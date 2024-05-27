@@ -1,0 +1,9 @@
+server:
+  shutdown: graceful
+  port: 8080
+spring:
+  application:
+    name: backend
+  threads:
+    virtual:
+      enabled: true
