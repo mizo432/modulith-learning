@@ -1,9 +1,9 @@
 package undecided.erp.relMgmt.model.party.addressUse;
 
 import java.util.List;
-import undecided.erp.relMgmt.model.party.Party;
 import undecided.erp.relMgmt.model.party.address.Address;
 import undecided.erp.relMgmt.model.party.organizationUnit.OrganizationUnit;
+import undecided.erp.relMgmt.model.party.party.Party;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**

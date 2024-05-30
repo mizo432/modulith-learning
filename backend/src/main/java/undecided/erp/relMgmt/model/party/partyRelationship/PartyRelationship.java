@@ -1,6 +1,6 @@
 package undecided.erp.relMgmt.model.party.partyRelationship;
 
-import undecided.erp.relMgmt.model.party.Party;
+import undecided.erp.relMgmt.model.party.party.Party;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**

@@ -105,6 +105,10 @@ public class DateProvider {
 
   }
 
+  public static void clear() {
+    DateProvider.initialize();
+  }
+
   protected LocalDateTime now() {
     return LocalDateTime.now();
   }

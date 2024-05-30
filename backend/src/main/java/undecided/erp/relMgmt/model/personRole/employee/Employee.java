@@ -15,6 +15,10 @@ public class Employee {
   private final String firstName;
   private final String lastName;
 
+  public static Employee reconstruct(Long id, String employeeNo) {
+    return null;
+  }
+
   @Override
   public String toString() {
     return "Employee{" +

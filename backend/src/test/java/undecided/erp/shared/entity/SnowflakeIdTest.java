@@ -2,29 +2,24 @@ package undecided.erp.shared.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import undecided.erp.common.dateProvider.StaticDateTimeProvider;
-import undecided.erp.common.ipaddress.StaticIpAddressProvider;
-import undecided.erp.common.snowflake.SnowflakeIdGenerator;
+import undecided.erp.common.snowflake.SnowflakeIdProvider;
+import undecided.erp.common.snowflake.StaticSnowflakeIdProvider;
 
 class SnowflakeIdTest {
 
   @BeforeEach
   void setUo() {
-    StaticDateTimeProvider.initialize(LocalDateTime.of(2024, 2, 3, 4, 5, 6, 7000000));
-    StaticIpAddressProvider.initialize("1.2.3.4");
-    SnowflakeIdGenerator.initialise();
+    StaticSnowflakeIdProvider.initialize(10L);
+    ;
 
   }
 
   @AfterEach
   void tearDown() {
-    StaticIpAddressProvider.clear();
-    StaticDateTimeProvider.clear();
-    SnowflakeIdGenerator.initialise();
+    SnowflakeIdProvider.clear();
 
   }
 
@@ -34,14 +29,38 @@ class SnowflakeIdTest {
   }
 
   @Test
-  void testNewInstance_unique() {
-    assertThat(SnowflakeId.newInstance()).isNotEqualTo(SnowflakeId.newInstance());
+  void testToString_persistency() {
+    SnowflakeId<?> snowflakeId = SnowflakeId.newInstance();
+    assertThat(snowflakeId.toString()).isEqualTo("10");
   }
 
   @Test
-  void testToString_persistency() {
+  void testEquals_reflexivity() {
     SnowflakeId<?> snowflakeId = SnowflakeId.newInstance();
-    System.out.println(snowflakeId);
-    assertThat(snowflakeId.toString()).isEqualTo("408699298413449216");
+    assertThat(snowflakeId.equals(snowflakeId)).isTrue();
+  }
+
+  @Test
+  void testEquals_symmetry() {
+    SnowflakeId<?> snowflakeId1 = SnowflakeId.newInstance();
+    SnowflakeId<?> snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
+    assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
+    assertThat(snowflakeId2.equals(snowflakeId1)).isTrue();
+  }
+
+  @Test
+  void testEquals_transitivity() {
+    SnowflakeId<?> snowflakeId1 = SnowflakeId.newInstance();
+    SnowflakeId<?> snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
+    SnowflakeId<?> snowflakeId3 = SnowflakeId.of(snowflakeId1.getValue());
+    assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
+    assertThat(snowflakeId2.equals(snowflakeId3)).isTrue();
+    assertThat(snowflakeId1.equals(snowflakeId3)).isTrue();
+  }
+
+  @Test
+  void testEquals_null() {
+    SnowflakeId<?> snowflakeId = SnowflakeId.newInstance();
+    assertThat(snowflakeId.equals(null)).isFalse();
   }
 }

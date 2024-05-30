@@ -2,21 +2,24 @@ package undecided.erp.relMgmt.model.party.organization;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import undecided.erp.relMgmt.model.party.organizationUnit.OrganizationUnit;
+import undecided.erp.relMgmt.model.party.party.Party;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**
  * Organizationクラスは、組織を表し、Partyクラスを拡張します。
  */
+@RequiredArgsConstructor
 public class Organization {
 
-  private SnowflakeId<Organization> id;
-  private OrganizationName name;
+  private final SnowflakeId<Party> id;
+  private final OrganizationName name;
   /**
    * 組織の産業部門。
    */
-  private IndustrySector industrySector;
-
+  private final IndustrySector industrySector;
+  private final OrganizationAttribute attribute;
   /**
    * taxExemptNumber変数は、組織の免税番号を表します。
    * <p>
@@ -48,4 +51,8 @@ public class Organization {
    */
   private final List<OrganizationUnit> organizationUnits = new ArrayList<>();
 
+  public static Organization createForInsert(SnowflakeId<Party> partyId,
+      OrganizationAttribute attribute) {
+    return new Organization(partyId, attribute.getName(), attribute.getIndustrySector(), attribute);
+  }
 }

@@ -41,14 +41,14 @@ public class SnowflakeIdGenerator {
   private static long sequence = 0L;
 
   /**
-   * The lastTimestamp variable represents the last timestamp in milliseconds used for generating
-   * unique IDs based on the Snowflake algorithm. It is initially set to -62167252739000L. The value
-   * of lastTimestamp is updated every time an ID is generated.
+   * lastTimestampという変数は、ユニークなID生成に使用されるSnowflakeアルゴリズムに基づいた 最後のタイムスタンプ（ミリ秒単位）を表します。
+   * 初期値は-62167252739000Lです。 IDが生成されるたびにlastTimestampの値は更新されます。
    */
   private static long lastTimestamp = -62167252739000L;
 
   /**
-   * SnowflakeIdGenerator is a class that generates unique IDs based on the Snowflake algorithm.
+   * SnowflakeIdGeneratorクラスは、Snowflakeアルゴリズムに基づいてユニークなIDを生成するために使用されます。
+   * タイムスタンプ、ワーカーID、シーケンス番号の組み合わせを使用してIDを生成します。
    */
   public SnowflakeIdGenerator(Long workerId) {
     if (workerId < 0 || workerId > MAX_WORKER_ID) {

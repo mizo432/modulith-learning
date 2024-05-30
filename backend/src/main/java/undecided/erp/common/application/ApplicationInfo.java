@@ -28,6 +28,11 @@ public class ApplicationInfo {
     return ApplicationInfo.applicationInfo.get().serverPort();
   }
 
+  public static void clear() {
+    ApplicationInfo.applicationInfo.set(new ApplicationInfo());
+    
+  }
+
   protected String applicationName() {
     return DEFAULT_APPLICATION_NAME;
   }
