@@ -13,9 +13,10 @@ class MachiAzaStatusTest {
       "2,地方自治法の町若しくは字に該当",
       "3,地方自治法の町若しくは字に非該当",
       "9,不明",
+      "32,不明",
       "999,不明"})
-    // test of unknown Id too
-  void testValueOfId(int id, MachiAzaStatus expectedStatus) {
+  void testValueOfId(int id, String machiAzaStatus) {
+    MachiAzaStatus expectedStatus = MachiAzaStatus.valueOf(machiAzaStatus);
     assertThat(MachiAzaStatus.valueOfId(id)).isEqualTo(expectedStatus);
   }
 

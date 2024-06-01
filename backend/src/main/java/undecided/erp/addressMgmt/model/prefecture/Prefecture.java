@@ -4,11 +4,10 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import undecided.erp.shared.date.ApplicableDate;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**
- * Prefectureクラスは、その属性と有効・適用日付と共に都道府県を表現します。
+ * Prefectureクラスは、属性、施行日、廃止日、備考とともに都道府県を表現しています。
  */
 @AllArgsConstructor
 @Getter
@@ -17,8 +16,8 @@ public class Prefecture {
 
   private SnowflakeId<Prefecture> id;
   private PrefectureAttribute attribute;
-  private ApplicableDate effectiveDate;
-  private ApplicableDate abolitionDate;
+  private PrefectureEffectiveDate effectiveDate;
+  private PrefectureAbolitionDate abolitionDate;
   private String remarks;
 
   /**
@@ -33,29 +32,29 @@ public class Prefecture {
    */
   public static Prefecture reconstruct(Long id, PrefectureAttribute attribute,
       LocalDate effectiveDate, LocalDate abolitionDate, String remarks) {
-    return new Prefecture(SnowflakeId.of(id), attribute, ApplicableDate.of(effectiveDate),
-        ApplicableDate.of(abolitionDate), remarks);
+    return new Prefecture(SnowflakeId.of(id), attribute, PrefectureEffectiveDate.of(effectiveDate),
+        PrefectureAbolitionDate.of(abolitionDate), remarks);
 
   }
 
   public static Prefecture create(SnowflakeId<Prefecture> id, PrefectureAttribute attribute,
-      ApplicableDate effectiveDate, String remarks) {
-    return new Prefecture(id, attribute, effectiveDate, ApplicableDate.MAX, remarks);
+      PrefectureEffectiveDate effectiveDate, String remarks) {
+    return new Prefecture(id, attribute, effectiveDate, PrefectureAbolitionDate.MAX, remarks);
   }
 
   public static Prefecture update(SnowflakeId<Prefecture> id, PrefectureAttribute attribute,
-      ApplicableDate effectiveDate, String remarks) {
-    return new Prefecture(id, attribute, effectiveDate, ApplicableDate.MAX, remarks);
+      PrefectureEffectiveDate effectiveDate, String remarks) {
+    return new Prefecture(id, attribute, effectiveDate, PrefectureAbolitionDate.MAX, remarks);
   }
 
   public Prefecture deleteAtToday() {
     return new Prefecture(SnowflakeId.newInstance(), attribute, effectiveDate,
-        ApplicableDate.now(), remarks);
+        PrefectureAbolitionDate.now(), remarks);
   }
 
   public Prefecture deleteAtYesterday() {
     return new Prefecture(SnowflakeId.newInstance(), attribute, effectiveDate,
-        ApplicableDate.yesterday(), remarks);
+        PrefectureAbolitionDate.yesterday(), remarks);
   }
 
 }

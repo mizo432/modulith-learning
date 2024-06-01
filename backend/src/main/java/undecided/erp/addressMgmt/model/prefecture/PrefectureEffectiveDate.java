@@ -21,17 +21,17 @@ import undecided.erp.shared.date.ApplicableDate;
  * }</pre>
  */
 @Getter
-public class EffectiveDate {
+public class PrefectureEffectiveDate {
 
-  public static final EffectiveDate MAX = new EffectiveDate(ApplicableDate.MAX);
+  public static final PrefectureEffectiveDate MAX = new PrefectureEffectiveDate(ApplicableDate.MAX);
   private final ApplicableDate value;
 
-  private EffectiveDate(ApplicableDate value) {
+  private PrefectureEffectiveDate(ApplicableDate value) {
     this.value = value;
   }
 
 
-  public static EffectiveDate of(LocalDate value) {
+  public static PrefectureEffectiveDate of(LocalDate value) {
     if (value.isAfter(ApplicableDate.MAX_DATE)) {
       throw new IllegalArgumentException("Value cannot be after MAX_DATE");
     }
@@ -39,12 +39,12 @@ public class EffectiveDate {
     return of(ApplicableDate.of(value));
   }
 
-  public static EffectiveDate of(ApplicableDate value) {
+  public static PrefectureEffectiveDate of(ApplicableDate value) {
     if (value.isAfter(ApplicableDate.MAX)) {
       throw new IllegalArgumentException("Value cannot be after MAX");
     }
 
-    return new EffectiveDate(value);
+    return new PrefectureEffectiveDate(value);
   }
 
   @Override

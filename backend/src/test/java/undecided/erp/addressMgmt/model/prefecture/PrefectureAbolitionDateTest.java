@@ -8,22 +8,22 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import undecided.erp.shared.date.ApplicableDate;
 
-class AbolitionDateTest {
+class PrefectureAbolitionDateTest {
 
   @Test
   void shouldCreateAbolitionDateFromLocalDate() {
     LocalDate date = LocalDate.now();
-    AbolitionDate abolitionDate = AbolitionDate.of(date);
+    PrefectureAbolitionDate prefectureAbolitionDate = PrefectureAbolitionDate.of(date);
 
-    assertNotNull(abolitionDate);
-    assertEquals(date, abolitionDate.getValue().getValue());
+    assertNotNull(prefectureAbolitionDate);
+    assertEquals(date, prefectureAbolitionDate.getValue().getValue());
   }
 
   @Test
   void shouldThrowExceptionWhenProvidedDateIsAfterMaxDate() {
     LocalDate date = ApplicableDate.MAX_DATE.plusDays(1);
 
-    assertThrows(IllegalArgumentException.class, () -> AbolitionDate.of(date));
+    assertThrows(IllegalArgumentException.class, () -> PrefectureAbolitionDate.of(date));
   }
 
 }

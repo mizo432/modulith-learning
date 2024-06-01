@@ -10,34 +10,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import undecided.erp.addressMgmt.model.prefecture.Prefecture;
+import undecided.erp.addressMgmt.model.prefecture.PrefectureAttribute;
 
 /**
- * This class represents a record of a prefecture in a database. It contains information about the
- * prefecture such as its ID, LG code, name, kana, romaji, effective date, ability date, and
- * remarks.
+ * このクラスはデータベースの都道府県のレコードを表現します。
  * <p>
- * The class is annotated with various annotations such as @AllArgsConstructor, @NoArgsConstructor,
- * @Getter, @Setter,
- *
- * @ToString, @Entity, and @Table to provide additional functionality and meta-data for the class.
- * <p>
- * The class has the following properties: - id: The ID of the prefecture (prefecture_id) - lgCode:
- * The LG code of the prefecture (lg_code) - prefName: The name of the prefecture (pref_name) -
- * prefKana: The kana representation of the prefecture's name (pref_kana) - prefRoma: The romaji
- * representation of the prefecture's name (pref_roma) - efctDate: The effective date of the
- * prefecture (nullable) - abltDate: The ability date of the prefecture (nullable) - remarks:
- * Remarks about the prefecture
- * <p>
- * Note: The properties are mapped to the corresponding columns in the "prefectures" table in the
- * "address_info" schema.
- * <p>
- * Example usage:
- * <p>
- * PrefectureRecord prefecture = new PrefectureRecord(); prefecture.setId(1L);
- * prefecture.setLgCode("01"); prefecture.setPrefName("Hokkaido"); prefecture.setPrefKana("ほっかいどう");
- * prefecture.setPrefRoma("Hokkaido"); prefecture.setEfctDate(LocalDate.of(1947, 8, 15));
- * prefecture.setAbltDate(LocalDate.of(9999, 12, 31)); prefecture.setRemarks("The northernmost
- * prefecture of Japan");
+ * それはID、LGコード、名前、カナ、ローマ字、有効日、能力日、備考などの都道府県に関する情報を含んでいます。
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -63,6 +42,25 @@ public class PrefectureRecord {
   private LocalDate efctDate;
   private LocalDate abltDate;
   private String remarks;
+
+  public static PrefectureRecord from(Prefecture prefecture) {
+    return new PrefectureRecord(
+        prefecture.getId().getValue(),
+        prefecture.getAttribute().getLgCode().getValue(),
+        prefecture.getAttribute().getNames().getName().getValue(),
+        prefecture.getAttribute().getNames().getKana().getValue(),
+        prefecture.getAttribute().getNames().getRoma().getValue(),
+        prefecture.getEffectiveDate().getValue().getValue(),
+        prefecture.getAbolitionDate().getValue().getValue(),
+        prefecture.getRemarks()
+    );
+  }
+
+  public Prefecture toPrefecture() {
+    return Prefecture.reconstruct(id,
+        PrefectureAttribute.reconstruct(lgCode, prefName, prefKana, prefRoma), efctDate, abltDate,
+        remarks);
+  }
 
 
 }

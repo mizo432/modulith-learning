@@ -1,4 +1,4 @@
-create table "address_info"."machi_azas"
+create table address_info.machi_azas
 (
     machi_aza_id       numeric(19, 0) not null,
     city_id            numeric(19, 0) not null,
@@ -21,11 +21,11 @@ create table "address_info"."machi_azas"
     koaza_aka_code     varchar(1),
     oaza_cho_gsi_uncmn varchar(50),
     koaza_gsi_uncmn    varchar(50),
-    status_flg         bit            not null,
+    status             smallint       not null,
     wake_num_flg       bit            not null,
     src_code           varchar(2),
-    efct_date          date,
-    ablt_date          date,
+    effective_date     date           not null,
+    abolition_date     date           not null,
     remarks            varchar(256),
     primary key (machi_aza_id)
 )

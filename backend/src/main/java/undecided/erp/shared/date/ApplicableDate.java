@@ -15,6 +15,7 @@ public class ApplicableDate {
    * MAXは、アプリケーションで使用できる最大の日付を表します。 これはApplicableDateクラスのインスタンスです。
    */
   public static final ApplicableDate MAX = new ApplicableDate(MAX_DATE);
+  public static final ApplicableDate EMPTY = new ApplicableDate(null);
   private final LocalDate value;
 
   private ApplicableDate(LocalDate value) {

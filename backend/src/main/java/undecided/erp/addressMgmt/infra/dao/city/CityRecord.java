@@ -10,7 +10,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import undecided.erp.addressMgmt.model.city.City;
+import undecided.erp.addressMgmt.model.city.CityAttribute;
+import undecided.erp.addressMgmt.model.city.CityLgCode;
+import undecided.erp.addressMgmt.model.city.CityNames;
+import undecided.erp.addressMgmt.model.city.CountyNames;
+import undecided.erp.addressMgmt.model.city.WardNames;
 
+/**
+ * CityRecordクラスは、address_infoデータベーススキーマにおける市区町村レコードを表します。
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -47,9 +56,32 @@ public class CityRecord {
   @Column(name = "ward_roma", nullable = false)
   private String wardRoma;
 
-  private LocalDate efctDate;
-  private LocalDate abltDate;
+  private LocalDate effectiveDate;
+  private LocalDate abolitionDate;
   private String remarks;
 
+  public City toEntity() {
+    CityAttribute attribute = toCityAttribute();
+    return City.reconstruct(id, attribute, effectiveDate, abolitionDate, remarks);
+  }
 
+  private CityAttribute toCityAttribute() {
+    CountyNames countyNames = toCountyNames();
+    CityNames cityNames = toCityNames();
+    WardNames wardNames = toWardNames();
+    return CityAttribute.reconstruct(CityLgCode.reconstruct(lgCode), countyNames, cityNames,
+        wardNames);
+  }
+
+  private WardNames toWardNames() {
+    return WardNames.reconstruct(countyRoma, cityRoma, wardRoma);
+  }
+
+  private CityNames toCityNames() {
+    return CityNames.reconstruct(cityName, cityKana, cityRoma);
+  }
+
+  private CountyNames toCountyNames() {
+    return CountyNames.reconstruct(countyName, cityKana, cityRoma);
+  }
 }

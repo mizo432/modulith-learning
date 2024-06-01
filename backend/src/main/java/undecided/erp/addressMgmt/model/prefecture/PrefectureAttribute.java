@@ -14,7 +14,7 @@ import lombok.ToString;
 public class PrefectureAttribute {
 
   private PrefectureLgCode lgCode;
-  private PrefectureName name;
+  private PrefectureNames names;
 
   /**
    * 提供されたlgCodeと名前を使用して新しいPrefectureAttributeオブジェクトを作成します。
@@ -24,7 +24,7 @@ public class PrefectureAttribute {
    * @return 提供されたlgCodeと名前をもつ新しいPrefectureAttributeオブジェクト
    */
   public static PrefectureAttribute create(@NonNull PrefectureLgCode lgCode,
-      @NonNull PrefectureName name) {
+      @NonNull PrefectureNames name) {
     return new PrefectureAttribute(lgCode, name);
 
   }
@@ -39,7 +39,7 @@ public class PrefectureAttribute {
   public static PrefectureAttribute reconstruct(String lgCode, String name, String nameKana,
       String nameRoma) {
     PrefectureLgCode lgCode1 = PrefectureLgCode.reconstruct(lgCode);
-    return new PrefectureAttribute(lgCode1, PrefectureName.reconstruct(name, nameKana, nameRoma));
+    return new PrefectureAttribute(lgCode1, PrefectureNames.reconstruct(name, nameKana, nameRoma));
 
   }
 

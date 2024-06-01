@@ -5,18 +5,22 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-
-public class NameKana {
+public class PrefectureRoma {
 
   private String value;
 
-  public static NameKana reconstruct(String value) {
-    return new NameKana(value);
+  public static PrefectureRoma reconstruct(String value) {
+    return new PrefectureRoma(value);
+
+  }
+
+  public static PrefectureRoma of(String value) {
+    return new PrefectureRoma(value);
+
   }
 
   @Override
   public String toString() {
     return value;
   }
-
 }

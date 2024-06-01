@@ -11,7 +11,7 @@ class PrefectureTest {
   void testReconstruct() {
     Long id = 1L;
     PrefectureAttribute attribute = PrefectureAttribute.create(PrefectureLgCode.of("01"),
-        PrefectureName.create("name", "kana", "roma"));
+        PrefectureNames.create("name", "kana", "roma"));
     LocalDate efctDate = LocalDate.now();
     LocalDate abltDate = LocalDate.now();
     String remarks = "remarks";
@@ -20,8 +20,8 @@ class PrefectureTest {
 
     assertEquals(id, result.getId().getValue());
     assertEquals(attribute, result.getAttribute());
-    assertEquals(efctDate, result.getEffectiveDate().getValue());
-    assertEquals(abltDate, result.getAbolitionDate().getValue());
+    assertEquals(efctDate, result.getEffectiveDate().getValue().getValue());
+    assertEquals(abltDate, result.getAbolitionDate().getValue().getValue());
     assertEquals(remarks, result.getRemarks());
   }
 }

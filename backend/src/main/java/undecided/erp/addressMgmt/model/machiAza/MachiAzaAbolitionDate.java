@@ -1,4 +1,4 @@
-package undecided.erp.addressMgmt.model.prefecture;
+package undecided.erp.addressMgmt.model.machiAza;
 
 import java.time.LocalDate;
 import lombok.Getter;
@@ -11,9 +11,11 @@ import undecided.erp.shared.date.ApplicableDate;
  * AbolitionDateクラスは、廃止日を作成し、その有効性をチェックするメソッドを提供します。
  */
 @Getter
-public class AbolitionDate {
+public class MachiAzaAbolitionDate {
 
-  public static final AbolitionDate MAX = new AbolitionDate(ApplicableDate.MAX);
+  public static final MachiAzaAbolitionDate MAX = new MachiAzaAbolitionDate(ApplicableDate.MAX);
+  public static final MachiAzaAbolitionDate EMPTY = new MachiAzaAbolitionDate(ApplicableDate.EMPTY);
+
   /**
    * AbolitionDateの値。これはアプリケーションで適用可能な日付を表しています。 これはApplicableDateクラスのラッパークラスです。
    */
@@ -24,8 +26,9 @@ public class AbolitionDate {
    *
    * @param value 設定するApplicableDateの値
    */
-  private AbolitionDate(ApplicableDate value) {
+  private MachiAzaAbolitionDate(ApplicableDate value) {
     this.value = value;
+
   }
 
 
@@ -39,12 +42,30 @@ public class AbolitionDate {
    * @return 与えられた値でAbolitionDateオブジェクト
    * @throws IllegalArgumentException 値がMAX_DATE以降の場合
    */
-  public static AbolitionDate of(LocalDate value) {
+  public static MachiAzaAbolitionDate of(LocalDate value) {
+    if (value == null) {
+      return EMPTY;
+    }
     if (value.isAfter(ApplicableDate.MAX_DATE)) {
       throw new IllegalArgumentException("Value cannot be after MAX_DATE");
     }
 
-    return new AbolitionDate(ApplicableDate.of(value));
+    return new MachiAzaAbolitionDate(ApplicableDate.of(value));
+  }
+
+  /**
+   * 昨日の日付を表すPrefectureAbolitionDateオブジェクトを返します。
+   *
+   * @return 昨日の日付を表すPrefectureAbolitionDateオブジェクト
+   */
+  public static MachiAzaAbolitionDate yesterday() {
+    return new MachiAzaAbolitionDate(ApplicableDate.yesterday());
+
+  }
+
+  public static MachiAzaAbolitionDate now() {
+    return new MachiAzaAbolitionDate(ApplicableDate.now());
+
   }
 
   @Override

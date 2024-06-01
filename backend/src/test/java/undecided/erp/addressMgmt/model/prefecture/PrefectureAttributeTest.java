@@ -8,14 +8,14 @@ public class PrefectureAttributeTest {
 
   @Test
   public void testReconstructWithLgCodeAndPerfName() {
-    PrefectureName testName = new PrefectureName(Name.reconstruct("test"),
-        NameKana.reconstruct("test_kana"),
-        NameRoma.reconstruct("test_roma"));
+    PrefectureNames testName = new PrefectureNames(PrefectureName.reconstruct("test"),
+        PrefectureKana.reconstruct("test_kana"),
+        PrefectureRoma.reconstruct("test_roma"));
     PrefectureLgCode testLgCode = new PrefectureLgCode("test");
 
     PrefectureAttribute testAttribute = new PrefectureAttribute(testLgCode, testName);
     assertTrue(testAttribute.getLgCode().equals(testLgCode));
-    assertTrue(testAttribute.getName().equals(testName));
+    assertTrue(testAttribute.getNames().equals(testName));
   }
 
   @Test
@@ -27,8 +27,8 @@ public class PrefectureAttributeTest {
     PrefectureAttribute testAttribute = PrefectureAttribute.reconstruct(testLgCode, testName,
         testNameKana, testNameRoma);
     assertTrue(testAttribute.getLgCode().getValue().equals(testLgCode));
-    assertTrue(testAttribute.getName().getName().toString().equals(testName));
-    assertTrue(testAttribute.getName().getKana().toString().equals(testNameKana));
-    assertTrue(testAttribute.getName().getRoma().toString().equals(testNameRoma));
+    assertTrue(testAttribute.getNames().getName().toString().equals(testName));
+    assertTrue(testAttribute.getNames().getKana().toString().equals(testNameKana));
+    assertTrue(testAttribute.getNames().getRoma().toString().equals(testNameRoma));
   }
 }
