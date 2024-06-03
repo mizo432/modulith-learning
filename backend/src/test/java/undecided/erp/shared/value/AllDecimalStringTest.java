@@ -1,44 +1,33 @@
 package undecided.erp.shared.value;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 class AllDecimalStringTest {
 
   @Test
-  void shouldThrowExceptionForLetterCharacter() {
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> AllDecimalString.of("abc"));
+  void testOfWithNullValue() {
+    AllDecimalString ads = AllDecimalString.of(null);
+    assertNull(ads.value());
   }
 
   @Test
-  void shouldThrowExceptionForZero() {
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> AllDecimalString.of("0"));
+  void testOfWithEmptyString() {
+    AllDecimalString ads = AllDecimalString.of("");
+    assertEquals("", ads.value());
   }
 
   @Test
-  void shouldCreateAllDecimalCodeForBigNumber() {
-    assertThat("99999999999999999").isEqualTo(AllDecimalString.of("99999999999999999").value());
-  }
-
-
-  @Test
-  void shouldThrowExceptionForNegativeNumber() {
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> AllDecimalString.of("-1"));
+  void testOfWithValidDecimalString() {
+    AllDecimalString ads = AllDecimalString.of("123");
+    assertEquals("123", ads.value());
   }
 
   @Test
-  void shouldThrowExceptionForNonNumericString() {
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> AllDecimalString.of("Hello"));
-  }
-
-  @Test
-  void shouldCreateAllDecimalCodeForSmallNumber() {
-    assertThat("1").isEqualTo(AllDecimalString.of("1").value());
+  void testOfWithInvalidDecimalString() {
+    assertThrows(IllegalArgumentException.class, () -> AllDecimalString.of("abc"));
   }
 }

@@ -1,22 +1,24 @@
 package undecided.erp.shared.value;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class NonEmptyStringTest {
 
-    @Test
-    public void WhenOfMethodIsCalledWithEmptyString_ThrowsIllegalArgumentException() {
-        String emptyString = "";
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> NonEmptyString.of(emptyString));
-        assertEquals("Empty string", exception.getMessage());
-    }
+  @Test
+  public void whenValueIsNull_thenShouldReturnObjectWithNull() {
+    assertEquals(new NonEmptyString(null).value(), NonEmptyString.of(null).value());
+  }
 
-    @Test
-    public void WhenOfMethodIsCalledWithNonEmptyString_ReturnsNonEmptyStringInstanceWithCorrectValue() {
-        String testString = "Non Empty String";
-        NonEmptyString nonEmptyString = NonEmptyString.of(testString);
-        assertEquals(testString, nonEmptyString.value());
-    }
+  @Test
+  public void whenValueIsEmpty_thenShouldThrowException() {
+    assertThrows(IllegalArgumentException.class, () -> NonEmptyString.of(""));
+  }
+
+  @Test
+  public void whenValueIsNotEmpty_thenShouldReturnObjectWithSameValue() {
+    assertEquals(new NonEmptyString("test").value(), NonEmptyString.of("test").value());
+  }
 }

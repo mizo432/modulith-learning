@@ -20,13 +20,10 @@ class ModulithTest {
 
   @Test
   void createModulithsDocumentation() {
-//    new Documenter(modules).writeDocumentation();
-    new Documenter(modules)
-        .writeModulesAsPlantUml()
-        .writeIndividualModulesAsPlantUml();
-//    Documenter documenter = new Documenter(modules);
-//    documenter.writeModulesAsPlantUml();
-//    documenter.writeIndividualModulesAsPlantUml();
+    new Documenter(modules).writeDocumentation();
+//    new Documenter(modules)
+//        .writeModulesAsPlantUml()
+//        .writeIndividualModulesAsPlantUml();
   }
 
 }

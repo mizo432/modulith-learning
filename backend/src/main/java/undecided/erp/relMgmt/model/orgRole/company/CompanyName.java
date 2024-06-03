@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import undecided.erp.shared.value.MaxLengthString;
-import undecided.erp.shared.value.NonNullString;
+import undecided.erp.shared.value.NonNullObject;
 
 @RequiredArgsConstructor
 @Getter
@@ -14,7 +14,7 @@ public class CompanyName {
   private final String value;
 
   public static CompanyName of(@NonNull String value) {
-    NonNullString.of(value);
+    NonNullObject.of(value);
     MaxLengthString.of(value, LENGTH);
     return new CompanyName(value);
 

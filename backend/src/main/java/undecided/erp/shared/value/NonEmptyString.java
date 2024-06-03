@@ -5,14 +5,11 @@ package undecided.erp.shared.value;
  */
 public record NonEmptyString(String value) {
 
-  /**
-   * 与えられた値で新しいNonEmptyStringのインスタンスを作成します。
-   *
-   * @param value NonEmptyStringに使用する値です。
-   * @return 新しいNonEmptyStringのインスタンスを返します。
-   * @throws IllegalArgumentException 値が空の場合に発生します。
-   */
   public static NonEmptyString of(String value) {
+    if (value == null) {
+      return new NonEmptyString(null);
+
+    }
     if (value.isEmpty()) {
       throw new IllegalArgumentException("Empty string");
     }

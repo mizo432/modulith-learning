@@ -5,6 +5,12 @@ import java.math.BigInteger;
 public record AllDecimalString(String value) {
 
   public static AllDecimalString of(String value) {
+    if (value == null) {
+      return new AllDecimalString(null);
+    }
+    if (value.isEmpty()) {
+      return new AllDecimalString("");
+    }
     if (!isPositiveDigits(value)) {
       throw new IllegalArgumentException("The value '" + value + "' is not a valid decimal code");
     }

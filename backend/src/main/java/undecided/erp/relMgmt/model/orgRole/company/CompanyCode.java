@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import undecided.erp.shared.value.AllDecimalString;
 import undecided.erp.shared.value.FixedLengthString;
-import undecided.erp.shared.value.NonNullString;
+import undecided.erp.shared.value.NonNullObject;
 
 @RequiredArgsConstructor
 @Getter
@@ -15,7 +15,7 @@ public class CompanyCode {
   private final String value;
 
   public static CompanyCode of(@NonNull String value) {
-    NonNullString.of(value);
+    NonNullObject.of(value);
     AllDecimalString.of(value);
     FixedLengthString.of(value, LENGTH);
     return new CompanyCode(value);
