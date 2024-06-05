@@ -12,53 +12,53 @@ import org.junit.jupiter.api.Test;
 class ListVerifiersTest {
 
   @Test
-  void testCheckNotEmptyWithEmptyList() {
+  void testVerifyNotEmptyWithEmptyList() {
     List<String> list = Collections.emptyList();
-    assertThrows(IllegalArgumentException.class, () -> ListVerifiers.checkNotEmpty(list));
+    assertThrows(IllegalArgumentException.class, () -> ListVerifiers.verifyNotEmpty(list));
   }
 
   @Test
-  void testCheckNotEmptyWithNonEmptyList() {
+  void testVerifyNotEmptyWithNonEmptyList() {
     List<String> list = Arrays.asList("Test1", "Test2");
-    List<String> result = ListVerifiers.checkNotEmpty(list);
+    List<String> result = ListVerifiers.verifyNotEmpty(list);
     assertEquals(result, list);
   }
 
   @Test
-  void testCheckNotEmptyWithNullList() {
+  void testVerifyNotEmptyWithNullList() {
     List<String> list = null;
-    List<String> result = ListVerifiers.checkNotEmpty(list);
+    List<String> result = ListVerifiers.verifyNotEmpty(list);
     assertNull(result);
   }
 
   @Test
-  void testCheckAnyElementNotNullWithNullList() {
+  void testVerifyAnyElementNotNullWithNullList() {
     List<String> list = null;
-    List<String> result = ListVerifiers.checkAnyElementNotNull(list,
+    List<String> result = ListVerifiers.verifyAnyElementNotNull(list,
         () -> new IllegalArgumentException("List must not contain null element"));
     assertNull(result);
   }
 
   @Test
-  void testCheckAnyElementNotNullWithNonNullList() {
+  void testVerifyAnyElementNotNullWithNonNullList() {
     List<String> list = Arrays.asList("Test1", null);
-    List<String> result = ListVerifiers.checkAnyElementNotNull(list,
+    List<String> result = ListVerifiers.verifyAnyElementNotNull(list,
         () -> new IllegalArgumentException("List must not contain null element"));
     assertEquals(result, list);
   }
 
   @Test
-  void testCheckAnyElementNotNullWithAllNullList() {
+  void testVerifyAnyElementNotNullWithAllNullList() {
     List<String> list = Arrays.asList(null, null);
     assertThrows(IllegalArgumentException.class,
-        () -> ListVerifiers.checkAnyElementNotNull(list,
+        () -> ListVerifiers.verifyAnyElementNotNull(list,
             () -> new IllegalArgumentException("List must not contain null element")));
   }
 
   @Test
   void testCheckAllElementsNotNullWithNonNullList() {
     List<String> list = Arrays.asList("Test1", "Test2");
-    List<String> result = ListVerifiers.checkAllElementNotNull(list,
+    List<String> result = ListVerifiers.verifyAllElementNotNull(list,
         idx -> new IndexedRuntimeException("List must not contain null element at index: " + idx,
             idx));
     assertEquals(list, result);
@@ -67,49 +67,49 @@ class ListVerifiersTest {
   @Test
   void testCheckAllElementsNotNullWithNullList() {
     List<String> list = null;
-    List<String> result = ListVerifiers.checkAllElementNotNull(list,
+    List<String> result = ListVerifiers.verifyAllElementNotNull(list,
         idx -> new IndexedRuntimeException("List must not contain null element at index: " + idx,
             idx));
     assertNull(result);
   }
 
   @Test
-  void testCheckAllElementNotNullWithSomeNullInList() {
+  void testVerifyAllElementNotNullWithSomeNullInList() {
     List<String> list = Arrays.asList("Test1", null, "Test2");
-    assertThrows(IndexedRuntimeException.class, () -> ListVerifiers.checkAllElementNotNull(list,
+    assertThrows(IndexedRuntimeException.class, () -> ListVerifiers.verifyAllElementNotNull(list,
         idx -> new IndexedRuntimeException("List must not contain null element at index: " + idx,
             idx)));
   }
 
   @Test
-  void testCheckOneElementNotNullWithNullList() {
+  void testVerifyOneElementNotNullWithNullList() {
     List<String> list = null;
-    List<String> result = ListVerifiers.checkOneElementNotNull(list,
+    List<String> result = ListVerifiers.verifyOneElementNotNull(list,
         () -> new IllegalArgumentException("List must contain exactly one non-null element"));
     assertNull(result);
   }
 
   @Test
-  void testCheckOneElementNotNullWithNonNullListOneNotNull() {
+  void testVerifyOneElementNotNullWithNonNullListOneNotNull() {
     List<String> list = Arrays.asList(null, "Test1", null);
-    List<String> result = ListVerifiers.checkOneElementNotNull(list,
+    List<String> result = ListVerifiers.verifyOneElementNotNull(list,
         () -> new IllegalArgumentException("List must contain exactly one non-null element"));
     assertEquals(result, list);
   }
 
   @Test
-  void testCheckOneElementNotNullWithNonNullListMoreThanOneNotNull() {
+  void testVerifyOneElementNotNullWithNonNullListMoreThanOneNotNull() {
     List<String> list = Arrays.asList("Test1", "Test2");
     assertThrows(IllegalArgumentException.class,
-        () -> ListVerifiers.checkOneElementNotNull(list,
+        () -> ListVerifiers.verifyOneElementNotNull(list,
             () -> new IllegalArgumentException("List must contain exactly one non-null element")));
   }
 
   @Test
-  void testCheckOneElementNotNullWithAllNullList() {
+  void testVerifyOneElementNotNullWithAllNullList() {
     List<String> list = Arrays.asList(null, null);
     assertThrows(IllegalArgumentException.class,
-        () -> ListVerifiers.checkOneElementNotNull(list,
+        () -> ListVerifiers.verifyOneElementNotNull(list,
             () -> new IllegalArgumentException("List must contain exactly one non-null element")));
   }
 }

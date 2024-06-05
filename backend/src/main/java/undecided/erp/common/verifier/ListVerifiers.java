@@ -16,8 +16,8 @@ public class ListVerifiers {
    * @return リストが空でない場合は入力リスト
    * @throws IllegalArgumentException リストが空の場合
    */
-  public static <T> List<T> checkNotEmpty(List<T> list) {
-    return checkNotEmpty(list, () -> new IllegalArgumentException("List must not be empty"));
+  public static <T> List<T> verifyNotEmpty(List<T> list) {
+    return verifyNotEmpty(list, () -> new IllegalArgumentException("List must not be empty"));
 
   }
 
@@ -30,7 +30,7 @@ public class ListVerifiers {
    * @return リストが空でない場合は入力リスト
    * @throws RuntimeException リストが空で、supplierによって生成された場合
    */
-  public static <T> List<T> checkNotEmpty(List<T> list,
+  public static <T> List<T> verifyNotEmpty(List<T> list,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (list == null) {
       return list;
@@ -53,7 +53,7 @@ public class ListVerifiers {
    * @return すべての要素がnullでない場合は入力リスト
    * @throws IndexedRuntimeException リストの任意の要素がnullの場合、null要素のインデックスと共に
    */
-  public static <E> List<E> checkAllElementNotNull(List<E> list,
+  public static <E> List<E> verifyAllElementNotNull(List<E> list,
       @NonNull Function<Integer, ? extends IndexedRuntimeException> function) {
     if (list == null) {
       return list;
@@ -79,7 +79,7 @@ public class ListVerifiers {
    * @return 全ての要素が null でない場合、入力リスト
    * @throws RuntimeException リスト内の任意の要素が null の場合
    */
-  public static <E> List<E> checkAnyElementNotNull(List<E> list,
+  public static <E> List<E> verifyAnyElementNotNull(List<E> list,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (list == null) {
       return list;
@@ -103,7 +103,7 @@ public class ListVerifiers {
    * @return チェックがパスした場合は入力リスト
    * @throws RuntimeException 1つ以上の非null要素を含んでいる場合
    */
-  public static <E> List<E> checkOneElementNotNull(List<E> list,
+  public static <E> List<E> verifyOneElementNotNull(List<E> list,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (list == null) {
       return list;
