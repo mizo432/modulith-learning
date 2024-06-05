@@ -2,7 +2,10 @@
     "relMgmt :: actor",
     "relMgmt :: developer",
     "relMgmt :: product-owner",
-    "shared :: entity"
+    "shared :: entity",
+    "shared :: value",
+    "common :: precondition"
+
 })
 package undecided.erp.scrum;
 
