@@ -5,12 +5,12 @@ import java.util.function.Supplier;
 
 public class ArrayVerifiers {
 
-  public static <T> T[] checkNotEmpty(T[] array) {
-    return checkNotEmpty(array, () -> new IllegalArgumentException("Array must not be empty"));
+  public static <T> T[] verifyNotEmpty(T[] array) {
+    return verifyNotEmpty(array, () -> new IllegalArgumentException("Array must not be empty"));
 
   }
 
-  public static <T> T[] checkNotEmpty(T[] array, Supplier<? extends RuntimeException> supplier) {
+  public static <T> T[] verifyNotEmpty(T[] array, Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
     }
@@ -30,7 +30,7 @@ public class ArrayVerifiers {
    * @return すべての要素がnullでない場合は元の配列
    * @throws IndexedRuntimeException 配列のどれかの要素がnullの場合
    */
-  public static <E> E[] checkAllElementNotNull(E[] array,
+  public static <E> E[] verifyAllElementNotNull(E[] array,
       Function<Integer, ? extends IndexedRuntimeException> function) {
     if (array == null) {
       return array;
@@ -57,7 +57,7 @@ public class ArrayVerifiers {
    * @return いずれかの要素がnullでない場合、元の配列を返します
    * @throws RuntimeException 配列がnullまたは配列内の全要素がnullの場合、ランタイム例外がスローされます。
    */
-  public static <E> E[] checkAnyElementNotNull(E[] array,
+  public static <E> E[] verifyAnyElementNotNull(E[] array,
       Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
@@ -84,7 +84,7 @@ public class ArrayVerifiers {
    * @return チェックが通ればその配列自体を返します
    * @throws RuntimeException 配列がnullであるか、配列内のnullでない要素の数がちょうど1つでない場合に投げられます
    */
-  public static <E> E[] checkOneElementNotNull(E[] array,
+  public static <E> E[] verifyOneElementNotNull(E[] array,
       Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;

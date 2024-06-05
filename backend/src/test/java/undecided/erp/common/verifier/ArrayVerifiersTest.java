@@ -9,48 +9,48 @@ import org.junit.jupiter.api.Test;
 public class ArrayVerifiersTest {
 
   @Test
-  void testCheckNotEmptyNull() {
-    assertNull(ArrayVerifiers.checkNotEmpty(null));
+  void testVerifyNotEmptyNull() {
+    assertNull(ArrayVerifiers.verifyNotEmpty(null));
 
   }
 
   @Test
-  void testCheckNotEmptyEmpty() {
+  void testVerifyNotEmptyEmpty() {
     assertThrows(IllegalArgumentException.class,
-        () -> ArrayVerifiers.checkNotEmpty(new Integer[]{}));
+        () -> ArrayVerifiers.verifyNotEmpty(new Integer[]{}));
   }
 
   @Test
-  void testCheckNotEmptyNotEmpty() {
+  void testVerifyNotEmptyNotEmpty() {
     Integer[] array = new Integer[]{1, 2, 3};
-    assertEquals(array, ArrayVerifiers.checkNotEmpty(array));
+    assertEquals(array, ArrayVerifiers.verifyNotEmpty(array));
   }
 
   @Test
-  void testCheckAllElementNotNullNullArray() {
-    assertNull(ArrayVerifiers.checkAllElementNotNull(null,
+  void testVerifyAllElementNotNullNullArray() {
+    assertNull(ArrayVerifiers.verifyAllElementNotNull(null,
         i -> new IndexedRuntimeException("Array element is null.", i)));
   }
 
   @Test
-  void testCheckAllElementNotNullEmptyArray() {
+  void testVerifyAllElementNotNullEmptyArray() {
     Integer[] array = new Integer[]{};
-    assertEquals(array, ArrayVerifiers.checkAllElementNotNull(array,
+    assertEquals(array, ArrayVerifiers.verifyAllElementNotNull(array,
         i -> new IndexedRuntimeException("Array element is null.", i)));
   }
 
   @Test
-  void testCheckAllElementNotNullWithNullException() {
+  void testVerifyAllElementNotNullWithNullException() {
     Integer[] array = new Integer[]{1, 2, 3, null};
     assertThrows(IndexedRuntimeException.class,
-        () -> ArrayVerifiers.checkAllElementNotNull(array,
+        () -> ArrayVerifiers.verifyAllElementNotNull(array,
             i -> new IndexedRuntimeException("Array element is null.", i)));
   }
 
   @Test
-  void testCheckAllElementNotNullWithoutNullException() {
+  void testVerifyAllElementNotNullWithoutNullException() {
     Integer[] array = new Integer[]{1, 2, 3};
-    assertEquals(array, ArrayVerifiers.checkAllElementNotNull(array,
+    assertEquals(array, ArrayVerifiers.verifyAllElementNotNull(array,
         i -> new IndexedRuntimeException("Array element is null.", i)));
   }
 }
