@@ -4,7 +4,87 @@ import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class NumberVerifiers {
+public class IntegerVerifiers {
+
+  /**
+   * 与えられた引用が正の整数であるかを検証し、そうでない場合はカスタム例外をスローします。
+   *
+   * @param ref 正のものであるかどうかを検証するための参照。null値も許可されます。
+   * @param exceptionSupplier 参照が正でない場合にスローされるカスタム例外を提供する{@code Supplier}。
+   * @return 参照がnullでなく、正の場合は正の参照。
+   * @throws RuntimeException 参照がnullまたは正でない場合。
+   */
+  public static Integer verifyPositive(Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    if (ref == null) {
+      return ref;
+    }
+    if (ref <= 0) {
+      throw exceptionSupplier.get();
+    }
+    return ref;
+  }
+
+  /**
+   * 与えられたIntegerの値が正またはゼロであることを検証します。
+   *
+   * @param ref 検証するIntegerの値。 nullの場合、メソッドは例外を投げずにnullを返します。
+   * @param exceptionSupplier 与えられた値が負である場合に投げられる適切なRuntimeExceptionを提供するSupplier。
+   * @return 与えられた値が正またはゼロである場合、同じIntegerの値が返ります。それ以外の場合、exceptionSupplierに基づいて例外が投げられます。
+   * @throws RuntimeException 与えられた値が負の場合、exceptionSupplierに基づいて投げられます。
+   */
+  public static Integer verifyPositiveOrZero(Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    if (ref == null) {
+      return ref;
+    }
+    if (ref < 0) {
+      throw exceptionSupplier.get();
+    }
+    return ref;
+  }
+
+  /**
+   * 与えられた参照が負であるかを確認し、そうでなければRuntimeExceptionをスローします。
+   * <p>
+   * 参照がnullの場合、変更せずに返されます。
+   *
+   * @param ref 確認する参照
+   * @param exceptionSupplier 参照が負でない場合にRuntimeExceptionを提供するSupplier
+   * @return 参照が負の場合は参照を、nullであればnullを返します
+   * @throws RuntimeException 参照が負でない場合
+   */
+  public static Integer verifyNegative(Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    if (ref == null) {
+      return ref;
+    }
+    if (ref >= 0) {
+      throw exceptionSupplier.get();
+    }
+    return ref;
+  }
+
+  /**
+   * 与えられた数値が負の数またはゼロであるかを確認します。
+   * <p>
+   * 参照数がnullの場合、nullを返します。参照数がゼロより大きい場合、指定された例外を投げます。
+   *
+   * @param ref 検証する数値。
+   * @param exceptionSupplier 数値がゼロより大きい場合に投げる例外を提供するSupplier。
+   * @return 数値がnullまたはゼロ以下である場合、同じ数値を返します。それ以外の場合は、例外が投げられます。
+   * @throws RuntimeException 数値がゼロより大きい場合。
+   */
+  public static Integer verifyNegativeOrZero(Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    if (ref == null) {
+      return ref;
+    }
+    if (ref > 0) {
+      throw exceptionSupplier.get();
+    }
+    return ref;
+  }
 
   /**
    * 指定した最小値と最大値によって定義される閉範囲内に特定のIntegerが存在するかを検証します。
