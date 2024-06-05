@@ -16,7 +16,7 @@ public class EnumVerifiers {
    * @return EnumSetに列挙型の定数が含まれている場合、同じ列挙型の定数
    * @throws RuntimeException 列挙型の定数がEnumSetに含まれていない場合
    */
-  public static <E extends Enum<E>> E checkContains(E ref, @NonNull EnumSet<E> enumSet,
+  public static <E extends Enum<E>> E verifyContains(E ref, @NonNull EnumSet<E> enumSet,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (!enumSet.contains(ref)) {
       throw supplier.get();

@@ -12,21 +12,21 @@ enum TestEnum {
 public class EnumVerifiersTest {
 
   @Test
-  public void testCheckContains_EnumPresent_ExpectNoException() {
+  public void testVerifyContains_EnumPresent_ExpectNoException() {
     EnumSet<TestEnum> enumSet = EnumSet.of(TestEnum.VALUE1, TestEnum.VALUE2);
     Supplier<RuntimeException> supplier = () -> new RuntimeException("Enum not contained in set");
 
     Assertions.assertDoesNotThrow(
-        () -> EnumVerifiers.checkContains(TestEnum.VALUE1, enumSet, supplier));
+        () -> EnumVerifiers.verifyContains(TestEnum.VALUE1, enumSet, supplier));
   }
 
   @Test
-  public void testCheckContains_EnumNotPresent_ExpectException() {
+  public void testVerifyContains_EnumNotPresent_ExpectException() {
     EnumSet<TestEnum> enumSet = EnumSet.of(TestEnum.VALUE1);
     Supplier<RuntimeException> supplier = () -> new RuntimeException("Enum not contained in set");
 
     Assertions.assertThrows(RuntimeException.class,
-        () -> EnumVerifiers.checkContains(TestEnum.VALUE2, enumSet, supplier));
+        () -> EnumVerifiers.verifyContains(TestEnum.VALUE2, enumSet, supplier));
   }
 
 }
