@@ -2,6 +2,7 @@ package undecided.erp.common.verifier;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import lombok.NonNull;
 
 public class ArrayVerifiers {
 
@@ -10,7 +11,8 @@ public class ArrayVerifiers {
 
   }
 
-  public static <T> T[] verifyNotEmpty(T[] array, Supplier<? extends RuntimeException> supplier) {
+  public static <T> T[] verifyNotEmpty(T[] array,
+      @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
     }
@@ -31,7 +33,7 @@ public class ArrayVerifiers {
    * @throws IndexedRuntimeException 配列のどれかの要素がnullの場合
    */
   public static <E> E[] verifyAllElementNotNull(E[] array,
-      Function<Integer, ? extends IndexedRuntimeException> function) {
+      @NonNull Function<Integer, ? extends IndexedRuntimeException> function) {
     if (array == null) {
       return array;
     }
@@ -58,7 +60,7 @@ public class ArrayVerifiers {
    * @throws RuntimeException 配列がnullまたは配列内の全要素がnullの場合、ランタイム例外がスローされます。
    */
   public static <E> E[] verifyAnyElementNotNull(E[] array,
-      Supplier<? extends RuntimeException> supplier) {
+      @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
     }
@@ -85,7 +87,7 @@ public class ArrayVerifiers {
    * @throws RuntimeException 配列がnullであるか、配列内のnullでない要素の数がちょうど1つでない場合に投げられます
    */
   public static <E> E[] verifyOneElementNotNull(E[] array,
-      Supplier<? extends RuntimeException> supplier) {
+      @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
     }
