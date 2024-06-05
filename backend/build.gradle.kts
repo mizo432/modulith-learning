@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins {
     java
     id("org.springframework.boot") version "3.3.0"
@@ -78,6 +80,30 @@ dependencyManagement {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+//tasks.withType<Test> {
+//    useJUnitPlatform()
+//}
+
+tasks.test {
+    useJUnitPlatform {
+        excludeTags("medium", "large")
+        timeout.set(Duration.ofSeconds(60))
+    }
+}
+
+val mediumTest = tasks.register("mediumTest", Test::class.java) {
+    group = "verification"
+    useJUnitPlatform {
+        excludeTags("small", "large")
+    }
+    timeout.set(Duration.ofSeconds(300))
+    shouldRunAfter("test")
+}
+val largeTest = tasks.register("largeTest", Test::class.java) {
+    group = "verification"
+    useJUnitPlatform {
+        excludeTags("small", "medium")
+    }
+    timeout.set(Duration.ofHours(1))
+    shouldRunAfter("mediumTest")
 }
