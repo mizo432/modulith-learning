@@ -10,8 +10,8 @@ import lombok.NonNull;
  */
 public class SetVerifiers {
 
-  public static <T> Set<T> checkNotEmpty(Set<T> set) {
-    return checkNotEmpty(set, () -> new IllegalArgumentException("List must not be empty"));
+  public static <T> Set<T> verifyNotEmpty(Set<T> set) {
+    return verifyNotEmpty(set, () -> new IllegalArgumentException("List must not be empty"));
 
   }
 
@@ -24,7 +24,7 @@ public class SetVerifiers {
    * @return セットが空でない場合は元のセット。
    * @throws RuntimeException セットがnullまたは空の場合。
    */
-  public static <T> Set<T> checkNotEmpty(Set<T> set,
+  public static <T> Set<T> verifyNotEmpty(Set<T> set,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (set == null) {
       return set;
@@ -43,7 +43,7 @@ public class SetVerifiers {
    * @return null要素が見つからなかった場合は、元のセット
    * @throws RuntimeException セット内にnull要素が見つかった場合
    */
-  public static <E> Set<E> checkAllElementNotNull(Set<E> set,
+  public static <E> Set<E> verifyAllElementNotNull(Set<E> set,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (set == null) {
       return set;
@@ -66,7 +66,7 @@ public class SetVerifiers {
    * @return 非null要素が見つかった場合は元のセット
    * @throws RuntimeException セット内で非nullの要素が見つからない場合
    */
-  public static <E> Set<E> checkAnyElementNotNull(Set<E> set,
+  public static <E> Set<E> verifyAnyElementNotNull(Set<E> set,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     if (set == null || set.stream().anyMatch(Objects::nonNull)) {
       return set;
@@ -83,7 +83,7 @@ public class SetVerifiers {
    * @return 具体的に1つの非null要素が含まれている場合は元のセット。
    * @throws RuntimeException セットがnullまたは具体的に1つの非null要素を含まない場合。
    */
-  public static <E> Set<E> checkOneElementNotNull(Set<E> set,
+  public static <E> Set<E> verifyOneElementNotNull(Set<E> set,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
 
     if (set != null && set.stream().filter(Objects::nonNull).count() != 1) {
