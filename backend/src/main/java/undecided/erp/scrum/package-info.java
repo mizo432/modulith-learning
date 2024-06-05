@@ -4,7 +4,7 @@
     "relMgmt :: product-owner",
     "shared :: entity",
     "shared :: value",
-    "common :: precondition"
+    "common :: verifier"
 
 })
 package undecided.erp.scrum;

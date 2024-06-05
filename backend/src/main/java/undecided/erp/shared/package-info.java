@@ -1,7 +1,7 @@
 @ApplicationModule(allowedDependencies = {"common::application",
     "common :: snowflake",
     "common :: dateProvider",
-    "common :: precondition"
+    "common :: verifier"
 })
 package undecided.erp.shared;
 
