@@ -1,10 +1,10 @@
-package undecided.erp.common.precondition;
+package undecided.erp.common.verifier;
 
 import java.util.EnumSet;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class EnumPreconditions {
+public class EnumVerifiers {
 
   /**
    * 指定されたEnumSetに与えられた列挙型の定数が含まれているかどうかを確認します。含まれていない場合、サプライヤーによって指定された例外がスローされます。

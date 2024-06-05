@@ -1,9 +1,9 @@
-package undecided.erp.common.precondition;
+package undecided.erp.common.verifier;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ArrayPreconditions {
+public class ArrayVerifiers {
 
   public static <T> T[] checkNotEmpty(T[] array) {
     return checkNotEmpty(array, () -> new IllegalArgumentException("Array must not be empty"));

@@ -1,4 +1,4 @@
-package undecided.erp.common.precondition;
+package undecided.erp.common.verifier;
 
 import java.util.Objects;
 import java.util.Set;
@@ -8,7 +8,7 @@ import lombok.NonNull;
 /**
  * SetPreconditionsクラスは、セットに対する前提条件をチェックするメソッドを提供します。
  */
-public class SetPreconditions {
+public class SetVerifiers {
 
   public static <T> Set<T> checkNotEmpty(Set<T> set) {
     return checkNotEmpty(set, () -> new IllegalArgumentException("List must not be empty"));

@@ -1,4 +1,4 @@
-package undecided.erp.common.precondition;
+package undecided.erp.common.verifier;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -7,131 +7,131 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
-class ObjectPreconditionsTest {
+class ObjectVerifiersTest {
 
   @Test
-  void checkStateWithBooleanAndSupplier_ExceptionThrown() {
+  void verifyStateWithBooleanAndSupplier_ExceptionThrown() {
     Supplier<IllegalStateException> exceptionSupplier = () -> new IllegalStateException(
         "State not expected");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPreconditions.checkState(false, exceptionSupplier);
+      ObjectVerifiers.verifyState(false, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("State not expected"));
   }
 
   @Test
-  void checkStateWithBooleanAndSupplier_NoExceptionThrown() {
+  void verifyStateWithBooleanAndSupplier_NoExceptionThrown() {
     Supplier<IllegalStateException> exceptionSupplier = () -> new IllegalStateException(
         "State not expected");
 
     assertDoesNotThrow(() -> {
-      ObjectPreconditions.checkState(true, exceptionSupplier);
+      ObjectVerifiers.verifyState(true, exceptionSupplier);
     });
   }
 
   @Test
-  void checkStateWithBooleanAndString_ExceptionThrown() {
+  void verifyStateWithBooleanAndString_ExceptionThrown() {
     String label = "test state";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPreconditions.checkState(false, label);
+      ObjectVerifiers.verifyState(false, label);
     });
 
     assertTrue(exception.getMessage().contains(label + " の状態が不正です。"));
   }
 
   @Test
-  void checkStateWithBooleanAndString_NoExceptionThrown() {
+  void verifyStateWithBooleanAndString_NoExceptionThrown() {
     String label = "test state";
 
     assertDoesNotThrow(() -> {
-      ObjectPreconditions.checkState(true, label);
+      ObjectVerifiers.verifyState(true, label);
     });
   }
 
   @Test
-  void checkArgumentWithBooleanAndSupplier_ExceptionThrown() {
+  void verifyArgumentWithBooleanAndSupplier_ExceptionThrown() {
     final Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException(
         "Invalid argument");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPreconditions.checkArgument(false, exceptionSupplier);
+      ObjectVerifiers.verifyArgument(false, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("Invalid argument"));
   }
 
   @Test
-  void checkArgumentWithBooleanAndSupplier_NoExceptionThrown() {
+  void verifyArgumentWithBooleanAndSupplier_NoExceptionThrown() {
     final Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException(
         "Invalid argument");
 
     assertDoesNotThrow(() -> {
-      ObjectPreconditions.checkArgument(true, exceptionSupplier);
+      ObjectVerifiers.verifyArgument(true, exceptionSupplier);
     });
   }
 
   @Test
-  void checkArgumentWithBooleanAndString_ExceptionThrown() {
+  void verifyArgumentWithBooleanAndString_ExceptionThrown() {
     String label = "test argument";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPreconditions.checkArgument(false, label);
+      ObjectVerifiers.verifyArgument(false, label);
     });
 
     assertTrue(exception.getMessage().contains(String.format("引数: %s が不正です。", label)));
   }
 
   @Test
-  void checkArgumentWithBooleanAndString_NoExceptionThrown() {
+  void verifyArgumentWithBooleanAndString_NoExceptionThrown() {
     String label = "test argument";
 
     assertDoesNotThrow(() -> {
-      ObjectPreconditions.checkArgument(true, label);
+      ObjectVerifiers.verifyArgument(true, label);
     });
   }
 
   @Test
-  void checkNotNullWithReferAndSupplier_NullReference_ExceptionThrown() {
+  void verifyNotNullWithReferAndSupplier_NullReference_ExceptionThrown() {
     final Supplier<NullPointerException> exceptionSupplier = () -> new NullPointerException(
         "Null reference");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPreconditions.checkNotNull(null, exceptionSupplier);
+      ObjectVerifiers.verifyNotNull(null, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("Null reference"));
   }
 
   @Test
-  void checkNotNullWithReferAndSupplier_ValidReference_NoExceptionThrown() {
+  void verifyNotNullWithReferAndSupplier_ValidReference_NoExceptionThrown() {
     final Supplier<NullPointerException> exceptionSupplier = () -> new NullPointerException(
         "Null reference");
 
     assertDoesNotThrow(() -> {
-      ObjectPreconditions.checkNotNull(new Object(), exceptionSupplier);
+      ObjectVerifiers.verifyNotNull(new Object(), exceptionSupplier);
     });
   }
 
   @Test
-  void checkNotNullWithReferAndString_NullReference_ExceptionThrown() {
+  void verifyNotNullWithReferAndString_NullReference_ExceptionThrown() {
     String label = "test reference";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPreconditions.checkNotNull(null, label);
+      ObjectVerifiers.verifyNotNull(null, label);
     });
 
     assertTrue(exception.getMessage().contains(String.format("%s がnullです。", label)));
   }
 
   @Test
-  void checkNotNullWithReferAndString_ValidReference_NoExceptionThrown() {
+  void verifyNotNullWithReferAndString_ValidReference_NoExceptionThrown() {
     String label = "test reference";
 
     assertDoesNotThrow(() -> {
-      ObjectPreconditions.checkNotNull(new Object(), label);
+      ObjectVerifiers.verifyNotNull(new Object(), label);
     });
   }
 }

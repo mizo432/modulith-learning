@@ -1,4 +1,4 @@
-package undecided.erp.common.precondition;
+package undecided.erp.common.verifier;
 
 import java.util.List;
 import java.util.Objects;
@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class ListPreconditions {
+public class ListVerifiers {
 
   /**
    * 与えられたリストが空でないことを確認します。

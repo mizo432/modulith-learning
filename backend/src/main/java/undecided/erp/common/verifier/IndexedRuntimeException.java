@@ -1,4 +1,4 @@
-package undecided.erp.common.precondition;
+package undecided.erp.common.verifier;
 
 import lombok.Getter;
 

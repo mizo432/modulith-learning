@@ -1,4 +1,4 @@
-package undecided.erp.common.precondition;
+package undecided.erp.common.verifier;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,12 +7,12 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SetPreconditionsTest {
+public class SetVerifiersTest {
 
   @Test
   public void checkNotEmpty_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPreconditions.checkNotEmpty(set,
+    Set<String> returnedSet = SetVerifiers.checkNotEmpty(set,
         () -> new IllegalArgumentException("Set must not be empty"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -21,7 +21,7 @@ public class SetPreconditionsTest {
   public void checkNotEmpty_setEmpty_throwsException() {
     Set<String> set = Collections.emptySet();
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      SetPreconditions.checkNotEmpty(set,
+      SetVerifiers.checkNotEmpty(set,
           () -> new IllegalArgumentException("Set must not be empty"));
     });
   }
@@ -29,7 +29,7 @@ public class SetPreconditionsTest {
   @Test
   public void checkNotEmpty_setNonEmpty_returnsSet() {
     Set<String> set = new HashSet<>(Collections.singletonList("test"));
-    Set<String> returnedSet = SetPreconditions.checkNotEmpty(set,
+    Set<String> returnedSet = SetVerifiers.checkNotEmpty(set,
         () -> new IllegalArgumentException("Set must not be empty"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -37,7 +37,7 @@ public class SetPreconditionsTest {
   @Test
   public void checkAllElementNotNull_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPreconditions.checkAllElementNotNull(set,
+    Set<String> returnedSet = SetVerifiers.checkAllElementNotNull(set,
         () -> new IllegalArgumentException("Set must not have null elements"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -46,7 +46,7 @@ public class SetPreconditionsTest {
   public void checkAllElementNotNull_setContainsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      SetPreconditions.checkAllElementNotNull(set,
+      SetVerifiers.checkAllElementNotNull(set,
           () -> new IllegalArgumentException("Set must not have null elements"));
     });
   }
@@ -54,7 +54,7 @@ public class SetPreconditionsTest {
   @Test
   public void checkAllElementNotNull_setDoesNotContainNull_returnsSet() {
     Set<String> set = new HashSet<>(Arrays.asList("test", "not null"));
-    Set<String> returnedSet = SetPreconditions.checkAllElementNotNull(set,
+    Set<String> returnedSet = SetVerifiers.checkAllElementNotNull(set,
         () -> new IllegalArgumentException("Set must not have null elements"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -62,7 +62,7 @@ public class SetPreconditionsTest {
   @Test
   public void checkAnyElementNotNull_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPreconditions.checkAnyElementNotNull(set,
+    Set<String> returnedSet = SetVerifiers.checkAnyElementNotNull(set,
         () -> new IllegalArgumentException("Set must have at least one non-null element"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -71,7 +71,7 @@ public class SetPreconditionsTest {
   public void checkAnyElementNotNull_setAllElementsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList(null, null));
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      SetPreconditions.checkAnyElementNotNull(set,
+      SetVerifiers.checkAnyElementNotNull(set,
           () -> new IllegalArgumentException("Set must have at least one non-null element"));
     });
   }
@@ -79,7 +79,7 @@ public class SetPreconditionsTest {
   @Test
   public void checkAnyElementNotNull_setContainsNonNull_returnsSet() {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
-    Set<String> returnedSet = SetPreconditions.checkAnyElementNotNull(set,
+    Set<String> returnedSet = SetVerifiers.checkAnyElementNotNull(set,
         () -> new IllegalArgumentException("Set must have at least one non-null element"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -87,7 +87,7 @@ public class SetPreconditionsTest {
   @Test
   public void checkOneElementNotNull_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPreconditions.checkOneElementNotNull(set,
+    Set<String> returnedSet = SetVerifiers.checkOneElementNotNull(set,
         () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -96,7 +96,7 @@ public class SetPreconditionsTest {
   public void checkOneElementNotNull_setAllElementsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList(null, null));
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      SetPreconditions.checkOneElementNotNull(set,
+      SetVerifiers.checkOneElementNotNull(set,
           () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     });
   }
@@ -104,7 +104,7 @@ public class SetPreconditionsTest {
   @Test
   public void checkOneElementNotNull_setOneNonNullElement_returnsSet() {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
-    Set<String> returnedSet = SetPreconditions.checkOneElementNotNull(set,
+    Set<String> returnedSet = SetVerifiers.checkOneElementNotNull(set,
         () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     Assertions.assertEquals(set, returnedSet);
   }
@@ -113,7 +113,7 @@ public class SetPreconditionsTest {
   public void checkOneElementNotNull_setMoreThanOneNonNullElement_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList("first", "second"));
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      SetPreconditions.checkOneElementNotNull(set,
+      SetVerifiers.checkOneElementNotNull(set,
           () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     });
   }
