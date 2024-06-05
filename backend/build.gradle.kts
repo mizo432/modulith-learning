@@ -65,10 +65,10 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.25.3")
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
     testCompileOnly("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
-    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.1.4")
+    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
-
+    implementation("com.google.guava:guava:33.2.1-jre")
 }
 
 dependencyManagement {
