@@ -1,6 +1,7 @@
 package undecided.erp.scrum.model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,8 +11,9 @@ import java.util.List;
  */
 public class SprintReview {
 
-  private Date date;
-  private List<String> participants;
+  public static final SprintReview EMPTY = new SprintReview();
+  private LocalDate date;
+  private final List<String> participants = new ArrayList<>();
   /**
    * issuesDiscussed変数は、スプリントレビューミーティングで議論された問題のリストを格納します。
    * <p>

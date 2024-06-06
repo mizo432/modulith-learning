@@ -7,6 +7,7 @@ package undecided.erp.scrum.model;
  */
 public class SprintRetrospective {
 
+  public static final SprintRetrospective EMPTY = new SprintRetrospective();
   /**
    * スプリントレトロスペクティブミーティングでうまくいったことについての情報を表します。
    */

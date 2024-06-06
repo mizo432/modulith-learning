@@ -1,7 +1,12 @@
 package undecided.erp.scrum.model;
 
 import java.util.Date;
+import java.util.EnumSet;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import undecided.erp.common.verifier.EnumVerifiers;
+import undecided.erp.scrum.model.product.Product;
+import undecided.erp.shared.entity.SnowflakeId;
 
 /**
  * SprintクラスはScrumプロジェクトのスプリントを表現します。
@@ -25,33 +30,56 @@ import lombok.Getter;
  * `moveToNextSprint`メソッドは、現在のスプリントのバックログから次のスプリントのバックログにユーザーストーリーを移動させます。これは、ユーザーストーリーが現在のスプリントでは完了できず、次のスプリントに持ち越す必要がある場合に使用できます。
  */
 @Getter
+@AllArgsConstructor
 public class Sprint {
 
-  public enum Status {
-    PLANNING, IN_PROGRESS, COMPLETED
+  public enum SprintStatus {
+    WAITING,
+    IN_PROGRESS,
+    COMPLETE;
+
+    public static EnumSet<SprintStatus> completableStatus() {
+      return EnumSet.of(IN_PROGRESS);
+    }
+
+    public static EnumSet<SprintStatus> startbleStatus() {
+      return EnumSet.of(WAITING);
+    }
   }
 
+  private SnowflakeId<Sprint> id;
+  private SnowflakeId<Product> productId;
   private Date startDate;
   private Date endDate;
-  private SprintBacklog sprintBacklog;
-  private SprintReview sprintReview;
-  private SprintRetrospective retrospective;
-  private Status status;
-  private int completedStoryPoints;
+  private SprintBacklog sprintBacklog = SprintBacklog.EMPTY;
+  private SprintReview sprintReview = SprintReview.EMPTY;
+  private SprintRetrospective retrospective = SprintRetrospective.EMPTY;
+  private SprintStatus status;
+  private StoryPoint completedStoryPoint;
+  private StoryPoint plannedStoryPoint;
+  private BusinessValue completedBusinessValue;
+  private BusinessValue plannedBusinessValue;
 
   public Sprint() {
-    // The initial status of the sprint could be set to PLANNING
-    this.status = Status.PLANNING;
+    this.status = SprintStatus.WAITING;
   }
 
   public void startSprint() {
-    // When the sprint is started, set the status to IN_PROGRESS
-    this.status = Status.IN_PROGRESS;
+    EnumVerifiers.verifyContains(status, SprintStatus.startbleStatus(),
+        () -> new IllegalStateException(
+            String.format("sprint %s は開始できません", status.name())));
+    this.status = SprintStatus.IN_PROGRESS;
   }
 
-  public void completeSprint() {
-    calculateCompletedStoryPoints();
-    this.status = Status.COMPLETED;
+  public Sprint completeSprint() {
+    EnumVerifiers.verifyContains(status, SprintStatus.completableStatus(),
+        () -> new IllegalStateException(
+            String.format("sprint %s は終了できません", status.name())));
+
+    return new Sprint(id, productId, startDate, endDate, sprintBacklog, sprintReview, retrospective,
+        this.status = SprintStatus.COMPLETE, completedStoryPoint, plannedStoryPoint,
+        completedBusinessValue, plannedBusinessValue).calculateCompletedStoryPoint()
+        .calculateCompletedBusinessValues();
   }
 
   // This method moves a UserStory from this sprint's backlog to the backlog of the next sprint
@@ -62,19 +90,23 @@ public class Sprint {
   }
 
   // other sprint methods...
-  public void calculateCompletedStoryPoints() {
-    for (UserStory userStory : sprintBacklog.getUserStories()) {
-      if (userStory.isCompleted()) {
-        completedStoryPoints += userStory.getStoryPoints();
-      }
-    }
+  public Sprint calculateCompletedStoryPoint() {
+    return new Sprint(id, productId, startDate, endDate, sprintBacklog, sprintReview, retrospective,
+        status, sprintBacklog.sumCompletedStoryPoints(), plannedStoryPoint, completedBusinessValue,
+        plannedBusinessValue);
   }
 
-  public int getCompletedStoryPoints() {
-    if (status != Status.COMPLETED) {
+  public Sprint calculateCompletedBusinessValues() {
+    return new Sprint(id, productId, startDate, endDate, sprintBacklog, sprintReview, retrospective,
+        status, completedStoryPoint, plannedStoryPoint, sprintBacklog.sumCompletedBusinessValues(),
+        plannedBusinessValue);
+  }
+
+  public StoryPoint getCompletedStoryPoints() {
+    if (status != SprintStatus.COMPLETE) {
       throw new UnsupportedOperationException(
           "Cannot get completed story points for an incomplete sprint");
     }
-    return completedStoryPoints;
+    return completedStoryPoint;
   }
 }

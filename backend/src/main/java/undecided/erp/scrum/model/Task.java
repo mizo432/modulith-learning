@@ -17,6 +17,13 @@ import undecided.erp.shared.entity.SnowflakeId;
 @Setter
 public class Task {
 
+  public enum TaskStatus {
+    TO_DO,
+    IN_PROGRESS,
+    IN_REVIEW,
+    DONE
+  }
+
   private SnowflakeId<Task> id;
   private SnowflakeId<UserStory> userStoryId;
   private String title;
