@@ -1,8 +1,10 @@
-package undecided.erp.scrum.model;
+package undecided.erp.scrum.model.userStory;
 
 import java.util.List;
 import lombok.Getter;
 import undecided.erp.relMgmt.model.personRole.actor.Actor;
+import undecided.erp.scrum.model.Feature;
+import undecided.erp.scrum.model.Task;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**

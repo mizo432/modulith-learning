@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model;
+package undecided.erp.scrum.model.userStory;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

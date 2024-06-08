@@ -15,10 +15,10 @@ import java.util.EnumSet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import undecided.erp.common.verifier.EnumVerifiers;
-import undecided.erp.scrum.model.BusinessValue;
-import undecided.erp.scrum.model.StoryPoint;
-import undecided.erp.scrum.model.UserStory;
 import undecided.erp.scrum.model.product.Product;
+import undecided.erp.scrum.model.userStory.BusinessValue;
+import undecided.erp.scrum.model.userStory.StoryPoint;
+import undecided.erp.scrum.model.userStory.UserStory;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**
