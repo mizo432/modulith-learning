@@ -1,10 +1,23 @@
-package undecided.erp.scrum.model;
+package undecided.erp.scrum.model.sprint;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.Date;
 import java.util.EnumSet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import undecided.erp.common.verifier.EnumVerifiers;
+import undecided.erp.scrum.model.BusinessValue;
+import undecided.erp.scrum.model.StoryPoint;
+import undecided.erp.scrum.model.UserStory;
 import undecided.erp.scrum.model.product.Product;
 import undecided.erp.shared.entity.SnowflakeId;
 
@@ -29,10 +42,15 @@ import undecided.erp.shared.entity.SnowflakeId;
  * <p>
  * `moveToNextSprint`メソッドは、現在のスプリントのバックログから次のスプリントのバックログにユーザーストーリーを移動させます。これは、ユーザーストーリーが現在のスプリントでは完了できず、次のスプリントに持ち越す必要がある場合に使用できます。
  */
+@Table(schema = "scrum", name = "sprints")
+@Entity
 @Getter
 @AllArgsConstructor
 public class Sprint {
 
+  /**
+   * SprintStatus列挙型は、スプリントの可能なステータスを表します。
+   */
   public enum SprintStatus {
     WAITING,
     IN_PROGRESS,
@@ -47,17 +65,44 @@ public class Sprint {
     }
   }
 
+  @EmbeddedId
+  @Id
+  @Column(name = "sprint_id")
   private SnowflakeId<Sprint> id;
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "product_id", nullable = false))
   private SnowflakeId<Product> productId;
   private Date startDate;
   private Date endDate;
+  @Transient
   private SprintBacklog sprintBacklog = SprintBacklog.EMPTY;
+  @Transient
   private SprintReview sprintReview = SprintReview.EMPTY;
+  @Transient
   private SprintRetrospective retrospective = SprintRetrospective.EMPTY;
+  /**
+   * スプリントの状態を表現します。
+   */
+  @Column(nullable = false, name = "sprint_status")
+  @Enumerated(EnumType.STRING)
   private SprintStatus status;
+  /**
+   * スプリントの完了したストーリーポイントを表します。
+   */
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "completed_story_point"))
   private StoryPoint completedStoryPoint;
+  /**
+   * スプリントの予定ストーリーポイントを表します。
+   */
+  @Embedded
+  @AttributeOverride(column = @Column(name = "planned_story_point"), name = "value")
   private StoryPoint plannedStoryPoint;
+  @Embedded
+  @AttributeOverride(column = @Column(name = "completed_business_value"), name = "value")
   private BusinessValue completedBusinessValue;
+  @Embedded
+  @AttributeOverride(column = @Column(name = "planned_business_value"), name = "value")
   private BusinessValue plannedBusinessValue;
 
   public Sprint() {

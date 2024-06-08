@@ -25,6 +25,14 @@ public class UserStory {
     DROP
   }
 
+  public enum StoryType {
+    FEATURE,
+    CHORE,
+    BUG,
+    NON_FUNCTIONAL
+
+  }
+
   private SnowflakeId<UserStory> id;
   private SnowflakeId<Actor> actorId;
   private Actor actor;

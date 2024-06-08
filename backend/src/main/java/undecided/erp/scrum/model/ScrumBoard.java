@@ -1,6 +1,7 @@
 package undecided.erp.scrum.model;
 
 import java.util.List;
+import undecided.erp.scrum.model.sprint.Sprint;
 
 public class ScrumBoard {
 

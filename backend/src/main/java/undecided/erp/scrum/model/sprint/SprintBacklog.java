@@ -1,8 +1,11 @@
-package undecided.erp.scrum.model;
+package undecided.erp.scrum.model.sprint;
 
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import undecided.erp.scrum.model.BusinessValue;
+import undecided.erp.scrum.model.StoryPoint;
+import undecided.erp.scrum.model.UserStory;
 
 @Getter
 public class SprintBacklog {
