@@ -4,12 +4,13 @@ plugins {
     java
     id("org.springframework.boot") version "3.3.0"
     id("io.spring.dependency-management") version "1.1.4"
+    kotlin("jvm")
 }
 
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
+
 }
 
 configurations {
@@ -69,6 +70,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.2.1-jre")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 dependencyManagement {
@@ -106,4 +108,7 @@ val largeTest = tasks.register("largeTest", Test::class.java) {
     }
     timeout.set(Duration.ofHours(1))
     shouldRunAfter("mediumTest")
+}
+kotlin {
+    jvmToolchain(21)
 }

@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model;
+package undecided.erp.scrum.model.sprint;
 
 /**
  * SprintRetrospectiveクラスは、Scrumプロジェクトのスプリントのレトロスペクティブ会議を表現します。

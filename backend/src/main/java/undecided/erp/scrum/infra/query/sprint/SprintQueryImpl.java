@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import undecided.erp.scrum.appl.query.sprint.SprintQuery;
-import undecided.erp.scrum.model.Sprint;
-import undecided.erp.scrum.model.SprintRepository;
+import undecided.erp.scrum.model.sprint.Sprint;
+import undecided.erp.scrum.model.sprint.SprintRepository;
 
 @RequiredArgsConstructor
 @Service
