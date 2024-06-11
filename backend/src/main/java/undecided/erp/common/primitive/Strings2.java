@@ -9,6 +9,21 @@ import com.ibm.icu.text.UnicodeSet;
  */
 public class Strings2 {
 
+  private static final String EMPTY = "";
+
+  /**
+   * 与えられた文字列が空かどうかを確認します。
+   *
+   * @param str 確認する文字列
+   * @return 文字列が空または{@code null}の場合は{@code true}、それ以外の場合は{@code false}を返します。
+   */
+  public static boolean isEmpty(String str) {
+    if (str == null) {
+      return true;
+    }
+    return EMPTY.equals(str);
+  }
+
   /**
    * {@code NARROW_WIDTH}変数は、Unicodeに基づいた狭い文字の幅を表す値です。 その値は定数であり、値は1です。
    * <p>
@@ -83,6 +98,9 @@ public class Strings2 {
   private static final UnicodeSet HALF_WIDTH_UNICODE_SET =
       new UnicodeSet(
           "[[:East_Asian_Width=Halfwidth:][:East_Asian_Width=Narrow:][:East_Asian_Width=Neutral:]]");
+  private static final UnicodeSet FULL_WIDTH_UNICODE_SET =
+      new UnicodeSet(
+          "[[:East_Asian_Width=Fullwidth:][:East_Asian_Width=Wide:][:East_Asian_Width=Ambiguous:]]");
 
   /**
    * 与えられた文字列内の全ての文字が半角文字であるかどうかを判断します。
@@ -91,8 +109,31 @@ public class Strings2 {
    * @return 全ての文字が半角の場合は {@code true}、そうでない場合は {@code false} を返します。
    */
   public static boolean isAllCharacterHalfWidth(String str) {
+    if (isEmpty(str)) {
+      return true;
+    }
+
     for (char c : str.toCharArray()) {
       if (!HALF_WIDTH_UNICODE_SET.contains(c)) {
+        return false;
+      }
+    }
+    return true;
+
+  }
+
+  /**
+   * 与えられた文字列内の全ての文字が半角文字であるかどうかを判断します。
+   *
+   * @param str チェックする文字列。
+   * @return 全ての文字が半角の場合は {@code true}、そうでない場合は {@code false} を返します。
+   */
+  public static boolean isAllCharacterFullWidth(String str) {
+    if (isEmpty(str)) {
+      return true;
+    }
+    for (char c : str.toCharArray()) {
+      if (!FULL_WIDTH_UNICODE_SET.contains(c)) {
         return false;
       }
     }

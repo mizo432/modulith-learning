@@ -78,4 +78,36 @@ class Strings2Test {
     }
 
   }
+
+  @Nested
+  class IsAllCharacterFullWidthTest {
+
+    @Test
+    void withFullWidthCharacter() {
+      String str = String.valueOf('あ');
+      boolean result = Strings2.isAllCharacterFullWidth(str);
+      assertThat(result).as("Expected result is true for full width character").isTrue();
+    }
+
+    @Test
+    void withHalfWidthCharacter() {
+      String str = String.valueOf('a');
+      boolean result = Strings2.isAllCharacterFullWidth(str);
+      assertThat(result).as("Expected result is false for half width character").isFalse();
+    }
+
+    @Test
+    void withEmptyString() {
+      String str = "";
+      boolean result = Strings2.isAllCharacterFullWidth(str);
+      assertThat(result).as("Expected result is true for empty string").isTrue();
+    }
+
+    @Test
+    void withNullString() {
+      String str = null;
+      assertThatExceptionOfType(NullPointerException.class).isThrownBy(
+          () -> Strings2.isAllCharacterFullWidth(str));
+    }
+  }
 }
