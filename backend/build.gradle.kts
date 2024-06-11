@@ -70,7 +70,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.2.1-jre")
-    implementation(kotlin("stdlib-jdk8"))
+    implementation("com.ibm.icu:icu4j:74.2")
+
 }
 
 dependencyManagement {
