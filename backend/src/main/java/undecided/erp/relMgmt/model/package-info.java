@@ -1,4 +1,4 @@
-@DomainRing
+@DomainModelRing
 package undecided.erp.relMgmt.model;
 
-import org.jmolecules.architecture.onion.simplified.DomainRing;
+import org.jmolecules.architecture.onion.classical.DomainModelRing;

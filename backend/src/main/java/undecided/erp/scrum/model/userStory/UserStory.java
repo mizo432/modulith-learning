@@ -1,10 +1,13 @@
 package undecided.erp.scrum.model.userStory;
 
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import undecided.erp.common.verifier.EnumVerifiers;
 import undecided.erp.relMgmt.model.personRole.actor.Actor;
-import undecided.erp.scrum.model.Feature;
-import undecided.erp.scrum.model.Task;
+import undecided.erp.scrum.model.feature.Feature;
+import undecided.erp.scrum.model.userStory.task.Task;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**
@@ -13,36 +16,48 @@ import undecided.erp.shared.entity.SnowflakeId;
  * アクター、アクション、価値、承認基準、優先度、ストーリーポイント、ステータス、コメント、機能、タスク、ストーリータイプなどの情報を含みます。
  */
 @Getter
+@RequiredArgsConstructor
 public class UserStory {
 
   public enum UserStoryStatus {
     ICEBOX,
     VALUE,
-    ESTIMATING,
     READY,
+    ESTIMATED,
     TO_DO,
     IN_PROGRESS,
-    TESTING,
+    REVIEW,
     DONE,
-    DROP
+    DROP;
+
+    public static EnumSet<UserStoryStatus> turnableReady() {
+      return EnumSet.of(VALUE);
+    }
   }
 
+  @Getter
   public enum StoryType {
-    FEATURE,
-    CHORE,
-    BUG,
-    NON_FUNCTIONAL
+    FEATURE("機能追加"),
+    CHORE("軽微な"),
+    BUG("バグ対応"),
+    NON_FUNCTIONAL("非機能"),
+    TECHNICAL("技術的");
 
+    private final String description;
+
+    StoryType(String description) {
+      this.description = description;
+    }
   }
 
-  private SnowflakeId<UserStory> id;
-  private SnowflakeId<Actor> actorId;
+  private final SnowflakeId<UserStory> id;
+  private final SnowflakeId<Actor> actorId;
   private Actor actor;
-  private String title;
+  private final String title;
   private String description;
   private final BusinessValue businessValue = BusinessValue.EMPTY;
-  private String acceptanceCriteria;
-  private Integer priority;
+  private final String acceptanceCriteria;
+  private final Integer priority;
   private StoryPoint storyPoint;
   private final UserStoryStatus status;
   private String comments;
@@ -60,10 +75,22 @@ public class UserStory {
 
   public UserStory() {
     this.status = UserStoryStatus.VALUE;
+    this.id = null;
+    this.actorId = null;
+    this.title = null;
+    this.acceptanceCriteria = null;
+    this.priority = null;
 
   }
 
   public boolean isCompleted() {
     return status == UserStoryStatus.DONE;
+  }
+
+  public UserStory turnToReady() {
+    EnumVerifiers.verifyContains(status, UserStoryStatus.turnableReady(),
+        () -> new IllegalStateException(""));
+    return new UserStory(id, actorId, title, acceptanceCriteria, priority, UserStoryStatus.READY);
+
   }
 }

@@ -17,7 +17,7 @@ public class PrefectureKana {
 
   public static PrefectureKana of(String value) {
     return new PrefectureKana(value);
-    
+
   }
 
   @Override
