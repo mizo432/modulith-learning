@@ -8,11 +8,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
+import undecided.erp.relMgmt.model.party.person.Person;
 
 @Getter
 @Setter
 @Embeddable
 public class SnowflakeId<A> implements Id<A> {
+
+  public static final SnowflakeId<Person> EMPTY = new SnowflakeId<>();
 
   @Column(nullable = false, unique = true)
   @JsonValue
