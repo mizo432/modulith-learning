@@ -2,9 +2,9 @@ package undecided.erp.scrum.application.command.sprint;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.erp.scrum.model.product.Product;
-import undecided.erp.scrum.model.sprint.Sprint;
-import undecided.erp.scrum.model.sprint.SprintRepository;
+import undecided.erp.scrum.domain.model.product.Product;
+import undecided.erp.scrum.domain.model.sprint.Sprint;
+import undecided.erp.scrum.domain.model.sprint.SprintRepository;
 import undecided.erp.shared.entity.SnowflakeId;
 
 @RequiredArgsConstructor

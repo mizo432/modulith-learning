@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.userStory.task;
+package undecided.erp.scrum.domain.model.userStory.task;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import undecided.erp.relMgmt.model.personRole.developer.Developer;
-import undecided.erp.scrum.model.userStory.UserStory;
+import undecided.erp.scrum.domain.model.userStory.UserStory;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**

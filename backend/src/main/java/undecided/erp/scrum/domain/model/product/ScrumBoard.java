@@ -1,7 +1,7 @@
-package undecided.erp.scrum.model.product;
+package undecided.erp.scrum.domain.model.product;
 
 import java.util.List;
-import undecided.erp.scrum.model.sprint.Sprint;
+import undecided.erp.scrum.domain.model.sprint.Sprint;
 
 public class ScrumBoard {
 

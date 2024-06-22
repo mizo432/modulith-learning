@@ -1,7 +1,7 @@
-package undecided.erp.scrum.model.product;
+package undecided.erp.scrum.domain.model.product;
 
 import java.util.List;
-import undecided.erp.scrum.model.userStory.UserStory;
+import undecided.erp.scrum.domain.model.userStory.UserStory;
 
 public class ProductBacklog {
 

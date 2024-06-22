@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.product;
+package undecided.erp.scrum.domain.model.product;
 
 import org.springframework.data.repository.CrudRepository;
 import undecided.erp.shared.entity.SnowflakeId;

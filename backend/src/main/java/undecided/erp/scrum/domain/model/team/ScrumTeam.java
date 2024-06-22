@@ -1,6 +1,6 @@
-package undecided.erp.scrum.model.team;
+package undecided.erp.scrum.domain.model.team;
 
-import undecided.erp.scrum.model.product.ScrumBoard;
+import undecided.erp.scrum.domain.model.product.ScrumBoard;
 
 public class ScrumTeam {
 

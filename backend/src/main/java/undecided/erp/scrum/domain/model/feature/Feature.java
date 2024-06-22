@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.feature;
+package undecided.erp.scrum.domain.model.feature;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
@@ -6,7 +6,7 @@ import jakarta.persistence.Transient;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import undecided.erp.scrum.model.product.Product;
+import undecided.erp.scrum.domain.model.product.Product;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**

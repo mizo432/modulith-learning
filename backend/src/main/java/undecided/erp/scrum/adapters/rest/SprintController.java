@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.erp.scrum.application.command.sprint.AddSprintCommand;
-import undecided.erp.scrum.model.product.Product;
-import undecided.erp.scrum.model.sprint.Sprint;
+import undecided.erp.scrum.domain.model.product.Product;
+import undecided.erp.scrum.domain.model.sprint.Sprint;
 import undecided.erp.shared.entity.SnowflakeId;
 
 @RestController

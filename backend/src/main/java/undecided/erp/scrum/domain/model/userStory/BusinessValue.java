@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.userStory;
+package undecided.erp.scrum.domain.model.userStory;
 
 import jakarta.persistence.Embeddable;
 import java.util.List;

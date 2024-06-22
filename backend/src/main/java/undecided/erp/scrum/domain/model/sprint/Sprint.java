@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.sprint;
+package undecided.erp.scrum.domain.model.sprint;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -15,10 +15,10 @@ import java.util.EnumSet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import undecided.erp.common.verifier.EnumVerifiers;
-import undecided.erp.scrum.model.product.Product;
-import undecided.erp.scrum.model.userStory.BusinessValue;
-import undecided.erp.scrum.model.userStory.StoryPoint;
-import undecided.erp.scrum.model.userStory.UserStory;
+import undecided.erp.scrum.domain.model.product.Product;
+import undecided.erp.scrum.domain.model.userStory.BusinessValue;
+import undecided.erp.scrum.domain.model.userStory.StoryPoint;
+import undecided.erp.scrum.domain.model.userStory.UserStory;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**

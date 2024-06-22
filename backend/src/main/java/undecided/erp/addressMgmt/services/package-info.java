@@ -1,3 +1,6 @@
+/**
+ * 住所情報のドメインサービスを格納する
+ */
 @DomainServiceRing
 package undecided.erp.addressMgmt.services;
 

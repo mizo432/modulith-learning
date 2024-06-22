@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.sprint;
+package undecided.erp.scrum.domain.model.sprint;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

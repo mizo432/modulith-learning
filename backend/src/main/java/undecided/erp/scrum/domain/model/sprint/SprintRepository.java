@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.sprint;
+package undecided.erp.scrum.domain.model.sprint;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import undecided.erp.shared.entity.SnowflakeId;
@@ -6,5 +6,5 @@ import undecided.erp.shared.entity.SnowflakeId;
 public interface SprintRepository extends PagingAndSortingRepository<Sprint, SnowflakeId<Sprint>> {
 
   void save(Sprint sprint);
-  
+
 }

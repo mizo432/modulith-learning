@@ -1,4 +1,4 @@
-package undecided.erp.scrum.model.userStory;
+package undecided.erp.scrum.domain.model.userStory;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import undecided.erp.common.verifier.EnumVerifiers;
 import undecided.erp.relMgmt.model.personRole.actor.Actor;
-import undecided.erp.scrum.model.feature.Feature;
-import undecided.erp.scrum.model.userStory.task.Task;
+import undecided.erp.scrum.domain.model.userStory.task.Task;
+import undecided.erp.scrum.domain.model.feature.Feature;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**
