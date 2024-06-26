@@ -3,6 +3,10 @@ package undecided.erp.addressMgmt.model.prefecture;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureKana;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureName;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureNames;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureRoma;
 
 class PrefectureNamesTest {
 

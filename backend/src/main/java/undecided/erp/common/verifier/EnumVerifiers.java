@@ -25,4 +25,23 @@ public class EnumVerifiers {
 
   }
 
+  /**
+   * 引数として与えられたtestValueがreferenceValueと等しくないことを確認します。
+   * <p>
+   * もし等しければ、指定されたsupplierを使って例外をスローします。
+   *
+   * @param referenceValue 比較するための参照値。
+   * @param testValue 参照値との非等価性を確認するための値。
+   * @param exceptionSupplier 値が等しい場合にスローされる例外を提供します。
+   * @param <E> Enumの種類を示します。
+   * @return 与えられたtestValueがそれと等しくない場合、参照値を返します。
+   * @throws RuntimeException 与えられたtestValueが参照値と等しい場合。
+   */
+  public static <E extends Enum<E>> E verifyNotEqual(E referenceValue, @NonNull E testValue,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    if (testValue == referenceValue) {
+      throw exceptionSupplier.get();
+    }
+    return referenceValue;
+  }
 }

@@ -1,10 +1,12 @@
 package undecided.erp.common.verifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class SetVerifiersTest {
@@ -14,13 +16,13 @@ public class SetVerifiersTest {
     Set<String> set = null;
     Set<String> returnedSet = SetVerifiers.verifyNotEmpty(set,
         () -> new IllegalArgumentException("Set must not be empty"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isNull();
   }
 
   @Test
   public void verifyNotEmpty_setEmpty_throwsException() {
     Set<String> set = Collections.emptySet();
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
       SetVerifiers.verifyNotEmpty(set,
           () -> new IllegalArgumentException("Set must not be empty"));
     });
@@ -31,7 +33,7 @@ public class SetVerifiersTest {
     Set<String> set = new HashSet<>(Collections.singletonList("test"));
     Set<String> returnedSet = SetVerifiers.verifyNotEmpty(set,
         () -> new IllegalArgumentException("Set must not be empty"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
@@ -39,13 +41,13 @@ public class SetVerifiersTest {
     Set<String> set = null;
     Set<String> returnedSet = SetVerifiers.verifyAllElementNotNull(set,
         () -> new IllegalArgumentException("Set must not have null elements"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
   public void verifyAllElementNotNull_setContainsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
       SetVerifiers.verifyAllElementNotNull(set,
           () -> new IllegalArgumentException("Set must not have null elements"));
     });
@@ -56,7 +58,7 @@ public class SetVerifiersTest {
     Set<String> set = new HashSet<>(Arrays.asList("test", "not null"));
     Set<String> returnedSet = SetVerifiers.verifyAllElementNotNull(set,
         () -> new IllegalArgumentException("Set must not have null elements"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
@@ -64,13 +66,13 @@ public class SetVerifiersTest {
     Set<String> set = null;
     Set<String> returnedSet = SetVerifiers.verifyAnyElementNotNull(set,
         () -> new IllegalArgumentException("Set must have at least one non-null element"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
   public void verifyAnyElementNotNull_setAllElementsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList(null, null));
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
       SetVerifiers.verifyAnyElementNotNull(set,
           () -> new IllegalArgumentException("Set must have at least one non-null element"));
     });
@@ -81,7 +83,7 @@ public class SetVerifiersTest {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
     Set<String> returnedSet = SetVerifiers.verifyAnyElementNotNull(set,
         () -> new IllegalArgumentException("Set must have at least one non-null element"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
@@ -89,13 +91,13 @@ public class SetVerifiersTest {
     Set<String> set = null;
     Set<String> returnedSet = SetVerifiers.verifyOneElementNotNull(set,
         () -> new IllegalArgumentException("Set must have exactly one non-null element"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
   public void verifyOneElementNotNull_setAllElementsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList(null, null));
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
       SetVerifiers.verifyOneElementNotNull(set,
           () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     });
@@ -106,13 +108,13 @@ public class SetVerifiersTest {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
     Set<String> returnedSet = SetVerifiers.verifyOneElementNotNull(set,
         () -> new IllegalArgumentException("Set must have exactly one non-null element"));
-    Assertions.assertEquals(set, returnedSet);
+    assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
   public void verifyOneElementNotNull_setMoreThanOneNonNullElement_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList("first", "second"));
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
       SetVerifiers.verifyOneElementNotNull(set,
           () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     });

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.machiAza.MachiAzaEffectiveDate;
 import undecided.erp.shared.date.ApplicableDate;
 
 /**

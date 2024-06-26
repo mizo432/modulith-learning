@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaBuddyIdeaProjectConfig">
+    <option name="defaultUnitInitialized" value="true" />
+    <option name="newEntityIdStrategy" />
+    <option name="newEntityIdType" value="Long" />
+    <option name="renamerInitialized" value="true" />
+  </component>
+  <component name="JpaPluginProjectSettings" mappingCollectionMethodNamingStrategy="COLLECTION_TYPE" />
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="modulith-learning.backend.main" name="Default">
+        <packages>
+          <package value="undecided.erp" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

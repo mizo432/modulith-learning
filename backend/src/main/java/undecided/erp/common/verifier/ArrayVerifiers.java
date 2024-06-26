@@ -3,14 +3,41 @@ package undecided.erp.common.verifier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ArrayVerifiers {
 
+  /**
+   * 与えられた配列が空でないことを確認します。
+   * <p>
+   * 配列が空の場合、IllegalArgumentExceptionの種類の例外がスローされます。
+   *
+   * @param array 検証される配列
+   * @param <T> 配列要素の型
+   * @return 非空の場合は同じ配列
+   * @throws IllegalArgumentException 配列が空の場合
+   */
   public static <T> T[] verifyNotEmpty(T[] array) {
+    if (array == null) {
+      return array;
+    }
     return verifyNotEmpty(array, () -> new IllegalArgumentException("Array must not be empty"));
 
   }
 
+  /**
+   * 与えられた配列が空でないことを確認します。
+   *
+   * <p>
+   * 配列が空の場合、指定されたタイプの例外がスローされます。
+   *
+   * @param array 確認対象の配列
+   * @param supplier 配列が空の場合にスローされる例外を提供するサプライヤー
+   * @param <T> 配列要素のタイプ
+   * @return 空でない場合は同じ配列
+   * @throws RuntimeException 配列が空の場合
+   */
   public static <T> T[] verifyNotEmpty(T[] array,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {

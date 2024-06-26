@@ -1,9 +1,10 @@
 package undecided.erp.addressMgmt.model.city;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.city.CityLgCode;
 
 public class CityLgCodeTest {
 

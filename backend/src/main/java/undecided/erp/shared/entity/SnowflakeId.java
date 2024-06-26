@@ -12,7 +12,10 @@ import undecided.erp.common.snowflake.SnowflakeIdProvider;
 @Getter
 @Setter
 @Embeddable
+@SuppressWarnings("unchecked")
 public class SnowflakeId<A> implements Id<A> {
+
+  private static final SnowflakeId<?> EMPTY = new SnowflakeId<>();
 
   @Column(nullable = false, unique = true)
   @JsonValue
@@ -46,6 +49,10 @@ public class SnowflakeId<A> implements Id<A> {
     return new SnowflakeId<>(value);
   }
 
+  public static <A> SnowflakeId<A> empty() {
+    return (SnowflakeId<A>) EMPTY;
+  }
+
   /**
    * SnowflakeIdオブジェクトの文字列表現を返します。
    *
@@ -72,5 +79,9 @@ public class SnowflakeId<A> implements Id<A> {
   @Override
   public int hashCode() {
     return Objects.hashCode(value);
+  }
+
+  public boolean isEmpty() {
+    return value == null;
   }
 }

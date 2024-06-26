@@ -2,6 +2,7 @@ package undecided.erp.addressMgmt.infra.dao.city;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.adapters.dao.city.CityRecord;
 
 class CityRecordTest {
 

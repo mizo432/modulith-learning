@@ -2,6 +2,9 @@ package undecided.erp.relMgmt.model.orgRole.company;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import undecided.erp.relMgmt.domain.model.orgRole.company.CompanyAttribute;
+import undecided.erp.relMgmt.domain.model.orgRole.company.CompanyCode;
+import undecided.erp.relMgmt.domain.model.orgRole.company.CompanyName;
 
 public class CompanyAttributeTest {
 

@@ -2,7 +2,7 @@ import java.time.Duration
 
 plugins {
     java
-    id("org.springframework.boot") version "3.3.0"
+    id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm")
 }
@@ -36,8 +36,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
-//    implementation("org.flywaydb:flyway-core")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.13.0")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.14.0")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa")
     compileOnly("org.projectlombok:lombok")
@@ -45,7 +45,6 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
-//    runtimeOnly("com.h2database:h2")
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
     annotationProcessor("org.projectlombok:lombok")
@@ -63,14 +62,14 @@ dependencies {
     implementation("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
     compileOnly("org.projectlombok:lombok-mapstruct-binding:0.2.0")
     testImplementation("com.github.spotbugs:spotbugs-annotations:4.8.4")
-    testImplementation("org.assertj:assertj-core:3.25.3")
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
     testCompileOnly("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
-    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.0")
+    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.2.1-jre")
-    implementation(kotlin("stdlib-jdk8"))
+    implementation("com.ibm.icu:icu4j:74.2")
+
 }
 
 dependencyManagement {
@@ -108,7 +107,4 @@ val largeTest = tasks.register("largeTest", Test::class.java) {
     }
     timeout.set(Duration.ofHours(1))
     shouldRunAfter("mediumTest")
-}
-kotlin {
-    jvmToolchain(21)
 }

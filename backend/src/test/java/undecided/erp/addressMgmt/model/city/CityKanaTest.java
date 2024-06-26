@@ -3,6 +3,7 @@ package undecided.erp.addressMgmt.model.city;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.city.CityKana;
 
 public class CityKanaTest {
 
