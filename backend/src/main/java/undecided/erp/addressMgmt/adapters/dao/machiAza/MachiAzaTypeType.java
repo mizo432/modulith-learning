@@ -2,7 +2,7 @@ package undecided.erp.addressMgmt.adapters.dao.machiAza;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import undecided.erp.addressMgmt.model.machiAza.MachiAzaType;
+import undecided.erp.addressMgmt.domain.model.machiAza.MachiAzaType;
 
 @Converter
 public class MachiAzaTypeType implements AttributeConverter<MachiAzaType, String> {

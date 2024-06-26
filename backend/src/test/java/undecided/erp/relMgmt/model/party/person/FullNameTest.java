@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import undecided.erp.relMgmt.domain.model.party.person.FirstName;
+import undecided.erp.relMgmt.domain.model.party.person.FullName;
+import undecided.erp.relMgmt.domain.model.party.person.LastName;
 
 public class FullNameTest {
 

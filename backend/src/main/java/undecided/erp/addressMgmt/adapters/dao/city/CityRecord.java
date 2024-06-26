@@ -10,12 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import undecided.erp.addressMgmt.model.city.City;
-import undecided.erp.addressMgmt.model.city.CityAttribute;
-import undecided.erp.addressMgmt.model.city.CityLgCode;
-import undecided.erp.addressMgmt.model.city.CityNames;
-import undecided.erp.addressMgmt.model.city.CountyNames;
-import undecided.erp.addressMgmt.model.city.WardNames;
+import undecided.erp.addressMgmt.domain.model.city.City;
+import undecided.erp.addressMgmt.domain.model.city.CityAttribute;
+import undecided.erp.addressMgmt.domain.model.city.CityLgCode;
+import undecided.erp.addressMgmt.domain.model.city.CityNames;
+import undecided.erp.addressMgmt.domain.model.city.CountyNames;
+import undecided.erp.addressMgmt.domain.model.city.WardNames;
 
 /**
  * CityRecordクラスは、address_infoデータベーススキーマにおける市区町村レコードを表します。

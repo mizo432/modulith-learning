@@ -1,6 +1,8 @@
 package undecided.erp.scrum.domain.model.userStory;
 
 import jakarta.persistence.Embeddable;
+import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,4 +29,27 @@ public class StoryPoint {
   public String toString() {
     return String.valueOf(value);
   }
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  public static class StoriesPoint {
+
+    private Integer value;
+
+    public StoryPoint toStoryPoint() {
+      return StoryPoint.of(value);
+
+    }
+
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static StoriesPoint of(List<StoryPoint> value) {
+      return new StoriesPoint(value.stream().mapToInt(StoryPoint::getValue).sum());
+
+    }
+  }
+
 }

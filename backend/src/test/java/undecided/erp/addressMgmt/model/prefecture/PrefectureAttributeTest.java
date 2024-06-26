@@ -3,6 +3,12 @@ package undecided.erp.addressMgmt.model.prefecture;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureAttribute;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureKana;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureLgCode;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureName;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureNames;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureRoma;
 
 public class PrefectureAttributeTest {
 

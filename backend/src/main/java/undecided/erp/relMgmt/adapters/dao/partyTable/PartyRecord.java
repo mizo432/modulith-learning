@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
-import undecided.erp.relMgmt.model.party.party.Party;
-import undecided.erp.relMgmt.model.party.party.PartyType;
+import undecided.erp.relMgmt.domain.model.party.party.Party;
+import undecided.erp.relMgmt.domain.model.party.party.PartyType;
 
 /**
  * PartyRecordは、システム内のパーティを表すクラスです。

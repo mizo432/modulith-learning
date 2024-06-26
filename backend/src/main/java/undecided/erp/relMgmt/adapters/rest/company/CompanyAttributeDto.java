@@ -1,9 +1,9 @@
 package undecided.erp.relMgmt.adapters.rest.company;
 
 import lombok.RequiredArgsConstructor;
-import undecided.erp.relMgmt.model.orgRole.company.CompanyAttribute;
-import undecided.erp.relMgmt.model.orgRole.company.CompanyCode;
-import undecided.erp.relMgmt.model.orgRole.company.CompanyName;
+import undecided.erp.relMgmt.domain.model.orgRole.company.CompanyAttribute;
+import undecided.erp.relMgmt.domain.model.orgRole.company.CompanyCode;
+import undecided.erp.relMgmt.domain.model.orgRole.company.CompanyName;
 
 @RequiredArgsConstructor
 public class CompanyAttributeDto {

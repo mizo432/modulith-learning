@@ -8,14 +8,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
-import undecided.erp.relMgmt.model.party.person.Person;
 
 @Getter
 @Setter
 @Embeddable
+@SuppressWarnings("unchecked")
 public class SnowflakeId<A> implements Id<A> {
 
-  public static final SnowflakeId<Person> EMPTY = new SnowflakeId<>();
+  private static final SnowflakeId<?> EMPTY = new SnowflakeId<>();
 
   @Column(nullable = false, unique = true)
   @JsonValue
@@ -49,6 +49,10 @@ public class SnowflakeId<A> implements Id<A> {
     return new SnowflakeId<>(value);
   }
 
+  public static <A> SnowflakeId<A> empty() {
+    return (SnowflakeId<A>) EMPTY;
+  }
+
   /**
    * SnowflakeIdオブジェクトの文字列表現を返します。
    *
@@ -75,5 +79,9 @@ public class SnowflakeId<A> implements Id<A> {
   @Override
   public int hashCode() {
     return Objects.hashCode(value);
+  }
+
+  public boolean isEmpty() {
+    return value == null;
   }
 }

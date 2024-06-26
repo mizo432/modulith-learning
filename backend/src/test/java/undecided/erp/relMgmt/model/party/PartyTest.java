@@ -9,10 +9,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import undecided.erp.common.dateProvider.StaticDateTimeProvider;
-import undecided.erp.relMgmt.model.party.party.GovtAssignedId;
-import undecided.erp.relMgmt.model.party.party.Party;
-import undecided.erp.relMgmt.model.party.party.PartyAttribute;
-import undecided.erp.relMgmt.model.party.party.PartyType;
+import undecided.erp.relMgmt.domain.model.party.party.GovtAssignedId;
+import undecided.erp.relMgmt.domain.model.party.party.Party;
+import undecided.erp.relMgmt.domain.model.party.party.PartyAttribute;
+import undecided.erp.relMgmt.domain.model.party.party.PartyType;
 
 class PartyTest {
 

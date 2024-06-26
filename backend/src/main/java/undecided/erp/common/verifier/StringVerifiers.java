@@ -3,8 +3,10 @@ package undecided.erp.common.verifier;
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import undecided.erp.common.primitive.Strings2;
 
+@UtilityClass
 public class StringVerifiers {
 
   /**

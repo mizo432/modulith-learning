@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.prefecture.Prefecture;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureAttribute;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureLgCode;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureNames;
 
 class PrefectureTest {
 

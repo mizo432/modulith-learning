@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.machiAza.MachiAzaAbolitionDate;
 import undecided.erp.shared.date.ApplicableDate;
 
 class MachiAzaAbolitionDateTest {

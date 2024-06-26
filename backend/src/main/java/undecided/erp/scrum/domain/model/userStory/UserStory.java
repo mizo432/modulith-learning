@@ -5,9 +5,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import undecided.erp.common.verifier.EnumVerifiers;
-import undecided.erp.relMgmt.model.personRole.actor.Actor;
-import undecided.erp.scrum.domain.model.userStory.task.Task;
+import undecided.erp.relMgmt.domain.model.personRole.actor.Actor;
 import undecided.erp.scrum.domain.model.feature.Feature;
+import undecided.erp.scrum.domain.model.userStory.task.Task;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**
@@ -58,7 +58,7 @@ public class UserStory {
   private final BusinessValue businessValue = BusinessValue.EMPTY;
   private final String acceptanceCriteria;
   private final Integer priority;
-  private StoryPoint storyPoint;
+  private final StoryPoint storyPoint = StoryPoint.EMPTY;
   private final UserStoryStatus status;
   private String comments;
   private Feature feature;
@@ -93,4 +93,6 @@ public class UserStory {
     return new UserStory(id, actorId, title, acceptanceCriteria, priority, UserStoryStatus.READY);
 
   }
+
+
 }

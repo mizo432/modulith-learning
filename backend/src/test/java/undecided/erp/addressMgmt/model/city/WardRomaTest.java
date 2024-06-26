@@ -4,13 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.city.WardRoma;
 
 class WardRomaTest {
 
   @Test
   void testReconstruct_NullValue() {
     WardRoma result = WardRoma.reconstruct(null);
-    assertSame(WardRoma.EMPTY, result);
+    assertSame(WardRoma.empty(), result);
   }
 
   @Test

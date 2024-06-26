@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.erp.relMgmt.application.command.company.RegisterCompanyCommand;
-import undecided.erp.relMgmt.model.party.party.Party;
+import undecided.erp.relMgmt.domain.model.party.party.Party;
 
 @RestController
 @RequestMapping(path = "/rel")

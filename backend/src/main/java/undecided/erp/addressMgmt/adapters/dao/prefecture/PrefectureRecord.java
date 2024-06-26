@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import undecided.erp.addressMgmt.model.prefecture.Prefecture;
-import undecided.erp.addressMgmt.model.prefecture.PrefectureAttribute;
+import undecided.erp.addressMgmt.domain.model.prefecture.Prefecture;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureAttribute;
 
 /**
  * このクラスはデータベースの都道府県のレコードを表現します。

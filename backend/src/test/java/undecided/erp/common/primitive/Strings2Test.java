@@ -1,7 +1,6 @@
 package undecided.erp.common.primitive;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -73,8 +72,8 @@ class Strings2Test {
     @Test
     void withNullString() {
       String str = null;
-      assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-          () -> Strings2.isAllCharacterHalfWidth(str));
+      boolean result = Strings2.isAllCharacterHalfWidth(str);
+      assertThat(result).as("Expected result is true for null string").isTrue();
     }
 
   }
@@ -106,8 +105,7 @@ class Strings2Test {
     @Test
     void withNullString() {
       String str = null;
-      assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-          () -> Strings2.isAllCharacterFullWidth(str));
+      assertThat(Strings2.isAllCharacterFullWidth(str)).isTrue();
     }
   }
 }

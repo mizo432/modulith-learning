@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import undecided.erp.addressMgmt.model.machiAza.MachiAzaStatus;
-import undecided.erp.addressMgmt.model.machiAza.MachiAzaType;
+import undecided.erp.addressMgmt.domain.model.machiAza.MachiAzaStatus;
+import undecided.erp.addressMgmt.domain.model.machiAza.MachiAzaType;
 
 /**
  * A class representing a MachiAzaRecord entity.

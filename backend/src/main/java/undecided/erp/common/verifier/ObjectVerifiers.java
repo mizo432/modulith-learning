@@ -2,10 +2,12 @@ package undecided.erp.common.verifier;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
 /**
  * ObjectVerifiersクラスはオブジェクトの状態や引数を検証するためのユーティリティメソッドを提供します。
  */
+@UtilityClass
 public class ObjectVerifiers {
 
   /**

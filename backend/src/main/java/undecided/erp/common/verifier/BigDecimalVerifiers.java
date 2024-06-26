@@ -4,7 +4,12 @@ import com.google.common.collect.Range;
 import java.math.BigDecimal;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+/**
+ * `BigDecimalVerifiers` クラスは、`BigDecimal` 値のプロパティを検証するメソッドを提供します。
+ */
+@UtilityClass
 public class BigDecimalVerifiers {
 
   /**

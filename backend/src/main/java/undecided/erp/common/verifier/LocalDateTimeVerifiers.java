@@ -4,7 +4,12 @@ import com.google.common.collect.Range;
 import java.time.LocalDateTime;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+/**
+ * LocalDateTimeの値が指定した範囲内にあるかどうかを検証するメソッドを含むユーティリティクラス。
+ */
+@UtilityClass
 public class LocalDateTimeVerifiers {
 
   /**

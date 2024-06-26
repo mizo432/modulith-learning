@@ -1,5 +1,7 @@
 package undecided.erp.common.verifier;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
@@ -76,6 +78,9 @@ public class LongVerifiers {
   public static Long verifyRangeClosed(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Long min, @NonNull Long max) {
+    if (isNull(ref)) {
+      return null;
+    }
     if (!Range.closed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -98,6 +103,9 @@ public class LongVerifiers {
   public static Long verifyRangeOpen(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Long min, @NonNull Long max) {
+    if (isNull(ref)) {
+      return null;
+    }
     if (!Range.open(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -120,6 +128,9 @@ public class LongVerifiers {
   public static Long verifyRangeClosedOpen(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long min,
       @NonNull Long max) {
+    if (isNull(ref)) {
+      return null;
+    }
     if (!Range.closedOpen(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -142,6 +153,9 @@ public class LongVerifiers {
   public static Long verifyRangeOpenClosed(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long min,
       @NonNull Long max) {
+    if (isNull(ref)) {
+      return null;
+    }
     if (!Range.openClosed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -163,6 +177,9 @@ public class LongVerifiers {
    */
   public static Long verifyAtLest(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long min) {
+    if (isNull(ref)) {
+      return null;
+    }
     if (!Range.atLeast(min).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -182,6 +199,9 @@ public class LongVerifiers {
    */
   public static Long verifyAtMost(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long max) {
+    if (isNull(ref)) {
+      return null;
+    }
     if (!Range.atMost(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -201,6 +221,9 @@ public class LongVerifiers {
    */
   public static Long verifyLessThan(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long max) {
+    if (isNull(ref)) {
+      return null;
+    }
     if (!Range.lessThan(max).contains(ref)) {
       throw exceptionSupplier.get();
     }

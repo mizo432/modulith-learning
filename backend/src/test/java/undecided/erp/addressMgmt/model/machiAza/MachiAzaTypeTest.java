@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.machiAza.MachiAzaType;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class MachiAzaTypeTest {

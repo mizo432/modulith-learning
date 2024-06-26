@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import undecided.erp.addressMgmt.adapters.dao.prefecture.PrefectureRecord;
-import undecided.erp.addressMgmt.model.prefecture.Prefecture;
-import undecided.erp.addressMgmt.model.prefecture.PrefectureAttribute;
+import undecided.erp.addressMgmt.domain.model.prefecture.Prefecture;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureAttribute;
 
 public class PrefectureRecordTest {
 

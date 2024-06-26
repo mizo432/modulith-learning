@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
-import undecided.erp.relMgmt.model.personRole.employee.Employee;
+import undecided.erp.relMgmt.domain.model.personRole.employee.Employee;
 
 /**
  * Represents an employee record.

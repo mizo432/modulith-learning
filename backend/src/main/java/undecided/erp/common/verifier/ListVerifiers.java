@@ -5,7 +5,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ListVerifiers {
 
   /**

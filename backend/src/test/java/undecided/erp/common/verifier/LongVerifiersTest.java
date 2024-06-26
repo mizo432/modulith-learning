@@ -2,6 +2,7 @@ package undecided.erp.common.verifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Nested;
@@ -188,9 +189,9 @@ class LongVerifiersTest {
       Long min = 1L;
       Long max = 10L;
       Long input = max;
-      Long output = LongVerifiers.verifyRangeClosedOpen(input, NoSuchElementException::new, min,
-          max);
-      assertThat(output).isEqualTo(input);
+      assertThatThrownBy(
+          () -> LongVerifiers.verifyRangeClosedOpen(input, NoSuchElementException::new, min,
+              max)).isInstanceOf(NoSuchElementException.class);
     }
   }
 

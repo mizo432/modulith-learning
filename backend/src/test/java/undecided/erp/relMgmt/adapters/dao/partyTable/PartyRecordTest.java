@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jakarta.persistence.Table;
 import org.junit.jupiter.api.Test;
-import undecided.erp.relMgmt.model.party.party.Party;
-import undecided.erp.relMgmt.model.party.party.PartyType;
+import undecided.erp.relMgmt.domain.model.party.party.Party;
+import undecided.erp.relMgmt.domain.model.party.party.PartyType;
 
 @Table(schema = "relationship", name = "parties")
 class PartyRecordTest {

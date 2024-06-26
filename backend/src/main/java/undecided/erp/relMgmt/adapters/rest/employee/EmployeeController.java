@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.erp.relMgmt.EmployeeDto;
-import undecided.erp.relMgmt.model.party.party.Party;
-import undecided.erp.relMgmt.spi.EmployeeQuery;
+import undecided.erp.relMgmt.application.query.employee.EmployeeQuery;
+import undecided.erp.relMgmt.domain.model.party.party.Party;
+import undecided.erp.relMgmt.domain.model.personRole.employee.Employee;
 import undecided.erp.shared.entity.SnowflakeId;
 
 @RestController
@@ -21,7 +21,7 @@ public class EmployeeController {
   }
 
   @GetMapping(path = "/api/v1/employees/{employeeId}")
-  ResponseEntity<EmployeeDto> findOneById(@PathVariable("employeeId") SnowflakeId<Party> id) {
+  ResponseEntity<Employee> findOneById(@PathVariable("employeeId") SnowflakeId<Party> id) {
     return ResponseEntity.ok(employeeQuery.findById(id));
 
   }

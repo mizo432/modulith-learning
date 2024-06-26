@@ -1,7 +1,7 @@
 package undecided.erp.relMgmt.adapters.rest.party.party;
 
-import undecided.erp.relMgmt.model.party.party.GovtAssignedId;
-import undecided.erp.relMgmt.model.party.party.PartyAttribute;
+import undecided.erp.relMgmt.domain.model.party.party.GovtAssignedId;
+import undecided.erp.relMgmt.domain.model.party.party.PartyAttribute;
 
 public record PartyAttributeDto(GovtAssignedId govtAssignedId) {
 

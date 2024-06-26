@@ -4,7 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import undecided.erp.addressMgmt.model.city.CityRoma;
+import undecided.erp.addressMgmt.domain.model.city.CityRoma;
+import undecided.erp.addressMgmt.domain.model.prefecture.PrefectureRoma;
 
 class PrefectureCityRomaTest {
 

@@ -4,6 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import undecided.erp.addressMgmt.domain.model.city.City;
+import undecided.erp.addressMgmt.domain.model.city.CityAttribute;
+import undecided.erp.addressMgmt.domain.model.city.CityLgCode;
+import undecided.erp.addressMgmt.domain.model.city.CityNames;
+import undecided.erp.addressMgmt.domain.model.city.CountyNames;
+import undecided.erp.addressMgmt.domain.model.city.WardNames;
 
 public class CityTest {
 

@@ -1,11 +1,13 @@
 package undecided.erp.scrum.domain.model.userStory.task;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
-import undecided.erp.relMgmt.model.personRole.developer.Developer;
+import undecided.erp.relMgmt.domain.model.party.person.Person;
 import undecided.erp.scrum.domain.model.userStory.UserStory;
 import undecided.erp.shared.entity.SnowflakeId;
 
@@ -31,7 +33,8 @@ public class Task {
   private String description;
   private TaskStatus status;
   private Double estimatedHours;
-  private Developer assignedDeveloper;
+  //  private Developer assignedDeveloper;
+  SnowflakeId<Person> assignedDeveloperId;
 
   /**
    * 与えられたパラメータで新しいTaskオブジェクトを作成します。
@@ -43,19 +46,23 @@ public class Task {
    */
   public static Task create(SnowflakeId<UserStory> userStoryId, String title, String description
   ) {
-    return new Task(SnowflakeId.newInstance(), userStoryId, title, description, TaskStatus.TO_DO,
-        null, null);
+    return new Task(SnowflakeId.newInstance(),
+        userStoryId,
+        title,
+        description,
+        TaskStatus.TO_DO,
+        null, SnowflakeId.empty());
   }
 
   /**
-   * タスクに開発者を割り当てます。
+   * タスクに開発者を割り当てるために、割り当てられた開発者IDを持つ新しいタスクオブジェクトを作成します。
    *
-   * @param developer タスクに割り当てられる開発者
-   * @return 割り当てられた開発者を持つ新しいタスクオブジェクト
+   * @param developerId タスクに割り当てる開発者のID。
+   * @return 割り当てられた開発者IDを持つ新しいタスクオブジェクト。
    */
-  public Task assignToTask(Developer developer) {
+  public Task assignToTask(@NonNull SnowflakeId<Person> developerId) {
     return new Task(id, userStoryId, title, description, status,
-        estimatedHours, developer);
+        estimatedHours, developerId);
   }
 
   /**
@@ -69,7 +76,7 @@ public class Task {
       throw new IllegalArgumentException("Estimated hours cannot be negative");
     }
     return new Task(id, userStoryId, title, description, status,
-        estimatedHours, assignedDeveloper);
+        estimatedHours, assignedDeveloperId);
   }
 
   public Task startTask() {
@@ -82,11 +89,22 @@ public class Task {
     if (status == TaskStatus.IN_REVIEW) {
       throw new IllegalStateException("Cannot start a task that is already in a review");
     }
+    if (isNull(estimatedHours)) {
+      throw new IllegalStateException("Estimated hours cannot be null");
+
+    }
+    if (assignedDeveloperId.isEmpty()) {
+      throw new IllegalStateException("Developer is not that assigned to a task");
+
+    }
     return new Task(id, userStoryId, title, description, TaskStatus.IN_PROGRESS,
-        estimatedHours, assignedDeveloper);
+        estimatedHours, assignedDeveloperId);
   }
 
-  public Task turnToInReview(Double estimatedHours) {
+  public Task turnToInReview() {
+    if (status == TaskStatus.TO_DO) {
+      throw new IllegalStateException("Cannot turn to inReview a task that is yet started");
+    }
     if (status == TaskStatus.DONE) {
       throw new IllegalStateException("Cannot turn to inReview a task that is already done");
     }
@@ -94,15 +112,18 @@ public class Task {
       throw new IllegalStateException("Cannot turn to inReview a task that is already in a review");
     }
     return new Task(id, userStoryId, title, description, TaskStatus.IN_REVIEW,
-        estimatedHours, assignedDeveloper);
+        estimatedHours, assignedDeveloperId);
   }
 
   public Task finishTask() {
+    if (status == TaskStatus.TO_DO) {
+      throw new IllegalStateException("Cannot finish a task that is yet started");
+    }
     if (status == TaskStatus.DONE) {
       throw new IllegalStateException("Cannot finish a task that is already done");
     }
     return new Task(id, userStoryId, title, description, TaskStatus.DONE,
-        estimatedHours, assignedDeveloper);
+        estimatedHours, assignedDeveloperId);
   }
 
 }

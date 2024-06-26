@@ -211,9 +211,9 @@ public class LocalDateTimeVerifiersTest {
     @Test
     void whenRefIsOnUpperBound() {
       LocalDateTime max = ref;
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeClosedOpen(ref, exceptionSupplier,
-          min, max);
-      assertThat(actual).isEqualTo(ref);
+      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
+          () -> LocalDateTimeVerifiers.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
+
     }
 
     @Test

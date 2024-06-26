@@ -8,21 +8,37 @@ import lombok.NonNull;
 /**
  * SetPreconditionsクラスは、セットに対する前提条件をチェックするメソッドを提供します。
  */
+@NonNull
 public class SetVerifiers {
 
+  /**
+   * 指定されたセットが空でないことを確認します。
+   * <p>
+   * セットが空の場合、指定された例外がスローされます。
+   *
+   * @param set 空でないことを確認するセット（null可能）。
+   * @param <T> セット内の要素の型。
+   * @return セットが空でない場合、元のセットを返します。
+   * @throws IllegalArgumentException セットが空の場合。
+   */
   public static <T> Set<T> verifyNotEmpty(Set<T> set) {
-    return verifyNotEmpty(set, () -> new IllegalArgumentException("List must not be empty"));
+    if (set == null) {
+      return set;
+    }
+    return verifyNotEmpty(set, () -> new IllegalArgumentException("Set must not be empty"));
 
   }
 
   /**
-   * 指定されたセットが空でないことを確認します。 セットがnullまたは空の場合、指定された例外がスローされます。
+   * 指定されたセットが空でないことを確認します。
+   * <p>
+   * セットが空の場合、指定された例外がスローされます。
    *
    * @param set 空でないことを確認するセット（null可能）。
    * @param supplier セットが空の場合にスローされる例外の供給者（非null）。
    * @param <T> セット内の要素のタイプ。
    * @return セットが空でない場合は元のセット。
-   * @throws RuntimeException セットがnullまたは空の場合。
+   * @throws RuntimeException セットが空の場合。
    */
   public static <T> Set<T> verifyNotEmpty(Set<T> set,
       @NonNull Supplier<? extends RuntimeException> supplier) {

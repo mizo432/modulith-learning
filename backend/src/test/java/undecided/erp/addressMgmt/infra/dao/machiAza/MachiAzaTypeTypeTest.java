@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 import undecided.erp.addressMgmt.adapters.dao.machiAza.MachiAzaTypeType;
-import undecided.erp.addressMgmt.model.machiAza.MachiAzaType;
+import undecided.erp.addressMgmt.domain.model.machiAza.MachiAzaType;
 
 @SuppressWarnings("NonAsciiCharacters")
 class MachiAzaTypeTypeTest {

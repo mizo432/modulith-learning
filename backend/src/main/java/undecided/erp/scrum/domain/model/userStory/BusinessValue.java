@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @AllArgsConstructor
@@ -21,7 +22,8 @@ public class BusinessValue {
 
   private Integer value;
 
-  public static BusinessValue of(Integer value) {
+  public static BusinessValue of(@NonNull Integer value) {
+
     return new BusinessValue(value);
   }
 
@@ -37,6 +39,7 @@ public class BusinessValue {
 
     public BusinessValue toBusinessValue() {
       return BusinessValue.of(value);
+
     }
 
 
