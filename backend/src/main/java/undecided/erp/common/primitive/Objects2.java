@@ -13,5 +13,21 @@ public class Objects2 {
    */
   public static <T> boolean isNull(T obj) {
     return Objects.isNull(obj);
+    
+  }
+
+  /**
+   * 与えられたオブジェクトがnullの場合はデフォルト値を返します。
+   *
+   * @param obj nullチェックするオブジェクト
+   * @param defaultValue オブジェクトがnullの場合に返すデフォルト値
+   * @param <T> オブジェクトのタイプ
+   * @return オブジェクトがnullでなければそのオブジェクト、それ以外の場合はデフォルト値
+   */
+  public static <T> T defaultIfNull(T obj, T defaultValue) {
+    if (isNull(obj)) {
+      return defaultValue;
+    }
+    return obj;
   }
 }

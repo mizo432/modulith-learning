@@ -1,5 +1,6 @@
 package undecided.erp.common.verifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.time.LocalTime;
@@ -125,12 +126,13 @@ class LocalTimeVerifiersTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenReferenceIsNull() {
+    void shouldNullWhenReferenceIsNull() {
       LocalTime min = LocalTime.of(10, 0);
       LocalTime max = LocalTime.of(20, 0);
       Supplier<RuntimeException> exceptionSupplier = RuntimeException::new;
-      assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-          () -> LocalTimeVerifiers.verifyRangeOpenClosed(null, exceptionSupplier, min, max));
+
+      assertThat(
+          LocalTimeVerifiers.verifyRangeOpenClosed(null, exceptionSupplier, min, max)).isNull();
     }
   }
 }

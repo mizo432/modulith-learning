@@ -1,6 +1,7 @@
 package undecided.erp.common.primitive;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static undecided.erp.common.primitive.Strings2.EMPTY;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -106,6 +107,36 @@ class Strings2Test {
     void withNullString() {
       String str = null;
       assertThat(Strings2.isAllCharacterFullWidth(str)).isTrue();
+    }
+  }
+
+  @Nested
+  class DefaultIfEmptyTest {
+
+    @Test
+    void withStringNotEmpty() {
+      String str = "Not empty";
+      String defaultValue = "Default String";
+      String result = Strings2.defaultIfEmpty(str, defaultValue);
+      assertThat(result).as("Expected original string, because it is not empty").isEqualTo(str);
+    }
+
+    @Test
+    void withEmptyString() {
+      String str = "";
+      String defaultValue = "Default String";
+      String result = Strings2.defaultIfEmpty(str, defaultValue);
+      assertThat(result).as("Expected default string, because input string is empty")
+          .isEqualTo(EMPTY);
+    }
+
+    @Test
+    void withNullString() {
+      String str = null;
+      String defaultValue = "Default String";
+      String result = Strings2.defaultIfEmpty(str, defaultValue);
+      assertThat(result).as("Expected default string, because input string is null")
+          .isEqualTo(EMPTY);
     }
   }
 }

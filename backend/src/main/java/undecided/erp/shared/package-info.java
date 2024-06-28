@@ -1,7 +1,9 @@
 @ApplicationModule(allowedDependencies = {"common::application",
+    "common :: annotation",
     "common :: snowflake",
     "common :: dateProvider",
-    "common :: verifier"
+    "common :: verifier",
+    "common :: primitive"
 })
 package undecided.erp.shared;
 

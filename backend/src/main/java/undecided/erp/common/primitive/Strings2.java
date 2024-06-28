@@ -9,7 +9,7 @@ import com.ibm.icu.text.UnicodeSet;
  */
 public class Strings2 {
 
-  private static final String EMPTY = "";
+  public static final String EMPTY = "";
 
   /**
    * 与えられた文字列が空かどうかを確認します。
@@ -138,6 +138,18 @@ public class Strings2 {
       }
     }
     return true;
+
+  }
+
+  /**
+   * 与えられた文字列が空かnullの場合、デフォルトの文字列を返します。
+   *
+   * @param str チェックする文字列
+   * @param defaultString 与えられた文字列が空またはnullの場合に返すデフォルトの文字列
+   * @return 与えられた文字列が空またはnullでない場合はその文字列、そうでない場合はデフォルトの文字列
+   */
+  public static String defaultIfEmpty(String str, String defaultString) {
+    return isEmpty(str) ? EMPTY : str;
 
   }
 }
