@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import undecided.erp.common.verifier.EnumVerifiers;
-import undecided.erp.relMgmt.domain.model.personRole.actor.Actor;
+import undecided.erp.relationship.domain.model.personRole.actor.Actor;
 import undecided.erp.scrum.domain.model.feature.Feature;
 import undecided.erp.scrum.domain.model.userStory.task.Task;
 import undecided.erp.shared.entity.SnowflakeId;

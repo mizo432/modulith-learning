@@ -1,5 +1,6 @@
 package undecided.erp.shared.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -45,6 +46,7 @@ public class SnowflakeId<A> implements Id<A> {
     return new SnowflakeId<>(id);
   }
 
+  @JsonCreator
   public static <A> SnowflakeId<A> of(@NonNull Long value) {
     return new SnowflakeId<>(value);
   }

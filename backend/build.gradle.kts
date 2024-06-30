@@ -4,7 +4,6 @@ plugins {
     java
     id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.4"
-    kotlin("jvm")
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -69,7 +68,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.2.1-jre")
     implementation("com.ibm.icu:icu4j:74.2")
-
+    runtimeOnly("com.h2database:h2")
 }
 
 dependencyManagement {
@@ -95,7 +94,7 @@ tasks.test {
 val mediumTest = tasks.register("mediumTest", Test::class.java) {
     group = "verification"
     useJUnitPlatform {
-        excludeTags("small", "large")
+        includeTags("medium")
     }
     timeout.set(Duration.ofSeconds(300))
     shouldRunAfter("test")
@@ -103,7 +102,7 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
 val largeTest = tasks.register("largeTest", Test::class.java) {
     group = "verification"
     useJUnitPlatform {
-        excludeTags("small", "medium")
+        includeTags("large")
     }
     timeout.set(Duration.ofHours(1))
     shouldRunAfter("mediumTest")

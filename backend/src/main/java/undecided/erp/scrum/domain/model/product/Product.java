@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
-import undecided.erp.relMgmt.domain.model.personRole.productOwner.ProductOwner;
+import undecided.erp.relationship.domain.model.personRole.productOwner.ProductOwner;
 import undecided.erp.scrum.domain.model.feature.Feature;
 import undecided.erp.shared.entity.SnowflakeId;
 import undecided.erp.shared.value.MaxLengthString;

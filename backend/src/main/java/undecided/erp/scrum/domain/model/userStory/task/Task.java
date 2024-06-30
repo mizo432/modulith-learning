@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
-import undecided.erp.relMgmt.domain.model.party.person.Person;
+import undecided.erp.relationship.domain.model.party.person.Person;
 import undecided.erp.scrum.domain.model.userStory.UserStory;
 import undecided.erp.shared.entity.SnowflakeId;
 

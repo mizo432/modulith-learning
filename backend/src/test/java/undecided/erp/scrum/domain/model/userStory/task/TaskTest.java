@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import undecided.erp.relMgmt.domain.model.party.person.Person;
+import undecided.erp.relationship.domain.model.party.person.Person;
 import undecided.erp.scrum.domain.model.userStory.UserStory;
 import undecided.erp.shared.entity.SnowflakeId;
 
