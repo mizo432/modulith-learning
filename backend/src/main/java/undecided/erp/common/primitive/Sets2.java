@@ -40,19 +40,13 @@ public class Sets2 {
   public static <T> boolean isEmptySilently(Set<T> set) {
     return (isNull(set) || set.isEmpty());
   }
-/**
- * 与えられたセット内のすべての要素がnullでないかどうかを確認します。
- *
- * @param <E> セット内の要素の型
- * @param set nullでない要素を確認するためのセット（nullであってはならない）
- * @return セット内のすべての要素がnullでなければ {@code true}、そうでなければ {@code false} を返します
- */
+
   /**
-   * Checks if all elements in the given set are not null.
+   * 与えられたセット内のすべての要素がnullでないかどうかを確認します。
    *
-   * @param <E> the type of elements in the set
-   * @param set the set to check for non-null elements (must not be null)
-   * @return {@code true} if all elements in the set are not null, {@code false} otherwise
+   * @param <E> セット内の要素の型
+   * @param set nullでない要素を確認するためのセット（nullであってはならない）
+   * @return セット内のすべての要素がnullでなければ {@code true}、そうでなければ {@code false} を返します
    */
   public static <E> boolean isAllElementsNotNull(@NonNull Set<E> set) {
     for (E e : set) {

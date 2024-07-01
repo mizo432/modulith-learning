@@ -25,7 +25,7 @@ class Sets2Test {
   class IsEmptyTest {
 
     @Test
-    public void withEmptySetShouldReturnTrue() {
+    public void shouldReturnTrueWhenSetIsEmpty() {
       // arrange
       @NonNull Set<Object> set = Collections.emptySet();
 

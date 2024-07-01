@@ -13,7 +13,7 @@ public class Objects2 {
    */
   public static <T> boolean isNull(T obj) {
     return Objects.isNull(obj);
-    
+
   }
 
   /**
@@ -29,5 +29,15 @@ public class Objects2 {
       return defaultValue;
     }
     return obj;
+  }
+
+  /**
+   * 指定された値がnullではないかを判断します。
+   *
+   * @param value nullかどうかを確認する値
+   * @return 値がnullでない場合は{@code true}、それ以外の場合は{@code false}
+   */
+  public static boolean nonNull(String value) {
+    return !isNull(value);
   }
 }

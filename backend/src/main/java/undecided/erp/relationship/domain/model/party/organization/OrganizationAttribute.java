@@ -1,16 +1,17 @@
 package undecided.erp.relationship.domain.model.party.organization;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import undecided.erp.relationship.domain.model.party.organizationUnit.OrganizationUnitName;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class OrganizationAttribute {
 
-  private final OrganizationName name;
+  private OrganizationUnitName name;
   /**
    * 組織の産業部門。
    */
-  private final IndustrySector industrySector;
+  private IndustrySector industrySector;
 
 }

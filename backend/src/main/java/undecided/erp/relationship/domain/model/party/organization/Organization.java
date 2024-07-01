@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import undecided.erp.relationship.domain.model.party.organizationUnit.OrganizationUnit;
+import undecided.erp.relationship.domain.model.party.organizationUnit.OrganizationUnitName;
 import undecided.erp.relationship.domain.model.party.party.Party;
 import undecided.erp.shared.entity.SnowflakeId;
 
@@ -14,7 +15,7 @@ import undecided.erp.shared.entity.SnowflakeId;
 public class Organization {
 
   private final SnowflakeId<Party> id;
-  private final OrganizationName name;
+  private final OrganizationUnitName name;
   /**
    * 組織の産業部門。
    */

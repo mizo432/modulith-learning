@@ -167,12 +167,12 @@ class Strings2Test {
     }
 
     @Test
-    void shouldReturnTrueWhenStringStartsWithPrefix2() {
+    void shouldReturnFalseWhenStringStartsWithPrefix2() {
       String str = "Hello";
       String prefix = "Hello World";
       assertThat(Strings2.startWith(str, prefix))
           .as("Expected true as the string starts with the prefix.")
-          .isTrue();
+          .isFalse();
     }
 
     @Test

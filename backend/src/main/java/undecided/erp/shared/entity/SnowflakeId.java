@@ -16,7 +16,7 @@ import undecided.erp.common.snowflake.SnowflakeIdProvider;
 @SuppressWarnings("unchecked")
 public class SnowflakeId<A> implements Id<A> {
 
-  private static final SnowflakeId<?> EMPTY = new SnowflakeId<>();
+  public static final SnowflakeId<?> EMPTY = new SnowflakeId<>();
 
   @Column(nullable = false, unique = true)
   @JsonValue

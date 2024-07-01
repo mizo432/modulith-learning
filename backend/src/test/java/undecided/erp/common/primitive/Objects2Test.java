@@ -1,8 +1,6 @@
 package undecided.erp.common.primitive;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,7 +18,7 @@ class Objects2Test {
     @Test
     void shouldReturnTrueWhenInputIsNull() {
       Integer value = null;
-      assertTrue(Objects2.isNull(value));
+      assertThat(Objects2.isNull(value)).isTrue();
     }
 
     /**
@@ -31,7 +29,7 @@ class Objects2Test {
     @Test
     void shouldReturnFalseWhenInputIsNotNull() {
       Integer value = 10;
-      assertFalse(Objects2.isNull(value));
+      assertThat(Objects2.isNull(value)).isFalse();
     }
   }
 
@@ -47,7 +45,7 @@ class Objects2Test {
     void shouldReturnDefaultWhenInputIsNull() {
       Integer value = null;
       Integer defaultValue = 10;
-      assertEquals(defaultValue, Objects2.defaultIfNull(value, defaultValue));
+      assertThat(Objects2.defaultIfNull(value, defaultValue)).isEqualTo(defaultValue);
     }
 
     /**
@@ -59,7 +57,33 @@ class Objects2Test {
     void shouldReturnInputWhenIfNotNull() {
       Integer value = 20;
       Integer defaultValue = 10;
-      assertEquals(value, Objects2.defaultIfNull(value, defaultValue));
+      assertThat(Objects2.defaultIfNull(value, defaultValue)).isEqualTo(value);
+    }
+  }
+
+  @Nested
+  class NonNullTest {
+
+    /**
+     * This test verifies the nonNull method of the Objects2 class.
+     * <p>
+     * Scenario: When the input object is null, the function should return false.
+     */
+    @Test
+    void shouldReturnFalseWhenValueIsNull() {
+      String value = null;
+      assertThat(Objects2.nonNull(value)).isFalse();
+    }
+
+    /**
+     * This test verifies the nonNull method of the Objects2 class.
+     * <p>
+     * Scenario: When the input object is non-null, the function should return true.
+     */
+    @Test
+    void shouldReturnTrueWhenValueIsNotNull() {
+      String value = "test";
+      assertThat(Objects2.nonNull(value)).isTrue();
     }
   }
 }

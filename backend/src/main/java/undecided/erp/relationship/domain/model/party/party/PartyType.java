@@ -9,6 +9,11 @@ public enum PartyType {
    */
   PERSON,
   /** 組織 */
-  ORGANIZATION
+  ORGANIZATION,
+  /** 組織部門 */
+  ORGANIZATION_UNIT;
 
+  public boolean isOrganizationUnit() {
+    return this == ORGANIZATION_UNIT;
+  }
 }
