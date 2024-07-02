@@ -1,5 +1,7 @@
 package undecided.erp.common.verifier;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -107,4 +109,29 @@ public class SetVerifiers {
     }
     return set;
   }
+
+  /**
+   * 指定されたセットのサイズを検証します。
+   *
+   * @param <SetElementType> セット内の要素の型
+   * @param <ExceptionType> 期待したサイズでない場合にスローされる例外の型
+   * @param providedSet 検証対象のセット（null可能）
+   * @param exceptionSupplier 期待したサイズでない場合にスローされる例外の供給者（null非許容）
+   * @param expectedSize セットの期待されるサイズ
+   * @return サイズが期待通りの場合は提供されたセットが返されます
+   * @throws RuntimeException セットのサイズが期待したものでない場合
+   */
+  public static <SetElementType, ExceptionType extends RuntimeException> Set<SetElementType> verifySize(
+      Set<SetElementType> providedSet, @NonNull Supplier<ExceptionType> exceptionSupplier,
+      int expectedSize) {
+    if (isNull(providedSet)) {
+      return null;
+    }
+
+    if (expectedSize != providedSet.size()) {
+      throw exceptionSupplier.get();
+    }
+    return providedSet;
+  }
+
 }
