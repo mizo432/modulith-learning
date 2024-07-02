@@ -1,5 +1,7 @@
 package undecided.erp.common.verifier;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -119,4 +121,32 @@ public class ListVerifiers {
 
     return list;
   }
+
+  /**
+   * リストのサイズを確認します。
+   * <p>
+   * このメソッドは与えられたリストがnullかどうかを確認します。もしそれがnullならば、nullを返します。
+   * リストのサイズが指定されたサイズと等しくない場合、exceptionSupplierによって提供される例外をスローします。 それ以外の場合は、入力リストを返します。
+   *
+   * @param <ListElementType> リスト内の要素の型
+   * @param <ExceptionType> 発生させる例外の型
+   * @param providedList 検証を行うリスト
+   * @param exceptionSupplier 発生させる例外を提供するサプライヤー
+   * @param expectedSize リストの期待されるサイズ
+   * @return 入力リストがnullでなく、指定されたサイズを持っている場合は入力リスト
+   * @throws ExceptionType リストのサイズが指定されたサイズと等しくない場合
+   */
+  public static <ListElementType, ExceptionType extends RuntimeException> List<ListElementType> verifySize(
+      List<ListElementType> providedList,
+      @NonNull Supplier<ExceptionType> exceptionSupplier, int expectedSize) {
+    if (isNull(providedList)) {
+      return null;
+    }
+
+    if (expectedSize != providedList.size()) {
+      throw exceptionSupplier.get();
+    }
+    return providedList;
+  }
+
 }
