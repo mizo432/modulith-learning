@@ -12,15 +12,22 @@ public class Arrays2 {
     return array.length == 0;
   }
 
+  /**
+   * 配列が空かどうかを確認します。
+   *
+   * @param array 確認する配列
+   * @param <T> 配列内の要素のタイプ
+   * @return 配列がnullまたは0の長さであれば真、それ以外の場合は偽
+   */
   public static <T> boolean isEmptySilently(T[] array) {
     return (array == null || array.length == 0);
   }
 
   /**
-   * This method verifies if all elements of the given array are non-null.
+   * このメソッドは、指定された配列のすべての要素が非nullであることを確認します。
    *
-   * @param array the array to check
-   * @return true if all elements are non-null; false otherwise
+   * @param array 確認する配列
+   * @return すべての要素が非nullの場合はtrue、そうでない場合はfalse
    */
   public static <E> boolean allElementsNotNull(@NonNull E[] array) {
     for (E e : array) {
@@ -33,13 +40,14 @@ public class Arrays2 {
   }
 
   /**
-   * This method takes an array as input and returns a stream of non-null elements.
+   * このメソッドは配列を引数にとり、非null要素のストリームを返します。
    *
-   * @param array the array from which the stream is to be created
-   * @param <T> the type of elements in the array
-   * @return a stream of non-null elements from the input array
+   * @param array ストリームを作成する配列
+   * @param <T> 配列の要素の型
+   * @return 入力配列からの非null要素のストリーム
    */
   public static <T> Stream<@NonNull T> stream(@NonNull T[] array) {
     return Arrays.stream(array);
+    
   }
 }
