@@ -1,5 +1,7 @@
 package undecided.erp.common.primitive;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import com.ibm.icu.lang.UCharacter;
 import com.ibm.icu.lang.UProperty;
 import com.ibm.icu.text.UnicodeSet;
@@ -333,5 +335,36 @@ public class Strings2 {
       return text.substring(0, text.length() - suffix.length());
     }
     return text;
+  }
+
+  /**
+   * 指定した文字列が十進数であるかどうかを確認します。
+   *
+   * @param value チェックする文字列
+   * @return 文字列が十進数であればtrue、そうでなければfalseを返します
+   */
+  public static boolean isDecimal(String value) {
+    if (isNull(value)) {
+      return true;
+    }
+    if (isEmpty(value)) {
+      return true;
+    }
+    return value.matches("[0-9]*");
+
+  }
+
+  /**
+   * 与えられた文字列の長さを計算します。
+   *
+   * @param value 長さを計算する文字列
+   * @return 文字列の長さ、または文字列がnullの場合は0
+   */
+  public static int length(String value) {
+    if (isNull(value)) {
+      return 0;
+    }
+    return value.length();
+
   }
 }

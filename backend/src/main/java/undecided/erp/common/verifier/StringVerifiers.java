@@ -182,4 +182,36 @@ public class StringVerifiers {
 
   }
 
+  /**
+   * 指定された値が有効な10進数の文字列であることを検証します。値がnullの場合は、そのまま返されます。 値が有効な10進数の文字列でない場合、指定された {@link Supplier}
+   * によって提供されるカスタム例外が投げられます。
+   *
+   * @param value 検証されるべき値。
+   * @param exceptionSupplier 値が有効な10進数の文字列でない場合に投げられるカスタム例外を提供する関数。
+   * @param <E> カスタム例外のタイプ。
+   * @return それが有効な10進数の文字列である場合は、同じ値。
+   * @throws E 値が有効な10進数の文字列でない場合。
+   */
+  public static <E extends RuntimeException> String verifyAllDecimal(String value,
+      @NonNull Supplier<E> exceptionSupplier) {
+    if (value == null) {
+      return value;
+    }
+    if (!Strings2.isDecimal(value)) {
+      throw exceptionSupplier.get();
+    }
+    return value;
+
+  }
+
+  public static <E extends RuntimeException> String verifyHalfWidthFixedLength(String value,
+      @NonNull Supplier<E> exceptionSupplier, int length) {
+    if (value == null) {
+      return value;
+    }
+    if (Strings2.length(value) != length) {
+      throw exceptionSupplier.get();
+    }
+    return value;
+  }
 }
