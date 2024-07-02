@@ -17,7 +17,7 @@ public class Enums {
    *
    * @param <EnumType> 列挙の型
    * @param <ValueType> 値の型
-   * @param enumValue 配列から値を取得するために使用される列挙の値
+   * @param targetEnum 配列から値を取得するために使用される列挙の値
    * @param values 値の配列
    * @return 列挙の値の序数に対応する配列からの値
    * @throws IllegalArgumentException 値の配列の長さが序数+1より小さい場合
@@ -25,12 +25,14 @@ public class Enums {
    */
   @SafeVarargs
   public static <EnumType extends Enum<EnumType>, ValueType> ValueType getValueByEnumOrdinal(
-      @NonNull EnumType enumValue, @NonNull ValueType... values) {
-    int ordinal = enumValue.ordinal();
+      @NonNull EnumType targetEnum, @NonNull ValueType... values) {
+    final int ordinal = targetEnum.ordinal();
+    final int minimumLength = ordinal + 1;
     verifyLengthAtLeast(values,
-        () -> new IllegalArgumentException("values length must be at least " + (ordinal + 1)),
-        ordinal + 1);
+        () -> new IllegalArgumentException("values length must be at least " + minimumLength),
+        minimumLength);
     return values[ordinal];
+
   }
 
   /**
@@ -38,7 +40,7 @@ public class Enums {
    *
    * @param <EnumType> 列挙型のタイプ
    * @param <ValueType> 値のタイプ
-   * @param enumValue 配列から値を取得するための列挙値
+   * @param targetEnum 配列から値を取得するための列挙値
    * @param valueSuppliers 値の提供者の配列
    * @return 値の提供者の配列から列挙値の順序に対応する値
    * @throws IllegalArgumentException 値供給者配列の長さが順序 + 1 未満の場合
@@ -47,11 +49,12 @@ public class Enums {
    */
   @SafeVarargs
   public static <EnumType extends Enum<EnumType>, ValueType> ValueType getValueByEnumOrdinalFromSuppliers(
-      @NonNull EnumType enumValue, @NonNull Supplier<ValueType>... valueSuppliers) {
-    int ordinal = enumValue.ordinal();
+      @NonNull EnumType targetEnum, @NonNull Supplier<ValueType>... valueSuppliers) {
+    final int ordinal = targetEnum.ordinal();
+    final int minimumLength = ordinal + 1;
     verifyLengthAtLeast(valueSuppliers,
         () -> new IllegalArgumentException(
-            "valueSuppliers length must be at least " + (ordinal + 1)), (ordinal + 1));
+            "valueSuppliers length must be at least " + minimumLength), minimumLength);
     verifyAllElementNotNull(valueSuppliers,
         (index) -> new IndexedRuntimeException("all value supplier must not null.", index));
 
