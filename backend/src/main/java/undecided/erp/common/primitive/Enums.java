@@ -45,6 +45,7 @@ public class Enums {
    * @throws IndexedRuntimeException 任意の値供給者がnullの場合
    * @throws NullPointerException enumValueまたはvalueSuppliersがnullの場合
    */
+  @SafeVarargs
   public static <EnumType extends Enum<EnumType>, ValueType> ValueType getValueByEnumOrdinalFromSuppliers(
       @NonNull EnumType enumValue, @NonNull Supplier<ValueType>... valueSuppliers) {
     int ordinal = enumValue.ordinal();
