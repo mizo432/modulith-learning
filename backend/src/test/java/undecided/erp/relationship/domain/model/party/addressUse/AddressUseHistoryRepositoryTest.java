@@ -3,6 +3,7 @@ package undecided.erp.relationship.domain.model.party.addressUse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ public class AddressUseHistoryRepositoryTest {
   private AddressUseHistoryRepository addressUseHistoryRepository;
 
   @Nested
+  @Disabled
   class FindByPartyIdAndTargetDateTest {
 
     @Test

@@ -1,4 +1,4 @@
-package undecided.erp.relationship.application.façade;
+package undecided.erp.relationship.application.facade;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import undecided.erp.shared.entity.SnowflakeId;
 
 @Service
 @RequiredArgsConstructor
-public class RelationshipFaçade implements RelationshipMgmt {
+public class RelationshipFacade implements RelationshipMgmt {
 
   private final EmployeeQuery employeeQuery;
 
@@ -19,4 +19,5 @@ public class RelationshipFaçade implements RelationshipMgmt {
   public Employee findById(@NonNull SnowflakeId<Party> id) {
     return employeeQuery.findById(id);
   }
+  
 }

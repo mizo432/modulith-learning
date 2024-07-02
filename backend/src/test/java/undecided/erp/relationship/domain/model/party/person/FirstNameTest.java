@@ -1,11 +1,10 @@
-package undecided.erp.relationship.model.party.person;
+package undecided.erp.relationship.domain.model.party.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
-import undecided.erp.relationship.domain.model.party.person.FirstName;
 
 public class FirstNameTest {
 

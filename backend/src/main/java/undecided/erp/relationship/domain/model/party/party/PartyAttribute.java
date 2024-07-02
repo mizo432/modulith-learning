@@ -1,11 +1,18 @@
 package undecided.erp.relationship.domain.model.party.party;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@Embeddable
+@EqualsAndHashCode
 public class PartyAttribute {
 
   /**
@@ -15,7 +22,7 @@ public class PartyAttribute {
    * @see Party
    */
   @JsonProperty
-  private final GovtAssignedId govtAssignedId;
+  private GovtAssignedId govtAssignedId;
 
   public static PartyAttribute create(GovtAssignedId govtAssignedId) {
     return new PartyAttribute(govtAssignedId);

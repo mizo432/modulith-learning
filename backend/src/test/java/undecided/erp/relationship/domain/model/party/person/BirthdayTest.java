@@ -1,11 +1,9 @@
-package undecided.erp.relationship.model.party.person;
-
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import undecided.erp.relationship.domain.model.party.person.Birthday;
+package undecided.erp.relationship.domain.model.party.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDate;
+import org.junit.jupiter.api.Test;
 
 public class BirthdayTest {
 

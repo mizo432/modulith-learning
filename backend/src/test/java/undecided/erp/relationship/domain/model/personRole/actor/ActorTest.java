@@ -1,12 +1,11 @@
-package undecided.erp.relationship.model.personRole.actor;
+package undecided.erp.relationship.domain.model.personRole.actor;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import undecided.erp.relationship.domain.model.party.party.Party;
 import undecided.erp.relationship.domain.model.party.person.Person;
-import undecided.erp.relationship.domain.model.personRole.actor.Actor;
 import undecided.erp.shared.entity.SnowflakeId;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ActorTest {
 

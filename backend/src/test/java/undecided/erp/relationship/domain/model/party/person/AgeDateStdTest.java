@@ -1,12 +1,10 @@
-package undecided.erp.relationship.model.party.person;
+package undecided.erp.relationship.domain.model.party.person;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
-import undecided.erp.relationship.domain.model.party.person.AgeDateStd;
-import undecided.erp.relationship.domain.model.party.person.Birthday;
 import undecided.erp.shared.date.Today;
 
 class AgeDateStdTest {

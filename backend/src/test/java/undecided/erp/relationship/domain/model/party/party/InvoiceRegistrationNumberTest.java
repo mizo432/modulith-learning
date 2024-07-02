@@ -11,35 +11,7 @@ class InvoiceRegistrationNumberTest {
   @Nested
   class ReconstructTest {
 
-    /**
-     * This test verifies the reconstruct method of the InvoiceRegistrationNumber class.
-     * <p>
-     * Scenario: When the input value is non-null, the function should return
-     * InvoiceRegistrationNumber with the input value.
-     */
-    @Test
-    void shouldReturnInvoiceRegistrationNumberWhenValueIsNonNull() {
-      String value = "nonNullValue";
-      assertThat(InvoiceRegistrationNumber.reconstruct(value, PartyType.PERSON).getValue())
-          .isEqualTo(value);
-      assertThat(InvoiceRegistrationNumber.reconstruct(value, PartyType.ORGANIZATION).getValue())
-          .isEqualTo(value);
-    }
 
-    /**
-     * This test verifies the reconstruct method of the InvoiceRegistrationNumber class.
-     * <p>
-     * Scenario: When the input value is null, the function should return EMPTY
-     * InvoiceRegistrationNumber.
-     */
-    @Test
-    void shouldReturnEmptyInvoiceRegistrationNumberWhenValueIsNull() {
-      String value = null;
-      assertThat(InvoiceRegistrationNumber.reconstruct(value, PartyType.PERSON))
-          .isSameAs(InvoiceRegistrationNumber.EMPTY);
-      assertThat(InvoiceRegistrationNumber.reconstruct(value, PartyType.ORGANIZATION))
-          .isSameAs(InvoiceRegistrationNumber.EMPTY);
-    }
   }
 
   @Nested

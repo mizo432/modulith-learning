@@ -1,15 +1,12 @@
-package undecided.erp.relationship.model.orgRole.company;
+package undecided.erp.relationship.domain.model.orgRole.company;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import undecided.erp.relationship.domain.model.orgRole.company.CompanyAttribute;
-import undecided.erp.relationship.domain.model.orgRole.company.CompanyCode;
-import undecided.erp.relationship.domain.model.orgRole.company.CompanyName;
 
-public class CompanyAttributeTest {
+class CompanyAttributeTest {
 
   @Test
-  public void testOfShouldCreateCompanyAttribute() {
+  void testOfShouldCreateCompanyAttribute() {
     // Initialize test inputs
     CompanyCode code = CompanyCode.of("001");
     CompanyName name = CompanyName.of("Test Name");

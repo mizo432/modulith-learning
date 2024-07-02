@@ -11,7 +11,7 @@ import undecided.erp.relationship.domain.model.personRole.employee.Employee;
 import undecided.erp.shared.entity.SnowflakeId;
 
 @RestController
-@RequestMapping(path = "/rel")
+@RequestMapping(path = "/relationship")
 public class EmployeeController {
 
   private final EmployeeQuery employeeQuery;

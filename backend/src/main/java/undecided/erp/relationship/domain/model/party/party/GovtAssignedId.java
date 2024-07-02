@@ -1,10 +1,13 @@
 package undecided.erp.relationship.domain.model.party.party;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import undecided.erp.common.primitive.Strings2;
 
 /**
  * GovtAssignedIdクラスは、政府がパーティまたは組織に割り当てた識別子です。 これは、政府システム内でパーティまたは組織を一意に識別するために使われます。
@@ -15,22 +18,40 @@ import lombok.RequiredArgsConstructor;
  * @see Party
  */
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC, staticName = "of")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @EqualsAndHashCode
+@Embeddable
 public class GovtAssignedId {
 
   public static final GovtAssignedId EMPTY = new GovtAssignedId(null);
 
   @JsonValue
-  private final String value;
+  private String value;
 
   public static GovtAssignedId empty() {
     return EMPTY;
   }
 
+  public static GovtAssignedId of(String value) {
+    if (Strings2.isEmpty(value)) {
+      return EMPTY;
+
+    }
+    return new GovtAssignedId(value);
+  }
+
+  public static GovtAssignedId reconstruct(String value) {
+    if (Strings2.isEmpty(value)) {
+      return EMPTY;
+
+    }
+    return new GovtAssignedId(value);
+  }
+
   @Override
   public String toString() {
-    return value;
+    return String.valueOf(value);
 
   }
 
