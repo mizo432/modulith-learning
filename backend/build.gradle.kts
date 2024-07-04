@@ -25,24 +25,21 @@ repositories {
 extra["springModulithVersion"] = "1.2.0"
 extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
-extra["mapStructVersion"] = "1.5.5.Final"
 extra["junitVersion"] = "5.10.2"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:10.14.0")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
-    implementation("org.springframework.modulith:spring-modulith-starter-jpa")
+    implementation("org.springframework.modulith:spring-modulith-starter-jdbc")
     compileOnly("org.projectlombok:lombok")
     testCompileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-//    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
@@ -55,20 +52,18 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     testImplementation("org.jmolecules.integrations:jmolecules-archunit")
     testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
-    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
-    annotationProcessor("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
-    implementation("org.mapstruct:mapstruct:${property("mapStructVersion")}")
-    implementation("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
-    compileOnly("org.projectlombok:lombok-mapstruct-binding:0.2.0")
     testImplementation("com.github.spotbugs:spotbugs-annotations:4.8.4")
-    testAnnotationProcessor("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
-    testCompileOnly("org.mapstruct:mapstruct-processor:${property("mapStructVersion")}")
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.2.1-jre")
     implementation("com.ibm.icu:icu4j:74.2")
     runtimeOnly("com.h2database:h2")
+// https://mvnrepository.com/artifact/am.ik.yavi/yavi
+    implementation("am.ik.yavi:yavi:0.14.1")
+    annotationProcessor("cc.jilt:jilt:1.6.1")
+    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
+
 }
 
 dependencyManagement {
