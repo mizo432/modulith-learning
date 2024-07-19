@@ -1,9 +1,9 @@
 package undecided.erp.relationship.domain.model.party.party;
 
-import org.springframework.data.repository.CrudRepository;
-import undecided.erp.shared.entity.SnowflakeId;
+import java.util.List;
 
-public interface PartyRepository extends
-    CrudRepository<Party, SnowflakeId<Party>> {
+public interface PartyRepository {
+
+  List<Party> findByType(PartyType type);
 
 }

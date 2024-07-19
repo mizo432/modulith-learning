@@ -1,0 +1,14 @@
+# application.yml
+
+server:
+  port: 8085 # ここに希望するポート番号を設定します
+  shutdown: graceful
+
+spring:
+  application:
+    name: api-gateway-service # アプリケーションの名前を設定します
+  threads:
+    virtual:
+      enabled: true
+
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka

@@ -2,18 +2,22 @@ package undecided.erp.relationship.domain.model.personRole.employee;
 
 import java.util.Objects;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import undecided.erp.shared.entity.SnowflakeId;
 
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC, staticName = "create")
+@AllArgsConstructor(access = AccessLevel.PUBLIC, staticName = "create")
+@NoArgsConstructor
 @Getter
 public class Employee {
 
-  private final SnowflakeId<Employee> id;
-  private final EmployeeNo employeeNo;
-  private final String firstName;
-  private final String lastName;
+  public static final Employee EMPTY = new Employee();
+
+  private SnowflakeId id = SnowflakeId.empty();
+  private EmployeeNo employeeNo = EmployeeNo.EMPTY;
+  private String firstName;
+  private String lastName;
 
   public static Employee reconstruct(Long id, String employeeNo) {
     return null;

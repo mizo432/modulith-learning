@@ -1,9 +1,18 @@
 import java.time.Duration
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+//        classpath("org.flywaydb:flyway-database-postgresql:10.15.2")
+    }
+}
 plugins {
     java
     id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.4"
+//    id("org.flywaydb.flyway") version "10.15.2"
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -26,17 +35,19 @@ extra["springModulithVersion"] = "1.2.0"
 extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.2"
+extra["springDataBomVersion"] = "2024.0.1"
+extra["springCloudBomVersion"] = "2023.0.3"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.14.0")
+//    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.15.2")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
-    implementation("org.springframework.modulith:spring-modulith-starter-jdbc")
+    implementation("org.springframework.modulith:spring-modulith-starter-jpa")
     compileOnly("org.projectlombok:lombok")
     testCompileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -58,14 +69,19 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.2.1-jre")
     implementation("com.ibm.icu:icu4j:74.2")
-    runtimeOnly("com.h2database:h2")
+    testRuntimeOnly("com.h2database:h2")
 // https://mvnrepository.com/artifact/am.ik.yavi/yavi
     implementation("am.ik.yavi:yavi:0.14.1")
     annotationProcessor("cc.jilt:jilt:1.6.1")
-    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
+//    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
 }
-
+//flyway {
+//    url = "jdbc:postgresql://localhost:5432/postgres"
+//    user = "postgres"
+//    password = "postgres"
+//}
 dependencyManagement {
     imports {
         mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
@@ -73,11 +89,13 @@ dependencyManagement {
     imports {
         mavenBom("org.jmolecules:jmolecules-bom:${property("jmoleculesBomVersion")}")
     }
+    imports {
+        mavenBom("org.springframework.data:spring-data-bom:${property("springDataBomVersion")}")
+    }
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
+    }
 }
-
-//tasks.withType<Test> {
-//    useJUnitPlatform()
-//}
 
 tasks.test {
     useJUnitPlatform {

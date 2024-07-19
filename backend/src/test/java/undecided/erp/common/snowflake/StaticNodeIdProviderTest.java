@@ -2,9 +2,21 @@ package undecided.erp.common.snowflake;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class StaticNodeIdProviderTest {
+
+  @BeforeEach
+  void setUp() {
+    StaticNodeIdProvider.clear();
+
+  }
+
+  @BeforeEach
+  void tearDown() {
+    StaticNodeIdProvider.clear();
+  }
 
   @Test
   void testNodeIdMethod_withValidNodeId() {

@@ -48,6 +48,21 @@ public class Arrays2 {
    */
   public static <T> Stream<@NonNull T> stream(@NonNull T[] array) {
     return Arrays.stream(array);
+
+  }
+
+  public static int hash(Object[] args) {
+    return Arrays.hashCode(args);
+
+  }
+
+  public static boolean equal(Object[] args, Object[] args1) {
+    return Arrays.equals(args, args1);
+
+  }
+
+  public static String toString(Object[] args) {
+    return Arrays.toString(args);
     
   }
 }

@@ -5,18 +5,18 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Objects;
-import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 import undecided.erp.common.dateProvider.DateProvider;
 import undecided.erp.common.verifier.LocalDateVerifiers;
 
 @Getter
-@Embeddable
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApplicableDate {
@@ -95,5 +95,12 @@ public class ApplicableDate {
   @Override
   public int hashCode() {
     return Objects.hashCode(value);
+  }
+
+  public ApplicableMonth getMonth() {
+    if (isNull(value)) {
+      ApplicableMonth.empty();
+    }
+    return ApplicableMonth.of(value.getMonth());
   }
 }

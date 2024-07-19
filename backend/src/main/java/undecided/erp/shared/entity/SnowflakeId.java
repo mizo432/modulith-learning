@@ -1,58 +1,58 @@
 package undecided.erp.shared.entity;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import java.util.Objects;
+import java.beans.Transient;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
 
-@Getter
-@Setter
 @Embeddable
-@SuppressWarnings("unchecked")
-public class SnowflakeId<A> implements Id<A> {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
+@EqualsAndHashCode
+public class SnowflakeId {
 
-  public static final SnowflakeId<?> EMPTY = new SnowflakeId<>();
-
-  @Column(nullable = false, unique = true)
+  public static final SnowflakeId EMPTY = new SnowflakeId(null);
   @JsonValue
   private final Long value;
-
-  public SnowflakeId(Long value) {
-    this.value = value;
-  }
-
-  public SnowflakeId() {
-    this.value = null;
-
-  }
-
 
   /**
    * SnowflakeIdクラスの新しいインスタンスを作成します。
    *
-   * @param <A> 型パラメータ
    * @return SnowflakeIdクラスの新しいインスタンス
    */
-  public static <A> SnowflakeId<A> newInstance() {
-    return new SnowflakeId<>(SnowflakeIdProvider.generateId());
-  }
-
-  public static <A> SnowflakeId<A> reconstruct(Long id) {
-    return new SnowflakeId<>(id);
+  public static SnowflakeId newInstance() {
+    return new SnowflakeId(SnowflakeIdProvider.generateId());
   }
 
   @JsonCreator
-  public static <A> SnowflakeId<A> of(@NonNull Long value) {
-    return new SnowflakeId<>(value);
+  public static SnowflakeId of(@NonNull Long value) {
+    return new SnowflakeId(value);
   }
 
-  public static <A> SnowflakeId<A> empty() {
-    return (SnowflakeId<A>) EMPTY;
+  /**
+   * 提供された値に基づいてSnowflakeIdオブジェクトを再構築します。
+   *
+   * @param value SnowflakeIdオブジェクトを再構築するために使用する値。
+   * @return 再構築されたSnowflakeIdオブジェクト、または値がnullの場合はSnowflakeId.EMPTY。
+   */
+  public static SnowflakeId reconstruct(Long value) {
+    if (isNull(value)) {
+      return EMPTY;
+    }
+    return new SnowflakeId(value);
+  }
+
+  public static SnowflakeId empty() {
+    return EMPTY;
   }
 
   /**
@@ -66,24 +66,8 @@ public class SnowflakeId<A> implements Id<A> {
 
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SnowflakeId<?> that = (SnowflakeId<?>) o;
-    return Objects.equals(value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(value);
-  }
-
+  @Transient
   public boolean isEmpty() {
-    return value == null;
+    return isNull(value);
   }
 }

@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * <p>@VisibleForFramework
  * で注釈されたメソッドは、通常、フレームワーク内部で使用され、内部の目的を果たします。それらはパッケージプライベートまたは保護された可視性を持ち、クライアントコードから直接呼び出すべきではありません。</p>
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface VisibleForFramework {
 

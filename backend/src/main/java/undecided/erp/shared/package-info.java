@@ -3,7 +3,8 @@
     "common :: snowflake",
     "common :: dateProvider",
     "common :: verifier",
-    "common :: primitive"
+    "common :: primitive",
+    "shared :: entity"
 })
 package undecided.erp.shared;
 

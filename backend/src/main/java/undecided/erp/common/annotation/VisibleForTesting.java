@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * <p>
  * このアノテーションは、メソッドに適用することができます。
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface VisibleForTesting {
 

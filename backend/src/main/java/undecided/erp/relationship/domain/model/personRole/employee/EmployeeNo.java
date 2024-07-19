@@ -1,19 +1,21 @@
 package undecided.erp.relationship.domain.model.personRole.employee;
 
-import org.springframework.lang.NonNull;
-import undecided.erp.shared.value.AllDecimalString;
-import undecided.erp.shared.value.FixedLengthString;
-import undecided.erp.shared.value.NonNullObject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.NonNull;
+import undecided.erp.common.verifier.StringVerifiers;
 
 public record EmployeeNo(String value) {
 
 
+  public static final EmployeeNo EMPTY = new EmployeeNo(null);
   private static final int LENGTH = 8;
 
+  @JsonCreator
   public static EmployeeNo of(@NonNull String value) {
-    NonNullObject.of(value);
-    AllDecimalString.of(value);
-    FixedLengthString.of(value, LENGTH);
+    StringVerifiers.verifyAllDecimal(value,
+        () -> new IllegalArgumentException("value must be decimal."));
+    StringVerifiers.verifyHalfWidthFixedLength(value,
+        () -> new IllegalArgumentException("value length"), LENGTH);
     return new EmployeeNo(value);
 
   }
