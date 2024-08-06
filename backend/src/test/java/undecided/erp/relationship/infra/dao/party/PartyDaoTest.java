@@ -24,8 +24,8 @@ public class PartyDaoTest {
     public void shouldReturnValidParties_WhenFindByTypeIsPERSON() {
       //given
       PartyType type = PartyType.PERSON;
-      PartyTable expectedParty1 = new PartyTable(1L, type);
-      PartyTable expectedParty2 = new PartyTable(2L, type);
+      PartyTable expectedParty1 = new PartyTable(1L, type, "party1");
+      PartyTable expectedParty2 = new PartyTable(2L, type, "party2");
       partyDao.save(expectedParty1);
       partyDao.save(expectedParty2);
 
@@ -40,7 +40,7 @@ public class PartyDaoTest {
     public void shouldReturnValidParties_WhenFindByTypeIsORGANIZATION() {
       //given
       PartyType type = PartyType.ORGANIZATION;
-      PartyTable expectedParty = new PartyTable(3L, type);
+      PartyTable expectedParty = new PartyTable(3L, type, "party");
       partyDao.save(expectedParty);
 
       //when

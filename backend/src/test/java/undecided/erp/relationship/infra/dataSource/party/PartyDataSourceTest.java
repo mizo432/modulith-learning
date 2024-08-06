@@ -6,12 +6,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import undecided.erp.relationship.domain.model.party.party.Party;
 import undecided.erp.relationship.domain.model.party.party.PartyType;
 import undecided.erp.relationship.infra.dao.party.PartyDao;
 import undecided.erp.relationship.infra.dao.party.PartyTable;
 
+@Tag("medium")
 class PartyDataSourceTest {
 
   private final PartyDao partyDaoMock = mock(PartyDao.class);
@@ -20,8 +22,8 @@ class PartyDataSourceTest {
   @Test
   public void testFindByType() {
     PartyType type = PartyType.PERSON;
-    Party party1 = Party.reconstruct(1L, type);
-    Party party2 = Party.reconstruct(2L, type);
+    Party party1 = Party.reconstruct(1L, type, "party1");
+    Party party2 = Party.reconstruct(2L, type, "party2");
     List<Party> expected = Arrays.asList(party1, party2);
 
     when(partyDaoMock.findByType(type)).thenReturn(PartyTable.toTableRecs(expected));

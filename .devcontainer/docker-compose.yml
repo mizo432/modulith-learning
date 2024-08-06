@@ -1,8 +1,9 @@
-version: '3.8'
+version: "3.8"
 
 volumes:
   postgres-data:
   dragonfly-data:
+
 
 services:
 
@@ -36,6 +37,28 @@ services:
     volumes:
       - ./dragonfly/data:/data
 
+  service-registry:
+    container_name: ${PROJECT_NAME:-default}-service-registry
+    build:
+      context: ../service-registry
+      dockerfile: Dockerfile
+
+    volumes:
+      - ../..:/workspaces:cached
+
+    command: sleep infinity
+
+  api-gateway:
+    container_name: ${PROJECT_NAME:-default}-api-gateway
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+
+    volumes:
+      - ../..:/workspaces:cached
+
+    command: sleep infinity
+  # 047-712-8534 国民健康保険 保険税
   app:
     container_name: ${PROJECT_NAME:-default}-javadev
     build:

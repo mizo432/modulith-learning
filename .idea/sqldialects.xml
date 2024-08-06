@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/backup/V20240530134941__add_prefectures_table.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/backup/V20240530135941__add_cities_table.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/backup/V20240530142053__add_machi_azas_table.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/backup/V20240601055025__add_postal_code_map_table.sql" dialect="PostgreSQL" />
-  </component>
-</project>

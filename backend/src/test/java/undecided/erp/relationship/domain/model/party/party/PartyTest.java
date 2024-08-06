@@ -20,7 +20,7 @@ class PartyTest {
       PartyType type = PartyType.PERSON;
 
       // when
-      Party party = Party.createForInsert(type);
+      Party party = Party.createForInsert(type, SimpleName.reconstruct("party"));
 
       // then
       assertThat(party.getType())
@@ -35,7 +35,7 @@ class PartyTest {
       PartyType type = PartyType.PERSON;
 
       // when
-      Party party = Party.createForInsert(type);
+      Party party = Party.createForInsert(type, SimpleName.reconstruct("party"));
 
       // then
       assertThat(party.getType())
@@ -49,8 +49,8 @@ class PartyTest {
       PartyType type = PartyType.PERSON;
 
       // when
-      Party party1 = Party.createForInsert(type);
-      Party party2 = Party.createForInsert(type);
+      Party party1 = Party.createForInsert(type, SimpleName.reconstruct("party1"));
+      Party party2 = Party.createForInsert(type, SimpleName.reconstruct("party2"));
 
       // then
       System.out.println(party1);
@@ -70,7 +70,7 @@ class PartyTest {
       // given
       PartyType type = PartyType.PERSON;
 
-      Party party = Party.createForInsert(type);
+      Party party = Party.createForInsert(type, SimpleName.reconstruct("party"));
 
       String id = party.getId().toString();
       String expectedString =

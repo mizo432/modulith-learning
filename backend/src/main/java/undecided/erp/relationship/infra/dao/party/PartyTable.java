@@ -31,29 +31,36 @@ public class PartyTable {
   @Column(name = "party_type", length = 1, nullable = false)
   private PartyType type;
 
+  @Column(name = "simple_name", length = 50, nullable = false)
+  private String simpleName;
+
   public static List<Party> toEntities(List<PartyTable> recs) {
     return recs
         .stream()
-        .map((rec) -> Party.reconstruct(rec.getId(), rec.getType()))
+        .map((rec) -> Party.reconstruct(rec.getId(), rec.getType(), rec.getSimpleName()))
         .toList();
   }
 
   public static List<PartyTable> toTableRecs(List<Party> entities) {
     return entities
         .stream()
-        .map((entity) -> new PartyTable(entity.getId().getValue(), entity.getType()))
+        .map((entity) -> new PartyTable(entity.getId().getValue(), entity.getType(),
+            entity.getSimpleName().getValue()))
         .toList();
 
 
   }
 
   public static PartyTable toTableRec(Party entity) {
-    return new PartyTable(entity.getId().getValue(), entity.getType());
+    return new PartyTable(
+        entity.getId().getValue(),
+        entity.getType(),
+        entity.getSimpleName().getValue());
 
   }
 
   public Party toEntity() {
-    return Party.reconstruct(id, type);
+    return Party.reconstruct(id, type, simpleName);
   }
 
   @Override

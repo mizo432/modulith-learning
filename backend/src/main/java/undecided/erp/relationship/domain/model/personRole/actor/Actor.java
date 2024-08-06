@@ -19,7 +19,7 @@ public class Actor {
   }
 
   public static Actor reconstruct(Person person) {
-    return new Actor(person.getId(), person.fullName());
+    return new Actor(person.getId(), person.getNames().fullName().getValue());
 
   }
 }

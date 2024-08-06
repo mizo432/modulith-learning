@@ -31,7 +31,7 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.2.0"
+extra["springModulithVersion"] = "1.2.1"
 extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.2"
@@ -64,7 +64,7 @@ dependencies {
     testImplementation("org.jmolecules.integrations:jmolecules-archunit")
     testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:4.8.4")
-    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.1")
+    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.2.1-jre")
@@ -109,7 +109,7 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
     useJUnitPlatform {
         includeTags("medium")
     }
-    timeout.set(Duration.ofSeconds(300))
+    timeout.set(Duration.ofMinutes(5))
     shouldRunAfter("test")
 }
 val largeTest = tasks.register("largeTest", Test::class.java) {

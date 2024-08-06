@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import undecided.erp.relationship.domain.model.party.party.Party;
 import undecided.erp.relationship.domain.model.party.party.PartyType;
+import undecided.erp.relationship.domain.model.party.party.SimpleName;
 
 public class PartyTableTest {
 
@@ -15,6 +16,7 @@ public class PartyTableTest {
     PartyTable partyTable = new PartyTable();
     partyTable.setId(1L);
     partyTable.setType(PartyType.PERSON);
+    partyTable.setSimpleName("party");
 
     Party partyEntity = partyTable.toEntity();
 
@@ -25,8 +27,9 @@ public class PartyTableTest {
 
   @Test
   public void toTableRecsTest() {
-    List<Party> partyEntities = List.of(Party.createForInsert(PartyType.PERSON),
-        Party.createForInsert(PartyType.ORGANIZATION));
+    List<Party> partyEntities = List.of(
+        Party.createForInsert(PartyType.PERSON, SimpleName.reconstruct("party1")),
+        Party.createForInsert(PartyType.ORGANIZATION, SimpleName.reconstruct("party2")));
 
     List<PartyTable> partyTables = PartyTable.toTableRecs(partyEntities);
 
@@ -40,7 +43,7 @@ public class PartyTableTest {
 
   @Test
   public void toTableRecTest() {
-    Party partyEntity = Party.createForInsert(PartyType.PERSON);
+    Party partyEntity = Party.createForInsert(PartyType.PERSON, SimpleName.reconstruct("party"));
 
     PartyTable partyTable = PartyTable.toTableRec(partyEntity);
 
@@ -53,8 +56,8 @@ public class PartyTableTest {
   @Test
   public void toEntitiesTest() {
     List<PartyTable> partyTables = List.of(
-        new PartyTable(1L, PartyType.PERSON),
-        new PartyTable(2L, PartyType.ORGANIZATION)
+        new PartyTable(1L, PartyType.PERSON, "party1"),
+        new PartyTable(2L, PartyType.ORGANIZATION, "party2")
     );
 
     List<Party> partyEntities = PartyTable.toEntities(partyTables);

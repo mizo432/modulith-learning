@@ -24,13 +24,15 @@ public class Party {
 
   private PartyType type;
 
-  public static Party createForInsert(@NonNull PartyType type) {
-    return new Party(SnowflakeId.newInstance(), type);
+  private SimpleName simpleName;
+
+  public static Party createForInsert(@NonNull PartyType type, SimpleName simpleName) {
+    return new Party(SnowflakeId.newInstance(), type, simpleName);
 
   }
 
-  public static Party reconstruct(Long id, PartyType type) {
-    return new Party(SnowflakeId.reconstruct(id), type);
+  public static Party reconstruct(Long id, PartyType type, String simpleName) {
+    return new Party(SnowflakeId.reconstruct(id), type, SimpleName.reconstruct(simpleName));
   }
 
   @Override
