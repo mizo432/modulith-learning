@@ -9,7 +9,7 @@ import com.ibm.icu.text.UnicodeSet;
 import undecided.erp.common.verifier.IntegerVerifiers;
 
 /**
- * The Strings2 class provides utility methods for working with strings.
+ * This class provides utility methods for handling strings.
  */
 public class Strings2 {
 

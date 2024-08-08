@@ -3,7 +3,9 @@ package undecided.erp.common.verifier;
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class DoubleVerifiers {
 
   /**
@@ -76,6 +78,9 @@ public class DoubleVerifiers {
   public static Double verifyRangeClosed(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min, @NonNull Double max) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.closed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -98,6 +103,9 @@ public class DoubleVerifiers {
   public static Double verifyRangeOpen(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min, @NonNull Double max) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.open(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -120,6 +128,9 @@ public class DoubleVerifiers {
   public static Double verifyRangeClosedOpen(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Double min,
       @NonNull Double max) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.closedOpen(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -142,6 +153,9 @@ public class DoubleVerifiers {
   public static Double verifyRangeOpenClosed(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Double min,
       @NonNull Double max) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.openClosed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -163,6 +177,9 @@ public class DoubleVerifiers {
    */
   public static Double verifyAtLest(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Double min) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.atLeast(min).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -182,6 +199,9 @@ public class DoubleVerifiers {
    */
   public static Double verifyAtMost(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Double max) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.atMost(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -201,6 +221,9 @@ public class DoubleVerifiers {
    */
   public static Double verifyLessThan(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Double max) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.lessThan(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -220,6 +243,9 @@ public class DoubleVerifiers {
    */
   public static Double verifyGreaterThan(Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Double min) {
+    if (ref == null) {
+      return ref;
+    }
     if (!Range.greaterThan(min).contains(ref)) {
       throw exceptionSupplier.get();
     }

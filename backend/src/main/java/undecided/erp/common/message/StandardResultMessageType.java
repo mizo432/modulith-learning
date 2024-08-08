@@ -1,5 +1,23 @@
 package undecided.erp.common.message;
 
+/**
+ * {@code StandardResultMessageType} enumは {@code ResultMessageType} インターフェースを実装し、
+ * さまざまな種類の結果メッセージを表します。
+ *
+ * <p>各タイプはenum内の定数として、その対応するメッセージタイプ文字列と共に表されます。
+ * このenumは、指定されたタイプ文字列を使用してメッセージタイプのインスタンスを作成するための コンストラクタも提供します。</p>
+ *
+ * <p>このenumは、{@code ResultMessageType} インターフェースの {@code getType()} メソッドをオーバーライドして、
+ * enum値のメッセージタイプ文字列を返します。また、{@code toString()} メソッドもオーバーライドして、 メッセージタイプ文字列を返します。</p>
+ *
+ * <p>enum値にはバージョンを示すために {@code @since} タグを使用して追加情報が指定されている場合があります。
+ * 一部のenum値には、メッセージタイプの意味を説明するための追加の説明があります。</p>
+ *
+ * <p>使用例:</p>
+ * <pre>{@code
+ *   ResultMessages messages = new ResultMessages(StandardResultMessageType.ERROR);
+ * }</pre>
+ */
 public enum StandardResultMessageType implements ResultMessageType {
   /**
    * message type is <code>success</code>.

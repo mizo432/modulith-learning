@@ -78,6 +78,9 @@ public class FloatVerifiers {
   public static Float verifyRangeClosed(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min, @NonNull Float max) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.closed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -100,6 +103,9 @@ public class FloatVerifiers {
   public static Float verifyRangeOpen(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min, @NonNull Float max) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.open(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -122,6 +128,9 @@ public class FloatVerifiers {
   public static Float verifyRangeClosedOpen(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Float min,
       @NonNull Float max) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.closedOpen(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -144,6 +153,9 @@ public class FloatVerifiers {
   public static Float verifyRangeOpenClosed(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Float min,
       @NonNull Float max) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.openClosed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -165,6 +177,9 @@ public class FloatVerifiers {
    */
   public static Float verifyAtLest(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Float min) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.atLeast(min).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -184,6 +199,9 @@ public class FloatVerifiers {
    */
   public static Float verifyAtMost(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Float max) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.atMost(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -203,6 +221,9 @@ public class FloatVerifiers {
    */
   public static Float verifyLessThan(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Float max) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.lessThan(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
@@ -222,6 +243,9 @@ public class FloatVerifiers {
    */
   public static Float verifyGreaterThan(Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Float min) {
+    if (ref == null) {
+      return null;
+    }
     if (!Range.greaterThan(min).contains(ref)) {
       throw exceptionSupplier.get();
     }

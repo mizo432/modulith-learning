@@ -4,10 +4,12 @@ import com.google.common.collect.Range;
 import java.math.BigInteger;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class BigIntegerVerifiers {
 
-  /**
+  /*
    * 指定されたBigInteger値が正数であることを検証します。値がnullまたは負である場合、 提供された例外供給装置に従って例外がスローされます。
    *
    * @param ref 検証するBigInteger値。

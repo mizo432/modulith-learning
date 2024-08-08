@@ -25,8 +25,14 @@ public class DateProvider {
 
   protected DateProvider(DateProvider dateProvider) {
     DateProvider.setDateProvider(dateProvider);
+
   }
 
+  /**
+   * 現在の日付と時刻を取得するための DateProvider を設定します。
+   *
+   * @param aDateProvider 設定する DateProvider
+   */
   public static void setDateProvider(DateProvider aDateProvider) {
     DateProvider.dateProvider.set(aDateProvider);
   }
@@ -51,10 +57,10 @@ public class DateProvider {
   }
 
   /**
-   * Returns the current date and time.
+   * 現在の日付と時刻を返します。
    *
-   * @return the current date and time
-   * @deprecated use {@link #currentLocalDateTime()} method.
+   * @return 現在の日付と時刻
+   * @deprecated {@link #currentLocalDateTime()} メソッドを使用してください。
    */
   @Deprecated
   public static Date currentDate() {
@@ -109,10 +115,6 @@ public class DateProvider {
     DateProvider.initialize();
   }
 
-  protected LocalDateTime now() {
-    return LocalDateTime.now();
-  }
-
   /**
    * 現在の月と日を MonthDay オブジェクトとして取得します。
    *
@@ -120,6 +122,10 @@ public class DateProvider {
    */
   public static MonthDay currentMonthDay() {
     return MonthDay.from(currentLocalDateTime());
+  }
+
+  protected LocalDateTime now() {
+    return LocalDateTime.now();
   }
 
 }
