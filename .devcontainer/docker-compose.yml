@@ -42,6 +42,8 @@ services:
     build:
       context: ../service-registry
       dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
 
     volumes:
       - ../..:/workspaces:cached
@@ -54,6 +56,8 @@ services:
       context: ../api-gateway
       dockerfile: Dockerfile
 
+    ports:
+      - "8085:8085"
     volumes:
       - ../..:/workspaces:cached
 
@@ -70,7 +74,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_HOSTNAME: postgres
-
+    ports:
+      - "8080:8080"
     volumes:
       - ../..:/workspaces:cached
 
