@@ -1,4 +1,4 @@
-version: "3.8"
+# version: "3.8"
 
 volumes:
   postgres-data:
@@ -36,6 +36,8 @@ services:
       - "6379:6379"
     volumes:
       - ./dragonfly/data:/data
+    depends_on:
+      - db
 
   service-registry:
     container_name: ${PROJECT_NAME:-default}-service-registry
@@ -50,6 +52,7 @@ services:
 
     command: sleep infinity
 
+
   api-gateway:
     container_name: ${PROJECT_NAME:-default}-api-gateway
     build:
@@ -62,6 +65,9 @@ services:
       - ../..:/workspaces:cached
 
     command: sleep infinity
+
+    depends_on:
+      - service-registry
   # 047-712-8534 国民健康保険 保険税
   app:
     container_name: ${PROJECT_NAME:-default}-javadev
@@ -78,9 +84,20 @@ services:
       - "8080:8080"
     volumes:
       - ../..:/workspaces:cached
+    depends_on:
+      - service-registry
+      - db
+      - dragonfly
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     network_mode: service:db
+
+    expose:
+      - 8080 # app
+      - 8085 # api-gateway
+      - 8761 # Service registry
+      - 5432 # postgres
+      - 6379 # dragonfly
