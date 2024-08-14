@@ -4,7 +4,7 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import jakarta.persistence.Embeddable;
+import com.google.common.collect.ComparisonChain;
 import java.beans.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,12 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
 
-@Embeddable
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode
-public class SnowflakeId {
+public class SnowflakeId implements LongValue, Comparable<SnowflakeId> {
 
   public static final SnowflakeId EMPTY = new SnowflakeId(null);
   @JsonValue
@@ -67,7 +66,20 @@ public class SnowflakeId {
   }
 
   @Transient
+  @Override
   public boolean isEmpty() {
     return isNull(value);
+  }
+
+  @Override
+  public int compareTo(SnowflakeId other) {
+    if (isNull(other)) {
+      return -1;
+    }
+    return ComparisonChain
+        .start()
+        .compare(this.value, other.getValue())
+        .result();
+
   }
 }
