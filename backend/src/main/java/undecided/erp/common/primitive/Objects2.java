@@ -37,7 +37,7 @@ public class Objects2 {
    * @param value nullかどうかを確認する値
    * @return 値がnullでない場合は{@code true}、それ以外の場合は{@code false}
    */
-  public static boolean nonNull(String value) {
+  public static boolean nonNull(Object value) {
     return !isNull(value);
   }
 }
