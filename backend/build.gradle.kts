@@ -34,7 +34,7 @@ repositories {
 extra["springModulithVersion"] = "1.2.1"
 extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
-extra["junitVersion"] = "5.10.2"
+extra["junitVersion"] = "5.10.3"
 extra["springDataBomVersion"] = "2024.0.1"
 extra["springCloudBomVersion"] = "2023.0.3"
 
