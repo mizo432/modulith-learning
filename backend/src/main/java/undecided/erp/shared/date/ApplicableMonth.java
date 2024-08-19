@@ -6,11 +6,10 @@ import java.time.Month;
 import lombok.Getter;
 import lombok.NonNull;
 import undecided.erp.common.verifier.ObjectVerifiers;
-import undecided.erp.shared.value.MakeableEmpty;
-import undecided.erp.shared.value.ValueVerifiers;
+import undecided.erp.shared.entity.SingleValue;
 
 @Getter
-public class ApplicableMonth implements MakeableEmpty {
+public class ApplicableMonth implements SingleValue<Month> {
 
   public static final ApplicableMonth MAX_MONTH = new ApplicableMonth(Month.DECEMBER);
   public static final ApplicableMonth EMPTY = new ApplicableMonth();
@@ -45,7 +44,7 @@ public class ApplicableMonth implements MakeableEmpty {
 
   public boolean isBefore(@NonNull ApplicableMonth month) {
     ObjectVerifiers.verifyNotNull(value, () -> new IllegalArgumentException("値が空です"));
-    ValueVerifiers.verifyNotEmpty(this,
+    ValueObjects.checkNotEmpty(this,
         () -> new IllegalArgumentException("比較対象の月が空です"));
 
     return value.getValue() < month.getValue().getValue();
