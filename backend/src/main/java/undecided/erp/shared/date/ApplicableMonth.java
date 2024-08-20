@@ -5,7 +5,6 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 import java.time.Month;
 import lombok.Getter;
 import lombok.NonNull;
-import undecided.erp.common.verifier.ObjectVerifiers;
 import undecided.erp.shared.entity.SingleValue;
 
 @Getter
@@ -42,10 +41,18 @@ public class ApplicableMonth implements SingleValue<Month> {
     return value.toString();
   }
 
+  /**
+   * このApplicableMonthが指定されたApplicableMonthよりも前かどうかをチェックします。
+   *
+   * @param month 比較するApplicableMonth
+   * @return このApplicableMonthが指定されたApplicableMonthより前の場合はtrue、それ以外の場合はfalse
+   * @throws IllegalArgumentException 入力またはこのApplicableMonthがnullの場合
+   */
   public boolean isBefore(@NonNull ApplicableMonth month) {
-    ObjectVerifiers.verifyNotNull(value, () -> new IllegalArgumentException("値が空です"));
-    ValueObjects.checkNotEmpty(this,
+    ValueObjects.checkNotEmpty(month,
         () -> new IllegalArgumentException("比較対象の月が空です"));
+    ValueObjects.checkNotEmpty(this,
+        () -> new IllegalArgumentException("自身の月が空です"));
 
     return value.getValue() < month.getValue().getValue();
   }
