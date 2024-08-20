@@ -21,10 +21,8 @@ java {
 
 }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
+configurations.compileOnly {
+    extendsFrom(configurations.annotationProcessor.get())
 }
 
 repositories {
@@ -37,6 +35,7 @@ extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.3"
 extra["springDataBomVersion"] = "2024.0.1"
 extra["springCloudBomVersion"] = "2023.0.3"
+extra["spotbugsAnnotationVersion"] = "4.8.4"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -63,14 +62,14 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     testImplementation("org.jmolecules.integrations:jmolecules-archunit")
     testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
-    testImplementation("com.github.spotbugs:spotbugs-annotations:4.8.4")
+    testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
-    implementation("com.google.guava:guava:33.2.1-jre")
+    implementation("com.google.guava:guava:33.3.0-jre")
     implementation("com.ibm.icu:icu4j:74.2")
     testRuntimeOnly("com.h2database:h2")
-// https://mvnrepository.com/artifact/am.ik.yavi/yavi
+    // https://mvnrepository.com/artifact/am.ik.yavi/yavi
     implementation("am.ik.yavi:yavi:0.14.1")
     annotationProcessor("cc.jilt:jilt:1.6.1")
 //    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
