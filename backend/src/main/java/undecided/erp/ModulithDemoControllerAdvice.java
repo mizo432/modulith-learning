@@ -27,10 +27,24 @@ public class ModulithDemoControllerAdvice {
   public void initBinder(WebDataBinder binder) {
     // bind empty strings as null
     binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+
   }
 
+  /**
+   * 指定された DataBinder インスタンスに直接フィールドアクセスを初期化します。
+   *
+   * <p>
+   * このメソッドは {@code @InitBinder} で注釈されており、ModulithDemoController クラスの コントローラーアドバイスの一部です。その目的は、String
+   * クラス用のカスタムエディターを登録することで データバインディングプロセスを構成することです。
+   *
+   * @param dataBinder 初期化する DataBinder インスタンス
+   * @see InitBinder
+   * @see WebDataBinder
+   * @see StringTrimmerEditor
+   */
   @InitBinder
   private void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
+
   }
 }
