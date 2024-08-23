@@ -17,14 +17,6 @@
     8080,
     8761
   ],
-  //"forwardPorts": [
-  //  5432,
-  //  6379,
-  //  8085,
-  //  8080,
-  //  8761
-  //]
-
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "java -version",
 
