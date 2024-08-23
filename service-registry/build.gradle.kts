@@ -2,7 +2,7 @@ import java.time.Duration
 
 plugins {
     java
-    id("org.springframework.boot") version "3.3.1"
+    id("org.springframework.boot") version "3.3.3"
     id("io.spring.dependency-management") version "1.1.4"
 }
 
@@ -12,18 +12,14 @@ java {
 
 }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
+configurations.compileOnly {
+    extendsFrom(configurations.annotationProcessor.get())
 }
 
 repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.2.0"
-extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.2"
 extra["springDataBomVersion"] = "2024.0.1"
@@ -37,12 +33,6 @@ dependencies {
 }
 
 dependencyManagement {
-    imports {
-        mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
-    }
-    imports {
-        mavenBom("org.jmolecules:jmolecules-bom:${property("jmoleculesBomVersion")}")
-    }
     imports {
         mavenBom("org.springframework.data:spring-data-bom:${property("springDataBomVersion")}")
     }
