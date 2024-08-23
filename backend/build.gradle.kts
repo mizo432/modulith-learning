@@ -36,6 +36,7 @@ extra["junitVersion"] = "5.10.3"
 extra["springDataBomVersion"] = "2024.0.1"
 extra["springCloudBomVersion"] = "2023.0.3"
 extra["spotbugsAnnotationVersion"] = "4.8.4"
+extra["libphonenumberVersion"] = "8.13.43"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -72,8 +73,10 @@ dependencies {
     // https://mvnrepository.com/artifact/am.ik.yavi/yavi
     implementation("am.ik.yavi:yavi:0.14.1")
     annotationProcessor("cc.jilt:jilt:1.6.1")
-//    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
+    //    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
+    implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
 
 }
 //flyway {
