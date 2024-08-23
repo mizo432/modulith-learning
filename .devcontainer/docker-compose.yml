@@ -1,21 +1,14 @@
-# version: "3.8"
-
+version: "3.8"
 volumes:
   postgres-data:
-  dragonfly-data:
-
+  redis-data:
 
 services:
-
-  # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
-  # (Adding the "ports" property to this file will not forward from a Codespace.)
-
   db:
     container_name: ${PROJECT_NAME:-default}-postgresdb
     image: postgres:16
     restart: unless-stopped
     environment:
-      # NOTE: POSTGRES_DB/USER/PASSWORD should match values in app container
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       PGPASSWORD: ${PGPASSWORD:-password123}
@@ -24,18 +17,15 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres/data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
-  dragonfly:
-    container_name: ${PROJECT_NAME:-default}-dragonflydb
-    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
-    restart: unless-stopped
-    ulimits:
-      memlock: -1
+  redis_server:
+    container_name: ${PROJECT_NAME:-default}-redis_server
+    image: redis:latest
     ports:
       - "6379:6379"
     volumes:
-      - ./dragonfly/data:/data
+      - redis-data:/data
     depends_on:
       - db
 
@@ -46,36 +36,27 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8761:8761"
-
     volumes:
       - ../..:/workspaces:cached
-
     command: sleep infinity
-
-
   api-gateway:
     container_name: ${PROJECT_NAME:-default}-api-gateway
     build:
       context: ../api-gateway
       dockerfile: Dockerfile
-
     ports:
       - "8085:8085"
     volumes:
       - ../..:/workspaces:cached
-
     command: sleep infinity
-
     depends_on:
       - service-registry
-  # 047-712-8534 国民健康保険 保険税
   app:
     container_name: ${PROJECT_NAME:-default}-javadev
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      # NOTE: POSTGRES_DB/USER/PASSWORD should match values in db container
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
@@ -87,17 +68,5 @@ services:
     depends_on:
       - service-registry
       - db
-      - dragonfly
-
-    # Overrides default command so things don't shut down after the process ends.
+      - redis_server
     command: sleep infinity
-
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db
-
-    expose:
-      - 8080 # app
-      - 8085 # api-gateway
-      - 8761 # Service registry
-      - 5432 # postgres
-      - 6379 # dragonfly
