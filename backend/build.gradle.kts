@@ -5,14 +5,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-//        classpath("org.flywaydb:flyway-database-postgresql:10.15.2")
+        classpath("org.flywaydb:flyway-database-postgresql:10.15.2")
     }
 }
 plugins {
     java
     id("org.springframework.boot") version "3.3.3"
     id("io.spring.dependency-management") version "1.1.4"
-//    id("org.flywaydb.flyway") version "10.15.2"
+    id("org.flywaydb.flyway") version "10.15.2"
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -45,7 +45,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-//    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.15.2")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.15.2")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa")
     compileOnly("org.projectlombok:lombok")
@@ -64,7 +64,7 @@ dependencies {
     testImplementation("org.jmolecules.integrations:jmolecules-archunit")
     testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
-    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.2")
+    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("com.google.guava:guava:33.3.0-jre")
@@ -77,13 +77,16 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
-
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine")
 }
-//flyway {
-//    url = "jdbc:postgresql://localhost:5432/postgres"
-//    user = "postgres"
-//    password = "postgres"
-//}
+
+flyway {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+}
+
 dependencyManagement {
     imports {
         mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
