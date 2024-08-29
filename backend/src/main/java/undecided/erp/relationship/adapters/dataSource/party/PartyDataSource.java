@@ -1,13 +1,13 @@
-package undecided.erp.relationship.infra.dataSource.party;
+package undecided.erp.relationship.adapters.dataSource.party;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import undecided.erp.relationship.adapters.dao.party.PartyDao;
+import undecided.erp.relationship.adapters.dao.party.PartyTable;
 import undecided.erp.relationship.domain.model.party.party.Party;
 import undecided.erp.relationship.domain.model.party.party.PartyRepository;
 import undecided.erp.relationship.domain.model.party.party.PartyType;
-import undecided.erp.relationship.infra.dao.party.PartyDao;
-import undecided.erp.relationship.infra.dao.party.PartyTable;
 
 @RequiredArgsConstructor
 @Component

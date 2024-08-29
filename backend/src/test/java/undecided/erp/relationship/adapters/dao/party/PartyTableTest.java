@@ -1,4 +1,4 @@
-package undecided.erp.relationship.infra.dao.party;
+package undecided.erp.relationship.adapters.dao.party;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

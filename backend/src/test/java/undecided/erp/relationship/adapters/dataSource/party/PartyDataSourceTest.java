@@ -1,4 +1,4 @@
-package undecided.erp.relationship.infra.dataSource.party;
+package undecided.erp.relationship.adapters.dataSource.party;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -8,10 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import undecided.erp.relationship.adapters.dao.party.PartyDao;
+import undecided.erp.relationship.adapters.dao.party.PartyTable;
 import undecided.erp.relationship.domain.model.party.party.Party;
 import undecided.erp.relationship.domain.model.party.party.PartyType;
-import undecided.erp.relationship.infra.dao.party.PartyDao;
-import undecided.erp.relationship.infra.dao.party.PartyTable;
 
 @Tag("medium")
 class PartyDataSourceTest {

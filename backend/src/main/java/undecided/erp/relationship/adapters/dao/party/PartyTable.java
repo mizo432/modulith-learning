@@ -1,4 +1,4 @@
-package undecided.erp.relationship.infra.dao.party;
+package undecided.erp.relationship.adapters.dao.party;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

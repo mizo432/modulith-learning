@@ -15,9 +15,30 @@ import undecided.erp.shared.entity.SnowflakeId;
 public class Prefecture {
 
   private SnowflakeId<Prefecture> id;
+  /**
+   * `attribute`変数は`PrefectureAttribute`クラスのインスタンスであり、都道府県の属性を表します。
+   * <p>
+   * この変数はプライベートな属性であり、`Prefecture`クラス内でのみアクセス可能です。
+   * <p>
+   * `PrefectureAttribute`クラスは、都道府県の属性に関する情報（名前、コード、その他関連する詳細など）を含みます。
+   * <p>
+   * この変数は、`Prefecture`クラス内で都道府県の属性を表現するために使用されます。
+   * 都道府県の属性にアクセスするには、`Prefecture`クラスに定義されたゲッターメソッドを使用できます。
+   * <p>
+   * この変数には、サンプルコードや使用例は含まれていません。
+   */
   private PrefectureAttribute attribute;
+  /**
+   * `effectiveDate` 変数は都道府県の有効になった日付を表します。
+   */
   private PrefectureEffectiveDate effectiveDate;
+  /**
+   * 変数 `abolitionDate` は、都道府県が廃止された日付を表します。
+   */
   private PrefectureAbolitionDate abolitionDate;
+  /**
+   * 日本の都道府県に関連する備考を表します。
+   */
   private String remarks;
 
   /**
