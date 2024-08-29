@@ -1,69 +1,82 @@
 package undecided.erp.relationship.domain.model.party.person;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class BirthdayTest {
 
-  @Test
-  void testBirthdayOfNonNullValue() {
-    LocalDate testDate = LocalDate.of(1995, 5, 28);
-    Birthday testBirthday = Birthday.of(testDate);
+  @Nested
+  @DisplayName("Birthdayクラスのofメソッドについて")
+  class OfTest {
 
-    assertThat(testBirthday.value()).isEqualTo(testDate);
+    @DisplayName("NonNullの値が引数の場合")
+    @Test
+    void shouldReturnBirthdayObject() {
+      LocalDate testDate = LocalDate.of(1995, 5, 28);
+      Birthday testBirthday = Birthday.of(testDate);
+
+      assertThat(testBirthday.getValue()).isEqualTo(testDate);
+    }
+
+    @DisplayName("Nullが引数の場合")
+    @Test
+    void shouldReturnBirthdayObjectWithNullValue() {
+      Birthday testBirthday = Birthday.of(null);
+
+      assertThat(testBirthday.getValue()).isNull();
+    }
   }
 
-  @Test
-  void testBirthdayOfNullValue() {
-    Birthday testBirthday = Birthday.of(null);
+  @Nested
+  @DisplayName("BirthdayクラスのdateIntegerメソッドについて")
+  class DateIntegerTest {
 
-    assertThat(testBirthday.value()).isNull();
+    @DisplayName("NonNullの値が引数の場合")
+    @Test
+    void shouldReturnDateIntegerValue() {
+      LocalDate testDate = LocalDate.of(2024, 11, 11);
+      Birthday testBirthday = Birthday.of(testDate);
+
+      assertThat(testBirthday.dateInteger()).isEqualTo(20241111);
+    }
+
+    @DisplayName("Nullが引数の場合")
+    @Test
+    void shouldReturnZeroWhenNullValue() {
+      Birthday testBirthday = Birthday.of(null);
+
+      assertThatThrownBy(() -> {
+        testBirthday.dateInteger();
+
+      }).isInstanceOf(IllegalStateException.class);
+
+    }
   }
 
-  @Test
-  void testReconstructNonNullValue() {
-    LocalDate testDate = LocalDate.of(1995, 5, 28);
-    Birthday testBirthday = Birthday.reconstruct(testDate);
+  @Nested
+  @DisplayName("BirthdayクラスのtoStringメソッドについて")
+  class ToStringTest {
 
-    assertThat(testBirthday.value()).isEqualTo(testDate);
-  }
+    @DisplayName("NonNullの値が引数の場合")
+    @Test
+    void shouldReturnStringValue() {
+      LocalDate testDate = LocalDate.of(1995, 5, 28);
+      Birthday testBirthday = Birthday.of(testDate);
 
-  @Test
-  void testReconstructNullValue() {
-    Birthday testBirthday = Birthday.reconstruct(null);
+      assertThat(testBirthday.toString()).isEqualTo("1995-05-28");
+    }
 
-    assertThat(testBirthday).isEqualTo(Birthday.EMPTY);
-  }
+    @DisplayName("Nullが引数の場合")
+    @Test
+    void shouldReturnNullStringValue() {
+      Birthday testBirthday = Birthday.of(null);
 
-  @Test
-  void testDateIntegerNonNullValue() {
-    LocalDate testDate = LocalDate.of(1995, 5, 28);
-    Birthday testBirthday = Birthday.of(testDate);
-
-    assertThat(testBirthday.dateInteger()).isEqualTo(19950528);
-  }
-
-  @Test
-  void testDateIntegerNullValue() {
-    Birthday testBirthday = Birthday.of(null);
-
-    assertThat(testBirthday.dateInteger()).isNull();
-  }
-
-  @Test
-  void testToStringNonNullValue() {
-    LocalDate testDate = LocalDate.of(1995, 5, 28);
-    Birthday testBirthday = Birthday.of(testDate);
-
-    assertThat(testBirthday.toString()).isEqualTo("1995-05-28");
-  }
-
-  @Test
-  void testToStringNullValue() {
-    Birthday testBirthday = Birthday.of(null);
-
-    assertThat(testBirthday.toString()).isEqualTo("null");
+      assertThat(testBirthday.toString()).isEqualTo("null");
+    }
   }
 }

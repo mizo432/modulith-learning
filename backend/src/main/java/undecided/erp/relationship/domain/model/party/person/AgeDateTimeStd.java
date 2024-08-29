@@ -8,7 +8,7 @@ public record AgeDateTimeStd(Integer value) {
 
   public static AgeDateTimeStd calculateFrom(@NonNull Birthday birthday, @NonNull Today today) {
     return new AgeDateTimeStd(
-        Long.valueOf(ChronoUnit.YEARS.between(birthday.value(), today.value())).intValue());
+        Long.valueOf(ChronoUnit.YEARS.between(birthday.getValue(), today.value())).intValue());
   }
 
 }

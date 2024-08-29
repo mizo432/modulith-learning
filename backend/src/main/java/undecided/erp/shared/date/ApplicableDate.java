@@ -1,6 +1,7 @@
 package undecided.erp.shared.date;
 
 import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.erp.common.verifier.ObjectVerifiers.verifyNotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -102,5 +103,17 @@ public class ApplicableDate {
       ApplicableMonth.empty();
     }
     return ApplicableMonth.of(value.getMonth());
+  }
+
+  /**
+   * 日付をyyyyMMddの形式で整数に変換して返します。
+   *
+   * @return 整数形式の日付
+   * @throws IllegalStateException 値がnullの場合
+   */
+  public int dateInteger() {
+    verifyNotNull(value, () -> new IllegalStateException("value is null"));
+    return value.getYear() * 10000 + value.getMonthValue() * 100 + value.getDayOfMonth();
+
   }
 }
