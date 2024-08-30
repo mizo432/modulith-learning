@@ -16,11 +16,17 @@ public class Employee {
 
   private SnowflakeId id = SnowflakeId.empty();
   private EmployeeNo employeeNo = EmployeeNo.EMPTY;
-  private String firstName;
-  private String lastName;
 
+  /**
+   * 指定されたidと社員番号からEmployeeオブジェクトを再構築します。
+   *
+   * @param id SnowflakeIdオブジェクトを再構築するためのid
+   * @param employeeNo EmployeeNoオブジェクトを再構築するための社員番号
+   * @return 再構築されたEmployeeオブジェクト
+   */
   public static Employee reconstruct(Long id, String employeeNo) {
-    return null;
+    return new Employee(SnowflakeId.reconstruct(id), EmployeeNo.reconstruct(employeeNo));
+
   }
 
   @Override
@@ -28,8 +34,6 @@ public class Employee {
     return "Employee{" +
         "id=" + id +
         ", employeeNo=" + employeeNo +
-        ", firstName='" + firstName + '\'' +
-        ", lastName='" + lastName + '\'' +
         '}';
   }
 
@@ -48,6 +52,6 @@ public class Employee {
   @Override
   public int hashCode() {
     return Objects.hashCode(id);
-    
+
   }
 }
