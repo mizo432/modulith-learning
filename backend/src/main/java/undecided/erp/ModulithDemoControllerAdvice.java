@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller advice for ModulithDemoController.
+ * ModulithDemoControllerのためのコントローラーアドバイス。
  */
 @ControllerAdvice(annotations = {RestController.class})
 public class ModulithDemoControllerAdvice {
