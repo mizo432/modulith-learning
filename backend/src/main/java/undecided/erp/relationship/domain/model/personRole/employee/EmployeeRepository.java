@@ -24,4 +24,8 @@ public interface EmployeeRepository {
    */
   Employee save(Employee employee);
 
+  void insert(Employee employee);
+
+  void update(Employee employee);
+  
 }

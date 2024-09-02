@@ -6,4 +6,7 @@ public interface PartyRepository {
 
   List<Party> findByType(PartyType type);
 
+  void insert(Party party);
+
+  void update(Party party);
 }

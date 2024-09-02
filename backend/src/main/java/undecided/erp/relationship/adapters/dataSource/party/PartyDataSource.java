@@ -19,4 +19,16 @@ public class PartyDataSource implements PartyRepository {
   public List<Party> findByType(PartyType type) {
     return PartyTable.toEntities(partyDao.findByType(type));
   }
+
+  @Override
+  public void insert(Party party) {
+    partyDao.save(PartyTable.toTableRec(party));
+
+  }
+
+  @Override
+  public void update(Party party) {
+    partyDao.save(PartyTable.toTableRec(party));
+
+  }
 }
