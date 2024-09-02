@@ -20,9 +20,6 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.2.0"
-extra["jmoleculesBomVersion"] = "2023.1.2"
-extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.2"
 extra["springDataBomVersion"] = "2024.0.1"
 extra["springCloudBomVersion"] = "2023.0.3"
@@ -32,6 +29,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
 
 }
 
