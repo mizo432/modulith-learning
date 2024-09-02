@@ -30,6 +30,13 @@ repositories {
 }
 
 extra["springModulithVersion"] = "1.2.1"
+extra["springModulithInsightVersion"] = "1.2.3"
+extra["guavaVersion"] = "33.3.0-jre"
+extra["icu4jVersion"] = "74.2"
+extra["yaviVersion"] = "0.14.1"
+extra["jiltVersion"] = "1.6.1"
+extra["jdbcPostgresqlVersion"] = "10.15.2"
+extra["openapiUiVersion"] = "2.3.0"
 extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.3"
@@ -45,7 +52,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.15.2")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:${property("jdbcPostgresqlVersion")}")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa")
     compileOnly("org.projectlombok:lombok")
@@ -60,19 +67,21 @@ dependencies {
     implementation("org.jmolecules:jmolecules-layered-architecture")
     implementation("org.jmolecules:jmolecules-onion-architecture")
     implementation("org.jmolecules:jmolecules-ddd")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
     testImplementation("org.jmolecules.integrations:jmolecules-archunit")
     testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
-    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:1.2.3")
+    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
-    implementation("com.google.guava:guava:33.3.0-jre")
-    implementation("com.ibm.icu:icu4j:74.2")
+    implementation("com.google.guava:guava:${property("guavaVersion")}")
+
+    implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     testRuntimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/am.ik.yavi/yavi
-    implementation("am.ik.yavi:yavi:0.14.1")
-    annotationProcessor("cc.jilt:jilt:1.6.1")
+
+    implementation("am.ik.yavi:yavi:${property("yaviVersion")}")
+    annotationProcessor("cc.jilt:jilt:${property("jiltVersion")}")
     //    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
