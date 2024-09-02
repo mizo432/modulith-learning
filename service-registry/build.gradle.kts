@@ -20,7 +20,6 @@ repositories {
     mavenCentral()
 }
 
-extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.2"
 extra["springDataBomVersion"] = "2024.0.1"
 extra["springCloudBomVersion"] = "2023.0.3"
@@ -29,6 +28,8 @@ dependencies {
 //    <!-- Spring Boot Starter -->
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
 
 }
 
