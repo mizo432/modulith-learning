@@ -37,7 +37,7 @@ public class GatewayServerApplication {
   public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
     return builder.routes()
         .route("backbone", r -> r.path("/backbone/**")
-//            .filters(f -> f.stripPrefix( 1 ))
+            .filters(f -> f.stripPrefix(1))
             .uri("lb://BACKBONE"))
 /*
         .route("service1", r -> r.path("/service1/**")
