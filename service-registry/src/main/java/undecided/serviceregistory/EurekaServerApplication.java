@@ -8,9 +8,10 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
  * これはEureka Serverアプリケーションのメインクラスです。
  * <p>
  * このアプリケーションはNetflix Eurekaを使用してサービスレジストリとして機能します。
- *
- * @SpringBootApplicationアノテーションはこのクラスをSpring Bootアプリケーションとしてマークします。
- * @EnableEurekaServerアノテーションはアプリケーションにEurekaサーバーを有効にします。
+ * <p>
+ * &#064;SpringBootApplicationアノテーションはこのクラスをSpring  Bootアプリケーションとしてマークします。
+ * <p>
+ * &#064;EnableEurekaServerアノテーションはアプリケーションにEurekaサーバーを有効にします。
  */
 @SpringBootApplication
 @EnableEurekaServer
