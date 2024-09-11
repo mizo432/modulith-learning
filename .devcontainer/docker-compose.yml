@@ -28,6 +28,13 @@ services:
       - redis-data:/data
     depends_on:
       - db
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: ${PROJECT_NAME:-default}-zipkin
+    ports:
+      - "9411:9411"
+    depends_on:
+      - service-registry
 
   service-registry:
     container_name: ${PROJECT_NAME:-default}-service-registry

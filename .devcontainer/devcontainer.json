@@ -8,6 +8,9 @@
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {}
 
+  containerEnv: {
+    "TZ": "Asia/Tokyo"
+  },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // This can be used to network with other containers or with the host.
   forwardPorts: [
@@ -15,7 +18,8 @@
     6379,
     8085,
     8080,
-    8761
+    8761,
+    9411
   ],
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "java -version",
