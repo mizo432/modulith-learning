@@ -16,3 +16,9 @@ eureka:
     fetch-registry: false # Eureka のレジストリを取得すできるかどうかを設定します
   environment: production # 環境名
   datacenter: center name # データセンター名
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans,health,env,info,loggers,heapdump,threaddump,metrics,prometheus
