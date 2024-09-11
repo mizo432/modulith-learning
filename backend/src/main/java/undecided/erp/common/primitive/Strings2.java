@@ -518,13 +518,19 @@ public class Strings2 {
     return new String(chars);
   }
 
-  public static int countHalfWidthChars(String value) {
+  /**
+   * 指定された文字列に含まれる半角文字の数をカウントします。
+   *
+   * @param value 半角文字を確認するための入力文字列
+   * @return 入力文字列に含まれる半角文字の数を返します。入力がnullの場合は0を返します。
+   */
+  public static int getHalfWidthCharCount(String value) {
     if (value == null) {
       return 0;
     }
     int count = 0;
     for (char c : value.toCharArray()) {
-      if (c <= '\u007E' || (c >= '\uFF61' && c <= '\uFF9F')) {
+      if (HALF_WIDTH_UNICODE_SET.contains(c)) {
         count++;
       }
     }

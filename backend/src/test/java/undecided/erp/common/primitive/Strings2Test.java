@@ -2,11 +2,42 @@ package undecided.erp.common.primitive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class Strings2Test {
+
+  /**
+   * Method under test: {@link Strings2#getHalfWidthCharCount(String)}
+   */
+  @Nested
+  @DisplayName("getHalfWidthCharCountメソッドのテスト")
+  class GetHalfWidthCharCountTest {
+
+    @Test
+    @DisplayName("半角文字と全角文字が混在する文字列の半角文字数を返す")
+    void shouldReturn2WhenInputIsMixedWidth12３４() {
+      // Arrange, Act and Assert
+      assertEquals(2, Strings2.getHalfWidthCharCount("12３４"));
+    }
+
+    @Test
+    @DisplayName("半角文字のみの文字列の半角文字数を返す")
+    void shouldReturn2WhenInputIsHalfWidth42() {
+      // Arrange, Act and Assert
+      assertEquals(2, Strings2.getHalfWidthCharCount("42"));
+    }
+
+    @Test
+    @DisplayName("入力がnullの場合は0を返す")
+    void shouldReturn0WhenInputIsNull() {
+      // Arrange, Act and Assert
+      assertEquals(0, Strings2.getHalfWidthCharCount(null));
+    }
+  }
 
   /**
    * Method under test: {@link Strings2#ltrim(String)}
@@ -19,50 +50,43 @@ class Strings2Test {
     @Test
     void shouldReturnSameStringWhenTrimValueIsNotFound() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim("Str", "Trim"))
-          .isEqualTo("Str");
+      assertThat(Strings2.ltrim("Str", "Trim")).isEqualTo("Str");
     }
 
     @Test
     void shouldReturnTrimmedStringWhenTrimValueIsFound() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim("TrimTrimStr", "Trim"))
-          .isEqualTo("Str");
+      assertThat(Strings2.ltrim("TrimTrimStr", "Trim")).isEqualTo("Str");
     }
 
     @Test
     void shouldReturnEmptyStringWhenOnlyTrimValueIsPresent() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim("TrimTrim", "Trim"))
-          .isEmpty();
+      assertThat(Strings2.ltrim("TrimTrim", "Trim")).isEmpty();
     }
 
     @Test
     void shouldReturnNullWhenBothArgumentsAreNull() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim(null, null))
-          .isNull();
+      assertThat(Strings2.ltrim(null, null)).isNull();
     }
 
     @Test
     void shouldReturnSameStringWhenTrimValueIsNull() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim("Str", null))
-          .isEqualTo("Str");
+      assertThat(Strings2.ltrim("Str", null)).isEqualTo("Str");
     }
 
     @Test
     void shouldReturnEmptyStringForEmptyInput() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim(Strings2.EMPTY, "Trim"))
-          .isEqualTo(Strings2.EMPTY);
+      assertThat(Strings2.ltrim(Strings2.EMPTY, "Trim")).isEqualTo(Strings2.EMPTY);
     }
 
     @Test
     void shouldReturnEmptyStringWhenRemovingBlanks() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim(Strings2.BLANK, null))
-          .isEqualTo(Strings2.EMPTY);
+      assertThat(Strings2.ltrim(Strings2.BLANK, null)).isEqualTo(Strings2.EMPTY);
     }
 
     @Test
@@ -80,8 +104,7 @@ class Strings2Test {
     @Test
     void shouldReturnEmptyStringForBlankInput() {
       // Arrange, Act and Assert
-      assertThat(Strings2.ltrim(Strings2.BLANK))
-          .isEqualTo(Strings2.EMPTY);
+      assertThat(Strings2.ltrim(Strings2.BLANK)).isEqualTo(Strings2.EMPTY);
     }
   }
 

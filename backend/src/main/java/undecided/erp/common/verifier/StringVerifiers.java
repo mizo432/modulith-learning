@@ -1,6 +1,6 @@
 package undecided.erp.common.verifier;
 
-import static undecided.erp.common.primitive.Strings2.countHalfWidthChars;
+import static undecided.erp.common.primitive.Strings2.getHalfWidthCharCount;
 import static undecided.erp.common.primitive.Strings2.isAllCharacterHalfWidth;
 
 import com.google.common.collect.Range;
@@ -216,7 +216,7 @@ public class StringVerifiers {
       throw exceptionSupplier.get();
 
     }
-    if (countHalfWidthChars(value) != length) {
+    if (getHalfWidthCharCount(value) != length) {
       throw exceptionSupplier.get();
     }
     return value;
