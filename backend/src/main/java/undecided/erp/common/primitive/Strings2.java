@@ -517,4 +517,18 @@ public class Strings2 {
     chars[0] = Character.toLowerCase(chars[0]);
     return new String(chars);
   }
+
+  public static int countHalfWidthChars(String value) {
+    if (value == null) {
+      return 0;
+    }
+    int count = 0;
+    for (char c : value.toCharArray()) {
+      if (c <= '\u007E' || (c >= '\uFF61' && c <= '\uFF9F')) {
+        count++;
+      }
+    }
+    return count;
+  }
+
 }
