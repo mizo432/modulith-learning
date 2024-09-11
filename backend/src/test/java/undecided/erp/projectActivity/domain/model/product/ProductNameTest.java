@@ -20,7 +20,7 @@ class ProductNameTest {
   class OfTest {
 
     @Test
-    @DisplayName("should正常にProductNameオブジェクトが作成される")
+    @DisplayName("正常にProductNameオブジェクトが作成される")
     void shouldCreateProductName() {
       String productCode = "PRODUCT_123";
 
@@ -33,7 +33,7 @@ class ProductNameTest {
     }
 
     @Test
-    @DisplayName("shouldNullPointerException引数が空の場合に例外をスローする")
+    @DisplayName("NullPointerException引数が空の場合に例外をスローする")
     void shouldThrowExceptionWhenValueIsNull() {
       assertThatThrownBy(() -> ProductName.of(null))
           .isInstanceOf(NullPointerException.class)
@@ -41,7 +41,7 @@ class ProductNameTest {
     }
 
     @Test
-    @DisplayName("shouldNullPointerException引数が空の場合に例外をスローする")
+    @DisplayName("NullPointerException引数が空の場合に例外をスローする")
     void shouldThrowExceptionWhenValueIsEmpty() {
       assertThatThrownBy(() -> ProductName.of(""))
           .isInstanceOf(IllegalArgumentException.class)
@@ -67,18 +67,17 @@ class ProductNameTest {
     }
 
     @Test
-    @DisplayName("should正常にProductNameオブジェクトが空でないことを検証")
+    @DisplayName("正常にProductNameオブジェクトが空でないことを検証")
     void shouldValidateProductNameIsNotEmpty() {
-      String productCode = "PRODUCT_123";
 
-      ProductName productName = ProductName.of(productCode);
+      ProductName productName = ProductName.of("PRODUCT_123");
 
       assertThat(productName.isEmpty())
           .isFalse();
     }
 
     @Test
-    @DisplayName("shouldNullPointerException引数がnullの場合に例外をスローする")
+    @DisplayName("NullPointerException引数がnullの場合に例外をスローする")
     void shouldThrowExceptionWhenValueIsNull() {
       assertThatThrownBy(() -> ProductName.of(null).isEmpty())
           .isInstanceOf(NullPointerException.class)
@@ -102,8 +101,8 @@ class ProductNameTest {
     }
 
     @Test
-    @DisplayName("nullが渡されるとNullPointerExceptionがスローされる")
-    void shouldThrowNullPointerExceptionWhenValueIsNull() {
+    @DisplayName("空が渡されるとnull文字列を返す")
+    void shouldNullStringWhenEmpty() {
       assertThat(ProductName.EMPTY.toString()).isEqualTo("null");
     }
   }
