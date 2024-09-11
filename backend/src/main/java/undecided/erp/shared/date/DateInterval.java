@@ -1,22 +1,35 @@
 package undecided.erp.shared.date;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @ToString
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Setter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class DateInterval {
 
-  private final ApplicableDate beginDate;
-  private final ApplicableDate endDate;
+  public static final DateInterval EMPTY = new DateInterval();
 
-  public static DateInterval create(@NonNull ApplicableDate beginDate,
-      @NonNull ApplicableDate endDate) {
+  @JsonProperty
+  private ApplicableDate beginDate = ApplicableDate.EMPTY;
+
+  @JsonProperty
+  private ApplicableDate endDate = ApplicableDate.EMPTY;
+
+  @JsonCreator
+  public static DateInterval create(@JsonProperty("beginDate") @NonNull ApplicableDate beginDate,
+      @JsonProperty("endDate") @NonNull ApplicableDate endDate) {
     return new DateInterval(beginDate, endDate);
   }
 
@@ -25,4 +38,21 @@ public class DateInterval {
     return new DateInterval(beginDate, ApplicableDate.MAX);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    DateInterval that = (DateInterval) o;
+    return Objects.equal(beginDate, that.beginDate)
+        && Objects.equal(endDate, that.endDate);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(beginDate, endDate);
+  }
 }

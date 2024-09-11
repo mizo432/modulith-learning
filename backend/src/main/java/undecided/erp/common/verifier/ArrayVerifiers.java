@@ -1,16 +1,45 @@
 package undecided.erp.common.verifier;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ArrayVerifiers {
 
+  /**
+   * 与えられた配列が空でないことを確認します。
+   * <p>
+   * 配列が空の場合、IllegalArgumentExceptionの種類の例外がスローされます。
+   *
+   * @param array 検証される配列
+   * @param <T> 配列要素の型
+   * @return 非空の場合は同じ配列
+   * @throws IllegalArgumentException 配列が空の場合
+   */
   public static <T> T[] verifyNotEmpty(T[] array) {
+    if (array == null) {
+      return array;
+    }
     return verifyNotEmpty(array, () -> new IllegalArgumentException("Array must not be empty"));
 
   }
 
+  /**
+   * 与えられた配列が空でないことを確認します。
+   *
+   * <p>
+   * 配列が空の場合、指定されたタイプの例外がスローされます。
+   *
+   * @param array 確認対象の配列
+   * @param supplier 配列が空の場合にスローされる例外を提供するサプライヤー
+   * @param <T> 配列要素のタイプ
+   * @return 空でない場合は同じ配列
+   * @throws RuntimeException 配列が空の場合
+   */
   public static <T> T[] verifyNotEmpty(T[] array,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
@@ -100,6 +129,79 @@ public class ArrayVerifiers {
     if (numberOfNonNullElements != 1) {
       throw supplier.get();
     }
+    return array;
+  }
+
+  /**
+   * 与えられた配列の長さを検証します。
+   *
+   * @param array 検証されるべき配列
+   * @param exceptionSupplier 長さが一致しない場合に投げられる例外を提供するサプライヤ
+   * @param size 配列の期待される長さ
+   * @param <O> 配列内の要素の型
+   * @param <E> スローされる例外の型
+   * @return 長さが一致する場合は入力配列
+   * @throws E 配列の長さが期待した長さと一致しない場合
+   */
+  public static <O, E extends RuntimeException> O[] verifyLength(O[] array,
+      @NonNull Supplier<E> exceptionSupplier, int size) {
+    if (isNull(array)) {
+      return null;
+    }
+
+    if (size != array.length) {
+      throw exceptionSupplier.get();
+    }
+    return array;
+  }
+
+  /**
+   * 与えられた配列の長さが指定された最小値よりも長いことを検証します。
+   *
+   * @param array 検証する配列
+   * @param exceptionSupplier 最小値より小さい場合にスローする例外を提供するサプライヤー
+   * @param min 配列の最小長
+   * @param <ValueType> 配列の要素の型
+   * @param <ExceptionType> スローされる例外の型
+   * @return 配列の長さが最小値よりも大きい場合は入力配列
+   * @throws ExceptionType 配列の長さが最小値より大きくない場合
+   */
+  public static <ValueType, ExceptionType extends RuntimeException> ValueType[] verifyLengthGreaterThan(
+      ValueType[] array, @NonNull Supplier<ExceptionType> exceptionSupplier,
+      int min) {
+    if (isNull(array)) {
+      return null;
+    }
+
+    if (array.length <= min) {
+      throw exceptionSupplier.get();
+    }
+
+    return array;
+  }
+
+  /**
+   * 与えられた配列の長さが指定された最小値以上であることを確認します。
+   *
+   * @param array 検証される配列
+   * @param exceptionSupplier 配列の長さが最小値未満の場合に投げられる例外の供給元
+   * @param min 配列の最小長さ
+   * @param <ValueType> 配列内の要素の型
+   * @param <ExceptionType> 投げられる例外の型
+   * @return 配列の長さが最小値以上の場合、入力配列
+   * @throws ExceptionType 配列の長さが最小値未満の場合
+   */
+  public static <ValueType, ExceptionType extends RuntimeException> ValueType[] verifyLengthAtLeast(
+      ValueType[] array, @NonNull Supplier<ExceptionType> exceptionSupplier,
+      int min) {
+    if (isNull(array)) {
+      return null;
+    }
+
+    if (array.length < min) {
+      throw exceptionSupplier.get();
+    }
+
     return array;
   }
 

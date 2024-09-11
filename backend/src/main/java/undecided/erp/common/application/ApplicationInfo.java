@@ -3,6 +3,9 @@ package undecided.erp.common.application;
 import java.util.concurrent.atomic.AtomicReference;
 
 
+/**
+ * ApplicationInfoクラスは、アプリケーション名やサーバーポートなどのアプリケーション情報を保存および取得するために使用されます。
+ */
 public class ApplicationInfo {
 
   private final static AtomicReference<ApplicationInfo> applicationInfo =
@@ -30,7 +33,7 @@ public class ApplicationInfo {
 
   public static void clear() {
     ApplicationInfo.applicationInfo.set(new ApplicationInfo());
-    
+
   }
 
   protected String applicationName() {

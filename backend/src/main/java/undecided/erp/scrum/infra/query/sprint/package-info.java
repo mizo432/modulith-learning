@@ -1,1 +1,0 @@
-package undecided.erp.scrum.infra.query.sprint;

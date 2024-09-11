@@ -1,0 +1,24 @@
+# application.yml
+
+server:
+  port: 8761 # ここに希望するポート番号を設定します
+  shutdown: graceful
+spring:
+  application:
+    name: service-registry # アプリケーションの名前を設定します
+  threads:
+    virtual:
+      enabled: true
+
+eureka:
+  client:
+    register-with-eureka: true # Eurekaに自身(Eureka)を登録します
+    fetch-registry: false # Eureka のレジストリを取得すできるかどうかを設定します
+  environment: production # 環境名
+  datacenter: center name # データセンター名
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans,health,env,info,loggers,heapdump,threaddump,metrics,prometheus

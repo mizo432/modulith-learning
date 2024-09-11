@@ -2,10 +2,12 @@ package undecided.erp.common.verifier;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
 /**
  * ObjectVerifiersクラスはオブジェクトの状態や引数を検証するためのユーティリティメソッドを提供します。
  */
+@UtilityClass
 public class ObjectVerifiers {
 
   /**
@@ -16,11 +18,12 @@ public class ObjectVerifiers {
    * @param <T> オブジェクト参照の型
    * @throws RuntimeException 参照がnullの場合
    */
-  public static <T> void verifyNotNull(T refer,
+  public static <T> T verifyNotNull(T refer,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (refer == null) {
       throw supplier.get();
     }
+    return refer;
   }
 
   /**
@@ -31,10 +34,11 @@ public class ObjectVerifiers {
    * @param <T> オブジェクト参照のタイプ
    * @throws NullPointerException 参照がnullの場合
    */
-  public static <T> void verifyNotNull(T refer, @NonNull String label) {
+  public static <T> T verifyNotNull(T refer, @NonNull String label) {
     if (refer == null) {
       throw new NullPointerException(String.format("%s がnullです。", label));
     }
+    return refer;
   }
 
   /**

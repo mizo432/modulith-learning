@@ -1,0 +1,1 @@
+package undecided.erp.scrum.application.query;

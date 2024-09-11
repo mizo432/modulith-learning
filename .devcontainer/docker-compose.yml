@@ -1,48 +1,79 @@
-version: '3.8'
-
+version: "3.8"
 volumes:
   postgres-data:
+  redis-data:
 
 services:
-
-  # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
-  # (Adding the "ports" property to this file will not forward from a Codespace.)
-
   db:
     container_name: ${PROJECT_NAME:-default}-postgresdb
     image: postgres:16
     restart: unless-stopped
     environment:
-      # NOTE: POSTGRES_DB/USER/PASSWORD should match values in app container
-      POSTGRES_USER: ${POSTGRES_USER:-user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       PGPASSWORD: ${PGPASSWORD:-password123}
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
       TZ: "Asia/Tokyo"
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres/data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
-    # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
+  redis_server:
+    container_name: ${PROJECT_NAME:-default}-redis_server
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    depends_on:
+      - db
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: ${PROJECT_NAME:-default}-zipkin
+    ports:
+      - "9411:9411"
+    depends_on:
+      - service-registry
+
+  service-registry:
+    container_name: ${PROJECT_NAME:-default}-service-registry
+    build:
+      context: ../service-registry
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+  api-gateway:
+    container_name: ${PROJECT_NAME:-default}-api-gateway
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    depends_on:
+      - service-registry
   app:
     container_name: ${PROJECT_NAME:-default}-javadev
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      # NOTE: POSTGRES_DB/USER/PASSWORD should match values in db container
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_HOSTNAME: postgres
-
+    ports:
+      - "8080:8080"
     volumes:
       - ../..:/workspaces:cached
-
-    # Overrides default command so things don't shut down after the process ends.
+    depends_on:
+      - service-registry
+      - db
+      - redis_server
     command: sleep infinity
-
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db

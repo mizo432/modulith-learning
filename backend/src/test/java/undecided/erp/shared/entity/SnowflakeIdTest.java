@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
 import undecided.erp.common.snowflake.StaticSnowflakeIdProvider;
@@ -23,44 +24,76 @@ class SnowflakeIdTest {
 
   }
 
-  @Test
-  void testNewInstance_notNull() {
-    assertThat(SnowflakeId.newInstance()).isNotNull();
+  @Nested
+  class NewInstanceTest {
+
+    @Test
+    void shouldReturnNotNullWhenNewInstance() {
+      assertThat(SnowflakeId.newInstance()).isNotNull();
+
+    }
+
   }
 
-  @Test
-  void testToString_persistency() {
-    SnowflakeId<?> snowflakeId = SnowflakeId.newInstance();
-    assertThat(snowflakeId.toString()).isEqualTo("10");
+  @Nested
+  class ToStringTest {
+
+    @Test
+    void shouldReturnPersistencyWhenToString() {
+      SnowflakeId snowflakeId = SnowflakeId.newInstance();
+      assertThat(snowflakeId.toString()).isEqualTo("10");
+    }
+
   }
 
-  @Test
-  void testEquals_reflexivity() {
-    SnowflakeId<?> snowflakeId = SnowflakeId.newInstance();
-    assertThat(snowflakeId.equals(snowflakeId)).isTrue();
+  @Nested
+  class EqualsTest {
+
+    @Test
+    void shouldReturnFalseWhenEqualsNull() {
+      SnowflakeId snowflakeId = SnowflakeId.newInstance();
+      assertThat(snowflakeId.equals(null)).isFalse();
+    }
+
+    @Test
+    void shouldReturnTrueWhenEqualsReflexivity() {
+      SnowflakeId snowflakeId = SnowflakeId.newInstance();
+      assertThat(snowflakeId.equals(snowflakeId)).isTrue();
+    }
+
+    @Test
+    void shouldReturnTrueWhenEqualsSymmetry() {
+      SnowflakeId snowflakeId1 = SnowflakeId.newInstance();
+      SnowflakeId snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
+      assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
+      assertThat(snowflakeId2.equals(snowflakeId1)).isTrue();
+    }
+
+    @Test
+    void shouldReturnTrueWhenEqualsTransitivity() {
+      SnowflakeId snowflakeId1 = SnowflakeId.newInstance();
+      SnowflakeId snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
+      assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
+      assertThat(snowflakeId2.equals(snowflakeId1)).isTrue();
+    }
+
   }
 
-  @Test
-  void testEquals_symmetry() {
-    SnowflakeId<?> snowflakeId1 = SnowflakeId.newInstance();
-    SnowflakeId<?> snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
-    assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
-    assertThat(snowflakeId2.equals(snowflakeId1)).isTrue();
-  }
+  @Nested
+  class ReconstructTest {
 
-  @Test
-  void testEquals_transitivity() {
-    SnowflakeId<?> snowflakeId1 = SnowflakeId.newInstance();
-    SnowflakeId<?> snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
-    SnowflakeId<?> snowflakeId3 = SnowflakeId.of(snowflakeId1.getValue());
-    assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
-    assertThat(snowflakeId2.equals(snowflakeId3)).isTrue();
-    assertThat(snowflakeId1.equals(snowflakeId3)).isTrue();
-  }
+    @Test
+    void shouldReturnNotNullValueWhenReconstructNotNullValue() {
+      SnowflakeId snowflakeId = SnowflakeId.reconstruct(15L);
+      assertThat(snowflakeId).isNotNull();
+      assertThat(snowflakeId.getValue()).isEqualTo(15L);
+    }
 
-  @Test
-  void testEquals_null() {
-    SnowflakeId<?> snowflakeId = SnowflakeId.newInstance();
-    assertThat(snowflakeId.equals(null)).isFalse();
+    @Test
+    void shouldReturnEmptyWhenReconstructNullValue() {
+      SnowflakeId snowflakeId = SnowflakeId.reconstruct(null);
+      assertThat(snowflakeId).isSameAs(SnowflakeId.EMPTY);
+    }
+
   }
 }

@@ -1,5 +1,7 @@
 package undecided.erp.common.verifier;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -8,21 +10,37 @@ import lombok.NonNull;
 /**
  * SetPreconditionsクラスは、セットに対する前提条件をチェックするメソッドを提供します。
  */
+@NonNull
 public class SetVerifiers {
 
+  /**
+   * 指定されたセットが空でないことを確認します。
+   * <p>
+   * セットが空の場合、指定された例外がスローされます。
+   *
+   * @param set 空でないことを確認するセット（null可能）。
+   * @param <T> セット内の要素の型。
+   * @return セットが空でない場合、元のセットを返します。
+   * @throws IllegalArgumentException セットが空の場合。
+   */
   public static <T> Set<T> verifyNotEmpty(Set<T> set) {
-    return verifyNotEmpty(set, () -> new IllegalArgumentException("List must not be empty"));
+    if (set == null) {
+      return set;
+    }
+    return verifyNotEmpty(set, () -> new IllegalArgumentException("Set must not be empty"));
 
   }
 
   /**
-   * 指定されたセットが空でないことを確認します。 セットがnullまたは空の場合、指定された例外がスローされます。
+   * 指定されたセットが空でないことを確認します。
+   * <p>
+   * セットが空の場合、指定された例外がスローされます。
    *
    * @param set 空でないことを確認するセット（null可能）。
    * @param supplier セットが空の場合にスローされる例外の供給者（非null）。
    * @param <T> セット内の要素のタイプ。
    * @return セットが空でない場合は元のセット。
-   * @throws RuntimeException セットがnullまたは空の場合。
+   * @throws RuntimeException セットが空の場合。
    */
   public static <T> Set<T> verifyNotEmpty(Set<T> set,
       @NonNull Supplier<? extends RuntimeException> supplier) {
@@ -91,4 +109,29 @@ public class SetVerifiers {
     }
     return set;
   }
+
+  /**
+   * 指定されたセットのサイズを検証します。
+   *
+   * @param <SetElementType> セット内の要素の型
+   * @param <ExceptionType> 期待したサイズでない場合にスローされる例外の型
+   * @param providedSet 検証対象のセット（null可能）
+   * @param exceptionSupplier 期待したサイズでない場合にスローされる例外の供給者（null非許容）
+   * @param expectedSize セットの期待されるサイズ
+   * @return サイズが期待通りの場合は提供されたセットが返されます
+   * @throws RuntimeException セットのサイズが期待したものでない場合
+   */
+  public static <SetElementType, ExceptionType extends RuntimeException> Set<SetElementType> verifySize(
+      Set<SetElementType> providedSet, @NonNull Supplier<ExceptionType> exceptionSupplier,
+      int expectedSize) {
+    if (isNull(providedSet)) {
+      return null;
+    }
+
+    if (expectedSize != providedSet.size()) {
+      throw exceptionSupplier.get();
+    }
+    return providedSet;
+  }
+
 }
