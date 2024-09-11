@@ -517,4 +517,24 @@ public class Strings2 {
     chars[0] = Character.toLowerCase(chars[0]);
     return new String(chars);
   }
+
+  /**
+   * 指定された文字列に含まれる半角文字の数をカウントします。
+   *
+   * @param value 半角文字を確認するための入力文字列
+   * @return 入力文字列に含まれる半角文字の数を返します。入力がnullの場合は0を返します。
+   */
+  public static int getHalfWidthCharCount(String value) {
+    if (value == null) {
+      return 0;
+    }
+    int count = 0;
+    for (char c : value.toCharArray()) {
+      if (HALF_WIDTH_UNICODE_SET.contains(c)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
 }

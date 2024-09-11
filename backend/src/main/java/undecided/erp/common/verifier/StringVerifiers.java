@@ -1,5 +1,8 @@
 package undecided.erp.common.verifier;
 
+import static undecided.erp.common.primitive.Strings2.getHalfWidthCharCount;
+import static undecided.erp.common.primitive.Strings2.isAllCharacterHalfWidth;
+
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
@@ -209,7 +212,11 @@ public class StringVerifiers {
     if (value == null) {
       return value;
     }
-    if (Strings2.length(value) != length) {
+    if (!isAllCharacterHalfWidth(value)) {
+      throw exceptionSupplier.get();
+
+    }
+    if (getHalfWidthCharCount(value) != length) {
       throw exceptionSupplier.get();
     }
     return value;
