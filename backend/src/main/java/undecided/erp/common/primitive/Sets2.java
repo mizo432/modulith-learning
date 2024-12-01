@@ -1,7 +1,7 @@
 package undecided.erp.common.primitive;
 
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.verifier.ObjectVerifiers.verifyNotNull;
+import static undecided.erp.common.precondition.ObjectVerifiers.verifyNotNull;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.AbstractSet;
@@ -67,94 +67,6 @@ public class Sets2 {
    */
   public static <T> Stream<@NonNull T> stream(@NonNull Set<T> set) {
     return set.stream();
-
-  }
-
-  /**
-   * SetViewクラスは、セットを操作するための種々の操作を提供するセットのビューを表します。
-   * <p>
-   * これはAbstractSetクラスを拡張し、セットでの作業用のユーティリティメソッドを提供します。
-   *
-   * @param <E> セット内の要素の型
-   */
-  public abstract static class SetView<E> extends AbstractSet<E> {
-
-    private SetView() {
-    }
-
-    @SuppressWarnings("nullness") // Unsafe, but we can't fix it now.
-    public ImmutableSet<E> immutableCopy() {
-      return ImmutableSet.copyOf(this);
-    }
-
-    @CanIgnoreReturnValue
-    public <S extends Set<E>> S copyInto(S set) {
-      set.addAll(this);
-      return set;
-    }
-
-    @CanIgnoreReturnValue
-    @Deprecated
-    @Override
-    @DoNotCall("Always throws UnsupportedOperationException")
-    public final boolean add(E e) {
-      throw new UnsupportedOperationException();
-    }
-
-    @CanIgnoreReturnValue
-    @Deprecated
-    @Override
-    @DoNotCall("Always throws UnsupportedOperationException")
-    public final boolean remove(@NonNull Object object) {
-      throw new UnsupportedOperationException();
-    }
-
-    @CanIgnoreReturnValue
-    @Deprecated
-    @Override
-    @DoNotCall("Always throws UnsupportedOperationException")
-    public final boolean addAll(Collection<? extends E> newElements) {
-      throw new UnsupportedOperationException();
-    }
-
-    @CanIgnoreReturnValue
-    @Deprecated
-    @Override
-    @DoNotCall("Always throws UnsupportedOperationException")
-    public final boolean removeAll(Collection<?> oldElements) {
-      throw new UnsupportedOperationException();
-    }
-
-    @CanIgnoreReturnValue
-    @Deprecated
-    @Override
-    @DoNotCall("Always throws UnsupportedOperationException")
-    public final boolean removeIf(java.util.function.Predicate<? super E> filter) {
-      throw new UnsupportedOperationException();
-    }
-
-    @CanIgnoreReturnValue
-    @Deprecated
-    @Override
-    @DoNotCall("Always throws UnsupportedOperationException")
-    public final boolean retainAll(Collection<?> elementsToKeep) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Deprecated
-    @Override
-    @DoNotCall("Always throws UnsupportedOperationException")
-    public final void clear() {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public abstract UnmodifiableIterator<E> iterator();
-
-    @Override
-    public int size() {
-      return 0;
-    }
 
   }
 
@@ -283,5 +195,93 @@ public class Sets2 {
 
       }
     };
+  }
+
+  /**
+   * SetViewクラスは、セットを操作するための種々の操作を提供するセットのビューを表します。
+   * <p>
+   * これはAbstractSetクラスを拡張し、セットでの作業用のユーティリティメソッドを提供します。
+   *
+   * @param <E> セット内の要素の型
+   */
+  public abstract static class SetView<E> extends AbstractSet<E> {
+
+    private SetView() {
+    }
+
+    @SuppressWarnings("nullness") // Unsafe, but we can't fix it now.
+    public ImmutableSet<E> immutableCopy() {
+      return ImmutableSet.copyOf(this);
+    }
+
+    @CanIgnoreReturnValue
+    public <S extends Set<E>> S copyInto(S set) {
+      set.addAll(this);
+      return set;
+    }
+
+    @CanIgnoreReturnValue
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final boolean add(E e) {
+      throw new UnsupportedOperationException();
+    }
+
+    @CanIgnoreReturnValue
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final boolean remove(@NonNull Object object) {
+      throw new UnsupportedOperationException();
+    }
+
+    @CanIgnoreReturnValue
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final boolean addAll(Collection<? extends E> newElements) {
+      throw new UnsupportedOperationException();
+    }
+
+    @CanIgnoreReturnValue
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final boolean removeAll(Collection<?> oldElements) {
+      throw new UnsupportedOperationException();
+    }
+
+    @CanIgnoreReturnValue
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final boolean removeIf(java.util.function.Predicate<? super E> filter) {
+      throw new UnsupportedOperationException();
+    }
+
+    @CanIgnoreReturnValue
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final boolean retainAll(Collection<?> elementsToKeep) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final void clear() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public abstract UnmodifiableIterator<E> iterator();
+
+    @Override
+    public int size() {
+      return 0;
+    }
+
   }
 }

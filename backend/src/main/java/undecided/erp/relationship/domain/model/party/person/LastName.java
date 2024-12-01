@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import undecided.erp.common.verifier.StringVerifiers;
+import undecided.erp.common.precondition.StringVerifiers;
 
 @EqualsAndHashCode
 @Getter

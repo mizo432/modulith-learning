@@ -1,11 +1,11 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.verifier.ArrayVerifiers.verifyAllElementNotNull;
-import static undecided.erp.common.verifier.ArrayVerifiers.verifyLengthAtLeast;
+import static undecided.erp.common.precondition.ArrayVerifiers.verifyAllElementNotNull;
+import static undecided.erp.common.precondition.ArrayVerifiers.verifyLengthAtLeast;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
-import undecided.erp.common.verifier.IndexedRuntimeException;
+import undecided.erp.common.precondition.IndexedRuntimeException;
 
 /**
  * This class provides utility methods for working with enums.

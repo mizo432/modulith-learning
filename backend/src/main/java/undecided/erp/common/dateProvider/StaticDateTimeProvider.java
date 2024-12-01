@@ -24,8 +24,15 @@ public class StaticDateTimeProvider extends DateProvider {
   public static void initialize(LocalDateTime localDateTime) {
     StaticDateTimeProvider instance = new StaticDateTimeProvider();
     instance.setLocalDateTime(localDateTime);
-    setDateProvider(instance);
+    new DateProvider(instance);
 
+  }
+
+  /**
+   * DateProviderを初期化することでクリアします。
+   */
+  public static void clear() {
+    DateProvider.clear();
 
   }
 
@@ -37,14 +44,6 @@ public class StaticDateTimeProvider extends DateProvider {
   @Override
   protected LocalDateTime now() {
     return localDateTime.get();
-
-  }
-
-  /**
-   * DateProviderを初期化することでクリアします。
-   */
-  public static void clear() {
-    DateProvider.initialize();
 
   }
 

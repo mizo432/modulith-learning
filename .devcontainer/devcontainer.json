@@ -8,12 +8,12 @@
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {}
 
-  containerEnv: {
+  "containerEnv": {
     "TZ": "Asia/Tokyo"
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // This can be used to network with other containers or with the host.
-  forwardPorts: [
+  "forwardPorts": [
     5432,
     6379,
     8085,

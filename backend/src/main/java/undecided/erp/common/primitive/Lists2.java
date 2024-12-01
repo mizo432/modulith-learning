@@ -1,8 +1,8 @@
 package undecided.erp.common.primitive;
 
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.verifier.IntegerVerifiers.verifyPositiveOrZero;
-import static undecided.erp.common.verifier.ObjectVerifiers.verifyNotNull;
+import static undecided.erp.common.precondition.IntegerVerifiers.verifyPositiveOrZero;
+import static undecided.erp.common.precondition.ObjectVerifiers.verifyNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -16,34 +16,15 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class DateProvider {
 
-  private static final AtomicReference<DateProvider> dateProvider = new AtomicReference<>(
+  private static final AtomicReference<DateProvider> DATE_PROVIDER = new AtomicReference<>(
       new DateProvider());
 
-  DateProvider() {
+  protected DateProvider() {
 
   }
 
   protected DateProvider(DateProvider dateProvider) {
-    DateProvider.setDateProvider(dateProvider);
-
-  }
-
-  /**
-   * 現在の日付と時刻を取得するための DateProvider を設定します。
-   *
-   * @param aDateProvider 設定する DateProvider
-   */
-  public static void setDateProvider(DateProvider aDateProvider) {
-    DateProvider.dateProvider.set(aDateProvider);
-  }
-
-  /**
-   * DateProviderオブジェクトを初期化します。
-   * <p>
-   * このメソッドは、新しいDateProviderのインスタンスで現在の日付プロバイダを設定します。
-   */
-  static void initialize() {
-    DateProvider.dateProvider.set(new DateProvider());
+    DATE_PROVIDER.set(dateProvider);
 
   }
 
@@ -53,7 +34,7 @@ public class DateProvider {
    * @return 現在のLocalDateTime
    */
   public static LocalDateTime currentLocalDateTime() {
-    return DateProvider.dateProvider.get().now();
+    return DATE_PROVIDER.get().now();
   }
 
   /**
@@ -62,7 +43,7 @@ public class DateProvider {
    * @return 現在の日付と時刻
    * @deprecated {@link #currentLocalDateTime()} メソッドを使用してください。
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static Date currentDate() {
     ZonedDateTime zdt = currentLocalDateTime().atZone(ZoneId.systemDefault());
     return Date.from(zdt.toInstant());
@@ -111,8 +92,15 @@ public class DateProvider {
 
   }
 
+  /**
+   * Resets the DateProvider instance to its default state.
+   * <p>
+   * This method calls the initialize method to replace the current DateProvider instance with a new
+   * instance, effectively clearing any customized date provider settings and reverting to the
+   * default behavior.
+   */
   public static void clear() {
-    DateProvider.initialize();
+    DATE_PROVIDER.set(new DateProvider());
   }
 
   /**
@@ -124,6 +112,11 @@ public class DateProvider {
     return MonthDay.from(currentLocalDateTime());
   }
 
+  /**
+   * Returns the current date and time as a LocalDateTime object.
+   *
+   * @return the current LocalDateTime
+   */
   protected LocalDateTime now() {
     return LocalDateTime.now();
   }

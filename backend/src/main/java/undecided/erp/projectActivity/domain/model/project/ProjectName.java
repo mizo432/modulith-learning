@@ -1,7 +1,7 @@
 package undecided.erp.projectActivity.domain.model.project;
 
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.verifier.StringVerifiers.verifyNonEmpty;
+import static undecided.erp.common.precondition.StringVerifiers.verifyNonEmpty;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

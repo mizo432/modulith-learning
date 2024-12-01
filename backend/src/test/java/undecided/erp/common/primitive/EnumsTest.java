@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import undecided.erp.common.verifier.IndexedRuntimeException;
+import undecided.erp.common.precondition.IndexedRuntimeException;
 
 enum TestEnum {
   VALUE1,

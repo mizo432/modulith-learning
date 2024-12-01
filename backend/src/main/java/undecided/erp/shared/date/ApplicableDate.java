@@ -1,7 +1,7 @@
 package undecided.erp.shared.date;
 
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.verifier.ObjectVerifiers.verifyNotNull;
+import static undecided.erp.common.precondition.ObjectVerifiers.verifyNotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import undecided.erp.common.dateProvider.DateProvider;
-import undecided.erp.common.verifier.LocalDateVerifiers;
+import undecided.erp.common.precondition.LocalDateVerifiers;
 
 @Getter
 @Setter

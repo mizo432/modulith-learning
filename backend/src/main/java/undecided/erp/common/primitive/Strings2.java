@@ -6,7 +6,7 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 import com.ibm.icu.lang.UCharacter;
 import com.ibm.icu.lang.UProperty;
 import com.ibm.icu.text.UnicodeSet;
-import undecided.erp.common.verifier.IntegerVerifiers;
+import undecided.erp.common.precondition.IntegerVerifiers;
 
 /**
  * This class provides utility methods for handling strings.

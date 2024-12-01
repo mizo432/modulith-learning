@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import undecided.erp.common.verifier.EnumVerifiers;
+import undecided.erp.common.precondition.EnumVerifiers;
 import undecided.erp.relationship.domain.model.personRole.actor.Actor;
 import undecided.erp.scrum.domain.model.feature.Feature;
 import undecided.erp.scrum.domain.model.userStory.task.Task;
@@ -18,6 +18,49 @@ import undecided.erp.shared.entity.SnowflakeId;
 @Getter
 @RequiredArgsConstructor
 public class UserStory {
+
+  private final SnowflakeId<UserStory> id;
+  private final SnowflakeId<Actor> actorId;
+  private final String title;
+  private final BusinessValue businessValue = BusinessValue.EMPTY;
+  private final String acceptanceCriteria;
+  private final Integer priority;
+  private final StoryPoint storyPoint = StoryPoint.EMPTY;
+  private final UserStoryStatus status;
+  /** スプリント開始時点のビジネス価値 */
+  private final BusinessValue plannedBusinessValue = BusinessValue.EMPTY;
+  /** ユーザーストーリー終了時点のビジネス価値 */
+  private final BusinessValue completedBusinessValue = BusinessValue.EMPTY;
+  /** スプリント開始時点のストーリーポイント */
+  private final StoryPoint plannedStoryPoint = StoryPoint.EMPTY;
+  /** ユーザーストーリー終了時点のストーリーポイント */
+  private final StoryPoint completedStoryPoint = StoryPoint.EMPTY;
+  private Actor actor;
+  private String description;
+  private String comments;
+  private Feature feature;
+  private List<Task> tasks;
+  private StoryType storyType;
+  public UserStory() {
+    this.status = UserStoryStatus.VALUE;
+    this.id = null;
+    this.actorId = null;
+    this.title = null;
+    this.acceptanceCriteria = null;
+    this.priority = null;
+
+  }
+
+  public boolean isCompleted() {
+    return status == UserStoryStatus.DONE;
+  }
+
+  public UserStory turnToReady() {
+    EnumVerifiers.verifyContains(status, UserStoryStatus.turnableReady(),
+        () -> new IllegalStateException(""));
+    return new UserStory(id, actorId, title, acceptanceCriteria, priority, UserStoryStatus.READY);
+
+  }
 
   public enum UserStoryStatus {
     ICEBOX,
@@ -48,50 +91,6 @@ public class UserStory {
     StoryType(String description) {
       this.description = description;
     }
-  }
-
-  private final SnowflakeId<UserStory> id;
-  private final SnowflakeId<Actor> actorId;
-  private Actor actor;
-  private final String title;
-  private String description;
-  private final BusinessValue businessValue = BusinessValue.EMPTY;
-  private final String acceptanceCriteria;
-  private final Integer priority;
-  private final StoryPoint storyPoint = StoryPoint.EMPTY;
-  private final UserStoryStatus status;
-  private String comments;
-  private Feature feature;
-  private List<Task> tasks;
-  private StoryType storyType;
-  /** スプリント開始時点のビジネス価値 */
-  private final BusinessValue plannedBusinessValue = BusinessValue.EMPTY;
-  /** ユーザーストーリー終了時点のビジネス価値 */
-  private final BusinessValue completedBusinessValue = BusinessValue.EMPTY;
-  /** スプリント開始時点のストーリーポイント */
-  private final StoryPoint plannedStoryPoint = StoryPoint.EMPTY;
-  /** ユーザーストーリー終了時点のストーリーポイント */
-  private final StoryPoint completedStoryPoint = StoryPoint.EMPTY;
-
-  public UserStory() {
-    this.status = UserStoryStatus.VALUE;
-    this.id = null;
-    this.actorId = null;
-    this.title = null;
-    this.acceptanceCriteria = null;
-    this.priority = null;
-
-  }
-
-  public boolean isCompleted() {
-    return status == UserStoryStatus.DONE;
-  }
-
-  public UserStory turnToReady() {
-    EnumVerifiers.verifyContains(status, UserStoryStatus.turnableReady(),
-        () -> new IllegalStateException(""));
-    return new UserStory(id, actorId, title, acceptanceCriteria, priority, UserStoryStatus.READY);
-
   }
 
 

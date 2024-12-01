@@ -2,7 +2,7 @@ package undecided.erp.scrum.domain.model.sprint;
 
 import com.ibm.icu.util.LocaleData;
 import java.util.EnumSet;
-import undecided.erp.common.verifier.EnumVerifiers;
+import undecided.erp.common.precondition.EnumVerifiers;
 import undecided.erp.scrum.domain.model.userStory.BusinessValue;
 import undecided.erp.scrum.domain.model.userStory.StoryPoint;
 import undecided.erp.scrum.domain.model.userStory.UserStory;
@@ -43,23 +43,6 @@ public record Sprint(
     StoryPoint plannedStoryPoint,
     BusinessValue completedBusinessValue,
     BusinessValue plannedBusinessValue) {
-
-  /**
-   * SprintStatus列挙型は、スプリントの可能なステータスを表します。
-   */
-  public enum SprintStatus {
-    WAITING,
-    IN_PROGRESS,
-    COMPLETE;
-
-    public static EnumSet<SprintStatus> completableStatus() {
-      return EnumSet.of(IN_PROGRESS);
-    }
-
-    public static EnumSet<SprintStatus> beginableStatus() {
-      return EnumSet.of(WAITING);
-    }
-  }
 
   public Sprint startSprint() {
     EnumVerifiers.verifyContains(status, SprintStatus.beginableStatus(),
@@ -106,5 +89,22 @@ public record Sprint(
           "Cannot get completed story points for an incomplete sprint");
     }
     return completedStoryPoint;
+  }
+
+  /**
+   * SprintStatus列挙型は、スプリントの可能なステータスを表します。
+   */
+  public enum SprintStatus {
+    WAITING,
+    IN_PROGRESS,
+    COMPLETE;
+
+    public static EnumSet<SprintStatus> completableStatus() {
+      return EnumSet.of(IN_PROGRESS);
+    }
+
+    public static EnumSet<SprintStatus> beginableStatus() {
+      return EnumSet.of(WAITING);
+    }
   }
 }

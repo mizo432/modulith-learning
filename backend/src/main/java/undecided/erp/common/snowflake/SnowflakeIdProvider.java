@@ -9,7 +9,7 @@ import undecided.erp.common.dateProvider.DateProvider;
  */
 public class SnowflakeIdProvider {
 
-  private final static AtomicReference<SnowflakeIdProvider> snowflakeIdProvider =
+  private final static AtomicReference<SnowflakeIdProvider> SNOWFLAKE_ID_PROVIDER =
       new AtomicReference<>(new SnowflakeIdProvider());
 
   /**
@@ -30,25 +30,18 @@ public class SnowflakeIdProvider {
    */
   private static final Long EPOCH = 1609459200000L;
   /**
-   * The MAX_WORKER_ID variable represents the maximum value allowed for the worker ID in the
-   * Snowflake ID generation algorithm.
-   */
-  private static final long MAX_WORKER_ID = 1023L;
-
-  /**
-   * Represents the unique ID of a worker.
-   */
-  private final long workerId;
-  /**
    *
    */
   private static long sequence = 0L;
-
   /**
    * lastTimestampという変数は、ユニークなID生成に使用されるSnowflakeアルゴリズムに基づいた 最後のタイムスタンプ（ミリ秒単位）を表します。
    * 初期値は-62167252739000Lです。 IDが生成されるたびにlastTimestampの値は更新されます。
    */
   private static long lastTimestamp = -62167252739000L;
+  /**
+   * Represents the unique ID of a worker.
+   */
+  private final long workerId;
 
   public SnowflakeIdProvider() {
     workerId = NodeIdProvider.getNodeId();
@@ -58,12 +51,29 @@ public class SnowflakeIdProvider {
   public SnowflakeIdProvider(SnowflakeIdProvider snowflakeIdProvider) {
     workerId = NodeIdProvider.getNodeId();
 
-    SnowflakeIdProvider.snowflakeIdProvider.set(snowflakeIdProvider);
+    SNOWFLAKE_ID_PROVIDER.set(snowflakeIdProvider);
 
   }
 
-  protected static void setSnowflakeIdProvider(SnowflakeIdProvider snowflakeIdProvider) {
-    SnowflakeIdProvider.snowflakeIdProvider.set(snowflakeIdProvider);
+  /**
+   * Snowflakeアルゴリズムに基づいて一意のIDを生成します。
+   *
+   * @return 生成された一意のID。
+   * @throws RuntimeException 時計が後ろ向きに動く場合。
+   */
+  public static long generateId() {
+    return SnowflakeIdProvider.SNOWFLAKE_ID_PROVIDER.get().snowflakeId();
+
+  }
+
+  /**
+   * このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。
+   */
+  public static void clear() {
+    lastTimestamp = -62167252739000L;
+    DateProvider.clear();
+    NodeIdProvider.clear();
+    SNOWFLAKE_ID_PROVIDER.set(new SnowflakeIdProvider());
 
   }
 
@@ -95,17 +105,6 @@ public class SnowflakeIdProvider {
   }
 
   /**
-   * Snowflakeアルゴリズムに基づいて一意のIDを生成します。
-   *
-   * @return 生成された一意のID。
-   * @throws RuntimeException 時計が後ろ向きに動く場合。
-   */
-  public static long generateId() {
-    return SnowflakeIdProvider.snowflakeIdProvider.get().snowflakeId();
-
-  }
-
-  /**
    * このメソッドは、現在のシステム時間を続けてチェックし、それが最後のタイムスタンプよりも大きくなるまで次のミリ秒タイムスタンプを計算します。
    *
    * @param lastTimestamp 前回のタイムスタンプ（ミリ秒）。
@@ -117,16 +116,5 @@ public class SnowflakeIdProvider {
       timestamp = System.currentTimeMillis();
     }
     return timestamp;
-  }
-
-  /**
-   * このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。
-   */
-  public static void clear() {
-    lastTimestamp = -62167252739000L;
-    DateProvider.clear();
-    NodeIdProvider.clear();
-    snowflakeIdProvider.set(new SnowflakeIdProvider());
-
   }
 }

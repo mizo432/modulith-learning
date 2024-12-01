@@ -6,14 +6,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import undecided.erp.common.snowflake.FixedSnowflakeIdProvider;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
-import undecided.erp.common.snowflake.StaticSnowflakeIdProvider;
 
 class SnowflakeIdTest {
 
   @BeforeEach
   void setUo() {
-    StaticSnowflakeIdProvider.initialize(10L);
+    FixedSnowflakeIdProvider.initialize(10L);
     ;
 
   }

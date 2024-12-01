@@ -1,7 +1,7 @@
 package undecided.erp.common.primitive;
 
 import static undecided.erp.common.primitive.NullnessCasts.uncheckedCastNullableTToT;
-import static undecided.erp.common.verifier.ObjectVerifiers.verifyState;
+import static undecided.erp.common.precondition.ObjectVerifiers.verifyState;
 
 import java.util.NoSuchElementException;
 import undecided.erp.common.annotation.CanIgnoreReturnValue;
@@ -9,21 +9,10 @@ import undecided.erp.common.annotation.CanIgnoreReturnValue;
 public abstract class AbstractIterator<T> extends UnmodifiableIterator<T> {
 
   private State state = State.NOT_READY;
+  private T next;
 
   protected AbstractIterator() {
   }
-
-  private enum State {
-    READY,
-
-    NOT_READY,
-
-    DONE,
-
-    FAILED,
-  }
-
-  private T next;
 
   protected abstract T computeNext();
 
@@ -71,5 +60,15 @@ public abstract class AbstractIterator<T> extends UnmodifiableIterator<T> {
       throw new NoSuchElementException();
     }
     return uncheckedCastNullableTToT(next);
+  }
+
+  private enum State {
+    READY,
+
+    NOT_READY,
+
+    DONE,
+
+    FAILED,
   }
 }

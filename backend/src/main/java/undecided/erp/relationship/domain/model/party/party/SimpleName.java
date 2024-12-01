@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NonNull;
-import undecided.erp.common.verifier.StringVerifiers;
+import undecided.erp.common.precondition.StringVerifiers;
 
 @Getter
 public class SimpleName {

@@ -4,7 +4,7 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
-import undecided.erp.common.verifier.LongVerifiers;
+import undecided.erp.common.precondition.LongVerifiers;
 
 /**
  * インターフェース LongValue は、Long 型の単一の値を表します。

@@ -10,7 +10,7 @@ buildscript {
 }
 plugins {
     java
-    id("org.springframework.boot") version "3.3.3"
+    id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.4"
     id("org.flywaydb.flyway") version "10.15.2"
 }
@@ -20,7 +20,11 @@ version = "0.0.1-SNAPSHOT"
 java {
 
 }
-
+tasks {
+    withType<JavaCompile> {
+        options.compilerArgs.add("-Xlint:unchecked")
+    }
+}
 configurations.compileOnly {
     extendsFrom(configurations.annotationProcessor.get())
 }
@@ -29,8 +33,8 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.2.1"
-extra["springModulithInsightVersion"] = "1.2.3"
+extra["springModulithVersion"] = "1.3.0"
+extra["springModulithInsightVersion"] = "1.3.0"
 extra["guavaVersion"] = "33.3.0-jre"
 extra["icu4jVersion"] = "74.2"
 extra["yaviVersion"] = "0.14.1"
@@ -41,7 +45,7 @@ extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.3"
 extra["springDataBomVersion"] = "2024.0.1"
-extra["springCloudBomVersion"] = "2023.0.3"
+extra["springCloudBomVersion"] = "2023.0.4"
 extra["spotbugsAnnotationVersion"] = "4.8.4"
 extra["libphonenumberVersion"] = "8.13.43"
 

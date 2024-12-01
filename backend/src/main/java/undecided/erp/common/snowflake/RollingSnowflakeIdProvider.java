@@ -27,8 +27,15 @@ public class RollingSnowflakeIdProvider extends SnowflakeIdProvider {
     if (snowflakeIds.length == 0) {
       throw new IllegalArgumentException("Snowflake IDs must not be empty");
     }
-    SnowflakeIdProvider.setSnowflakeIdProvider(
-        new RollingSnowflakeIdProvider(Arrays.asList(snowflakeIds)));
+    new SnowflakeIdProvider(new RollingSnowflakeIdProvider(Arrays.asList(snowflakeIds)));
+
+  }
+
+  /**
+   * このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。
+   */
+  public static void clear() {
+    SnowflakeIdProvider.clear();
 
   }
 
@@ -47,14 +54,6 @@ public class RollingSnowflakeIdProvider extends SnowflakeIdProvider {
       index++;
     }
     return result;
-
-  }
-
-  /**
-   * このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。
-   */
-  public static void clear() {
-    SnowflakeIdProvider.clear();
 
   }
 }

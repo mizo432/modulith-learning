@@ -27,6 +27,9 @@ RUN gradle clean build --refresh-dependencies -x test > build.log 2>&1 || (cat b
 # JARファイルの名前を環境変数として設定
 ENV JAR_FILE="api-gateway-0.0.1-SNAPSHOT.jar"
 
+# デバッグ用のエントリポイント
+RUN echo "Listing build/libs directory:" && ls -l build/libs
+
 # ポートを公開
 EXPOSE 8085
 

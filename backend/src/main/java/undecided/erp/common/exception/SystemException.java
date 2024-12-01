@@ -22,15 +22,14 @@ public class SystemException extends RuntimeException implements
   private final String code;
 
   /**
-   * Constructor
+   * コンストラクタ
    * <p>
-   * {@link ExceptionCodeProvider}, message to be displayed and underlying cause of exception can be
-   * specified.
+   * {@link ExceptionCodeProvider}、表示されるメッセージ、および例外の根本原因を指定できます。
    * </p>
    *
-   * @param code ExceptionCode {@link ExceptionCodeProvider}
-   * @param message message to be displayed
-   * @param cause underlying cause of exception
+   * @param code 例外コード {@link ExceptionCodeProvider}
+   * @param message 表示されるメッセージ
+   * @param cause 例外の根本原因
    */
   public SystemException(String code, String message, Throwable cause) {
     super(message, cause);
@@ -38,13 +37,13 @@ public class SystemException extends RuntimeException implements
   }
 
   /**
-   * Constructor<br>
+   * コンストラクタ
    * <p>
-   * {@link ExceptionCodeProvider}, message to be displayed can be specified.
+   * {@link ExceptionCodeProvider} と表示されるメッセージを指定できます。
    * </p>
    *
-   * @param code ExceptionCode {@link ExceptionCodeProvider}
-   * @param message message to be displayed
+   * @param code 例外コード {@link ExceptionCodeProvider}
+   * @param message 表示されるメッセージ
    */
   public SystemException(String code, String message) {
     super(message);
@@ -52,22 +51,29 @@ public class SystemException extends RuntimeException implements
   }
 
   /**
-   * Constructor<br>
+   * コンストラクタ
    * <p>
-   * {@link ExceptionCodeProvider} and underlying cause of exception can be specified.
+   * {@link ExceptionCodeProvider} と例外の原因を指定することができます。
    * </p>
    *
-   * @param code ExceptionCode {@link ExceptionCodeProvider}
-   * @param cause underlying cause of exception
+   * @param code 例外コード {@link ExceptionCodeProvider}
+   * @param cause 例外の原因となる要素
    */
   public SystemException(String code, Throwable cause) {
     super(cause);
     this.code = code;
   }
 
+  
+  /**
+   * Retrieves the exception code associated with the system exception.
+   *
+   * @return the exception code as a String
+   */
   @Override
   public String getCode() {
     return code;
+
   }
 
 }
