@@ -1,13 +1,12 @@
 package undecided.erp.relationship.domain.model.orgRole.company;
 
-import undecided.erp.common.exception.BusinessException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import undecided.erp.common.exception.BusinessException;
 
 @DisplayName("CompanyCodeクラスのテスト")
 class CompanyCodeTest {
@@ -39,7 +38,8 @@ class CompanyCodeTest {
       // When / Then
       assertThatThrownBy(() -> CompanyCode.of(nullCode))
           .isInstanceOf(BusinessException.class)
-          .hasMessage("Company code cannot be null");
+          .hasMessage(
+              "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=Company code cannot be null]]]");
     }
 
     @Test
@@ -51,7 +51,8 @@ class CompanyCodeTest {
       // When / Then
       assertThatThrownBy(() -> CompanyCode.of(emptyCode))
           .isInstanceOf(BusinessException.class)
-          .hasMessage("Company code cannot be empty");
+          .hasMessage(
+              "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=Company code cannot be empty]]]");
     }
 
     @Test
@@ -63,7 +64,8 @@ class CompanyCodeTest {
       // When / Then
       assertThatThrownBy(() -> CompanyCode.of(invalidLengthCode))
           .isInstanceOf(BusinessException.class)
-          .hasMessage("Company code must be length is 8");
+          .hasMessage(
+              "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=Company code must be length is 8]]]");
     }
 
     @Test
@@ -75,7 +77,8 @@ class CompanyCodeTest {
       // When / Then
       assertThatThrownBy(() -> CompanyCode.of(nonDecimalCode))
           .isInstanceOf(BusinessException.class)
-          .hasMessage("Company code must be all decimal");
+          .hasMessage(
+              "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=Company code must be all decimal]]]");
     }
   }
 }
