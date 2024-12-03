@@ -1,8 +1,8 @@
 package undecided.erp.projectActivity.domain.model.project;
 
+import static undecided.erp.common.precondition.StringPrecondition.checkHalfWidthFixedLength;
+import static undecided.erp.common.precondition.StringPrecondition.checkNonEmpty;
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.precondition.StringVerifiers.verifyHalfWidthFixedLength;
-import static undecided.erp.common.precondition.StringVerifiers.verifyNonEmpty;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,10 +27,10 @@ public class ProjectCode implements SingleValue<String> {
   }
 
   public static ProjectCode of(@NonNull String value) {
-    verifyNonEmpty(value,
+    checkNonEmpty(value,
         () -> new IllegalArgumentException(
             "ProjectCode cannot be empty. Please provide a valid code."));
-    verifyHalfWidthFixedLength(value,
+    checkHalfWidthFixedLength(value,
         () -> new IllegalArgumentException("ProjectCode must be exactly " + LENGTH
             + " characters long and use half-width characters."), LENGTH);
     return new ProjectCode(value);

@@ -1,7 +1,7 @@
 package undecided.erp.projectActivity.domain.model.product;
 
+import static undecided.erp.common.precondition.StringPrecondition.checkNonEmpty;
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.precondition.StringVerifiers.verifyNonEmpty;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class ProductName implements SingleValue<String> {
   }
 
   public static ProductName of(@NonNull String value) {
-    verifyNonEmpty(value,
+    checkNonEmpty(value,
         () -> new IllegalArgumentException(
             "ProductName cannot be empty. Please provide a valid code."));
     return new ProductName(value);

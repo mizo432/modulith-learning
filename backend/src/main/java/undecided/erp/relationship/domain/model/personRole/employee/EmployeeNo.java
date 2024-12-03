@@ -1,8 +1,8 @@
 package undecided.erp.relationship.domain.model.personRole.employee;
 
+import static undecided.erp.common.precondition.StringPrecondition.checkHalfWidthFixedLength;
+import static undecided.erp.common.precondition.StringPrecondition.verifyAllDecimal;
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.precondition.StringVerifiers.verifyAllDecimal;
-import static undecided.erp.common.precondition.StringVerifiers.verifyHalfWidthFixedLength;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.NonNull;
@@ -18,7 +18,7 @@ public record EmployeeNo(String value) {
   public static EmployeeNo of(@NonNull String value) {
     verifyAllDecimal(value,
         () -> new IllegalArgumentException("value must be decimal."));
-    verifyHalfWidthFixedLength(value,
+    checkHalfWidthFixedLength(value,
         () -> new IllegalArgumentException("value length"), LENGTH);
     return new EmployeeNo(value);
 

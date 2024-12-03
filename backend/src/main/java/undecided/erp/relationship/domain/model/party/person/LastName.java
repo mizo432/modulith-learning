@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import undecided.erp.common.precondition.StringVerifiers;
+import undecided.erp.common.precondition.StringPrecondition;
 
 @EqualsAndHashCode
 @Getter
@@ -30,7 +30,8 @@ public class LastName {
 
   @JsonCreator
   public static LastName of(@NonNull @NotEmpty final String value) {
-    StringVerifiers.verifyNonEmpty(value, () -> new IllegalArgumentException("value is not empty"));
+    StringPrecondition.checkNonEmpty(value,
+        () -> new IllegalArgumentException("value is not empty"));
     return new LastName(value);
   }
 

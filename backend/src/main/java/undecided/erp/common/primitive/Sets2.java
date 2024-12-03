@@ -1,7 +1,6 @@
 package undecided.erp.common.primitive;
 
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.precondition.ObjectVerifiers.verifyNotNull;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.AbstractSet;
@@ -14,6 +13,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import undecided.erp.common.annotation.CanIgnoreReturnValue;
 import undecided.erp.common.annotation.DoNotCall;
+import undecided.erp.common.precondition.ObjectPrecondition;
 
 @UtilityClass
 public class Sets2 {
@@ -138,8 +138,8 @@ public class Sets2 {
    */
   public static <E> SetView<E> difference(
       final Set<E> set1, final Set<?> set2) {
-    verifyNotNull(set1, () -> new IllegalArgumentException("set1 is null"));
-    verifyNotNull(set2, () -> new IllegalArgumentException("set2 is null"));
+    ObjectPrecondition.checkNotNull(set1, () -> new IllegalArgumentException("set1 is null"));
+    ObjectPrecondition.checkNotNull(set2, () -> new IllegalArgumentException("set2 is null"));
 
     return new SetView<E>() {
       @Override

@@ -81,7 +81,6 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * factory method for warning messages.
    *
    * @return warning messages
-   * @since 5.0.0
    */
   public static ResultMessages warning() {
     return new ResultMessages(WARNING);
@@ -262,7 +261,7 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * special handling for the serialization and deserialization process
    *
    * @param out ObjectOutputStream
-   * @throws IOException {@link java.io.ObjectOutputStream#defaultWriteObject()}
+   * @throws IOException see {@link java.io.ObjectOutputStream#defaultWriteObject()}
    * @see java.io.Serializable
    */
   private void writeObject(ObjectOutputStream out) throws IOException {

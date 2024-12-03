@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NonNull;
-import undecided.erp.common.precondition.StringVerifiers;
+import undecided.erp.common.precondition.StringPrecondition;
 
 @Getter
 public class SimpleName {
@@ -26,7 +26,7 @@ public class SimpleName {
 
   @JsonCreator
   public static SimpleName of(@NonNull @NotEmpty final String value) {
-    StringVerifiers.verifyNonEmpty(value,
+    StringPrecondition.checkNonEmpty(value,
         () -> new IllegalArgumentException("value can't be empty."));
     return new SimpleName(value);
   }

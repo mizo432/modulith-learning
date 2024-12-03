@@ -1,7 +1,7 @@
 package undecided.erp.projectActivity.domain.model.project;
 
+import static undecided.erp.common.precondition.StringPrecondition.checkNonEmpty;
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.precondition.StringVerifiers.verifyNonEmpty;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class ProjectName implements SingleValue<String> {
   }
 
   public static ProjectName of(@NonNull String value) {
-    verifyNonEmpty(value,
+    checkNonEmpty(value,
         () -> new IllegalArgumentException("projectName may not be empty."));
     return new ProjectName(value);
   }

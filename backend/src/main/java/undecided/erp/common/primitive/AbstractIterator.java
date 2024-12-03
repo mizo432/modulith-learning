@@ -1,7 +1,7 @@
 package undecided.erp.common.primitive;
 
+import static undecided.erp.common.precondition.ObjectPrecondition.verifyState;
 import static undecided.erp.common.primitive.NullnessCasts.uncheckedCastNullableTToT;
-import static undecided.erp.common.precondition.ObjectVerifiers.verifyState;
 
 import java.util.NoSuchElementException;
 import undecided.erp.common.annotation.CanIgnoreReturnValue;

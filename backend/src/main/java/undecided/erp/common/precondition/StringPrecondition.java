@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 import undecided.erp.common.primitive.Strings2;
 
 @UtilityClass
-public class StringVerifiers {
+public class StringPrecondition {
 
   /**
    * 文字列が空でないことを確認するか、カスタマイズされた例外をスローします。
@@ -21,7 +21,7 @@ public class StringVerifiers {
    * @return 文字列が非空の場合は、同じ文字列の参照を返します
    * @throws E 文字列が空の場合にスローされます
    */
-  public static <E extends RuntimeException> String verifyNonEmpty(String ref,
+  public static <E extends RuntimeException> String checkNonEmpty(String ref,
       @NonNull Supplier<E> exceptionSupplier) {
     if (ref == null) {
       return ref;
@@ -207,7 +207,7 @@ public class StringVerifiers {
 
   }
 
-  public static <E extends RuntimeException> String verifyHalfWidthFixedLength(String value,
+  public static <E extends RuntimeException> String checkHalfWidthFixedLength(String value,
       @NonNull Supplier<E> exceptionSupplier, int length) {
     if (value == null) {
       return value;

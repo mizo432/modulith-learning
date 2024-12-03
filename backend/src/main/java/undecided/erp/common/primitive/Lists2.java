@@ -1,8 +1,7 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.primitive.Objects2.isNull;
 import static undecided.erp.common.precondition.IntegerVerifiers.verifyPositiveOrZero;
-import static undecided.erp.common.precondition.ObjectVerifiers.verifyNotNull;
+import static undecided.erp.common.primitive.Objects2.isNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +11,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import undecided.erp.common.precondition.ObjectPrecondition;
 
 @UtilityClass
 public class Lists2 {
@@ -46,7 +46,8 @@ public class Lists2 {
 
   @SafeVarargs
   public static <E> ArrayList<E> newArrayList(E... elements) {
-    verifyNotNull(elements, () -> new IllegalArgumentException("elements is null"));
+    ObjectPrecondition.checkNotNull(elements,
+        () -> new IllegalArgumentException("elements is null"));
     int capacity = computeArrayListCapacity(elements.length);
     ArrayList<E> list = new ArrayList<>(capacity);
     Collections.addAll(list, elements);
@@ -54,7 +55,7 @@ public class Lists2 {
   }
 
   public static <E> ArrayList<E> newArrayList(Iterable<? extends E> elements) {
-    verifyNotNull(elements,
+    ObjectPrecondition.checkNotNull(elements,
         () -> new IllegalArgumentException("elements is null")); // for GWT
     return (elements instanceof Collection)
         ? new ArrayList<>((Collection<? extends E>) elements)

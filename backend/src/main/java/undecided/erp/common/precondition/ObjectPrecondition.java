@@ -8,7 +8,7 @@ import lombok.experimental.UtilityClass;
  * ObjectVerifiersクラスはオブジェクトの状態や引数を検証するためのユーティリティメソッドを提供します。
  */
 @UtilityClass
-public class ObjectVerifiers {
+public class ObjectPrecondition {
 
   /**
    * 指定されたオブジェクトの参照がnullでないことを確認します。もし参照がnullならば、 supplierから提供される例外がスローされます。
@@ -18,7 +18,7 @@ public class ObjectVerifiers {
    * @param <T> オブジェクト参照の型
    * @throws RuntimeException 参照がnullの場合
    */
-  public static <T> T verifyNotNull(T refer,
+  public static <T> T checkNotNull(T refer,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (refer == null) {
       throw supplier.get();
@@ -34,7 +34,7 @@ public class ObjectVerifiers {
    * @param <T> オブジェクト参照のタイプ
    * @throws NullPointerException 参照がnullの場合
    */
-  public static <T> T verifyNotNull(T refer, @NonNull String label) {
+  public static <T> T checkNotNull(T refer, @NonNull String label) {
     if (refer == null) {
       throw new NullPointerException(String.format("%s がnullです。", label));
     }

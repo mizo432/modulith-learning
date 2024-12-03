@@ -1,7 +1,6 @@
 package undecided.erp.shared.date;
 
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.precondition.ObjectVerifiers.verifyNotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -15,6 +14,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import undecided.erp.common.dateProvider.DateProvider;
 import undecided.erp.common.precondition.LocalDateVerifiers;
+import undecided.erp.common.precondition.ObjectPrecondition;
 
 @Getter
 @Setter
@@ -112,7 +112,7 @@ public class ApplicableDate {
    * @throws IllegalStateException 値がnullの場合
    */
   public int dateInteger() {
-    verifyNotNull(value, () -> new IllegalStateException("value is null"));
+    ObjectPrecondition.checkNotNull(value, () -> new IllegalStateException("value is null"));
     return value.getYear() * 10000 + value.getMonthValue() * 100 + value.getDayOfMonth();
 
   }

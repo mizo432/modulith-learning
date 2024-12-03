@@ -2,7 +2,7 @@ import java.time.Duration
 
 plugins {
     java
-    id("org.springframework.boot") version "3.3.3"
+    id("org.springframework.boot") version "3.3.6"
     id("io.spring.dependency-management") version "1.1.4"
 }
 
@@ -22,7 +22,7 @@ repositories {
 
 extra["junitVersion"] = "5.10.2"
 extra["springDataBomVersion"] = "2024.0.1"
-extra["springCloudBomVersion"] = "2023.0.3"
+extra["springCloudBomVersion"] = "2023.0.4"
 
 dependencies {
 //    <!-- Spring Boot Starter -->

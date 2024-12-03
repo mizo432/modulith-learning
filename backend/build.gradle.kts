@@ -10,7 +10,7 @@ buildscript {
 }
 plugins {
     java
-    id("org.springframework.boot") version "3.3.5"
+    id("org.springframework.boot") version "3.3.6"
     id("io.spring.dependency-management") version "1.1.4"
     id("org.flywaydb.flyway") version "10.15.2"
 }

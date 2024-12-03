@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
-class ObjectVerifiersTest {
+class ObjectPreconditionTest {
 
   @Test
   void verifyStateWithBooleanAndSupplier_ExceptionThrown() {
@@ -15,7 +15,7 @@ class ObjectVerifiersTest {
         "State not expected");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectVerifiers.verifyState(false, exceptionSupplier);
+      ObjectPrecondition.verifyState(false, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("State not expected"));
@@ -27,7 +27,7 @@ class ObjectVerifiersTest {
         "State not expected");
 
     assertDoesNotThrow(() -> {
-      ObjectVerifiers.verifyState(true, exceptionSupplier);
+      ObjectPrecondition.verifyState(true, exceptionSupplier);
     });
   }
 
@@ -36,7 +36,7 @@ class ObjectVerifiersTest {
     String label = "test state";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectVerifiers.verifyState(false, label);
+      ObjectPrecondition.verifyState(false, label);
     });
 
     assertTrue(exception.getMessage().contains(label + " の状態が不正です。"));
@@ -47,7 +47,7 @@ class ObjectVerifiersTest {
     String label = "test state";
 
     assertDoesNotThrow(() -> {
-      ObjectVerifiers.verifyState(true, label);
+      ObjectPrecondition.verifyState(true, label);
     });
   }
 
@@ -57,7 +57,7 @@ class ObjectVerifiersTest {
         "Invalid argument");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectVerifiers.verifyArgument(false, exceptionSupplier);
+      ObjectPrecondition.verifyArgument(false, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("Invalid argument"));
@@ -69,7 +69,7 @@ class ObjectVerifiersTest {
         "Invalid argument");
 
     assertDoesNotThrow(() -> {
-      ObjectVerifiers.verifyArgument(true, exceptionSupplier);
+      ObjectPrecondition.verifyArgument(true, exceptionSupplier);
     });
   }
 
@@ -78,7 +78,7 @@ class ObjectVerifiersTest {
     String label = "test argument";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectVerifiers.verifyArgument(false, label);
+      ObjectPrecondition.verifyArgument(false, label);
     });
 
     assertTrue(exception.getMessage().contains(String.format("引数: %s が不正です。", label)));
@@ -89,49 +89,49 @@ class ObjectVerifiersTest {
     String label = "test argument";
 
     assertDoesNotThrow(() -> {
-      ObjectVerifiers.verifyArgument(true, label);
+      ObjectPrecondition.verifyArgument(true, label);
     });
   }
 
   @Test
-  void verifyNotNullWithReferAndSupplier_NullReference_ExceptionThrown() {
+  void checkNotNullWithReferAndSupplier_NullReference_ExceptionThrown() {
     final Supplier<NullPointerException> exceptionSupplier = () -> new NullPointerException(
         "Null reference");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectVerifiers.verifyNotNull(null, exceptionSupplier);
+      ObjectPrecondition.checkNotNull(null, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("Null reference"));
   }
 
   @Test
-  void verifyNotNullWithReferAndSupplier_ValidReference_NoExceptionThrown() {
+  void checkNotNullWithReferAndSupplier_ValidReference_NoExceptionThrown() {
     final Supplier<NullPointerException> exceptionSupplier = () -> new NullPointerException(
         "Null reference");
 
     assertDoesNotThrow(() -> {
-      ObjectVerifiers.verifyNotNull(new Object(), exceptionSupplier);
+      ObjectPrecondition.checkNotNull(new Object(), exceptionSupplier);
     });
   }
 
   @Test
-  void verifyNotNullWithReferAndString_NullReference_ExceptionThrown() {
+  void checkNotNullWithReferAndString_NullReference_ExceptionThrown() {
     String label = "test reference";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectVerifiers.verifyNotNull(null, label);
+      ObjectPrecondition.checkNotNull(null, label);
     });
 
     assertTrue(exception.getMessage().contains(String.format("%s がnullです。", label)));
   }
 
   @Test
-  void verifyNotNullWithReferAndString_ValidReference_NoExceptionThrown() {
+  void checkNotNullWithReferAndString_ValidReference_NoExceptionThrown() {
     String label = "test reference";
 
     assertDoesNotThrow(() -> {
-      ObjectVerifiers.verifyNotNull(new Object(), label);
+      ObjectPrecondition.checkNotNull(new Object(), label);
     });
   }
 }
