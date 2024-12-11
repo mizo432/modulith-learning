@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -37,7 +38,8 @@ public class PartyTable {
   public static List<Party> toEntities(List<PartyTable> recs) {
     return recs
         .stream()
-        .map((rec) -> Party.reconstruct(rec.getId(), rec.getType(), rec.getSimpleName()))
+        .map((rec) -> Party.reconstruct(rec.getId(), rec.getType(), rec.getSimpleName(),
+            new ArrayList<>()))
         .toList();
   }
 
@@ -60,7 +62,7 @@ public class PartyTable {
   }
 
   public Party toEntity() {
-    return Party.reconstruct(id, type, simpleName);
+    return Party.reconstruct(id, type, simpleName, new ArrayList<>());
   }
 
   @Override

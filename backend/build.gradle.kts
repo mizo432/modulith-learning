@@ -10,7 +10,7 @@ buildscript {
 }
 plugins {
     java
-    id("org.springframework.boot") version "3.3.6"
+    id("org.springframework.boot") version "3.4.0"
     id("io.spring.dependency-management") version "1.1.4"
     id("org.flywaydb.flyway") version "10.15.2"
 }
@@ -45,7 +45,7 @@ extra["jmoleculesBomVersion"] = "2023.1.2"
 extra["archunitVersion"] = "1.2.1"
 extra["junitVersion"] = "5.10.3"
 extra["springDataBomVersion"] = "2024.0.1"
-extra["springCloudBomVersion"] = "2023.0.4"
+extra["springCloudBomVersion"] = "2024.0.0"
 extra["spotbugsAnnotationVersion"] = "4.8.4"
 extra["libphonenumberVersion"] = "8.13.43"
 
