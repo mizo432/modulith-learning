@@ -10,6 +10,47 @@ import org.junit.jupiter.api.Test;
 
 class Strings2Test {
 
+  @Nested
+  @DisplayName("nullIfBlankメソッドのテスト")
+  class NullIfBlankTest {
+
+    @Test
+    @DisplayName("入力がnullの場合nullを返す")
+    void shouldReturnNullWhenStringIsNull() {
+      String input = null;
+      assertThat(Strings2.nullIfBlank(input))
+          .as("Expected null when input is null")
+          .isNull();
+    }
+
+    @Test
+    @DisplayName("入力が空文字の場合nullを返す")
+    void shouldReturnNullWhenStringIsEmpty() {
+      String input = "";
+      assertThat(Strings2.nullIfBlank(input))
+          .as("Expected null when input is an empty string")
+          .isNull();
+    }
+
+    @Test
+    @DisplayName("入力が空白文字の場合nullを返す")
+    void shouldReturnNullWhenStringIsBlank() {
+      String input = "   ";
+      assertThat(Strings2.nullIfBlank(input))
+          .as("Expected null when input contains only blank spaces")
+          .isNull();
+    }
+
+    @Test
+    @DisplayName("入力が空白文字でない場合入力値を返す")
+    void shouldReturnOriginalStringWhenStringIsNotBlank() {
+      String input = "Not Blank";
+      assertThat(Strings2.nullIfBlank(input))
+          .as("Expected original string when input is not blank")
+          .isEqualTo(input);
+    }
+  }
+
   /**
    * Method under test: {@link Strings2#getHalfWidthCharCount(String)}
    */
@@ -391,7 +432,9 @@ class Strings2Test {
       String str = "Not Empty";
       String defaultValue = "";
       String result = Strings2.defaultIfEmpty(str, defaultValue);
-      assertThat(result).as("Expected original string, because it is not empty").isEqualTo(str);
+      assertThat(result)
+          .as("Expected original string, because it is not empty")
+          .isEqualTo(str);
     }
 
     @Test
@@ -399,8 +442,138 @@ class Strings2Test {
       String str = null;
       String defaultValue = null;
       String result = Strings2.defaultIfEmpty(str, defaultValue);
-      assertThat(result).as(
-          "Expected null string, because input string and default string are null").isNull();
+      assertThat(result)
+          .as(
+              "Expected null string, because input string and default string are null")
+          .isNull();
+    }
+
+    @Test
+    void shouldReturnNullForEmptyStringAndNullDefaultValue() {
+      String str = "  ";
+      String defaultValue = null;
+      String result = Strings2.defaultIfEmpty(str, defaultValue);
+      assertThat(result)
+          .as(
+              "Expected null string, because input string and default string are null")
+          .isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("defaultIfBlankメソッドのテスト")
+  class DefaultIfBlankTest {
+
+    @Test
+    @DisplayName("入力がnullの場合デフォルト値を返す")
+    void shouldReturnDefaultWhenInputIsNull() {
+      String input = null;
+      String defaultValue = "Default";
+      assertThat(Strings2.defaultIfBlank(input, defaultValue))
+          .as("Expected default value when input is null")
+          .isEqualTo(defaultValue);
+    }
+
+    @Test
+    @DisplayName("入力が空文字の場合デフォルト値を返す")
+    void shouldReturnDefaultWhenInputIsEmpty() {
+      String input = "";
+      String defaultValue = "Default";
+      assertThat(Strings2.defaultIfBlank(input, defaultValue))
+          .as("Expected default value when input is empty")
+          .isEqualTo(defaultValue);
+    }
+
+    @Test
+    @DisplayName("入力が空白文字の場合デフォルト値を返す")
+    void shouldReturnDefaultWhenInputIsBlank() {
+      String input = "    ";
+      String defaultValue = "Default";
+      assertThat(Strings2.defaultIfBlank(input, defaultValue))
+          .as("Expected default value when input is blank")
+          .isEqualTo(defaultValue);
+    }
+
+    @Test
+    @DisplayName("入力が空白文字でない場合入力値を返す")
+    void shouldReturnInputWhenInputIsNotBlank() {
+      String input = "Not Blank";
+      String defaultValue = "Default";
+      assertThat(Strings2.defaultIfBlank(input, defaultValue))
+          .as("Expected input value as it is not blank")
+          .isEqualTo(input);
+    }
+
+    @Test
+    @DisplayName("入力値とデフォルト値の両方がnullの場合nullを返す")
+    void shouldReturnNullWhenBothInputAndDefaultAreNull() {
+      String input = null;
+      String defaultValue = null;
+      assertThat(Strings2.defaultIfBlank(input, defaultValue))
+          .as("Expected null when both input and default value are null")
+          .isNull();
+    }
+
+    @Test
+    @DisplayName("入力が空白文字でデフォルト値も空文字の場合空文字を返す")
+    void shouldReturnEmptyStringWhenInputIsBlankAndDefaultIsEmpty() {
+      String input = "    ";
+      String defaultValue = "";
+      assertThat(Strings2.defaultIfBlank(input, defaultValue))
+          .as("Expected empty string when input is blank and default is empty")
+          .isEqualTo(defaultValue);
+    }
+
+    @Test
+    @DisplayName("入力が空白文字でデフォルト値がnullの場合nullを返す")
+    void shouldReturnNullWhenInputIsBlankAndDefaultIsNull() {
+      String input = "    ";
+      String defaultValue = null;
+      assertThat(Strings2.defaultIfBlank(input, defaultValue))
+          .as("Expected null when input is blank and default is null")
+          .isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("isBlankメソッドのテスト")
+  class IsBlankTest {
+
+    @Test
+    @DisplayName("入力がnullの場合trueを返す")
+    void shouldReturnTrueForNullInput() {
+      String input = null;
+      assertThat(Strings2.isBlank(input)).as("Expected true for null input").isTrue();
+    }
+
+    @Test
+    @DisplayName("入力が空文字の場合trueを返す")
+    void shouldReturnTrueForEmptyString() {
+      String input = "";
+      assertThat(Strings2.isBlank(input)).as("Expected true for an empty string").isTrue();
+    }
+
+    @Test
+    @DisplayName("入力が空白文字のみの場合trueを返す")
+    void shouldReturnTrueForBlankString() {
+      String input = "   ";
+      assertThat(Strings2.isBlank(input)).as("Expected true for a blank string").isTrue();
+    }
+
+    @Test
+    @DisplayName("入力が空白でない文字を含む場合falseを返す")
+    void shouldReturnFalseForNonBlankString() {
+      String input = "test";
+      assertThat(Strings2.isBlank(input)).as("Expected false for a non-blank string").isFalse();
+    }
+
+    @Test
+    @DisplayName("空白を含むがそれ以外の文字を含む場合falseを返す")
+    void shouldReturnFalseForStringWithNonBlankAndBlankSpaces() {
+      String input = "  test  ";
+      assertThat(Strings2.isBlank(input)).as(
+              "Expected false for a string with spaces and non-blank characters")
+          .isFalse();
     }
   }
 
@@ -583,7 +756,8 @@ class Strings2Test {
       String str = "Hello World";
       String suffix = "HELLO";
       assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-          "文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。").isFalse();
+              "文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。")
+          .isFalse();
     }
 
     @Test
@@ -591,7 +765,8 @@ class Strings2Test {
       String str = "hello";
       String suffix = "Hello World";
       assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-          "文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。").isFalse();
+              "文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。")
+          .isFalse();
     }
 
     @Test
@@ -635,7 +810,8 @@ class Strings2Test {
       String str = "Hello World";
       String suffix = "Hello";
       String result = Strings2.trimSuffix(str, suffix);
-      assertThat(result).as("Expected original string as the string does not end with the suffix")
+      assertThat(result).as(
+              "Expected original string as the string does not end with the suffix")
           .isEqualTo(str);
     }
 

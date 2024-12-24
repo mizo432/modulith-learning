@@ -537,4 +537,42 @@ public class Strings2 {
     return count;
   }
 
+  /**
+   * Checks if a given string is blank, which means it is either null, empty, or contains only
+   * whitespace characters.
+   *
+   * @param str the string to check for blankness
+   * @return true if the string is null, empty, or contains only whitespace; false otherwise
+   */
+  public static boolean isBlank(String str) {
+    return (str == null || str.isEmpty() || str.trim().isEmpty());
+
+  }
+
+  /**
+   * Returns the provided default string if the input string is blank, otherwise returns the input
+   * string.
+   *
+   * @param str the input string to check for blankness
+   * @param defaultString the default string to return if the input string is blank
+   * @return the input string if it is not blank, otherwise the default string
+   */
+  public static String defaultIfBlank(String str, String defaultString) {
+    return isBlank(str) ? defaultString : str;
+  }
+
+  /**
+   * Returns null if the provided string is null, empty, or contains only whitespace.
+   * <p>
+   * Otherwise, returns the original string.
+   *
+   * @param str the string to check, may be null
+   * @return null if the string is null, empty, or contains only whitespace, otherwise the original
+   * string
+   */
+  public static String nullIfBlank(String str) {
+    return defaultIfBlank(str, null);
+  }
+
+
 }
