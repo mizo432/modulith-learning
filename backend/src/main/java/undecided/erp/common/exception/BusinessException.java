@@ -4,8 +4,9 @@ import undecided.erp.common.message.ResultMessage;
 import undecided.erp.common.message.ResultMessages;
 
 /**
- * The BusinessException class is a custom exception used for handling business-related errors. It
- * extends the ResultMessagesNotificationException class, enabling the encapsulation and
+ * The BusinessException class is a custom exception used for handling business-related errors.
+ * <p>
+ * It extends the ResultMessagesNotificationException class, enabling the encapsulation and
  * notification of result messages related to business logic issues.
  * <p>
  * This class provides multiple constructors for creating instances with specific messages or causes
