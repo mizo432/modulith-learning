@@ -4,50 +4,45 @@ import lombok.Getter;
 import undecided.erp.common.message.ResultMessages;
 
 /**
- * The {@code ResultMessagesNotificationException} class is an abstract subclass of the
- * {@code RuntimeException} class.
+ * {@code ResultMessagesNotificationException} クラスは、{@code RuntimeException} クラスの抽象サブクラスです。
  * <p>
- * It represents an exception that can be thrown when there are result messages to be notified. It
- * provides a way to encapsulate result messages and pass them to the caller.
+ * このクラスは、通知すべき結果メッセージが存在する場合にスローされる例外を表します。 このクラスは、結果メッセージをカプセル化し、それを呼び出し元に渡す手段を提供します。
  *
- * <p>This class has two constructors: a single argument constructor and a two argument
- * constructor.
- * The single argument constructor takes an instance of {@link ResultMessages} as a parameter. The
- * two argument constructor takes an instance of {@link ResultMessages} and a {@link Throwable} as
- * parameters.
+ * <p>このクラスには、1つの引数を取るコンストラクタと、2つの引数を取るコンストラクタがあります。
+ * 1つの引数を取るコンストラクタは、{@link ResultMessages} のインスタンスをパラメータとして受け取ります。
+ * 2つの引数を取るコンストラクタは、{@link ResultMessages} と {@link Throwable} のインスタンスをパラメータとして受け取ります。
  *
- * <p>Instances of this class have a {@code resultMessages} property of type
- * {@link ResultMessages}.
- * This property holds the encapsulated result messages.
+ * <p>このクラスのインスタンスには、{@code resultMessages} というプロパティがあります。このプロパティは、
+ * {@link ResultMessages} 型で、カプセル化された結果メッセージを保持します。
  *
- * <p>Instances of this class can be used to retrieve the encapsulated result messages in a string
- * format
- * by calling the {@link #getMessage()} method.
+ * <p>このクラスのインスタンスでは、{@link #getMessage()} メソッドを呼び出すことで、
+ * カプセル化された結果メッセージを文字列形式で取得できます。
  */
 @Getter
 public abstract class ResultMessagesNotificationException extends RuntimeException {
 
   /**
-   * Instance of -- GETTER -- Returns the instance
+   * 例外内でカプセル化された結果メッセージを表します。
    * <p>
-   * {@link ResultMessages}
+   * このフィールドは、呼び出し側に通知されるメッセージを保持する {@link ResultMessages} のインスタンスを格納します。 このフィールドは final フィールドであり、
+   * コンストラクタを通じて設定された後は不変であることが保証されています。
    */
   private final ResultMessages resultMessages;
 
   /**
-   * Single argument constructor
+   * 引数が1つのコンストラクタ
    *
-   * @param messages instance of {@link ResultMessages}
+   * @param messages {@link ResultMessages} のインスタンス
    */
   protected ResultMessagesNotificationException(ResultMessages messages) {
     this(messages, null);
   }
 
   /**
-   * Two argument constructor
+   * 2つの引数を取るコンストラクタ。
    *
-   * @param messages instance of {@link ResultMessages}
-   * @param cause {@link Throwable} instance
+   * @param messages {@link ResultMessages} のインスタンス
+   * @param cause {@link Throwable} のインスタンス
    */
   public ResultMessagesNotificationException(ResultMessages messages,
       Throwable cause) {
@@ -59,9 +54,9 @@ public abstract class ResultMessagesNotificationException extends RuntimeExcepti
   }
 
   /**
-   * Returns the messages in String format
+   * メッセージを文字列形式で返します。
    *
-   * @return String messages
+   * @return メッセージの文字列
    */
   @Override
   public String getMessage() {
