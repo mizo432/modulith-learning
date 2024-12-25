@@ -4,57 +4,53 @@ import undecided.erp.common.message.ResultMessage;
 import undecided.erp.common.message.ResultMessages;
 
 /**
- * The BusinessException class is a custom exception used for handling business-related errors.
+ * BusinessException クラスは、業務関連のエラーを処理するためのカスタム例外です。
  * <p>
- * It extends the ResultMessagesNotificationException class, enabling the encapsulation and
- * notification of result messages related to business logic issues.
+ * このクラスは ResultMessagesNotificationException を拡張しており、 業務ロジックに関する問題の結果メッセージをカプセル化し、通知する機能を提供します。
  * <p>
- * This class provides multiple constructors for creating instances with specific messages or causes
- * of exceptions.
+ * このクラスは、特定のメッセージや例外の原因に基づいてインスタンスを作成するための 複数のコンストラクタを提供します。
  * <p>
- * - The first constructor allows creating an instance by specifying a single message. It generates
- * a ResultMessages instance of error type and adds the provided message.
+ * - 最初のコンストラクタは、単一のメッセージを指定してインスタンスを作成するために使用されます。 このコンストラクタはエラータイプの ResultMessages
+ * インスタンスを生成し、指定されたメッセージを追加します。
  * <p>
- * - The second constructor allows creating an instance by specifying multiple messages through a
- * ResultMessages object.
+ * - 2 番目のコンストラクタは、ResultMessages オブジェクトを通じて複数のメッセージを指定して インスタンスを作成するために使用されます。
  * <p>
- * - The third constructor allows creating an instance by specifying both multiple messages and the
- * cause of the exception, facilitating a more detailed exception handling approach.
+ * - 3 番目のコンストラクタは、複数のメッセージと例外の原因の両方を指定してインスタンスを作成するために使用され、 詳細な例外処理のアプローチを可能にします。
  */
 public class BusinessException extends ResultMessagesNotificationException {
 
   /**
-   * Constructor for specify a message.
+   * メッセージを指定するためのコンストラクタ。
    * <p>
-   * generate a {@link ResultMessages} instance of error type and add a message.
+   * エラータイプの{@link ResultMessages}インスタンスを生成し、メッセージを追加します。
    * </p>
    *
-   * @param message result message
+   * @param message 結果メッセージ
    */
   public BusinessException(String message) {
     super(ResultMessages.error().add(ResultMessage.fromText(message)));
   }
 
   /**
-   * Constructor for specify messages.
+   * メッセージを指定するためのコンストラクタ。
    * <p>
-   * Takes multiple {@code String} messages as argument.
+   * 複数の{@code String}形式のメッセージを引数として受け取ります。
    * </p>
    *
-   * @param messages {@link ResultMessages} instance
+   * @param messages {@link ResultMessages}のインスタンス
    */
   public BusinessException(ResultMessages messages) {
     super(messages);
   }
 
   /**
-   * Constructor for specify messages and exception.
+   * メッセージと例外を指定するためのコンストラクタ。
    * <p>
-   * Takes multiple {@code String} messages and cause of exception as argument.
+   * 複数の{@code String}メッセージと例外の原因を引数として受け取ります。
    * </p>
    *
-   * @param messages {@link ResultMessages} instance
-   * @param cause {@link Throwable} instance
+   * @param messages {@link ResultMessages} のインスタンス
+   * @param cause {@link Throwable} のインスタンス
    */
   public BusinessException(ResultMessages messages, Throwable cause) {
     super(messages, cause);
