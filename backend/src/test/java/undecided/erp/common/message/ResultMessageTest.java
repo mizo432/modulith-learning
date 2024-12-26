@@ -10,14 +10,14 @@ class ResultMessageTest {
   @Test
   public void testFromCode() {
     ResultMessage rm = ResultMessage.fromCode("code123", "arg1", "arg2", "arg3");
-    assertThat(rm.getCode()).isEqualTo("code123");
-    assertThat(rm.getArgs()).isNotEqualTo(null);
+    assertThat(rm.code()).isEqualTo("code123");
+    assertThat(rm.args()).isNotEqualTo(null);
   }
 
   @Test
   public void testFromText() {
     ResultMessage rm = ResultMessage.fromText("text123");
-    assertThat(rm.getText()).isEqualTo("text123");
+    assertThat(rm.text()).isEqualTo("text123");
   }
 
   @Test
