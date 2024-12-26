@@ -31,17 +31,18 @@ class BusinessExceptionTest {
       List<ResultMessage> list = resultMessages.getList();
       assertThat(list.size()).isEqualTo(1);
       ResultMessage getResult = list.get(0);
-      assertThat(getResult.getText()).isEqualTo("An error occurred");
+
+      assertThat(getResult.text()).isEqualTo("An error occurred");
       assertThat(actualBusinessException.getLocalizedMessage())
           .isEqualTo(
               "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=An error occurred]]]");
       assertThat(actualBusinessException.getMessage())
           .isEqualTo(
               "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=An error occurred]]]");
-      assertThat(getResult.getCode()).isNull();
+      assertThat(getResult.code()).isNull();
       assertThat(actualBusinessException.getCause()).isNull();
       assertThat(actualBusinessException.getSuppressed().length).isEqualTo(0);
-      assertThat(getResult.getArgs().length).isEqualTo(0);
+      assertThat(getResult.args().length).isEqualTo(0);
       assertThat(type).isEqualTo(StandardResultMessageType.ERROR);
       assertThat(resultMessages.isNotEmpty()).isTrue();
     }
@@ -97,7 +98,7 @@ class BusinessExceptionTest {
       String message = "Business Exception Message";
       BusinessException exception = new BusinessException(message);
       assertThat(exception).isNotNull();
-      assertThat(exception.getResultMessages().getList().getFirst().getText()).isEqualTo(message);
+      assertThat(exception.getResultMessages().getList().getFirst().text()).isEqualTo(message);
     }
 
     @Test
