@@ -30,7 +30,7 @@ class ResultMessagesTest {
     resultMessages.add("Test");
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.isNotEmpty()).isTrue();
-    assertThat(resultMessages.getList().getFirst().getCode()).isEqualTo("Test");
+    assertThat(resultMessages.getList().getFirst().code()).isEqualTo("Test");
   }
 
   @Test
@@ -41,8 +41,8 @@ class ResultMessagesTest {
     resultMessages.addAll(res1, res2);
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.isNotEmpty()).isTrue();
-    assertThat(resultMessages.getList().get(0).getCode()).isEqualTo("Test 1");
-    assertThat(resultMessages.getList().get(1).getCode()).isEqualTo("Test 2");
+    assertThat(resultMessages.getList().get(0).code()).isEqualTo("Test 1");
+    assertThat(resultMessages.getList().get(1).code()).isEqualTo("Test 2");
   }
 
   @Test
@@ -54,9 +54,9 @@ class ResultMessagesTest {
     resultMessages.addAll(res1, res2, res3);
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.isNotEmpty()).isTrue();
-    assertThat(resultMessages.getList().get(0).getCode()).isEqualTo("Test 1");
-    assertThat(resultMessages.getList().get(1).getCode()).isEqualTo("Test 2");
-    assertThat(resultMessages.getList().get(2).getCode()).isEqualTo("Test 3");
+    assertThat(resultMessages.getList().get(0).code()).isEqualTo("Test 1");
+    assertThat(resultMessages.getList().get(1).code()).isEqualTo("Test 2");
+    assertThat(resultMessages.getList().get(2).code()).isEqualTo("Test 3");
   }
 
   @Test
@@ -95,7 +95,7 @@ class ResultMessagesTest {
     resultMessages.addAll(messages);
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.isNotEmpty()).isTrue();
-    assertThat(resultMessages.getList().get(0).getCode()).isEqualTo("Test 1");
-    assertThat(resultMessages.getList().get(1).getCode()).isEqualTo("Test 2");
+    assertThat(resultMessages.getList().get(0).code()).isEqualTo("Test 1");
+    assertThat(resultMessages.getList().get(1).code()).isEqualTo("Test 2");
   }
 }

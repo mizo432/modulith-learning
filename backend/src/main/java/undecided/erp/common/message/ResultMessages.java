@@ -4,12 +4,14 @@ import static undecided.erp.common.message.StandardResultMessageType.DANGER;
 import static undecided.erp.common.message.StandardResultMessageType.INFO;
 import static undecided.erp.common.message.StandardResultMessageType.SUCCESS;
 import static undecided.erp.common.message.StandardResultMessageType.WARNING;
+import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.erp.common.primitive.Lists2.newArrayList;
+import static undecided.erp.common.primitive.Objects2.nonNull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -25,14 +27,24 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    */
   public static final String DEFAULT_MESSAGES_ATTRIBUTE_NAME = Strings2
       .uncapitalize(ResultMessages.class.getSimpleName());
+
   /**
-   * message type -- GETTER -- returns type
+   * 結果メッセージの種類を表します。
+   * <p>
+   * この変数は{@link ResultMessageType}のインスタンスを保持し、関連付けられた {@link ResultMessages}インスタンスに含まれるメッセージの種類（例:
+   * 成功、情報、警告、エラー） を定義します。
+   * <p>
+   * {@code private final}として宣言されているため、この変数は不変であり、 {@link ResultMessages}の対応するコンストラクタを通じてオブジェクトの構築時に
+   * 初期化する必要があります。
    */
   private final ResultMessageType type;
+
   /**
-   * message list -- GETTER -- returns messages
+   * {@link ResultMessage} オブジェクトのリストを表します。
+   * <p>
+   * このリストは、複数の結果メッセージを格納して管理するために使用されます。 初期状態では空の ArrayList として初期化され、直接変更することはできません。
    */
-  private final List<ResultMessage> list = new ArrayList<>();
+  private final List<ResultMessage> list = newArrayList();
 
   /**
    * Constructor.
@@ -40,7 +52,8 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * @param type message type
    */
   public ResultMessages(ResultMessageType type) {
-    this(type, (ResultMessage[]) null);
+    this(type, new ResultMessage[0]);
+
   }
 
   /**
@@ -50,13 +63,13 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * @param messages messages to add
    */
   public ResultMessages(ResultMessageType type, ResultMessage... messages) {
-    if (type == null) {
-      throw new IllegalArgumentException("type must not be null!");
-    }
+    checkNotNull(type,
+        () -> new IllegalArgumentException("type must not be null!"));
     this.type = type;
-    if (messages != null) {
+    if (nonNull(messages)) {
       addAll(messages);
     }
+
   }
 
   /**
@@ -135,10 +148,10 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * factory method for dark messages.
    *
    * @return dark messages
-   * @since 5.7.0
    */
   public static ResultMessages dark() {
     return new ResultMessages(StandardResultMessageType.DARK);
+
   }
 
   /**
@@ -148,11 +161,8 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * @return this result messages
    */
   public ResultMessages add(ResultMessage message) {
-    if (message != null) {
-      this.list.add(message);
-    } else {
-      throw new IllegalArgumentException("message must not be null");
-    }
+    checkNotNull(message, () -> new IllegalArgumentException("message must not be null!"));
+    this.list.add(message);
     return this;
   }
 
@@ -163,11 +173,8 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * @return this result messages
    */
   public ResultMessages add(String code) {
-    if (code != null) {
-      this.add(ResultMessage.fromCode(code));
-    } else {
-      throw new IllegalArgumentException("code must not be null");
-    }
+    checkNotNull(code, () -> new IllegalArgumentException("code must not be null!"));
+    this.add(ResultMessage.fromCode(code));
     return this;
   }
 
@@ -179,11 +186,8 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * @return this result messages
    */
   public ResultMessages add(String code, Object... args) {
-    if (code != null) {
-      this.add(ResultMessage.fromCode(code, args));
-    } else {
-      throw new IllegalArgumentException("code must not be null");
-    }
+    checkNotNull(code, () -> new IllegalArgumentException("code must not be null!"));
+    this.add(ResultMessage.fromCode(code, args));
     return this;
   }
 
@@ -197,12 +201,9 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * @return this messages
    */
   public ResultMessages addAll(ResultMessage... messages) {
-    if (messages != null) {
-      for (ResultMessage message : messages) {
-        add(message);
-      }
-    } else {
-      throw new IllegalArgumentException("messages must not be null");
+    checkNotNull(messages, () -> new IllegalArgumentException("messages must not be null!"));
+    for (ResultMessage message : messages) {
+      add(message);
     }
     return this;
   }
@@ -217,12 +218,9 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
    * @return this messages
    */
   public ResultMessages addAll(Collection<ResultMessage> messages) {
-    if (messages != null) {
-      for (ResultMessage message : messages) {
-        add(message);
-      }
-    } else {
-      throw new IllegalArgumentException("messages must not be null");
+    checkNotNull(messages, () -> new IllegalArgumentException("messages must not be null!"));
+    for (ResultMessage message : messages) {
+      add(message);
     }
     return this;
   }
@@ -269,12 +267,11 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * special handling for the serialization and deserialization process
+   * {@code ResultMessages} オブジェクトのデシリアライズを処理します。
    *
-   * @param in ObjectInputStream
-   * @throws IOException {@link java.io.ObjectInputStream#defaultReadObject()}
-   * @throws ClassNotFoundException {@link java.io.ObjectInputStream#defaultReadObject()}
-   * @see java.io.Serializable
+   * @param in オブジェクトの状態を読み取るための {@code ObjectInputStream}
+   * @throws IOException ストリームから読み取る際にI/Oエラーが発生した場合
+   * @throws ClassNotFoundException シリアライズされたオブジェクトのクラスが見つからない場合
    */
   private void readObject(
       ObjectInputStream in) throws IOException, ClassNotFoundException {
