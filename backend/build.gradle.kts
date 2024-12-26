@@ -2,16 +2,21 @@ import java.time.Duration
 
 buildscript {
     repositories {
-        mavenCentral()
+        mavenCentral() // Maven Centralリポジトリから依存関係を取得する
     }
     dependencies {
+        // Flyway（データベース移行ツール）のクラスパス追加
         classpath("org.flywaydb:flyway-database-postgresql:10.15.2")
     }
 }
 plugins {
+    // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
+    // Spring Bootプラグイン
     id("org.springframework.boot") version "3.4.0"
+    // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.4"
+    // Flywayプラグイン（DBマイグレーション）
     id("org.flywaydb.flyway") version "10.15.2"
 }
 
@@ -22,6 +27,7 @@ java {
 }
 tasks {
     withType<JavaCompile> {
+        // コンパイラの警告を有効化（未チェック警告）
         options.compilerArgs.add("-Xlint:unchecked")
     }
 }
