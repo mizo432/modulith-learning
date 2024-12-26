@@ -76,7 +76,7 @@ public enum StandardResultMessageType implements ResultMessageType {
    *
    * @param type message type
    */
-  private StandardResultMessageType(String type) {
+  StandardResultMessageType(String type) {
     this.type = type;
   }
 

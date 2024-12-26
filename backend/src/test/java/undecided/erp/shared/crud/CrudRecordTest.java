@@ -22,9 +22,9 @@ class CrudRecordTest {
 
       // Assertion
       assertThat(result).as("Result should not be null").isNotNull();
-      assertThat(result.getRecord()).as("Record should be same as test record")
+      assertThat(result.record()).as("Record should be same as test record")
           .isEqualTo(testRecord);
-      assertThat(result.getCrudType()).as("Default CrudType should be NO_CHANGED")
+      assertThat(result.crudType()).as("Default CrudType should be NO_CHANGED")
           .isEqualTo(CrudType.NO_CHANGED);
     }
 
@@ -44,9 +44,9 @@ class CrudRecordTest {
 
       // Assertions
       assertThat(result).as("Result should not be null").isNotNull();
-      assertThat(result.getRecord()).as("Record should be same as test record")
+      assertThat(result.record()).as("Record should be same as test record")
           .isEqualTo(testRecord);
-      assertThat(result.getCrudType()).as("CrudType should be same as test CrudType")
+      assertThat(result.crudType()).as("CrudType should be same as test CrudType")
           .isEqualTo(testCrudType);
     }
 

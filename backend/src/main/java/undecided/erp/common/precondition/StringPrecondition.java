@@ -29,7 +29,6 @@ public class StringPrecondition {
     if (ref.isEmpty()) {
       throw exceptionSupplier.get();
     }
-    ;
     return ref;
   }
 

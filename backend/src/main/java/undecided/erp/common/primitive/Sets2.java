@@ -71,10 +71,10 @@ public class Sets2 {
   }
 
   public static <E> Set<E> intersection(@NonNull Set<E> set1, @NonNull Set<E> set2) {
-    return new SetView<E>() {
+    return new SetView<>() {
       @Override
       public UnmodifiableIterator<E> iterator() {
-        return new AbstractIterator<E>() {
+        return new AbstractIterator<>() {
           final Iterator<E> itr = set1.iterator();
 
           @Override
@@ -141,10 +141,10 @@ public class Sets2 {
     ObjectPrecondition.checkNotNull(set1, () -> new IllegalArgumentException("set1 is null"));
     ObjectPrecondition.checkNotNull(set2, () -> new IllegalArgumentException("set2 is null"));
 
-    return new SetView<E>() {
+    return new SetView<>() {
       @Override
       public UnmodifiableIterator<E> iterator() {
-        return new AbstractIterator<E>() {
+        return new AbstractIterator<>() {
           final Iterator<E> itr = set1.iterator();
 
           @Override

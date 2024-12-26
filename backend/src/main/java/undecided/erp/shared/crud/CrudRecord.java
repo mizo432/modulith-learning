@@ -5,7 +5,6 @@ import static undecided.erp.common.primitive.Objects2.defaultIfNull;
 
 import java.util.Collections;
 import java.util.List;
-import lombok.Getter;
 import lombok.NonNull;
 import undecided.erp.common.annotation.VisibleForFramework;
 
@@ -13,28 +12,18 @@ import undecided.erp.common.annotation.VisibleForFramework;
  * CrudRecordクラスは、CRUDタイプを持つレコードを表します。
  *
  * @param <T> レコードオブジェクトの型。
+ * @param crudType CrudRecordインスタンス内のレコードのCRUDタイプを表します。
+ * @param record レコード変数を表します。
  */
-@Getter
-public class CrudRecord<T> {
+public record CrudRecord<T>(T record, CrudType crudType) {
 
   /**
    * CrudRecordオブジェクトのデフォルトのCRUDタイプ。
    */
   private static final CrudType DEFAULT_CRUD_TYPE = CrudType.NO_CHANGED;
 
-  /**
-   * CrudRecordインスタンス内のレコードのCRUDタイプを表します。
-   */
-  private final CrudType crudType;
-  /**
-   * レコード変数を表します。
-   */
-  private final T record;
-
   @VisibleForFramework
-  public CrudRecord(T record, CrudType crudType) {
-    this.crudType = crudType;
-    this.record = record;
+  public CrudRecord {
   }
 
   /**
@@ -62,6 +51,46 @@ public class CrudRecord<T> {
 
   }
 
+  private boolean isChanged() {
+    return crudType.isChanged();
+  }
+
+  /**
+   * CrudRecordが「作成済み」状態であるかどうかを確認します。
+   *
+   * @return CrudRecordが「作成済み」状態である場合はtrue、それ以外の場合はfalseを返します。
+   */
+  private boolean isCreated() {
+    return crudType.isCreated();
+  }
+
+  /**
+   * CrudRecordが更新されたかどうかを確認します。
+   *
+   * @return CrudRecordが更新されていればtrue、そうでなければfalse。
+   */
+  private boolean isUpdated() {
+    return crudType.isUpdated();
+  }
+
+  /**
+   * CrudRecordが削除としてマークされているかどうかをチェックします。
+   *
+   * @return CrudRecordが削除としてマークされている場合はtrue、それ以外の場合はfalse。
+   */
+  private boolean isDeleted() {
+    return crudType.isDeleted();
+  }
+
+  /**
+   * CrudRecordが削除としてマークされているかどうかをチェックします。
+   *
+   * @return CrudRecordが削除としてマークされている場合はtrue、それ以外の場合はfalse。
+   */
+  private boolean available() {
+    return crudType.available();
+  }
+
   /**
    * CrudRecordsクラスは、CRUDレコードのコレクションを表します。
    *
@@ -81,6 +110,18 @@ public class CrudRecord<T> {
      */
     private CrudRecords(List<CrudRecord<T>> records) {
       this.records.addAll(defaultIfNull(records, newArrayList()));
+    }
+
+    /**
+     * CrudRecordsクラスの新しいインスタンスを作成します。
+     *
+     * @param <T> レコードオブジェクトのタイプ
+     * @param records CRUDレコード
+     * @return CrudRecordsの新しいインスタンス
+     */
+    public static <T> CrudRecords<T> of(List<CrudRecord<T>> records) {
+      return new CrudRecords<>(records);
+
     }
 
     /**
@@ -155,58 +196,6 @@ public class CrudRecord<T> {
       return Collections.unmodifiableList(records);
     }
 
-    /**
-     * CrudRecordsクラスの新しいインスタンスを作成します。
-     *
-     * @param <T> レコードオブジェクトのタイプ
-     * @param records CRUDレコード
-     * @return CrudRecordsの新しいインスタンス
-     */
-    public static <T> CrudRecords<T> of(List<CrudRecord<T>> records) {
-      return new CrudRecords<>(records);
-
-    }
-
-  }
-
-  private boolean isChanged() {
-    return crudType.isChanged();
-  }
-
-  /**
-   * CrudRecordが「作成済み」状態であるかどうかを確認します。
-   *
-   * @return CrudRecordが「作成済み」状態である場合はtrue、それ以外の場合はfalseを返します。
-   */
-  private boolean isCreated() {
-    return crudType.isCreated();
-  }
-
-  /**
-   * CrudRecordが更新されたかどうかを確認します。
-   *
-   * @return CrudRecordが更新されていればtrue、そうでなければfalse。
-   */
-  private boolean isUpdated() {
-    return crudType.isUpdated();
-  }
-
-  /**
-   * CrudRecordが削除としてマークされているかどうかをチェックします。
-   *
-   * @return CrudRecordが削除としてマークされている場合はtrue、それ以外の場合はfalse。
-   */
-  private boolean isDeleted() {
-    return crudType.isDeleted();
-  }
-
-  /**
-   * CrudRecordが削除としてマークされているかどうかをチェックします。
-   *
-   * @return CrudRecordが削除としてマークされている場合はtrue、それ以外の場合はfalse。
-   */
-  private boolean available() {
-    return crudType.available();
   }
 
 }

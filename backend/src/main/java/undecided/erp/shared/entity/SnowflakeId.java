@@ -17,7 +17,7 @@ import undecided.erp.common.snowflake.SnowflakeIdProvider;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode
-public class SnowflakeId implements LongValue, Comparable<SnowflakeId> {
+public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<SnowflakeId> {
 
   public static final SnowflakeId EMPTY = new SnowflakeId(null);
   @JsonValue
