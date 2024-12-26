@@ -30,7 +30,7 @@ class BusinessExceptionTest {
       assertThat(type instanceof StandardResultMessageType).isTrue();
       List<ResultMessage> list = resultMessages.getList();
       assertThat(list.size()).isEqualTo(1);
-      ResultMessage getResult = list.get(0);
+      ResultMessage getResult = list.getFirst();
 
       assertThat(getResult.text()).isEqualTo("An error occurred");
       assertThat(actualBusinessException.getLocalizedMessage())
