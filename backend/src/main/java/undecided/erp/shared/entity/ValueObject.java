@@ -10,7 +10,7 @@ public interface ValueObject {
 
   boolean isEmpty();
 
-  public class ValueObjects {
+  class ValueObjects {
 
     /**
      * 提供された値オブジェクトの配列内のすべての値が空でないかどうかを判定します。

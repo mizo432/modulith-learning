@@ -1,5 +1,7 @@
 package undecided.erp.relationship.adapters.dao.party;
 
+import static undecided.erp.common.primitive.Lists2.newArrayList;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -39,7 +41,7 @@ public class PartyTable {
     return recs
         .stream()
         .map((rec) -> Party.reconstruct(rec.getId(), rec.getType(), rec.getSimpleName(),
-            new ArrayList<>()))
+            newArrayList()))
         .toList();
   }
 

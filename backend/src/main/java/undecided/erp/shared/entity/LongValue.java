@@ -15,7 +15,7 @@ import undecided.erp.common.precondition.LongVerifiers;
  */
 public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
 
-  public class LongValues {
+  class LongValues {
 
     /**
      * 与えられた引用が正の整数であるかを検証し、そうでない場合はカスタム例外をスローします。
