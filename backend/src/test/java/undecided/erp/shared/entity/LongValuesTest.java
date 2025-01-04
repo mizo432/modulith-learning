@@ -149,7 +149,7 @@ class LongValuesTest {
     @DisplayName("ゼロを指定すると該当の値が返ること")
     void shouldReturnGivenValueWhenZeroGiven() {
       var ref = new TestLongValue(0L);
-      var result = LongValues.checkNegativeOrZero(ref, exceptionSupplier);
+      var result = LongValues.checkNonPositive(ref, exceptionSupplier);
       assertThat(result).isEqualTo(ref);
     }
 
@@ -157,7 +157,7 @@ class LongValuesTest {
     @DisplayName("負の値を指定すると該当の値が返ること")
     void shouldReturnGivenValueWhenNegativeValueGiven() {
       var ref = new TestLongValue(-5L);
-      var result = LongValues.checkNegativeOrZero(ref, exceptionSupplier);
+      var result = LongValues.checkNonPositive(ref, exceptionSupplier);
       assertThat(result).isEqualTo(ref);
     }
 
@@ -165,7 +165,7 @@ class LongValuesTest {
     @DisplayName("正の値を指定すると例外がスローされること")
     void shouldThrowExceptionWhenPositiveValueGiven() {
       var ref = new TestLongValue(5L);
-      assertThatThrownBy(() -> LongValues.checkNegativeOrZero(ref, exceptionSupplier))
+      assertThatThrownBy(() -> LongValues.checkNonPositive(ref, exceptionSupplier))
           .isInstanceOf(Exception.class);
     }
 
@@ -173,7 +173,7 @@ class LongValuesTest {
     @DisplayName("nullを指定するとnullが返ること")
     void shouldReturnNullWhenNullGiven() {
       TestLongValue ref = null;
-      var result = LongValues.checkNegativeOrZero(ref, exceptionSupplier);
+      var result = LongValues.checkNonPositive(ref, exceptionSupplier);
       assertThat(result).isEqualTo(ref);
     }
   }

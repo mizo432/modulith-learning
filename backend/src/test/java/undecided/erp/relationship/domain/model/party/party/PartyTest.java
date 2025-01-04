@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import undecided.erp.relationship.domain.model.party.partyRelationship.PartyRelationship.PartyRelationships;
+import undecided.erp.shared.entity.SnowflakeId;
 
 @DisplayName("パーティ")
 class PartyTest {
@@ -45,8 +46,8 @@ class PartyTest {
     void shouldReturnStringWithNullSimpleName() {
       // given
       PartyType type = PartyType.PERSON;
-      Party party = new Party(SnowflakeId.newInstance(), type, null,
-          PartyRelationships.reconstruct(null));
+      Party party = Party.reconstruct(SnowflakeId.newInstance().getValue(), type, null,
+          PartyRelationships.empty().getValue());
 
       String expectedString =
           "Party{id=" + party.getId() + ", type=" + type
@@ -66,7 +67,8 @@ class PartyTest {
       // given
       PartyType type = PartyType.PERSON;
       SimpleName name = SimpleName.reconstruct("name");
-      Party party = new Party(SnowflakeId.newInstance(), type, name, null);
+      Party party = Party.reconstruct(SnowflakeId.newInstance().getValue(),
+          type, name.getValue(), null);
 
       String expectedString =
           "Party{id=" + party.getId() + ", type=" + type + ", simpleName=" + name

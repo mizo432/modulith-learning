@@ -54,5 +54,6 @@ public class DateInterval {
   @Override
   public int hashCode() {
     return Objects.hashCode(beginDate, endDate);
+    
   }
 }

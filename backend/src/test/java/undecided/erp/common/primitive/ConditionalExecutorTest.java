@@ -20,15 +20,6 @@ class ConditionalExecutorTest {
   private Function<String, String> trueConditionFunction;
   private Function<String, String> falseConditionFunction;
 
-  @BeforeEach
-  void setUp() {
-    testingObject = "Test";
-    trueConditionConsumer = mock(Consumer.class);
-    falseConditionConsumer = mock(Consumer.class);
-    trueConditionFunction = mock(Function.class);
-    falseConditionFunction = mock(Function.class);
-  }
-
   @Test
   void executeBasedOnPredicate_GivenTruthyPredicate_ShouldCallTruthyConsumer() {
     testingObject = "Test";

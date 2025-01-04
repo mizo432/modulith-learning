@@ -1,6 +1,6 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.precondition.IntegerVerifiers.verifyPositiveOrZero;
+import static undecided.erp.common.precondition.IntegerPrecondition.verifyPositiveOrZero;
 import static undecided.erp.common.primitive.Objects2.isNull;
 
 import java.util.ArrayList;

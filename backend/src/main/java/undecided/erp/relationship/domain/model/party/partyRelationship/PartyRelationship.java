@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 import undecided.erp.shared.entity.SnowflakeId;
 
 /**
@@ -41,6 +42,10 @@ public class PartyRelationship implements IPartyRelationship {
 
     public static PartyRelationships reconstruct(List<IPartyRelationship> partyRelationships) {
       return new PartyRelationships(partyRelationships);
+    }
+
+    public static @NonNull PartyRelationships empty() {
+      return new PartyRelationships(Collections.emptyList());
     }
 
     public List<IPartyRelationship> getValue() {

@@ -1,7 +1,7 @@
 package undecided.erp.common.primitive;
 
+import static undecided.erp.common.precondition.IntegerPrecondition.verifyPositiveOrZero;
 import static undecided.erp.common.primitive.Objects2.isNull;
-import static undecided.erp.common.precondition.IntegerVerifiers.verifyPositiveOrZero;
 
 import com.google.common.primitives.Ints;
 import java.util.Collections;

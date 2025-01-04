@@ -3,6 +3,7 @@ package undecided.erp.relationship.adapters.dataSource.party;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static undecided.erp.common.primitive.Lists2.newArrayList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +23,8 @@ class PartyDataSourceTest {
   @Test
   public void testFindByType() {
     PartyType type = PartyType.PERSON;
-    Party party1 = Party.reconstruct(1L, type, "party1");
-    Party party2 = Party.reconstruct(2L, type, "party2");
+    Party party1 = Party.reconstruct(1L, type, "party1", newArrayList());
+    Party party2 = Party.reconstruct(2L, type, "party2", newArrayList());
     List<Party> expected = Arrays.asList(party1, party2);
 
     when(partyDaoMock.findByType(type)).thenReturn(PartyTable.toTableRecs(expected));

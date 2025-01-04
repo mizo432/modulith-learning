@@ -6,7 +6,7 @@ import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class LongVerifiers {
+public class LongPrecondition {
 
   /**
    * 与えられた引用が正の整数であるかを検証し、そうでない場合はカスタム例外をスローします。
@@ -18,7 +18,7 @@ public class LongVerifiers {
    */
   public static Long verifyPositive(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyGreaterThan(ref, exceptionSupplier, 0L);
+    return checkGreaterThan(ref, exceptionSupplier, 0L);
   }
 
   /**
@@ -31,7 +31,7 @@ public class LongVerifiers {
    */
   public static Long verifyPositiveOrZero(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyAtLest(ref, exceptionSupplier, 0L);
+    return checkAtLest(ref, exceptionSupplier, 0L);
 
   }
 
@@ -47,7 +47,7 @@ public class LongVerifiers {
    */
   public static Long verifyNegative(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyLessThan(ref, exceptionSupplier, 0L);
+    return checkLessThan(ref, exceptionSupplier, 0L);
   }
 
   /**
@@ -62,7 +62,7 @@ public class LongVerifiers {
    */
   public static Long verifyNegativeOrZero(final Long ref,
       final @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyAtMost(ref, exceptionSupplier, 0L);
+    return checkAtMost(ref, exceptionSupplier, 0L);
   }
 
   /**
@@ -75,7 +75,7 @@ public class LongVerifiers {
    * @return 検証済みのLong値。
    * @throws RuntimeException Long値が指定された閉範囲内にない場合。
    */
-  public static Long verifyRangeClosed(Long ref,
+  public static Long checkRangeClosed(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Long min, @NonNull Long max) {
     if (isNull(ref)) {
@@ -100,7 +100,7 @@ public class LongVerifiers {
    * @return 検証されたLong値。
    * @throws RuntimeException Long値が指定した開放範囲内にない場合。
    */
-  public static Long verifyRangeOpen(Long ref,
+  public static Long checkRangeOpen(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Long min, @NonNull Long max) {
     if (isNull(ref)) {
@@ -125,7 +125,7 @@ public class LongVerifiers {
    * @return 検証済みのLong型の値。
    * @throws RuntimeException Long型の値が指定された閉区間-開区間の範囲内にない場合。
    */
-  public static Long verifyRangeClosedOpen(Long ref,
+  public static Long checkRangeClosedOpen(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long min,
       @NonNull Long max) {
     if (isNull(ref)) {
@@ -150,7 +150,7 @@ public class LongVerifiers {
    * @return 検証したLong値。
    * @throws RuntimeException Long値が指定した開放-閉鎖範囲内にない場合。
    */
-  public static Long verifyRangeOpenClosed(Long ref,
+  public static Long checkRangeOpenClosed(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long min,
       @NonNull Long max) {
     if (isNull(ref)) {
@@ -175,7 +175,7 @@ public class LongVerifiers {
    * @return 検証された整数値。
    * @throws RuntimeException 整数値が指定された最小値以上でない場合にスローされます。
    */
-  public static Long verifyAtLest(Long ref,
+  public static Long checkAtLest(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long min) {
     if (isNull(ref)) {
       return null;
@@ -197,7 +197,7 @@ public class LongVerifiers {
    * @return 検証されたLong値を返します。
    * @throws RuntimeException Long値が指定範囲内に存在しない場合にスローされます。
    */
-  public static Long verifyAtMost(Long ref,
+  public static Long checkAtMost(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long max) {
     if (isNull(ref)) {
       return null;
@@ -219,7 +219,7 @@ public class LongVerifiers {
    * @return 検証済みのLongの値。
    * @throws RuntimeException Longの値が指定された最大値未満でない場合。
    */
-  public static Long verifyLessThan(Long ref,
+  public static Long checkLessThan(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long max) {
     if (isNull(ref)) {
       return null;
@@ -241,7 +241,7 @@ public class LongVerifiers {
    * @return 検証されたLong値。
    * @throws RuntimeException Long値が最小値よりも大きくない場合。
    */
-  public static Long verifyGreaterThan(Long ref,
+  public static Long checkGreaterThan(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Long min) {
     if (ref == null) {
       return ref;

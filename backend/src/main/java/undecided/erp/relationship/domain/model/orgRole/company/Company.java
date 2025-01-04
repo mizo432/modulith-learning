@@ -1,7 +1,14 @@
 package undecided.erp.relationship.domain.model.orgRole.company;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.Table;
+import java.util.Objects;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 import undecided.erp.relationship.domain.model.orgRole.ICompany;
 import undecided.erp.shared.entity.SnowflakeId;
 
@@ -11,7 +18,12 @@ import undecided.erp.shared.entity.SnowflakeId;
  * The class implements the ICompany interface, which extends the OrgRole interface, indicating that
  * Company is a type of organizational role in the system.
  */
-@Data
+@Table(name = "companies")
+@Entity
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class Company implements ICompany {
 
   @Id
@@ -19,4 +31,30 @@ public class Company implements ICompany {
 
   private CompanyCode code;
 
+  @Override
+  public final boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
+    Class<?> oEffectiveClass = o instanceof HibernateProxy
+        ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
+        : o.getClass();
+    Class<?> thisEffectiveClass = this instanceof HibernateProxy
+        ? ((HibernateProxy) this).getHibernateLazyInitializer()
+        .getPersistentClass() : this.getClass();
+    if (thisEffectiveClass != oEffectiveClass) {
+      return false;
+    }
+    Company company = (Company) o;
+    return getId() != null && Objects.equals(getId(), company.getId());
+  }
+
+  @Override
+  public final int hashCode() {
+    return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer()
+        .getPersistentClass().hashCode() : getClass().hashCode();
+  }
 }

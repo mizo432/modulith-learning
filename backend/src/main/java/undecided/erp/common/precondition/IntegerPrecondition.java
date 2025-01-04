@@ -4,7 +4,7 @@ import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class IntegerVerifiers {
+public class IntegerPrecondition {
 
   /**
    * 与えられた引用が正の整数であるかを検証し、そうでない場合はカスタム例外をスローします。
@@ -16,7 +16,7 @@ public class IntegerVerifiers {
    */
   public static Integer verifyPositive(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyGreaterThan(ref, exceptionSupplier, 0);
+    return checkGreaterThan(ref, exceptionSupplier, 0);
   }
 
   /**
@@ -29,7 +29,7 @@ public class IntegerVerifiers {
    */
   public static Integer verifyPositiveOrZero(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyAtLest(ref, exceptionSupplier, 0);
+    return checkAtLest(ref, exceptionSupplier, 0);
   }
 
   /**
@@ -44,7 +44,7 @@ public class IntegerVerifiers {
    */
   public static Integer verifyNegative(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyLessThan(ref, exceptionSupplier, 0);
+    return checkLessThan(ref, exceptionSupplier, 0);
   }
 
   /**
@@ -59,7 +59,7 @@ public class IntegerVerifiers {
    */
   public static Integer verifyNegativeOrZero(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return verifyAtMost(ref, exceptionSupplier, 0);
+    return checkAtMost(ref, exceptionSupplier, 0);
 
   }
 
@@ -73,7 +73,7 @@ public class IntegerVerifiers {
    * @return 検証済みのInteger値。
    * @throws RuntimeException Integer値が指定された閉範囲内にない場合。
    */
-  public static Integer verifyRangeClosed(Integer ref,
+  public static Integer checkRangeClosed(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Integer min, @NonNull Integer max) {
     if (!Range.closed(min, max).contains(ref)) {
@@ -95,7 +95,7 @@ public class IntegerVerifiers {
    * @return 検証されたInteger値。
    * @throws RuntimeException Integer値が指定した開放範囲内にない場合。
    */
-  public static Integer verifyRangeOpen(Integer ref,
+  public static Integer checkRangeOpen(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Integer min, @NonNull Integer max) {
     if (!Range.open(min, max).contains(ref)) {
@@ -117,7 +117,7 @@ public class IntegerVerifiers {
    * @return 検証済みのInteger型の値。
    * @throws RuntimeException Integer型の値が指定された閉区間-開区間の範囲内にない場合。
    */
-  public static Integer verifyRangeClosedOpen(Integer ref,
+  public static Integer checkRangeClosedOpen(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min,
       @NonNull Integer max) {
     if (!Range.closedOpen(min, max).contains(ref)) {
@@ -139,7 +139,7 @@ public class IntegerVerifiers {
    * @return 検証したInteger値。
    * @throws RuntimeException Integer値が指定した開放-閉鎖範囲内にない場合。
    */
-  public static Integer verifyRangeOpenClosed(Integer ref,
+  public static Integer checkRangeOpenClosed(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min,
       @NonNull Integer max) {
     if (!Range.openClosed(min, max).contains(ref)) {
@@ -161,7 +161,7 @@ public class IntegerVerifiers {
    * @return 検証された整数値。
    * @throws RuntimeException 整数値が指定された最小値以上でない場合にスローされます。
    */
-  public static Integer verifyAtLest(Integer ref,
+  public static Integer checkAtLest(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min) {
     if (!Range.atLeast(min).contains(ref)) {
       throw exceptionSupplier.get();
@@ -180,7 +180,7 @@ public class IntegerVerifiers {
    * @return 検証されたInteger値を返します。
    * @throws RuntimeException Integer値が指定範囲内に存在しない場合にスローされます。
    */
-  public static Integer verifyAtMost(Integer ref,
+  public static Integer checkAtMost(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer max) {
     if (!Range.atMost(max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -199,7 +199,7 @@ public class IntegerVerifiers {
    * @return 検証済みのIntegerの値。
    * @throws RuntimeException Integerの値が指定された最大値未満でない場合。
    */
-  public static Integer verifyLessThan(Integer ref,
+  public static Integer checkLessThan(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer max) {
     if (!Range.lessThan(max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -218,7 +218,7 @@ public class IntegerVerifiers {
    * @return 検証されたInteger値。
    * @throws RuntimeException Integer値が最小値よりも大きくない場合。
    */
-  public static Integer verifyGreaterThan(Integer ref,
+  public static Integer checkGreaterThan(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min) {
     if (!Range.greaterThan(min).contains(ref)) {
       throw exceptionSupplier.get();

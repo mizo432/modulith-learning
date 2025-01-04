@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ValueVerifiers {
+public class ValuePrecondition {
 
   /**
    * 指定された参照が空でないことを検証します。参照が空の場合、exceptionSupplierで提供されるランタイム例外がスローされます。それ以外の場合、参照が返されます。
@@ -17,7 +17,7 @@ public class ValueVerifiers {
    * @return 検証済みの参照
    * @throws E 参照が空の場合
    */
-  public static <R extends MakeableEmpty, E extends RuntimeException> R verifyNotEmpty(
+  public static <R extends MakeableEmpty, E extends RuntimeException> R checkNotEmpty(
       @NonNull R ref, Supplier<E> exceptionSupplier) {
     if (ref.isEmpty()) {
       throw exceptionSupplier.get();

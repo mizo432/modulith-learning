@@ -24,8 +24,9 @@ public record Today(LocalDate value) {
 
   }
 
-  public LocalDate addOneMonth() {
+  public LocalDate plusOneMonth() {
     return value.plusMonths(1);
+
   }
 
   public int nextMonthInteger() {

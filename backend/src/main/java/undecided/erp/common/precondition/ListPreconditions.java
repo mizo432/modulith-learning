@@ -10,7 +10,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ListVerifiers {
+public class ListPreconditions {
 
   /**
    * 与えられたリストが空でないことを確認します。

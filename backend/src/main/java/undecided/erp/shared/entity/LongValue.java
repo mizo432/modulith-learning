@@ -4,7 +4,7 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
-import undecided.erp.common.precondition.LongVerifiers;
+import undecided.erp.common.precondition.LongPrecondition;
 
 /**
  * インターフェース LongValue は、Long 型の単一の値を表します。
@@ -69,7 +69,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
      * @return 数値がnullまたはゼロ以下である場合、同じ数値を返します。それ以外の場合は、例外が投げられます。
      * @throws RuntimeException 数値がゼロより大きい場合。
      */
-    public static <VO extends LongValue<VO>> VO checkNegativeOrZero(final VO ref,
+    public static <VO extends LongValue<VO>> VO checkNonPositive(final VO ref,
         final @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
       return checkAtMost(ref, exceptionSupplier, 0L);
     }
@@ -90,7 +90,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongVerifiers.verifyRangeClosed(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeClosed(ref.getValue(), exceptionSupplier, min, max);
       return ref;
 
     }
@@ -112,7 +112,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongVerifiers.verifyRangeOpen(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeOpen(ref.getValue(), exceptionSupplier, min, max);
       return ref;
 
     }
@@ -134,7 +134,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongVerifiers.verifyRangeClosedOpen(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeClosedOpen(ref.getValue(), exceptionSupplier, min, max);
       return ref;
 
     }
@@ -156,7 +156,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongVerifiers.verifyRangeOpenClosed(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeOpenClosed(ref.getValue(), exceptionSupplier, min, max);
       return ref;
 
     }
@@ -177,7 +177,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongVerifiers.verifyAtLest(ref.getValue(), exceptionSupplier, min);
+      LongPrecondition.checkAtLest(ref.getValue(), exceptionSupplier, min);
       return ref;
 
     }
@@ -197,7 +197,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
         return null;
       }
 
-      LongVerifiers.verifyAtMost(ref.getValue(), exceptionSupplier, max);
+      LongPrecondition.checkAtMost(ref.getValue(), exceptionSupplier, max);
       return ref;
 
     }
@@ -216,7 +216,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongVerifiers.verifyLessThan(ref.getValue(), exceptionSupplier, max);
+      LongPrecondition.checkLessThan(ref.getValue(), exceptionSupplier, max);
       return ref;
 
     }
@@ -236,7 +236,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
         return ref;
       }
 
-      LongVerifiers.verifyGreaterThan(ref.getValue(), exceptionSupplier, min);
+      LongPrecondition.checkGreaterThan(ref.getValue(), exceptionSupplier, min);
       return ref;
 
     }

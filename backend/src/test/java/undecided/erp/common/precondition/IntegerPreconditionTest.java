@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class IntegerVerifiersTest {
+class IntegerPreconditionTest {
 
   private final Supplier<RuntimeException> exceptionSupplier = () -> new RuntimeException(
       "Number is not in the specified range");
@@ -18,33 +18,34 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsInRange_shouldReturnThatNumber() {
       Integer number = 10;
-      assertThat(IntegerVerifiers.verifyRangeClosed(10, exceptionSupplier, 5, 15)).isEqualTo(
+      assertThat(IntegerPrecondition.checkRangeClosed(10, exceptionSupplier, 5, 15)).isEqualTo(
           number);
     }
 
     @Test
     void whenNumberIsEqualToMin_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerVerifiers.verifyRangeClosed(5, exceptionSupplier, 5, 15)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkRangeClosed(5, exceptionSupplier, 5, 15)).isEqualTo(
+          number);
     }
 
     @Test
     void whenNumberIsEqualToMax_shouldReturnThatNumber() {
       Integer number = 15;
-      assertThat(IntegerVerifiers.verifyRangeClosed(15, exceptionSupplier, 5, 15)).isEqualTo(
+      assertThat(IntegerPrecondition.checkRangeClosed(15, exceptionSupplier, 5, 15)).isEqualTo(
           number);
     }
 
     @Test
     void whenNumberIsLessThanMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeClosed(4, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeClosed(4, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsGreaterThanMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeClosed(16, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeClosed(16, exceptionSupplier, 5, 15));
     }
 
   }
@@ -55,19 +56,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsGreaterThanMin_shouldReturnThatNumber() {
       Integer number = 10;
-      assertThat(IntegerVerifiers.verifyGreaterThan(10, exceptionSupplier, 5)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkGreaterThan(10, exceptionSupplier, 5)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsEqualToMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyGreaterThan(5, exceptionSupplier, 5));
+          () -> IntegerPrecondition.checkGreaterThan(5, exceptionSupplier, 5));
     }
 
     @Test
     void whenNumberIsLessThanMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyGreaterThan(4, exceptionSupplier, 5));
+          () -> IntegerPrecondition.checkGreaterThan(4, exceptionSupplier, 5));
     }
 
   }
@@ -78,31 +79,32 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsInRange_shouldReturnThatNumber() {
       Integer number = 10;
-      assertThat(IntegerVerifiers.verifyRangeOpen(10, exceptionSupplier, 5, 15)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkRangeOpen(10, exceptionSupplier, 5, 15)).isEqualTo(
+          number);
     }
 
     @Test
     void whenNumberIsEqualToMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeOpen(5, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeOpen(5, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsEqualToMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeOpen(15, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeOpen(15, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsLessThanMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeOpen(4, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeOpen(4, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsGreaterThanMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeOpen(16, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeOpen(16, exceptionSupplier, 5, 15));
     }
 
   }
@@ -113,33 +115,33 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsInClosedRange_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerVerifiers.verifyRangeClosedOpen(5, exceptionSupplier, 5, 15)).isEqualTo(
+      assertThat(IntegerPrecondition.checkRangeClosedOpen(5, exceptionSupplier, 5, 15)).isEqualTo(
           number);
     }
 
     @Test
     void whenNumberIsInOpenRange_shouldReturnThatNumber() {
       Integer number = 14;
-      assertThat(IntegerVerifiers.verifyRangeClosedOpen(14, exceptionSupplier, 5, 15)).isEqualTo(
+      assertThat(IntegerPrecondition.checkRangeClosedOpen(14, exceptionSupplier, 5, 15)).isEqualTo(
           number);
     }
 
     @Test
     void whenNumberIsEqualToMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeClosedOpen(15, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeClosedOpen(15, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsLessThanMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeClosedOpen(4, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeClosedOpen(4, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsGreaterThanMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeClosedOpen(16, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeClosedOpen(16, exceptionSupplier, 5, 15));
     }
 
   }
@@ -150,33 +152,33 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsInOpenRange_shouldReturnThatNumber() {
       Integer number = 6;
-      assertThat(IntegerVerifiers.verifyRangeOpenClosed(6, exceptionSupplier, 5, 15)).isEqualTo(
+      assertThat(IntegerPrecondition.checkRangeOpenClosed(6, exceptionSupplier, 5, 15)).isEqualTo(
           number);
     }
 
     @Test
     void whenNumberIsInClosedRange_shouldReturnThatNumber() {
       Integer number = 15;
-      assertThat(IntegerVerifiers.verifyRangeOpenClosed(15, exceptionSupplier, 5, 15)).isEqualTo(
+      assertThat(IntegerPrecondition.checkRangeOpenClosed(15, exceptionSupplier, 5, 15)).isEqualTo(
           number);
     }
 
     @Test
     void whenNumberIsEqualToMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeOpenClosed(5, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeOpenClosed(5, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsLessThanMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeOpenClosed(4, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeOpenClosed(4, exceptionSupplier, 5, 15));
     }
 
     @Test
     void whenNumberIsGreaterThanMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyRangeOpenClosed(16, exceptionSupplier, 5, 15));
+          () -> IntegerPrecondition.checkRangeOpenClosed(16, exceptionSupplier, 5, 15));
     }
 
   }
@@ -187,19 +189,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsEqualToMin_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerVerifiers.verifyAtLest(5, exceptionSupplier, 5)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkAtLest(5, exceptionSupplier, 5)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsGreaterThanMin_shouldReturnThatNumber() {
       Integer number = 10;
-      assertThat(IntegerVerifiers.verifyAtLest(10, exceptionSupplier, 5)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkAtLest(10, exceptionSupplier, 5)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsLessThanMin_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyAtLest(4, exceptionSupplier, 5));
+          () -> IntegerPrecondition.checkAtLest(4, exceptionSupplier, 5));
     }
 
   }
@@ -210,19 +212,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsEqualToMax_shouldReturnThatNumber() {
       Integer number = 10;
-      assertThat(IntegerVerifiers.verifyAtMost(10, exceptionSupplier, 10)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkAtMost(10, exceptionSupplier, 10)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsLessThanMax_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerVerifiers.verifyAtMost(5, exceptionSupplier, 10)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkAtMost(5, exceptionSupplier, 10)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsGreaterThanMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyAtMost(15, exceptionSupplier, 10));
+          () -> IntegerPrecondition.checkAtMost(15, exceptionSupplier, 10));
     }
 
   }
@@ -233,19 +235,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsPositive_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerVerifiers.verifyPositive(5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.verifyPositive(5, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsZero_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyPositive(0, exceptionSupplier));
+          () -> IntegerPrecondition.verifyPositive(0, exceptionSupplier));
     }
 
     @Test
     void whenNumberIsNegative_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyPositive(-5, exceptionSupplier));
+          () -> IntegerPrecondition.verifyPositive(-5, exceptionSupplier));
     }
 
   }
@@ -256,19 +258,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsZero_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyNegative(0, exceptionSupplier));
+          () -> IntegerPrecondition.verifyNegative(0, exceptionSupplier));
     }
 
     @Test
     void whenNumberIsPositive_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyNegative(5, exceptionSupplier));
+          () -> IntegerPrecondition.verifyNegative(5, exceptionSupplier));
     }
 
     @Test
     void whenNumberIsNegative_shouldReturnThatNumber() {
       Integer number = -5;
-      assertThat(IntegerVerifiers.verifyNegative(-5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.verifyNegative(-5, exceptionSupplier)).isEqualTo(number);
     }
 
   }
@@ -279,19 +281,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsPositive_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerVerifiers.verifyPositiveOrZero(5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.verifyPositiveOrZero(5, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsZero_shouldReturnThatNumber() {
       Integer number = 0;
-      assertThat(IntegerVerifiers.verifyPositiveOrZero(0, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.verifyPositiveOrZero(0, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsNegative_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyPositiveOrZero(-5, exceptionSupplier));
+          () -> IntegerPrecondition.verifyPositiveOrZero(-5, exceptionSupplier));
     }
 
   }
@@ -302,19 +304,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsZero_shouldReturnThatNumber() {
       Integer number = 0;
-      assertThat(IntegerVerifiers.verifyNegativeOrZero(0, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.verifyNegativeOrZero(0, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsNegative_shouldReturnThatNumber() {
       Integer number = -5;
-      assertThat(IntegerVerifiers.verifyNegativeOrZero(-5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.verifyNegativeOrZero(-5, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsPositive_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyNegativeOrZero(5, exceptionSupplier));
+          () -> IntegerPrecondition.verifyNegativeOrZero(5, exceptionSupplier));
     }
 
   }
@@ -329,19 +331,19 @@ class IntegerVerifiersTest {
     @Test
     void whenNumberIsLessThanMax_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerVerifiers.verifyLessThan(5, exceptionSupplier, 10)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkLessThan(5, exceptionSupplier, 10)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsEqualToMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyLessThan(10, exceptionSupplier, 10));
+          () -> IntegerPrecondition.checkLessThan(10, exceptionSupplier, 10));
     }
 
     @Test
     void whenNumberIsGreaterThanMax_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerVerifiers.verifyLessThan(15, exceptionSupplier, 10));
+          () -> IntegerPrecondition.checkLessThan(15, exceptionSupplier, 10));
     }
 
   }

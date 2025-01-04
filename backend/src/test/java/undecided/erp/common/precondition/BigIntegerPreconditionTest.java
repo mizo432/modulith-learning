@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class BigIntegerVerifiersTest {
+public class BigIntegerPreconditionTest {
 
   private static final BigInteger ZERO = BigInteger.ZERO;
   private static final BigInteger POSITIVE = BigInteger.ONE;
