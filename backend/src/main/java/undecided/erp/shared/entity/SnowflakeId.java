@@ -1,23 +1,29 @@
 package undecided.erp.shared.entity;
 
+import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.erp.shared.entity.LongValue.LongValues.checkNotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ComparisonChain;
+import jakarta.persistence.Embeddable;
 import java.beans.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.springframework.lang.Nullable;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode
-public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<SnowflakeId> {
+@Embeddable
+public class SnowflakeId implements LongValue<SnowflakeId>,
+    Comparable<SnowflakeId> {
 
   public static final SnowflakeId EMPTY = new SnowflakeId(null);
   @JsonValue
@@ -71,15 +77,37 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
     return isNull(value);
   }
 
+  /**
+   * この SnowflakeId インスタンスを他のインスタンスと比較して順序を決定します。
+   *
+   * @param other 比較対象の SnowflakeId インスタンス。null の可能性があります。
+   * @return この SnowflakeId が指定された SnowflakeId より小さい場合は負の整数、 等しい場合は 0、大きい場合は正の整数を返します。 指定されたオブジェクトが
+   * null の場合は -1 を返します。
+   */
   @Override
-  public int compareTo(SnowflakeId other) {
+  public int compareTo(@Nullable SnowflakeId other) {
     if (isNull(other)) {
       return -1;
+    }
+    if (isNull(this.value)) {
+      return 1;
     }
     return ComparisonChain
         .start()
         .compare(this.value, other.getValue())
         .result();
 
+  }
+
+  /**
+   * このインスタンスに格納されている値をBase-36エンコードされた文字列に変換します。 このメソッドは、変換を実行する前に値がnullでも空でもないことを検証します。
+   *
+   * @return 現在のインスタンスの値をBase-36エンコードした文字列。
+   * @throws IllegalStateException 値がnullまたは空の場合にスローされます。
+   */
+  public String toBase36String() {
+    checkNotNull(value, () -> new IllegalStateException("value is null"));
+    checkNotEmpty(this, () -> new IllegalStateException("value is empty"));
+    return Long.toString(value, 36);
   }
 }

@@ -12,10 +12,11 @@ buildscript {
 plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
+    idea
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "3.4.0"
+    id("org.springframework.boot") version "3.4.1"
     // Spring関連の依存関係の管理用プラグイン
-    id("io.spring.dependency-management") version "1.1.4"
+    id("io.spring.dependency-management") version "1.1.7"
     // Flywayプラグイン（DBマイグレーション）
     id("org.flywaydb.flyway") version "10.15.2"
 }
@@ -41,7 +42,7 @@ repositories {
 
 extra["springModulithVersion"] = "1.3.1"
 extra["springModulithInsightVersion"] = "1.3.1"
-extra["guavaVersion"] = "33.3.0-jre"
+extra["guavaVersion"] = "33.4.0-jre"
 extra["icu4jVersion"] = "74.2"
 extra["yaviVersion"] = "0.14.1"
 extra["jiltVersion"] = "1.6.1"
@@ -98,6 +99,10 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+}
+tasks.withType<Javadoc> {
+    (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    (options as StandardJavadocDocletOptions).addStringOption("encoding", "UTF-8")
 }
 
 flyway {

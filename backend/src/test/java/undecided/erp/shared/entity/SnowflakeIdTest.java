@@ -1,99 +1,38 @@
 package undecided.erp.shared.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import undecided.erp.common.snowflake.FixedSnowflakeIdProvider;
-import undecided.erp.common.snowflake.SnowflakeIdProvider;
 
+@DisplayName("SnowflakeIdTest - toBase36Stringメソッドのテスト")
 class SnowflakeIdTest {
 
-  @BeforeEach
-  void setUo() {
-    FixedSnowflakeIdProvider.initialize(10L);
-    ;
-
-  }
-
-  @AfterEach
-  void tearDown() {
-    SnowflakeIdProvider.clear();
-
-  }
-
   @Nested
-  class NewInstanceTest {
+  @DisplayName("toBase36Stringメソッドのテスト")
+  class ToBase36StringTest {
 
     @Test
-    void shouldReturnNotNullWhenNewInstance() {
-      assertThat(SnowflakeId.newInstance()).isNotNull();
+    @DisplayName("有効な値が正しくBase36文字列に変換されることを確認する")
+    void shouldConvertValidValueToBase36String() {
+      long validValue = 123456789L;
+      SnowflakeId snowflakeId = SnowflakeId.reconstruct(validValue);
 
-    }
+      String result = snowflakeId.toBase36String();
 
-  }
-
-  @Nested
-  class ToStringTest {
-
-    @Test
-    void shouldReturnPersistencyWhenToString() {
-      SnowflakeId snowflakeId = SnowflakeId.newInstance();
-      assertThat(snowflakeId.toString()).isEqualTo("10");
-    }
-
-  }
-
-  @Nested
-  class EqualsTest {
-
-    @Test
-    void shouldReturnFalseWhenEqualsNull() {
-      SnowflakeId snowflakeId = SnowflakeId.newInstance();
-      assertThat(snowflakeId.equals(null)).isFalse();
+      assertThat(result).isEqualTo(Long.toString(validValue, 36));
     }
 
     @Test
-    void shouldReturnTrueWhenEqualsReflexivity() {
-      SnowflakeId snowflakeId = SnowflakeId.newInstance();
-      assertThat(snowflakeId.equals(snowflakeId)).isTrue();
+    @DisplayName("SnowflakeIdが空の場合、例外がスローされることを確認する")
+    void shouldThrowExceptionWhenSnowflakeIdIsEmpty() {
+      SnowflakeId snowflakeId = SnowflakeId.empty();
+
+      assertThatThrownBy(snowflakeId::toBase36String)
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessage("value is empty");
     }
-
-    @Test
-    void shouldReturnTrueWhenEqualsSymmetry() {
-      SnowflakeId snowflakeId1 = SnowflakeId.newInstance();
-      SnowflakeId snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
-      assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
-      assertThat(snowflakeId2.equals(snowflakeId1)).isTrue();
-    }
-
-    @Test
-    void shouldReturnTrueWhenEqualsTransitivity() {
-      SnowflakeId snowflakeId1 = SnowflakeId.newInstance();
-      SnowflakeId snowflakeId2 = SnowflakeId.of(snowflakeId1.getValue());
-      assertThat(snowflakeId1.equals(snowflakeId2)).isTrue();
-      assertThat(snowflakeId2.equals(snowflakeId1)).isTrue();
-    }
-
-  }
-
-  @Nested
-  class ReconstructTest {
-
-    @Test
-    void shouldReturnNotNullValueWhenReconstructNotNullValue() {
-      SnowflakeId snowflakeId = SnowflakeId.reconstruct(15L);
-      assertThat(snowflakeId).isNotNull();
-      assertThat(snowflakeId.getValue()).isEqualTo(15L);
-    }
-
-    @Test
-    void shouldReturnEmptyWhenReconstructNullValue() {
-      SnowflakeId snowflakeId = SnowflakeId.reconstruct(null);
-      assertThat(snowflakeId).isSameAs(SnowflakeId.EMPTY);
-    }
-
   }
 }

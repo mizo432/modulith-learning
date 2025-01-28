@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
+import undecided.erp.shared.entity.BusinessEntity;
 import undecided.erp.shared.entity.SnowflakeId;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Product {
+public class Product extends BusinessEntity<Product> {
 
   /**
    * この変数は、Snowflakeアルゴリズムを使用して一意の識別子を表します。 通常、Projectクラスのフィールドとして使用されます。

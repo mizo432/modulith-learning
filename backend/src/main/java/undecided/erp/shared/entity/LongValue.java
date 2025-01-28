@@ -241,5 +241,14 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
 
     }
 
+    public static void checkNotEmpty(LongValue<?> ref,
+        Supplier<? extends RuntimeException> exceptionSupplier) {
+      if (isNull(ref)) {
+        throw exceptionSupplier.get();
+      }
+      if (ref.isEmpty()) {
+        throw exceptionSupplier.get();
+      }
+    }
   }
 }

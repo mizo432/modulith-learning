@@ -1,5 +1,8 @@
 package undecided.erp.relationship.domain.model.orgRole.company;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -27,8 +30,12 @@ import undecided.erp.shared.entity.SnowflakeId;
 public class Company implements ICompany {
 
   @Id
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "company_id", nullable = false))
   private SnowflakeId id;
 
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "company_code", nullable = false))
   private CompanyCode code;
 
   @Override

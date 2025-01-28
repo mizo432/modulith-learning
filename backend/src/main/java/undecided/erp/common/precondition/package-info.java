@@ -3,7 +3,4 @@
  *
  * <pre>業務的な観点のチェックよりもメソッドレベルでの入力パラメータ値などをチェックするのにご利用ください</pre>
  */
-@NamedInterface("verifier")
 package undecided.erp.common.precondition;
-
-import org.springframework.modulith.NamedInterface;

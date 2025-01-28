@@ -8,11 +8,12 @@ import undecided.erp.common.precondition.IntegerPrecondition;
 
 
 /**
- * インターフェース IntegerValue は、Integer 型の単一の値を表します。
+ * IntegerValueクラスは、型Integerの単一の値をカプセル化する値オブジェクトを表します。
+ * このクラスは、Integer型でパラメータ化されたSingleValueクラスの機能を拡張し、 整数値を処理するための特定の実装を提供します。
  * <p>
- * このインターフェースは SingleValue インターフェースを拡張しています。
+ * このクラスは、型付けが強い整数値の値オブジェクトとしての表現が必要な状況で使用されることを意図しています。
  *
- * @see SingleValue
+ * @param <VO> 値オブジェクトのタイプを表します。
  */
 public interface IntegerValue<VO extends IntegerValue<VO>> extends SingleValue<Integer> {
 

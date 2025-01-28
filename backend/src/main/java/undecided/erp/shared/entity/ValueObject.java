@@ -5,11 +5,25 @@ import java.util.function.Supplier;
 import lombok.NonNull;
 import undecided.erp.common.primitive.Objects2;
 
+/**
+ * ドメイン駆動設計 (Domain-Driven Design) の文脈における値オブジェクトを表します。 値オブジェクトは不変（immutable）な型であり、属性のみで定義され、
+ * 個別の識別子（identity）を持ちません。
+ */
 public interface ValueObject {
 
 
+  /**
+   * Determines whether the value object is empty.
+   *
+   * @return {@code true} if the value object is empty, {@code false} otherwise.
+   */
   boolean isEmpty();
 
+  /**
+   * このユーティリティクラスは、値オブジェクト (`ValueObject`) を操作するためのメソッドを提供し、 null
+   * または空の値オブジェクトのケースを扱うための判断基準に基づくユーティリティメソッドを用意しています。 主に値オブジェクトが頻繁に使用されるアプリケーション内で、null
+   * 安全性や空チェック検証を容易にするのに役立ちます。
+   */
   class ValueObjects {
 
     /**
