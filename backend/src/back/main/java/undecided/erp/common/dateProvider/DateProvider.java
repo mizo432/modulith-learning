@@ -1,0 +1,124 @@
+package undecided.erp.common.dateProvider;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
+
+/**
+ * DateProviderクラスは現在の日付と時刻を提供する役割を担っています。
+ */
+public class DateProvider {
+
+  private static final AtomicReference<DateProvider> DATE_PROVIDER = new AtomicReference<>(
+      new DateProvider());
+
+  protected DateProvider() {
+
+  }
+
+  protected DateProvider(DateProvider dateProvider) {
+    DATE_PROVIDER.set(dateProvider);
+
+  }
+
+  /**
+   * 現在のLocalDateTimeを返します。
+   *
+   * @return 現在のLocalDateTime
+   */
+  public static LocalDateTime currentLocalDateTime() {
+    return DATE_PROVIDER.get().now();
+  }
+
+  /**
+   * 現在の日付と時刻を返します。
+   *
+   * @return 現在の日付と時刻
+   * @deprecated {@link #currentLocalDateTime()} メソッドを使用してください。
+   */
+  @Deprecated(forRemoval = true)
+  public static Date currentDate() {
+    ZonedDateTime zdt = currentLocalDateTime().atZone(ZoneId.systemDefault());
+    return Date.from(zdt.toInstant());
+
+  }
+
+  /**
+   * 現在のローカル日付を返します。
+   *
+   * @return 現在のローカル日付
+   */
+  public static LocalDate currentLocalDate() {
+    return LocalDate.from(currentLocalDateTime());
+
+  }
+
+  /**
+   * 現在のローカル時間を返します。
+   *
+   * @return 現在のローカル時間
+   */
+  public static LocalTime currentLocalTime() {
+    return LocalTime.from(currentLocalDateTime());
+
+  }
+
+  /**
+   * 現在の年と月をYearMonthオブジェクトとして返します。
+   *
+   * @return 現在の年と月
+   */
+  public static YearMonth currentYearMonth() {
+    LocalDateTime currentDateTime = currentLocalDateTime();
+    return YearMonth.from(currentDateTime);
+  }
+
+  /**
+   * エポックからの現在の時間をミリ秒で返します。
+   *
+   * @return 現在の時間（ミリ秒）
+   */
+  public static long currentTimeMillis() {
+    LocalDateTime currentLocalDateTime = currentLocalDateTime();
+    Instant instant = currentLocalDateTime.atZone(ZoneId.systemDefault()).toInstant();
+    return instant.toEpochMilli();
+
+  }
+
+  /**
+   * Resets the DateProvider instance to its default state.
+   * <p>
+   * This method calls the initialize method to replace the current DateProvider instance with a new
+   * instance, effectively clearing any customized date provider settings and reverting to the
+   * default behavior.
+   */
+  public static void clear() {
+    DATE_PROVIDER.set(new DateProvider());
+  }
+
+  /**
+   * 現在の月と日を MonthDay オブジェクトとして取得します。
+   *
+   * @return 現在の月と日を表す MonthDay オブジェクト。
+   */
+  public static MonthDay currentMonthDay() {
+    return MonthDay.from(currentLocalDateTime());
+  }
+
+  /**
+   * Returns the current date and time as a LocalDateTime object.
+   *
+   * @return the current LocalDateTime
+   */
+  protected LocalDateTime now() {
+    return LocalDateTime.now();
+  }
+
+}

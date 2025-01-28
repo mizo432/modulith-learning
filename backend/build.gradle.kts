@@ -21,6 +21,8 @@ plugins {
     id("org.flywaydb.flyway") version "10.15.2"
 }
 
+idea { module { inheritOutputDirs = false } }
+
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -93,7 +95,6 @@ dependencies {
 
     implementation("am.ik.yavi:yavi:${property("yaviVersion")}")
     annotationProcessor("cc.jilt:jilt:${property("jiltVersion")}")
-    //    implementation("olg.zalando:logbook-spring-boot-starter:3.9.0")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
