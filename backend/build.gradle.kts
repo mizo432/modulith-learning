@@ -12,16 +12,14 @@ buildscript {
 plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
-    idea
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "3.4.1"
+    id("org.springframework.boot") version "3.4.2"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     // Flywayプラグイン（DBマイグレーション）
     id("org.flywaydb.flyway") version "10.15.2"
+    jacoco
 }
-
-idea { module { inheritOutputDirs = false } }
 
 version = "0.0.1-SNAPSHOT"
 
@@ -52,7 +50,7 @@ extra["jdbcPostgresqlVersion"] = "10.15.2"
 extra["openapiUiVersion"] = "2.3.0"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
-extra["junitVersion"] = "5.10.3"
+extra["junitVersion"] = "5.11.4"
 extra["springDataBomVersion"] = "2024.1.1"
 extra["springCloudBomVersion"] = "2024.0.0"
 extra["spotbugsAnnotationVersion"] = "4.8.4"
