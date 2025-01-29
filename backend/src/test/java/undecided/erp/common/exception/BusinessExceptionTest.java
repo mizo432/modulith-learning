@@ -35,10 +35,10 @@ class BusinessExceptionTest {
       assertThat(getResult.text()).isEqualTo("An error occurred");
       assertThat(actualBusinessException.getLocalizedMessage())
           .isEqualTo(
-              "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=An error occurred]]]");
+              "ResultMessages [type=error, list=[ResultMessage{code='null', args=[], text='An error occurred'}]]");
       assertThat(actualBusinessException.getMessage())
           .isEqualTo(
-              "ResultMessages [type=error, list=[ResultMessage [code=null, args=[], text=An error occurred]]]");
+              "ResultMessages [type=error, list=[ResultMessage{code='null', args=[], text='An error occurred'}]]");
       assertThat(getResult.code()).isNull();
       assertThat(actualBusinessException.getCause()).isNull();
       assertThat(actualBusinessException.getSuppressed().length).isEqualTo(0);

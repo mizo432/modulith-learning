@@ -1,5 +1,6 @@
 package undecided.erp.common.message;
 
+import java.util.Arrays;
 import lombok.NonNull;
 import undecided.erp.common.primitive.Objects2;
 
@@ -46,4 +47,12 @@ public record ResultMessage(String code, Object[] args, String text) {
 
   }
 
+  @Override
+  public String toString() {
+    return "ResultMessage{" +
+        "code='" + code + '\'' +
+        ", args=" + Arrays.toString(args) +
+        ", text='" + text + '\'' +
+        '}';
+  }
 }
