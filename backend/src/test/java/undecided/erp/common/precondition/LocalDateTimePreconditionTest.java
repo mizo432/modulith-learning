@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class LocalDateTimeVerifiersTest {
+public class LocalDateTimePreconditionTest {
 
   private final Supplier<RuntimeException> exceptionSupplier = RuntimeException::new;
   private LocalDateTime ref = LocalDateTime.now();
@@ -29,7 +29,8 @@ public class LocalDateTimeVerifiersTest {
 
     @Test
     void whenRefIsInRange() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeClosed(ref, exceptionSupplier, min,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeClosed(ref, exceptionSupplier,
+          min,
           max);
       assertThat(actual).isEqualTo(ref);
     }
@@ -38,7 +39,8 @@ public class LocalDateTimeVerifiersTest {
     void whenRefIsOnLowerBound() {
       LocalDateTime min = ref;
       LocalDateTime max = ref.plusDays(1);
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeClosed(ref, exceptionSupplier, min,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeClosed(ref, exceptionSupplier,
+          min,
           max);
       assertThat(actual).isEqualTo(ref);
     }
@@ -46,7 +48,8 @@ public class LocalDateTimeVerifiersTest {
     @Test
     void whenRefIsOnUpperBound() {
       LocalDateTime max = ref;
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeClosed(ref, exceptionSupplier, min,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeClosed(ref, exceptionSupplier,
+          min,
           max);
       assertThat(actual).isEqualTo(ref);
     }
@@ -57,7 +60,7 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime max = ref.plusDays(2);
       Supplier<RuntimeException> exceptionSupplier = RuntimeException::new;
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeClosed(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeClosed(ref, exceptionSupplier, min, max));
     }
 
   }
@@ -74,7 +77,7 @@ public class LocalDateTimeVerifiersTest {
 
     @Test
     void whenRefIsInRange() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeOpen(ref, exceptionSupplier, min,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeOpen(ref, exceptionSupplier, min,
           max);
       assertThat(actual).isEqualTo(ref);
     }
@@ -84,7 +87,7 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime min = ref.plusSeconds(1);
       LocalDateTime max = ref.plusDays(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeOpen(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeOpen(ref, exceptionSupplier, min, max));
     }
 
     @Test
@@ -92,7 +95,7 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime min = ref.minusDays(1);
       LocalDateTime max = ref.minusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeOpen(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeOpen(ref, exceptionSupplier, min, max));
     }
 
     @Test
@@ -100,7 +103,7 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime min = ref;
       LocalDateTime max = ref.plusDays(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeOpen(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeOpen(ref, exceptionSupplier, min, max));
     }
 
     @Test
@@ -108,7 +111,7 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime min = ref.minusDays(1);
       LocalDateTime max = ref;
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeOpen(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeOpen(ref, exceptionSupplier, min, max));
     }
   }
 
@@ -124,14 +127,14 @@ public class LocalDateTimeVerifiersTest {
 
     @Test
     void whenRefIsInRange() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeOpenClosed(ref, exceptionSupplier,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeOpenClosed(ref, exceptionSupplier,
           min, max);
       assertThat(actual).isEqualTo(ref);
     }
 
     @Test
     void whenRefIsAtLeastMin() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyAtLest(ref, exceptionSupplier, min);
+      LocalDateTime actual = LocalDateTimePrecondition.verifyAtLest(ref, exceptionSupplier, min);
       assertThat(actual).isEqualTo(ref);
     }
 
@@ -139,7 +142,7 @@ public class LocalDateTimeVerifiersTest {
     void whenRefIsBelowMin() {
       LocalDateTime min = ref.plusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyAtLest(ref, exceptionSupplier, min));
+          () -> LocalDateTimePrecondition.verifyAtLest(ref, exceptionSupplier, min));
     }
 
     @Test
@@ -147,7 +150,7 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime min = ref.plusSeconds(1);
       LocalDateTime max = ref.plusDays(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
     }
 
     @Test
@@ -155,7 +158,7 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime min = ref.minusDays(1);
       LocalDateTime max = ref.minusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
     }
 
     @Test
@@ -163,14 +166,14 @@ public class LocalDateTimeVerifiersTest {
       LocalDateTime min = ref;
       LocalDateTime max = ref.plusDays(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
     }
 
     @Test
     void whenRefIsOnUpperBound() {
       LocalDateTime min = ref.minusDays(1);
       LocalDateTime max = ref;
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeOpenClosed(ref, exceptionSupplier,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeOpenClosed(ref, exceptionSupplier,
           min, max);
       assertThat(actual).isEqualTo(ref);
     }
@@ -188,7 +191,7 @@ public class LocalDateTimeVerifiersTest {
 
     @Test
     void whenRefIsInRange() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeClosedOpen(ref, exceptionSupplier,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeClosedOpen(ref, exceptionSupplier,
           min, max);
       assertThat(actual).isEqualTo(ref);
     }
@@ -196,7 +199,7 @@ public class LocalDateTimeVerifiersTest {
     @Test
     void whenRefIsOnLowerBound() {
       LocalDateTime min = ref;
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyRangeClosedOpen(ref, exceptionSupplier,
+      LocalDateTime actual = LocalDateTimePrecondition.verifyRangeClosedOpen(ref, exceptionSupplier,
           min, max);
       assertThat(actual).isEqualTo(ref);
     }
@@ -205,14 +208,14 @@ public class LocalDateTimeVerifiersTest {
     void whenRefIsOutsideUpperBound() {
       LocalDateTime max = ref.minusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
     }
 
     @Test
     void whenRefIsOnUpperBound() {
       LocalDateTime max = ref;
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
 
     }
 
@@ -220,7 +223,7 @@ public class LocalDateTimeVerifiersTest {
     void whenRefIsOutsideLowerBound() {
       LocalDateTime min = ref.plusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
+          () -> LocalDateTimePrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
     }
   }
 
@@ -236,7 +239,7 @@ public class LocalDateTimeVerifiersTest {
 
     @Test
     void whenRefIsAtLeastMin() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyAtLest(ref, exceptionSupplier, min);
+      LocalDateTime actual = LocalDateTimePrecondition.verifyAtLest(ref, exceptionSupplier, min);
       assertThat(actual).isEqualTo(ref);
     }
 
@@ -244,7 +247,7 @@ public class LocalDateTimeVerifiersTest {
     void whenRefIsBelowMin() {
       LocalDateTime min = ref.plusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyAtLest(ref, exceptionSupplier, min));
+          () -> LocalDateTimePrecondition.verifyAtLest(ref, exceptionSupplier, min));
     }
 
     @Nested
@@ -258,7 +261,7 @@ public class LocalDateTimeVerifiersTest {
 
       @Test
       void whenRefIsAtMostMax() {
-        LocalDateTime actual = LocalDateTimeVerifiers.verifyAtMost(ref, exceptionSupplier, max);
+        LocalDateTime actual = LocalDateTimePrecondition.verifyAtMost(ref, exceptionSupplier, max);
         assertThat(actual).isEqualTo(ref);
       }
 
@@ -266,7 +269,7 @@ public class LocalDateTimeVerifiersTest {
       void whenRefIsAboveMax() {
         LocalDateTime max = ref.minusSeconds(1);
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-            () -> LocalDateTimeVerifiers.verifyAtMost(ref, exceptionSupplier, max));
+            () -> LocalDateTimePrecondition.verifyAtMost(ref, exceptionSupplier, max));
       }
     }
   }
@@ -282,7 +285,7 @@ public class LocalDateTimeVerifiersTest {
 
     @Test
     void whenRefIsLessThanMax() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyLessThan(ref.minusDays(1),
+      LocalDateTime actual = LocalDateTimePrecondition.verifyLessThan(ref.minusDays(1),
           exceptionSupplier, max);
       assertThat(actual).isEqualTo(ref.minusDays(1));
     }
@@ -291,7 +294,7 @@ public class LocalDateTimeVerifiersTest {
     void whenRefIsNotLessThanMax() {
       LocalDateTime max = ref.minusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyLessThan(ref, exceptionSupplier, max));
+          () -> LocalDateTimePrecondition.verifyLessThan(ref, exceptionSupplier, max));
     }
   }
 
@@ -306,7 +309,7 @@ public class LocalDateTimeVerifiersTest {
 
     @Test
     void whenRefIsGreaterThanMin() {
-      LocalDateTime actual = LocalDateTimeVerifiers.verifyGreaterThan(ref.plusDays(1),
+      LocalDateTime actual = LocalDateTimePrecondition.verifyGreaterThan(ref.plusDays(1),
           exceptionSupplier, min);
       assertThat(actual).isEqualTo(ref.plusDays(1));
     }
@@ -315,7 +318,7 @@ public class LocalDateTimeVerifiersTest {
     void whenRefIsNotGreaterThanMin() {
       LocalDateTime min = ref.plusSeconds(1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateTimeVerifiers.verifyGreaterThan(ref, exceptionSupplier, min));
+          () -> LocalDateTimePrecondition.verifyGreaterThan(ref, exceptionSupplier, min));
     }
   }
 }

@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
  * LocalDateTimeの値が指定した範囲内にあるかどうかを検証するメソッドを含むユーティリティクラス。
  */
 @UtilityClass
-public class LocalDateTimeVerifiers {
+public class LocalDateTimePrecondition {
 
   /**
    * 指定した最小値と最大値によって定義される閉範囲内に特定のLocalDateTimeが存在するかを検証します。
