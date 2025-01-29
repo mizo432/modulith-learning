@@ -450,7 +450,7 @@ class Strings2Test {
 
     @Test
     void shouldReturnNullForEmptyStringAndNullDefaultValue() {
-      String str = "  ";
+      String str = Strings2.EMPTY;
       String defaultValue = null;
       String result = Strings2.defaultIfEmpty(str, defaultValue);
       assertThat(result)
