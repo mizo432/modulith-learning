@@ -56,6 +56,13 @@ public class Arrays2 {
 
   }
 
+  /**
+   * {@link Arrays#equals(Object[], Object[])} を使用して2つの配列を比較し、等しいかどうかを判定します。
+   *
+   * @param args 比較する最初の配列
+   * @param args1 比較する2番目の配列
+   * @return 2つの配列が等しい場合はtrue、それ以外の場合はfalse
+   */
   public static boolean equal(Object[] args, Object[] args1) {
     return Arrays.equals(args, args1);
 
@@ -63,6 +70,6 @@ public class Arrays2 {
 
   public static String toString(Object[] args) {
     return Arrays.toString(args);
-    
+
   }
 }

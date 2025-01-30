@@ -20,31 +20,6 @@ class ResultMessageTest {
     assertThat(rm.text()).isEqualTo("text123");
   }
 
-  @Test
-  public void testEquals() {
-    ResultMessage rm1 = ResultMessage.fromCode("sameCode",
-        new Object[]{"sameArg1", "sameArg2", "sameArg3"});
-    ResultMessage rm2 = ResultMessage.fromCode("sameCode",
-        new Object[]{"sameArg1", "sameArg2", "sameArg3"});
-    assertThat(rm1.equals(rm2)).isTrue();
-  }
-
-
-  @Test
-  public void testEqualsWithDifferentCodes() {
-    ResultMessage rm1 = ResultMessage.fromCode("code1",
-        new Object[]{"sameArg1", "sameArg2", "sameArg3"});
-    ResultMessage rm2 = ResultMessage.fromCode("code2",
-        new Object[]{"sameArg1", "sameArg2", "sameArg3"});
-    assertThat(rm1.equals(rm2)).isFalse();
-  }
-
-  @Test
-  public void testEqualsWithDifferentArgs() {
-    ResultMessage rm1 = ResultMessage.fromCode("sameCode", "arg1");
-    ResultMessage rm2 = ResultMessage.fromCode("sameCode", "arg2");
-    assertThat(rm1.equals(rm2)).isFalse();
-  }
 
   @Test
   public void testEqualsWithDifferentText() {

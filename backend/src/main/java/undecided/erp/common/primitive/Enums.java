@@ -5,11 +5,13 @@ import static undecided.erp.common.precondition.ArrayVerifiers.verifyLengthAtLea
 
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import undecided.erp.common.precondition.IndexedRuntimeException;
 
 /**
- * This class provides utility methods for working with enums.
+ * 列挙型およびそれに関連する機能を扱うためのユーティリティクラスです。
  */
+@UtilityClass
 public class Enums {
 
   /**
