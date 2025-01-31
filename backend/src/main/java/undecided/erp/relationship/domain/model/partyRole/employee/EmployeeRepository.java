@@ -16,4 +16,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmployeeRepository extends PagingAndSortingRepository<Employee, Long> {
 
+  /**
+   * 指定された従業員IDに基づいてEmployeeエンティティを取得します。
+   *
+   * @param employeeId 取得する従業員の一意の識別子
+   * @return 指定された従業員IDに一致するEmployeeエンティティ、またはエンティティが見つからない場合はnull
+   */
+  Employee findEmployeeByEmployeeId(Long employeeId);
+
 }
