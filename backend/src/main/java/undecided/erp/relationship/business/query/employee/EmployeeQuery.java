@@ -16,4 +16,6 @@ public interface EmployeeQuery {
    */
   Optional<Employee> findByEmployeeId(Long employeeId);
 
+  Iterable<Employee> findByInitials(String initials);
+  
 }

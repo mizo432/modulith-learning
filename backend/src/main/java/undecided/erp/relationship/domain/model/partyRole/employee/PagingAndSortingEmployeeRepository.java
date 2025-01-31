@@ -1,6 +1,6 @@
 package undecided.erp.relationship.domain.model.partyRole.employee;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,7 +14,16 @@ import org.springframework.stereotype.Repository;
  * このリポジトリは、Long型のユニークIDで識別されるEmployeeエンティティを操作します。
  */
 @Repository
-public interface EmployeeRepository extends CrudRepository<Employee, Long> {
+public interface PagingAndSortingEmployeeRepository extends
+    PagingAndSortingRepository<Employee, Long> {
 
-  Employee deleteEmployeeByEmployeeId(Long employeeId);
+  /**
+   * 指定された従業員IDに基づいてEmployeeエンティティを取得します。
+   *
+   * @param employeeId 取得する従業員の一意の識別子
+   * @return 指定された従業員IDに一致するEmployeeエンティティ、またはエンティティが見つからない場合はnull
+   */
+  Employee findEmployeeByEmployeeId(Long employeeId);
+
+  Iterable<Employee> findEmployeesByInitials(String initials);
 }
