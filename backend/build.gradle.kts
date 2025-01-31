@@ -75,7 +75,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
-    implementation("org.jmolecules:jmolecules-layered-architecture")
     implementation("org.jmolecules:jmolecules-onion-architecture")
     implementation("org.jmolecules:jmolecules-ddd")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
