@@ -69,7 +69,7 @@ public class StringPrecondition {
    * @return 半角長が許容範囲内である場合、同じ文字列への参照を返します。
    * @throws E 半角長が許容範囲内でない場合
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthClosed(String ref,
+  public static <E extends RuntimeException> String checkHalfWidthLengthClosed(String ref,
       @NonNull Supplier<E> exceptionSupplier, int min, int max) {
     if (ref == null) {
       return ref;
