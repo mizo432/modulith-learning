@@ -22,7 +22,7 @@ repositories {
 
 extra["junitVersion"] = "5.10.2"
 extra["springDataBomVersion"] = "2024.0.1"
-extra["springCloudBomVersion"] = "2023.0.4"
+extra["springCloudBomVersion"] = "2024.0.0"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
