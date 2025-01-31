@@ -9,6 +9,9 @@ spring:
   threads:
     virtual:
       enabled: true
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
 eureka:
   client:
