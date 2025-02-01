@@ -33,7 +33,7 @@ class DropEmployeeCommandTest {
 
       // Act & Assert
       assertThatNoException().isThrownBy(() -> command.execute(validEmployeeId));
-      verify(mockRepository, times(1)).deleteEmployeeByEmployeeId(validEmployeeId);
+      verify(mockRepository, times(1)).deleteById(validEmployeeId);
     }
 
     @Test
@@ -51,7 +51,7 @@ class DropEmployeeCommandTest {
           .isThrownBy(() -> command.execute(nonExistingEmployeeId))
           .withMessage("Employee not found. employeeId: " + nonExistingEmployeeId);
 
-      verify(mockRepository, never()).deleteEmployeeByEmployeeId(nonExistingEmployeeId);
+      verify(mockRepository, never()).deleteById(nonExistingEmployeeId);
     }
 
     @Test
@@ -66,7 +66,7 @@ class DropEmployeeCommandTest {
           .isThrownBy(() -> command.execute(null))
           .withMessage("EmployeeId must not be null");
 
-      verify(mockRepository, never()).deleteEmployeeByEmployeeId(any());
+      verify(mockRepository, never()).deleteById(any());
     }
 
     @Test
@@ -82,7 +82,7 @@ class DropEmployeeCommandTest {
           .isThrownBy(() -> command.execute(negativeEmployeeId))
           .withMessage("EmployeeId must be positive");
 
-      verify(mockRepository, never()).deleteEmployeeByEmployeeId(any());
+      verify(mockRepository, never()).deleteById(any());
     }
 
     @Test
@@ -98,7 +98,7 @@ class DropEmployeeCommandTest {
           .isThrownBy(() -> command.execute(zeroEmployeeId))
           .withMessage("EmployeeId must be positive");
 
-      verify(mockRepository, never()).deleteEmployeeByEmployeeId(any());
+      verify(mockRepository, never()).deleteById(any());
     }
   }
 }

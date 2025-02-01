@@ -1,8 +1,9 @@
 package undecided.erp.relationship.business.command.employee;
 
 import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import undecided.erp.relationship.domain.model.partyRole.personRole.employee.Employee;
 import undecided.erp.relationship.domain.model.partyRole.personRole.employee.EmployeeRepository;
@@ -15,6 +16,7 @@ import undecided.erp.relationship.domain.model.partyRole.personRole.employee.Emp
  * 特定のIDで識別される従業員の情報を更新するために、このコマンドを使用してください。
  */
 @Service
+@RequiredArgsConstructor
 public class UpdateEmployeeCommand {
 
   /**
@@ -27,17 +29,6 @@ public class UpdateEmployeeCommand {
   private final EmployeeRepository employeeRepository;
 
   /**
-   * UpdateEmployeeCommandのインスタンスを構築します。
-   *
-   * @param employeeRepository 従業員に関する情報へのアクセスおよび管理に使用される {@code EmployeeRepository}
-   * のインスタンス。nullであってはなりません。
-   */
-  public UpdateEmployeeCommand(
-      EmployeeRepository employeeRepository) {
-    this.employeeRepository = employeeRepository;
-  }
-
-  /**
    * 指定された employeeId によって識別される既存の従業員の詳細を更新します。 まず、指定されたIDの従業員がシステム内に存在するかどうかを検証します。
    * 従業員が存在する場合、その詳細を更新し、リポジトリに保存します。 従業員が存在しない場合は、{@code IllegalArgumentException} がスローされます。
    *
@@ -45,10 +36,8 @@ public class UpdateEmployeeCommand {
    * @param employee 更新された詳細を含む {@code Employee} オブジェクト。nullであってはなりません。
    * @throws IllegalArgumentException 指定されたIDの従業員が見つからない場合にスローされます。
    */
-  public void execute(Long employeeId, Employee employee) {
-    checkNotNull(employeeId, () -> new IllegalArgumentException("EmployeeId must not be null"));
+  public void execute(@NonNull Long employeeId, @NonNull Employee employee) {
     checkPositive(employeeId, () -> new IllegalArgumentException("EmployeeId must be positive"));
-    checkNotNull(employee, () -> new IllegalArgumentException("Employee must not be null"));
     if (employeeRepository.existsById(employeeId)) {
       employee.setEmployeeId(employeeId);
       employeeRepository.save(employee);

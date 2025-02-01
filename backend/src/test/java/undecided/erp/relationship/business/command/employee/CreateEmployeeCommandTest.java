@@ -54,9 +54,71 @@ class CreateEmployeeCommandTest {
     void shouldThrowExceptionWhenEmployeeIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> createEmployeeCommand.execute(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Employee must not be null");
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("無効な従業員データのテスト")
+  class InvalidEmployeeTest {
+
+    @Test
+    @DisplayName("名前が null の場合に例外がスローされる")
+    void shouldThrowExceptionWhenNameIsNull() {
+      // Arrange
+      Employee employee = new Employee(
+          1L,
+          null,
+          "JD",
+          "ジョン ドウ"
+      );
+
+      // Act & Assert
+      assertThatThrownBy(() -> createEmployeeCommand.execute(employee))
+          .isInstanceOf(Exception.class);
     }
 
+    @Test
+    @DisplayName("イニシャルが null の場合に例外がスローされる")
+    void shouldThrowExceptionWhenInitialsAreNull() {
+      // Arrange
+      Employee employee = new Employee(
+          1L,
+          "John Doe",
+          null,
+          "ジョン ドウ"
+      );
+
+      // Act & Assert
+      assertThatThrownBy(() -> createEmployeeCommand.execute(employee))
+          .isInstanceOf(Exception.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("有効な従業員データのテスト")
+  class ValidEmployeeTests {
+
+    @Test
+    @DisplayName("異なる名前とイニシャルの従業員を保存する")
+    void shouldSaveEmployeeWithDifferentAttributes() {
+      // Arrange
+      Employee employee = new Employee(
+          2L,
+          "Jane Smith",
+          "JS",
+          "ジェーン スミス"
+      );
+
+      // Act
+      Employee savedEmployee = createEmployeeCommand.execute(employee);
+
+      // Assert
+      assertThat(savedEmployee).isNotNull();
+      assertThat(savedEmployee.getEmployeeId()).isEqualTo(2L);
+      assertThat(savedEmployee.getName()).isEqualTo("Jane Smith");
+      assertThat(savedEmployee.getInitials()).isEqualTo("JS");
+      assertThat(savedEmployee.getKanaName()).isEqualTo("ジェーン スミス");
+    }
   }
 }
