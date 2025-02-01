@@ -1,7 +1,7 @@
 package undecided.erp.relationship.business.query.employee;
 
 import java.util.Optional;
-import undecided.erp.relationship.domain.model.partyRole.employee.Employee;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.Employee;
 
 /**
  * システム内の従業員エンティティをクエリするためのメソッドを提供します。
@@ -17,5 +17,5 @@ public interface EmployeeQuery {
   Optional<Employee> findByEmployeeId(Long employeeId);
 
   Iterable<Employee> findByInitials(String initials);
-  
+
 }

@@ -1,4 +1,4 @@
-package undecided.erp.relationship.domain.model.partyRole.employee;
+package undecided.erp.relationship.domain.model.partyRole.personRole.employee;
 
 import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.erp.common.precondition.StringPrecondition.checkHalfWidthLengthClosed;

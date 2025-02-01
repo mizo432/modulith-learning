@@ -16,7 +16,7 @@ class LongPreconditionTest {
     @Test
     public void withPositiveValue() {
       long input = 5;
-      long output = LongPrecondition.verifyPositive(input, NoSuchElementException::new);
+      long output = LongPrecondition.checkPositive(input, NoSuchElementException::new);
       assertThat(output).isEqualTo(input);
     }
 
@@ -24,7 +24,7 @@ class LongPreconditionTest {
     public void withZero() {
       long input = 0;
       assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
-        LongPrecondition.verifyPositive(input, NoSuchElementException::new);
+        LongPrecondition.checkPositive(input, NoSuchElementException::new);
       });
     }
 
@@ -32,14 +32,14 @@ class LongPreconditionTest {
     public void withNegativeValue() {
       long input = -5;
       assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
-        LongPrecondition.verifyPositive(input, NoSuchElementException::new);
+        LongPrecondition.checkPositive(input, NoSuchElementException::new);
       });
     }
 
     @Test
     public void withNull() {
       Long input = null;
-      Long output = LongPrecondition.verifyPositive(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkPositive(input, NoSuchElementException::new);
       assertThat(output).isNull();
     }
 

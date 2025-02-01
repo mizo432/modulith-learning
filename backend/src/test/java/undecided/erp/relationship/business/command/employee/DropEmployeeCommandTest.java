@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import undecided.erp.relationship.domain.model.partyRole.employee.EmployeeRepository;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.EmployeeRepository;
 
 @DisplayName("DropEmployeeCommandTest クラスのテスト")
 class DropEmployeeCommandTest {

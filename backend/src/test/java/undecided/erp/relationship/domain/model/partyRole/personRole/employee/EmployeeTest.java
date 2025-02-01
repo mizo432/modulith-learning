@@ -1,4 +1,4 @@
-package undecided.erp.relationship.domain.model.partyRole.employee;
+package undecided.erp.relationship.domain.model.partyRole.personRole.employee;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

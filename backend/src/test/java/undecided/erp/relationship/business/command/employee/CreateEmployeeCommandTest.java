@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import undecided.erp.relationship.domain.model.partyRole.employee.Employee;
-import undecided.erp.relationship.domain.model.partyRole.employee.EmployeeRepository;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.Employee;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.EmployeeRepository;
 
 @SpringBootTest
 @Import(CreateEmployeeCommand.class)

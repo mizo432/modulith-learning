@@ -16,7 +16,7 @@ public class LongPrecondition {
    * @return 参照がnullでなく、正の場合は正の参照。
    * @throws RuntimeException 参照がnullまたは正でない場合。
    */
-  public static Long verifyPositive(Long ref,
+  public static Long checkPositive(Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkGreaterThan(ref, exceptionSupplier, 0L);
   }

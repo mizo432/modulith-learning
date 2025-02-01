@@ -1,4 +1,4 @@
-package undecided.erp.relationship.presentation.api;
+package undecided.erp.relationship.presentation.api.employee;
 
 import static undecided.erp.common.primitive.Lists2.newArrayList;
 
@@ -18,7 +18,7 @@ import undecided.erp.relationship.business.command.employee.CreateEmployeeComman
 import undecided.erp.relationship.business.command.employee.DropEmployeeCommand;
 import undecided.erp.relationship.business.command.employee.UpdateEmployeeCommand;
 import undecided.erp.relationship.business.query.employee.EmployeeQuery;
-import undecided.erp.relationship.domain.model.partyRole.employee.Employee;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.Employee;
 
 /**
  * 従業員関連の操作を管理するためのREST APIコントローラークラスです。 このクラスは、従業員に対するCRUD（作成、読み取り、更新、削除）操作を実行するためのエンドポイントを提供します。

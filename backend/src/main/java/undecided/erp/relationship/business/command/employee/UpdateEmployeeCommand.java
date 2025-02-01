@@ -1,11 +1,11 @@
 package undecided.erp.relationship.business.command.employee;
 
-import static undecided.erp.common.precondition.LongPrecondition.verifyPositive;
+import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
 import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 
 import org.springframework.stereotype.Service;
-import undecided.erp.relationship.domain.model.partyRole.employee.Employee;
-import undecided.erp.relationship.domain.model.partyRole.employee.EmployeeRepository;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.Employee;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.EmployeeRepository;
 
 /**
  * このクラスは、既存の従業員の詳細をシステム内で更新するための機能を提供します。
@@ -47,7 +47,7 @@ public class UpdateEmployeeCommand {
    */
   public void execute(Long employeeId, Employee employee) {
     checkNotNull(employeeId, () -> new IllegalArgumentException("EmployeeId must not be null"));
-    verifyPositive(employeeId, () -> new IllegalArgumentException("EmployeeId must be positive"));
+    checkPositive(employeeId, () -> new IllegalArgumentException("EmployeeId must be positive"));
     checkNotNull(employee, () -> new IllegalArgumentException("Employee must not be null"));
     if (employeeRepository.existsById(employeeId)) {
       employee.setEmployeeId(employeeId);

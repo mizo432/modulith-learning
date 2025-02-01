@@ -12,8 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import undecided.erp.relationship.domain.model.partyRole.employee.Employee;
-import undecided.erp.relationship.domain.model.partyRole.employee.EmployeeRepository;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.Employee;
+import undecided.erp.relationship.domain.model.partyRole.personRole.employee.EmployeeRepository;
 
 @SpringBootTest
 @DisplayName("UpdateEmployeeCommandのテスト")

@@ -1,4 +1,4 @@
-package undecided.erp.relationship.presentation.api;
+package undecided.erp.relationship.presentation.api.employee;
 
 public class EmployeeCriteria {
 
