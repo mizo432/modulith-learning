@@ -30,7 +30,7 @@ public class DropEmployeeCommand {
     checkPositive(employeeId, () -> new IllegalArgumentException("EmployeeId must be positive"));
 
     if (employeeRepository.existsById(employeeId)) {
-      employeeRepository.deleteEmployeeByEmployeeId(employeeId);
+      employeeRepository.deleteById(employeeId);
       return;
 
     }
