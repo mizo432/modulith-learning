@@ -1,3 +1,6 @@
+/**
+ * ドメイン層の資材を格納
+ */
 @DomainModelRing
 package undecided.erp.relationship.domain;
 
