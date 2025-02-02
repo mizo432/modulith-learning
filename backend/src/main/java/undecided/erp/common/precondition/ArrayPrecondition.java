@@ -8,7 +8,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ArrayVerifiers {
+public class ArrayPrecondition {
 
   /**
    * 与えられた配列が空でないことを確認します。
