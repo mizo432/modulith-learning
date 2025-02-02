@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class BigDecimalVerifiersTest {
+class BigDecimalPreconditionTest {
 
   public static final Supplier<RuntimeException> RUNTIME_EXCEPTION_SUPPLIER = IllegalArgumentException::new;
   private static final BigDecimal ref = new BigDecimal("10");
@@ -20,7 +20,7 @@ class BigDecimalVerifiersTest {
 
     @Test
     void positive() {
-      BigDecimal result = BigDecimalVerifiers.verifyGreaterThan(ref,
+      BigDecimal result = BigDecimalPrecondition.verifyGreaterThan(ref,
           RUNTIME_EXCEPTION_SUPPLIER, min);
       assertThat(result).isEqualTo(ref);
     }
@@ -28,7 +28,7 @@ class BigDecimalVerifiersTest {
     @Test
     void negative() {
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyGreaterThan(min, RUNTIME_EXCEPTION_SUPPLIER,
+          () -> BigDecimalPrecondition.verifyGreaterThan(min, RUNTIME_EXCEPTION_SUPPLIER,
               max));
     }
 
@@ -39,7 +39,7 @@ class BigDecimalVerifiersTest {
 
     @Test
     void positive() {
-      BigDecimal result = BigDecimalVerifiers.verifyLessThan(ref,
+      BigDecimal result = BigDecimalPrecondition.verifyLessThan(ref,
           RUNTIME_EXCEPTION_SUPPLIER, max);
       assertThat(result).isEqualTo(ref);
     }
@@ -47,7 +47,7 @@ class BigDecimalVerifiersTest {
     @Test
     void negative() {
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyLessThan(max, RUNTIME_EXCEPTION_SUPPLIER, min));
+          () -> BigDecimalPrecondition.verifyLessThan(max, RUNTIME_EXCEPTION_SUPPLIER, min));
     }
 
   }
@@ -58,7 +58,7 @@ class BigDecimalVerifiersTest {
     @Test
     void positiveWithinRange() {
       BigDecimal withinRange = new BigDecimal("6");
-      BigDecimal result = BigDecimalVerifiers.verifyRangeOpenClosed(withinRange,
+      BigDecimal result = BigDecimalPrecondition.verifyRangeOpenClosed(withinRange,
           RUNTIME_EXCEPTION_SUPPLIER, min, max);
       assertThat(result).isEqualTo(withinRange);
     }
@@ -67,20 +67,20 @@ class BigDecimalVerifiersTest {
     void negativeOutOfRange() {
       BigDecimal outOfRange = new BigDecimal("16");
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyRangeOpenClosed(outOfRange, RUNTIME_EXCEPTION_SUPPLIER,
+          () -> BigDecimalPrecondition.verifyRangeOpenClosed(outOfRange, RUNTIME_EXCEPTION_SUPPLIER,
               min, max));
     }
 
     @Test
     void negativeEqualToMin() {
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyRangeOpenClosed(min, RUNTIME_EXCEPTION_SUPPLIER,
+          () -> BigDecimalPrecondition.verifyRangeOpenClosed(min, RUNTIME_EXCEPTION_SUPPLIER,
               min, max));
     }
 
     @Test
     void positiveEqualToMax() {
-      BigDecimal result = BigDecimalVerifiers.verifyRangeOpenClosed(max,
+      BigDecimal result = BigDecimalPrecondition.verifyRangeOpenClosed(max,
           RUNTIME_EXCEPTION_SUPPLIER, min, max);
       assertThat(result).isEqualTo(max);
     }
@@ -91,7 +91,7 @@ class BigDecimalVerifiersTest {
 
     @Test
     void positive() {
-      BigDecimal result = BigDecimalVerifiers.verifyAtMost(ref,
+      BigDecimal result = BigDecimalPrecondition.verifyAtMost(ref,
           RUNTIME_EXCEPTION_SUPPLIER, max);
       assertThat(result).isEqualTo(ref);
     }
@@ -99,7 +99,7 @@ class BigDecimalVerifiersTest {
     @Test
     void negative() {
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyAtMost(max, RUNTIME_EXCEPTION_SUPPLIER, min));
+          () -> BigDecimalPrecondition.verifyAtMost(max, RUNTIME_EXCEPTION_SUPPLIER, min));
     }
   }
 
@@ -109,7 +109,7 @@ class BigDecimalVerifiersTest {
     @Test
     void positive() {
       BigDecimal positiveNum = new BigDecimal("1");
-      BigDecimal result = BigDecimalVerifiers.verifyPositive(positiveNum,
+      BigDecimal result = BigDecimalPrecondition.verifyPositive(positiveNum,
           RUNTIME_EXCEPTION_SUPPLIER);
       assertThat(result).isEqualTo(positiveNum);
     }
@@ -117,14 +117,14 @@ class BigDecimalVerifiersTest {
     @Test
     void negativeWithZero() {
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyPositive(BigDecimal.ZERO, RUNTIME_EXCEPTION_SUPPLIER));
+          () -> BigDecimalPrecondition.verifyPositive(BigDecimal.ZERO, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     void negativeWithNegative() {
       BigDecimal negativeNum = new BigDecimal("-1");
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyPositive(negativeNum, RUNTIME_EXCEPTION_SUPPLIER));
+          () -> BigDecimalPrecondition.verifyPositive(negativeNum, RUNTIME_EXCEPTION_SUPPLIER));
     }
   }
 
@@ -134,14 +134,14 @@ class BigDecimalVerifiersTest {
     @Test
     void positive() {
       BigDecimal positiveNum = new BigDecimal("1");
-      BigDecimal result = BigDecimalVerifiers.verifyPositiveOrZero(positiveNum,
+      BigDecimal result = BigDecimalPrecondition.verifyPositiveOrZero(positiveNum,
           RUNTIME_EXCEPTION_SUPPLIER);
       assertThat(result).isEqualTo(positiveNum);
     }
 
     @Test
     void zero() {
-      BigDecimal result = BigDecimalVerifiers.verifyPositiveOrZero(BigDecimal.ZERO,
+      BigDecimal result = BigDecimalPrecondition.verifyPositiveOrZero(BigDecimal.ZERO,
           RUNTIME_EXCEPTION_SUPPLIER);
       assertThat(result).isEqualTo(BigDecimal.ZERO);
     }
@@ -150,7 +150,8 @@ class BigDecimalVerifiersTest {
     void negativeWithNegative() {
       BigDecimal negativeNum = new BigDecimal("-1");
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyPositiveOrZero(negativeNum, RUNTIME_EXCEPTION_SUPPLIER));
+          () -> BigDecimalPrecondition.verifyPositiveOrZero(negativeNum,
+              RUNTIME_EXCEPTION_SUPPLIER));
     }
   }
 
@@ -160,7 +161,7 @@ class BigDecimalVerifiersTest {
     @Test
     void positive() {
       BigDecimal negativeNum = new BigDecimal("-1");
-      BigDecimal result = BigDecimalVerifiers.verifyNegative(negativeNum,
+      BigDecimal result = BigDecimalPrecondition.verifyNegative(negativeNum,
           RUNTIME_EXCEPTION_SUPPLIER);
       assertThat(result).isEqualTo(negativeNum);
     }
@@ -168,14 +169,14 @@ class BigDecimalVerifiersTest {
     @Test
     void negativeWithZero() {
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyNegative(BigDecimal.ZERO, RUNTIME_EXCEPTION_SUPPLIER));
+          () -> BigDecimalPrecondition.verifyNegative(BigDecimal.ZERO, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     void negativeWithPositive() {
       BigDecimal positiveNum = new BigDecimal("1");
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyNegative(positiveNum, RUNTIME_EXCEPTION_SUPPLIER));
+          () -> BigDecimalPrecondition.verifyNegative(positiveNum, RUNTIME_EXCEPTION_SUPPLIER));
     }
   }
 
@@ -186,14 +187,14 @@ class BigDecimalVerifiersTest {
     @Test
     void positive() {
       BigDecimal negativeNum = new BigDecimal("-1");
-      BigDecimal result = BigDecimalVerifiers.verifyNegativeOrZero(negativeNum,
+      BigDecimal result = BigDecimalPrecondition.verifyNegativeOrZero(negativeNum,
           RUNTIME_EXCEPTION_SUPPLIER);
       assertThat(result).isEqualTo(negativeNum);
     }
 
     @Test
     void zero() {
-      BigDecimal result = BigDecimalVerifiers.verifyNegativeOrZero(BigDecimal.ZERO,
+      BigDecimal result = BigDecimalPrecondition.verifyNegativeOrZero(BigDecimal.ZERO,
           RUNTIME_EXCEPTION_SUPPLIER);
       assertThat(result).isEqualTo(BigDecimal.ZERO);
     }
@@ -202,7 +203,8 @@ class BigDecimalVerifiersTest {
     void negativeWithPositive() {
       BigDecimal positiveNum = new BigDecimal("1");
       assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-          () -> BigDecimalVerifiers.verifyNegativeOrZero(positiveNum, RUNTIME_EXCEPTION_SUPPLIER));
+          () -> BigDecimalPrecondition.verifyNegativeOrZero(positiveNum,
+              RUNTIME_EXCEPTION_SUPPLIER));
     }
   }
 }

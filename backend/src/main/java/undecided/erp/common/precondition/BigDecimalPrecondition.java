@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
  * `BigDecimalVerifiers` クラスは、`BigDecimal` 値のプロパティを検証するメソッドを提供します。
  */
 @UtilityClass
-public class BigDecimalVerifiers {
+public class BigDecimalPrecondition {
 
   /**
    * 指定されたBigDecimal値が正数であることを検証します。値がnullまたは負である場合、 提供された例外供給装置に従って例外がスローされます。
