@@ -1,3 +1,6 @@
+/**
+ * ドメインサービスを格納
+ */
 @DomainServiceRing
 package undecided.erp.relationship.domain.service;
 
