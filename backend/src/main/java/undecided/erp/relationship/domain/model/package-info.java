@@ -1,5 +1,5 @@
 /**
- * ドメイン層.モデルを格納
+ * ドメインモデルを格納
  */
 @DomainModelRing
 package undecided.erp.relationship.domain.model;
