@@ -1,7 +1,7 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.precondition.ArrayVerifiers.verifyAllElementNotNull;
-import static undecided.erp.common.precondition.ArrayVerifiers.verifyLengthAtLeast;
+import static undecided.erp.common.precondition.ArrayPrecondition.verifyAllElementNotNull;
+import static undecided.erp.common.precondition.ArrayPrecondition.verifyLengthAtLeast;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
