@@ -5,9 +5,20 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
+/**
+ * 配列操作を提供するユーティリティクラスです。 すべてのメソッドは静的であり、インスタンス化して使用することはできません。
+ */
 @UtilityClass
 public class Arrays2 {
+  
 
+  /**
+   * Checks if the specified array is empty.
+   *
+   * @param array the array to check, must not be null
+   * @param <T> the type of elements in the array
+   * @return true if the array is empty, false otherwise
+   */
   public static <T> boolean isEmpty(@NonNull T[] array) {
     return array.length == 0;
   }
@@ -24,10 +35,11 @@ public class Arrays2 {
   }
 
   /**
-   * このメソッドは、指定された配列のすべての要素が非nullであることを確認します。
+   * Checks whether all elements in the provided array are not null.
    *
-   * @param array 確認する配列
-   * @return すべての要素が非nullの場合はtrue、そうでない場合はfalse
+   * @param array the array to check, must not be null
+   * @param <E> the type of elements in the array
+   * @return true if all elements in the array are not null, false otherwise
    */
   public static <E> boolean allElementsNotNull(@NonNull E[] array) {
     for (E e : array) {
@@ -51,6 +63,12 @@ public class Arrays2 {
 
   }
 
+  /**
+   * Computes the hash code for a given array of objects.
+   *
+   * @param args the array of objects for which the hash code is to be computed; can be null
+   * @return the computed hash code for the array, or 0 if the array is null
+   */
   public static int hash(Object[] args) {
     return Arrays.hashCode(args);
 
@@ -68,6 +86,12 @@ public class Arrays2 {
 
   }
 
+  /**
+   * Converts an object array into its string representation.
+   *
+   * @param args the array of objects to be converted into a string; can be null
+   * @return the string representation of the array, or "null" if the array is null
+   */
   public static String toString(Object[] args) {
     return Arrays.toString(args);
 

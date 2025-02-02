@@ -65,7 +65,6 @@ public abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
   /**
    * ビルダの設定に基づいてValueObjectの新しいインスタンスを生成する。
    * <p>
-   * <p>
    * {@link #build}内でこのビルダに追加された{@link BuilderConfigurator}を全て実行した後に、このメソッドが呼ばれる。<br>
    * その為、このビルダに対する変更を行うロジックはこのメソッド内に記述せず、目的となるValueObjectを生成し返すロジックを記述することが望まれる。
    * </p>

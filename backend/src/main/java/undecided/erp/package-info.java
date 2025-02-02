@@ -1,1 +1,4 @@
+/**
+ * プロジェクトルートパッケージ.
+ */
 package undecided.erp;

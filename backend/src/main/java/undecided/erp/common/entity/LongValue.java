@@ -11,6 +11,7 @@ import undecided.erp.common.precondition.LongPrecondition;
  * <p>
  * このインターフェースは SingleValue インターフェースを拡張しています。
  *
+ * @param <VO> LongValueを実装した型
  * @see SingleValue
  */
 public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {

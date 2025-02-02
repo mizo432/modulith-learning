@@ -30,6 +30,9 @@ public class ApplicationInfo {
    */
   private static final String DEFAULT_APPLICATION_NAME = "DEFAULT_APPLICATION_NAME";
 
+  /**
+   * Protectedコンストラクタ。 ApplicationInfoクラスのインスタンスを作成します。 このコンストラクタは、サブクラス化で使用されることを想定しています。
+   */
   protected ApplicationInfo() {
 
   }
