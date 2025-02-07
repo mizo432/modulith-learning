@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class BooleanVerifiersTest {
+class BooleanPreconditionTest {
 
   @Nested
   class VerifyTrue {
@@ -15,7 +15,7 @@ class BooleanVerifiersTest {
     void shouldNotThrowExceptionWhenVerifyTrueWithTrueBoolean() {
       AtomicBoolean exceptionThrown = new AtomicBoolean(false);
       try {
-        BooleanVerifiers.verifyTrue(true,
+        BooleanPrecondition.checkTrue(true,
             () -> new RuntimeException("Exception thrown on verify true"));
       } catch (RuntimeException e) {
         exceptionThrown.set(true);
@@ -28,7 +28,7 @@ class BooleanVerifiersTest {
     void shouldThrowExceptionWhenVerifyTrueWithFalseBoolean() {
       AtomicBoolean exceptionThrown = new AtomicBoolean(false);
       try {
-        BooleanVerifiers.verifyTrue(false,
+        BooleanPrecondition.checkTrue(false,
             () -> new RuntimeException("Exception thrown on verify true"));
       } catch (RuntimeException e) {
         exceptionThrown.set(true);
@@ -42,7 +42,7 @@ class BooleanVerifiersTest {
       AtomicBoolean exceptionThrown = new AtomicBoolean(false);
       Boolean result = false;
       try {
-        result = BooleanVerifiers.verifyTrue(null,
+        result = BooleanPrecondition.checkTrue(null,
             () -> new RuntimeException("Exception on verify true"));
       } catch (RuntimeException e) {
         exceptionThrown.set(true);
@@ -62,7 +62,7 @@ class BooleanVerifiersTest {
     void shouldNotThrowExceptionWhenVerifyFalseWithFalseBoolean() {
       AtomicBoolean exceptionThrown = new AtomicBoolean(false);
       try {
-        BooleanVerifiers.verifyFalse(false,
+        BooleanPrecondition.checkFalse(false,
             () -> new RuntimeException("Exception thrown on verify false"));
       } catch (RuntimeException e) {
         exceptionThrown.set(true);
@@ -75,7 +75,7 @@ class BooleanVerifiersTest {
     void shouldThrowExceptionWhenVerifyFalseWithTrueBoolean() {
       AtomicBoolean exceptionThrown = new AtomicBoolean(false);
       try {
-        BooleanVerifiers.verifyFalse(true,
+        BooleanPrecondition.checkFalse(true,
             () -> new RuntimeException("Exception thrown on verify false"));
       } catch (RuntimeException e) {
         exceptionThrown.set(true);
@@ -89,7 +89,7 @@ class BooleanVerifiersTest {
       AtomicBoolean exceptionThrown = new AtomicBoolean(false);
       Boolean result = false;
       try {
-        result = BooleanVerifiers.verifyFalse(null,
+        result = BooleanPrecondition.checkFalse(null,
             () -> new RuntimeException("Exception on verify false"));
       } catch (RuntimeException e) {
         exceptionThrown.set(true);
