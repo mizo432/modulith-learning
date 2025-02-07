@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
  * LocalTimeの値が指定した範囲内にあるかどうかを検証するメソッドを含むユーティリティクラス。
  */
 @UtilityClass
-public class LocalTimeVerifiers {
+public class LocalTimePrecondition {
 
   /**
    * 指定した最小値と最大値によって定義される閉範囲内に特定のLocalTimeが存在するかを検証します。
@@ -22,7 +22,7 @@ public class LocalTimeVerifiers {
    * @return 検証済みのLocalTime値。
    * @throws RuntimeException LocalTime値が指定された閉範囲内にない場合。
    */
-  public static LocalTime verifyRangeClosed(LocalTime ref,
+  public static LocalTime checkRangeClosed(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull LocalTime min, @NonNull LocalTime max) {
     if (!Range.closed(min, max).contains(ref)) {
@@ -44,7 +44,7 @@ public class LocalTimeVerifiers {
    * @return 検証されたLocalTime値。
    * @throws RuntimeException LocalTime値が指定した開放範囲内にない場合。
    */
-  public static LocalTime verifyRangeOpen(LocalTime ref,
+  public static LocalTime checkRangeOpen(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull LocalTime min, @NonNull LocalTime max) {
     if (ref == null) {
@@ -68,7 +68,7 @@ public class LocalTimeVerifiers {
    * @return 検証済みのLocalTimeの値。
    * @throws RuntimeException LocalTimeの値が指定された範囲外の場合。
    */
-  public static LocalTime verifyRangeClosedOpen(LocalTime ref,
+  public static LocalTime checkRangeClosedOpen(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull LocalTime min,
       @NonNull LocalTime max) {
     if (ref == null) {
@@ -92,7 +92,7 @@ public class LocalTimeVerifiers {
    * @return 検証されたLocalTimeの値。
    * @throws RuntimeException LocalTimeの値が指定された範囲外の場合。
    */
-  public static LocalTime verifyRangeOpenClosed(LocalTime ref,
+  public static LocalTime checkRangeOpenClosed(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull LocalTime min,
       @NonNull LocalTime max) {
     if (ref == null) {
@@ -115,7 +115,7 @@ public class LocalTimeVerifiers {
    * @return 検証されたLocalTime値。
    * @throws RuntimeException LocalTime値が最小値以下の場合にスローされます。
    */
-  public static LocalTime verifyAtLest(LocalTime ref,
+  public static LocalTime checkAtLest(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull LocalTime min) {
     if (ref == null) {
       return ref;
@@ -137,7 +137,7 @@ public class LocalTimeVerifiers {
    * @return 検証済みのLocalTime値。
    * @throws RuntimeException LocalTime値が指定した最大値以下でない場合。
    */
-  public static LocalTime verifyAtMost(LocalTime ref,
+  public static LocalTime checkAtMost(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull LocalTime max) {
     if (ref == null) {
       return ref;
@@ -159,7 +159,7 @@ public class LocalTimeVerifiers {
    * @return 検証されたLocalTimeの値。
    * @throws RuntimeException LocalTimeの値が指定された最大値よりも大きい場合。
    */
-  public static LocalTime verifyLessThan(LocalTime ref,
+  public static LocalTime checkLessThan(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull LocalTime max) {
     if (ref == null) {
       return ref;
@@ -182,7 +182,7 @@ public class LocalTimeVerifiers {
    * @return 検証されたLocalTimeの値。
    * @throws RuntimeException LocalTimeの値が最小値より大きくない場合。
    */
-  public static LocalTime verifyGreaterThan(LocalTime ref,
+  public static LocalTime checkGreaterThan(LocalTime ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull LocalTime min) {
     if (ref == null) {
       return ref;
