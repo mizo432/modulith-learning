@@ -7,6 +7,7 @@ import lombok.NonNull;
 public class Objects2 {
 
   public static final Object[] EMPTY_ARRAY = {};
+  public static final Object NULL = null;
 
   /**
    * 指定したオブジェクトがnullかどうかを調べます。

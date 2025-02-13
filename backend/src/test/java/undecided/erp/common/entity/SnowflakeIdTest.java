@@ -83,4 +83,32 @@ class SnowflakeIdTest {
       assertThat(result).isSameAs(SnowflakeId.EMPTY);
     }
   }
+
+  @Nested
+  @DisplayName("newInstance メソッドのテスト")
+  class NewInstanceMethodTest {
+
+    @Test
+    @DisplayName("newInstance() メソッドは新しいSnowflakeIdを返し、値が空ではない")
+    void shouldReturnNewNonEmptySnowflakeId() {
+      // Act
+      SnowflakeId result = SnowflakeId.newInstance();
+
+      // Assert
+      assertThat(result).isNotNull();
+      assertThat(result.isEmpty()).isFalse();
+    }
+
+    @Test
+    @DisplayName("newInstance() メソッドの呼び出しごとに一意の値を生成する")
+    void shouldGenerateUniqueSnowflakeIds() {
+      // Act
+      SnowflakeId firstInstance = SnowflakeId.newInstance();
+      SnowflakeId secondInstance = SnowflakeId.newInstance();
+
+      // Assert
+      assertThat(firstInstance).isNotEqualTo(secondInstance);
+      assertThat(firstInstance.getValue()).isNotEqualTo(secondInstance.getValue());
+    }
+  }
 }

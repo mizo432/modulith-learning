@@ -13,9 +13,9 @@ public interface ValueObject {
 
 
   /**
-   * Determines whether the value object is empty.
+   * 値オブジェクトが空であるかどうかを判定します。
    *
-   * @return {@code true} if the value object is empty, {@code false} otherwise.
+   * @return 空である場合は {@code true} を返し、そうでない場合は {@code false} を返します。
    */
   boolean isEmpty();
 

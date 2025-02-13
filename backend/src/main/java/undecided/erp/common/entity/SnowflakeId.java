@@ -1,13 +1,13 @@
 package undecided.erp.common.entity;
 
-import static undecided.erp.common.entity.LongValue.LongValues.checkNotEmpty;
 import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
 import static undecided.erp.common.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ComparisonChain;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import java.beans.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,6 @@ import undecided.erp.common.snowflake.SnowflakeIdProvider;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode
-@Embeddable
 public class SnowflakeId implements LongValue<SnowflakeId>,
     Comparable<SnowflakeId> {
 
@@ -95,19 +94,53 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
     }
     return ComparisonChain
         .start()
-        .compare(this.value, other.getValue())
+        .compare(this.getValue(), other.getValue())
         .result();
 
   }
 
   /**
-   * このインスタンスに格納されている値をBase-36エンコードされた文字列に変換します。 このメソッドは、変換を実行する前に値が空でないことを検証します。
+   * このインスタンスに格納されている値をBase-36エンコードされた文字列に変換します。
+   * <p>
+   * このメソッドは、変換を実行する前に値が空でないことを検証します。
    *
    * @return 現在のインスタンスの値をBase-36エンコードした文字列。
    * @throws IllegalStateException 値がnullまたは空の場合にスローされます。
    */
   public String toBase36String() {
-    checkNotEmpty(this, () -> new IllegalStateException("value is empty"));
-    return Long.toString(value, 36);
+    LongValues.checkNotEmpty(this, () -> new IllegalStateException("value is empty"));
+    return Long.toString(getValue(), 36);
+  }
+
+  /**
+   * SnowflakeIdクラスとデータベースで格納されるLong型の値を相互に変換するためのコンバータークラスです。
+   * このクラスはJPAのAttributeConverterインターフェースを実装しています。
+   */
+  @Converter
+  public static class SnowflakeIdConverter implements
+      AttributeConverter<SnowflakeId, Long> {
+
+    /**
+     * SnowflakeIdオブジェクトをデータベースに保存可能なLong型に変換します。
+     *
+     * @param attribute 変換対象のSnowflakeIdオブジェクト。この値がnullの場合、nullを返します。
+     * @return 変換されたLong型の値。attributeがnullの場合はnullを返します。
+     */
+    @Override
+    public Long convertToDatabaseColumn(SnowflakeId attribute) {
+      return attribute.getValue();
+
+    }
+
+    /**
+     * データベースから取得したLong型の値をSnowflakeIdエンティティに変換します。
+     *
+     * @param dbData データベースから取得したLong型の値
+     * @return 変換されたSnowflakeIdオブジェクト。dbDataがnullの場合はSnowflakeId.EMPTYを返します。
+     */
+    @Override
+    public SnowflakeId convertToEntityAttribute(Long dbData) {
+      return SnowflakeId.reconstruct(dbData);
+    }
   }
 }

@@ -30,12 +30,12 @@ import undecided.erp.shared.entity.SnowflakeId;
 public class Company implements ICompany {
 
   @Id
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "company_id", nullable = false))
+  @Column(name = "company_id", length = 19, nullable = false)
+  @Convert(converter = SnowflakeIdConverter.class)
   private SnowflakeId id;
 
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "company_code", nullable = false))
+  @Column(name = "company_code", nullable = false)
+  @Convert(converter = CompanyCodeConverter.class)
   private CompanyCode code;
 
   @Override

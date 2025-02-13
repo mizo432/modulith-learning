@@ -2,7 +2,7 @@ import java.time.Duration
 
 plugins {
     java
-    id("org.springframework.boot") version "3.4.1"
+    id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -20,7 +20,7 @@ repositories {
     mavenCentral()
 }
 
-extra["junitVersion"] = "5.10.2"
+extra["junitVersion"] = "5.11.4"
 extra["springDataBomVersion"] = "2024.0.1"
 extra["springCloudBomVersion"] = "2023.0.4"
 
