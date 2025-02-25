@@ -6,9 +6,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import lombok.RequiredArgsConstructor;
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import undecided.erp.common.entity.PptEntity;
-import undecided.erp.common.entity.SnowflakeId;
+import undecided.erp.relationship.domain.model.party.PartyType.PartyTypeConverter;
 
 /**
  * Partyクラスは、エンティティとしてシステム内でのパーティ（関係者）を表現します。
@@ -24,21 +27,22 @@ import undecided.erp.common.entity.SnowflakeId;
  * <p>
  * オーバーライドされたtoStringメソッドにより、このクラスのインスタンスを文字列表現として簡易的に出力することが可能です。
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "parties", indexes = {
     @Index(columnList = "search_name", name = "idx01_party"),
     @Index(columnList = "type", name = "idx02_party")})
-public class Party extends PptEntity<Party> implements java.io.Serializable {
+@NoArgsConstructor
+public class Party extends PptEntity<Party> implements Serializable {
 
   /**
    * ユニークなパーティー識別子を表す変数。 アプリケーションにおける各パーティーを一意に識別するために使用されます。 データベース上の "party_id" カラムに対応し、null
    * 値は許可されていません。
    */
   @Id
-  @Column(name = "party_id", nullable = false, unique = true)
-  @Convert(converter = SnowflakeId.SnowflakeIdConverter.class)
-  private SnowflakeId partyId;
+  @Column(name = "party_id", columnDefinition = "BIGINT", nullable = false)
+  //@Convert(converter = SnowflakeIdConverter.class)
+  private Long partyId;
 
   /**
    * searchNameフィールドは、検索用の名前情報を保持します。
@@ -48,9 +52,10 @@ public class Party extends PptEntity<Party> implements java.io.Serializable {
    * <p>
    * 主にデータベースの永続化および取得において、このフィールドが文字列または特定の形式で 保存されるための変換ロジックをサポートします。
    */
-  @Convert(converter = SearchName.SearchNameConverter.class)
+//  @Convert(converter = SearchName.SearchNameConverter.class)
+  @Getter
   @Column(name = "search_name", nullable = false, length = 100)
-  private SearchName searchName;
+  private String searchName;
 
   /**
    * typeフィールドは、パーティのタイプ情報を保持します。
@@ -59,7 +64,7 @@ public class Party extends PptEntity<Party> implements java.io.Serializable {
    * <p>
    * 主にデータベースへの永続化および取得時において、このフィールドは適切な形式で 格納・復元されるよう処理されます。
    */
-  @Convert(converter = PartyType.PartyTypeConverter.class)
+  @Convert(converter = PartyTypeConverter.class)
   @Column(name = "type", nullable = false, length = 2)
   private PartyType type;
 
@@ -76,4 +81,5 @@ public class Party extends PptEntity<Party> implements java.io.Serializable {
         ", type=" + type +
         '}';
   }
+
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class ShortVerifiers {
+public class ShortPrecondition {
 
   /**
    * 与えられた引用が正の整数であるかを検証し、そうでない場合はカスタム例外をスローします。

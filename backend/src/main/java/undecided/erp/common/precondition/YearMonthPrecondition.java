@@ -5,7 +5,7 @@ import java.time.YearMonth;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class YearMonthVerifiers {
+public class YearMonthPrecondition {
 
   /**
    * 指定した最小値と最大値によって定義される閉範囲内に特定のYearMonthが存在するかを検証します。
@@ -17,7 +17,7 @@ public class YearMonthVerifiers {
    * @return 検証済みのYearMonth値。
    * @throws RuntimeException YearMonth値が指定された閉範囲内にない場合。
    */
-  public static YearMonth verifyRangeClosed(YearMonth ref,
+  public static YearMonth checkRangeClosed(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull YearMonth min, @NonNull YearMonth max) {
     if (!Range.closed(min, max).contains(ref)) {
@@ -39,7 +39,7 @@ public class YearMonthVerifiers {
    * @return 検証されたYearMonth値。
    * @throws RuntimeException YearMonth値が指定した開放範囲内にない場合。
    */
-  public static YearMonth verifyRangeOpen(YearMonth ref,
+  public static YearMonth checkRangeOpen(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull YearMonth min, @NonNull YearMonth max) {
     if (ref == null) {

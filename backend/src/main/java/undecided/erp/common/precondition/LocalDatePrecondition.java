@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class LocalDateVerifiers {
+public class LocalDatePrecondition {
 
   /**
    * 指定した最小値と最大値によって定義される閉範囲内に特定のLocalDateが存在するかを検証します。

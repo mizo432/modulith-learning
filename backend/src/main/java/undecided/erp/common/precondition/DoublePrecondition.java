@@ -6,7 +6,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class DoubleVerifiers {
+public class DoublePrecondition {
 
   /**
    * 与えられた引用が正の整数であるかを検証し、そうでない場合はカスタム例外をスローします。

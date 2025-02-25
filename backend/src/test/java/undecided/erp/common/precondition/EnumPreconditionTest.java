@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class EnumVerifiersTest {
+class EnumPreconditionTest {
 
   enum TestEnum {VALUE2, VALUE1}
 
@@ -21,7 +21,7 @@ class EnumVerifiersTest {
       EnumSet<TestEnum> enumSet = EnumSet.of(TestEnum.VALUE1, TestEnum.VALUE2);
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Enum not contained in set");
       Assertions.assertDoesNotThrow(
-          () -> EnumVerifiers.verifyContains(TestEnum.VALUE1, enumSet, supplier));
+          () -> EnumPrecondition.verifyContains(TestEnum.VALUE1, enumSet, supplier));
     }
 
     @Test
@@ -30,7 +30,7 @@ class EnumVerifiersTest {
       EnumSet<TestEnum> enumSet = EnumSet.of(TestEnum.VALUE1);
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Enum not contained in set");
       Assertions.assertThrows(RuntimeException.class,
-          () -> EnumVerifiers.verifyContains(TestEnum.VALUE2, enumSet, supplier));
+          () -> EnumPrecondition.verifyContains(TestEnum.VALUE2, enumSet, supplier));
     }
   }
 
@@ -43,7 +43,7 @@ class EnumVerifiersTest {
     void valuesNotEqualNoExceptionExpected() {
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Values are equal");
       Assertions.assertDoesNotThrow(
-          () -> EnumVerifiers.verifyNotEqual(TestEnum.VALUE1, TestEnum.VALUE2, supplier));
+          () -> EnumPrecondition.verifyNotEqual(TestEnum.VALUE1, TestEnum.VALUE2, supplier));
     }
 
     @Test
@@ -51,7 +51,7 @@ class EnumVerifiersTest {
     void valuesEqualExceptionExpected() {
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Values are equal");
       Assertions.assertThrows(RuntimeException.class,
-          () -> EnumVerifiers.verifyNotEqual(TestEnum.VALUE1, TestEnum.VALUE1, supplier));
+          () -> EnumPrecondition.verifyNotEqual(TestEnum.VALUE1, TestEnum.VALUE1, supplier));
     }
   }
 }

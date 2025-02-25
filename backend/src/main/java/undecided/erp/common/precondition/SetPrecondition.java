@@ -11,7 +11,7 @@ import lombok.NonNull;
  * SetPreconditionsクラスは、セットに対する前提条件をチェックするメソッドを提供します。
  */
 @NonNull
-public class SetVerifiers {
+public class SetPrecondition {
 
   /**
    * 指定されたセットが空でないことを確認します。

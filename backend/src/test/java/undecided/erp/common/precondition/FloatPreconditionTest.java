@@ -6,14 +6,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
-class FloatVerifiersTest {
+class FloatPreconditionTest {
 
   private final Supplier<RuntimeException> exceptionSupplier = IllegalArgumentException::new;
 
   @Test
   void shouldVerifyPositive_InputIsPositive_ReturnsSameValue() {
     Float input = 1.5f;
-    Float output = FloatVerifiers.verifyPositive(input, exceptionSupplier);
+    Float output = FloatPrecondition.verifyPositive(input, exceptionSupplier);
     assertThat(output).isEqualTo(input);
   }
 
@@ -24,7 +24,7 @@ class FloatVerifiersTest {
     Float input = 1.5f;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> FloatVerifiers.verifyPositive(input, nullSupplier));
+        () -> FloatPrecondition.verifyPositive(input, nullSupplier));
   }
 
   @Test
@@ -33,7 +33,7 @@ class FloatVerifiersTest {
     Float max = 2.0f;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> FloatVerifiers.verifyAtMost(input, nullSupplier, max));
+        () -> FloatPrecondition.verifyAtMost(input, nullSupplier, max));
   }
 
   //added
@@ -41,27 +41,27 @@ class FloatVerifiersTest {
   void shouldVerifyPositive_InputIsNegative_ThrowsException() {
     Float input = -1.5f;
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> FloatVerifiers.verifyPositive(input, exceptionSupplier));
+        () -> FloatPrecondition.verifyPositive(input, exceptionSupplier));
   }
 
   @Test
   void shouldVerifyPositive_InputIsZero_ThrowsException() {
     Float input = 0.0f;
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> FloatVerifiers.verifyPositive(input, exceptionSupplier));
+        () -> FloatPrecondition.verifyPositive(input, exceptionSupplier));
   }
 
   @Test
   void shouldVerifyPositiveOrZero_InputIsPositive_ReturnsSameValue() {
     Float input = 1.5f;
-    Float output = FloatVerifiers.verifyPositiveOrZero(input, exceptionSupplier);
+    Float output = FloatPrecondition.verifyPositiveOrZero(input, exceptionSupplier);
     assertThat(output).isEqualTo(input);
   }
 
   @Test
   void shouldVerifyPositiveOrZero_InputIsZero_ReturnsSameValue() {
     Float input = 0.0f;
-    Float output = FloatVerifiers.verifyPositiveOrZero(input, exceptionSupplier);
+    Float output = FloatPrecondition.verifyPositiveOrZero(input, exceptionSupplier);
     assertThat(output).isEqualTo(input);
   }
 
@@ -69,13 +69,13 @@ class FloatVerifiersTest {
   void shouldVerifyPositiveOrZero_InputIsNegative_ThrowsException() {
     Float input = -1.5f;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> FloatVerifiers.verifyPositiveOrZero(input, exceptionSupplier));
+        () -> FloatPrecondition.verifyPositiveOrZero(input, exceptionSupplier));
   }
 
   @Test
   void shouldVerifyNegative_InputIsNegative_ReturnsSameValue() {
     Float input = -1.5f;
-    Float output = FloatVerifiers.verifyNegative(input, exceptionSupplier);
+    Float output = FloatPrecondition.verifyNegative(input, exceptionSupplier);
     assertThat(output).isEqualTo(input);
   }
 
@@ -83,27 +83,27 @@ class FloatVerifiersTest {
   void shouldVerifyNegative_InputIsPositive_ThrowsException() {
     Float input = 1.5f;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> FloatVerifiers.verifyNegative(input, exceptionSupplier));
+        () -> FloatPrecondition.verifyNegative(input, exceptionSupplier));
   }
 
   @Test
   void shouldVerifyNegative_InputIsZero_ThrowsException() {
     Float input = 0.0f;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> FloatVerifiers.verifyNegative(input, exceptionSupplier));
+        () -> FloatPrecondition.verifyNegative(input, exceptionSupplier));
   }
 
   @Test
   void shouldVerifyNegativeOrZero_InputIsNegative_ReturnsSameValue() {
     Float input = -1.5f;
-    Float output = FloatVerifiers.verifyNegativeOrZero(input, exceptionSupplier);
+    Float output = FloatPrecondition.verifyNegativeOrZero(input, exceptionSupplier);
     assertThat(output).isEqualTo(input);
   }
 
   @Test
   void shouldVerifyNegativeOrZero_InputIsZero_ReturnsSameValue() {
     Float input = 0.0f;
-    Float output = FloatVerifiers.verifyNegativeOrZero(input, exceptionSupplier);
+    Float output = FloatPrecondition.verifyNegativeOrZero(input, exceptionSupplier);
     assertThat(output).isEqualTo(input);
   }
 
@@ -111,14 +111,14 @@ class FloatVerifiersTest {
   void shouldVerifyNegativeOrZero_InputIsPositive_ThrowsException() {
     Float input = 1.5f;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> FloatVerifiers.verifyNegativeOrZero(input, exceptionSupplier));
+        () -> FloatPrecondition.verifyNegativeOrZero(input, exceptionSupplier));
   }
 
   @Test
   void shouldVerifyNegativeOrZero_InputIsNull_ReturnsNull() {
     Float input = null;
     Float expectedOutput = null;
-    Float output = FloatVerifiers.verifyNegativeOrZero(input, exceptionSupplier);
+    Float output = FloatPrecondition.verifyNegativeOrZero(input, exceptionSupplier);
     assertThat(output).isEqualTo(expectedOutput);
   }
 
@@ -127,7 +127,7 @@ class FloatVerifiersTest {
     Float input = 1.5f;
     Float min = 0.0f;
     Float max = 2.0f;
-    Float output = FloatVerifiers.verifyRangeClosed(input, exceptionSupplier, min, max);
+    Float output = FloatPrecondition.verifyRangeClosed(input, exceptionSupplier, min, max);
     assertThat(output).isEqualTo(input);
   }
 
@@ -137,7 +137,7 @@ class FloatVerifiersTest {
     Float min = 0.0f;
     Float max = 2.0f;
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> FloatVerifiers.verifyRangeClosed(input, exceptionSupplier, min, max));
+        () -> FloatPrecondition.verifyRangeClosed(input, exceptionSupplier, min, max));
   }
 
   @Test
@@ -146,7 +146,7 @@ class FloatVerifiersTest {
     Float min = 0.0f;
     Float max = 2.0f;
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> FloatVerifiers.verifyRangeClosed(input, exceptionSupplier, min, max));
+        () -> FloatPrecondition.verifyRangeClosed(input, exceptionSupplier, min, max));
   }
 
   @Test
@@ -154,7 +154,7 @@ class FloatVerifiersTest {
     Float input = null;
     Float min = 0.0f;
     Float max = 2.0f;
-    Float output = FloatVerifiers.verifyRangeClosed(input, exceptionSupplier, min, max);
+    Float output = FloatPrecondition.verifyRangeClosed(input, exceptionSupplier, min, max);
     assertThat(output).isNull();
   }
 
@@ -163,7 +163,7 @@ class FloatVerifiersTest {
     Float input = 1.0f;
     Float min = 1.0f;
     Float max = 1.0f;
-    Float output = FloatVerifiers.verifyRangeClosed(input, exceptionSupplier, min, max);
+    Float output = FloatPrecondition.verifyRangeClosed(input, exceptionSupplier, min, max);
     assertThat(output).isEqualTo(input);
   }
 
@@ -173,7 +173,7 @@ class FloatVerifiersTest {
     Float min = 1.0f;
     Float max = 1.0f;
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> FloatVerifiers.verifyRangeClosed(input, exceptionSupplier, min, max));
+        () -> FloatPrecondition.verifyRangeClosed(input, exceptionSupplier, min, max));
   }
 
   @Test
@@ -182,7 +182,7 @@ class FloatVerifiersTest {
     Float min = 1.0f;
     Float max = 1.0f;
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> FloatVerifiers.verifyRangeClosed(input, exceptionSupplier, min, max));
+        () -> FloatPrecondition.verifyRangeClosed(input, exceptionSupplier, min, max));
   }
 
   @Test
@@ -192,6 +192,6 @@ class FloatVerifiersTest {
     Float max = 1.0f;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> FloatVerifiers.verifyRangeClosed(input, nullSupplier, min, max));
+        () -> FloatPrecondition.verifyRangeClosed(input, nullSupplier, min, max));
   }
 }

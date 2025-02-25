@@ -111,4 +111,32 @@ class SnowflakeIdTest {
       assertThat(firstInstance.getValue()).isNotEqualTo(secondInstance.getValue());
     }
   }
+
+  @Nested
+  @DisplayName("of メソッドのテスト")
+  class OfMethodTest {
+
+    @Test
+    @DisplayName("正の値を渡すと、正しいSnowflakeIdオブジェクトを生成する")
+    void shouldCreateSnowflakeIdForPositiveValue() {
+      // Arrange
+      Long value = 123456789L;
+
+      // Act
+      SnowflakeId result = SnowflakeId.of(value);
+
+      // Assert
+      assertThat(result).isNotNull();
+      assertThat(result.getValue()).isEqualTo(value);
+    }
+
+    @Test
+    @DisplayName("nullを渡すと例外をスローする")
+    void shouldThrowExceptionForNullValue() {
+      // Act & Assert
+      assertThatThrownBy(() -> SnowflakeId.of(null))
+          .isInstanceOf(NullPointerException.class)
+          .hasMessageContainingAll("value", "must not be null");
+    }
+  }
 }

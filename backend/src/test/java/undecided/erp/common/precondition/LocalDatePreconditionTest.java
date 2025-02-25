@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class LocalDateVerifiersTest {
+class LocalDatePreconditionTest {
 
   private LocalDate createDate(int year, int month, int day) {
     return LocalDate.of(year, month, day);
@@ -34,14 +34,14 @@ class LocalDateVerifiersTest {
 
     private void assertDateWithinRange(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
-      assertThat(LocalDateVerifiers.verifyRangeClosed(dateToTest, exceptionSupplier, minDate,
+      assertThat(LocalDatePrecondition.verifyRangeClosed(dateToTest, exceptionSupplier, minDate,
           maxDate)).isEqualTo(dateToTest);
     }
 
     private void assertExceptionOnDateOutOfRange(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateVerifiers.verifyRangeClosed(dateToTest, exceptionSupplier, minDate,
+          () -> LocalDatePrecondition.verifyRangeClosed(dateToTest, exceptionSupplier, minDate,
               maxDate));
     }
   }
@@ -66,7 +66,7 @@ class LocalDateVerifiersTest {
     private void assertDateWithinOpenRange(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
       assertThat(
-          LocalDateVerifiers.verifyRangeOpen(dateToTest, exceptionSupplier, minDate, maxDate))
+          LocalDatePrecondition.verifyRangeOpen(dateToTest, exceptionSupplier, minDate, maxDate))
           .isEqualTo(dateToTest);
     }
 
@@ -74,7 +74,7 @@ class LocalDateVerifiersTest {
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
       assertThatExceptionOfType(RuntimeException.class)
           .isThrownBy(
-              () -> LocalDateVerifiers.verifyRangeOpen(dateToTest, exceptionSupplier, minDate,
+              () -> LocalDatePrecondition.verifyRangeOpen(dateToTest, exceptionSupplier, minDate,
                   maxDate));
     }
   }
@@ -100,7 +100,8 @@ class LocalDateVerifiersTest {
     private void assertDateWithinClosedOpenRange(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
       assertThat(
-          LocalDateVerifiers.verifyRangeClosedOpen(dateToTest, exceptionSupplier, minDate, maxDate))
+          LocalDatePrecondition.verifyRangeClosedOpen(dateToTest, exceptionSupplier, minDate,
+              maxDate))
           .isEqualTo(dateToTest);
     }
 
@@ -108,7 +109,8 @@ class LocalDateVerifiersTest {
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
       assertThatExceptionOfType(RuntimeException.class)
           .isThrownBy(
-              () -> LocalDateVerifiers.verifyRangeClosedOpen(dateToTest, exceptionSupplier, minDate,
+              () -> LocalDatePrecondition.verifyRangeClosedOpen(dateToTest, exceptionSupplier,
+                  minDate,
                   maxDate));
     }
   }
@@ -131,7 +133,8 @@ class LocalDateVerifiersTest {
     private void assertDateWithinOpenClosedRange(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
       assertThat(
-          LocalDateVerifiers.verifyRangeOpenClosed(dateToTest, exceptionSupplier, minDate, maxDate))
+          LocalDatePrecondition.verifyRangeOpenClosed(dateToTest, exceptionSupplier, minDate,
+              maxDate))
           .isEqualTo(dateToTest);
     }
 
@@ -139,7 +142,8 @@ class LocalDateVerifiersTest {
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate, LocalDate maxDate) {
       assertThatExceptionOfType(RuntimeException.class)
           .isThrownBy(
-              () -> LocalDateVerifiers.verifyRangeOpenClosed(dateToTest, exceptionSupplier, minDate,
+              () -> LocalDatePrecondition.verifyRangeOpenClosed(dateToTest, exceptionSupplier,
+                  minDate,
                   maxDate));
     }
   }
@@ -161,12 +165,13 @@ class LocalDateVerifiersTest {
     private void assertExceptionOnDateBeforeMinimum(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate) {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateVerifiers.verifyAtLest(dateToTest, exceptionSupplier, minDate));
+          () -> LocalDatePrecondition.verifyAtLest(dateToTest, exceptionSupplier, minDate));
     }
 
     private void assertValidMinimumDate(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate) {
-      assertThat(LocalDateVerifiers.verifyAtLest(dateToTest, exceptionSupplier, minDate)).isEqualTo(
+      assertThat(
+          LocalDatePrecondition.verifyAtLest(dateToTest, exceptionSupplier, minDate)).isEqualTo(
           dateToTest);
     }
   }
@@ -188,12 +193,13 @@ class LocalDateVerifiersTest {
     private void assertExceptionOnDateAfterMaximum(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate maxDate) {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateVerifiers.verifyAtMost(dateToTest, exceptionSupplier, maxDate));
+          () -> LocalDatePrecondition.verifyAtMost(dateToTest, exceptionSupplier, maxDate));
     }
 
     private void assertValidMaximumDate(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate maxDate) {
-      assertThat(LocalDateVerifiers.verifyAtMost(dateToTest, exceptionSupplier, maxDate)).isEqualTo(
+      assertThat(
+          LocalDatePrecondition.verifyAtMost(dateToTest, exceptionSupplier, maxDate)).isEqualTo(
           dateToTest);
     }
   }
@@ -215,13 +221,13 @@ class LocalDateVerifiersTest {
     private void assertExceptionOnDateNotLessThanMaximum(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate maxDate) {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateVerifiers.verifyLessThan(dateToTest, exceptionSupplier, maxDate));
+          () -> LocalDatePrecondition.verifyLessThan(dateToTest, exceptionSupplier, maxDate));
     }
 
     private void assertValidLessThanDate(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate maxDate) {
       assertThat(
-          LocalDateVerifiers.verifyLessThan(dateToTest, exceptionSupplier, maxDate)).isEqualTo(
+          LocalDatePrecondition.verifyLessThan(dateToTest, exceptionSupplier, maxDate)).isEqualTo(
           dateToTest);
     }
   }
@@ -245,13 +251,14 @@ class LocalDateVerifiersTest {
     private void assertExceptionOnDateNotGreaterThanMinimum(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate) {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> LocalDateVerifiers.verifyGreaterThan(dateToTest, exceptionSupplier, minDate));
+          () -> LocalDatePrecondition.verifyGreaterThan(dateToTest, exceptionSupplier, minDate));
     }
 
     private void assertValidGreaterThanDate(LocalDate dateToTest,
         Supplier<RuntimeException> exceptionSupplier, LocalDate minDate) {
       assertThat(
-          LocalDateVerifiers.verifyGreaterThan(dateToTest, exceptionSupplier, minDate)).isEqualTo(
+          LocalDatePrecondition.verifyGreaterThan(dateToTest, exceptionSupplier,
+              minDate)).isEqualTo(
           dateToTest);
     }
   }

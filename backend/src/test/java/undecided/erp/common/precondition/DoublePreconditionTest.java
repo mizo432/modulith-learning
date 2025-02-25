@@ -6,14 +6,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
-class DoubleVerifiersTest {
+class DoublePreconditionTest {
 
   private final Supplier<RuntimeException> exceptionSupplier = IllegalArgumentException::new;
 
   @Test
   void shouldVerifyPositive_InputIsPositive_ReturnsSameValue() {
     Double input = 1.5;
-    Double output = DoubleVerifiers.verifyPositive(input, exceptionSupplier);
+    Double output = DoublePrecondition.verifyPositive(input, exceptionSupplier);
     assertThat(output).isEqualTo(input);
   }
 
@@ -24,7 +24,7 @@ class DoubleVerifiersTest {
     Double input = 1.5;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyPositive(input, nullSupplier));
+        () -> DoublePrecondition.verifyPositive(input, nullSupplier));
   }
 
   @Test
@@ -32,7 +32,7 @@ class DoubleVerifiersTest {
     Double input = 1.5;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyPositiveOrZero(input, nullSupplier));
+        () -> DoublePrecondition.verifyPositiveOrZero(input, nullSupplier));
   }
 
   @Test
@@ -40,7 +40,7 @@ class DoubleVerifiersTest {
     Double input = -1.5;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyNegative(input, nullSupplier));
+        () -> DoublePrecondition.verifyNegative(input, nullSupplier));
   }
 
   @Test
@@ -48,7 +48,7 @@ class DoubleVerifiersTest {
     Double input = -1.5;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyNegativeOrZero(input, nullSupplier));
+        () -> DoublePrecondition.verifyNegativeOrZero(input, nullSupplier));
   }
 
   @Test
@@ -58,7 +58,7 @@ class DoubleVerifiersTest {
     Double max = 2.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyRangeClosed(input, nullSupplier, min, max));
+        () -> DoublePrecondition.verifyRangeClosed(input, nullSupplier, min, max));
   }
 
   @Test
@@ -68,7 +68,7 @@ class DoubleVerifiersTest {
     Double max = 2.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyRangeOpen(input, nullSupplier, min, max));
+        () -> DoublePrecondition.verifyRangeOpen(input, nullSupplier, min, max));
   }
 
   @Test
@@ -78,7 +78,7 @@ class DoubleVerifiersTest {
     Double max = 2.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyRangeClosedOpen(input, nullSupplier, min, max));
+        () -> DoublePrecondition.verifyRangeClosedOpen(input, nullSupplier, min, max));
   }
 
   @Test
@@ -88,7 +88,7 @@ class DoubleVerifiersTest {
     Double max = 2.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyRangeOpenClosed(input, nullSupplier, min, max));
+        () -> DoublePrecondition.verifyRangeOpenClosed(input, nullSupplier, min, max));
   }
 
   @Test
@@ -97,7 +97,7 @@ class DoubleVerifiersTest {
     Double min = 1.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyAtLest(input, nullSupplier, min));
+        () -> DoublePrecondition.verifyAtLest(input, nullSupplier, min));
   }
 
   @Test
@@ -106,7 +106,7 @@ class DoubleVerifiersTest {
     Double max = 2.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyAtMost(input, nullSupplier, max));
+        () -> DoublePrecondition.verifyAtMost(input, nullSupplier, max));
   }
 
   @Test
@@ -115,7 +115,7 @@ class DoubleVerifiersTest {
     Double max = 2.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyLessThan(input, nullSupplier, max));
+        () -> DoublePrecondition.verifyLessThan(input, nullSupplier, max));
   }
 
   @Test
@@ -124,14 +124,14 @@ class DoubleVerifiersTest {
     Double min = 1.0;
     Supplier<RuntimeException> nullSupplier = null;
     assertThatExceptionOfType(NullPointerException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyGreaterThan(input, nullSupplier, min));
+        () -> DoublePrecondition.verifyGreaterThan(input, nullSupplier, min));
   }
 
   @Test
   void shouldReturnGivenRefForVerifyLessThan_whenRefIsLessThanMax() {
     Double ref = 1.5;
     Double max = 2.0;
-    Double output = DoubleVerifiers.verifyLessThan(ref, exceptionSupplier, max);
+    Double output = DoublePrecondition.verifyLessThan(ref, exceptionSupplier, max);
     assertThat(output).isEqualTo(ref);
   }
 
@@ -140,7 +140,7 @@ class DoubleVerifiersTest {
     Double ref = 2.0;
     Double max = 2.0;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyLessThan(ref, exceptionSupplier, max));
+        () -> DoublePrecondition.verifyLessThan(ref, exceptionSupplier, max));
   }
 
   @Test
@@ -148,14 +148,14 @@ class DoubleVerifiersTest {
     Double ref = 2.5;
     Double max = 2.0;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyLessThan(ref, exceptionSupplier, max));
+        () -> DoublePrecondition.verifyLessThan(ref, exceptionSupplier, max));
   }
 
   @Test
   void shouldReturnNullForVerifyLessThan_whenRefIsNull() {
     Double ref = null;
     Double max = 2.0;
-    Double output = DoubleVerifiers.verifyLessThan(ref, exceptionSupplier, max);
+    Double output = DoublePrecondition.verifyLessThan(ref, exceptionSupplier, max);
     assertThat(output).isNull();
   }
 
@@ -163,7 +163,7 @@ class DoubleVerifiersTest {
   void shouldReturnGivenRefForVerifyGreaterThan_whenRefIsGreaterThanMin() {
     Double ref = 2.5;
     Double min = 2.0;
-    Double output = DoubleVerifiers.verifyGreaterThan(ref, exceptionSupplier, min);
+    Double output = DoublePrecondition.verifyGreaterThan(ref, exceptionSupplier, min);
     assertThat(output).isEqualTo(ref);
   }
 
@@ -172,7 +172,7 @@ class DoubleVerifiersTest {
     Double ref = 2.0;
     Double min = 2.0;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyGreaterThan(ref, exceptionSupplier, min));
+        () -> DoublePrecondition.verifyGreaterThan(ref, exceptionSupplier, min));
   }
 
   @Test
@@ -180,14 +180,14 @@ class DoubleVerifiersTest {
     Double ref = 1.5;
     Double min = 2.0;
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> DoubleVerifiers.verifyGreaterThan(ref, exceptionSupplier, min));
+        () -> DoublePrecondition.verifyGreaterThan(ref, exceptionSupplier, min));
   }
 
   @Test
   void shouldReturnNullForVerifyGreaterThan_whenRefIsNull() {
     Double ref = null;
     Double min = 2.0;
-    Double output = DoubleVerifiers.verifyGreaterThan(ref, exceptionSupplier, min);
+    Double output = DoublePrecondition.verifyGreaterThan(ref, exceptionSupplier, min);
     assertThat(output).isNull();
   }
 }

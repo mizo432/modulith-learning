@@ -116,7 +116,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
    * SnowflakeIdクラスとデータベースで格納されるLong型の値を相互に変換するためのコンバータークラスです。
    * このクラスはJPAのAttributeConverterインターフェースを実装しています。
    */
-  @Converter
+  @Converter(autoApply = true)
   public static class SnowflakeIdConverter implements
       AttributeConverter<SnowflakeId, Long> {
 
