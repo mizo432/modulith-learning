@@ -1,3 +1,4 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.time.Duration
 
 buildscript {
@@ -6,18 +7,20 @@ buildscript {
     }
     dependencies {
         // Flyway（データベース移行ツール）のクラスパス追加
-        classpath("org.flywaydb:flyway-database-postgresql:10.15.2")
+        classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
     }
 }
 plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "3.4.2"
+    id("org.springframework.boot") version "3.4.3"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
+    id("se.patrikerdes.use-latest-versions") version "0.2.18"
+    id("com.github.ben-manes.versions") version "0.52.0"
     // Flywayプラグイン（DBマイグレーション）
-    id("org.flywaydb.flyway") version "10.15.2"
+    id("org.flywaydb.flyway") version "11.3.4"
     jacoco
 }
 
@@ -40,21 +43,21 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.3.1"
-extra["springModulithInsightVersion"] = "1.3.1"
+extra["springModulithVersion"] = "1.3.3"
+extra["springModulithInsightVersion"] = "1.3.3"
 extra["guavaVersion"] = "33.4.0-jre"
-extra["icu4jVersion"] = "74.2"
-extra["yaviVersion"] = "0.14.1"
-extra["jiltVersion"] = "1.6.1"
-extra["jdbcPostgresqlVersion"] = "10.15.2"
-extra["openapiUiVersion"] = "2.3.0"
+extra["icu4jVersion"] = "76.1"
+extra["yaviVersion"] = "0.14.2"
+extra["jiltVersion"] = "1.7"
+extra["jdbcPostgresqlVersion"] = "11.3.4"
+extra["openapiUiVersion"] = "2.8.5"
 extra["jmoleculesBomVersion"] = "2023.2.1"
-extra["archunitVersion"] = "1.3.0"
-extra["junitVersion"] = "5.11.4"
-extra["springDataBomVersion"] = "2024.1.1"
+extra["archunitVersion"] = "1.6.0"
+extra["junitVersion"] = "5.12.0"
+extra["springDataBomVersion"] = "2024.1.3"
 extra["springCloudBomVersion"] = "2024.0.0"
-extra["spotbugsAnnotationVersion"] = "4.8.4"
-extra["libphonenumberVersion"] = "8.13.43"
+extra["spotbugsAnnotationVersion"] = "4.9.1"
+extra["libphonenumberVersion"] = "9.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -62,11 +65,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-hateoas")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:${property("jdbcPostgresqlVersion")}")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa")
-    testImplementation("org.springframework.data:spring-data-jpa-starter-test")
     compileOnly("org.projectlombok:lombok")
     testCompileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -147,4 +148,24 @@ val largeTest = tasks.register("largeTest", Test::class.java) {
     }
     timeout.set(Duration.ofHours(1))
     shouldRunAfter("mediumTest")
+}
+apply(plugin = "com.github.ben-manes.versions")
+
+
+tasks.named<DependencyUpdatesTask>("dependencyUpdates").configure {
+
+    // optional parameters
+    checkForGradleUpdate = true
+    outputFormatter = "json"
+    outputDir = "build/dependencyUpdates"
+    reportfileName = "report"
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+}
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
 }
