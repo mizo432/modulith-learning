@@ -20,8 +20,8 @@ repositories {
     mavenCentral()
 }
 
-extra["junitVersion"] = "5.11.4"
-extra["springDataBomVersion"] = "2024.0.1"
+extra["junitVersion"] = "5.12.0"
+extra["springDataBomVersion"] = "2024.1.3"
 extra["springCloudBomVersion"] = "2024.0.0"
 
 dependencies {
