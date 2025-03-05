@@ -11,7 +11,8 @@ spring:
     virtual:
       enabled: true
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://${PROJECT_NAME:-default}-service-registry:8761/eureka
+#  eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://${PROJECT_NAME:-default}-service-registry:8761/eureka
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
