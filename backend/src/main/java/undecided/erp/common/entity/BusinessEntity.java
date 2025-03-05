@@ -1,9 +1,11 @@
 package undecided.erp.common.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Immutable;
 
 /**
@@ -35,6 +37,7 @@ public abstract class BusinessEntity<E extends BusinessEntity<E>> {
    * <p>
    * 監査目的で使用され、エンティティがいつ作成されたかを追跡するために利用されます。
    */
+  @CreatedDate
   private LocalDateTime createdAt;
 
   /**
@@ -46,6 +49,7 @@ public abstract class BusinessEntity<E extends BusinessEntity<E>> {
    * <p>
    * この値はエンティティが初期作成された際に設定され、その後変更されることはありません。
    */
+  @Column(nullable = true)
   private Long createdBy;
 
 }
