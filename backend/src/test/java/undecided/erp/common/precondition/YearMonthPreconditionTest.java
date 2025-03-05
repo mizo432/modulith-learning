@@ -1,10 +1,9 @@
 package undecided.erp.common.precondition;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import java.time.YearMonth;
 import java.util.function.Supplier;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -99,7 +98,7 @@ class YearMonthPreconditionTest {
 
     @Test
     void validRange_NoException() {
-      YearMonth result = YearMonthPrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min,
+      YearMonth result = YearMonthPrecondition.checkRangeClosedOpen(ref, exceptionSupplier, min,
           max);
       assertThat(result).isEqualTo(ref);
     }
@@ -108,13 +107,13 @@ class YearMonthPreconditionTest {
     void valueSmallerThanRange_ThrowsException() {
       YearMonth ref = YearMonth.of(2023, 12);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> YearMonthPrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
+          () -> YearMonthPrecondition.checkRangeClosedOpen(ref, exceptionSupplier, min, max));
     }
 
     @Test
     void valueEqualToMinRange_NoException() {
       YearMonth ref = YearMonth.of(2024, 1);
-      YearMonth result = YearMonthPrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min,
+      YearMonth result = YearMonthPrecondition.checkRangeClosedOpen(ref, exceptionSupplier, min,
           max);
       assertThat(result).isEqualTo(ref);
     }
@@ -123,7 +122,7 @@ class YearMonthPreconditionTest {
     void valueEqualToMaxRange_ThrowsException() {
       YearMonth ref = YearMonth.of(2024, 12);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> YearMonthPrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
+          () -> YearMonthPrecondition.checkRangeClosedOpen(ref, exceptionSupplier, min, max));
     }
 
     @Test
@@ -131,7 +130,7 @@ class YearMonthPreconditionTest {
       YearMonth min = YearMonth.of(2024, 6);
       YearMonth max = YearMonth.of(2024, 6);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> YearMonthPrecondition.verifyRangeClosedOpen(ref, exceptionSupplier, min, max));
+          () -> YearMonthPrecondition.checkRangeClosedOpen(ref, exceptionSupplier, min, max));
     }
   }
 
@@ -141,7 +140,7 @@ class YearMonthPreconditionTest {
     @Test
     void validRange_NoException() {
       YearMonth min = YearMonth.of(2024, 5);
-      YearMonth result = YearMonthPrecondition.verifyAtLest(ref, exceptionSupplier, min);
+      YearMonth result = YearMonthPrecondition.checkAtLest(ref, exceptionSupplier, min);
 
       assertThat(result).isEqualTo(ref);
     }
@@ -151,14 +150,14 @@ class YearMonthPreconditionTest {
       YearMonth ref = YearMonth.of(2023, 12);
 
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> YearMonthPrecondition.verifyAtLest(ref, exceptionSupplier, min));
+          () -> YearMonthPrecondition.checkAtLest(ref, exceptionSupplier, min));
     }
 
     @Test
     void valueEqualToMin_NoException() {
       YearMonth min = YearMonth.of(2024, 6);
 
-      YearMonth result = YearMonthPrecondition.verifyAtLest(ref, exceptionSupplier, min);
+      YearMonth result = YearMonthPrecondition.checkAtLest(ref, exceptionSupplier, min);
 
       assertThat(result).isEqualTo(ref);
     }
@@ -169,7 +168,7 @@ class YearMonthPreconditionTest {
 
     @Test
     void validRange_NoException() {
-      YearMonth result = YearMonthPrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min,
+      YearMonth result = YearMonthPrecondition.checkRangeOpenClosed(ref, exceptionSupplier, min,
           max);
       assertThat(result).isEqualTo(ref);
     }
@@ -178,20 +177,20 @@ class YearMonthPreconditionTest {
     void valueSmallerThanRange_ThrowsException() {
       YearMonth ref = YearMonth.of(2023, 12);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> YearMonthPrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
+          () -> YearMonthPrecondition.checkRangeOpenClosed(ref, exceptionSupplier, min, max));
     }
 
     @Test
     void valueEqualToMinRange_ThrowsException() {
       YearMonth ref = YearMonth.of(2024, 1);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> YearMonthPrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
+          () -> YearMonthPrecondition.checkRangeOpenClosed(ref, exceptionSupplier, min, max));
     }
 
     @Test
     void valueEqualToMaxRange_NoException() {
       YearMonth ref = YearMonth.of(2024, 12);
-      YearMonth result = YearMonthPrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min,
+      YearMonth result = YearMonthPrecondition.checkRangeOpenClosed(ref, exceptionSupplier, min,
           max);
       assertThat(result).isEqualTo(ref);
     }
@@ -201,7 +200,7 @@ class YearMonthPreconditionTest {
       YearMonth min = YearMonth.of(2024, 6);
       YearMonth max = YearMonth.of(2024, 6);
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> YearMonthPrecondition.verifyRangeOpenClosed(ref, exceptionSupplier, min, max));
+          () -> YearMonthPrecondition.checkRangeOpenClosed(ref, exceptionSupplier, min, max));
     }
   }
 

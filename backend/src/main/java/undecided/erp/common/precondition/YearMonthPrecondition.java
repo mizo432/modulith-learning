@@ -63,7 +63,7 @@ public class YearMonthPrecondition {
    * @return 検証済みのYearMonth値。
    * @throws RuntimeException YearMonth値が指定された閉開範囲内にない場合。
    */
-  public static YearMonth verifyRangeClosedOpen(YearMonth ref,
+  public static YearMonth checkRangeClosedOpen(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull YearMonth min,
       @NonNull YearMonth max) {
     if (ref == null) {
@@ -87,7 +87,7 @@ public class YearMonthPrecondition {
    * @return 検証されたYearMonthの値。
    * @throws RuntimeException YearMonthの値が指定された範囲外の場合。
    */
-  public static YearMonth verifyRangeOpenClosed(YearMonth ref,
+  public static YearMonth checkRangeOpenClosed(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull YearMonth min,
       @NonNull YearMonth max) {
     if (ref == null) {
@@ -110,7 +110,7 @@ public class YearMonthPrecondition {
    * @return 検証されたYearMonth値。
    * @throws RuntimeException YearMonth値が最小値以下の場合にスローされます。
    */
-  public static YearMonth verifyAtLest(YearMonth ref,
+  public static YearMonth checkAtLest(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull YearMonth min) {
     if (ref == null) {
       return ref;
@@ -132,7 +132,7 @@ public class YearMonthPrecondition {
    * @return 検証済みのYearMonth値。
    * @throws RuntimeException YearMonth値が指定した最大値以下でない場合。
    */
-  public static YearMonth verifyAtMost(YearMonth ref,
+  public static YearMonth checkAtMost(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull YearMonth max) {
     if (ref == null) {
       return ref;
@@ -154,7 +154,7 @@ public class YearMonthPrecondition {
    * @return 検証されたYearMonthの値。
    * @throws RuntimeException YearMonthの値が指定された最大値よりも大きい場合。
    */
-  public static YearMonth verifyLessThan(YearMonth ref,
+  public static YearMonth checkLessThan(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull YearMonth max) {
     if (ref == null) {
       return ref;
@@ -177,7 +177,7 @@ public class YearMonthPrecondition {
    * @return 検証されたYearMonthの値。
    * @throws RuntimeException YearMonthの値が最小値より大きくない場合。
    */
-  public static YearMonth verifyGreaterThan(YearMonth ref,
+  public static YearMonth checkGreaterThan(YearMonth ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull YearMonth min) {
     if (ref == null) {
       return ref;
