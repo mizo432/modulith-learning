@@ -1,9 +1,8 @@
 package undecided.erp.common.precondition;
 
+import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -235,19 +234,19 @@ class IntegerPreconditionTest {
     @Test
     void whenNumberIsPositive_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerPrecondition.verifyPositive(5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkPositive(5, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsZero_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerPrecondition.verifyPositive(0, exceptionSupplier));
+          () -> IntegerPrecondition.checkPositive(0, exceptionSupplier));
     }
 
     @Test
     void whenNumberIsNegative_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerPrecondition.verifyPositive(-5, exceptionSupplier));
+          () -> IntegerPrecondition.checkPositive(-5, exceptionSupplier));
     }
 
   }
@@ -258,19 +257,19 @@ class IntegerPreconditionTest {
     @Test
     void whenNumberIsZero_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerPrecondition.verifyNegative(0, exceptionSupplier));
+          () -> IntegerPrecondition.checkNegative(0, exceptionSupplier));
     }
 
     @Test
     void whenNumberIsPositive_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerPrecondition.verifyNegative(5, exceptionSupplier));
+          () -> IntegerPrecondition.checkNegative(5, exceptionSupplier));
     }
 
     @Test
     void whenNumberIsNegative_shouldReturnThatNumber() {
       Integer number = -5;
-      assertThat(IntegerPrecondition.verifyNegative(-5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkNegative(-5, exceptionSupplier)).isEqualTo(number);
     }
 
   }
@@ -281,19 +280,19 @@ class IntegerPreconditionTest {
     @Test
     void whenNumberIsPositive_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerPrecondition.verifyPositiveOrZero(5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkPositiveOrZero(5, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsZero_shouldReturnThatNumber() {
       Integer number = 0;
-      assertThat(IntegerPrecondition.verifyPositiveOrZero(0, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkPositiveOrZero(0, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsNegative_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerPrecondition.verifyPositiveOrZero(-5, exceptionSupplier));
+          () -> IntegerPrecondition.checkPositiveOrZero(-5, exceptionSupplier));
     }
 
   }
@@ -304,19 +303,19 @@ class IntegerPreconditionTest {
     @Test
     void whenNumberIsZero_shouldReturnThatNumber() {
       Integer number = 0;
-      assertThat(IntegerPrecondition.verifyNegativeOrZero(0, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkNegativeOrZero(0, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsNegative_shouldReturnThatNumber() {
       Integer number = -5;
-      assertThat(IntegerPrecondition.verifyNegativeOrZero(-5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkNegativeOrZero(-5, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsPositive_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerPrecondition.verifyNegativeOrZero(5, exceptionSupplier));
+          () -> IntegerPrecondition.checkNegativeOrZero(5, exceptionSupplier));
     }
 
   }

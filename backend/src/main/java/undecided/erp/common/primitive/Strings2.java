@@ -1,12 +1,11 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.primitive.Objects2.defaultIfNull;
-import static undecided.erp.common.primitive.Objects2.isNull;
-
 import com.ibm.icu.lang.UCharacter;
 import com.ibm.icu.lang.UProperty;
 import com.ibm.icu.text.UnicodeSet;
 import undecided.erp.common.precondition.IntegerPrecondition;
+import static undecided.erp.common.primitive.Objects2.defaultIfNull;
+import static undecided.erp.common.primitive.Objects2.isNull;
 
 /**
  * This class provides utility methods for handling strings.
@@ -464,7 +463,7 @@ public class Strings2 {
    * @return 繰り返された文字列。
    */
   public static String repeat(String str, int times) {
-    IntegerPrecondition.verifyPositiveOrZero(times,
+    IntegerPrecondition.checkPositiveOrZero(times,
         () -> new IllegalArgumentException("times must not negative times=" + times));
 
     return repeat(str, times, EMPTY);
@@ -479,7 +478,7 @@ public class Strings2 {
    * @return 指定した数の反復と分割記号を含む結果の文字列
    */
   public static String repeat(String str, int times, String separator) {
-    IntegerPrecondition.verifyPositiveOrZero(times,
+    IntegerPrecondition.checkPositiveOrZero(times,
         () -> new IllegalArgumentException("times must not negative times=" + times));
     if (isNull(str)) {
       str = EMPTY;

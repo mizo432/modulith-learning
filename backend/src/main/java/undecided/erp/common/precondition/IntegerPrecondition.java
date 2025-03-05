@@ -14,7 +14,7 @@ public class IntegerPrecondition {
    * @return 参照がnullでなく、正の場合は正の参照。
    * @throws RuntimeException 参照がnullまたは正でない場合。
    */
-  public static Integer verifyPositive(Integer ref,
+  public static Integer checkPositive(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkGreaterThan(ref, exceptionSupplier, 0);
   }
@@ -27,7 +27,7 @@ public class IntegerPrecondition {
    * @return 与えられた値が正またはゼロである場合、同じIntegerの値が返ります。それ以外の場合、exceptionSupplierに基づいて例外が投げられます。
    * @throws RuntimeException 与えられた値が負の場合、exceptionSupplierに基づいて投げられます。
    */
-  public static Integer verifyPositiveOrZero(Integer ref,
+  public static Integer checkPositiveOrZero(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkAtLest(ref, exceptionSupplier, 0);
   }
@@ -42,7 +42,7 @@ public class IntegerPrecondition {
    * @return 参照が負の場合は参照を、nullであればnullを返します
    * @throws RuntimeException 参照が負でない場合
    */
-  public static Integer verifyNegative(Integer ref,
+  public static Integer checkNegative(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkLessThan(ref, exceptionSupplier, 0);
   }
@@ -57,7 +57,7 @@ public class IntegerPrecondition {
    * @return 数値がnullまたはゼロ以下である場合、同じ数値を返します。それ以外の場合は、例外が投げられます。
    * @throws RuntimeException 数値がゼロより大きい場合。
    */
-  public static Integer verifyNegativeOrZero(Integer ref,
+  public static Integer checkNegativeOrZero(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkAtMost(ref, exceptionSupplier, 0);
 

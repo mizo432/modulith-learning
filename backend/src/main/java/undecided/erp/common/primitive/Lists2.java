@@ -1,8 +1,5 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.precondition.IntegerPrecondition.verifyPositiveOrZero;
-import static undecided.erp.common.primitive.Objects2.isNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +8,9 @@ import java.util.List;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import static undecided.erp.common.precondition.IntegerPrecondition.checkPositiveOrZero;
 import undecided.erp.common.precondition.ObjectPrecondition;
+import static undecided.erp.common.primitive.Objects2.isNull;
 
 @UtilityClass
 public class Lists2 {
@@ -69,7 +68,7 @@ public class Lists2 {
   }
 
   private static int computeArrayListCapacity(int arraySize) {
-    verifyPositiveOrZero(arraySize,
+    checkPositiveOrZero(arraySize,
         () -> new IllegalArgumentException("arraySize must positive or zero."));
 
     return Ints.saturatedCast(5L + arraySize + (arraySize / 10));
@@ -77,7 +76,7 @@ public class Lists2 {
 
   public static <E> ArrayList<E> newArrayListWithCapacity(
       int initialArraySize) {
-    verifyPositiveOrZero(initialArraySize,
+    checkPositiveOrZero(initialArraySize,
         () -> new IllegalArgumentException("initialArraySize must positive or zero"));
     return new ArrayList<>(initialArraySize);
   }

@@ -1,8 +1,5 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.precondition.IntegerPrecondition.verifyPositiveOrZero;
-import static undecided.erp.common.primitive.Objects2.isNull;
-
 import com.google.common.primitives.Ints;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +8,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import static undecided.erp.common.precondition.IntegerPrecondition.checkPositiveOrZero;
+import static undecided.erp.common.primitive.Objects2.isNull;
 
 @UtilityClass
 public class Maps2 {
@@ -49,7 +48,7 @@ public class Maps2 {
    */
   static int capacity(int expectedSize) {
     if (expectedSize < 3) {
-      verifyPositiveOrZero(expectedSize,
+      checkPositiveOrZero(expectedSize,
           () -> new IllegalArgumentException("expectedSize must positive or zero."));
       return expectedSize + 1;
     }
