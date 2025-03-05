@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import undecided.erp.common.entity.PptEntity;
+import undecided.erp.common.entity.SnowflakeId;
 import undecided.erp.relationship.domain.model.party.PartyType.PartyTypeConverter;
 
 /**
@@ -41,8 +42,8 @@ public class Party extends PptEntity<Party> implements Serializable {
    */
   @Id
   @Column(name = "party_id", columnDefinition = "BIGINT", nullable = false)
-  //@Convert(converter = SnowflakeIdConverter.class)
-  private Long partyId;
+  @Convert(converter = SnowflakeId.SnowflakeIdConverter.class)
+  private SnowflakeId partyId;
 
   /**
    * searchNameフィールドは、検索用の名前情報を保持します。
