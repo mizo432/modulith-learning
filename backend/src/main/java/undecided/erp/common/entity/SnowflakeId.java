@@ -1,22 +1,26 @@
 package undecided.erp.common.entity;
 
-import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
-import static undecided.erp.common.primitive.Objects2.isNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ComparisonChain;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.beans.Transient;
+import java.io.Serial;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.springframework.lang.Nullable;
+import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
+import static undecided.erp.common.primitive.Objects2.isNull;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
 
+/**
+ * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。
+ * IDをラップし、文字列表現や比較、データベースの永続化などのユーティリティメソッドを提供します。 このクラスは不変オブジェクトとして設計されています。
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -24,7 +28,24 @@ import undecided.erp.common.snowflake.SnowflakeIdProvider;
 public class SnowflakeId implements LongValue<SnowflakeId>,
     Comparable<SnowflakeId> {
 
+  /**
+   * 空のSnowflakeIdを表す定数。 この定数は、値を持たないSnowflakeIdオブジェクトを表現するために使用されます。 主に、未設定や初期状態を明示的に示すために利用されます。
+   * <p>
+   * 例外やエッジケースを処理する際に役立ち、空の状態であることを確認したり 比較や操作を実行する際の基準として使用されます。
+   */
   public static final SnowflakeId EMPTY = new SnowflakeId(null);
+  /**
+   * クラスSnowflakeIdにおいて、シリアライズのバージョン管理を行うために使用される直列化識別子。
+   * serialVersionUIDは、異なるJava仮想マシン間でのインスタンスの保存および読み込み（シリアライズおよびデシリアライズ）
+   * プロセス中に、クラスの互換性を検証するために使用されます。 クラスの構造に大きな変更がない限り、独自に定義された値を保持することで、 シリアライズ済みオブジェクトの互換性を維持ができます。
+   */
+  @Serial
+  private static final long serialVersionUID = 1L;
+  /**
+   * SnowflakeIdインスタンスの基盤となる具体的な値を表します。 この値は不変であり、SnowflakeIdの一意性を保証するために使用されます。
+   * <p>
+   * 序列化・デシリアライズの過程でJSON形式で表現される際に利用されます。
+   */
   @JsonValue
   private final Long value;
 
@@ -37,6 +58,13 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
     return new SnowflakeId(SnowflakeIdProvider.generateId());
   }
 
+  /**
+   * 指定された正の値からSnowflakeIdオブジェクトを生成します。
+   *
+   * @param value SnowflakeIdオブジェクトを生成するための正の値。nullではない必要があります。
+   * @return 指定された値を持つSnowflakeIdオブジェクト。
+   * @throws IllegalArgumentException valueが正の値でない場合にスローされます。
+   */
   @JsonCreator
   public static SnowflakeId of(@NonNull Long value) {
     checkPositive(value, () -> new IllegalArgumentException("value must be positive"));
@@ -56,6 +84,11 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
     return new SnowflakeId(value);
   }
 
+  /**
+   * 空のSnowflakeIdインスタンスを返します。
+   *
+   * @return 空のSnowflakeIdインスタンス。
+   */
   public static SnowflakeId empty() {
     return EMPTY;
   }
@@ -71,6 +104,11 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
 
   }
 
+  /**
+   * 現在のSnowflakeIdオブジェクトが空であるかどうかを判定します。
+   *
+   * @return オブジェクトが空の場合は{@code true}、そうでない場合は{@code false}
+   */
   @Transient
   @Override
   public boolean isEmpty() {
