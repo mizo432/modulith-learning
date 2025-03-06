@@ -1,17 +1,18 @@
 package undecided.erp.relationship.domain.model.party;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import java.util.Arrays;
 import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import undecided.erp.common.entity.SnowflakeId;
 
-@DataJpaTest
+@SpringBootTest
 @DisplayName("パーティリポジトリのテスト")
 class PartyRepositoryTest {
 
@@ -19,12 +20,13 @@ class PartyRepositoryTest {
   private PartyRepository partyRepository;
 
   private Party createParty(Long partyId, String searchName, PartyType type) {
-    Party party = new Party(partyId, searchName, type);
+    Party party = new Party(SnowflakeId.of(partyId), searchName, type);
     return party;
   }
 
   @Nested
   @DisplayName("findBySearchNameBeforeメソッドのテスト")
+  @Tag("medium")
   class FindBySearchNameBeforeTest {
 
     @Test

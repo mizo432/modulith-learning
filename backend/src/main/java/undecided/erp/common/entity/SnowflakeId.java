@@ -7,6 +7,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.beans.Transient;
 import java.io.Serial;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,7 +27,7 @@ import undecided.erp.common.snowflake.SnowflakeIdProvider;
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode
 public class SnowflakeId implements LongValue<SnowflakeId>,
-    Comparable<SnowflakeId> {
+    Comparable<SnowflakeId>, Serializable {
 
   /**
    * 空のSnowflakeIdを表す定数。 この定数は、値を持たないSnowflakeIdオブジェクトを表現するために使用されます。 主に、未設定や初期状態を明示的に示すために利用されます。
@@ -166,7 +167,8 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
      */
     @Override
     public Long convertToDatabaseColumn(SnowflakeId attribute) {
-      return attribute.getValue();
+      return attribute != null ? attribute.getValue() : null;
+
 
     }
 

@@ -17,8 +17,12 @@ import undecided.erp.relationship.domain.model.party.PartyType.PartyTypeConverte
 /**
  * Partyクラスは、エンティティとしてシステム内でのパーティ（関係者）を表現します。
  * <p>
- * このクラスは以下の特性を持ちます: - `partyId`: パーティ固有の識別子を表す。SnowflakeIdを使用。 - `searchName`:
- * 検索用の名前情報を保持する。SearchNameを使用。 - `type`: パーティのタイプを示す。PartyTypeを使用。
+ * このクラスは以下の特性を持ちます:
+ * <ul>
+ *   <li>`partyId`: パーティ固有の識別子を表す。SnowflakeIdを使用。</li>
+ *   <li>`searchName`: 検索用の名前情報を保持する。SearchNameを使用。</li>
+ *   <li>`type`: パーティのタイプを示す。PartyTypeを使用。</li>
+ * </ul>
  * <p>
  * このクラスは@NoArgsConstructorアノテーションにより、デフォルトでprotectedな引数なしコンストラクタを提供します。
  * また、@RequiredArgsConstructorにより、必須フィールドを初期化するためのコンストラクタを生成します。
@@ -37,8 +41,9 @@ import undecided.erp.relationship.domain.model.party.PartyType.PartyTypeConverte
 public class Party extends PptEntity<Party> implements Serializable {
 
   /**
-   * ユニークなパーティー識別子を表す変数。 アプリケーションにおける各パーティーを一意に識別するために使用されます。 データベース上の "party_id" カラムに対応し、null
-   * 値は許可されていません。
+   * ユニークなパーティー識別子を表す変数。
+   * <p>
+   * 0アプリケーションにおける各パーティーを一意に識別するために使用されます。 データベース上の "party_id" カラムに対応し、null 値は許可されていません。
    */
   @Id
   @Column(name = "party_id", columnDefinition = "BIGINT", nullable = false)
@@ -70,7 +75,9 @@ public class Party extends PptEntity<Party> implements Serializable {
   private PartyType type;
 
   /**
-   * このメソッドはPartyクラスの文字列表現を生成します。 各フィールドの値を連結して構成された文字列を返します。
+   * このメソッドはPartyクラスの文字列表現を生成します。
+   * <p>
+   * 各フィールドの値を連結して構成された文字列を返します。
    *
    * @return Partyオブジェクトのフィールド情報を含む文字列表現
    */

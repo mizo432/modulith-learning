@@ -52,11 +52,11 @@ extra["jiltVersion"] = "1.7"
 extra["jdbcPostgresqlVersion"] = "11.3.4"
 extra["openapiUiVersion"] = "2.8.5"
 extra["jmoleculesBomVersion"] = "2023.2.1"
-extra["archunitVersion"] = "1.4.0"
+extra["archunitVersion"] = "1.3.0"
 extra["junitVersion"] = "5.12.0"
 extra["springDataBomVersion"] = "2024.1.3"
 extra["springCloudBomVersion"] = "2024.0.0"
-extra["spotbugsAnnotationVersion"] = "4.9.1"
+extra["spotbugsAnnotationVersion"] = "4.9.2"
 extra["libphonenumberVersion"] = "9.0.0"
 
 dependencies {
@@ -79,8 +79,10 @@ dependencies {
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     implementation("org.jmolecules:jmolecules-onion-architecture")
     implementation("org.jmolecules:jmolecules-ddd")
+    // https://mvnrepository.com/artifact/org.jmolecules/jmolecules-layered-architecture
+    implementation("org.jmolecules:jmolecules-layered-architecture")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
-    testImplementation("org.jmolecules.integrations:jmolecules-archunit")
+    testImplementation("org.jmolecules.integrations:jmolecules-archunit:1.6.0")
     testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
@@ -98,7 +100,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
@@ -125,6 +127,10 @@ dependencyManagement {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
     }
 }
+jacoco {
+    toolVersion = "0.8.12"
+    // reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+}
 
 tasks.test {
     useJUnitPlatform {
@@ -148,6 +154,14 @@ val largeTest = tasks.register("largeTest", Test::class.java) {
     }
     timeout.set(Duration.ofHours(1))
     shouldRunAfter("mediumTest")
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
 }
 apply(plugin = "com.github.ben-manes.versions")
 
