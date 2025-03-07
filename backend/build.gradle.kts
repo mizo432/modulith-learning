@@ -27,6 +27,9 @@ plugins {
 version = "0.0.1-SNAPSHOT"
 
 java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 
 }
 tasks {
@@ -78,16 +81,16 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     implementation("org.jmolecules:jmolecules-onion-architecture")
-    implementation("org.jmolecules:jmolecules-ddd")
+//    implementation("org.jmolecules:jmolecules-ddd")
     // https://mvnrepository.com/artifact/org.jmolecules/jmolecules-layered-architecture
-    implementation("org.jmolecules:jmolecules-layered-architecture")
+//    implementation("org.jmolecules:jmolecules-layered-architecture")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
-    testImplementation("org.jmolecules.integrations:jmolecules-archunit:1.6.0")
-    testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
+//    testImplementation("org.jmolecules.integrations:jmolecules-archunit:1.6.0")
+    //  testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
 
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
