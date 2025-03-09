@@ -6,7 +6,7 @@
     <option name="newEntityIdType" value="Long" />
     <option name="renamerInitialized" value="true" />
   </component>
-  <component name="JpaPluginProjectSettings" commentSavingStrategy="@Comment アノテーション" reExcludeTablePrefixes="" reExcludeColumnPrefixes="" reExcludeTableSuffixes="" reExcludeColumnSuffixes="" mappingCollectionMethodNamingStrategy="COLLECTION_TYPE">
+  <component name="JpaPluginProjectSettings" commentSavingStrategy="@Comment アノテーション" reExcludeTablePrefixes="" reExcludeColumnPrefixes="" reExcludeTableSuffixes="" reExcludeColumnSuffixes="" mappingCollectionMethodNamingStrategy="PLURALIZE">
     <option name="entityNameTemplate" />
     <option name="isLombokToString" value="true" />
     <option name="useLazyOnToOneAssociations" value="true" />
