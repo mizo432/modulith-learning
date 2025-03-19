@@ -21,8 +21,7 @@ repositories {
 }
 
 extra["junitVersion"] = "5.12.0"
-extra["springDataBomVersion"] = "2024.1.3"
-extra["springCloudBomVersion"] = "2024.0.0"
+extra["springCloudBomVersion"] = "2024.0.1"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
@@ -35,9 +34,6 @@ dependencies {
 }
 
 dependencyManagement {
-    imports {
-        mavenBom("org.springframework.data:spring-data-bom:${property("springDataBomVersion")}")
-    }
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
     }

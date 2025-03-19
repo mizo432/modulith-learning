@@ -57,8 +57,7 @@ extra["openapiUiVersion"] = "2.8.5"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
 extra["junitVersion"] = "5.12.0"
-extra["springDataBomVersion"] = "2024.1.3"
-extra["springCloudBomVersion"] = "2024.0.0"
+extra["springCloudBomVersion"] = "2024.0.1"
 extra["spotbugsAnnotationVersion"] = "4.9.2"
 extra["libphonenumberVersion"] = "9.0.0"
 
@@ -105,7 +104,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
+    implementation("com.github.ben-manes.caffeine:caffeine")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
@@ -124,9 +123,6 @@ dependencyManagement {
     }
     imports {
         mavenBom("org.jmolecules:jmolecules-bom:${property("jmoleculesBomVersion")}")
-    }
-    imports {
-        mavenBom("org.springframework.data:spring-data-bom:${property("springDataBomVersion")}")
     }
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
