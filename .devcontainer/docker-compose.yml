@@ -7,7 +7,7 @@ volumes:
 services:
   db:
     container_name: ${PROJECT_NAME:-default}-postgresdb
-    image: postgres:16
+    image: postgres:latest
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
