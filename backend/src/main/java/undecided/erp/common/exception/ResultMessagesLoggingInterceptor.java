@@ -1,5 +1,6 @@
 package undecided.erp.common.exception;
 
+import javax.annotation.Nonnull;
 import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -14,7 +15,7 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
   public ResultMessagesLoggingInterceptor() {
   }
 
-  public Object invoke(MethodInvocation invocation)
+  public Object invoke(@Nonnull MethodInvocation invocation)
       throws Throwable, ResultMessagesNotificationException {
     if (this.startingPoint.get() == null) {
       this.startingPoint.set(invocation);
