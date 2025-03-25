@@ -2,7 +2,8 @@
 
 ## プロジェクト概要
 
-このプロジェクトは、Spring Modulithアーキテクチャを学習・実践するためのデモンストレーションプロジェクトです。モジュラーモノリス（Modular Monolith）アプローチを採用し、マイクロサービスとモノリシックアプリケーションの利点を組み合わせています。
+このプロジェクトは、Spring Modulithアーキテクチャを学習・実践するためのデモンストレーションプロジェクトです。モジュラーモノリス（Modular
+Monolith）アプローチを採用し、マイクロサービスとモノリシックアプリケーションの利点を組み合わせています。
 
 ### 主な目的
 
@@ -16,53 +17,59 @@
 このシステムは以下の主要コンポーネントで構成されています：
 
 1. **バックエンド（Backend）**：
-   - Spring Boot 3.4.3ベースのアプリケーション
-   - Spring Modulithを使用したモジュール化
-   - PostgreSQLデータベース
-   - JPA/Hibernateによるデータアクセス
-   - Flywayによるデータベースマイグレーション
+    - Spring Boot 3.4.3ベースのアプリケーション
+    - Spring Modulithを使用したモジュール化
+    - PostgreSQLデータベース
+    - JPA/Hibernateによるデータアクセス
+    - Flywayによるデータベースマイグレーション
 
 2. **APIゲートウェイ（API Gateway）**：
-   - クライアントリクエストのルーティングと管理
+    - クライアントリクエストのルーティングと管理
 
 3. **サービスレジストリ（Service Registry）**：
-   - Netflix Eurekaを使用したサービスディスカバリー
+    - Netflix Eurekaを使用したサービスディスカバリー
+
+4. **フロントエンド（Frontend）**:
 
 ### モジュール構造
+
+- Reactベースのアプリケーション
+- SPAとして作成する
+- コンポーネントライブラリーとして最新のMUIを使用する
 
 バックエンドアプリケーションは以下のモジュールで構成されています：
 
 - **関係管理（Relationship）**：
-  - ビジネス関係の管理機能
-  - クリーンアーキテクチャに基づく内部構造（ビジネス、ドメイン、インフラ、プレゼンテーション層）
+    - ビジネス関係の管理機能
+    - クリーンアーキテクチャに基づく内部構造（ビジネス、ドメイン、インフラ、プレゼンテーション層）
 
 - **共通（Common）**：
-  - 共通ユーティリティと設定
-  - 例外処理
-  - ロギング機能
+    - 共通ユーティリティと設定
+    - 例外処理
+    - ロギング機能
 
 - **共有（Shared）**：
-  - モジュール間で共有されるコンポーネント
+    - モジュール間で共有されるコンポーネント
 
 ### 技術スタック
 
 - **言語**：Java 21
 - **フレームワーク**：
-  - Spring Boot 3.4.3
-  - Spring Modulith
-  - Spring Security
-  - Spring Data JPA
-  - Spring Cloud (Netflix Eureka)
+    - Spring Boot 3.4.3
+    - Spring Modulith
+    - Spring Security
+    - Spring Data JPA
+    - Spring Cloud (Netflix Eureka)
 - **データベース**：PostgreSQL
 - **マイグレーション**：Flyway
 - **テスト**：JUnit 5（小、中、大規模テスト）
 - **ドキュメント**：OpenAPI/Swagger
 - **その他**：
-  - Lombok
-  - Guava
-  - ICU4J
-  - Caffeine（キャッシュ）
-  - libphonenumber
+    - Lombok
+    - Guava
+    - ICU4J
+    - Caffeine（キャッシュ）
+    - libphonenumber
 
 ### 開発アプローチ
 
