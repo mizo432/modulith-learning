@@ -23,7 +23,7 @@ public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver
       logger.warn("target exception is null. return defaultExceptionCode.");
       return this.defaultExceptionCode;
     } else {
-      if (ex instanceof org.terasoluna.gfw.common.exception.ExceptionCodeProvider) {
+      if (ex instanceof ExceptionCodeProvider) {
         String code = ((ExceptionCodeProvider) ex).getCode();
         if (code != null) {
           return code;

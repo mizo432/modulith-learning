@@ -19,11 +19,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class TraceLoggingInterceptor implements HandlerInterceptor {
 
   private static final Logger logger = LoggerFactory.getLogger(
-      org.terasoluna.gfw.web.logging.TraceLoggingInterceptor.class);
+      TraceLoggingInterceptor.class);
   private static final String START_ATTR =
-      org.terasoluna.gfw.web.logging.TraceLoggingInterceptor.class.getName() + ".startTime";
+      TraceLoggingInterceptor.class.getName() + ".startTime";
   private static final String HANDLING_ATTR =
-      org.terasoluna.gfw.web.logging.TraceLoggingInterceptor.class.getName() + ".handlingTime";
+      TraceLoggingInterceptor.class.getName() + ".handlingTime";
   private static final long DEFAULT_WARN_NANOS;
 
   static {

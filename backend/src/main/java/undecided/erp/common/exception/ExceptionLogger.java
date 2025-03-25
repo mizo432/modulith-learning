@@ -3,13 +3,16 @@ package undecided.erp.common.exception;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-public class ExceptionLogger implements InitializingBean {
+@Component
+@RequiredArgsConstructor
+public class ExceptionLogger {
 
   private static final String MONITORING_LOG_LOGGER_SUFFIX = ".Monitoring";
   private final Logger applicationLogger;
@@ -33,12 +36,8 @@ public class ExceptionLogger implements InitializingBean {
   @Setter
   private boolean trimLogMessage;
 
-  public ExceptionLogger() {
-    this(ExceptionLogger.class.getName());
-  }
-
   public ExceptionLogger(String name) {
-    this.exceptionLevelLoggers = new ConcurrentHashMap();
+    this.exceptionLevelLoggers = new ConcurrentHashMap<>();
     this.exceptionCodeResolver = new SimpleMappingExceptionCodeResolver();
     this.PLACEHOLDER_OF_EXCEPTION_CODE = "{0}";
     this.PLACEHOLDER_OF_EXCEPTION_MESSAGE = "{1}";
