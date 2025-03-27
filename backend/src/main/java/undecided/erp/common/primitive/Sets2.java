@@ -70,6 +70,14 @@ public class Sets2 {
 
   }
 
+  /**
+   * 2つのセットの共通部分（交差）を返します。
+   * 
+   * @param <E> セット内の要素の型
+   * @param set1 最初のセット（nullであってはならない）
+   * @param set2 二番目のセット（nullであってはならない）
+   * @return set1とset2の共通要素を含む新しいSetView
+   */
   public static <E> Set<E> intersection(@NonNull Set<E> set1, @NonNull Set<E> set2) {
     return new SetView<>() {
       @Override
@@ -209,11 +217,23 @@ public class Sets2 {
     private SetView() {
     }
 
+    /**
+     * このSetViewの不変コピーを作成します。
+     *
+     * @return このSetViewの要素を含む不変のセット
+     */
     @SuppressWarnings("nullness") // Unsafe, but we can't fix it now.
     public ImmutableSet<E> immutableCopy() {
       return ImmutableSet.copyOf(this);
     }
 
+    /**
+     * このSetViewの要素を指定されたセットにコピーします。
+     *
+     * @param <S> コピー先のセットの型
+     * @param set 要素をコピーする先のセット
+     * @return 要素がコピーされた後の入力セット
+     */
     @CanIgnoreReturnValue
     public <S extends Set<E>> S copyInto(S set) {
       set.addAll(this);
@@ -275,9 +295,20 @@ public class Sets2 {
       throw new UnsupportedOperationException();
     }
 
+    /**
+     * このSetViewの要素を反復処理するための変更不可能なイテレータを返します。
+     *
+     * @return このSetViewの要素を反復処理するための変更不可能なイテレータ
+     */
     @Override
     public abstract UnmodifiableIterator<E> iterator();
 
+    /**
+     * このSetViewに含まれる要素の数を返します。
+     * デフォルトの実装では常に0を返します。
+     *
+     * @return このSetViewに含まれる要素の数
+     */
     @Override
     public int size() {
       return 0;
