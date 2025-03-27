@@ -12,6 +12,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface DoNotCall {
 
+  /**
+   * アノテーションが付けられたメソッドに対する説明や理由を指定します。
+   *
+   * @return メソッドに関する説明や意図した使用制限事項
+   */
   String value() default "";
 
 }

@@ -2,6 +2,9 @@ package undecided.erp.common.primitive;
 
 import lombok.experimental.UtilityClass;
 
+/**
+ * ブール値を操作するためのユーティリティクラスです。主にBoolean型に対する 簡単なチェックや判定メソッドを提供します。
+ */
 @UtilityClass
 public class Booleans {
 

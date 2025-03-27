@@ -74,15 +74,33 @@ public class SearchName implements StringValue<SearchName> {
    */
   public record SearchNamePrefixCriteria(String value) {
 
+    /**
+     * SearchNamePrefixCriteriaクラスのコンストラクタ。
+     * <p>
+     * 指定された名前接頭辞を検索条件として設定するオブジェクトを生成します。 入力された値がnullまたは空文字列の場合、デフォルト値が内部的に設定されます。
+     *
+     * @param value 名前接頭辞を示す文字列。nullまたは空文字列が指定された場合、 デフォルト値が自動的に設定されます。
+     */
     public SearchNamePrefixCriteria(String value) {
       this.value = Strings2.defaultIfEmpty(value, (String) Objects2.NULL);
 
     }
 
+    /**
+     * 指定された文字列を基にSearchNamePrefixCriteriaのインスタンスを生成するファクトリメソッド。
+     *
+     * @param prefix 使用する名前接頭辞を示す文字列
+     * @return 指定された接頭辞を基に作成されたSearchNamePrefixCriteriaのインスタンス
+     */
     public static SearchNamePrefixCriteria of(String prefix) {
       return new SearchNamePrefixCriteria(prefix);
     }
 
+    /**
+     * このメソッドはSearchNamePrefixCriteriaオブジェクトの文字列表現を生成します。
+     *
+     * @return 内部で保持している値(value)を文字列として表したもの
+     */
     @Override
     public String toString() {
       return String.valueOf(value);

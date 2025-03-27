@@ -7,6 +7,9 @@ import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
+/**
+ * 配列の事前条件をチェックするためのユーティリティクラス。 このクラスはインスタンス化することはできません。
+ */
 @UtilityClass
 public class ArrayPrecondition {
 

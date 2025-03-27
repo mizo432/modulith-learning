@@ -1,5 +1,8 @@
 package undecided.erp.common.primitive;
 
+import static undecided.erp.common.precondition.IntegerPrecondition.checkPositiveOrZero;
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,10 +11,11 @@ import java.util.List;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import static undecided.erp.common.precondition.IntegerPrecondition.checkPositiveOrZero;
 import undecided.erp.common.precondition.ObjectPrecondition;
-import static undecided.erp.common.primitive.Objects2.isNull;
 
+/**
+ * Lists2クラスはリストに関するユーティリティメソッドを提供します。 このクラスはインスタンス化できないユーティリティクラスとして設計されています。
+ */
 @UtilityClass
 public class Lists2 {
 

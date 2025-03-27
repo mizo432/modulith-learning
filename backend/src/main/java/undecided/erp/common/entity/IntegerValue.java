@@ -17,6 +17,15 @@ import undecided.erp.common.precondition.IntegerPrecondition;
  */
 public interface IntegerValue<VO extends IntegerValue<VO>> extends SingleValue<Integer> {
 
+  /**
+   * IntegerValuesクラスは、数値に対する検証を行うためのユーティリティクラスです。 このクラスでは、数値が特定の条件を満たしているかどうかを確認し、
+   * 条件に一致しない場合にカスタム例外をスローするメソッドを提供します。
+   * <p>
+   * 提供されている各メソッドは以下の用途に使用できます: - 数値が正であるかを検証 - 数値が正またはゼロであるかを検証 - 数値が負であるかを検証 - 数値が負またはゼロであるかを検証 -
+   * 数値が特定の範囲内にあるかを検証
+   * <p>
+   * このクラスは、数値検証の再利用可能で効率的な手段を提供し、 不適切な数値入力を防ぐ補助となります。
+   */
   class IntegerValues {
 
     /**

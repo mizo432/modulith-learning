@@ -215,10 +215,20 @@ public class ExceptionLogger implements InitializingBean {
     this.exceptionLevelLoggers.put(level, logger);
   }
 
+  /**
+   * アプリケーションロガーを取得します。 このロガーは、アプリケーション全体で使用するログ出力に利用されます。
+   *
+   * @return アプリケーションロガーのインスタンス
+   */
   protected Logger getApplicationLogger() {
     return this.applicationLogger;
   }
 
+  /**
+   * モニタリング用途で使用するロガーを取得します。 このロガーは主にシステムの監視や運用に関するログ出力に適しています。
+   *
+   * @return モニタリングロガーのインスタンス
+   */
   protected Logger getMonitoringLogger() {
     return this.monitoringLogger;
   }

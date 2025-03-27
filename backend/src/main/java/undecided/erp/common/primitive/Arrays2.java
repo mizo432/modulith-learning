@@ -6,11 +6,11 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
- * 配列操作を提供するユーティリティクラスです。 すべてのメソッドは静的であり、インスタンス化して使用することはできません。
+ * 配列操作を補助するユーティリティクラスです。 このクラスは、主に配列に関する便利なメソッドを提供します。 すべてのメソッドは静的メソッドであり、インスタンス化する必要がありません。
  */
 @UtilityClass
 public class Arrays2 {
-  
+
 
   /**
    * Checks if the specified array is empty.

@@ -5,7 +5,16 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 import java.util.EnumSet;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+/**
+ * 列挙型に関する事前条件を検証するためのユーティリティクラス。
+ * <p>
+ * このクラスは、指定されたEnumSetや列挙型に基づいた入力検証を行うための静的メソッドを提供します。 これらのメソッドは、入力された条件に基づき、例外をスローすることで不正な値を防ぎます。
+ * <p>
+ * 業務的な観点での条件チェックではなく、主にメソッドレベルでの入力値検証を目的としています。
+ */
+@UtilityClass
 public class EnumPrecondition {
 
   /**

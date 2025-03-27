@@ -20,13 +20,40 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class IpAddressProvider {
 
+  /**
+   * IpAddressProviderクラスのインスタンスを管理するスレッドセーフなAtomicReference。
+   * <p>
+   * デフォルトのIpAddressProviderのインスタンスを保持し、必要に応じて別のインスタンスに置き換えることができます。
+   * この変数は、現在のIPアドレスプロバイダーの管理や切り替えに使用されます。
+   * <p>
+   * 注意: この変数はスレッドセーフな操作のためにAtomicReferenceを使用しています。
+   */
   private final static AtomicReference<IpAddressProvider> ipAddressProvider =
       new AtomicReference<>(new IpAddressProvider());
 
+  /**
+   * IpAddressProviderクラスのデフォルトコンストラクタ。
+   * <p>
+   * ホストマシンの現在のIPアドレスを提供するためのデフォルトインスタンスを生成します。 通常、このコンストラクタは直接使用されることはなく、
+   * スタティックメソッドやサブクラスを通して利用されます。
+   * <p>
+   * 注意: このクラスはスレッドセーフに設計されており、AtomicReferenceを使用して デフォルトインスタンスを管理します。
+   */
   IpAddressProvider() {
 
   }
 
+
+  /**
+   * IpAddressProviderクラスの新しいインスタンスを初期化します。
+   * <p>
+   * このコンストラクタにより、新しいIpAddressProviderインスタンスで 現在のIPアドレスプロバイダーを設定します。
+   *
+   * @param ipAddressProvider 新しいIPアドレスプロバイダーとして設定するIpAddressProviderインスタンス
+   */
+  protected IpAddressProvider(IpAddressProvider ipAddressProvider) {
+    IpAddressProvider.setIpAddressProvider(ipAddressProvider);
+  }
 
   /**
    * 現在のホストのIPアドレスを取得します。
@@ -41,13 +68,24 @@ public class IpAddressProvider {
         .ipHostAddress();
   }
 
-
-  protected IpAddressProvider(IpAddressProvider ipAddressProvider) {
-    IpAddressProvider.setIpAddressProvider(ipAddressProvider);
-  }
-
+  /**
+   * 現在のIPアドレスプロバイダーを設定します。
+   * <p>
+   * このメソッドを使用して、カスタムのIpAddressProviderを設定することができます。 設定後、{@link #ipAddress()}
+   * メソッド呼び出し時にカスタム実装が使用されます。
+   *
+   * @param ipAddressProvider 新しいIPアドレスプロバイダーとして設定するIpAddressProviderインスタンス
+   */
   public static void setIpAddressProvider(IpAddressProvider ipAddressProvider) {
     IpAddressProvider.ipAddressProvider.set(ipAddressProvider);
+  }
+
+  /**
+   * DateProviderを初期化する
+   */
+  public static void clear() {
+    IpAddressProvider.ipAddressProvider.set(new IpAddressProvider());
+
   }
 
   /**
@@ -57,14 +95,6 @@ public class IpAddressProvider {
    */
   protected String ipHostAddress() throws UnknownHostException {
     return InetAddress.getLocalHost().getHostAddress();
-
-  }
-
-  /**
-   * DateProviderを初期化する
-   */
-  public static void clear() {
-    IpAddressProvider.ipAddressProvider.set(new IpAddressProvider());
 
   }
 

@@ -8,10 +8,23 @@ package undecided.erp.common.entity;
  */
 public abstract class EnumConverter<E extends PersistableEnum> {
 
+  /**
+   * 指定された {@link PersistableEnum} 実装の列挙型インスタンスから、そのデータベースでの表現値を取得して返します。
+   *
+   * @param value データベース値に変換する対象の列挙型インスタンス
+   * @return 対応するデータベース表現値
+   */
   protected String toDatabaseValue(E value) {
     return value.getDatabaseValue();
   }
 
+  /**
+   * 指定されたデータベース値を基に、指定された列挙型クラスのインスタンスを返します。
+   *
+   * @param enumClass 変換先の列挙型クラス。{@link PersistableEnum} を実装している必要があります。
+   * @param value データベースから取得した値。この値に対応する列挙型のインスタンスを生成します。
+   * @return 指定されたデータベース値に対応する列挙型のインスタンス
+   */
   protected abstract E toEntityAttribute(Class<E> enumClass, String value);
 
 }

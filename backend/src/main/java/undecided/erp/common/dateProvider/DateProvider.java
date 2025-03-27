@@ -19,10 +19,21 @@ public class DateProvider {
   private static final AtomicReference<DateProvider> DATE_PROVIDER = new AtomicReference<>(
       new DateProvider());
 
+  /**
+   * DateProviderクラスのコンストラクタです。
+   * <p>
+   * このコンストラクタは保護されたアクセス修飾子を持ち、DateProviderクラスを サブクラス化する場合に使用されます。このデフォルトコンストラクタは
+   * 外部から直接呼び出すことはできず、クラス内または同一パッケージ内、 もしくはサブクラスでのみアクセス可能です。
+   */
   protected DateProvider() {
 
   }
 
+  /**
+   * 指定されたDateProviderを用いて新しいDateProviderを設定します。
+   *
+   * @param dateProvider 新しいDateProviderとして設定するインスタンス
+   */
   protected DateProvider(DateProvider dateProvider) {
     DATE_PROVIDER.set(dateProvider);
 

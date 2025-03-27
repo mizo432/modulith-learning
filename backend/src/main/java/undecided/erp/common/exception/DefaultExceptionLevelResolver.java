@@ -2,6 +2,12 @@ package undecided.erp.common.exception;
 
 import static org.springframework.util.StringUtils.hasText;
 
+/**
+ * 例外のレベルを解決するデフォルトの実装クラス。
+ * <p>
+ * このクラスは {@link ExceptionLevelResolver} インターフェースを実装しており、 指定された例外から適切な例外レベルを判定して返します。
+ * 必要に応じて、{@link ExceptionCodeResolver} を利用して例外コードを解決できます。
+ */
 public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
 
   private ExceptionCodeResolver exceptionCodeResolver;
