@@ -10,7 +10,6 @@ import lombok.NonNull;
 /**
  * SetPreconditionsクラスは、セットに対する前提条件をチェックするメソッドを提供します。
  */
-@NonNull
 public class SetPrecondition {
 
   /**
@@ -23,11 +22,11 @@ public class SetPrecondition {
    * @return セットが空でない場合、元のセットを返します。
    * @throws IllegalArgumentException セットが空の場合。
    */
-  public static <T> Set<T> verifyNotEmpty(Set<T> set) {
+  public static <T> Set<T> checkNotEmpty(Set<T> set) {
     if (set == null) {
       return set;
     }
-    return verifyNotEmpty(set, () -> new IllegalArgumentException("Set must not be empty"));
+    return checkNotEmpty(set, () -> new IllegalArgumentException("Set must not be empty"));
 
   }
 
@@ -42,7 +41,7 @@ public class SetPrecondition {
    * @return セットが空でない場合は元のセット。
    * @throws RuntimeException セットが空の場合。
    */
-  public static <T> Set<T> verifyNotEmpty(Set<T> set,
+  public static <T> Set<T> checkNotEmpty(Set<T> set,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (set == null) {
       return set;
@@ -61,7 +60,7 @@ public class SetPrecondition {
    * @return null要素が見つからなかった場合は、元のセット
    * @throws RuntimeException セット内にnull要素が見つかった場合
    */
-  public static <E> Set<E> verifyAllElementNotNull(Set<E> set,
+  public static <E> Set<E> checkAllElementNotNull(Set<E> set,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (set == null) {
       return set;
@@ -84,7 +83,7 @@ public class SetPrecondition {
    * @return 非null要素が見つかった場合は元のセット
    * @throws RuntimeException セット内で非nullの要素が見つからない場合
    */
-  public static <E> Set<E> verifyAnyElementNotNull(Set<E> set,
+  public static <E> Set<E> checkAnyElementNotNull(Set<E> set,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     if (set == null || set.stream().anyMatch(Objects::nonNull)) {
       return set;
@@ -101,7 +100,7 @@ public class SetPrecondition {
    * @return 具体的に1つの非null要素が含まれている場合は元のセット。
    * @throws RuntimeException セットがnullまたは具体的に1つの非null要素を含まない場合。
    */
-  public static <E> Set<E> verifyOneElementNotNull(Set<E> set,
+  public static <E> Set<E> checkOneElementNotNull(Set<E> set,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
 
     if (set != null && set.stream().filter(Objects::nonNull).count() != 1) {
@@ -121,7 +120,7 @@ public class SetPrecondition {
    * @return サイズが期待通りの場合は提供されたセットが返されます
    * @throws RuntimeException セットのサイズが期待したものでない場合
    */
-  public static <SetElementType, ExceptionType extends RuntimeException> Set<SetElementType> verifySize(
+  public static <SetElementType, ExceptionType extends RuntimeException> Set<SetElementType> checkSize(
       Set<SetElementType> providedSet, @NonNull Supplier<ExceptionType> exceptionSupplier,
       int expectedSize) {
     if (isNull(providedSet)) {

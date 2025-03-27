@@ -37,7 +37,6 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
               targetObject.getClass().getName());
         }
 
-        return returnObj;
       } else {
         Exception exception = (Exception) invocation.getArguments()[3];
         if (this.isTargetException(exception)) {
@@ -47,24 +46,22 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
           this.log(exception, request, response, handler);
         }
 
-        return returnObj;
       }
+      return returnObj;
     }
   }
 
 
   protected boolean isTargetException(Exception ex) {
-    if (this.ignoreExceptions == null) {
-      return true;
-    } else {
+    if (this.ignoreExceptions != null) {
       for (Class<? extends Exception> ignoreClass : this.ignoreExceptions) {
         if (ignoreClass.isInstance(ex)) {
           return false;
         }
       }
 
-      return true;
     }
+    return true;
   }
 
   protected void log(Exception ex, HttpServletRequest request, HttpServletResponse response,

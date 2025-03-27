@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * このアノテーションは、メソッドがテスト目的で可視であることを示すために使用されます。
  * <p>
- * このアノテーションは、メソッドに適用することができます。
+ * このアノテーションは、メソッドに適用できます。
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})

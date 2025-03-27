@@ -1,6 +1,6 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.precondition.ObjectPrecondition.verifyState;
+import static undecided.erp.common.precondition.ObjectPrecondition.checkState;
 import static undecided.erp.common.primitive.NullnessCasts.uncheckedCastNullableTToT;
 
 import java.util.NoSuchElementException;
@@ -78,7 +78,7 @@ public abstract class AbstractIterator<T> extends UnmodifiableIterator<T> {
    */
   @Override
   public final boolean hasNext() {
-    verifyState(state != State.FAILED,
+    checkState(state != State.FAILED,
         () -> new IllegalStateException("state is State.FAILED"));
     return switch (state) {
       case DONE -> false;

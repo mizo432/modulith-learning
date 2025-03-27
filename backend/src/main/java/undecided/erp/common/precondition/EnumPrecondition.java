@@ -18,7 +18,7 @@ public class EnumPrecondition {
    * @return EnumSetに列挙型の定数が含まれている場合、同じ列挙型の定数
    * @throws RuntimeException 列挙型の定数がEnumSetに含まれていない場合
    */
-  public static <E extends Enum<E>> E verifyContains(E ref, @NonNull EnumSet<E> enumSet,
+  public static <E extends Enum<E>> E checkContains(E ref, @NonNull EnumSet<E> enumSet,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (!enumSet.contains(ref)) {
       throw supplier.get();
@@ -40,7 +40,7 @@ public class EnumPrecondition {
    * @return EnumSetに列挙型の定数が含まれていない場合、同じ列挙型の定数
    * @throws RuntimeException 列挙型の定数がEnumSetに含まれている場合
    */
-  public static <EnumType extends Enum<EnumType>, ExceptionType extends RuntimeException> EnumType verifyNotContains(
+  public static <EnumType extends Enum<EnumType>, ExceptionType extends RuntimeException> EnumType checkNotContains(
       EnumType ref, @NonNull EnumSet<EnumType> enumSet,
       @NonNull Supplier<ExceptionType> supplier) {
     if (isNull(ref)) {
@@ -66,7 +66,7 @@ public class EnumPrecondition {
    * @return テスト値が基準値と等しくない場合の基準値
    * @throws ExceptionType テスト値が基準値と等しい場合
    */
-  public static <EnumType extends Enum<EnumType>, ExceptionType extends RuntimeException> EnumType verifyNotEqual(
+  public static <EnumType extends Enum<EnumType>, ExceptionType extends RuntimeException> EnumType checkNotEqual(
       EnumType referenceValue, @NonNull EnumType testValue,
       @NonNull Supplier<ExceptionType> exceptionSupplier) {
     if (testValue == referenceValue) {

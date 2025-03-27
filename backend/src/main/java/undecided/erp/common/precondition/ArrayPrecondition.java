@@ -20,11 +20,11 @@ public class ArrayPrecondition {
    * @return 非空の場合は同じ配列
    * @throws IllegalArgumentException 配列が空の場合
    */
-  public static <T> T[] verifyNotEmpty(T[] array) {
+  public static <T> T[] checkNotEmpty(T[] array) {
     if (array == null) {
       return array;
     }
-    return verifyNotEmpty(array, () -> new IllegalArgumentException("Array must not be empty"));
+    return checkNotEmpty(array, () -> new IllegalArgumentException("Array must not be empty"));
 
   }
 
@@ -40,7 +40,7 @@ public class ArrayPrecondition {
    * @return 空でない場合は同じ配列
    * @throws RuntimeException 配列が空の場合
    */
-  public static <T> T[] verifyNotEmpty(T[] array,
+  public static <T> T[] checkNotEmpty(T[] array,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
@@ -61,7 +61,7 @@ public class ArrayPrecondition {
    * @return すべての要素がnullでない場合は元の配列
    * @throws IndexedRuntimeException 配列のどれかの要素がnullの場合
    */
-  public static <E> E[] verifyAllElementNotNull(E[] array,
+  public static <E> E[] checkAllElementNotNull(E[] array,
       @NonNull Function<Integer, ? extends IndexedRuntimeException> function) {
     if (array == null) {
       return array;
@@ -88,7 +88,7 @@ public class ArrayPrecondition {
    * @return いずれかの要素がnullでない場合、元の配列を返します
    * @throws RuntimeException 配列がnullまたは配列内の全要素がnullの場合、ランタイム例外がスローされます。
    */
-  public static <E> E[] verifyAnyElementNotNull(E[] array,
+  public static <E> E[] checkAnyElementNotNull(E[] array,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
@@ -115,7 +115,7 @@ public class ArrayPrecondition {
    * @return チェックが通ればその配列自体を返します
    * @throws RuntimeException 配列がnullであるか、配列内のnullでない要素の数がちょうど1つでない場合に投げられます
    */
-  public static <E> E[] verifyOneElementNotNull(E[] array,
+  public static <E> E[] checkOneElementNotNull(E[] array,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (array == null) {
       return array;
@@ -143,7 +143,7 @@ public class ArrayPrecondition {
    * @return 長さが一致する場合は入力配列
    * @throws E 配列の長さが期待した長さと一致しない場合
    */
-  public static <O, E extends RuntimeException> O[] verifyLength(O[] array,
+  public static <O, E extends RuntimeException> O[] checkLength(O[] array,
       @NonNull Supplier<E> exceptionSupplier, int size) {
     if (isNull(array)) {
       return null;
@@ -166,7 +166,7 @@ public class ArrayPrecondition {
    * @return 配列の長さが最小値よりも大きい場合は入力配列
    * @throws ExceptionType 配列の長さが最小値より大きくない場合
    */
-  public static <ValueType, ExceptionType extends RuntimeException> ValueType[] verifyLengthGreaterThan(
+  public static <ValueType, ExceptionType extends RuntimeException> ValueType[] checkLengthGreaterThan(
       ValueType[] array, @NonNull Supplier<ExceptionType> exceptionSupplier,
       int min) {
     if (isNull(array)) {
@@ -191,7 +191,7 @@ public class ArrayPrecondition {
    * @return 配列の長さが最小値以上の場合、入力配列
    * @throws ExceptionType 配列の長さが最小値未満の場合
    */
-  public static <ValueType, ExceptionType extends RuntimeException> ValueType[] verifyLengthAtLeast(
+  public static <ValueType, ExceptionType extends RuntimeException> ValueType[] checkLengthAtLeast(
       ValueType[] array, @NonNull Supplier<ExceptionType> exceptionSupplier,
       int min) {
     if (isNull(array)) {

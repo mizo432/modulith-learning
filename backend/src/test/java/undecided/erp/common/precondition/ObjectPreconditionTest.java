@@ -10,86 +10,86 @@ import org.junit.jupiter.api.Test;
 class ObjectPreconditionTest {
 
   @Test
-  void verifyStateWithBooleanAndSupplier_ExceptionThrown() {
+  void checkStateWithBooleanAndSupplier_ExceptionThrown() {
     Supplier<IllegalStateException> exceptionSupplier = () -> new IllegalStateException(
         "State not expected");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPrecondition.verifyState(false, exceptionSupplier);
+      ObjectPrecondition.checkState(false, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("State not expected"));
   }
 
   @Test
-  void verifyStateWithBooleanAndSupplier_NoExceptionThrown() {
+  void checkStateWithBooleanAndSupplier_NoExceptionThrown() {
     Supplier<IllegalStateException> exceptionSupplier = () -> new IllegalStateException(
         "State not expected");
 
     assertDoesNotThrow(() -> {
-      ObjectPrecondition.verifyState(true, exceptionSupplier);
+      ObjectPrecondition.checkState(true, exceptionSupplier);
     });
   }
 
   @Test
-  void verifyStateWithBooleanAndString_ExceptionThrown() {
+  void checkStateWithBooleanAndString_ExceptionThrown() {
     String label = "test state";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPrecondition.verifyState(false, label);
+      ObjectPrecondition.checkState(false, label);
     });
 
     assertTrue(exception.getMessage().contains(label + " の状態が不正です。"));
   }
 
   @Test
-  void verifyStateWithBooleanAndString_NoExceptionThrown() {
+  void checkStateWithBooleanAndString_NoExceptionThrown() {
     String label = "test state";
 
     assertDoesNotThrow(() -> {
-      ObjectPrecondition.verifyState(true, label);
+      ObjectPrecondition.checkState(true, label);
     });
   }
 
   @Test
-  void verifyArgumentWithBooleanAndSupplier_ExceptionThrown() {
+  void checkArgumentWithBooleanAndSupplier_ExceptionThrown() {
     final Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException(
         "Invalid argument");
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPrecondition.verifyArgument(false, exceptionSupplier);
+      ObjectPrecondition.checkArgument(false, exceptionSupplier);
     });
 
     assertTrue(exception.getMessage().contains("Invalid argument"));
   }
 
   @Test
-  void verifyArgumentWithBooleanAndSupplier_NoExceptionThrown() {
+  void checkArgumentWithBooleanAndSupplier_NoExceptionThrown() {
     final Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException(
         "Invalid argument");
 
     assertDoesNotThrow(() -> {
-      ObjectPrecondition.verifyArgument(true, exceptionSupplier);
+      ObjectPrecondition.checkArgument(true, exceptionSupplier);
     });
   }
 
   @Test
-  void verifyArgumentWithBooleanAndString_ExceptionThrown() {
+  void checkArgumentWithBooleanAndString_ExceptionThrown() {
     String label = "test argument";
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
-      ObjectPrecondition.verifyArgument(false, label);
+      ObjectPrecondition.checkArgument(false, label);
     });
 
     assertTrue(exception.getMessage().contains(String.format("引数: %s が不正です。", label)));
   }
 
   @Test
-  void verifyArgumentWithBooleanAndString_NoExceptionThrown() {
+  void checkArgumentWithBooleanAndString_NoExceptionThrown() {
     String label = "test argument";
 
     assertDoesNotThrow(() -> {
-      ObjectPrecondition.verifyArgument(true, label);
+      ObjectPrecondition.checkArgument(true, label);
     });
   }
 

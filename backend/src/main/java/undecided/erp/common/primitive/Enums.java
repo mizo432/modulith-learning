@@ -1,7 +1,7 @@
 package undecided.erp.common.primitive;
 
-import static undecided.erp.common.precondition.ArrayPrecondition.verifyAllElementNotNull;
-import static undecided.erp.common.precondition.ArrayPrecondition.verifyLengthAtLeast;
+import static undecided.erp.common.precondition.ArrayPrecondition.checkAllElementNotNull;
+import static undecided.erp.common.precondition.ArrayPrecondition.checkLengthAtLeast;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
@@ -30,7 +30,7 @@ public class Enums {
       @NonNull EnumType targetEnum, @NonNull ValueType... values) {
     final int ordinal = targetEnum.ordinal();
     final int minimumLength = ordinal + 1;
-    verifyLengthAtLeast(values,
+    checkLengthAtLeast(values,
         () -> new IllegalArgumentException("values length must be at least " + minimumLength),
         minimumLength);
     return values[ordinal];
@@ -54,10 +54,10 @@ public class Enums {
       @NonNull EnumType targetEnum, @NonNull Supplier<ValueType>... valueSuppliers) {
     final int ordinal = targetEnum.ordinal();
     final int minimumLength = ordinal + 1;
-    verifyLengthAtLeast(valueSuppliers,
+    checkLengthAtLeast(valueSuppliers,
         () -> new IllegalArgumentException(
             "valueSuppliers length must be at least " + minimumLength), minimumLength);
-    verifyAllElementNotNull(valueSuppliers,
+    checkAllElementNotNull(valueSuppliers,
         (index) -> new IndexedRuntimeException("all value supplier must not null.", index));
 
     return valueSuppliers[ordinal].get();

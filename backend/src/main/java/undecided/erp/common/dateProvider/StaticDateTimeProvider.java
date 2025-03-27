@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * StaticDateTimeProvider クラスは、DateProvider 抽象クラスの具体的な実装です。
  * <p>
- * これにより、now() メソッドを呼び出すときに戻される固定の LocalDateTime を設定することができます。
+ * これにより、now() メソッドを呼び出すときに戻される固定の LocalDateTime を設定できます。
  */
 public class StaticDateTimeProvider extends DateProvider {
 

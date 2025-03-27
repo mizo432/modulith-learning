@@ -15,7 +15,7 @@ public abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
   /**
    * ビルダーを構成するために使用される BuilderConfigurator のリスト。
    */
-  protected List<BuilderConfigurator<B>> configurators = newArrayList();
+  protected final List<BuilderConfigurator<B>> configurators = newArrayList();
 
   /**
    * ビルダの設定に基づき、引数のValueObjectの内容を変更した新しいインスタンスを生成する。

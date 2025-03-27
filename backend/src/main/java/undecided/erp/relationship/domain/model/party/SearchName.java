@@ -72,10 +72,7 @@ public class SearchName implements StringValue<SearchName> {
    * <p>
    * インスタンスは指定した接頭辞を使用して生成できます。
    */
-  @Getter
-  public static class SearchNamePrefixCriteria {
-
-    private final String value;
+  public record SearchNamePrefixCriteria(String value) {
 
     public SearchNamePrefixCriteria(String value) {
       this.value = Strings2.defaultIfEmpty(value, (String) Objects2.NULL);

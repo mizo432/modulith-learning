@@ -7,12 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
-@Component
 @RequiredArgsConstructor
-public class ExceptionLogger {
+public class ExceptionLogger implements InitializingBean {
 
   private static final String MONITORING_LOG_LOGGER_SUFFIX = ".Monitoring";
   private final Logger applicationLogger;
@@ -36,6 +35,12 @@ public class ExceptionLogger {
   @Setter
   private boolean trimLogMessage;
 
+  /**
+   * 指定された名前を使用して ExceptionLogger を初期化します。 このクラスは指定された名前を基にアプリケーションロガーおよびモニタリングロガーを設定し、
+   * 各種ログレベル（INFO、WARN、ERROR）用のロガーを内部的に準備します。
+   *
+   * @param name ロガーに使用する名前。通常はアプリケーションのコンポーネント名やモジュール名を指定します。
+   */
   public ExceptionLogger(String name) {
     this.exceptionLevelLoggers = new ConcurrentHashMap<>();
     this.exceptionCodeResolver = new SimpleMappingExceptionCodeResolver();
@@ -53,6 +58,17 @@ public class ExceptionLogger {
     this.errorLogger = new ExceptionLogger.ErrorLogger();
   }
 
+  /**
+   * このメソッドは、オブジェクトのプロパティがセットされた後に呼び出され、初期化のための操作を実行します。
+   * <p>
+   * 主に以下の操作を行います: 1. ログメッセージフォーマットの妥当性を検証します。 2. 例外レベル解決ロジックが設定されていない場合、デフォルトの例外レベル解決ロジックを設定します。 3.
+   * 各例外レベル（INFO、WARN、ERROR）に対応するロガーを登録します。
+   * <p>
+   * Spring Frameworkの{@code InitializingBean}インターフェースを実装しており、
+   * オブジェクトの依存関係が設定された後、Beanのライフサイクル内でこのメソッドが自動的に実行されます。
+   * <p>
+   * このメソッドを通じて、例外ログを適切に処理するための内部設定を整えます。
+   */
   public void afterPropertiesSet() {
     this.validateLogMessageFormat(this.logMessageFormat);
     if (this.exceptionLevelResolver == null) {
@@ -64,6 +80,12 @@ public class ExceptionLogger {
     this.registerExceptionLevelLoggers(ExceptionLevel.ERROR, this.errorLogger);
   }
 
+  /**
+   * 渡された例外をログ出力します。 指定された例外のレベルを解決し、その結果に応じた適切なロガーを使用してログを出力します。
+   * 例外レベルが解決できない場合や対応するロガーが存在しない場合は、エラーロガーを使用します。
+   *
+   * @param ex ログ出力対象の例外
+   */
   public void log(Exception ex) {
     ExceptionLevel level = this.exceptionLevelResolver.resolveExceptionLevel(ex);
     ExceptionLogger.LogLevelWrappingLogger logger = null;
@@ -78,18 +100,39 @@ public class ExceptionLogger {
     this.log(ex, logger);
   }
 
+  /**
+   * INFOレベルのロガーを使用して、指定された例外をログ出力します。
+   *
+   * @param ex ログ出力対象の例外
+   */
   public void info(Exception ex) {
     this.log(ex, this.infoLogger);
   }
 
+  /**
+   * WARN レベルのロガーを使用して、指定された例外をログ出力します。
+   *
+   * @param ex ログ出力対象の例外
+   */
   public void warn(Exception ex) {
     this.log(ex, this.warnLogger);
   }
 
+  /**
+   * ERRORレベルのロガーを使用して、指定された例外をログ出力します。
+   *
+   * @param ex ログ出力対象の例外
+   */
   public void error(Exception ex) {
     this.log(ex, this.errorLogger);
   }
 
+  /**
+   * ログメッセージフォーマットの妥当性を検証します。 指定されたフォーマットに例外コードのプレースホルダーおよび例外メッセージのプレースホルダーが含まれていない場合、
+   * {@link IllegalArgumentException} をスローします。
+   *
+   * @param logMessageFormat ログメッセージのフォーマット文字列。 例外コードのプレースホルダーと例外メッセージのプレースホルダーが必要です。
+   */
   protected void validateLogMessageFormat(String logMessageFormat) {
     if (logMessageFormat == null || !logMessageFormat.contains(this.PLACEHOLDER_OF_EXCEPTION_CODE)
         || !logMessageFormat.contains(this.PLACEHOLDER_OF_EXCEPTION_MESSAGE)) {
@@ -100,6 +143,13 @@ public class ExceptionLogger {
     }
   }
 
+  /**
+   * 指定された例外を基に例外コードを解決します。 このメソッドは内部的に例外コード解決ロジックを使用して、例外コードを文字列として返します。
+   * 例外コード解決ロジックが設定されていない場合は、null を返します。
+   *
+   * @param ex 解決対象の例外
+   * @return 解決された例外コード、もしくは解決できない場合は null
+   */
   protected String resolveExceptionCode(Exception ex) {
     String exceptionCode = null;
     if (this.exceptionCodeResolver != null) {
@@ -109,11 +159,25 @@ public class ExceptionLogger {
     return exceptionCode;
   }
 
+  /**
+   * 指定された例外情報を基にログメッセージを生成します。 このメソッドは、例外コードを解決し、それと例外メッセージをフォーマットして ログメッセージを構成します。
+   *
+   * @param ex ログメッセージ生成の基となる例外オブジェクト
+   * @return 生成されたログメッセージ文字列
+   */
   protected String makeLogMessage(Exception ex) {
     String exceptionCode = this.resolveExceptionCode(ex);
     return this.formatLogMessage(exceptionCode, ex.getMessage());
   }
 
+  /**
+   * 指定された例外コードと例外メッセージを基にログメッセージをフォーマットします。 例外コードまたは例外メッセージが指定されていない場合、それぞれデフォルト値が使用されます。
+   * また、ログメッセージの設定によっては、生成されたメッセージをトリム処理します。
+   *
+   * @param exceptionCode ログメッセージに使用する例外コード
+   * @param exceptionMessage ログメッセージに使用する例外メッセージ
+   * @return フォーマットされたログメッセージ
+   */
   protected String formatLogMessage(String exceptionCode, String exceptionMessage) {
     String bindingExceptionCode = exceptionCode;
     String bindingExceptionMessage = exceptionMessage;
@@ -134,6 +198,12 @@ public class ExceptionLogger {
     return message;
   }
 
+  /**
+   * 指定された例外レベルとロガーを登録します。 このメソッドを使用して、各例外レベルに対するログ出力のロジックを設定できます。
+   *
+   * @param level 例外レベル（INFO、WARN、ERROR、UNKNOWN）
+   * @param logger 該当レベルのログ出力に使用するロガーの実装
+   */
   protected void registerExceptionLevelLoggers(
       ExceptionLevel level, ExceptionLogger.LogLevelWrappingLogger logger) {
     this.exceptionLevelLoggers.put(level, logger);
@@ -147,6 +217,12 @@ public class ExceptionLogger {
     return this.monitoringLogger;
   }
 
+  /**
+   * 指定された例外とロガーを使用してログを記録します。 提供されたロガーが有効である場合、例外情報を基にログメッセージを生成し、 ロガーを用いてログを出力します。
+   *
+   * @param ex ログ出力対象の例外オブジェクト
+   * @param logger ログ出力を担う {@link ExceptionLogger.LogLevelWrappingLogger} インスタンス
+   */
   private void log(Exception ex, ExceptionLogger.LogLevelWrappingLogger logger) {
     if (logger.isEnabled()) {
       String logMessage = this.makeLogMessage(ex);
@@ -154,6 +230,12 @@ public class ExceptionLogger {
     }
   }
 
+  /**
+   * ログレベルに基づいてログメッセージのフィルタリングおよび記録を行うインターフェース。 このインターフェースは、特定のログレベル（例: INFO, WARN, ERROR）に適合する
+   * ログ処理のロジックを定義するために使用されます。
+   * <p>
+   * ユーザーはこのインターフェースを実装することで、各ロギングレベルに対応する カスタムロジックを提供できます。
+   */
   protected interface LogLevelWrappingLogger {
 
     boolean isEnabled();
@@ -161,6 +243,12 @@ public class ExceptionLogger {
     void log(String var1, Exception var2);
   }
 
+  /**
+   * InfoLoggerクラスは、ログレベルがINFOの場合にログメッセージを処理するための
+   * ロジックを提供します。このクラスは、ExceptionLogger.LogLevelWrappingLogger インターフェースを実装しています。
+   * <p>
+   * InfoLoggerは、監視ログとアプリケーションログの両方を検査し、それぞれのロガーが INFOレベルのログを有効にしている場合にログを記録します。
+   */
   private final class InfoLogger implements
       ExceptionLogger.LogLevelWrappingLogger {
 
@@ -184,6 +272,12 @@ public class ExceptionLogger {
     }
   }
 
+  /**
+   * WarnLogger クラスは、ExceptionLogger クラスにおいて WARN レベルの ログ処理を実行するための実装クラスです。このクラスは内部クラスとして定義されており、
+   * ExceptionLogger.LogLevelWrappingLogger インターフェースを実装しています。
+   * <p>
+   * このクラスの目的は、WARN レベルでのログ記録を可能にし、 モニタリングロガーおよびアプリケーションロガーの両方で適切な ログメッセージを記録することです。
+   */
   private final class WarnLogger implements
       ExceptionLogger.LogLevelWrappingLogger {
 
@@ -207,6 +301,10 @@ public class ExceptionLogger {
     }
   }
 
+  /**
+   * ErrorLoggerクラスは、ExceptionLogger.LogLevelWrappingLoggerインターフェースを実装し、
+   * エラーレベルのログメッセージを処理および記録するためのロジックを提供します。 このクラスは、関連するロガーのエラー有効状態を確認し、有効な場合にログを記録します。
+   */
   private final class ErrorLogger implements
       ExceptionLogger.LogLevelWrappingLogger {
 

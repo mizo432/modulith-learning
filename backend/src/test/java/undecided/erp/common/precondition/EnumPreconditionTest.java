@@ -13,7 +13,7 @@ class EnumPreconditionTest {
 
   @Nested
   @DisplayName("Enumの存在確認テスト")
-  class VerifyContainsTest {
+  class CheckContainsTest {
 
     @Test
     @DisplayName("Enumが存在する場合、例外は発生しない")
@@ -21,7 +21,7 @@ class EnumPreconditionTest {
       EnumSet<TestEnum> enumSet = EnumSet.of(TestEnum.VALUE1, TestEnum.VALUE2);
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Enum not contained in set");
       Assertions.assertDoesNotThrow(
-          () -> EnumPrecondition.verifyContains(TestEnum.VALUE1, enumSet, supplier));
+          () -> EnumPrecondition.checkContains(TestEnum.VALUE1, enumSet, supplier));
     }
 
     @Test
@@ -30,7 +30,7 @@ class EnumPreconditionTest {
       EnumSet<TestEnum> enumSet = EnumSet.of(TestEnum.VALUE1);
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Enum not contained in set");
       Assertions.assertThrows(RuntimeException.class,
-          () -> EnumPrecondition.verifyContains(TestEnum.VALUE2, enumSet, supplier));
+          () -> EnumPrecondition.checkContains(TestEnum.VALUE2, enumSet, supplier));
     }
   }
 
@@ -43,7 +43,7 @@ class EnumPreconditionTest {
     void valuesNotEqualNoExceptionExpected() {
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Values are equal");
       Assertions.assertDoesNotThrow(
-          () -> EnumPrecondition.verifyNotEqual(TestEnum.VALUE1, TestEnum.VALUE2, supplier));
+          () -> EnumPrecondition.checkNotEqual(TestEnum.VALUE1, TestEnum.VALUE2, supplier));
     }
 
     @Test
@@ -51,7 +51,7 @@ class EnumPreconditionTest {
     void valuesEqualExceptionExpected() {
       Supplier<RuntimeException> supplier = () -> new RuntimeException("Values are equal");
       Assertions.assertThrows(RuntimeException.class,
-          () -> EnumPrecondition.verifyNotEqual(TestEnum.VALUE1, TestEnum.VALUE1, supplier));
+          () -> EnumPrecondition.checkNotEqual(TestEnum.VALUE1, TestEnum.VALUE1, supplier));
     }
   }
 }

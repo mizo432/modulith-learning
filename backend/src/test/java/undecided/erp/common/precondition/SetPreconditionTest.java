@@ -12,110 +12,110 @@ import org.junit.jupiter.api.Test;
 public class SetPreconditionTest {
 
   @Test
-  public void verifyNotEmpty_setNull_returnsSet() {
+  public void checkNotEmpty_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPrecondition.verifyNotEmpty(set,
+    Set<String> returnedSet = SetPrecondition.checkNotEmpty(set,
         () -> new IllegalArgumentException("Set must not be empty"));
     assertThat(returnedSet).isNull();
   }
 
   @Test
-  public void verifyNotEmpty_setEmpty_throwsException() {
+  public void checkNotEmpty_setEmpty_throwsException() {
     Set<String> set = Collections.emptySet();
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      SetPrecondition.verifyNotEmpty(set,
+      SetPrecondition.checkNotEmpty(set,
           () -> new IllegalArgumentException("Set must not be empty"));
     });
   }
 
   @Test
-  public void verifyNotEmpty_setNonEmpty_returnsSet() {
+  public void checkNotEmpty_setNonEmpty_returnsSet() {
     Set<String> set = new HashSet<>(Collections.singletonList("test"));
-    Set<String> returnedSet = SetPrecondition.verifyNotEmpty(set,
+    Set<String> returnedSet = SetPrecondition.checkNotEmpty(set,
         () -> new IllegalArgumentException("Set must not be empty"));
     assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
-  public void verifyAllElementNotNull_setNull_returnsSet() {
+  public void checkAllElementNotNull_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPrecondition.verifyAllElementNotNull(set,
+    Set<String> returnedSet = SetPrecondition.checkAllElementNotNull(set,
         () -> new IllegalArgumentException("Set must not have null elements"));
     assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
-  public void verifyAllElementNotNull_setContainsNull_throwsException() {
+  public void checkAllElementNotNull_setContainsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      SetPrecondition.verifyAllElementNotNull(set,
+      SetPrecondition.checkAllElementNotNull(set,
           () -> new IllegalArgumentException("Set must not have null elements"));
     });
   }
 
   @Test
-  public void verifyAllElementNotNull_setDoesNotContainNull_returnsSet() {
+  public void checkAllElementNotNull_setDoesNotContainNull_returnsSet() {
     Set<String> set = new HashSet<>(Arrays.asList("test", "not null"));
-    Set<String> returnedSet = SetPrecondition.verifyAllElementNotNull(set,
+    Set<String> returnedSet = SetPrecondition.checkAllElementNotNull(set,
         () -> new IllegalArgumentException("Set must not have null elements"));
     assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
-  public void verifyAnyElementNotNull_setNull_returnsSet() {
+  public void checkAnyElementNotNull_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPrecondition.verifyAnyElementNotNull(set,
+    Set<String> returnedSet = SetPrecondition.checkAnyElementNotNull(set,
         () -> new IllegalArgumentException("Set must have at least one non-null element"));
     assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
-  public void verifyAnyElementNotNull_setAllElementsNull_throwsException() {
+  public void checkAnyElementNotNull_setAllElementsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList(null, null));
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      SetPrecondition.verifyAnyElementNotNull(set,
+      SetPrecondition.checkAnyElementNotNull(set,
           () -> new IllegalArgumentException("Set must have at least one non-null element"));
     });
   }
 
   @Test
-  public void verifyAnyElementNotNull_setContainsNonNull_returnsSet() {
+  public void checkAnyElementNotNull_setContainsNonNull_returnsSet() {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
-    Set<String> returnedSet = SetPrecondition.verifyAnyElementNotNull(set,
+    Set<String> returnedSet = SetPrecondition.checkAnyElementNotNull(set,
         () -> new IllegalArgumentException("Set must have at least one non-null element"));
     assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
-  public void verifyOneElementNotNull_setNull_returnsSet() {
+  public void checkOneElementNotNull_setNull_returnsSet() {
     Set<String> set = null;
-    Set<String> returnedSet = SetPrecondition.verifyOneElementNotNull(set,
+    Set<String> returnedSet = SetPrecondition.checkOneElementNotNull(set,
         () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
-  public void verifyOneElementNotNull_setAllElementsNull_throwsException() {
+  public void checkOneElementNotNull_setAllElementsNull_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList(null, null));
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      SetPrecondition.verifyOneElementNotNull(set,
+      SetPrecondition.checkOneElementNotNull(set,
           () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     });
   }
 
   @Test
-  public void verifyOneElementNotNull_setOneNonNullElement_returnsSet() {
+  public void checkOneElementNotNull_setOneNonNullElement_returnsSet() {
     Set<String> set = new HashSet<>(Arrays.asList("test", null));
-    Set<String> returnedSet = SetPrecondition.verifyOneElementNotNull(set,
+    Set<String> returnedSet = SetPrecondition.checkOneElementNotNull(set,
         () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     assertThat(returnedSet).isEqualTo(set);
   }
 
   @Test
-  public void verifyOneElementNotNull_setMoreThanOneNonNullElement_throwsException() {
+  public void checkOneElementNotNull_setMoreThanOneNonNullElement_throwsException() {
     Set<String> set = new HashSet<>(Arrays.asList("first", "second"));
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-      SetPrecondition.verifyOneElementNotNull(set,
+      SetPrecondition.checkOneElementNotNull(set,
           () -> new IllegalArgumentException("Set must have exactly one non-null element"));
     });
   }

@@ -3,7 +3,7 @@ package undecided.erp.common.exception;
 /**
  * このクラスは RuntimeException クラスのサブクラスであり、ExceptionCodeProvider インターフェースを実装する システム例外を表します。
  * <p>
- * SystemException クラスには3つのコンストラクタがあり、それぞれ例外コード、表示されるメッセージ、および 例外の根本的な原因を指定することができます。code パラメータは
+ * SystemException クラスには3つのコンストラクタがあり、それぞれ例外コード、表示されるメッセージ、および 例外の根本的な原因を指定できます。code パラメータは
  * ExceptionCodeProvider 型であり、 ExceptionCodeProvider インターフェースの実装である必要があります。message パラメータは例外がスロー
  * されたときに表示されるメッセージを表す文字列です。cause パラメータは例外の根本的な原因を表す Throwable オブジェクトです。
  * <p>
@@ -53,7 +53,7 @@ public class SystemException extends RuntimeException implements
   /**
    * コンストラクタ
    * <p>
-   * {@link ExceptionCodeProvider} と例外の原因を指定することができます。
+   * {@link ExceptionCodeProvider} と例外の原因を指定できます。
    * </p>
    *
    * @param code 例外コード {@link ExceptionCodeProvider}
@@ -64,7 +64,7 @@ public class SystemException extends RuntimeException implements
     this.code = code;
   }
 
-  
+
   /**
    * Retrieves the exception code associated with the system exception.
    *

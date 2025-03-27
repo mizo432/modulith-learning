@@ -49,7 +49,7 @@ public abstract class BusinessEntity<E extends BusinessEntity<E>> {
    * <p>
    * この値はエンティティが初期作成された際に設定され、その後変更されることはありません。
    */
-  @Column(nullable = true)
+  @Column
   private Long createdBy;
 
 }

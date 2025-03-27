@@ -48,7 +48,7 @@ public class ObjectPrecondition {
    * @param supplier 表現が偽であった場合に投げられる例外を提供するサプライヤ
    * @throws RuntimeException 表現が偽であった場合
    */
-  public static void verifyArgument(boolean expression,
+  public static void checkArgument(boolean expression,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (!expression) {
       throw supplier.get();
@@ -62,7 +62,7 @@ public class ObjectPrecondition {
    * @param label 例外メッセージで使用されるラベル
    * @throws IllegalArgumentException 論理式が偽である場合
    */
-  public static void verifyArgument(boolean expression,
+  public static void checkArgument(boolean expression,
       @NonNull String label) {
     if (!expression) {
       throw new IllegalArgumentException(String.format("引数: %s が不正です。", label));
@@ -76,7 +76,7 @@ public class ObjectPrecondition {
    * @param supplier 式が偽であった場合にスローされる例外を提供するサプライヤ
    * @throws RuntimeException 式の評価結果が偽であった場合にスローされます
    */
-  public static void verifyState(boolean expression,
+  public static void checkState(boolean expression,
       @NonNull Supplier<? extends RuntimeException> supplier) {
     if (!expression) {
       throw supplier.get();
@@ -92,7 +92,7 @@ public class ObjectPrecondition {
    * @param label エラーメッセージで使用するラベル
    * @throws IllegalStateException 式がfalseと評価された場合
    */
-  public static <T> void verifyState(boolean expression,
+  public static <T> void checkState(boolean expression,
       @NonNull String label) {
     if (!expression) {
       throw new IllegalStateException(String.format("%s の状態が不正です。", label));

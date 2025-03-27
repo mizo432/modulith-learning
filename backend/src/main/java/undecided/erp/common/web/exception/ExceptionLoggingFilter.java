@@ -7,18 +7,32 @@ import jakarta.servlet.ServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import undecided.erp.common.exception.ExceptionLogger;
 
-@Component
+/**
+ * ExceptionLoggingFilterは、フィルタチェーン内で発生する例外をキャッチし、ログへ記録するためのフィルタクラスです。
+ * 主にIOException、ServletException、およびRuntimeExceptionを処理します。
+ * <p>
+ * フィルタチェーン内の次のエレメントを実行中にスローされた例外は、適切なログメソッドによって記録されます。 捕捉した例外は再スローされるため、例外の伝播に影響を与えません。
+ */
 @Setter
 @RequiredArgsConstructor
 public class ExceptionLoggingFilter extends GenericFilterBean {
 
-  private final ExceptionLogger exceptionLogger;
+  private ExceptionLogger exceptionLogger;
 
 
+  /**
+   * フィルタチェーン内でリクエストとレスポンスを処理します。 処理の途中で発生する特定の例外(IOException, ServletException,
+   * RuntimeException)を捕捉し、 ログに記録した後、例外を再スローします。
+   *
+   * @param servletRequest クライアントから送信されたリクエスト
+   * @param servletResponse サーバーからクライアントへのレスポンス
+   * @param filterChain フィルタチェーンオブジェクト。次のフィルタまたはターゲットリソースを呼び出します
+   * @throws IOException 入出力エラーが発生した場合
+   * @throws ServletException サーブレットに関するエラーが発生した場合
+   */
   public void doFilter(
       ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
       throws IOException, ServletException {
@@ -37,20 +51,46 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
   }
 
 
+  /**
+   * IOExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
+   *
+   * @param ex 記録するIOExceptionオブジェクト
+   * @param request エラーログのコンテキストとなるServletRequest
+   * @param response エラーログのコンテキストとなるServletResponse
+   */
   protected void logIOException(IOException ex, ServletRequest request, ServletResponse response) {
     this.exceptionLogger.error(ex);
   }
 
+  /**
+   * ServletExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
+   *
+   * @param ex 記録するServletExceptionオブジェクト
+   * @param request エラーログのコンテキストとなるServletRequest
+   * @param response エラーログのコンテキストとなるServletResponse
+   */
   protected void logServletException(ServletException ex, ServletRequest request,
       ServletResponse response) {
     this.exceptionLogger.error(ex);
   }
 
+  /**
+   * RuntimeExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
+   *
+   * @param ex 記録するRuntimeExceptionオブジェクト
+   * @param request エラーログのコンテキストとなるServletRequest
+   * @param response エラーログのコンテキストとなるServletResponse
+   */
   protected void logRuntimeException(RuntimeException ex, ServletRequest request,
       ServletResponse response) {
     this.exceptionLogger.error(ex);
   }
 
+  /**
+   * ExceptionLoggerインスタンスを取得します。
+   *
+   * @return このフィルタで使用されているExceptionLoggerオブジェクト
+   */
   protected ExceptionLogger getExceptionLogger() {
     return this.exceptionLogger;
   }

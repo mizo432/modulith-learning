@@ -40,7 +40,7 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
     return e;
   }
 
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     if (this.exceptionLogger == null) {
       this.exceptionLogger = new ExceptionLogger(this.getClass().getName());
       this.exceptionLogger.afterPropertiesSet();

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
@@ -16,6 +17,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+@Setter
 public class TraceLoggingInterceptor implements HandlerInterceptor {
 
   private static final Logger logger = LoggerFactory.getLogger(
@@ -94,7 +96,7 @@ public class TraceLoggingInterceptor implements HandlerInterceptor {
         logger.trace("[END CONTROLLER  ] {}.{}({})-> view={}, model={}",
             m.getDeclaringClass().getSimpleName(),
             m.getName(), buildMethodParams(handlerMethod), view, model);
-        String handlingTimeMessage = "[HANDLING TIME   ] {}.{}({})-> {} ns";
+        final String handlingTimeMessage = "[HANDLING TIME   ] {}.{}({})-> {} ns";
         if (isWarnHandling) {
           logger.warn(handlingTimeMessage + " > {}", m.getDeclaringClass().getSimpleName(),
               m.getName(),
@@ -116,7 +118,4 @@ public class TraceLoggingInterceptor implements HandlerInterceptor {
     }
   }
 
-  public void setWarnHandlingNanos(long warnHandlingNanos) {
-    this.warnHandlingNanos = warnHandlingNanos;
-  }
 }

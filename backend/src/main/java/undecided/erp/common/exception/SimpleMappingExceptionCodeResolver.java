@@ -30,9 +30,7 @@ public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver
         }
       }
 
-      if (CollectionUtils.isEmpty(this.exceptionMappings)) {
-        return this.defaultExceptionCode;
-      } else {
+      if (!CollectionUtils.isEmpty(this.exceptionMappings)) {
         for (Map.Entry<String, String> entry : this.exceptionMappings.entrySet()) {
           String targetException = entry.getKey();
 
@@ -44,8 +42,8 @@ public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver
           }
         }
 
-        return this.defaultExceptionCode;
       }
+      return this.defaultExceptionCode;
     }
   }
 }

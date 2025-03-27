@@ -8,103 +8,103 @@ import org.junit.jupiter.api.Test;
 public class ArrayPreconditionTest {
 
   @Test
-  void testVerifyNotEmptyNull() {
-    assertThat((Object[]) ArrayPrecondition.verifyNotEmpty(null)).isNull();
+  void testCheckNotEmptyNull() {
+    assertThat((Object[]) ArrayPrecondition.checkNotEmpty(null)).isNull();
 
   }
 
   @Test
-  void testVerifyNotEmptyEmpty() {
+  void testCheckNotEmptyEmpty() {
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> ArrayPrecondition.verifyNotEmpty(new Integer[]{}));
+        () -> ArrayPrecondition.checkNotEmpty(new Integer[]{}));
   }
 
   @Test
-  void testVerifyNotEmptyNotEmpty() {
+  void testCheckNotEmptyNotEmpty() {
     Integer[] array = new Integer[]{1, 2, 3};
-    assertThat(ArrayPrecondition.verifyNotEmpty(array)).isEqualTo(array);
+    assertThat(ArrayPrecondition.checkNotEmpty(array)).isEqualTo(array);
   }
 
   @Test
-  void testVerifyAllElementNotNullNullArray() {
-    assertThat((Object[]) ArrayPrecondition.verifyAllElementNotNull(null,
+  void testCheckAllElementNotNullNullArray() {
+    assertThat((Object[]) ArrayPrecondition.checkAllElementNotNull(null,
         i -> new IndexedRuntimeException("Array element is null.", i))).isNull();
   }
 
   @Test
-  void testVerifyAllElementNotNullEmptyArray() {
+  void testCheckAllElementNotNullEmptyArray() {
     Integer[] array = new Integer[]{};
-    assertThat(ArrayPrecondition.verifyAllElementNotNull(array,
+    assertThat(ArrayPrecondition.checkAllElementNotNull(array,
         i -> new IndexedRuntimeException("Array element is null.", i))).isEqualTo(array);
   }
 
   @Test
-  void testVerifyAllElementNotNullWithNullException() {
+  void testCheckAllElementNotNullWithNullException() {
     Integer[] array = new Integer[]{1, 2, 3, null};
     assertThatExceptionOfType(IndexedRuntimeException.class).isThrownBy(
-        () -> ArrayPrecondition.verifyAllElementNotNull(array,
+        () -> ArrayPrecondition.checkAllElementNotNull(array,
             i -> new IndexedRuntimeException("Array element is null.", i)));
   }
 
   @Test
-  void testVerifyAllElementNotNullWithoutNullException() {
+  void testCheckAllElementNotNullWithoutNullException() {
     Integer[] array = new Integer[]{1, 2, 3};
-    assertThat(ArrayPrecondition.verifyAllElementNotNull(array,
+    assertThat(ArrayPrecondition.checkAllElementNotNull(array,
         i -> new IndexedRuntimeException("Array element is null.", i))).isEqualTo(array);
   }
 
   @Test
-  void testVerifyOneElementNotNullWithNullArray() {
-    assertThat((Object[]) ArrayPrecondition.verifyOneElementNotNull(null,
+  void testCheckOneElementNotNullWithNullArray() {
+    assertThat((Object[]) ArrayPrecondition.checkOneElementNotNull(null,
         () -> new RuntimeException(
             "All the array elements are null or not exactly one element is not null."))).isNull();
   }
 
   @Test
-  void testVerifyOneElementNotNullWithAllNulls() {
+  void testCheckOneElementNotNullWithAllNulls() {
     Integer[] array = new Integer[]{null, null, null};
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> ArrayPrecondition.verifyOneElementNotNull(array,
+        () -> ArrayPrecondition.checkOneElementNotNull(array,
             () -> new RuntimeException(
                 "All the array elements are null or not exactly one element is not null.")));
   }
 
   @Test
-  void testVerifyOneElementNotNullWithOneNotNull() {
+  void testCheckOneElementNotNullWithOneNotNull() {
     Integer[] array = new Integer[]{1, null, null};
-    assertThat(ArrayPrecondition.verifyOneElementNotNull(array,
+    assertThat(ArrayPrecondition.checkOneElementNotNull(array,
         () -> new RuntimeException(
             "All the array elements are null or not exactly one element is not null."))).isEqualTo(
         array);
   }
 
   @Test
-  void testVerifyOneElementNotNullWithMoreThanOneNotNull() {
+  void testCheckOneElementNotNullWithMoreThanOneNotNull() {
     Integer[] array = new Integer[]{1, 2, 3};
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> ArrayPrecondition.verifyOneElementNotNull(array,
+        () -> ArrayPrecondition.checkOneElementNotNull(array,
             () -> new RuntimeException(
                 "All the array elements are null or not exactly one element is not null.")));
   }
 
   @Test
-  void testVerifyAnyElementNotNullWithNullArray() {
-    assertThat((Object[]) ArrayPrecondition.verifyAnyElementNotNull(null,
+  void testCheckAnyElementNotNullWithNullArray() {
+    assertThat((Object[]) ArrayPrecondition.checkAnyElementNotNull(null,
         () -> new RuntimeException("All elements in the array are null."))).isNull();
   }
 
   @Test
-  void testVerifyAnyElementNotNullWithAllNulls() {
+  void testCheckAnyElementNotNullWithAllNulls() {
     Integer[] array = new Integer[]{null, null, null};
     assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-        () -> ArrayPrecondition.verifyAnyElementNotNull(array,
+        () -> ArrayPrecondition.checkAnyElementNotNull(array,
             () -> new RuntimeException("All elements in the array are null.")));
   }
 
   @Test
-  void testVerifyAnyElementNotNullWithNotNull() {
+  void testCheckAnyElementNotNullWithNotNull() {
     Integer[] array = new Integer[]{1, null, null};
-    assertThat(ArrayPrecondition.verifyAnyElementNotNull(array,
+    assertThat(ArrayPrecondition.checkAnyElementNotNull(array,
         () -> new RuntimeException("All elements in the array are null."))).isEqualTo(array);
   }
 }
