@@ -10,6 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
+/**
+ * 例外情報をログとして記録するためのユーティリティクラス。
+ * <p>
+ * このクラスは、アプリケーションログとモニタリングログを分離し、 各種例外レベル（INFO、WARN、ERROR）に基づいて適切にログ出力を行います。
+ * また、例外コードや例外メッセージを基にしたカスタムログメッセージの生成や、 ログフォーマットの妥当性チェック機能も提供します。
+ */
 @RequiredArgsConstructor
 public class ExceptionLogger implements InitializingBean {
 
