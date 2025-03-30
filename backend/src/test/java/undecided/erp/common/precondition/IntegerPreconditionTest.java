@@ -1,8 +1,9 @@
 package undecided.erp.common.precondition;
 
-import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -280,19 +281,19 @@ class IntegerPreconditionTest {
     @Test
     void whenNumberIsPositive_shouldReturnThatNumber() {
       Integer number = 5;
-      assertThat(IntegerPrecondition.checkPositiveOrZero(5, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkNonNegative(5, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsZero_shouldReturnThatNumber() {
       Integer number = 0;
-      assertThat(IntegerPrecondition.checkPositiveOrZero(0, exceptionSupplier)).isEqualTo(number);
+      assertThat(IntegerPrecondition.checkNonNegative(0, exceptionSupplier)).isEqualTo(number);
     }
 
     @Test
     void whenNumberIsNegative_shouldThrowException() {
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> IntegerPrecondition.checkPositiveOrZero(-5, exceptionSupplier));
+          () -> IntegerPrecondition.checkNonNegative(-5, exceptionSupplier));
     }
 
   }

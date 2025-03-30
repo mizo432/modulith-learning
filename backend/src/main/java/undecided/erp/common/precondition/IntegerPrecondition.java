@@ -27,7 +27,7 @@ public class IntegerPrecondition {
    * @return 与えられた値が正またはゼロである場合、同じIntegerの値が返ります。それ以外の場合、exceptionSupplierに基づいて例外が投げられます。
    * @throws RuntimeException 与えられた値が負の場合、exceptionSupplierに基づいて投げられます。
    */
-  public static Integer checkPositiveOrZero(Integer ref,
+  public static Integer checkNonNegative(Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkAtLest(ref, exceptionSupplier, 0);
   }
