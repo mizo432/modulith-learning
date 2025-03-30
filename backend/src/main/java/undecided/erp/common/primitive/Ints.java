@@ -6,7 +6,16 @@ import lombok.experimental.UtilityClass;
 public class Ints {
 
   public static final int BYTES = Integer.SIZE / Byte.SIZE;
+  /**
+   * {@code int}型における最大の2のべき乗値を表します。
+   * <p>
+   * この定数は、32ビット整数の範囲内で最大の2のべき乗値であり、 具体的には <code>1 << (Integer.SIZE -
+   * 2)</code>、すなわち2<sup>30</sup>を示します。
+   * <p>
+   * これは主に整数値を扱う際に、領域チェックやビット演算を効率的に行う ために使用されます。
+   */
   public static final int MAX_POWER_OF_TWO = 1 << (Integer.SIZE - 2);
+
 
   /**
    * 指定された{@code long}値に相当する{@code int}値を返します。
