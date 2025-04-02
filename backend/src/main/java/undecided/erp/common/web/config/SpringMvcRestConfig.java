@@ -7,34 +7,25 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import undecided.erp.common.exception.ExceptionLogger;
 import undecided.erp.common.web.exception.HandlerExceptionResolverLoggingInterceptor;
 import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 
 /**
- * Spring MVC REST configuration class.
- * This class configures various aspects of Spring MVC for REST APIs, including:
- * - JSON message converters
- * - Object mappers
- * - Date formats
- * - Argument resolvers
- * - Interceptors
- * - Exception handling
+ * Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。
  */
-@EnableAspectJAutoProxy(proxyTargetClass = true)
+//@EnableAspectJAutoProxy(proxyTargetClass = true)
 // (7)
 //@ComponentScan("com.example.project.api") // (6)
-@EnableWebMvc
-@Configuration
+//@EnableWebMvc
+//@Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
 
   /**
@@ -52,8 +43,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates and configures an ObjectMapper for JSON serialization/deserialization.
-   * The ObjectMapper is configured with a standard date format.
+   * Creates and configures an ObjectMapper for JSON serialization/deserialization. The ObjectMapper
+   * is configured with a standard date format.
    *
    * @return A configured ObjectMapper
    */
@@ -76,8 +67,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Configures the HTTP message converters for the application.
-   * Adds a JSON message converter with the configured ObjectMapper.
+   * Configures the HTTP message converters for the application. Adds a JSON message converter with
+   * the configured ObjectMapper.
    *
    * @param converters The list of converters to be configured
    */
@@ -88,8 +79,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Configures the argument resolvers for controller methods.
-   * Adds a pageable handler method argument resolver for pagination support.
+   * Configures the argument resolvers for controller methods. Adds a pageable handler method
+   * argument resolver for pagination support.
    *
    * @param argumentResolvers The list of argument resolvers to be configured
    */
@@ -100,8 +91,9 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates a PageableHandlerMethodArgumentResolver for handling pageable parameters in controller methods.
-   * This resolver enables automatic conversion of pagination parameters from request parameters.
+   * Creates a PageableHandlerMethodArgumentResolver for handling pageable parameters in controller
+   * methods. This resolver enables automatic conversion of pagination parameters from request
+   * parameters.
    *
    * @return A PageableHandlerMethodArgumentResolver instance
    */
@@ -111,8 +103,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Configures the interceptors for HTTP requests.
-   * Adds a trace logging interceptor for all request paths.
+   * Configures the interceptors for HTTP requests. Adds a trace logging interceptor for all request
+   * paths.
    *
    * @param registry The interceptor registry to be configured
    */
@@ -122,8 +114,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates a TraceLoggingInterceptor for logging HTTP request and response information.
-   * This interceptor logs details about incoming requests and outgoing responses for tracing purposes.
+   * Creates a TraceLoggingInterceptor for logging HTTP request and response information. This
+   * interceptor logs details about incoming requests and outgoing responses for tracing purposes.
    *
    * @return A TraceLoggingInterceptor instance
    */
@@ -132,11 +124,18 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
     return new TraceLoggingInterceptor();
   }
 
+  @Bean("handlerExceptionResolverLoggingInterceptor")
+  public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
+      ExceptionLogger exceptionLogger) {
+    HandlerExceptionResolverLoggingInterceptor bean = new HandlerExceptionResolverLoggingInterceptor();
+    bean.setExceptionLogger(exceptionLogger);
+    return bean;
+  }
 
   /**
-   * Creates an advisor for the HandlerExceptionResolverLoggingInterceptor.
-   * This advisor intercepts exception resolution in Spring MVC and applies logging.
-   * It targets the resolveException method of HandlerExceptionResolver.
+   * Creates an advisor for the HandlerExceptionResolverLoggingInterceptor. This advisor intercepts
+   * exception resolution in Spring MVC and applies logging. It targets the resolveException method
+   * of HandlerExceptionResolver.
    *
    * @param handlerExceptionResolverLoggingInterceptor The interceptor to be applied
    * @return An advisor that applies the interceptor to the specified pointcut

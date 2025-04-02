@@ -4,36 +4,25 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import undecided.erp.common.exception.ExceptionLogger;
 
 /**
  * HandlerExceptionResolverLoggingInterceptorクラスは、SpringフレームワークのMethodInterceptorを実装したクラスです。
+ * <p>
  * HandlerExceptionResolverをターゲットにしたメソッド呼び出しをインターセプトし、例外発生時のログ処理を制御します。
  * <p>
  * 主な機能:
  * <p>
  * 1. 指定したターゲットがHandlerExceptionResolverインタフェースを実装していない場合は警告ログを出力します。 2.
  * 例外情報に基づき、特定の条件下で例外のロギングを実行します。 3. 発生した例外とHTTPレスポンスのステータスコードに応じて、ログレベルを変更してログ出力を行います。
- * <p>
- * 主なメソッド:
- * <p>
- * - invoke: メソッドインターセプタのエントリポイントで、例外ロギングを制御します。 - isTargetException: ログ出力対象の例外かどうかを判定します。 - log:
- * ステータスコードに応じて適切なロギングメソッドを呼び出します。 - logInformational: Informationalレベル(1xx)のレスポンスに対する例外ログを出力します。 -
- * logSuccess: 成功レベル(2xx)のレスポンスに対する例外ログを出力します。 - logRedirection: リダイレクトレベル(3xx)のレスポンスに対する例外ログを出力します。
- * - logClientError: クライアントエラー(4xx)レベルのレスポンスに対する例外ログを出力します。 - logServerError:
- * サーバエラー(5xx)レベルのレスポンスに対する例外ログを出力します。
- * <p>
- * 設定可能なプロパティ:
- * <p>
- * - ignoreExceptions: ログ出力対象外の例外クラスを指定するためのプロパティです。
  * <p>
  * 構成要素:
  * <p>
@@ -45,12 +34,14 @@ import undecided.erp.common.exception.ExceptionLogger;
  * レスポンスステータスコードの範囲に基づいて異なるロギングレベルが設定されるため、ロギング設定が適切であることを確認してください。
  */
 @Setter
-@Component
-@RequiredArgsConstructor
-public class HandlerExceptionResolverLoggingInterceptor implements MethodInterceptor {
+@NoArgsConstructor
+public class HandlerExceptionResolverLoggingInterceptor implements MethodInterceptor,
+    InitializingBean {
 
   /**
-   * ログ出力を行うためのロガーオブジェクト。 このクラスにおける主な目的は、{@code HandlerExceptionResolverLoggingInterceptor} クラスの
+   * ログ出力を行うためのロガーオブジェクト。
+   * <p>
+   * このクラスにおける主な目的は、{@code HandlerExceptionResolverLoggingInterceptor} クラスの
    * 実行中に記録が必要な情報や例外のログを記録することです。
    * <p>
    * 「ログ出力」には例外やHTTPリクエスト・レスポンスのコンテキストに基づくログ分類が含まれます。 主にサーバーエラーやクライアントエラー、リダイレクト、成功メッセージ等のレベルに応じて
@@ -60,6 +51,7 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
       HandlerExceptionResolverLoggingInterceptor.class);
   /**
    * 例外のログ記録を処理するためのコンポーネントを保持するフィールドです。
+   * <p>
    * このオブジェクトは、{@link HandlerExceptionResolverLoggingInterceptor} クラス内で 例外のログ記録を実行する際に使用されます。
    * <p>
    * 主に、{@link HandlerExceptionResolver} を実装したオブジェクトに対する メソッド呼び出し処理や、HTTPリクエストおよびレスポンスに関連する
@@ -67,9 +59,11 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * <p>
    * このフィールドは不変であり、初期化後に変更されることはありません。
    */
-  private final ExceptionLogger exceptionLogger = null;
+  private ExceptionLogger exceptionLogger;
   /**
-   * ログ記録時に無視される例外クラスを保持するセット。 このセットに含まれる例外クラスに一致する場合、それらの例外は処理対象外として扱われ、 ログ記録が行われません。
+   * ログ記録時に無視される例外クラスを保持するセット。
+   * <p>
+   * このセットに含まれる例外クラスに一致する場合、それらの例外は処理対象外として扱われ、 ログ記録が行われません。
    * <p>
    * このフィールドは、例外処理の柔軟性を向上させるために使用され、 通常、特定の要件に基づき、無視すべき例外クラスを明示的に設定して使用されます。
    */
@@ -200,4 +194,8 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
     return this.exceptionLogger;
   }
 
+  @Override
+  public void afterPropertiesSet() throws Exception {
+
+  }
 }
