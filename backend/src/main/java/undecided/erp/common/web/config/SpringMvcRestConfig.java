@@ -29,10 +29,12 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 public class SpringMvcRestConfig implements WebMvcConfigurer {
 
   /**
-   * Creates a JSON message converter for HTTP responses.
+   * JSONメッセージコンバータを作成します。このメソッドは、指定されたObjectMapperを使用して
+   * MappingJackson2HttpMessageConverterを設定します。これにより、HTTPリクエスト/レスポンスの
+   * JSONのシリアライズ/デシリアライズ処理がカスタマイズされます。
    *
-   * @param objectMapper The ObjectMapper to use for JSON conversion
-   * @return A configured MappingJackson2HttpMessageConverter
+   * @param objectMapper JSONのシリアライズ/デシリアライズ処理をカスタマイズするためのObjectMapperのインスタンス
+   * @return 設定済みのMappingJackson2HttpMessageConverterインスタンス
    */
   @Bean("jsonMessageConverter")
   public MappingJackson2HttpMessageConverter jsonMessageConverter(
@@ -43,10 +45,10 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates and configures an ObjectMapper for JSON serialization/deserialization. The ObjectMapper
-   * is configured with a standard date format.
+   * ObjectMapperを生成するためのメソッドです。
+   * Jackson2ObjectMapperFactoryBeanを使用して、JSONのシリアライズ/デシリアライズ処理をカスタマイズします。 標準の日付フォーマットが適用されます。
    *
-   * @return A configured ObjectMapper
+   * @return 設定済みのObjectMapperインスタンス
    */
   @Bean("objectMapper")
   public ObjectMapper objectMapper() {
@@ -57,9 +59,9 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates a standard date format for JSON date serialization/deserialization.
+   * 標準の日付フォーマットを提供するStdDateFormatインスタンスを作成します。 このメソッドは、日付のシリアライズ/デシリアライズ処理を統一された形式で設定するために使用されます。
    *
-   * @return A StdDateFormat instance
+   * @return 標準の日付フォーマットを表すStdDateFormatインスタンス
    */
   @Bean
   public StdDateFormat stdDateFormat() {
@@ -67,10 +69,10 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Configures the HTTP message converters for the application. Adds a JSON message converter with
-   * the configured ObjectMapper.
+   * メッセージコンバータを設定するメソッドです。 このメソッドでは、HTTPリクエストやレスポンスのJSONのシリアライズ/デシリアライズ処理を
+   * 行うためのカスタムメッセージコンバータを追加します。
    *
-   * @param converters The list of converters to be configured
+   * @param converters HTTPメッセージコンバータを保持するリスト
    */
   @Override
   public void configureMessageConverters(
@@ -79,10 +81,10 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Configures the argument resolvers for controller methods. Adds a pageable handler method
-   * argument resolver for pagination support.
+   * コントローラメソッドで使用される引数リゾルバを追加します。 このメソッドを使用することで、Spring
+   * MVCにカスタムのHandlerMethodArgumentResolverを登録できます。
    *
-   * @param argumentResolvers The list of argument resolvers to be configured
+   * @param argumentResolvers HandlerMethodArgumentResolverを保持するリスト
    */
   @Override
   public void addArgumentResolvers(
@@ -91,11 +93,10 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates a PageableHandlerMethodArgumentResolver for handling pageable parameters in controller
-   * methods. This resolver enables automatic conversion of pagination parameters from request
-   * parameters.
+   * PageableHandlerMethodArgumentResolverのインスタンスを作成し、Spring MVCで使用するための
+   * {@link HandlerMethodArgumentResolver}として設定します。このメソッドは、 ページネーションをサポートするデフォルトの設定を提供します。
    *
-   * @return A PageableHandlerMethodArgumentResolver instance
+   * @return PageableHandlerMethodArgumentResolverのインスタンス
    */
   @Bean
   public PageableHandlerMethodArgumentResolver pageableHandlerMethodArgumentResolver() {
@@ -103,10 +104,10 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Configures the interceptors for HTTP requests. Adds a trace logging interceptor for all request
-   * paths.
+   * InterceptorをSpring MVC設定に追加するメソッドです。 指定されたInterceptorRegistryにTraceLoggingInterceptorを登録し、
+   * 全てのパスパターンに適用します。
    *
-   * @param registry The interceptor registry to be configured
+   * @param registry Interceptorを登録するためのInterceptorRegistryインスタンス
    */
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
@@ -114,16 +115,23 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates a TraceLoggingInterceptor for logging HTTP request and response information. This
-   * interceptor logs details about incoming requests and outgoing responses for tracing purposes.
+   * TraceLoggingInterceptorのインスタンスを生成し、Spring MVCのInterceptorとして利用可能にします。
+   * このInterceptorはリクエストの処理時間をトレースし、必要に応じてログ出力を行います。
    *
-   * @return A TraceLoggingInterceptor instance
+   * @return TraceLoggingInterceptorの新しいインスタンス
    */
   @Bean
   public TraceLoggingInterceptor traceLoggingInterceptor() {
     return new TraceLoggingInterceptor();
   }
 
+  /**
+   * HandlerExceptionResolverLoggingInterceptorを生成し、ExceptionLoggerを設定します。
+   * このInterceptorは例外解決プロセスにログ機能を追加するために使用されます。
+   *
+   * @param exceptionLogger 例外発生時に記録を行うExceptionLoggerのインスタンス
+   * @return 設定済みのHandlerExceptionResolverLoggingInterceptorインスタンス
+   */
   @Bean("handlerExceptionResolverLoggingInterceptor")
   public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
@@ -133,12 +141,13 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates an advisor for the HandlerExceptionResolverLoggingInterceptor. This advisor intercepts
-   * exception resolution in Spring MVC and applies logging. It targets the resolveException method
-   * of HandlerExceptionResolver.
+   * HandlerExceptionResolverLoggingInterceptorを使用して、例外発生時のログ処理を実装するための
+   * Advisorを設定します。このAdvisorは、HandlerExceptionResolverのresolveExceptionメソッドの
+   * 実行時にログ処理を行うためのポイントカットとインターセプターを組み合わせます。
    *
-   * @param handlerExceptionResolverLoggingInterceptor The interceptor to be applied
-   * @return An advisor that applies the interceptor to the specified pointcut
+   * @param handlerExceptionResolverLoggingInterceptor 例外解決プロセス中にログ処理を行う
+   * HandlerExceptionResolverLoggingInterceptorのインスタンス
+   * @return 例外解決プロセスにログ処理を追加するために使用できるAdvisorのインスタンス
    */
   @Bean
   public Advisor handlerExceptionResolverLoggingInterceptorAdvisor(
