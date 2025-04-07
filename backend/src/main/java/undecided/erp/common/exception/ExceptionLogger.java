@@ -1,5 +1,6 @@
 package undecided.erp.common.exception;
 
+import jakarta.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 /**
@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
  * また、例外コードや例外メッセージを基にしたカスタムログメッセージの生成や、 ログフォーマットの妥当性チェック機能も提供します。
  */
 @RequiredArgsConstructor
-public class ExceptionLogger implements InitializingBean {
+public class ExceptionLogger {
 
   private static final String MONITORING_LOG_LOGGER_SUFFIX = ".Monitoring";
   private final Logger applicationLogger;
@@ -76,6 +76,7 @@ public class ExceptionLogger implements InitializingBean {
    * <p>
    * このメソッドを通じて、例外ログを適切に処理するための内部設定を整えます。
    */
+  @PostConstruct
   public void afterPropertiesSet() {
     this.validateLogMessageFormat(this.logMessageFormat);
     if (this.exceptionLevelResolver == null) {
