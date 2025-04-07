@@ -42,8 +42,9 @@ public class ExceptionLogger implements InitializingBean {
   private boolean trimLogMessage;
 
   /**
-   * 指定された名前を使用して ExceptionLogger を初期化します。 このクラスは指定された名前を基にアプリケーションロガーおよびモニタリングロガーを設定し、
-   * 各種ログレベル（INFO、WARN、ERROR）用のロガーを内部的に準備します。
+   * 指定された名前を使用して ExceptionLogger を初期化します。
+   * <p>
+   * このクラスは指定された名前を基にアプリケーションロガーおよびモニタリングロガーを設定し、 各種ログレベル（INFO、WARN、ERROR）用のロガーを内部的に準備します。
    *
    * @param name ロガーに使用する名前。通常はアプリケーションのコンポーネント名やモジュール名を指定します。
    */
@@ -58,7 +59,7 @@ public class ExceptionLogger implements InitializingBean {
     this.defaultMessage = "UNDEFINED-MESSAGE";
     this.trimLogMessage = true;
     this.applicationLogger = LoggerFactory.getLogger(name);
-    this.monitoringLogger = LoggerFactory.getLogger(name + ".Monitoring");
+    this.monitoringLogger = LoggerFactory.getLogger(name + MONITORING_LOG_LOGGER_SUFFIX);
     this.infoLogger = new ExceptionLogger.InfoLogger();
     this.warnLogger = new ExceptionLogger.WarnLogger();
     this.errorLogger = new ExceptionLogger.ErrorLogger();
@@ -134,8 +135,10 @@ public class ExceptionLogger implements InitializingBean {
   }
 
   /**
-   * ログメッセージフォーマットの妥当性を検証します。 指定されたフォーマットに例外コードのプレースホルダーおよび例外メッセージのプレースホルダーが含まれていない場合、
-   * {@link IllegalArgumentException} をスローします。
+   * ログメッセージフォーマットの妥当性を検証します。
+   * <p>
+   * 指定されたフォーマットに例外コードのプレースホルダーおよび例外メッセージのプレースホルダーが含まれていない場合、 {@link IllegalArgumentException}
+   * をスローします。
    *
    * @param logMessageFormat ログメッセージのフォーマット文字列。 例外コードのプレースホルダーと例外メッセージのプレースホルダーが必要です。
    */
@@ -143,7 +146,8 @@ public class ExceptionLogger implements InitializingBean {
     if (logMessageFormat == null || !logMessageFormat.contains(this.PLACEHOLDER_OF_EXCEPTION_CODE)
         || !logMessageFormat.contains(this.PLACEHOLDER_OF_EXCEPTION_MESSAGE)) {
       String message =
-          "logMessageFormat must have placeholder({0} and {1}). {0} is replaced with exception code. {1} is replaced with exception message. current logMessageFormat is \""
+          "logMessageFormat must have placeholder({0} and {1}). {0} is replaced with exception code. {1} is replaced "
+              + "with exception message. current logMessageFormat is \""
               + logMessageFormat + "\".";
       throw new IllegalArgumentException(message);
     }
