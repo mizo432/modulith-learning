@@ -54,36 +54,37 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
   /**
    * IOExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
    *
-   * @param ex 記録するIOExceptionオブジェクト
+   * @param ioException 記録するIOExceptionオブジェクト
    * @param request エラーログのコンテキストとなるServletRequest
    * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logIOException(IOException ex, ServletRequest request, ServletResponse response) {
-    this.exceptionLogger.error(ex);
+  protected void logIOException(IOException ioException, ServletRequest request,
+      ServletResponse response) {
+    this.exceptionLogger.error(ioException);
   }
 
   /**
    * ServletExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
    *
-   * @param ex 記録するServletExceptionオブジェクト
+   * @param servletException 記録するServletExceptionオブジェクト
    * @param request エラーログのコンテキストとなるServletRequest
    * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logServletException(ServletException ex, ServletRequest request,
+  protected void logServletException(ServletException servletException, ServletRequest request,
       ServletResponse response) {
-    this.exceptionLogger.error(ex);
+    this.exceptionLogger.error(servletException);
   }
 
   /**
    * RuntimeExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
    *
-   * @param ex 記録するRuntimeExceptionオブジェクト
+   * @param runtimeException 記録するRuntimeExceptionオブジェクト
    * @param request エラーログのコンテキストとなるServletRequest
    * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logRuntimeException(RuntimeException ex, ServletRequest request,
+  protected void logRuntimeException(RuntimeException runtimeException, ServletRequest request,
       ServletResponse response) {
-    this.exceptionLogger.error(ex);
+    this.exceptionLogger.error(runtimeException);
   }
 
   /**
