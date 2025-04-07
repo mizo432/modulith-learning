@@ -128,72 +128,103 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * 指定された例外およびリクエスト・レスポンス情報を基に、HTTPステータスコードに応じたログ出力を行います。 ステータスコードが100～199の場合は情報ログ、200～299の場合は成功ログ、
    * 300～399の場合はリダイレクトログ、400～499の場合はクライアントエラーログ、 500以上の場合はサーバーエラーログとして処理されます。
    *
-   * @param ex ログに記録する例外オブジェクト
+   * @param exception ログに記録する例外オブジェクト
    * @param request ログのコンテキストとなるHttpServletRequest
    * @param response ログのコンテキストとなるHttpServletResponse
    * @param handler 対象となるハンドラーオブジェクト（コントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void log(Exception ex, HttpServletRequest request, HttpServletResponse response,
+  protected void log(Exception exception, HttpServletRequest request, HttpServletResponse response,
       Object handler) {
     int statusCode = response.getStatus();
     if (500 <= statusCode) {
-      this.logServerError(ex, request, response, handler);
+      this.logServerError(exception, request, response, handler);
     } else if (400 <= statusCode) {
-      this.logClientError(ex, request, response, handler);
+      this.logClientError(exception, request, response, handler);
     } else if (300 <= statusCode) {
-      this.logRedirection(ex, request, response, handler);
+      this.logRedirection(exception, request, response, handler);
     } else if (200 <= statusCode) {
-      this.logSuccess(ex, request, response, handler);
+      this.logSuccess(exception, request, response, handler);
     } else if (100 <= statusCode) {
-      this.logInformational(ex, request, response, handler);
+      this.logInformational(exception, request, response, handler);
     }
   }
 
   /**
    * 指定された例外を情報ログとして記録します。
    *
-   * @param ex ログに記録する例外オブジェクト
+   * @param exception ログに記録する例外オブジェクト
    * @param request ログのコンテキストとなるHttpServletRequest
    * @param response ログのコンテキストとなるHttpServletResponse
    * @param handler 対象となるハンドラーオブジェクト（コントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void logInformational(Exception ex, HttpServletRequest request,
+  protected void logInformational(Exception exception, HttpServletRequest request,
       HttpServletResponse response, Object handler) {
-    this.exceptionLogger.info(ex);
+    this.exceptionLogger.info(exception);
   }
 
   /**
    * 成功ログを記録するためのメソッドです。
    *
-   * @param ex 記録する例外オブジェクト
+   * @param exception 記録する例外オブジェクト
    * @param request ログ記録時のコンテキストとなるHttpServletRequest
    * @param response ログ記録時のコンテキストとなるHttpServletResponse
    * @param handler 実行対象のハンドラーオブジェクト（通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void logSuccess(Exception ex, HttpServletRequest request, HttpServletResponse response,
+  protected void logSuccess(Exception exception, HttpServletRequest request,
+      HttpServletResponse response,
       Object handler) {
-    this.exceptionLogger.info(ex);
+    this.exceptionLogger.info(exception);
   }
 
-  protected void logRedirection(Exception ex, HttpServletRequest request,
+  /**
+   * 指定された例外、リクエスト情報、レスポンス情報、およびハンドラー情報を基に、 リダイレクトに関するログを記録します。
+   *
+   * @param exception ログに記録する例外オブジェクト
+   * @param request ログ記録時のコンテキストとなる HttpServletRequest
+   * @param response ログ記録時のコンテキストとなる HttpServletResponse
+   * @param handler 実行対象のハンドラーオブジェクト （通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
+   */
+  protected void logRedirection(Exception exception, HttpServletRequest request,
       HttpServletResponse response, Object handler) {
-    this.exceptionLogger.info(ex);
+    this.exceptionLogger.info(exception);
   }
 
-  protected void logClientError(Exception ex, HttpServletRequest request,
+  /**
+   * クライアントエラーに対する例外情報をログ出力します。
+   *
+   * @param exception ログに記録する例外オブジェクト
+   * @param request ログ記録時のコンテキストとなる HttpServletRequest
+   * @param response ログ記録時のコンテキストとなる HttpServletResponse
+   * @param handler 実行対象のハンドラーオブジェクト（通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
+   */
+  protected void logClientError(Exception exception, HttpServletRequest request,
       HttpServletResponse response, Object handler) {
-    this.exceptionLogger.warn(ex);
+    this.exceptionLogger.warn(exception);
   }
 
-  protected void logServerError(Exception ex, HttpServletRequest request,
+  /**
+   * サーバーエラーに関する例外情報をログ出力します。
+   *
+   * @param exception ログに記録する例外オブジェクト
+   * @param request ログ記録のコンテキストとなる HttpServletRequest
+   * @param response ログ記録のコンテキストとなる HttpServletResponse
+   * @param handler 実行対象のハンドラーオブジェクト（通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
+   */
+  protected void logServerError(Exception exception, HttpServletRequest request,
       HttpServletResponse response, Object handler) {
-    this.exceptionLogger.error(ex);
+    this.exceptionLogger.error(exception);
   }
 
   protected ExceptionLogger getExceptionLogger() {
     return this.exceptionLogger;
   }
 
+  /**
+   * Beanのプロパティが設定された後に呼び出されるメソッドで、Spring InitializingBeanインターフェースの一部として実装されています。
+   * このメソッドをオーバーライドし、初期化処理を実行します。 実装クラスでは、このメソッドを利用して必要な初期化作業を行うことができます。
+   *
+   * @throws Exception 初期化処理中に発生した例外
+   */
   @Override
   public void afterPropertiesSet() throws Exception {
 
