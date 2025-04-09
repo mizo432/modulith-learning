@@ -8,14 +8,16 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 
 /**
- * GatewayServerApplicationは、Spring Bootアプリケーションのエントリーポイントです。
+ * GatewayServerApplicationクラスは、Spring Bootベースのゲートウェイサーバーアプリケーションを表します。
  * <p>
- * このアプリケーションはゲートウェイサーバーとして機能し、提供された設定に基づいて 入ってくるリクエストを適切なサービスにルーティングします。
+ * このクラスはアプリケーションのエントリーポイントであり、ルーティング機能を提供します。
+ * <p>
+ * また、サービスディスカバリクライアントの有効化を行います。
  */
 @SpringBootApplication
 @EnableDiscoveryClient
 public class GatewayServerApplication {
-
+  
   /**
    * メインメソッドはSpring Bootアプリケーションのエントリーポイントとして機能します。
    * <p>
