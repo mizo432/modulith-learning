@@ -25,15 +25,16 @@ management:
       connection-timeout: 60000                  # Default: 30000 (30 seconds)
       minimum-idle: 2                            # Default: same as maximumPoolSize
       maximum-pool-size: 10
-  flyway:
-    enabled: false
-    outOfOrder: true
-    locations: classpath:db/migration, classpath:db/migration_local
-    baseline-on-migrate: true
-    user: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:postgres}
-
-
+  #  flyway:
+  #    enabled: false
+  #    outOfOrder: true
+  #    locations: classpath:db/migration, classpath:db/migration_local
+  #    baseline-on-migrate: true
+  #    user: ${POSTGRES_USER:postgres}
+  #    password: ${POSTGRES_PASSWORD:postgres}
+  #    url: ${SYSTEM_JDBC_URL:jdbc:postgresql://localhost:5432/postgres}
+  
+  
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
   devtools:

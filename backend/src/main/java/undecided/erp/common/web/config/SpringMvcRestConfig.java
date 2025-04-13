@@ -3,10 +3,9 @@ package undecided.erp.common.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import java.util.List;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
@@ -14,18 +13,16 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import undecided.erp.common.exception.ExceptionLogger;
-import undecided.erp.common.web.exception.HandlerExceptionResolverLoggingInterceptor;
 import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 
 /**
  * Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。
  */
-//@EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 // (7)
 //@ComponentScan("com.example.project.api") // (6)
 //@EnableWebMvc
-//@Configuration
+@Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
 
   /**
@@ -69,8 +66,9 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * メッセージコンバータを設定するメソッドです。 このメソッドでは、HTTPリクエストやレスポンスのJSONのシリアライズ/デシリアライズ処理を
-   * 行うためのカスタムメッセージコンバータを追加します。
+   * メッセージコンバータを設定するメソッドです。
+   * <p>
+   * このメソッドでは、HTTPリクエストやレスポンスのJSONのシリアライズ/デシリアライズ処理を 行うためのカスタムメッセージコンバータを追加します。
    *
    * @param converters HTTPメッセージコンバータを保持するリスト
    */
@@ -112,6 +110,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor()).addPathPatterns("/**");
+
   }
 
   /**
@@ -122,7 +121,10 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    */
   @Bean
   public TraceLoggingInterceptor traceLoggingInterceptor() {
-    return new TraceLoggingInterceptor();
+    TraceLoggingInterceptor traceLoggingInterceptor = new TraceLoggingInterceptor();
+    traceLoggingInterceptor.setWarnHandlingNanos(3000000000L);
+    return traceLoggingInterceptor;
+
   }
 
   /**
@@ -132,13 +134,13 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @param exceptionLogger 例外発生時に記録を行うExceptionLoggerのインスタンス
    * @return 設定済みのHandlerExceptionResolverLoggingInterceptorインスタンス
    */
-  @Bean("handlerExceptionResolverLoggingInterceptor")
-  public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
+  // @Bean("handlerExceptionResolverLoggingInterceptor")
+  /* public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
     HandlerExceptionResolverLoggingInterceptor bean = new HandlerExceptionResolverLoggingInterceptor();
     bean.setExceptionLogger(exceptionLogger);
     return bean;
-  }
+  }*/
 
   /**
    * HandlerExceptionResolverLoggingInterceptorを使用して、例外発生時のログ処理を実装するための
@@ -149,12 +151,12 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * HandlerExceptionResolverLoggingInterceptorのインスタンス
    * @return 例外解決プロセスにログ処理を追加するために使用できるAdvisorのインスタンス
    */
-  @Bean
+  /* @Bean
   public Advisor handlerExceptionResolverLoggingInterceptorAdvisor(
       HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor) {
     AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
     pointcut.setExpression(
         "execution(* org.springframework.web.servlet.HandlerExceptionResolver.resolveException(..))");
     return new DefaultPointcutAdvisor(pointcut, handlerExceptionResolverLoggingInterceptor);
-  }
+  }*/
 }

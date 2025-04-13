@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         // Flyway（データベース移行ツール）のクラスパス追加
-        classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
+        // classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
     }
 }
 plugins {
@@ -20,7 +20,7 @@ plugins {
     id("se.patrikerdes.use-latest-versions") version "0.2.18"
     id("com.github.ben-manes.versions") version "0.52.0"
     // Flywayプラグイン（DBマイグレーション）
-    id("org.flywaydb.flyway") version "11.3.4"
+    // id("org.flywaydb.flyway") version "11.3.4"
     jacoco
 }
 
@@ -67,7 +67,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:${property("jdbcPostgresqlVersion")}")
+    //   runtimeOnly("org.flywaydb:flyway-database-postgresql:${property("jdbcPostgresqlVersion")}")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa")
     compileOnly("org.projectlombok:lombok")
@@ -111,11 +111,11 @@ tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addStringOption("encoding", "UTF-8")
 }
 
-flyway {
-    url = "jdbc:postgresql://localhost:5432/postgres"
-    user = "postgres"
-    password = "postgres"
-}
+// flyway {
+//    url = "jdbc:postgresql://localhost:5432/postgres"
+//    user = "postgres"
+//    password = "postgres"
+//}
 
 dependencyManagement {
     imports {
