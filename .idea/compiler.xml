@@ -15,4 +15,20 @@
     </annotationProcessing>
     <bytecodeTargetLevel target="21" />
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="modulith-learning.api-gateway" options="-parameters" />
+      <module name="modulith-learning.api-gateway.main" options="-parameters" />
+      <module name="modulith-learning.api-gateway.test" options="-parameters" />
+      <module name="modulith-learning.authorization" options="-parameters -Xlint:unchecked" />
+      <module name="modulith-learning.authorization.main" options="-parameters -Xlint:unchecked" />
+      <module name="modulith-learning.authorization.test" options="-parameters -Xlint:unchecked" />
+      <module name="modulith-learning.backend" options="-parameters -Xlint:unchecked" />
+      <module name="modulith-learning.backend.main" options="-parameters -Xlint:unchecked" />
+      <module name="modulith-learning.backend.test" options="-parameters -Xlint:unchecked" />
+      <module name="modulith-learning.service-registry" options="-parameters" />
+      <module name="modulith-learning.service-registry.main" options="-parameters" />
+      <module name="modulith-learning.service-registry.test" options="-parameters" />
+    </option>
+  </component>
 </project>
