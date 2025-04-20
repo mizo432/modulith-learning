@@ -3,6 +3,7 @@ package undecided.authorization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
 
@@ -11,8 +12,13 @@ import org.springframework.context.event.EventListener;
  * <p>
  * このクラスはSpring Bootアプリケーションの初期化と起動を行います。また、 アプリケーションコンテキストが開始されたイベントを処理し、
  * アプリケーション名やサーバーポートなど、アプリケーション固有の情報を初期化します。
+ * <p>
+ * このアプリケーションは、ユーザー認証と認可の機能を提供します。
+ * Spring Securityを使用してセキュリティを実装し、JWTトークンベースの認証を行います。
+ * また、ロールベースのアクセス制御（RBAC）を実装しています。
  */
 @SpringBootApplication
+@EnableDiscoveryClient
 public class AuthorizationApplication {
 
   /**
@@ -48,27 +54,5 @@ public class AuthorizationApplication {
   public void handleContextRefreshEvent(ContextStartedEvent ctxStartEvt) {
     // アプリケーション情報の初期化処理
     System.out.println("Authorization Application started on port " + serverPort);
-  }
-
-  /**
-   * 認証サービスを提供します。 このメソッドは、ユーザー認証に関連する機能を実装します。
-   *
-   * @return 認証結果
-   */
-  public boolean authenticate(String username, String password) {
-    // 認証ロジックの実装
-    // 実際の実装では、データベースやLDAPなどの外部システムと連携して認証を行う
-    return true;
-  }
-
-  /**
-   * 認可サービスを提供します。 このメソッドは、ユーザーの権限チェックに関連する機能を実装します。
-   *
-   * @return 認可結果
-   */
-  public boolean authorize(String username, String resource, String action) {
-    // 認可ロジックの実装
-    // 実際の実装では、ロールベースのアクセス制御（RBAC）や属性ベースのアクセス制御（ABAC）などを実装する
-    return true;
   }
 }
