@@ -38,11 +38,8 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.3.3"
-extra["springModulithInsightVersion"] = "1.3.3"
 extra["guavaVersion"] = "33.4.0-jre"
 extra["icu4jVersion"] = "76.1"
-extra["yaviVersion"] = "0.14.2"
 extra["jiltVersion"] = "1.7"
 extra["jdbcPostgresqlVersion"] = "11.3.4"
 extra["openapiUiVersion"] = "2.8.5"
@@ -58,32 +55,18 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.modulith:spring-modulith-starter-core")
-    implementation("org.springframework.modulith:spring-modulith-starter-jpa")
-    compileOnly("org.projectlombok:lombok")
-    testCompileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
-    runtimeOnly("org.springframework.modulith:spring-modulith-observability")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.modulith:spring-modulith-starter-test")
-    implementation("org.jmolecules:jmolecules-onion-architecture")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
-    runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
-    implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     testRuntimeOnly("com.h2database:h2")
-    implementation("am.ik.yavi:yavi:${property("yaviVersion")}")
-    annotationProcessor("cc.jilt:jilt:${property("jiltVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client") {
         exclude("com.google.guava")
     }
-    implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
 }
@@ -95,13 +78,10 @@ tasks.withType<Javadoc> {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
-    }
-    imports {
-        mavenBom("org.jmolecules:jmolecules-bom:${property("jmoleculesBomVersion")}")
-    }
-    imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
+    }
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:3.1.5")
     }
 }
 
