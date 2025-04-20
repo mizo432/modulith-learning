@@ -67,6 +67,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client") {
         exclude("com.google.guava")
     }
+    annotationProcessor("org.projectlombok:lombok")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
 }
