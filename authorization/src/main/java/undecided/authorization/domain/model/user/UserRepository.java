@@ -1,9 +1,8 @@
-package undecided.authorization.infra.repository;
+package undecided.authorization.domain.model.user;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import undecided.authorization.domain.model.User;
 
 /**
  * ユーザーリポジトリ

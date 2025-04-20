@@ -2,7 +2,7 @@ package undecided.authorization.business.service;
 
 import java.util.List;
 import java.util.Optional;
-import undecided.authorization.domain.model.User;
+import undecided.authorization.domain.model.user.User;
 
 /**
  * ユーザーサービス

@@ -1,4 +1,4 @@
-package undecided.authorization.presentation.dto;
+package undecided.authorization.presentation.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

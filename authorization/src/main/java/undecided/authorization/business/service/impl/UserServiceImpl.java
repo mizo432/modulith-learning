@@ -8,10 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.authorization.business.service.UserService;
-import undecided.authorization.domain.model.Role;
-import undecided.authorization.domain.model.User;
-import undecided.authorization.infra.repository.RoleRepository;
-import undecided.authorization.infra.repository.UserRepository;
+import undecided.authorization.domain.model.role.Role;
+import undecided.authorization.domain.model.role.RoleRepository;
+import undecided.authorization.domain.model.user.User;
+import undecided.authorization.domain.model.user.UserRepository;
 
 /**
  * ユーザーサービス実装

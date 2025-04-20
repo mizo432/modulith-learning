@@ -1,4 +1,4 @@
-package undecided.authorization.domain.model;
+package undecided.authorization.domain.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import undecided.authorization.domain.model.role.Role;
 
 /**
  * ユーザーエンティティ

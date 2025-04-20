@@ -1,6 +1,6 @@
 package undecided.authorization.business.service;
 
-import undecided.authorization.domain.model.User;
+import undecided.authorization.domain.model.user.User;
 
 /**
  * 認証サービス

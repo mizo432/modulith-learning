@@ -1,4 +1,4 @@
-package undecided.authorization.domain.model;
+package undecided.authorization.domain.model.permission;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

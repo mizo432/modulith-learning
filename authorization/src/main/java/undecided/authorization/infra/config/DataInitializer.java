@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import undecided.authorization.domain.model.Permission;
-import undecided.authorization.domain.model.Role;
-import undecided.authorization.domain.model.User;
-import undecided.authorization.infra.repository.PermissionRepository;
-import undecided.authorization.infra.repository.RoleRepository;
-import undecided.authorization.infra.repository.UserRepository;
+import undecided.authorization.domain.model.permission.Permission;
+import undecided.authorization.domain.model.permission.PermissionRepository;
+import undecided.authorization.domain.model.role.Role;
+import undecided.authorization.domain.model.role.RoleRepository;
+import undecided.authorization.domain.model.user.User;
+import undecided.authorization.domain.model.user.UserRepository;
 
 /**
  * データ初期化

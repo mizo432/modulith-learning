@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.authorization.business.service.AuthenticationService;
 import undecided.authorization.business.service.AuthorizationService;
-import undecided.authorization.domain.model.User;
-import undecided.authorization.presentation.dto.AuthRequest;
-import undecided.authorization.presentation.dto.AuthResponse;
-import undecided.authorization.presentation.dto.PasswordChangeRequest;
+import undecided.authorization.domain.model.user.User;
 
 /**
  * 認証・認可コントローラー

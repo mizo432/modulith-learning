@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.authorization.business.service.AuthorizationService;
-import undecided.authorization.infra.repository.UserRepository;
+import undecided.authorization.domain.model.user.UserRepository;
 
 /**
  * 認可サービス実装

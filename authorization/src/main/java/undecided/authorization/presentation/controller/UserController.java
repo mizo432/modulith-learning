@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.authorization.business.service.UserService;
-import undecided.authorization.domain.model.User;
+import undecided.authorization.domain.model.user.User;
 
 /**
  * ユーザーコントローラー
