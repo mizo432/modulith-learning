@@ -17,37 +17,6 @@ spring:
       connection-timeout: 60000                  # Default: 30000 (30 seconds)
       minimum-idle: 2                            # Default: same as maximumPoolSize
       maximum-pool-size: 10
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,modulith,modulithApplications
-  endpoint:
-    health:
-      show-details: always
-  datasource:
-    url: ${SYSTEM_JDBC_URL:jdbc:postgresql://localhost:5432/postgres}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-test-query: SELECT 1
-      connection-timeout: 60000
-      minimum-idle: 2
-      maximum-pool-size: 10
-  jackson:
-    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-  modulith:
-    events:
-      jdbc:
-        schema-initialization:
-          enabled: true
   jpa:
     show-sql: true
     defer-datasource-initialization: true
@@ -56,6 +25,14 @@ management:
     properties.hibernate.format_sql: true
     properties.hibernate.jdbc.lob.non_contextual_creation: true
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
 
 logging:
   level:
@@ -66,3 +43,11 @@ logging:
     org.hibernate.SQL: DEBUG
 
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,modulith,modulithApplications
+  endpoint:
+    health:
+      show-details: always

@@ -12,11 +12,15 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 import undecided.authorization.domain.model.role.Role;
 
 /**
@@ -26,42 +30,13 @@ import undecided.authorization.domain.model.role.Role;
  */
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  @Column(nullable = false, unique = true)
-  private String username;
-
-  @Column(nullable = false)
-  private String password;
-
-  @Column(nullable = false, unique = true)
-  private String email;
-
-  @Column(name = "first_name")
-  private String firstName;
-
-  @Column(name = "last_name")
-  private String lastName;
-
-  @Column(nullable = false)
-  private boolean enabled;
-
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
-
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  @Column(name = "last_login_at")
-  private LocalDateTime lastLoginAt;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
@@ -69,7 +44,28 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id")
   )
-  private Set<Role> roles = new HashSet<>();
+  private final Set<Role> roles = new HashSet<>();
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  @Column(nullable = false, unique = true)
+  private String username;
+  @Column(nullable = false)
+  private String password;
+  @Column(nullable = false, unique = true)
+  private String email;
+  @Column(name = "first_name")
+  private String firstName;
+  @Column(name = "last_name")
+  private String lastName;
+  @Column(nullable = false)
+  private boolean enabled;
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+  @Column(name = "last_login_at")
+  private LocalDateTime lastLoginAt;
 
   /**
    * ユーザーにロールを追加します。
@@ -110,5 +106,32 @@ public class User {
     return this.roles.stream()
         .flatMap(role -> role.getPermissions().stream())
         .anyMatch(permission -> permission.getName().equals(permissionName));
+  }
+
+  @Override
+  public final boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
+    Class<?> oEffectiveClass = o instanceof HibernateProxy
+        ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
+        : o.getClass();
+    Class<?> thisEffectiveClass = this instanceof HibernateProxy
+        ? ((HibernateProxy) this).getHibernateLazyInitializer()
+        .getPersistentClass() : this.getClass();
+    if (thisEffectiveClass != oEffectiveClass) {
+      return false;
+    }
+    User user = (User) o;
+    return getId() != null && Objects.equals(getId(), user.getId());
+  }
+
+  @Override
+  public final int hashCode() {
+    return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer()
+        .getPersistentClass().hashCode() : getClass().hashCode();
   }
 }
