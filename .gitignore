@@ -292,3 +292,4 @@ modules.xml
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,intellij,visualstudiocode,eclipse,gradle
 /.devcontainer/postgres/data/
 /.devcontainer/dragonfly/data/
+/frontend/node_modules/
