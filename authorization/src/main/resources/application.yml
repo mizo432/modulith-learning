@@ -14,7 +14,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-test-query: SELECT 1
-      connection-timeout: 60000                  # Default: 30000 (30 seconds)
+      connection-timeout: 60000                  # Default: 30,000 (30 seconds)
       minimum-idle: 2                            # Default: same as maximumPoolSize
       maximum-pool-size: 10
   jpa:
