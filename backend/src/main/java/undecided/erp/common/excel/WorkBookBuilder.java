@@ -99,6 +99,19 @@ public final class WorkBookBuilder {
   }
 
   /**
+   * ワークブックに新しいシートを作成し、そのシートを操作するためのWorkSheetBuilderを返します。
+   *
+   * @param sheetName シートの名前
+   * @return 新しいWorkSheetBuilderインスタンス
+   */
+  public WorkSheetBuilder worksheet(String sheetName) {
+    WorkSheetBuilder builder = new WorkSheetBuilder(this, sheetName);
+    currentSheet = builder.getSheet();
+    currentRow = null;
+    return builder;
+  }
+
+  /**
    * 既存のシートを現在のシートとして設定します。
    *
    * @param sheetIndex シートのインデックス
@@ -108,6 +121,66 @@ public final class WorkBookBuilder {
     currentSheet = workbook.getSheetAt(sheetIndex);
     currentRow = null;
     return this;
+  }
+
+  /**
+   * 既存のシートを操作するためのWorkSheetBuilderを返します。
+   *
+   * @param sheetIndex シートのインデックス
+   * @return 指定されたシートに対するWorkSheetBuilderインスタンス
+   */
+  public WorkSheetBuilder worksheet(int sheetIndex) {
+    Sheet sheet = workbook.getSheetAt(sheetIndex);
+    currentSheet = sheet;
+    currentRow = null;
+    return new WorkSheetBuilder(this, sheet);
+  }
+
+  /**
+   * 現在のシートに対するWorkSheetBuilderを返します。
+   *
+   * @return 現在のシートに対するWorkSheetBuilderインスタンス
+   * @throws IllegalStateException シートが作成または選択されていない場合
+   */
+  public WorkSheetBuilder worksheet() {
+    if (currentSheet == null) {
+      throw new IllegalStateException("No sheet has been created or selected");
+    }
+    return new WorkSheetBuilder(this, currentSheet);
+  }
+
+  /**
+   * テンプレートシートのヘッダー行を使用して新しいワークシートを作成します。 作成されたワークシートは一覧形式となり、1行目はテンプレートからコピーされたヘッダー行、
+   * 2行目以降にデータを配置することができます。
+   *
+   * @param sheetName 作成するシートの名前
+   * @param templateSheet テンプレートとなるシート（1行目にヘッダー行が必要）
+   * @return 新しいWorkSheetBuilderインスタンス
+   */
+  public WorkSheetBuilder worksheetWithTemplateHeader(String sheetName, Sheet templateSheet) {
+    WorkSheetBuilder builder = new WorkSheetBuilder(this, sheetName);
+    builder.initHeaderFromTemplate(templateSheet);
+    currentSheet = builder.getSheet();
+    currentRow = null;
+    return builder;
+  }
+
+  /**
+   * テンプレートシートのヘッダー行と2行目の書式を使用して新しいワークシートを作成します。 作成されたワークシートは一覧形式となり、1行目はテンプレートからコピーされたヘッダー行、
+   * 2行目以降にデータを配置する際にテンプレートの2行目の書式が適用されます。 テンプレートの2行目は書式を設定してあり、データ部はその書式をコピーしてデータのみをセルに設定します。
+   *
+   * @param sheetName 作成するシートの名前
+   * @param templateSheet テンプレートとなるシート（1行目にヘッダー行、2行目に書式行が必要）
+   * @return 新しいWorkSheetBuilderインスタンス
+   */
+  public WorkSheetBuilder worksheetWithTemplateHeaderAndFormat(String sheetName,
+      Sheet templateSheet) {
+    WorkSheetBuilder builder = new WorkSheetBuilder(this, sheetName);
+    builder.initHeaderFromTemplate(templateSheet);
+    builder.initDataFormatFromTemplate(templateSheet);
+    currentSheet = builder.getSheet();
+    currentRow = null;
+    return builder;
   }
 
   /**
@@ -283,5 +356,35 @@ public final class WorkBookBuilder {
    */
   public Workbook build() {
     return workbook;
+  }
+
+  /**
+   * 現在のワークブックを取得します。
+   *
+   * @return 現在のワークブック
+   */
+  Workbook getWorkbook() {
+    return workbook;
+  }
+
+  /**
+   * 名前付きスタイルのマップを取得します。
+   *
+   * @return 名前付きスタイルのマップ
+   */
+  Map<String, CellStyle> getNamedStyles() {
+    return namedStyles;
+  }
+
+  /**
+   * 名前付きスタイルを追加します。
+   *
+   * @param styleName スタイルの名前
+   * @param cellStyle 追加するセルスタイル
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   */
+  WorkBookBuilder addNamedStyle(String styleName, CellStyle cellStyle) {
+    namedStyles.put(styleName, cellStyle);
+    return this;
   }
 }
