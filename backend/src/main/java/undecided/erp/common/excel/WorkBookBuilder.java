@@ -1,5 +1,6 @@
 package undecided.erp.common.excel;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
@@ -40,6 +41,19 @@ public final class WorkBookBuilder {
    * @return a new WorkBookBuilder instance
    */
   public static WorkBookBuilder withWorkbook(Workbook workbook) {
+    return new WorkBookBuilder(workbook);
+  }
+
+  /**
+   * Creates a new WorkBookBuilder with an existing Excel file as a template.
+   *
+   * @param filePath the path to the Excel file to use as a template
+   * @return a new WorkBookBuilder instance
+   * @throws IOException if an I/O error occurs
+   * @throws IllegalArgumentException if the file does not have a valid XLSX extension
+   */
+  public static WorkBookBuilder fromTemplate(String filePath) throws IOException {
+    Workbook workbook = ExcelUtils.loadWorkbook(filePath);
     return new WorkBookBuilder(workbook);
   }
 

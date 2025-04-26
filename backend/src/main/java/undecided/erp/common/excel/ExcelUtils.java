@@ -38,6 +38,26 @@ public final class ExcelUtils {
   }
 
   /**
+   * Loads an existing Excel workbook from a file.
+   *
+   * @param filePath the path to the Excel file
+   * @return the loaded workbook
+   * @throws IOException if an I/O error occurs
+   * @throws IllegalArgumentException if the file does not have a valid XLSX extension
+   */
+  public static Workbook loadWorkbook(String filePath) throws IOException {
+    File file = new File(filePath);
+    if (!hasValidExtension(file)) {
+      throw new IllegalArgumentException(
+          "File must have " + ExcelFileType.EXTENSION_WITH_DOT + " extension");
+    }
+
+    try (InputStream is = new FileInputStream(file)) {
+      return new XSSFWorkbook(is);
+    }
+  }
+
+  /**
    * Checks if the file has a valid Excel XLSX extension.
    *
    * @param file the file to check

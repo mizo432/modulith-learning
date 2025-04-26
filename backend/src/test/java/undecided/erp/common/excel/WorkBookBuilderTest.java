@@ -250,4 +250,62 @@ class WorkBookBuilderTest {
     assertArrayEquals(new String[]{"Item2", "200.0"}, data.get(2),
         "Second data row should match expected values");
   }
+
+  @Test
+  void testFromTemplate() throws IOException {
+    // Create a workbook with some data
+    Workbook originalWorkbook = WorkBookBuilder.create()
+        .sheet("TemplateSheet")
+        .row(0)
+        .cell(0, "Header1")
+        .cell(1, "Header2")
+        .row(1)
+        .cell(0, "Data1")
+        .cell(1, 123.45)
+        .build();
+
+    // Save the workbook to a file
+    Path templatePath = tempDir.resolve("template-test.xlsx");
+    try (FileOutputStream fos = new FileOutputStream(templatePath.toFile())) {
+      originalWorkbook.write(fos);
+    }
+
+    // Load the file as a template
+    WorkBookBuilder builder = WorkBookBuilder.fromTemplate(templatePath.toString());
+    Workbook loadedWorkbook = builder.build();
+
+    // Verify the loaded workbook has the same content as the original
+    assertEquals(1, loadedWorkbook.getNumberOfSheets(), "Should have 1 sheet");
+    Sheet sheet = loadedWorkbook.getSheetAt(0);
+    assertEquals("TemplateSheet", sheet.getSheetName(), "Sheet name should match");
+
+    // Verify header row
+    Row headerRow = sheet.getRow(0);
+    assertEquals("Header1", headerRow.getCell(0).getStringCellValue(), "Header1 should match");
+    assertEquals("Header2", headerRow.getCell(1).getStringCellValue(), "Header2 should match");
+
+    // Verify data row
+    Row dataRow = sheet.getRow(1);
+    assertEquals("Data1", dataRow.getCell(0).getStringCellValue(), "Data1 should match");
+    assertEquals(123.45, dataRow.getCell(1).getNumericCellValue(), 0.001,
+        "Numeric value should match");
+
+    // Test adding more data to the template
+    Workbook enhancedWorkbook = builder
+        .sheet("TemplateSheet") // Select the existing sheet
+        .row(2) // Add a new row
+        .cell(0, "Data2")
+        .cell(1, 678.90)
+        .build();
+
+    // Verify the enhanced workbook
+    sheet = enhancedWorkbook.getSheetAt(0);
+    assertEquals(3, sheet.getLastRowNum() + 1, "Should have 3 rows");
+
+    // Verify the new row
+    Row newRow = sheet.getRow(2);
+    assertEquals("Data2", newRow.getCell(0).getStringCellValue(), "Data2 should match");
+    assertEquals(678.90, newRow.getCell(1).getNumericCellValue(), 0.001,
+        "Numeric value should match");
+  }
 }
