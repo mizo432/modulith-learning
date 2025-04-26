@@ -81,6 +81,24 @@ public final class WorkSheetBuilder {
   }
 
   /**
+   * データ行を作成し、そのデータ行を操作するためのDataRowBuilderを返します。 一覧形式のワークシートでは、データは2行目から始まります。
+   * ヘッダー行が存在しない場合は、先にヘッダー行を作成する必要があります。
+   *
+   * @param dataRowIndex データ行のインデックス（0から始まる）
+   * @return 新しいDataRowBuilderインスタンス
+   * @throws IllegalStateException ヘッダー行が存在しない場合
+   */
+  public DataRowBuilder dataRowBuilder(int dataRowIndex) {
+    if (!hasHeaderRow) {
+      throw new IllegalStateException("Header row must be created first");
+    }
+    // データ行は2行目（インデックス1）から始まるため、dataRowIndex + 1 を使用
+    Row row = sheet.createRow(dataRowIndex + 1);
+    currentRow = row;
+    return new DataRowBuilder(this, row, namedStyles);
+  }
+
+  /**
    * テンプレートからヘッダー行を初期化します。 テンプレートシートの1行目をヘッダー行として使用します。
    *
    * @param templateSheet テンプレートとなるシート
@@ -224,6 +242,16 @@ public final class WorkSheetBuilder {
   }
 
   /**
+   * 最初のデータ行（2行目、インデックス1）を作成し、そのデータ行を操作するためのDataRowBuilderを返します。
+   *
+   * @return 新しいDataRowBuilderインスタンス
+   * @throws IllegalStateException ヘッダー行が存在しない場合
+   */
+  public DataRowBuilder firstDataRowBuilder() {
+    return dataRowBuilder(0);
+  }
+
+  /**
    * 現在の行に文字列値を持つセルを作成します。
    *
    * @param columnIndex セルのインデックス
@@ -355,8 +383,8 @@ public final class WorkSheetBuilder {
   }
 
   /**
-   * データソースからワークシートにデータを追加します。 各データ項目に対して、指定されたコンシューマーが呼び出されます。
-   * コンシューマーは、WorkSheetBuilderとデータ項目を受け取り、 ワークシートにデータを書き込む方法を定義します。
+   * データソースからワークシートにデータを追加します。 各データ項目に対して、指定されたコンシューマーが呼び出されます。 コンシューマーは、DataRowBuilderとデータ項目を受け取り、
+   * ワークシートにデータを書き込む方法を定義します。
    *
    * @param <T> データソースの要素の型
    * @param dataSource データソース（Iterable<T>型）
@@ -365,15 +393,15 @@ public final class WorkSheetBuilder {
    * @throws IllegalStateException ヘッダー行が存在しない場合
    */
   public <T> WorkSheetBuilder datasource(Iterable<T> dataSource,
-      BiConsumer<WorkSheetBuilder, T> consumer) {
+      BiConsumer<DataRowBuilder, T> consumer) {
     if (!hasHeaderRow) {
       throw new IllegalStateException("Header row must be created first");
     }
 
     int dataRowIndex = 0;
     for (T item : dataSource) {
-      dataRow(dataRowIndex);
-      consumer.accept(this, item);
+      DataRowBuilder rowBuilder = dataRowBuilder(dataRowIndex);
+      consumer.accept(rowBuilder, item);
       dataRowIndex++;
     }
 

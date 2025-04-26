@@ -618,8 +618,8 @@ class WorkBookBuilderTest {
     // Create a new workbook and use the datasource method
     Workbook workbook = WorkBookBuilder.create()
         .worksheetWithTemplateHeader("DataSheet", templateSheet)
-        .datasource(testItems, (builder, item) -> {
-          builder.cell(0, item.getId())
+        .datasource(testItems, (rowBuilder, item) -> {
+          rowBuilder.cell(0, item.getId())
               .cell(1, item.getName())
               .cell(2, item.getValue());
         })
@@ -662,8 +662,8 @@ class WorkBookBuilderTest {
     // Try to use datasource method without a header row
     WorkSheetBuilder worksheetBuilder = builder.worksheet();
     Exception exception = assertThrows(IllegalStateException.class, () -> {
-      worksheetBuilder.datasource(dataSource, (wsBuilder, item) -> {
-        wsBuilder.cell(0, item);
+      worksheetBuilder.datasource(dataSource, (rowBuilder, item) -> {
+        rowBuilder.cell(0, item);
       });
     });
 
