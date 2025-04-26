@@ -1,16 +1,19 @@
 package undecided.erp.common.excel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +31,17 @@ import org.junit.jupiter.api.io.TempDir;
  */
 class WorkBookBuilderTest {
 
+  private final static File TEMPLATE_WORKBOOK = new File("./src/test/resources/template.xlsx");
   @TempDir
   Path tempDir;
+
+  @Test
+  void sample() throws IOException {
+    OutputStream result = new ByteArrayOutputStream();
+    WorkBookBuilder.create(TEMPLATE_WORKBOOK).build(result);
+    assertThat(((ByteArrayOutputStream) result).toByteArray().length)
+        .isEqualTo(500);
+  }
 
   @Test
   void testCreateWorkbook() {

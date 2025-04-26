@@ -1,6 +1,9 @@
 package undecided.erp.common.excel;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
@@ -9,6 +12,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * WorkBookBuilder は、Excel ワークブックの構築および管理を簡易化するビルダークラスです。 シート、行、セルの構成やスタイルの設定をチェーンメソッドの形式で提供します。
@@ -84,6 +88,26 @@ public final class WorkBookBuilder {
       throws IOException {
     Workbook workbook = ExcelUtils.loadWorkbookFromResource(resourcePath, classLoader);
     return new WorkBookBuilder(workbook);
+  }
+
+  /**
+   * ファイルからExcelテンプレートを使用して新しいWorkBookBuilderを作成します。
+   *
+   * @param file テンプレートとして使用するExcelファイル
+   * @return 新しいWorkBookBuilderインスタンス
+   * @throws IOException I/Oエラーが発生した場合
+   * @throws IllegalArgumentException ファイルが有効なXLSX拡張子を持っていない場合
+   */
+  public static WorkBookBuilder create(File file) throws IOException {
+    if (!ExcelUtils.hasValidExtension(file)) {
+      throw new IllegalArgumentException(
+          "File must have " + ExcelFileType.EXTENSION_WITH_DOT + " extension");
+    }
+
+    try (FileInputStream is = new FileInputStream(file)) {
+      Workbook workbook = new XSSFWorkbook(is);
+      return new WorkBookBuilder(workbook);
+    }
   }
 
   /**
@@ -356,6 +380,16 @@ public final class WorkBookBuilder {
    */
   public Workbook build() {
     return workbook;
+  }
+
+  /**
+   * 設定されたワークブックを指定されたOutputStreamに書き込みます。
+   *
+   * @param outputStream ワークブックを書き込むOutputStream
+   * @throws IOException I/Oエラーが発生した場合
+   */
+  public void build(OutputStream outputStream) throws IOException {
+    workbook.write(outputStream);
   }
 
   /**
