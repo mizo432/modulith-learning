@@ -170,18 +170,28 @@ public final class ExcelUtils {
       return "";
     }
 
-    switch (cell.getCellType()) {
-      case STRING:
-        return cell.getStringCellValue();
-      case NUMERIC:
-        return String.valueOf(cell.getNumericCellValue());
-      case BOOLEAN:
-        return String.valueOf(cell.getBooleanCellValue());
-      case FORMULA:
-        return cell.getCellFormula();
-      default:
-        return "";
-    }
+    return switch (cell.getCellType()) {
+      case STRING -> {
+        // For string cells, return the string value directly
+        yield cell.getStringCellValue();
+      }
+      case NUMERIC -> {
+        // For numeric cells, convert the numeric value to a string
+        yield String.valueOf(cell.getNumericCellValue());
+      }
+      case BOOLEAN -> {
+        // For boolean cells, convert the boolean value to a string
+        yield String.valueOf(cell.getBooleanCellValue());
+      }
+      case FORMULA -> {
+        // For formula cells, return the formula string
+        yield cell.getCellFormula();
+      }
+      default -> {
+        // For all other cell types (blank, error, etc.), return an empty string
+        yield "";
+      }
+    };
   }
 
   /**
