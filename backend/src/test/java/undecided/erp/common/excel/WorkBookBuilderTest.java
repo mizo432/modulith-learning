@@ -7,8 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -20,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Tests for the WorkBookBuilder class.
+ * WorkBookBuilderクラスのテスト。
  */
 class WorkBookBuilderTest {
 
@@ -306,6 +308,86 @@ class WorkBookBuilderTest {
     Row newRow = sheet.getRow(2);
     assertEquals("Data2", newRow.getCell(0).getStringCellValue(), "Data2 should match");
     assertEquals(678.90, newRow.getCell(1).getNumericCellValue(), 0.001,
+        "Numeric value should match");
+  }
+
+  @Test
+  void testFromResource() throws IOException {
+    // Create a workbook with some data
+    Workbook originalWorkbook = WorkBookBuilder.create()
+        .sheet("ResourceSheet")
+        .row(0)
+        .cell(0, "ResourceHeader1")
+        .cell(1, "ResourceHeader2")
+        .row(1)
+        .cell(0, "ResourceData1")
+        .cell(1, 987.65)
+        .build();
+
+    // Save the workbook to a file in the test resources directory
+    Path resourceDir = tempDir.resolve("resources");
+    resourceDir.toFile().mkdir();
+    Path resourcePath = resourceDir.resolve("test-resource.xlsx");
+    try (FileOutputStream fos = new FileOutputStream(resourcePath.toFile())) {
+      originalWorkbook.write(fos);
+    }
+
+    // Create a custom ClassLoader that can load from our temporary directory
+    ClassLoader testClassLoader = new ClassLoader(WorkBookBuilderTest.class.getClassLoader()) {
+      @Override
+      public InputStream getResourceAsStream(String name) {
+        if ("test-resource.xlsx".equals(name)) {
+          try {
+            return new FileInputStream(resourcePath.toFile());
+          } catch (IOException e) {
+            return null;
+          }
+        }
+        return super.getResourceAsStream(name);
+      }
+    };
+
+    // Load the file as a resource using our custom ClassLoader
+    WorkBookBuilder builder = WorkBookBuilder.fromResource("test-resource.xlsx",
+        testClassLoader);
+    Workbook loadedWorkbook = builder.build();
+
+    // Verify the loaded workbook has the same content as the original
+    assertEquals(1, loadedWorkbook.getNumberOfSheets(), "Should have 1 sheet");
+    Sheet sheet = loadedWorkbook.getSheetAt(0);
+    assertEquals("ResourceSheet", sheet.getSheetName(), "Sheet name should match");
+
+    // Verify header row
+    Row headerRow = sheet.getRow(0);
+    assertEquals("ResourceHeader1", headerRow.getCell(0).getStringCellValue(),
+        "ResourceHeader1 should match");
+    assertEquals("ResourceHeader2", headerRow.getCell(1).getStringCellValue(),
+        "ResourceHeader2 should match");
+
+    // Verify data row
+    Row dataRow = sheet.getRow(1);
+    assertEquals("ResourceData1", dataRow.getCell(0).getStringCellValue(),
+        "ResourceData1 should match");
+    assertEquals(987.65, dataRow.getCell(1).getNumericCellValue(), 0.001,
+        "Numeric value should match");
+
+    // Test adding more data to the template
+    Workbook enhancedWorkbook = builder
+        .sheet("ResourceSheet") // Select the existing sheet
+        .row(2) // Add a new row
+        .cell(0, "ResourceData2")
+        .cell(1, 543.21)
+        .build();
+
+    // Verify the enhanced workbook
+    sheet = enhancedWorkbook.getSheetAt(0);
+    assertEquals(3, sheet.getLastRowNum() + 1, "Should have 3 rows");
+
+    // Verify the new row
+    Row newRow = sheet.getRow(2);
+    assertEquals("ResourceData2", newRow.getCell(0).getStringCellValue(),
+        "ResourceData2 should match");
+    assertEquals(543.21, newRow.getCell(1).getNumericCellValue(), 0.001,
         "Numeric value should match");
   }
 }

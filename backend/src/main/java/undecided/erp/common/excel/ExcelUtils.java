@@ -21,29 +21,28 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- * Utility class for Excel operations. This class provides methods for reading and writing Excel
- * files in XLSX format.
+ * Excel操作のためのユーティリティクラス。このクラスはXLSX形式のExcelファイルの読み書きのためのメソッドを提供します。
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExcelUtils {
 
   /**
-   * Creates a new Excel workbook in XLSX format.
+   * XLSX形式の新しいExcelワークブックを作成します。
    *
-   * @return a new workbook instance
+   * @return 新しいワークブックインスタンス
    */
   public static Workbook createWorkbook() {
     return new XSSFWorkbook();
   }
 
   /**
-   * Loads an existing Excel workbook from a file.
+   * ファイルから既存のExcelワークブックを読み込みます。
    *
-   * @param filePath the path to the Excel file
-   * @return the loaded workbook
-   * @throws IOException if an I/O error occurs
-   * @throws IllegalArgumentException if the file does not have a valid XLSX extension
+   * @param filePath Excelファイルへのパス
+   * @return 読み込まれたワークブック
+   * @throws IOException I/Oエラーが発生した場合
+   * @throws IllegalArgumentException ファイルが有効なXLSX拡張子を持っていない場合
    */
   public static Workbook loadWorkbook(String filePath) throws IOException {
     File file = new File(filePath);
@@ -58,20 +57,44 @@ public final class ExcelUtils {
   }
 
   /**
-   * Checks if the file has a valid Excel XLSX extension.
+   * JARファイル内のリソースから既存のExcelワークブックを読み込みます。
    *
-   * @param file the file to check
-   * @return true if the file has an XLSX extension, false otherwise
+   * @param resourcePath JAR内のリソースへのパス
+   * @param classLoader リソースの読み込みに使用するClassLoader
+   * @return 読み込まれたワークブック
+   * @throws IOException I/Oエラーが発生した場合
+   * @throws IllegalArgumentException リソースが有効なXLSX拡張子を持っていないか、見つからない場合
+   */
+  public static Workbook loadWorkbookFromResource(String resourcePath, ClassLoader classLoader)
+      throws IOException {
+    if (!resourcePath.toLowerCase().endsWith(ExcelFileType.EXTENSION_WITH_DOT)) {
+      throw new IllegalArgumentException(
+          "Resource must have " + ExcelFileType.EXTENSION_WITH_DOT + " extension");
+    }
+
+    try (InputStream is = classLoader.getResourceAsStream(resourcePath)) {
+      if (is == null) {
+        throw new IllegalArgumentException("Resource not found: " + resourcePath);
+      }
+      return new XSSFWorkbook(is);
+    }
+  }
+
+  /**
+   * ファイルが有効なExcel XLSX拡張子を持っているかチェックします。
+   *
+   * @param file チェックするファイル
+   * @return ファイルがXLSX拡張子を持っている場合はtrue、そうでない場合はfalse
    */
   public static boolean hasValidExtension(File file) {
     return file != null && file.getName().toLowerCase().endsWith(ExcelFileType.EXTENSION_WITH_DOT);
   }
 
   /**
-   * Ensures the file has the correct XLSX extension, adding it if necessary.
+   * ファイルが正しいXLSX拡張子を持っていることを確認し、必要に応じて追加します。
    *
-   * @param filePath the file path to check and possibly modify
-   * @return the file path with the correct extension
+   * @param filePath チェックして修正する可能性のあるファイルパス
+   * @return 正しい拡張子を持つファイルパス
    */
   public static String ensureCorrectExtension(String filePath) {
     if (filePath == null || filePath.isEmpty()) {
@@ -92,12 +115,12 @@ public final class ExcelUtils {
   }
 
   /**
-   * Reads an Excel file and processes each row with the provided consumer.
+   * Excelファイルを読み込み、提供されたコンシューマで各行を処理します。
    *
-   * @param filePath the path to the Excel file
-   * @param rowConsumer the consumer to process each row
-   * @throws IOException if an I/O error occurs
-   * @throws IllegalArgumentException if the file does not have a valid XLSX extension
+   * @param filePath Excelファイルへのパス
+   * @param rowConsumer 各行を処理するコンシューマ
+   * @throws IOException I/Oエラーが発生した場合
+   * @throws IllegalArgumentException ファイルが有効なXLSX拡張子を持っていない場合
    */
   public static void readExcel(String filePath, Consumer<Row> rowConsumer) throws IOException {
     File file = new File(filePath);
@@ -117,11 +140,11 @@ public final class ExcelUtils {
   }
 
   /**
-   * Writes data to an Excel file.
+   * データをExcelファイルに書き込みます。
    *
-   * @param filePath the path to the Excel file
-   * @param workbookConsumer the consumer to populate the workbook
-   * @throws IOException if an I/O error occurs
+   * @param filePath Excelファイルへのパス
+   * @param workbookConsumer ワークブックにデータを設定するコンシューマ
+   * @throws IOException I/Oエラーが発生した場合
    */
   public static void writeExcel(String filePath, Consumer<Workbook> workbookConsumer)
       throws IOException {
@@ -138,12 +161,12 @@ public final class ExcelUtils {
   }
 
   /**
-   * Creates a temporary Excel file.
+   * 一時的なExcelファイルを作成します。
    *
-   * @param prefix the prefix for the temporary file
-   * @param workbookConsumer the consumer to populate the workbook
-   * @return the path to the created temporary file
-   * @throws IOException if an I/O error occurs
+   * @param prefix 一時ファイルのプレフィックス
+   * @param workbookConsumer ワークブックにデータを設定するコンシューマ
+   * @return 作成された一時ファイルへのパス
+   * @throws IOException I/Oエラーが発生した場合
    */
   public static Path createTempExcelFile(String prefix, Consumer<Workbook> workbookConsumer)
       throws IOException {
@@ -160,10 +183,10 @@ public final class ExcelUtils {
   }
 
   /**
-   * Gets the string value from a cell, handling different cell types.
+   * セルから文字列値を取得し、異なるセルタイプを処理します。
    *
-   * @param cell the cell to get the value from
-   * @return the string value of the cell, or empty string if the cell is null
+   * @param cell 値を取得するセル
+   * @return セルの文字列値、セルがnullの場合は空文字列
    */
   public static String getCellStringValue(Cell cell) {
     if (cell == null) {
@@ -195,11 +218,11 @@ public final class ExcelUtils {
   }
 
   /**
-   * Extracts all data from an Excel file as a list of string arrays.
+   * Excelファイルからすべてのデータを文字列配列のリストとして抽出します。
    *
-   * @param filePath the path to the Excel file
-   * @return a list of string arrays, each representing a row of data
-   * @throws IOException if an I/O error occurs
+   * @param filePath Excelファイルへのパス
+   * @return 文字列配列のリスト、各配列はデータの1行を表す
+   * @throws IOException I/Oエラーが発生した場合
    */
   public static List<String[]> extractDataFromExcel(String filePath) throws IOException {
     List<String[]> data = new ArrayList<>();

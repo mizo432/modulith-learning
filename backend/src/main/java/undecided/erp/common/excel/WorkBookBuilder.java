@@ -11,8 +11,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 /**
- * Builder class for creating Excel workbooks. This class provides a fluent API for creating and
- * configuring Excel workbooks, sheets, rows, and cells.
+ * WorkBookBuilder は、Excel ワークブックの構築および管理を簡易化するビルダークラスです。 シート、行、セルの構成やスタイルの設定をチェーンメソッドの形式で提供します。
+ * 使用者は POI ライブラリによる手作業を減らし、直感的に Excel ファイルを作成・操作できます。
  */
 public final class WorkBookBuilder {
 
@@ -26,31 +26,31 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a new WorkBookBuilder with a new workbook.
+   * 新しいワークブックで新しいWorkBookBuilderを作成します。
    *
-   * @return a new WorkBookBuilder instance
+   * @return 新しいWorkBookBuilderインスタンス
    */
   public static WorkBookBuilder create() {
     return new WorkBookBuilder(ExcelUtils.createWorkbook());
   }
 
   /**
-   * Creates a new WorkBookBuilder with the provided workbook.
+   * 提供されたワークブックで新しいWorkBookBuilderを作成します。
    *
-   * @param workbook the workbook to use
-   * @return a new WorkBookBuilder instance
+   * @param workbook 使用するワークブック
+   * @return 新しいWorkBookBuilderインスタンス
    */
   public static WorkBookBuilder withWorkbook(Workbook workbook) {
     return new WorkBookBuilder(workbook);
   }
 
   /**
-   * Creates a new WorkBookBuilder with an existing Excel file as a template.
+   * 既存のExcelファイルをテンプレートとして新しいWorkBookBuilderを作成します。
    *
-   * @param filePath the path to the Excel file to use as a template
-   * @return a new WorkBookBuilder instance
-   * @throws IOException if an I/O error occurs
-   * @throws IllegalArgumentException if the file does not have a valid XLSX extension
+   * @param filePath テンプレートとして使用するExcelファイルへのパス
+   * @return 新しいWorkBookBuilderインスタンス
+   * @throws IOException I/Oエラーが発生した場合
+   * @throws IllegalArgumentException ファイルが有効なXLSX拡張子を持っていない場合
    */
   public static WorkBookBuilder fromTemplate(String filePath) throws IOException {
     Workbook workbook = ExcelUtils.loadWorkbook(filePath);
@@ -58,10 +58,39 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a new sheet in the workbook and makes it the current sheet.
+   * JARファイル内のリソースからExcelテンプレートを使用して新しいWorkBookBuilderを作成します。
    *
-   * @param sheetName the name of the sheet
-   * @return this builder instance for method chaining
+   * @param resourcePath JAR内のリソースへのパス
+   * @return 新しいWorkBookBuilderインスタンス
+   * @throws IOException I/Oエラーが発生した場合
+   * @throws IllegalArgumentException リソースが有効なXLSX拡張子を持っていないか、見つからない場合
+   */
+  public static WorkBookBuilder fromResource(String resourcePath) throws IOException {
+    Workbook workbook = ExcelUtils.loadWorkbookFromResource(resourcePath,
+        WorkBookBuilder.class.getClassLoader());
+    return new WorkBookBuilder(workbook);
+  }
+
+  /**
+   * JARファイル内のリソースからExcelテンプレートを使用して新しいWorkBookBuilderを作成します。
+   *
+   * @param resourcePath JAR内のリソースへのパス
+   * @param classLoader リソースの読み込みに使用するClassLoader
+   * @return 新しいWorkBookBuilderインスタンス
+   * @throws IOException I/Oエラーが発生した場合
+   * @throws IllegalArgumentException リソースが有効なXLSX拡張子を持っていないか、見つからない場合
+   */
+  public static WorkBookBuilder fromResource(String resourcePath, ClassLoader classLoader)
+      throws IOException {
+    Workbook workbook = ExcelUtils.loadWorkbookFromResource(resourcePath, classLoader);
+    return new WorkBookBuilder(workbook);
+  }
+
+  /**
+   * ワークブックに新しいシートを作成し、それを現在のシートとして設定します。
+   *
+   * @param sheetName シートの名前
+   * @return メソッドチェーン用のこのビルダーインスタンス
    */
   public WorkBookBuilder sheet(String sheetName) {
     currentSheet = workbook.createSheet(sheetName);
@@ -70,10 +99,10 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Sets an existing sheet as the current sheet.
+   * 既存のシートを現在のシートとして設定します。
    *
-   * @param sheetIndex the index of the sheet
-   * @return this builder instance for method chaining
+   * @param sheetIndex シートのインデックス
+   * @return メソッドチェーン用のこのビルダーインスタンス
    */
   public WorkBookBuilder sheet(int sheetIndex) {
     currentSheet = workbook.getSheetAt(sheetIndex);
@@ -82,11 +111,11 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a new row in the current sheet and makes it the current row.
+   * 現在のシートに新しい行を作成し、それを現在の行として設定します。
    *
-   * @param rowIndex the index of the row
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no sheet has been created or selected
+   * @param rowIndex 行のインデックス
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException シートが作成または選択されていない場合
    */
   public WorkBookBuilder row(int rowIndex) {
     if (currentSheet == null) {
@@ -97,12 +126,12 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a cell in the current row with a string value.
+   * 現在の行に文字列値を持つセルを作成します。
    *
-   * @param columnIndex the index of the cell
-   * @param value the string value to set
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no row has been created or selected
+   * @param columnIndex セルのインデックス
+   * @param value 設定する文字列値
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException 行が作成または選択されていない場合
    */
   public WorkBookBuilder cell(int columnIndex, String value) {
     if (currentRow == null) {
@@ -114,12 +143,12 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a cell in the current row with a numeric value.
+   * 現在の行に数値を持つセルを作成します。
    *
-   * @param columnIndex the index of the cell
-   * @param value the numeric value to set
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no row has been created or selected
+   * @param columnIndex セルのインデックス
+   * @param value 設定する数値
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException 行が作成または選択されていない場合
    */
   public WorkBookBuilder cell(int columnIndex, double value) {
     if (currentRow == null) {
@@ -131,12 +160,12 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a cell in the current row with a boolean value.
+   * 現在の行に真偽値を持つセルを作成します。
    *
-   * @param columnIndex the index of the cell
-   * @param value the boolean value to set
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no row has been created or selected
+   * @param columnIndex セルのインデックス
+   * @param value 設定する真偽値
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException 行が作成または選択されていない場合
    */
   public WorkBookBuilder cell(int columnIndex, boolean value) {
     if (currentRow == null) {
@@ -148,12 +177,12 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a cell in the current row with a formula.
+   * 現在の行に数式を持つセルを作成します。
    *
-   * @param columnIndex the index of the cell
-   * @param formula the formula to set
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no row has been created or selected
+   * @param columnIndex セルのインデックス
+   * @param formula 設定する数式
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException 行が作成または選択されていない場合
    */
   public WorkBookBuilder cellFormula(int columnIndex, String formula) {
     if (currentRow == null) {
@@ -165,14 +194,13 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a cell in the current row with a string value and applies a named style.
+   * 現在の行に文字列値を持つセルを作成し、名前付きスタイルを適用します。
    *
-   * @param columnIndex the index of the cell
-   * @param value the string value to set
-   * @param styleName the name of the style to apply
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no row has been created or selected or if the style does not
-   * exist
+   * @param columnIndex セルのインデックス
+   * @param value 設定する文字列値
+   * @param styleName 適用するスタイルの名前
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException 行が作成または選択されていない場合、またはスタイルが存在しない場合
    */
   public WorkBookBuilder styledCell(int columnIndex, String value, String styleName) {
     if (currentRow == null) {
@@ -188,11 +216,11 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a named cell style that can be reused.
+   * 再利用可能な名前付きセルスタイルを作成します。
    *
-   * @param styleName the name of the style
-   * @param styleConfigurer a consumer that configures the style
-   * @return this builder instance for method chaining
+   * @param styleName スタイルの名前
+   * @param styleConfigurer スタイルを設定するコンシューマ
+   * @return メソッドチェーン用のこのビルダーインスタンス
    */
   public WorkBookBuilder createStyle(String styleName,
       java.util.function.Consumer<CellStyle> styleConfigurer) {
@@ -203,10 +231,10 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Creates a bold font style.
+   * 太字フォントスタイルを作成します。
    *
-   * @param styleName the name of the style
-   * @return this builder instance for method chaining
+   * @param styleName スタイルの名前
+   * @return メソッドチェーン用のこのビルダーインスタンス
    */
   public WorkBookBuilder createBoldStyle(String styleName) {
     CellStyle style = workbook.createCellStyle();
@@ -218,12 +246,12 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Sets the column width for a specific column in the current sheet.
+   * 現在のシートの特定の列の幅を設定します。
    *
-   * @param columnIndex the index of the column
-   * @param width the width in characters
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no sheet has been created or selected
+   * @param columnIndex 列のインデックス
+   * @param width 文字単位の幅
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException シートが作成または選択されていない場合
    */
   public WorkBookBuilder columnWidth(int columnIndex, int width) {
     if (currentSheet == null) {
@@ -234,11 +262,11 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Auto-sizes a column in the current sheet.
+   * 現在のシートの列を自動サイズ調整します。
    *
-   * @param columnIndex the index of the column
-   * @return this builder instance for method chaining
-   * @throws IllegalStateException if no sheet has been created or selected
+   * @param columnIndex 列のインデックス
+   * @return メソッドチェーン用のこのビルダーインスタンス
+   * @throws IllegalStateException シートが作成または選択されていない場合
    */
   public WorkBookBuilder autoSizeColumn(int columnIndex) {
     if (currentSheet == null) {
@@ -249,9 +277,9 @@ public final class WorkBookBuilder {
   }
 
   /**
-   * Builds and returns the configured workbook.
+   * 設定されたワークブックを構築して返します。
    *
-   * @return the configured workbook
+   * @return 設定されたワークブック
    */
   public Workbook build() {
     return workbook;
