@@ -1,5 +1,6 @@
 package undecided.authorization.presentation.controller;
 
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +52,7 @@ public class UserController {
   }
 
   /**
-   * ユーザーを作成します。
-   * 管理者権限を持つユーザーのみがこの操作を実行できます。
+   * ユーザーを作成します。 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param user 作成するユーザー
    * @return 作成されたユーザー
@@ -64,8 +64,7 @@ public class UserController {
   }
 
   /**
-   * ユーザーを更新します。
-   * 管理者権限を持つユーザーのみがこの操作を実行できます。
+   * ユーザーを更新します。 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param id ユーザーID
    * @param user 更新するユーザー
@@ -83,8 +82,7 @@ public class UserController {
   }
 
   /**
-   * ユーザーを削除します。
-   * 管理者権限を持つユーザーのみがこの操作を実行できます。
+   * ユーザーを削除します。 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param id 削除するユーザーのID
    * @return レスポンス
@@ -101,8 +99,7 @@ public class UserController {
   }
 
   /**
-   * ユーザーにロールを追加します。
-   * 管理者権限を持つユーザーのみがこの操作を実行できます。
+   * ユーザーにロールを追加します。 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param userId ユーザーID
    * @param roleName ロール名
@@ -121,8 +118,7 @@ public class UserController {
   }
 
   /**
-   * ユーザーからロールを削除します。
-   * 管理者権限を持つユーザーのみがこの操作を実行できます。
+   * ユーザーからロールを削除します。 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param userId ユーザーID
    * @param roleName ロール名
@@ -137,6 +133,31 @@ public class UserController {
       return ResponseEntity.ok(userService.removeRoleFromUser(userId, roleName));
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
+   * ユーザーが自身の情報を更新します。 更新可能なフィールドは、氏名、イニシャル、メールアドレスです。
+   *
+   * @param request 更新リクエスト
+   * @param principal 認証済みユーザー
+   * @return 更新されたユーザー
+   */
+  @PutMapping("/profile")
+  public ResponseEntity<?> updateProfile(
+      @RequestBody UserUpdateRequest request,
+      Principal principal) {
+    try {
+      User updatedUser = userService.updateUserProfile(
+          principal.getName(),
+          request.getFirstName(),
+          request.getLastName(),
+          request.getInitials(),
+          request.getEmail()
+      );
+      return ResponseEntity.ok(updatedUser);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
 }

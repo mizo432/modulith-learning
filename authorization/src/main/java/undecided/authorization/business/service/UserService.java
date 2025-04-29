@@ -82,4 +82,17 @@ public interface UserService {
    * @return 更新されたユーザー
    */
   User removeRoleFromUser(Long userId, String roleName);
+
+  /**
+   * ユーザーが自身の情報を更新します。 更新可能なフィールドは、氏名、イニシャル、メールアドレスです。
+   *
+   * @param username 更新するユーザーのユーザー名
+   * @param firstName 名前
+   * @param lastName 姓
+   * @param initials イニシャル
+   * @param email メールアドレス
+   * @return 更新されたユーザー
+   */
+  User updateUserProfile(String username, String firstName, String lastName, String initials,
+      String email);
 }

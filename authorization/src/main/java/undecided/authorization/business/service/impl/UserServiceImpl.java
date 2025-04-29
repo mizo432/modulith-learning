@@ -97,4 +97,38 @@ public class UserServiceImpl implements UserService {
     user.removeRole(role);
     return userRepository.save(user);
   }
+
+  @Override
+  public User updateUserProfile(String username, String firstName, String lastName, String initials,
+      String email) {
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(
+            () -> new IllegalArgumentException("User not found with username: " + username));
+
+    // メールアドレスが変更される場合、重複チェック
+    if (email != null && !email.equals(user.getEmail())) {
+      userRepository.findByEmail(email).ifPresent(existingUser -> {
+        if (!existingUser.getId().equals(user.getId())) {
+          throw new IllegalArgumentException("Email already in use: " + email);
+        }
+      });
+      user.setEmail(email);
+    }
+
+    // 各フィールドを更新（nullでない場合のみ）
+    if (firstName != null) {
+      user.setFirstName(firstName);
+    }
+    if (lastName != null) {
+      user.setLastName(lastName);
+    }
+    if (initials != null) {
+      user.setInitials(initials);
+    }
+
+    // 更新日時を設定
+    user.setUpdatedAt(LocalDateTime.now());
+
+    return userRepository.save(user);
+  }
 }
