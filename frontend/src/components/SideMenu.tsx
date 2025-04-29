@@ -13,49 +13,151 @@ import {
 import {
   Assignment as ProjectIcon,
   ChevronLeft as ChevronLeftIcon,
-  Dashboard as DashboardIcon,
-  Group as TeamIcon
+  Group as TeamIcon,
+  People as PeopleIcon,
+  Settings as SettingsIcon
 } from '@mui/icons-material';
 import {Link as RouterLink} from 'react-router-dom';
 import {useAuth} from '../contexts/AuthContext';
+import {TabType} from './TabNavigation';
 
 interface SideMenuProps {
   open: boolean;
   onClose: () => void;
+  selectedTab: TabType;
 }
 
-const SideMenu: React.FC<SideMenuProps> = ({open, onClose}) => {
-  const {isAuthenticated} = useAuth();
+const SideMenu: React.FC<SideMenuProps> = ({open, onClose, selectedTab}) => {
+  const {isAuthenticated, isAdmin} = useAuth();
 
-  // Only show menu items if user is authenticated
-  const menuItems = isAuthenticated ? (
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton component={RouterLink} to="/" onClick={onClose}>
-            <ListItemIcon>
-              <DashboardIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Dashboard"/>
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={RouterLink} to="/projects" onClick={onClose}>
-            <ListItemIcon>
-              <ProjectIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Projects"/>
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={RouterLink} to="/teams" onClick={onClose}>
-            <ListItemIcon>
-              <TeamIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Teams"/>
-          </ListItemButton>
-        </ListItem>
-      </List>
-  ) : null;
+  // Render different menu items based on the selected tab
+  const renderMenuItems = () => {
+    if (!isAuthenticated) return null;
+
+    // Only admin users can access the Users tab
+    if (selectedTab === 'users' && !isAdmin) {
+      return (
+          <List>
+            <ListItem>
+              <ListItemText primary="You don't have permission to access this page."/>
+            </ListItem>
+          </List>
+      );
+    }
+
+    switch (selectedTab) {
+
+      case 'users':
+        return (
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/users/all" onClick={onClose}>
+                  <ListItemIcon>
+                    <PeopleIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="All Users"/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/users/add" onClick={onClose}>
+                  <ListItemIcon>
+                    <PeopleIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Add User"/>
+                </ListItemButton>
+              </ListItem>
+            </List>
+        );
+
+      case 'projects':
+        return (
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/projects/all" onClick={onClose}>
+                  <ListItemIcon>
+                    <ProjectIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="All Projects"/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/projects/active" onClick={onClose}>
+                  <ListItemIcon>
+                    <ProjectIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Active Projects"/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/projects/archived" onClick={onClose}>
+                  <ListItemIcon>
+                    <ProjectIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Archived Projects"/>
+                </ListItemButton>
+              </ListItem>
+            </List>
+        );
+
+      case 'teams':
+        return (
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/teams/all" onClick={onClose}>
+                  <ListItemIcon>
+                    <TeamIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="All Teams"/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/teams/members" onClick={onClose}>
+                  <ListItemIcon>
+                    <PeopleIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Team Members"/>
+                </ListItemButton>
+              </ListItem>
+            </List>
+        );
+
+      case 'settings':
+        return (
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/settings/profile" onClick={onClose}>
+                  <ListItemIcon>
+                    <SettingsIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Profile Settings"/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/settings/preferences" onClick={onClose}>
+                  <ListItemIcon>
+                    <SettingsIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Preferences"/>
+                </ListItemButton>
+              </ListItem>
+            </List>
+        );
+
+      default:
+        return (
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/projects/all" onClick={onClose}>
+                  <ListItemIcon>
+                    <ProjectIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="All Projects"/>
+                </ListItemButton>
+              </ListItem>
+            </List>
+        );
+    }
+  };
 
   return (
       <Drawer
@@ -75,7 +177,7 @@ const SideMenu: React.FC<SideMenuProps> = ({open, onClose}) => {
           </IconButton>
         </Box>
         <Divider/>
-        {menuItems}
+        {renderMenuItems()}
       </Drawer>
   );
 };

@@ -1,13 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {AppBar, Box, Button, IconButton, Toolbar, Typography} from '@mui/material';
 import {Link as RouterLink} from 'react-router-dom';
 import {useAuth} from '../contexts/AuthContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import SideMenu from './SideMenu';
+import TabNavigation, {TabType} from './TabNavigation';
 
 const Header: React.FC = () => {
-  const {isAuthenticated, username, logout} = useAuth();
-  const [menuOpen, setMenuOpen] = React.useState(false);
+  const {isAuthenticated, username, isAdmin, logout} = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<TabType>('projects');
 
   const handleMenuOpen = () => {
     setMenuOpen(true);
@@ -15,6 +17,14 @@ const Header: React.FC = () => {
 
   const handleMenuClose = () => {
     setMenuOpen(false);
+  };
+
+  const handleTabChange = (tab: TabType) => {
+    // Only allow admin users to select the Users tab
+    if (tab === 'users' && !isAdmin) {
+      return;
+    }
+    setSelectedTab(tab);
   };
 
   return (
@@ -57,9 +67,21 @@ const Header: React.FC = () => {
           </Toolbar>
         </AppBar>
 
+        {/* Tab Navigation - only show when authenticated */}
+        {isAuthenticated && (
+            <TabNavigation
+                selectedTab={selectedTab}
+                onTabChange={handleTabChange}
+            />
+        )}
+
         {/* Side Menu */}
         {isAuthenticated && (
-            <SideMenu open={menuOpen} onClose={handleMenuClose}/>
+            <SideMenu
+                open={menuOpen}
+                onClose={handleMenuClose}
+                selectedTab={selectedTab}
+            />
         )}
       </>
   );
