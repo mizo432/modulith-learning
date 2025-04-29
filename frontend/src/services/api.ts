@@ -31,19 +31,20 @@ api.interceptors.response.use(
     // Handle common errors (401, 403, etc.)
     if (error.response) {
       const { status } = error.response;
-      
+
       if (status === 401) {
         // Unauthorized - redirect to login
         localStorage.removeItem('token');
-        // window.location.href = '/login';
+        localStorage.removeItem('user');
+        window.location.href = '/login';
       }
-      
+
       if (status === 403) {
         // Forbidden - handle access denied
         console.error('Access denied');
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
