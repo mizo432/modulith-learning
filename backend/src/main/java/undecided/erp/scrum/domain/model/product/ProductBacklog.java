@@ -19,10 +19,10 @@ import undecided.erp.common.entity.SnowflakeId;
  * <p>
  * このクラスは以下の特性を持ちます:
  * <ul>
- *   <li>`backlogId`: バックログ固有の識別子を表す。SnowflakeIdを使用。</li>
- *   <li>`product`: 関連するプロダクト。</li>
- *   <li>`name`: バックログの名前。</li>
- *   <li>`description`: バックログの詳細説明。</li>
+ *   <li>`backlogId`: プロダクトバックログ固有の識別子を表す。SnowflakeIdを使用。</li>
+ *   <li>`product`: このバックログが属するプロダクト。</li>
+ *   <li>`name`: プロダクトバックログの名前。</li>
+ *   <li>`description`: プロダクトバックログの詳細説明。</li>
  * </ul>
  */
 @AllArgsConstructor
@@ -32,9 +32,10 @@ import undecided.erp.common.entity.SnowflakeId;
 public class ProductBacklog extends PptEntity<ProductBacklog> implements Serializable {
 
   /**
-   * ユニークなバックログ識別子を表す変数。
+   * ユニークなプロダクトバックログ識別子を表す変数。
    * <p>
-   * アプリケーションにおける各プロダクトバックログを一意に識別するために使用されます。 データベース上の "backlog_id" カラムに対応し、null 値は許可されていません。
+   * アプリケーションにおける各プロダクトバックログを一意に識別するために使用されます。
+   * データベース上の "backlog_id" カラムに対応し、null 値は許可されていません。
    */
   @Id
   @Column(name = "backlog_id", columnDefinition = "BIGINT", nullable = false)
@@ -42,28 +43,31 @@ public class ProductBacklog extends PptEntity<ProductBacklog> implements Seriali
   private SnowflakeId backlogId;
 
   /**
-   * このバックログが関連するプロダクトを表す変数。
+   * このバックログが属するプロダクトを表す変数。
    * <p>
-   * プロダクトバックログが属するプロダクトへの参照です。 データベース上の "product_id" カラムに対応し、null 値は許可されていません。
+   * プロダクトとプロダクトバックログの関連付けを表します。
+   * データベース上の "product_id" カラムに対応し、null 値は許可されていません。
    */
-  @Getter
   @ManyToOne
   @JoinColumn(name = "product_id", nullable = false)
+  @Getter
   private Product product;
 
   /**
-   * バックログの名前を表す変数。
+   * プロダクトバックログの名前を表す変数。
    * <p>
-   * プロダクトバックログの識別に使用される名前です。 データベース上の "name" カラムに対応し、null 値は許可されていません。
+   * プロダクトバックログの識別に使用される名前です。
+   * データベース上の "name" カラムに対応し、null 値は許可されていません。
    */
   @Getter
   @Column(name = "name", nullable = false, length = 100)
   private String name;
 
   /**
-   * バックログの詳細説明を表す変数。
+   * プロダクトバックログの詳細説明を表す変数。
    * <p>
-   * プロダクトバックログの詳細な説明や目的を提供します。 データベース上の "description" カラムに対応します。
+   * プロダクトバックログの詳細な説明や背景情報を提供します。
+   * データベース上の "description" カラムに対応します。
    */
   @Getter
   @Column(name = "description", length = 2000)
@@ -80,7 +84,7 @@ public class ProductBacklog extends PptEntity<ProductBacklog> implements Seriali
   public String toString() {
     return "ProductBacklog{" +
         "backlogId=" + backlogId +
-        ", product=" + product +
+        ", product=" + (product != null ? product.toString() : "null") +
         ", name='" + name + '\'' +
         ", description='" + description + '\'' +
         '}';

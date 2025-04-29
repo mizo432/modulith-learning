@@ -13,19 +13,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import undecided.erp.common.entity.PptEntity;
 import undecided.erp.common.entity.SnowflakeId;
-import undecided.erp.scrum.domain.model.product.ProductBacklog;
 
 /**
  * SprintBacklogクラスは、エンティティとしてスクラム開発におけるスプリントバックログを表現します。
  * <p>
  * このクラスは以下の特性を持ちます:
  * <ul>
- *   <li>`sprintBacklogId`: スプリントバックログ固有の識別子を表す。SnowflakeIdを使用。</li>
- *   <li>`sprint`: 関連するスプリント。</li>
- *   <li>`productBacklog`: 関連するプロダクトバックログ。</li>
+ *   <li>`backlogId`: スプリントバックログ固有の識別子を表す。SnowflakeIdを使用。</li>
+ *   <li>`sprint`: このバックログが属するスプリント。</li>
+ *   <li>`name`: スプリントバックログの名前。</li>
+ *   <li>`description`: スプリントバックログの詳細説明。</li>
  *   <li>`estimatedEffort`: 見積もり工数。</li>
- *   <li>`remainingEffort`: 残工数。</li>
- *   <li>`status`: ステータス（未着手、進行中、完了など）。</li>
+ *   <li>`remainingEffort`: 残り工数。</li>
  * </ul>
  */
 @AllArgsConstructor
@@ -37,60 +36,64 @@ public class SprintBacklog extends PptEntity<SprintBacklog> implements Serializa
   /**
    * ユニークなスプリントバックログ識別子を表す変数。
    * <p>
-   * アプリケーションにおける各スプリントバックログを一意に識別するために使用されます。 データベース上の "sprint_backlog_id" カラムに対応し、null
-   * 値は許可されていません。
+   * アプリケーションにおける各スプリントバックログを一意に識別するために使用されます。
+   * データベース上の "backlog_id" カラムに対応し、null 値は許可されていません。
    */
   @Id
-  @Column(name = "sprint_backlog_id", columnDefinition = "BIGINT", nullable = false)
+  @Column(name = "backlog_id", columnDefinition = "BIGINT", nullable = false)
   @Convert(converter = SnowflakeId.SnowflakeIdConverter.class)
-  private SnowflakeId sprintBacklogId;
+  private SnowflakeId backlogId;
 
   /**
-   * このスプリントバックログが関連するスプリントを表す変数。
+   * このバックログが属するスプリントを表す変数。
    * <p>
-   * スプリントバックログが属するスプリントへの参照です。 データベース上の "sprint_id" カラムに対応し、null 値は許可されていません。
+   * スプリントとスプリントバックログの関連付けを表します。
+   * データベース上の "sprint_id" カラムに対応し、null 値は許可されていません。
    */
-  @Getter
   @ManyToOne
   @JoinColumn(name = "sprint_id", nullable = false)
+  @Getter
   private Sprint sprint;
 
   /**
-   * このスプリントバックログが関連するプロダクトバックログを表す変数。
+   * スプリントバックログの名前を表す変数。
    * <p>
-   * スプリントバックログが対応するプロダクトバックログへの参照です。 データベース上の "product_backlog_id" カラムに対応し、null 値は許可されていません。
+   * スプリントバックログの識別に使用される名前です。
+   * データベース上の "name" カラムに対応し、null 値は許可されていません。
    */
   @Getter
-  @ManyToOne
-  @JoinColumn(name = "product_backlog_id", nullable = false)
-  private ProductBacklog productBacklog;
+  @Column(name = "name", nullable = false, length = 100)
+  private String name;
+
+  /**
+   * スプリントバックログの詳細説明を表す変数。
+   * <p>
+   * スプリントバックログの詳細な説明や背景情報を提供します。
+   * データベース上の "description" カラムに対応します。
+   */
+  @Getter
+  @Column(name = "description", length = 2000)
+  private String description;
 
   /**
    * 見積もり工数を表す変数。
    * <p>
-   * スプリントバックログアイテムの完了に必要な見積もり工数です。 データベース上の "estimated_effort" カラムに対応します。
+   * スプリントバックログの完了に必要な見積もり工数を示します。
+   * データベース上の "estimated_effort" カラムに対応します。
    */
   @Getter
   @Column(name = "estimated_effort")
   private Integer estimatedEffort;
 
   /**
-   * 残工数を表す変数。
+   * 残り工数を表す変数。
    * <p>
-   * スプリントバックログアイテムの完了までに残っている工数です。 データベース上の "remaining_effort" カラムに対応します。
+   * スプリントバックログの完了までの残り工数を示します。
+   * データベース上の "remaining_effort" カラムに対応します。
    */
   @Getter
   @Column(name = "remaining_effort")
   private Integer remainingEffort;
-
-  /**
-   * ステータスを表す変数。
-   * <p>
-   * スプリントバックログアイテムの現在の状態（未着手、進行中、完了など）を示します。 データベース上の "status" カラムに対応し、null 値は許可されていません。
-   */
-  @Getter
-  @Column(name = "status", nullable = false, length = 20)
-  private String status;
 
   /**
    * このメソッドはSprintBacklogクラスの文字列表現を生成します。
@@ -102,12 +105,12 @@ public class SprintBacklog extends PptEntity<SprintBacklog> implements Serializa
   @Override
   public String toString() {
     return "SprintBacklog{" +
-        "sprintBacklogId=" + sprintBacklogId +
-        ", sprint=" + sprint +
-        ", productBacklog=" + productBacklog +
+        "backlogId=" + backlogId +
+        ", sprint=" + (sprint != null ? sprint.toString() : "null") +
+        ", name='" + name + '\'' +
+        ", description='" + description + '\'' +
         ", estimatedEffort=" + estimatedEffort +
         ", remainingEffort=" + remainingEffort +
-        ", status='" + status + '\'' +
         '}';
   }
 }

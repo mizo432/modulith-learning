@@ -21,7 +21,7 @@ import undecided.erp.common.entity.SnowflakeId;
  * このクラスは以下の特性を持ちます:
  * <ul>
  *   <li>`roadmapId`: ロードマップ固有の識別子を表す。SnowflakeIdを使用。</li>
- *   <li>`product`: 関連するプロダクト。</li>
+ *   <li>`product`: このロードマップが属するプロダクト。</li>
  *   <li>`name`: ロードマップの名前。</li>
  *   <li>`description`: ロードマップの詳細説明。</li>
  *   <li>`startDate`: ロードマップの開始日。</li>
@@ -37,7 +37,8 @@ public class Roadmap extends PptEntity<Roadmap> implements Serializable {
   /**
    * ユニークなロードマップ識別子を表す変数。
    * <p>
-   * アプリケーションにおける各ロードマップを一意に識別するために使用されます。 データベース上の "roadmap_id" カラムに対応し、null 値は許可されていません。
+   * アプリケーションにおける各ロードマップを一意に識別するために使用されます。
+   * データベース上の "roadmap_id" カラムに対応し、null 値は許可されていません。
    */
   @Id
   @Column(name = "roadmap_id", columnDefinition = "BIGINT", nullable = false)
@@ -45,19 +46,21 @@ public class Roadmap extends PptEntity<Roadmap> implements Serializable {
   private SnowflakeId roadmapId;
 
   /**
-   * このロードマップが関連するプロダクトを表す変数。
+   * このロードマップが属するプロダクトを表す変数。
    * <p>
-   * ロードマップが属するプロダクトへの参照です。 データベース上の "product_id" カラムに対応し、null 値は許可されていません。
+   * プロダクトとロードマップの関連付けを表します。
+   * データベース上の "product_id" カラムに対応し、null 値は許可されていません。
    */
-  @Getter
   @ManyToOne
   @JoinColumn(name = "product_id", nullable = false)
+  @Getter
   private Product product;
 
   /**
    * ロードマップの名前を表す変数。
    * <p>
-   * ロードマップの識別に使用される名前です。 データベース上の "name" カラムに対応し、null 値は許可されていません。
+   * ロードマップの識別に使用される名前です。
+   * データベース上の "name" カラムに対応し、null 値は許可されていません。
    */
   @Getter
   @Column(name = "name", nullable = false, length = 100)
@@ -66,7 +69,8 @@ public class Roadmap extends PptEntity<Roadmap> implements Serializable {
   /**
    * ロードマップの詳細説明を表す変数。
    * <p>
-   * ロードマップの詳細な説明や目的を提供します。 データベース上の "description" カラムに対応します。
+   * ロードマップの詳細な説明や背景情報を提供します。
+   * データベース上の "description" カラムに対応します。
    */
   @Getter
   @Column(name = "description", length = 2000)
@@ -75,7 +79,8 @@ public class Roadmap extends PptEntity<Roadmap> implements Serializable {
   /**
    * ロードマップの開始日を表す変数。
    * <p>
-   * ロードマップの計画期間の開始日です。 データベース上の "start_date" カラムに対応します。
+   * ロードマップの計画開始日を示します。
+   * データベース上の "start_date" カラムに対応します。
    */
   @Getter
   @Column(name = "start_date")
@@ -84,7 +89,8 @@ public class Roadmap extends PptEntity<Roadmap> implements Serializable {
   /**
    * ロードマップの終了日を表す変数。
    * <p>
-   * ロードマップの計画期間の終了日です。 データベース上の "end_date" カラムに対応します。
+   * ロードマップの計画終了日を示します。
+   * データベース上の "end_date" カラムに対応します。
    */
   @Getter
   @Column(name = "end_date")
@@ -101,7 +107,7 @@ public class Roadmap extends PptEntity<Roadmap> implements Serializable {
   public String toString() {
     return "Roadmap{" +
         "roadmapId=" + roadmapId +
-        ", product=" + product +
+        ", product=" + (product != null ? product.toString() : "null") +
         ", name='" + name + '\'' +
         ", description='" + description + '\'' +
         ", startDate=" + startDate +
