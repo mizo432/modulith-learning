@@ -1,5 +1,6 @@
 package undecided.authorization.presentation.controller;
 
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -133,6 +134,30 @@ public class AuthController {
     } else {
       return ResponseEntity.ok(
           new AuthResponse(false, username, "User is not authorized for the requested action"));
+    }
+  }
+
+  /**
+   * ユーザーが自身のパスワードを変更します。
+   *
+   * @param request パスワード変更リクエスト
+   * @param principal 認証済みユーザー
+   * @return 認証レスポンス
+   */
+  @PostMapping("/change-password")
+  public ResponseEntity<AuthResponse> changeOwnPassword(
+      @RequestBody PasswordChangeRequest request,
+      Principal principal) {
+    try {
+      User user = authenticationService.changePasswordByUsername(
+          principal.getName(),
+          request.getCurrentPassword(),
+          request.getNewPassword()
+      );
+      return ResponseEntity.ok(
+          new AuthResponse(true, user.getUsername(), "Password changed successfully"));
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage()));
     }
   }
 }

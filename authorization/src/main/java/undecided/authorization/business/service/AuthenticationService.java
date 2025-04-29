@@ -36,4 +36,15 @@ public interface AuthenticationService {
    * @return 更新されたユーザー
    */
   User updateLoginInfo(Long userId);
+
+  /**
+   * ユーザー名を使用してユーザーのパスワードを変更します。
+   *
+   * @param username ユーザー名
+   * @param currentPassword 現在のパスワード
+   * @param newPassword 新しいパスワード
+   * @return パスワードが変更されたユーザー
+   * @throws IllegalArgumentException 現在のパスワードが一致しない場合、またはユーザーが見つからない場合
+   */
+  User changePasswordByUsername(String username, String currentPassword, String newPassword);
 }

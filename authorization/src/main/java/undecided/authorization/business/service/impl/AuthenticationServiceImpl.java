@@ -56,4 +56,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     user.setLastLoginAt(LocalDateTime.now());
     return userRepository.save(user);
   }
+
+  @Override
+  public User changePasswordByUsername(String username, String currentPassword,
+      String newPassword) {
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(
+            () -> new IllegalArgumentException("User not found with username: " + username));
+
+    if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+      throw new IllegalArgumentException("Current password is incorrect");
+    }
+
+    user.setPassword(passwordEncoder.encode(newPassword));
+    user.setUpdatedAt(LocalDateTime.now());
+    return userRepository.save(user);
+  }
 }
