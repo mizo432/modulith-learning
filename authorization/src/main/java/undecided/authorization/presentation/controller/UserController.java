@@ -3,6 +3,7 @@ package undecided.authorization.presentation.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,23 +52,27 @@ public class UserController {
 
   /**
    * ユーザーを作成します。
+   * 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param user 作成するユーザー
    * @return 作成されたユーザー
    */
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> createUser(@RequestBody User user) {
     return ResponseEntity.ok(userService.createUser(user));
   }
 
   /**
    * ユーザーを更新します。
+   * 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param id ユーザーID
    * @param user 更新するユーザー
    * @return 更新されたユーザー
    */
   @PutMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
     return userService.findUserById(id)
         .map(existingUser -> {
@@ -79,11 +84,13 @@ public class UserController {
 
   /**
    * ユーザーを削除します。
+   * 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param id 削除するユーザーのID
    * @return レスポンス
    */
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
     return userService.findUserById(id)
         .map(user -> {
@@ -95,12 +102,14 @@ public class UserController {
 
   /**
    * ユーザーにロールを追加します。
+   * 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param userId ユーザーID
    * @param roleName ロール名
    * @return 更新されたユーザー
    */
   @PostMapping("/{userId}/roles/{roleName}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> addRoleToUser(
       @PathVariable Long userId,
       @PathVariable String roleName) {
@@ -113,12 +122,14 @@ public class UserController {
 
   /**
    * ユーザーからロールを削除します。
+   * 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param userId ユーザーID
    * @param roleName ロール名
    * @return 更新されたユーザー
    */
   @DeleteMapping("/{userId}/roles/{roleName}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> removeRoleFromUser(
       @PathVariable Long userId,
       @PathVariable String roleName) {
