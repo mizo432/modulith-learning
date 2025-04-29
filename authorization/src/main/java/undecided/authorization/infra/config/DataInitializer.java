@@ -13,6 +13,7 @@ import undecided.authorization.domain.model.role.Role;
 import undecided.authorization.domain.model.role.RoleRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
+import undecided.authorization.domain.model.user.UserType;
 
 /**
  * データ初期化
@@ -84,8 +85,9 @@ public class DataInitializer implements CommandLineRunner {
 
   private void createUsers(List<Role> roles) {
     Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
+    Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow();
 
-    // システム初回起動時には管理者ユーザーのみを作成
+    // 管理者ユーザー（社員）を作成
     User adminUser = User.builder()
         .username("admin")
         .password(passwordEncoder.encode("admin"))
@@ -94,9 +96,37 @@ public class DataInitializer implements CommandLineRunner {
         .lastName("User")
         .enabled(true)
         .createdAt(LocalDateTime.now())
+        .userType(UserType.EMPLOYEE)
         .build();
     adminUser.addRole(adminRole);
-
     userRepository.save(adminUser);
+
+    // ビジネスパートナー社員ユーザーを作成
+    User bpEmployeeUser = User.builder()
+        .username("partner_employee")
+        .password(passwordEncoder.encode("password"))
+        .email("partner_employee@example.com")
+        .firstName("Partner")
+        .lastName("Employee")
+        .enabled(true)
+        .createdAt(LocalDateTime.now())
+        .userType(UserType.BUSINESS_PARTNER_EMPLOYEE)
+        .build();
+    bpEmployeeUser.addRole(userRole);
+    userRepository.save(bpEmployeeUser);
+
+    // ビジネスパートナー（個人）ユーザーを作成
+    User individualBpUser = User.builder()
+        .username("individual_partner")
+        .password(passwordEncoder.encode("password"))
+        .email("individual_partner@example.com")
+        .firstName("Individual")
+        .lastName("Partner")
+        .enabled(true)
+        .createdAt(LocalDateTime.now())
+        .userType(UserType.INDIVIDUAL_BUSINESS_PARTNER)
+        .build();
+    individualBpUser.addRole(userRole);
+    userRepository.save(individualBpUser);
   }
 }

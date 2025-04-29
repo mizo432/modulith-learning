@@ -2,6 +2,8 @@ package undecided.authorization.domain.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +29,13 @@ import undecided.authorization.domain.model.role.Role;
  * ユーザーエンティティ
  * <p>
  * システムのユーザーを表すエンティティクラスです。 ユーザー名、パスワード、メールアドレスなどの基本情報と、 ユーザーに割り当てられたロールのコレクションを持ちます。
+ * <p>
+ * ユーザーは以下の3種類のタイプに分類されます：
+ * <ul>
+ *   <li>社員（EMPLOYEE）</li>
+ *   <li>ビジネスパートナー社員（BUSINESS_PARTNER_EMPLOYEE）</li>
+ *   <li>ビジネスパートナー（個人）（INDIVIDUAL_BUSINESS_PARTNER）</li>
+ * </ul>
  */
 @Entity
 @Table(name = "users")
@@ -66,6 +75,17 @@ public class User {
   private LocalDateTime updatedAt;
   @Column(name = "last_login_at")
   private LocalDateTime lastLoginAt;
+
+  /**
+   * ユーザータイプを表す変数。
+   * <p>
+   * ユーザーの種類（社員、ビジネスパートナー社員、ビジネスパートナー（個人））を示します。 データベース上の "user_type" カラムに対応し、デフォルト値は
+   * EMPLOYEE（社員）です。
+   */
+  @Enumerated(EnumType.STRING)
+  @Column(name = "user_type", nullable = false)
+  @Builder.Default
+  private UserType userType = UserType.EMPLOYEE;
 
   /**
    * ユーザーにロールを追加します。
