@@ -84,9 +84,8 @@ public class DataInitializer implements CommandLineRunner {
 
   private void createUsers(List<Role> roles) {
     Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
-    Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow();
 
-    // 管理者ユーザー
+    // システム初回起動時には管理者ユーザーのみを作成
     User adminUser = User.builder()
         .username("admin")
         .password(passwordEncoder.encode("admin"))
@@ -98,18 +97,6 @@ public class DataInitializer implements CommandLineRunner {
         .build();
     adminUser.addRole(adminRole);
 
-    // 一般ユーザー
-    User normalUser = User.builder()
-        .username("user")
-        .password(passwordEncoder.encode("user"))
-        .email("user@example.com")
-        .firstName("Normal")
-        .lastName("User")
-        .enabled(true)
-        .createdAt(LocalDateTime.now())
-        .build();
-    normalUser.addRole(userRole);
-
-    userRepository.saveAll(Arrays.asList(adminUser, normalUser));
+    userRepository.save(adminUser);
   }
 }
