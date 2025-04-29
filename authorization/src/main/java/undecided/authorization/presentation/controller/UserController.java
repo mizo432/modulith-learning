@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.authorization.business.service.UserService;
 import undecided.authorization.domain.model.user.User;
+import undecided.authorization.domain.model.user.UserType;
 
 /**
  * ユーザーコントローラー
@@ -54,31 +55,109 @@ public class UserController {
   /**
    * ユーザーを作成します。 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
-   * @param user 作成するユーザー
+   * @param request 作成するユーザーの情報
    * @return 作成されたユーザー
    */
   @PostMapping
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<User> createUser(@RequestBody User user) {
-    return ResponseEntity.ok(userService.createUser(user));
+  public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
+    try {
+      // リクエストからユーザーエンティティを作成
+      User user = User.builder()
+          .username(request.getUsername())
+          .password(request.getPassword())
+          .email(request.getEmail())
+          .firstName(request.getFirstName())
+          .lastName(request.getLastName())
+          .initials(request.getInitials())
+          .userType(request.getUserType() != null ? request.getUserType() : UserType.EMPLOYEE)
+          .build();
+
+      // ユーザーを作成
+      User createdUser = userService.createUser(user);
+
+      // ロールを追加（指定されている場合）
+      if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+        for (String roleName : request.getRoles()) {
+          userService.addRoleToUser(createdUser.getId(), roleName);
+        }
+        // 最新のユーザー情報を取得
+        createdUser = userService.findUserById(createdUser.getId()).orElse(createdUser);
+      }
+
+      return ResponseEntity.ok(createdUser);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   /**
    * ユーザーを更新します。 管理者権限を持つユーザーのみがこの操作を実行できます。
    *
    * @param id ユーザーID
-   * @param user 更新するユーザー
+   * @param request 更新するユーザーの情報
    * @return 更新されたユーザー
    */
   @PutMapping("/{id}")
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-    return userService.findUserById(id)
-        .map(existingUser -> {
-          user.setId(id);
-          return ResponseEntity.ok(userService.updateUser(user));
-        })
-        .orElse(ResponseEntity.notFound().build());
+  public ResponseEntity<User> updateUser(@PathVariable Long id,
+      @RequestBody UserAdminUpdateRequest request) {
+    try {
+      return userService.findUserById(id)
+          .map(existingUser -> {
+            // 基本情報の更新
+            if (request.getUsername() != null) {
+              existingUser.setUsername(request.getUsername());
+            }
+            if (request.getEmail() != null) {
+              existingUser.setEmail(request.getEmail());
+            }
+            if (request.getFirstName() != null) {
+              existingUser.setFirstName(request.getFirstName());
+            }
+            if (request.getLastName() != null) {
+              existingUser.setLastName(request.getLastName());
+            }
+            if (request.getInitials() != null) {
+              existingUser.setInitials(request.getInitials());
+            }
+            if (request.getUserType() != null) {
+              existingUser.setUserType(request.getUserType());
+            }
+            if (request.getEnabled() != null) {
+              existingUser.setEnabled(request.getEnabled());
+            }
+
+            // パスワードの更新（指定されている場合のみ）
+            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+              // パスワードの更新はUserServiceに任せる（ハッシュ化などが必要なため）
+              // 一時的に設定しておき、UserServiceでハッシュ化される
+              existingUser.setPassword(request.getPassword());
+            }
+
+            // ユーザーを更新
+            User updatedUser = userService.updateUser(existingUser);
+
+            // ロールの更新（指定されている場合）
+            if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+              // 既存のロールをクリア
+              updatedUser.getRoles().clear();
+              userService.updateUser(updatedUser);
+
+              // 新しいロールを追加
+              for (String roleName : request.getRoles()) {
+                userService.addRoleToUser(updatedUser.getId(), roleName);
+              }
+              // 最新のユーザー情報を取得
+              updatedUser = userService.findUserById(updatedUser.getId()).orElse(updatedUser);
+            }
+
+            return ResponseEntity.ok(updatedUser);
+          })
+          .orElse(ResponseEntity.notFound().build());
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   /**

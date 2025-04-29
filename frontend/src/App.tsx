@@ -5,6 +5,9 @@ import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import UserList from './pages/users/UserList';
+import UserCreate from './pages/users/UserCreate';
+import UserEdit from './pages/users/UserEdit';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
@@ -13,6 +16,21 @@ const ProtectedRoute = ({children}: { children: React.ReactNode }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login"/>;
+  }
+
+  return <>{children}</>;
+};
+
+// Admin route component that redirects to dashboard if not admin
+const AdminRoute = ({children}: { children: React.ReactNode }) => {
+  const {isAuthenticated, isAdmin} = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login"/>;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/"/>;
   }
 
   return <>{children}</>;
@@ -48,6 +66,22 @@ const AppContent = () => {
                 <ProtectedRoute>
                   <Dashboard/>
                 </ProtectedRoute>
+              }/>
+              {/* User management routes - admin only */}
+              <Route path="/users/all" element={
+                <AdminRoute>
+                  <UserList/>
+                </AdminRoute>
+              }/>
+              <Route path="/users/add" element={
+                <AdminRoute>
+                  <UserCreate/>
+                </AdminRoute>
+              }/>
+              <Route path="/users/edit/:id" element={
+                <AdminRoute>
+                  <UserEdit/>
+                </AdminRoute>
               }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
