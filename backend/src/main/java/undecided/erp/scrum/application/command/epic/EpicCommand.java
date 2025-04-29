@@ -1,4 +1,4 @@
-package undecided.erp.scrum.application.service;
+package undecided.erp.scrum.application.command.epic;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ import undecided.erp.scrum.domain.model.task.UserStoryRepository;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EpicService {
+public class EpicCommand {
 
   private final EpicRepository epicRepository;
   private final ProductRepository productRepository;

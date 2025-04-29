@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.erp.common.entity.SnowflakeId;
-import undecided.erp.scrum.application.service.EpicService;
+import undecided.erp.scrum.application.command.epic.EpicCommand;
 import undecided.erp.scrum.domain.model.epic.Epic;
 import undecided.erp.scrum.domain.model.sprint.Sprint;
 import undecided.erp.scrum.domain.model.task.UserStory;
@@ -29,7 +29,7 @@ import undecided.erp.scrum.domain.model.task.UserStory;
 @RequiredArgsConstructor
 public class EpicApi {
 
-  private final EpicService epicService;
+  private final EpicCommand epicCommand;
 
   /**
    * すべてのエピックを取得します。
@@ -38,7 +38,7 @@ public class EpicApi {
    */
   @GetMapping
   public ResponseEntity<List<Epic>> getAllEpics() {
-    return ResponseEntity.ok(epicService.getAllEpics());
+    return ResponseEntity.ok(epicCommand.getAllEpics());
   }
 
   /**
@@ -49,7 +49,7 @@ public class EpicApi {
    */
   @GetMapping("/{epicId}")
   public ResponseEntity<Epic> getEpicById(@PathVariable String epicId) {
-    return epicService.getEpicById(SnowflakeId.of(Long.parseLong(epicId)))
+    return epicCommand.getEpicById(SnowflakeId.of(Long.parseLong(epicId)))
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
@@ -62,7 +62,7 @@ public class EpicApi {
    */
   @PostMapping
   public ResponseEntity<Epic> createEpic(@RequestBody Epic epic) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(epicService.createEpic(epic));
+    return ResponseEntity.status(HttpStatus.CREATED).body(epicCommand.createEpic(epic));
   }
 
   /**
@@ -75,7 +75,7 @@ public class EpicApi {
   @PostMapping("/products/{productId}")
   public ResponseEntity<Epic> createEpicForProduct(@PathVariable String productId,
       @RequestBody Epic epic) {
-    return epicService.createEpicForProduct(SnowflakeId.of(Long.parseLong(productId)), epic)
+    return epicCommand.createEpicForProduct(SnowflakeId.of(Long.parseLong(productId)), epic)
         .map(createdEpic -> ResponseEntity.status(HttpStatus.CREATED).body(createdEpic))
         .orElse(ResponseEntity.notFound().build());
   }
@@ -89,7 +89,7 @@ public class EpicApi {
    */
   @PutMapping("/{epicId}")
   public ResponseEntity<Epic> updateEpic(@PathVariable String epicId, @RequestBody Epic epic) {
-    return epicService.updateEpic(SnowflakeId.of(Long.parseLong(epicId)), epic)
+    return epicCommand.updateEpic(SnowflakeId.of(Long.parseLong(epicId)), epic)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
@@ -103,7 +103,7 @@ public class EpicApi {
   @DeleteMapping("/{epicId}")
   public ResponseEntity<Void> deleteEpic(@PathVariable String epicId) {
     try {
-      epicService.deleteEpic(SnowflakeId.of(Long.parseLong(epicId)));
+      epicCommand.deleteEpic(SnowflakeId.of(Long.parseLong(epicId)));
       return ResponseEntity.noContent().build();
     } catch (Exception e) {
       return ResponseEntity.notFound().build();
@@ -119,7 +119,7 @@ public class EpicApi {
   @GetMapping("/products/{productId}")
   public ResponseEntity<List<Epic>> getEpicsByProductId(@PathVariable String productId) {
     return ResponseEntity.ok(
-        epicService.getEpicsByProductId(SnowflakeId.of(Long.parseLong(productId))));
+        epicCommand.getEpicsByProductId(SnowflakeId.of(Long.parseLong(productId))));
   }
 
   /**
@@ -130,7 +130,7 @@ public class EpicApi {
    */
   @GetMapping("/status/{status}")
   public ResponseEntity<List<Epic>> getEpicsByStatus(@PathVariable Epic.Status status) {
-    return ResponseEntity.ok(epicService.getEpicsByStatus(status));
+    return ResponseEntity.ok(epicCommand.getEpicsByStatus(status));
   }
 
   /**
@@ -140,7 +140,7 @@ public class EpicApi {
    */
   @GetMapping("/spanning-multiple-sprints")
   public ResponseEntity<List<Epic>> getEpicsSpanningMultipleSprints() {
-    return ResponseEntity.ok(epicService.getEpicsSpanningMultipleSprints());
+    return ResponseEntity.ok(epicCommand.getEpicsSpanningMultipleSprints());
   }
 
   /**
@@ -150,7 +150,7 @@ public class EpicApi {
    */
   @GetMapping("/with-stories-spanning-multiple-sprints")
   public ResponseEntity<List<Epic>> getEpicsWithUserStoriesSpanningMultipleSprints() {
-    return ResponseEntity.ok(epicService.getEpicsWithUserStoriesSpanningMultipleSprints());
+    return ResponseEntity.ok(epicCommand.getEpicsWithUserStoriesSpanningMultipleSprints());
   }
 
   /**
@@ -162,7 +162,7 @@ public class EpicApi {
   @GetMapping("/{epicId}/sprints")
   public ResponseEntity<List<Sprint>> getSprintsByEpicId(@PathVariable String epicId) {
     return ResponseEntity.ok(
-        epicService.getSprintsByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
+        epicCommand.getSprintsByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
   }
 
   /**
@@ -174,7 +174,7 @@ public class EpicApi {
   @GetMapping("/{epicId}/user-stories")
   public ResponseEntity<List<UserStory>> getUserStoriesByEpicId(@PathVariable String epicId) {
     return ResponseEntity.ok(
-        epicService.getUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
+        epicCommand.getUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
   }
 
   /**
@@ -185,7 +185,7 @@ public class EpicApi {
    */
   @GetMapping("/{epicId}/user-stories/count")
   public ResponseEntity<Map<String, Long>> countUserStoriesByEpicId(@PathVariable String epicId) {
-    long count = epicService.countUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId)));
+    long count = epicCommand.countUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId)));
     return ResponseEntity.ok(Map.of("count", count));
   }
 
@@ -199,7 +199,7 @@ public class EpicApi {
   @PostMapping("/{epicId}/user-stories/{storyId}")
   public ResponseEntity<UserStory> associateUserStoryWithEpic(@PathVariable String epicId,
       @PathVariable String storyId) {
-    return epicService.associateUserStoryWithEpic(
+    return epicCommand.associateUserStoryWithEpic(
             SnowflakeId.of(Long.parseLong(epicId)),
             SnowflakeId.of(Long.parseLong(storyId)))
         .map(ResponseEntity::ok)
@@ -214,7 +214,7 @@ public class EpicApi {
    */
   @DeleteMapping("/user-stories/{storyId}")
   public ResponseEntity<UserStory> disassociateUserStoryFromEpic(@PathVariable String storyId) {
-    return epicService.disassociateUserStoryFromEpic(SnowflakeId.of(Long.parseLong(storyId)))
+    return epicCommand.disassociateUserStoryFromEpic(SnowflakeId.of(Long.parseLong(storyId)))
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
@@ -228,7 +228,7 @@ public class EpicApi {
   @GetMapping("/{epicId}/is-spanning-multiple-sprints")
   public ResponseEntity<Map<String, Boolean>> isEpicSpanningMultipleSprints(
       @PathVariable String epicId) {
-    boolean isSpanning = epicService.isEpicSpanningMultipleSprints(
+    boolean isSpanning = epicCommand.isEpicSpanningMultipleSprints(
         SnowflakeId.of(Long.parseLong(epicId)));
     return ResponseEntity.ok(Map.of("isSpanningMultipleSprints", isSpanning));
   }
