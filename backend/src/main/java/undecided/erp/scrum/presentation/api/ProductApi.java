@@ -56,14 +56,19 @@ public class ProductApi {
 
   /**
    * 新しいプロダクトを作成します。 このエンドポイントはアドミンユーザーのみが実行できます。 注意: 現在の実装ではセキュリティチェックは行われていません。
+   * プロダクトオーナーを指定する必要があります。
    *
    * @param product 作成するプロダクト
-   * @return 作成されたプロダクト
+   * @return 作成されたプロダクト、またはエラーレスポンス
    */
   @PostMapping
-  public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(productCommand.createProduct(product));
+  public ResponseEntity<?> createProduct(@RequestBody Product product) {
+    try {
+      return ResponseEntity.status(HttpStatus.CREATED)
+          .body(productCommand.createProduct(product));
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   /**
@@ -85,21 +90,13 @@ public class ProductApi {
 
   /**
    * 指定されたIDのプロダクトを削除します。 このエンドポイントはアドミンユーザーのみが実行できます。
+   * 注意: 現在の実装ではセキュリティチェックは行われていません。
    *
    * @param productId 削除するプロダクトのID
-   * @param username 認証されたユーザー名
-   * @return 削除成功時は204、存在しない場合は404、権限がない場合は403
+   * @return 削除成功時は204、存在しない場合は404
    */
   @DeleteMapping("/{productId}")
-  public ResponseEntity<Void> deleteProduct(
-      @PathVariable String productId,
-      @RequestParam String username) {
-
-    // アドミンユーザーかどうかをチェック
-    if (!authorizationService.hasRole(username, "ROLE_ADMIN")) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
-
+  public ResponseEntity<Void> deleteProduct(@PathVariable String productId) {
     try {
       productCommand.deleteProduct(SnowflakeId.of(Long.parseLong(productId)));
       return ResponseEntity.noContent().build();

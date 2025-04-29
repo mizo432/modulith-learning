@@ -54,12 +54,16 @@ public class ProductCommand {
   }
 
   /**
-   * 新しいプロダクトを作成します。
+   * 新しいプロダクトを作成します。 プロダクトオーナーが指定されていない場合は例外をスローします。
    *
    * @param product 作成するプロダクト
    * @return 作成されたプロダクト
+   * @throws IllegalArgumentException プロダクトオーナーが指定されていない場合
    */
   public Product createProduct(Product product) {
+    if (product.getProductOwner() == null) {
+      throw new IllegalArgumentException("プロダクトオーナーを指定する必要があります。");
+    }
     return productRepository.save(product);
   }
 
@@ -82,7 +86,9 @@ public class ProductCommand {
               product.getName() != null ? product.getName() : existingProduct.getName(),
               product.getVision() != null ? product.getVision() : existingProduct.getVision(),
               product.getDescription() != null ? product.getDescription()
-                  : existingProduct.getDescription()
+                  : existingProduct.getDescription(),
+              product.getProductOwner() != null ? product.getProductOwner()
+                  : existingProduct.getProductOwner()
           );
 
           return productRepository.save(newProduct);

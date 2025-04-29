@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import undecided.erp.common.entity.PptEntity;
 import undecided.erp.common.entity.SnowflakeId;
+import undecided.erp.scrum.domain.model.team.Member;
 
 /**
  * Productクラスは、エンティティとしてスクラム開発におけるプロダクトを表現します。
@@ -21,6 +24,7 @@ import undecided.erp.common.entity.SnowflakeId;
  *   <li>`name`: プロダクトの名前。</li>
  *   <li>`vision`: プロダクトのビジョン。</li>
  *   <li>`description`: プロダクトの詳細説明。</li>
+ *   <li>`productOwner`: プロダクトオーナー。</li>
  * </ul>
  */
 @AllArgsConstructor
@@ -67,6 +71,16 @@ public class Product extends PptEntity<Product> implements Serializable {
   private String description;
 
   /**
+   * プロダクトオーナーを表す変数。
+   * <p>
+   * このプロダクトのオーナーとなるチームメンバーです。 データベース上の "product_owner_id" カラムに対応し、null 値は許可されていません。
+   */
+  @Getter
+  @ManyToOne
+  @JoinColumn(name = "product_owner_id", nullable = false)
+  private Member productOwner;
+
+  /**
    * このメソッドはProductクラスの文字列表現を生成します。
    * <p>
    * 各フィールドの値を連結して構成された文字列を返します。
@@ -80,6 +94,7 @@ public class Product extends PptEntity<Product> implements Serializable {
         ", name='" + name + '\'' +
         ", vision='" + vision + '\'' +
         ", description='" + description + '\'' +
+        ", productOwner=" + productOwner +
         '}';
   }
 }
