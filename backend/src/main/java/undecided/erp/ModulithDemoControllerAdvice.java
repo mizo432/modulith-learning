@@ -17,7 +17,9 @@ public class ModulithDemoControllerAdvice {
    * 指定されたリクエストのデータバインダーを初期化します。
    * <p>
    * このメソッドは {@code @InitBinder}
-   * というアノテーションがついていて、ModulithDemoControllerクラスのコントローラアドバイスの一部として使用されます。このメソッドの目的は、Stringクラス用のカスタムエディターを登録することによってデータバインディングプロセスを設定することです。
+   * というアノテーションがついていて、ModulithDemoControllerクラスのコントローラアドバイスの一部として使用されます。
+   * <p>
+   * このメソッドの目的は、Stringクラス用のカスタムエディターを登録することによってデータバインディングプロセスを設定することです。
    *
    * @param binder 初期化するWebDataBinderインスタンス
    * @see WebDataBinder
@@ -27,6 +29,7 @@ public class ModulithDemoControllerAdvice {
   public void initBinder(WebDataBinder binder) {
     // bind empty strings as null
     binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    binder.initDirectFieldAccess();
 
   }
 
