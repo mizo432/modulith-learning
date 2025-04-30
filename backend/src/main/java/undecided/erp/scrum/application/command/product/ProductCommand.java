@@ -1,6 +1,5 @@
 package undecided.erp.scrum.application.command.product;
 
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,37 +20,6 @@ public class ProductCommand {
 
   private final ProductRepository productRepository;
 
-  /**
-   * すべてのプロダクトを取得します。
-   *
-   * @return すべてのプロダクトのリスト
-   */
-  @Transactional(readOnly = true)
-  public List<Product> getAllProducts() {
-    return productRepository.findAll();
-  }
-
-  /**
-   * 指定されたIDのプロダクトを取得します。
-   *
-   * @param productId 取得するプロダクトのID
-   * @return 指定されたIDのプロダクト（存在しない場合は空のOptional）
-   */
-  @Transactional(readOnly = true)
-  public Optional<Product> getProductById(SnowflakeId productId) {
-    return productRepository.findById(productId);
-  }
-
-  /**
-   * 指定された名前のプロダクトを取得します。
-   *
-   * @param name 取得するプロダクトの名前
-   * @return 指定された名前のプロダクト（存在しない場合は空のOptional）
-   */
-  @Transactional(readOnly = true)
-  public Optional<Product> getProductByName(String name) {
-    return productRepository.findByName(name);
-  }
 
   /**
    * 新しいプロダクトを作成します。 プロダクトオーナーが指定されていない場合は例外をスローします。
@@ -104,14 +72,4 @@ public class ProductCommand {
     productRepository.deleteById(productId);
   }
 
-  /**
-   * 指定された名前を含むプロダクトを検索します。
-   *
-   * @param name 検索対象の名前の一部
-   * @return 指定された名前を含むプロダクトのリスト
-   */
-  @Transactional(readOnly = true)
-  public List<Product> searchProductsByName(String name) {
-    return productRepository.findByNameContaining(name);
-  }
 }

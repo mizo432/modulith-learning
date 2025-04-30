@@ -1,8 +1,6 @@
 package undecided.erp.scrum.application.command.epic;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,8 +8,6 @@ import undecided.erp.common.entity.SnowflakeId;
 import undecided.erp.scrum.domain.model.epic.Epic;
 import undecided.erp.scrum.domain.model.epic.EpicRepository;
 import undecided.erp.scrum.domain.model.product.ProductRepository;
-import undecided.erp.scrum.domain.model.sprint.Sprint;
-import undecided.erp.scrum.domain.model.sprint.SprintRepository;
 import undecided.erp.scrum.domain.model.task.UserStory;
 import undecided.erp.scrum.domain.model.task.UserStoryRepository;
 
@@ -28,7 +24,6 @@ public class EpicCommand {
   private final EpicRepository epicRepository;
   private final ProductRepository productRepository;
   private final UserStoryRepository userStoryRepository;
-  private final SprintRepository sprintRepository;
 
   /**
    * 新しいエピックを作成します。
@@ -43,45 +38,6 @@ public class EpicCommand {
       epic.setEpicId(SnowflakeId.newInstance());
     }
     return epicRepository.save(epic);
-  }
-
-  /**
-   * 指定されたIDのエピックを取得します。
-   *
-   * @param epicId 取得するエピックのID
-   * @return 指定されたIDのエピック（存在しない場合はEmpty）
-   */
-  public Optional<Epic> getEpicById(SnowflakeId epicId) {
-    return epicRepository.findById(epicId);
-  }
-
-  /**
-   * すべてのエピックを取得します。
-   *
-   * @return すべてのエピックのリスト
-   */
-  public List<Epic> getAllEpics() {
-    return epicRepository.findAll();
-  }
-
-  /**
-   * 指定されたプロダクトに関連するすべてのエピックを取得します。
-   *
-   * @param productId 検索対象のプロダクトID
-   * @return 指定されたプロダクトに関連するエピックのリスト
-   */
-  public List<Epic> getEpicsByProductId(SnowflakeId productId) {
-    return epicRepository.findByProductProductId(productId);
-  }
-
-  /**
-   * 指定されたステータスを持つエピックを取得します。
-   *
-   * @param status 検索対象のステータス
-   * @return 指定されたステータスを持つエピックのリスト
-   */
-  public List<Epic> getEpicsByStatus(Epic.Status status) {
-    return epicRepository.findByStatus(status);
   }
 
   /**
@@ -128,29 +84,6 @@ public class EpicCommand {
     epicRepository.deleteById(epicId);
   }
 
-  /**
-   * 複数のスプリントにまたがるエピックを取得します。
-   *
-   * @return 複数のスプリントにまたがるエピックのリスト
-   */
-  public List<Epic> getEpicsSpanningMultipleSprints() {
-    return epicRepository.findEpicsSpanningMultipleSprints();
-  }
-
-  /**
-   * 指定されたエピックに関連するスプリントを取得します。
-   *
-   * @param epicId 検索対象のエピックID
-   * @return 関連するスプリントのリスト
-   */
-  public List<Sprint> getSprintsByEpicId(SnowflakeId epicId) {
-    List<SnowflakeId> sprintIds = epicRepository.findSprintIdsByEpicId(epicId);
-    return sprintIds.stream()
-        .map(sprintId -> sprintRepository.findById(sprintId))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
-  }
 
   /**
    * ユーザーストーリーをエピックに関連付けます。
@@ -188,26 +121,6 @@ public class EpicCommand {
   }
 
   /**
-   * 指定されたエピックに関連するユーザーストーリーを取得します。
-   *
-   * @param epicId 検索対象のエピックID
-   * @return 関連するユーザーストーリーのリスト
-   */
-  public List<UserStory> getUserStoriesByEpicId(SnowflakeId epicId) {
-    return userStoryRepository.findByEpicEpicId(epicId);
-  }
-
-  /**
-   * 指定されたエピックに関連するユーザーストーリーの数を取得します。
-   *
-   * @param epicId 検索対象のエピックID
-   * @return 関連するユーザーストーリーの数
-   */
-  public long countUserStoriesByEpicId(SnowflakeId epicId) {
-    return epicRepository.countUserStoriesByEpicId(epicId);
-  }
-
-  /**
    * 指定されたプロダクトに新しいエピックを作成します。
    *
    * @param productId エピックを作成するプロダクトのID
@@ -226,29 +139,4 @@ public class EpicCommand {
         });
   }
 
-  /**
-   * 複数のスプリントにまたがるユーザーストーリーを持つエピックを取得します。
-   *
-   * @return 複数のスプリントにまたがるユーザーストーリーを持つエピックのリスト
-   */
-  public List<Epic> getEpicsWithUserStoriesSpanningMultipleSprints() {
-    List<UserStory> userStories = userStoryRepository.findUserStoriesSpanningMultipleSprints();
-    return userStories.stream()
-        .map(UserStory::getEpic)
-        .filter(epic -> epic != null)
-        .distinct()
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * 指定されたエピックに関連するユーザーストーリーが複数のスプリントにまたがっているかを確認します。
-   *
-   * @param epicId 検索対象のエピックID
-   * @return 複数のスプリントにまたがっている場合はtrue、そうでない場合はfalse
-   */
-  public boolean isEpicSpanningMultipleSprints(SnowflakeId epicId) {
-    List<UserStory> userStories = userStoryRepository.findUserStoriesInEpicSpanningMultipleSprints(
-        epicId);
-    return !userStories.isEmpty();
-  }
 }

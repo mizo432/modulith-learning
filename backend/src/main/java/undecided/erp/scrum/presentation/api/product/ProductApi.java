@@ -1,4 +1,4 @@
-package undecided.erp.scrum.presentation.api;
+package undecided.erp.scrum.presentation.api.product;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.erp.common.entity.SnowflakeId;
 import undecided.erp.scrum.application.command.product.ProductCommand;
+import undecided.erp.scrum.application.query.poduct.ProductQuery;
 import undecided.erp.scrum.domain.model.product.Product;
 
 /**
  * プロダクトに関連するREST APIエンドポイントを提供するコントローラークラス。
  * <p>
- * このコントローラーは、プロダクトの作成、取得、更新、削除などの操作に関するエンドポイントを提供します。 プロダクトの作成、更新、削除はアドミンユーザーのみが実行できます。
+ * このコントローラーは、プロダクトの作成、取得、更新、削除などの操作に関するエンドポイントを提供します。
+ * <p>
+ * プロダクトの作成、更新、削除はアドミンユーザーのみが実行できます。
  * <p>
  * 注意: 現在の実装ではセキュリティチェックは行われていません。実際の環境では、 Spring Securityなどを使用して適切な認証・認可を実装する必要があります。
  */
@@ -31,6 +34,8 @@ public class ProductApi {
 
   private final ProductCommand productCommand;
 
+  private final ProductQuery productQuery;
+
   /**
    * すべてのプロダクトを取得します。
    *
@@ -38,7 +43,7 @@ public class ProductApi {
    */
   @GetMapping
   public ResponseEntity<List<Product>> getAllProducts() {
-    return ResponseEntity.ok(productCommand.getAllProducts());
+    return ResponseEntity.ok(productQuery.selectAllProducts());
   }
 
   /**
@@ -49,7 +54,7 @@ public class ProductApi {
    */
   @GetMapping("/{productId}")
   public ResponseEntity<Product> getProductById(@PathVariable String productId) {
-    return productCommand.getProductById(SnowflakeId.of(Long.parseLong(productId)))
+    return productQuery.findProductById(SnowflakeId.of(Long.parseLong(productId)))
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
@@ -89,8 +94,7 @@ public class ProductApi {
   }
 
   /**
-   * 指定されたIDのプロダクトを削除します。 このエンドポイントはアドミンユーザーのみが実行できます。
-   * 注意: 現在の実装ではセキュリティチェックは行われていません。
+   * 指定されたIDのプロダクトを削除します。 このエンドポイントはアドミンユーザーのみが実行できます。 注意: 現在の実装ではセキュリティチェックは行われていません。
    *
    * @param productId 削除するプロダクトのID
    * @return 削除成功時は204、存在しない場合は404
@@ -113,6 +117,6 @@ public class ProductApi {
    */
   @GetMapping("/search")
   public ResponseEntity<List<Product>> searchProductsByName(@RequestParam String name) {
-    return ResponseEntity.ok(productCommand.searchProductsByName(name));
+    return ResponseEntity.ok(productQuery.selectProductsByName(name));
   }
 }

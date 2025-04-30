@@ -1,4 +1,4 @@
-package undecided.erp.scrum.presentation.api;
+package undecided.erp.scrum.presentation.api.epic;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.erp.common.entity.SnowflakeId;
 import undecided.erp.scrum.application.command.epic.EpicCommand;
+import undecided.erp.scrum.application.query.epic.EpicQuery;
 import undecided.erp.scrum.domain.model.epic.Epic;
 import undecided.erp.scrum.domain.model.sprint.Sprint;
 import undecided.erp.scrum.domain.model.task.UserStory;
@@ -31,6 +32,8 @@ public class EpicApi {
 
   private final EpicCommand epicCommand;
 
+  private final EpicQuery epicQuery;
+
   /**
    * すべてのエピックを取得します。
    *
@@ -38,7 +41,7 @@ public class EpicApi {
    */
   @GetMapping
   public ResponseEntity<List<Epic>> getAllEpics() {
-    return ResponseEntity.ok(epicCommand.getAllEpics());
+    return ResponseEntity.ok(epicQuery.selectAllEpics());
   }
 
   /**
@@ -49,7 +52,7 @@ public class EpicApi {
    */
   @GetMapping("/{epicId}")
   public ResponseEntity<Epic> getEpicById(@PathVariable String epicId) {
-    return epicCommand.getEpicById(SnowflakeId.of(Long.parseLong(epicId)))
+    return epicQuery.findEpicById(SnowflakeId.of(Long.parseLong(epicId)))
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
@@ -119,7 +122,7 @@ public class EpicApi {
   @GetMapping("/products/{productId}")
   public ResponseEntity<List<Epic>> getEpicsByProductId(@PathVariable String productId) {
     return ResponseEntity.ok(
-        epicCommand.getEpicsByProductId(SnowflakeId.of(Long.parseLong(productId))));
+        epicQuery.selectEpicsByProductId(SnowflakeId.of(Long.parseLong(productId))));
   }
 
   /**
@@ -130,7 +133,7 @@ public class EpicApi {
    */
   @GetMapping("/status/{status}")
   public ResponseEntity<List<Epic>> getEpicsByStatus(@PathVariable Epic.Status status) {
-    return ResponseEntity.ok(epicCommand.getEpicsByStatus(status));
+    return ResponseEntity.ok(epicQuery.selectEpicsByStatus(status));
   }
 
   /**
@@ -140,7 +143,7 @@ public class EpicApi {
    */
   @GetMapping("/spanning-multiple-sprints")
   public ResponseEntity<List<Epic>> getEpicsSpanningMultipleSprints() {
-    return ResponseEntity.ok(epicCommand.getEpicsSpanningMultipleSprints());
+    return ResponseEntity.ok(epicQuery.selectEpicsSpanningMultipleSprints());
   }
 
   /**
@@ -150,7 +153,7 @@ public class EpicApi {
    */
   @GetMapping("/with-stories-spanning-multiple-sprints")
   public ResponseEntity<List<Epic>> getEpicsWithUserStoriesSpanningMultipleSprints() {
-    return ResponseEntity.ok(epicCommand.getEpicsWithUserStoriesSpanningMultipleSprints());
+    return ResponseEntity.ok(epicQuery.selectEpicsWithUserStoriesSpanningMultipleSprints());
   }
 
   /**
@@ -162,7 +165,7 @@ public class EpicApi {
   @GetMapping("/{epicId}/sprints")
   public ResponseEntity<List<Sprint>> getSprintsByEpicId(@PathVariable String epicId) {
     return ResponseEntity.ok(
-        epicCommand.getSprintsByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
+        epicQuery.selectSprintsByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
   }
 
   /**
@@ -174,7 +177,7 @@ public class EpicApi {
   @GetMapping("/{epicId}/user-stories")
   public ResponseEntity<List<UserStory>> getUserStoriesByEpicId(@PathVariable String epicId) {
     return ResponseEntity.ok(
-        epicCommand.getUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
+        epicQuery.selectUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId))));
   }
 
   /**
@@ -185,7 +188,7 @@ public class EpicApi {
    */
   @GetMapping("/{epicId}/user-stories/count")
   public ResponseEntity<Map<String, Long>> countUserStoriesByEpicId(@PathVariable String epicId) {
-    long count = epicCommand.countUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId)));
+    long count = epicQuery.countUserStoriesByEpicId(SnowflakeId.of(Long.parseLong(epicId)));
     return ResponseEntity.ok(Map.of("count", count));
   }
 
@@ -228,7 +231,7 @@ public class EpicApi {
   @GetMapping("/{epicId}/is-spanning-multiple-sprints")
   public ResponseEntity<Map<String, Boolean>> isEpicSpanningMultipleSprints(
       @PathVariable String epicId) {
-    boolean isSpanning = epicCommand.isEpicSpanningMultipleSprints(
+    boolean isSpanning = epicQuery.isEpicSpanningMultipleSprints(
         SnowflakeId.of(Long.parseLong(epicId)));
     return ResponseEntity.ok(Map.of("isSpanningMultipleSprints", isSpanning));
   }
