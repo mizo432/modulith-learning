@@ -82,7 +82,7 @@ dependencyManagement {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
     }
     imports {
-        mavenBom("org.springframework.boot:spring-boot-dependencies:3.1.5")
+        mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.5")
     }
 }
 
