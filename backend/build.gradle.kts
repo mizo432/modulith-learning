@@ -130,20 +130,24 @@ dependencyManagement {
     }
 }
 jacoco {
-    toolVersion = "0.8.12"
+    toolVersion = "0.8.13"
     // reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
-
 }
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco")
+    }
 }
 tasks.test {
     useJUnitPlatform {
         excludeTags("medium", "large")
         timeout.set(Duration.ofSeconds(60))
     }
-    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+    finalizedBy(tasks.jacocoTestReport) // a report is always generated after tests run
 }
 
 val mediumTest = tasks.register("mediumTest", Test::class.java) {
@@ -163,13 +167,6 @@ val largeTest = tasks.register("largeTest", Test::class.java) {
     shouldRunAfter("mediumTest")
 }
 
-tasks.jacocoTestReport {
-    reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
-    }
-}
 apply(plugin = "com.github.ben-manes.versions")
 
 
