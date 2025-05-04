@@ -60,7 +60,7 @@ extra["junitVersion"] = "5.12.0"
 extra["springCloudBomVersion"] = "2024.0.1"
 extra["spotbugsAnnotationVersion"] = "4.9.2"
 extra["libphonenumberVersion"] = "9.0.0"
-extra["poiVersion"] = "5.2.5"
+extra["poiVersion"] = "5.4.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -132,6 +132,7 @@ dependencyManagement {
 jacoco {
     toolVersion = "0.8.12"
     // reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+
 }
 
 tasks.test {
