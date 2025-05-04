@@ -10,18 +10,18 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 - Spring Modulithフレームワークの学習と実践
 - モジュラーモノリスアーキテクチャの実装
 - ドメイン駆動設計（DDD）の原則の適用
-- オ尼オンアーキテクチャ_PATTERNの実装
+- オニオンアーキテクチャパターンの実装
 
 ### システム構成
 
 このシステムは以下の主要コンポーネントで構成されています：
 
 1. **バックエンド（Backend）**：
-    - Spring Boot 3.4.3ベースのアプリケーション
+    - Spring Boot 3.4.5ベースのアプリケーション
     - Spring Modulithを使用したモジュール化
-    - PostgreSQLデータ баз
+    - PostgreSQLデータベース
     - JPA/Hibernateによるデータアクセス
-    - Flywayによるデータ базマイグレ�ーション
+    - Flywayによるデータベースマイグレーション
 
 2. **APIゲートウェイ（API Gateway）**：
     - クライアントリクエストのルーティングと管理
@@ -30,14 +30,13 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
     - Netflix Eurekaを使用したサービスディスカバリー
 
 4. **フロントエンド（Frontend）**：
-
-- Reactベースのアプリケーション
-- SPAとして作成する
-- コンポーネントライブラリーとして最新のMUIを使用する
+    - Reactベースのアプリケーション
+    - SPAとして作成する
+    - コンポーネントライブラリーとして最新のMUIを使用する
 
 ### モジュール構造
 
-バックエンド примененияは以下のモジュールで構成されています：
+バックエンドアプリケーションは以下のモジュールで構成されています：
 
 - **関係管理（Relationship）**：
     - ビジネス関係の管理機能
@@ -55,7 +54,7 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 
 - **言語**：Java 21
 - **フレームワーク**：
-    - Spring Boot 3.4.3
+    - Spring Boot 3.4.5
     - Spring Modulith
     - Spring Security
     - Spring Data JPA
@@ -76,7 +75,7 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 このプロジェクトは、Scrumフレームワークを使用して複数のプロジェクトの開発を管理するシステムとして設計されています。モジュラーモノリスアプローチにより、以下の利点を実現しています：
 
 - モジュール間の明確な境界
-- 疸結合と高凝集
+- 疎結合と高凝集
 - 独立したデプロイの可能性
 - マイクロサービスへの段階的な移行パス
 
@@ -84,55 +83,55 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 
 Dockerfileが提供され、アプリケーションのコンテナ化とデプロイが可能です。
 
-## 新增追加（ Feature Flags, テスト・ strateg, etc.）
+## 機能追加（Feature Flags, テスト戦略, etc.）
 
-### 特徴 flags
+### フィーチャーフラグ
 
-- **APIリミット**：API call limitを管理
-- **ロールbasedアクセス制御**：RBACを実装
-- **バックエンドのリabilit**：Backendのリabilを管理
-- **デプロイスcheduling**：デプロイのスケジュール管理
+- **APIリミット**：API呼び出し制限を管理
+- **ロールベースアクセス制御**：RBACを実装
+- **バックエンドの信頼性**：バックエンドの信頼性を管理
+- **デプロイスケジューリング**：デプロイのスケジュール管理
 
-### テスト・strateg
+### テスト戦略
 
-- **单元テスト**：JUnitを基盤とした单元テスト
-- ** Integration tests**：APIやサービス之间的 inte gra tion test
-- **性能测试**：Loload, JMeter等で性能を測定
-- **安全性测试**：Security scanと vulnerability testing
+- **単体テスト**：JUnitを基盤とした単体テスト
+- **統合テスト**：APIやサービス間の統合テスト
+- **性能テスト**：LoadUI、JMeter等で性能を測定
+- **セキュリティテスト**：セキュリティスキャンと脆弱性テスト
 
-### DevOps プ拉グイン
+### DevOpsプラグイン
 
-- **Ansible/Inventory**：CI/CD pipelineを管理
-- **Dockerfile**：docker containerの配置とデプロイ
-- **Kubernetes pod**：Docker podをkubernetesにデプロイ
-- **日記管理**：Git, GitHub Actions, etc.を基盤としてCI/CD Pipelineを構築
+- **Ansible/Inventory**：CI/CDパイプラインを管理
+- **Dockerfile**：Dockerコンテナの配置とデプロイ
+- **Kubernetes pod**：Docker podをKubernetesにデプロイ
+- **履歴管理**：Git、GitHub Actions等を基盤としてCI/CDパイプラインを構築
 
-### メンバーメネ有幸
+### メンバー管理
 
-- **コミット制限**：_commitsや push restrictionを管理
-- **チーム之间的コミット exchange**： team internal code reviewやpull request management
-- **リリース管理**：Release schedule and build environment setup
-- **CI/CD Pipeline**：CI/CD Pipelineを管理
+- **コミット制限**：コミットやプッシュ制限を管理
+- **チーム間コード交換**：チーム内コードレビューやプルリクエスト管理
+- **リリース管理**：リリーススケジュールとビルド環境設定
+- **CI/CDパイプライン**：CI/CDパイプラインを管理
 
-### プロジェクトの管理者
+### プロジェクト管理者
 
-- **プロジェクト代行者**：project managerに責任割り
-- **チームの管理**：team roster management, role assignment
-- **プロジェクトの状態管理**：project status update, milestone tracking
-- **トラブル対応**：fault management and resolution tracking
+- **プロジェクト代表者**：プロジェクトマネージャーの責任割り当て
+- **チームの管理**：チームロスター管理、役割割り当て
+- **プロジェクトの状態管理**：プロジェクト状況更新、マイルストーン追跡
+- **問題対応**：障害管理と解決追跡
 
 ### プロジェクトの発展
 
-- **Scrumを拡張**：Scrumに沿うプロジェクトの管理
-- ** Sprint interval**：Sprint interval management
-- ** retrospekt ion**： retrospective meeting conduct
-- **Change request**：Change request system operation
+- **Scrumを拡張**：Scrumに沿ったプロジェクト管理
+- **スプリント間隔**：スプリント間隔管理
+- **レトロスペクティブ**：振り返りミーティングの実施
+- **変更要求**：変更要求システムの運用
 
-### 定期的_review
+### 定期的レビュー
 
-- **Mid-term review**：プロジェクトのmid-term status update
-- **Post-term review**：project's long-term success evaluation
-- **Plan review**：project plan update and revision
+- **中間レビュー**：プロジェクトの中間状況更新
+- **最終レビュー**：プロジェクトの長期的成功評価
+- **計画レビュー**：プロジェクト計画の更新と改訂
 
 ## 付録
 
