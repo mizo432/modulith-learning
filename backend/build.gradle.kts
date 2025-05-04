@@ -135,11 +135,15 @@ jacoco {
 
 }
 
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+}
 tasks.test {
     useJUnitPlatform {
         excludeTags("medium", "large")
         timeout.set(Duration.ofSeconds(60))
     }
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 
 val mediumTest = tasks.register("mediumTest", Test::class.java) {
