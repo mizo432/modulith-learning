@@ -29,7 +29,7 @@ const Login: React.FC = () => {
 
       if (response.data.success) {
         // Use the login function from auth context
-        login(response.data.token || 'dummy-token', response.data.username);
+        login(response.data.token || 'dummy-token', response.data.username, response.data.isAdmin || false);
 
         // The redirect will happen automatically due to the useEffect hook
       } else {

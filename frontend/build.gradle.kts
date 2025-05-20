@@ -8,11 +8,6 @@ node {
     download.set(true)
 }
 
-tasks.register<com.github.gradle.node.npm.task.NpmTask>("installNpm") {
-    description = "Install npm dependencies"
-    args.set(listOf("install"))
-}
-
 tasks.register<com.github.gradle.node.npm.task.NpmTask>("npmBuild") {
     description = "Build the frontend application"
     args.set(listOf("run", "build"))

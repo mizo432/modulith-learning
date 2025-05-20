@@ -87,7 +87,10 @@ const UserCreate: React.FC = () => {
 
   // Handle user type selection
   const handleUserTypeChange = (e: SelectChangeEvent<string>) => {
-    setFormData(prev => ({...prev, userType: e.target.value}));
+    setFormData(prev => ({
+      ...prev,
+      userType: e.target.value as 'EMPLOYEE' | 'BUSINESS_PARTNER_EMPLOYEE' | 'INDIVIDUAL_BUSINESS_PARTNER'
+    }));
   };
 
   // Handle roles selection
