@@ -292,4 +292,17 @@ modules.xml
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,intellij,visualstudiocode,eclipse,gradle
 /.devcontainer/postgres/data/
 /.devcontainer/dragonfly/data/
-/frontend/node_modules/*
+
+# Frontend specific
+/frontend/node_modules/
+/frontend/build/
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/coverage/
+/frontend/.DS_Store
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
