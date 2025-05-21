@@ -42,9 +42,27 @@ const Header: React.FC = () => {
                   <MenuIcon/>
                 </IconButton>
             )}
-            <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-              Modulith Learning
-            </Typography>
+            <Box sx={{flexGrow: 1, display: 'flex', alignItems: 'center'}}>
+              <Typography variant="h6" component="div">
+                Modulith Learning
+              </Typography>
+              {process.env.REACT_APP_ENV && process.env.REACT_APP_ENV !== 'production' && (
+                  <Typography
+                      variant="caption"
+                      component="div"
+                      sx={{
+                        ml: 1,
+                        px: 1,
+                        py: 0.5,
+                        bgcolor: 'rgba(255, 255, 255, 0.2)',
+                        borderRadius: 1,
+                        textTransform: 'uppercase'
+                      }}
+                  >
+                    {process.env.REACT_APP_ENV}
+                  </Typography>
+              )}
+            </Box>
             <Box>
               {isAuthenticated ? (
                   <>

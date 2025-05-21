@@ -43,11 +43,35 @@ frontend/
 - Node.js (v20.12.2 以降)
 - npm (v10.5.0 以降)
 
+### 環境設定
+
+フロントエンドプロジェクトは以下の実行環境をサポートしています：
+
+- **ローカル環境**: ローカル開発用
+- **開発環境**: 開発サーバー用
+- **ステージング環境**: テスト・検証用
+- **本番環境**: 実運用用
+
+各環境の設定は対応する `.env` ファイルで管理されています：
+
+- `.env`: デフォルト設定（すべての環境で使用される基本設定）
+- `.env.local`: ローカル環境の設定
+- `.env.development`: 開発環境の設定
+- `.env.staging`: ステージング環境の設定
+- `.env.production`: 本番環境の設定
+
+現在の環境はアプリケーションのヘッダーに表示されます（本番環境を除く）。これにより、開発者は現在どの環境で作業しているかを簡単に確認できます。環境表示は
+`REACT_APP_ENV` 環境変数の値に基づいています。
+
 ### 利用可能なスクリプト
 
 - **依存関係のインストール**: `npm install`
-- **開発サーバーの起動**: `npm start`
-- **本番用ビルド**: `npm run build`
+- **ローカル環境での開発サーバーの起動**: `npm run start:local`
+- **開発環境での開発サーバーの起動**: `npm run start:dev`
+- **デフォルト環境での開発サーバーの起動**: `npm start`
+- **ステージング環境用ビルド**: `npm run build:staging`
+- **本番環境用ビルド**: `npm run build:production`
+- **デフォルト環境用ビルド**: `npm run build`
 - **テストの実行**: `npm test`
 
 ### Gradle 統合
@@ -56,8 +80,11 @@ frontend/
 タスクを使用できます：
 
 - **依存関係のインストール**: `./gradlew :frontend:npmInstall`
-- **開発サーバーの起動**: `./gradlew :frontend:npmStart`
-- **本番用ビルド**: `./gradlew :frontend:npmBuild`
+- **ローカル環境での開発サーバーの起動**: `./gradlew :frontend:npmStartLocal`
+- **開発環境での開発サーバーの起動**: `./gradlew :frontend:npmStartDev`
+- **デフォルト環境での開発サーバーの起動**: `./gradlew :frontend:npmStart`
+- **ステージング環境用ビルド**: `./gradlew :frontend:npmBuildStaging`
+- **本番環境用ビルド**: `./gradlew :frontend:npmBuild`
 - **テストの実行**: `./gradlew :frontend:npmTest`
 - **クリーン**: `./gradlew :frontend:clean`
 
