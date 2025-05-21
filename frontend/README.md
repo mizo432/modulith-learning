@@ -1,78 +1,81 @@
-# Frontend Module
+# フロントエンドモジュール
 
-This is the frontend module for the Modulith Learning project. It's a React-based Single Page Application (SPA) that uses Material-UI (MUI) for the component library.
+これは Modulith Learning プロジェクトのフロントエンドモジュールです。Material-UI (MUI)
+をコンポーネントライブラリとして使用する React ベースのシングルページアプリケーション (SPA) です。
 
-## Technology Stack
+## 技術スタック
 
-- **React 18**: A JavaScript library for building user interfaces
-- **TypeScript**: For type safety and better developer experience
-- **Material-UI (MUI)**: React component library implementing Google's Material Design
-- **React Router**: For navigation and routing
-- **Axios**: For API communication with the backend
+- **React 18**: ユーザーインターフェースを構築するための JavaScript ライブラリ
+- **TypeScript**: 型安全性と優れた開発者体験のため
+- **Material-UI (MUI)**: Google の Material Design を実装した React コンポーネントライブラリ
+- **React Router**: ナビゲーションとルーティング用
+- **Axios**: バックエンドとの API 通信用
 
-## Project Structure
+## プロジェクト構造
 
 ```
 frontend/
-├── public/                 # Static files
-│   ├── index.html          # HTML template
-│   └── manifest.json       # PWA manifest
-├── src/                    # Source code
-│   ├── components/         # Reusable UI components
-│   │   └── Header.tsx      # Application header
-│   ├── pages/              # Page components
-│   │   ├── Dashboard.tsx   # Dashboard page
-│   │   └── NotFound.tsx    # 404 page
-│   ├── services/           # Services for API communication
-│   │   └── api.ts          # Axios configuration
-│   ├── App.tsx             # Main application component
-│   ├── index.tsx           # Application entry point
-│   ├── index.css           # Global styles
-│   ├── theme.ts            # MUI theme configuration
-│   └── reportWebVitals.ts  # Performance monitoring
-├── package.json            # NPM dependencies and scripts
-├── tsconfig.json           # TypeScript configuration
-└── build.gradle.kts        # Gradle build configuration
+├── public/                 # 静的ファイル
+│   ├── index.html          # HTML テンプレート
+│   └── manifest.json       # PWA マニフェスト
+├── src/                    # ソースコード
+│   ├── components/         # 再利用可能な UI コンポーネント
+│   │   └── Header.tsx      # アプリケーションヘッダー
+│   ├── pages/              # ページコンポーネント
+│   │   ├── Dashboard.tsx   # ダッシュボードページ
+│   │   └── NotFound.tsx    # 404 ページ
+│   ├── services/           # API 通信用サービス
+│   │   └── api.ts          # Axios 設定
+│   ├── App.tsx             # メインアプリケーションコンポーネント
+│   ├── index.tsx           # アプリケーションエントリーポイント
+│   ├── index.css           # グローバルスタイル
+│   ├── theme.ts            # MUI テーマ設定
+│   └── reportWebVitals.ts  # パフォーマンスモニタリング
+├── package.json            # NPM 依存関係とスクリプト
+├── tsconfig.json           # TypeScript 設定
+└── build.gradle.kts        # Gradle ビルド設定
 ```
 
-## Development
+## 開発
 
-### Prerequisites
+### 前提条件
 
-- Node.js (v20.12.2 or later)
-- npm (v10.5.0 or later)
+- Node.js (v20.12.2 以降)
+- npm (v10.5.0 以降)
 
-### Available Scripts
+### 利用可能なスクリプト
 
-- **Install Dependencies**: `npm install`
-- **Start Development Server**: `npm start`
-- **Build for Production**: `npm run build`
-- **Run Tests**: `npm test`
+- **依存関係のインストール**: `npm install`
+- **開発サーバーの起動**: `npm start`
+- **本番用ビルド**: `npm run build`
+- **テストの実行**: `npm test`
 
-### Gradle Integration
+### Gradle 統合
 
-The frontend module is integrated with Gradle using the node-gradle plugin. You can use the following Gradle tasks:
+フロントエンドモジュールは node-gradle プラグインを使用して Gradle と統合されています。以下の Gradle
+タスクを使用できます：
 
-- **Install Dependencies**: `./gradlew :frontend:npmInstall`
-- **Start Development Server**: `./gradlew :frontend:npmStart`
-- **Build for Production**: `./gradlew :frontend:npmBuild`
-- **Run Tests**: `./gradlew :frontend:npmTest`
-- **Clean**: `./gradlew :frontend:clean`
+- **依存関係のインストール**: `./gradlew :frontend:npmInstall`
+- **開発サーバーの起動**: `./gradlew :frontend:npmStart`
+- **本番用ビルド**: `./gradlew :frontend:npmBuild`
+- **テストの実行**: `./gradlew :frontend:npmTest`
+- **クリーン**: `./gradlew :frontend:clean`
 
-## Communication with Backend
+## バックエンドとの通信
 
-The frontend communicates with the backend using Axios. The API service is configured in `src/services/api.ts` and provides:
+フロントエンドは Axios を使用してバックエンドと通信します。API サービスは `src/services/api.ts`
+で設定され、以下を提供します：
 
-- Base URL configuration
-- Authentication via JWT tokens
-- Error handling for common HTTP status codes
+- ベース URL 設定
+- JWT トークンによる認証
+- 一般的な HTTP ステータスコードのエラー処理
 
-## Deployment
+## デプロイメント
 
-To build the frontend for production, run:
+本番用にフロントエンドをビルドするには、次のコマンドを実行します：
 
 ```
 ./gradlew :frontend:npmBuild
 ```
 
-This will create a production-ready build in the `frontend/build` directory, which can be served by any static file server.
+これにより、`frontend/build` ディレクトリに本番用ビルドが作成され、任意の静的ファイルサーバーで提供できます。
