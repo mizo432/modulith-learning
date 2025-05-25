@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import undecided.erp.common.entity.PptEntity;
 import undecided.erp.common.entity.SnowflakeId;
 import undecided.erp.scrum.domain.model.product.Product;
@@ -39,6 +40,7 @@ import undecided.erp.scrum.domain.model.product.Product;
 @Table(name = "sprints")
 @NoArgsConstructor
 @Builder
+@Setter
 public class Sprint extends PptEntity<Sprint> implements Serializable {
 
   /**
@@ -49,6 +51,7 @@ public class Sprint extends PptEntity<Sprint> implements Serializable {
   @Id
   @Column(name = "sprint_id", columnDefinition = "BIGINT", nullable = false)
   @Convert(converter = SnowflakeId.SnowflakeIdConverter.class)
+  @Getter
   private SnowflakeId sprintId;
 
   /**
