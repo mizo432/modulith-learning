@@ -12,8 +12,9 @@ import undecided.erp.scrum.domain.model.product.ProductBacklog;
 
 /**
  * ユーザーストーリーに関連するデータアクセス操作を提供するリポジトリインターフェース。
- * <p>
- * このインターフェースはSpring Data JPAのJpaRepositoryを拡張し、 ユーザーストーリーエンティティに対する標準的なCRUD操作と、 カスタムクエリメソッドを提供します。
+ *
+ * <p>このインターフェースはSpring Data JPAのJpaRepositoryを拡張し、 ユーザーストーリーエンティティに対する標準的なCRUD操作と、
+ * カスタムクエリメソッドを提供します。
  */
 @Repository
 public interface UserStoryRepository extends JpaRepository<UserStory, SnowflakeId> {
@@ -89,8 +90,8 @@ public interface UserStoryRepository extends JpaRepository<UserStory, SnowflakeI
    * @param status 検索対象のステータス
    * @return 指定されたプロダクトバックログIDとステータスを持つユーザーストーリーのリスト
    */
-  List<UserStory> findByProductBacklogBacklogIdAndStatus(SnowflakeId backlogId,
-      UserStory.Status status);
+  List<UserStory> findByProductBacklogBacklogIdAndStatus(
+      SnowflakeId backlogId, UserStory.Status status);
 
   /**
    * 指定されたエピックIDとステータスを持つユーザーストーリーを検索します。
@@ -106,9 +107,10 @@ public interface UserStoryRepository extends JpaRepository<UserStory, SnowflakeI
    *
    * @return 複数のスプリントにまたがるタスクを持つユーザーストーリーのリスト
    */
-  @Query("SELECT DISTINCT us FROM UserStory us JOIN us.tasks t " +
-      "GROUP BY us.storyId " +
-      "HAVING COUNT(DISTINCT t.sprint.sprintId) > 1")
+  @Query(
+      "SELECT DISTINCT us FROM UserStory us JOIN us.tasks t "
+          + "GROUP BY us.storyId "
+          + "HAVING COUNT(DISTINCT t.sprint.sprintId) > 1")
   List<UserStory> findUserStoriesSpanningMultipleSprints();
 
   /**
@@ -117,9 +119,26 @@ public interface UserStoryRepository extends JpaRepository<UserStory, SnowflakeI
    * @param epicId 検索対象のエピックID
    * @return 指定されたエピックに属し、複数のスプリントにまたがるタスクを持つユーザーストーリーのリスト
    */
-  @Query("SELECT DISTINCT us FROM UserStory us JOIN us.tasks t " +
-      "WHERE us.epic.epicId = :epicId " +
-      "GROUP BY us.storyId " +
-      "HAVING COUNT(DISTINCT t.sprint.sprintId) > 1")
+  @Query(
+      "SELECT DISTINCT us FROM UserStory us JOIN us.tasks t "
+          + "WHERE us.epic.epicId = :epicId "
+          + "GROUP BY us.storyId "
+          + "HAVING COUNT(DISTINCT t.sprint.sprintId) > 1")
   List<UserStory> findUserStoriesInEpicSpanningMultipleSprints(@Param("epicId") SnowflakeId epicId);
+
+  /**
+   * 指定されたプロダクトバックログに関連するすべてのユーザーストーリーをバックログ順序でソートして取得します。
+   *
+   * @param productBacklog 検索対象のプロダクトバックログ
+   * @return 指定されたプロダクトバックログに関連するユーザーストーリーのリスト（バックログ順序でソート）
+   */
+  List<UserStory> findByProductBacklogOrderByBacklogOrderAsc(ProductBacklog productBacklog);
+
+  /**
+   * 指定されたプロダクトバックログIDに関連するすべてのユーザーストーリーをバックログ順序でソートして取得します。
+   *
+   * @param backlogId 検索対象のプロダクトバックログID
+   * @return 指定されたプロダクトバックログIDに関連するユーザーストーリーのリスト（バックログ順序でソート）
+   */
+  List<UserStory> findByProductBacklogBacklogIdOrderByBacklogOrderAsc(SnowflakeId backlogId);
 }
