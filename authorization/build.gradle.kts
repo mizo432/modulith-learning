@@ -9,7 +9,7 @@ buildscript {
 
 plugins {
     java
-    id("org.springframework.boot") version "3.4.5"
+    id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.18"
     id("com.github.ben-manes.versions") version "0.52.0"
@@ -46,7 +46,7 @@ extra["openapiUiVersion"] = "2.8.5"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
 extra["junitVersion"] = "5.12.0"
-extra["springCloudBomVersion"] = "2024.0.1"
+extra["springCloudBomVersion"] = "2025.0.0"
 extra["spotbugsAnnotationVersion"] = "4.9.2"
 extra["libphonenumberVersion"] = "9.0.0"
 
