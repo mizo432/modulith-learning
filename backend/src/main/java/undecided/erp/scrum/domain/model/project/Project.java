@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import undecided.erp.common.entity.PptEntity;
 import undecided.erp.common.entity.SnowflakeId;
+import undecided.erp.scrum.domain.model.product.Product;
 import undecided.erp.scrum.domain.model.team.Member;
 
 /**
@@ -85,7 +86,38 @@ public class Project extends PptEntity<Project> implements Serializable {
   private Member projectManager;
 
   /**
+   * このプロジェクトに関連付けられたプロダクトを表す変数。
+   *
+   * <p>プロジェクトとプロダクトの関連付けを表します。 データベース上の "product_id" カラムに対応します。
+   */
+  @Getter
+  @ManyToOne
+  @JoinColumn(name = "product_id")
+  private Product product;
+
+  /**
    * 新しいプロジェクトを作成します。
+   *
+   * @param name プロジェクト名
+   * @param description プロジェクトの説明
+   * @param projectManager プロジェクトマネージャー
+   * @param product 関連付けるプロダクト（オプション）
+   * @return 新しいプロジェクトインスタンス
+   */
+  public static Project create(
+      String name, String description, Member projectManager, Product product) {
+    Project project = new Project();
+    project.projectId = SnowflakeId.newInstance();
+    project.name = name;
+    project.description = description;
+    project.status = ProjectStatus.ACTIVE;
+    project.projectManager = projectManager;
+    project.product = product;
+    return project;
+  }
+
+  /**
+   * 新しいプロジェクトを作成します（プロダクトなし）。
    *
    * @param name プロジェクト名
    * @param description プロジェクトの説明
@@ -93,13 +125,7 @@ public class Project extends PptEntity<Project> implements Serializable {
    * @return 新しいプロジェクトインスタンス
    */
   public static Project create(String name, String description, Member projectManager) {
-    Project project = new Project();
-    project.projectId = SnowflakeId.newInstance();
-    project.name = name;
-    project.description = description;
-    project.status = ProjectStatus.ACTIVE;
-    project.projectManager = projectManager;
-    return project;
+    return create(name, description, projectManager, null);
   }
 
   /**
@@ -108,13 +134,27 @@ public class Project extends PptEntity<Project> implements Serializable {
    * @param name 新しいプロジェクト名
    * @param description 新しいプロジェクトの説明
    * @param projectManager 新しいプロジェクトマネージャー
+   * @param product 関連付けるプロダクト
    * @return 更新されたプロジェクトインスタンス
    */
-  public Project edit(String name, String description, Member projectManager) {
+  public Project edit(String name, String description, Member projectManager, Product product) {
     this.name = name;
     this.description = description;
     this.projectManager = projectManager;
+    this.product = product;
     return this;
+  }
+
+  /**
+   * プロジェクトを編集します（プロダクトを変更しない）。
+   *
+   * @param name 新しいプロジェクト名
+   * @param description 新しいプロジェクトの説明
+   * @param projectManager 新しいプロジェクトマネージャー
+   * @return 更新されたプロジェクトインスタンス
+   */
+  public Project edit(String name, String description, Member projectManager) {
+    return edit(name, description, projectManager, this.product);
   }
 
   /**
@@ -159,6 +199,8 @@ public class Project extends PptEntity<Project> implements Serializable {
         + status
         + ", projectManager="
         + projectManager
+        + ", product="
+        + (product != null ? product.toString() : "null")
         + '}';
   }
 }
