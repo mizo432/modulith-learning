@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.erp.common.entity.SnowflakeId;
+import undecided.erp.common.primitive.Objects2;
 import undecided.erp.scrum.domain.model.epic.Epic;
 import undecided.erp.scrum.domain.model.epic.EpicRepository;
 import undecided.erp.scrum.domain.model.sprint.Sprint;
@@ -16,8 +17,8 @@ import undecided.erp.scrum.domain.model.task.UserStoryRepository;
 
 /**
  * エピックに関連するビジネスロジックを提供するサービスクラス。
- * <p>
- * このサービスは、エピックの作成、取得、更新、削除などの操作と、 複数のスプリントにまたがるエピックの管理に関する機能を提供します。
+ *
+ * <p>このサービスは、エピックの作成、取得、更新、削除などの操作と、 複数のスプリントにまたがるエピックの管理に関する機能を提供します。
  */
 @Service
 @RequiredArgsConstructor
@@ -85,7 +86,7 @@ public class EpicQuery {
   public List<Sprint> selectSprintsByEpicId(SnowflakeId epicId) {
     List<SnowflakeId> sprintIds = epicRepository.findSprintIdsByEpicId(epicId);
     return sprintIds.stream()
-        .map(sprintId -> sprintRepository.findById(sprintId))
+        .map(sprintRepository::findById)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
@@ -120,7 +121,7 @@ public class EpicQuery {
     List<UserStory> userStories = userStoryRepository.findUserStoriesSpanningMultipleSprints();
     return userStories.stream()
         .map(UserStory::getEpic)
-        .filter(epic -> epic != null)
+        .filter(Objects2::nonNull)
         .distinct()
         .collect(Collectors.toList());
   }
@@ -132,8 +133,8 @@ public class EpicQuery {
    * @return 複数のスプリントにまたがっている場合はtrue、そうでない場合はfalse
    */
   public boolean isEpicSpanningMultipleSprints(SnowflakeId epicId) {
-    List<UserStory> userStories = userStoryRepository.findUserStoriesInEpicSpanningMultipleSprints(
-        epicId);
+    List<UserStory> userStories =
+        userStoryRepository.findUserStoriesInEpicSpanningMultipleSprints(epicId);
     return !userStories.isEmpty();
   }
 }

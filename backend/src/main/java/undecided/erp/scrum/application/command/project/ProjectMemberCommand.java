@@ -137,11 +137,7 @@ public class ProjectMemberCommand {
     return projectRoleRepository.save(role);
   }
 
-  /**
-   * デフォルトのプロジェクトロールを作成します。 管理者、メンバー、閲覧者の3つのロールを作成します。
-   *
-   * @return 作成されたプロジェクトロールのリスト
-   */
+  /** デフォルトのプロジェクトロールを作成します。 管理者、メンバー、閲覧者の3つのロールを作成します。 */
   @Transactional
   public void createDefaultRoles() {
     if (projectRoleRepository.count() == 0) {
