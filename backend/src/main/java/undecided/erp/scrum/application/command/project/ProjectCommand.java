@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.erp.common.entity.SnowflakeId;
+import undecided.erp.scrum.domain.model.product.Product;
 import undecided.erp.scrum.domain.model.project.Project;
 import undecided.erp.scrum.domain.model.project.ProjectRepository;
 import undecided.erp.scrum.domain.model.team.Member;
@@ -27,16 +28,57 @@ public class ProjectCommand {
    * @param name プロジェクト名
    * @param description プロジェクトの説明
    * @param projectManager プロジェクトマネージャー
+   * @param product 関連付けるプロダクト（オプション）
    * @return 作成されたプロジェクト
    */
   @Transactional
-  public Project createProject(String name, String description, Member projectManager) {
-    Project project = Project.create(name, description, projectManager);
+  public Project createProject(
+      String name, String description, Member projectManager, Product product) {
+    Project project = Project.create(name, description, projectManager, product);
     return projectRepository.save(project);
   }
 
   /**
+   * 新しいプロジェクトを作成します（プロダクトなし）。
+   *
+   * @param name プロジェクト名
+   * @param description プロジェクトの説明
+   * @param projectManager プロジェクトマネージャー
+   * @return 作成されたプロジェクト
+   */
+  @Transactional
+  public Project createProject(String name, String description, Member projectManager) {
+    return createProject(name, description, projectManager, null);
+  }
+
+  /**
    * プロジェクトを編集します。
+   *
+   * @param projectId 編集するプロジェクトのID
+   * @param name 新しいプロジェクト名
+   * @param description 新しいプロジェクトの説明
+   * @param projectManager 新しいプロジェクトマネージャー
+   * @param product 関連付けるプロダクト
+   * @return 更新されたプロジェクト（存在しない場合はEmpty）
+   */
+  @Transactional
+  public Optional<Project> editProject(
+      SnowflakeId projectId,
+      String name,
+      String description,
+      Member projectManager,
+      Product product) {
+    return projectRepository
+        .findById(projectId)
+        .map(
+            project -> {
+              project.edit(name, description, projectManager, product);
+              return projectRepository.save(project);
+            });
+  }
+
+  /**
+   * プロジェクトを編集します（プロダクトを変更しない）。
    *
    * @param projectId 編集するプロジェクトのID
    * @param name 新しいプロジェクト名

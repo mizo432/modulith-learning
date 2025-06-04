@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import undecided.erp.common.entity.SnowflakeId;
+import undecided.erp.scrum.domain.model.product.Product;
 import undecided.erp.scrum.domain.model.team.Member;
 
 /**
@@ -37,4 +38,12 @@ public interface ProjectRepository extends JpaRepository<Project, SnowflakeId> {
    * @return 条件に一致するプロジェクトのリスト
    */
   List<Project> findByNameContaining(String name);
+
+  /**
+   * 指定されたプロダクトに関連付けられたプロジェクトを検索します。
+   *
+   * @param product 検索対象のプロダクト
+   * @return 指定されたプロダクトに関連付けられたプロジェクトのリスト
+   */
+  List<Project> findByProduct(Product product);
 }

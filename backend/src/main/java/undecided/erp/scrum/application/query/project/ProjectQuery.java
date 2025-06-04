@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.erp.common.entity.SnowflakeId;
+import undecided.erp.scrum.domain.model.product.Product;
 import undecided.erp.scrum.domain.model.project.Project;
 import undecided.erp.scrum.domain.model.project.ProjectMember;
 import undecided.erp.scrum.domain.model.project.ProjectMemberRepository;
@@ -85,6 +86,16 @@ public class ProjectQuery {
    */
   public List<Project> searchProjectsByName(String name) {
     return projectRepository.findByNameContaining(name);
+  }
+
+  /**
+   * 指定されたプロダクトに関連付けられたプロジェクトを検索します。
+   *
+   * @param product プロダクト
+   * @return プロジェクトのリスト
+   */
+  public List<Project> findProjectsByProduct(Product product) {
+    return projectRepository.findByProduct(product);
   }
 
   /**
