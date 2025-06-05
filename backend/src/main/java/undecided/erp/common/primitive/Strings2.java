@@ -6,47 +6,54 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 import com.ibm.icu.lang.UCharacter;
 import com.ibm.icu.lang.UProperty;
 import com.ibm.icu.text.UnicodeSet;
+import jakarta.validation.constraints.NotNull;
+import java.util.Collection;
+import org.apache.commons.lang3.tuple.Pair;
 import undecided.erp.common.precondition.IntegerPrecondition;
 
 /**
- * This class provides utility methods for handling strings.
+ * Strings2 クラスは、文字列操作を簡単に行うためのユーティリティメソッドを提供します。
+ * このクラスは、文字列の空チェック、全角・半角判定、前後のトリミング、指定された条件でのデフォルト文字列の提供など、 文字列に関連する様々な便利な機能を提供します。
+ *
+ * <p>このクラスはインスタンス化する必要はなく、すべてのメソッドは静的メソッドとして提供されています。
  */
 public class Strings2 {
 
-  /**
-   * An empty string constant.
-   */
+  /** An empty string constant. */
   public static final String EMPTY = "";
+
   /**
    * Represents a blank space.
-   * <p>
-   * This variable is a constant {@code String} that contains a single blank space character. It can
-   * be used to represent an empty or blank value in various situations.
-   * </p>
+   *
+   * <p>This variable is a constant {@code String} that contains a single blank space character. It
+   * can be used to represent an empty or blank value in various situations.
    */
   public static final String BLANK = " ";
+
   /**
    * {@code NARROW_WIDTH}変数は、Unicodeに基づいた狭い文字の幅を表す値です。 その値は定数であり、値は1です。
-   * <p>
-   * この変数は、{@code Strings2}クラスの{@code getWidthBasedOnUnicode}メソッドで文字の幅を
+   *
+   * <p>この変数は、{@code Strings2}クラスの{@code getWidthBasedOnUnicode}メソッドで文字の幅を
    * Unicode値に基づいて決定するために使用されます。このメソッドは、{@code UCharacter.getIntPropertyValue}
    * メソッドから得られた値がswitch文で定義されたどのケースにも一致しない場合、{@code NARROW_WIDTH}定数を使用します。
-   * <p>
-   * 注：{@code NARROW_WIDTH}変数はprivate、static、finalで宣言されているため、その所属するクラスの外部からは
+   *
+   * <p>注：{@code NARROW_WIDTH}変数はprivate、static、finalで宣言されているため、その所属するクラスの外部からは
    * 修正したりアクセスしたりすることはできません。
    */
   private static final int NARROW_WIDTH = 1;
+
   /**
    * {@code WIDE_WIDTH} 変数は、Unicodeに基づく幅値を表す変数です。 その値は定数で、2です。
-   * <p>
-   * この変数は {@code Strings2} クラスの {@code getWidthBasedOnUnicode} メソッドで使用され、 その Unicode
+   *
+   * <p>この変数は {@code Strings2} クラスの {@code getWidthBasedOnUnicode} メソッドで使用され、 その Unicode
    * 値に基づいて文字の幅を決定します。 {@code UCharacter.getIntPropertyValue} メソッドから得た値が switch
    * 文で定義されたどのケースとも一致しない場合、 {@code WIDE_WIDTH} 定数が使用されます。
-   * <p>
-   * 注意： {@code WIDE_WIDTH} 変数は private、static、final として宣言されているため、
+   *
+   * <p>注意： {@code WIDE_WIDTH} 変数は private、static、final として宣言されているため、
    * それを含むクラスの外部から変更したりアクセスしたりすることはできません。
    */
   private static final int WIDE_WIDTH = 2;
+
   /**
    * {@code HALF_WIDTH_UNICODE_SET} represents a UnicodeSet that contains halfwidth, narrow, and
    * neutral characters based on East Asian Width property.
@@ -54,9 +61,70 @@ public class Strings2 {
   private static final UnicodeSet HALF_WIDTH_UNICODE_SET =
       new UnicodeSet(
           "[[:East_Asian_Width=Halfwidth:][:East_Asian_Width=Narrow:][:East_Asian_Width=Neutral:]]");
+
   private static final UnicodeSet FULL_WIDTH_UNICODE_SET =
       new UnicodeSet(
           "[[:East_Asian_Width=Fullwidth:][:East_Asian_Width=Wide:][:East_Asian_Width=Ambiguous:]]");
+
+  /**
+   * 指定された文字列が、与えられた文字列のコレクション内のいずれかの文字列を含むかどうかを判定します。
+   *
+   * @param str チェック対象の文字列。null の場合は false を返します。
+   * @param searchStrs 判定に使用する文字列のコレクション。null または空の場合は false を返します。
+   * @return 引数 str が searchStrs 内のいずれかの文字列を含む場合は true、それ以外の場合は false。
+   */
+  public static boolean containsAny(final String str, @NotNull Collection<String> searchStrs) {
+    boolean isStringNull = str == null;
+    boolean isSearchStrsNullOrEmpty = searchStrs == null || searchStrs.isEmpty();
+
+    if (isStringNull || isSearchStrsNullOrEmpty) {
+      return false;
+    }
+
+    for (String searchStr : searchStrs) {
+      if (str.contains(searchStr)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * 指定された文字列内の部分文字列を置き換えます。
+   *
+   * @param str 元の文字列。nullの場合はnullが返されます。
+   * @param searchText 置き換え対象の部分文字列。nullまたは空文字列の場合は置き換えが発生しません。
+   * @param replacementText 置き換え後の文字列。nullが渡された場合、置き換え後の文字列はnullになります。
+   * @return 部分文字列を置き換えた新しい文字列。元の文字列がnullの場合はnullを返します。
+   */
+  public static String replace(
+      final String str, @NotNull final String searchText, @NotNull final String replacementText) {
+    if (str == null) {
+      return null;
+    }
+    return str.replace(searchText, replacementText);
+  }
+
+  /**
+   * 指定された文字列に対して、複数の検索文字列と置換文字列のペアを用いて置換を行います。
+   *
+   * @param str 対象となる文字列。nullの場合はnullを返します。
+   * @param replaceConfigs 検索文字列と置換文字列のペアの配列。それぞれのペアに基づいて置換が行われます。
+   * @return 全ての置換を適用した結果の文字列を返します。入力がnullの場合はnullを返します。
+   */
+  @SafeVarargs
+  public static String replace(final String str, final Pair<String, String>... replaceConfigs) {
+    if (str == null) {
+      return null;
+    }
+    String result = str;
+    for (Pair<String, String> replaceConfig : replaceConfigs) {
+      String searchText = replaceConfig.getKey();
+      String replacementText = replaceConfig.getValue();
+      result = replace(result, searchText, replacementText);
+    }
+    return result;
+  }
 
   /**
    * 与えられた文字列が空かどうかを確認します。
@@ -104,13 +172,15 @@ public class Strings2 {
    *
    * @param codePoint 幅を決定するためのユニコードのコードポイント
    * @return ユニコードのコードポイントに基づいた幅値。コードポイントが全角、広い、または曖昧な東アジアの幅を持つ場合、 {@code WIDE_WIDTH}
-   * を返します。それ以外の場合は、{@code NARROW_WIDTH} を返します。
+   *     を返します。それ以外の場合は、{@code NARROW_WIDTH} を返します。
    */
   private static int getWidthBasedOnUnicode(int codePoint) {
     int value = UCharacter.getIntPropertyValue(codePoint, UProperty.EAST_ASIAN_WIDTH);
     return switch (value) {
-      case UCharacter.EastAsianWidth.FULLWIDTH, UCharacter.EastAsianWidth.WIDE,
-           UCharacter.EastAsianWidth.AMBIGUOUS -> WIDE_WIDTH;
+      case UCharacter.EastAsianWidth.FULLWIDTH,
+          UCharacter.EastAsianWidth.WIDE,
+          UCharacter.EastAsianWidth.AMBIGUOUS ->
+          WIDE_WIDTH;
       default -> NARROW_WIDTH;
     };
   }
@@ -132,7 +202,6 @@ public class Strings2 {
       }
     }
     return true;
-
   }
 
   /**
@@ -151,7 +220,6 @@ public class Strings2 {
       }
     }
     return true;
-
   }
 
   /**
@@ -162,7 +230,6 @@ public class Strings2 {
    */
   public static String emptyIfNull(String str) {
     return defaultIfNull(str, EMPTY);
-
   }
 
   /**
@@ -172,9 +239,8 @@ public class Strings2 {
    * @param defaultString 与えられた文字列が空またはnullの場合に返すデフォルトの文字列
    * @return 与えられた文字列が空またはnullでない場合はその文字列、そうでない場合はデフォルトの文字列
    */
-  public static String defaultIfEmpty(String str, String defaultString) {
+  public static String defaultIfEmpty(final String str, String defaultString) {
     return isEmpty(str) ? defaultString : str;
-
   }
 
   /**
@@ -183,9 +249,8 @@ public class Strings2 {
    * @param str 確認されるべき文字列
    * @return 文字列が空またはnullの場合はnull、それ以外の場合は与えられた文字列
    */
-  public static String nullIfEmpty(String str) {
+  public static String nullIfEmpty(final String str) {
     return defaultIfEmpty(str, null);
-
   }
 
   /**
@@ -206,7 +271,6 @@ public class Strings2 {
     }
     final String s1 = str.substring(0, prefix.length());
     return s1.equals(prefix);
-
   }
 
   /**
@@ -216,8 +280,7 @@ public class Strings2 {
    * @param prefix 比較する接頭辞
    * @return 文字列が接頭辞で始まる場合（大文字・小文字を区別せず）は{@code true}、そうでない場合は{@code false}
    */
-  public static boolean startsWithIgnoreCase(final String str,
-      final String prefix) {
+  public static boolean startsWithIgnoreCase(final String str, final String prefix) {
     if (str == null || prefix == null) {
       return false;
     }
@@ -237,8 +300,7 @@ public class Strings2 {
    * @param suffix 比較する接尾辞。
    * @return 文字列が接尾辞で終わる場合は {@code true}、それ以外の場合は {@code false}。
    */
-  public static boolean endsWith(final String str,
-      final String suffix) {
+  public static boolean endsWith(final String str, final String suffix) {
     if (str == null || suffix == null) {
       return false;
     }
@@ -258,8 +320,7 @@ public class Strings2 {
    * @param suffix 比較する接尾辞。
    * @return 文字列が大文字と小文字を区別せずに接尾辞で終わる場合は {@code true}、 そうでない場合は {@code false}。
    */
-  public static boolean endsWithIgnoreCase(final String str,
-      final String suffix) {
+  public static boolean endsWithIgnoreCase(final String str, final String suffix) {
     if (str == null || suffix == null) {
       return false;
     }
@@ -280,7 +341,6 @@ public class Strings2 {
    */
   public static String ltrim(final String str) {
     return ltrim(str, null);
-
   }
 
   /**
@@ -353,7 +413,6 @@ public class Strings2 {
    */
   public static String trim(final String str) {
     return trim(str, null);
-
   }
 
   /**
@@ -421,7 +480,6 @@ public class Strings2 {
       return true;
     }
     return value.matches("[0-9]*");
-
   }
 
   /**
@@ -435,7 +493,6 @@ public class Strings2 {
       return 0;
     }
     return value.length();
-
   }
 
   /**
@@ -464,8 +521,8 @@ public class Strings2 {
    * @return 繰り返された文字列。
    */
   public static String repeat(String str, int times) {
-    IntegerPrecondition.checkNonNegative(times,
-        () -> new IllegalArgumentException("times must not negative times=" + times));
+    IntegerPrecondition.checkNonNegative(
+        times, () -> new IllegalArgumentException("times must not negative times=" + times));
 
     return repeat(str, times, EMPTY);
   }
@@ -479,8 +536,8 @@ public class Strings2 {
    * @return 指定した数の反復と分割記号を含む結果の文字列
    */
   public static String repeat(String str, int times, String separator) {
-    IntegerPrecondition.checkNonNegative(times,
-        () -> new IllegalArgumentException("times must not negative times=" + times));
+    IntegerPrecondition.checkNonNegative(
+        times, () -> new IllegalArgumentException("times must not negative times=" + times));
     if (isNull(str)) {
       str = EMPTY;
     }
@@ -510,8 +567,7 @@ public class Strings2 {
       return str;
     }
     final char[] chars = str.toCharArray();
-    if (chars.length >= 2 && Character.isUpperCase(chars[0])
-        && Character.isUpperCase(chars[1])) {
+    if (chars.length >= 2 && Character.isUpperCase(chars[0]) && Character.isUpperCase(chars[1])) {
       return str;
     }
     chars[0] = Character.toLowerCase(chars[0]);
@@ -538,41 +594,33 @@ public class Strings2 {
   }
 
   /**
-   * Checks if a given string is blank, which means it is either null, empty, or contains only
-   * whitespace characters.
+   * 指定された文字列が空または空白のみかどうかを判定します。
    *
-   * @param str the string to check for blankness
-   * @return true if the string is null, empty, or contains only whitespace; false otherwise
+   * @param str 判定対象の文字列
+   * @return 文字列がnull、空文字列、または空白文字のみで構成されている場合はtrue、それ以外の場合はfalse
    */
   public static boolean isBlank(String str) {
     return (str == null || str.isEmpty() || str.trim().isEmpty());
-
   }
 
   /**
-   * Returns the provided default string if the input string is blank, otherwise returns the input
-   * string.
+   * 指定された文字列が空白、null、または空文字である場合にデフォルト文字列を返します。 空白でない場合は元の文字列を返します。
    *
-   * @param str the input string to check for blankness
-   * @param defaultString the default string to return if the input string is blank
-   * @return the input string if it is not blank, otherwise the default string
+   * @param str チェック対象の文字列
+   * @param defaultString strが空白、null、または空文字の場合に返されるデフォルト文字列
+   * @return strが空白、null、または空文字の場合はdefaultString、それ以外の場合はstr
    */
   public static String defaultIfBlank(String str, String defaultString) {
     return isBlank(str) ? defaultString : str;
   }
 
   /**
-   * Returns null if the provided string is null, empty, or contains only whitespace.
-   * <p>
-   * Otherwise, returns the original string.
+   * 指定された文字列が空白文字列の場合に null を返し、それ以外の場合はその文字列を返します。
    *
-   * @param str the string to check, may be null
-   * @return null if the string is null, empty, or contains only whitespace, otherwise the original
-   * string
+   * @param str 処理対象の文字列
+   * @return 入力文字列が空白なら null、それ以外ならそのままの文字列
    */
   public static String nullIfBlank(String str) {
     return defaultIfBlank(str, null);
   }
-
-
 }
