@@ -50,8 +50,15 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
   /**
    * ユニークなユーザーストーリー識別子を表す変数。
    *
-   * <p>アプリケーションにおける各ユーザーストーリーを一意に識別するために使用されます。 データベース上の "story_id" カラムに対応し、null 値は許可されていません。
+   * <p>アプリケーションにおける各ユーザーストーリーを一意に識別するために使用されます。 データベース上の "story_id" カラムに対応し、null 値は許可されていません。 --
+   * GETTER -- ユーザーストーリーIDを取得します。
+   *
+   * <p>-- SETTER -- ユーザーストーリーIDを設定します。
+   *
+   * @return ユーザーストーリーID
+   * @param storyId 設定するユーザーストーリーID
    */
+  @Getter
   @Id
   @Column(name = "story_id", columnDefinition = "BIGINT", nullable = false)
   @Convert(converter = SnowflakeId.SnowflakeIdConverter.class)
@@ -60,7 +67,10 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
   /**
    * このユーザーストーリーが属するプロダクトバックログを表す変数。
    *
-   * <p>プロダクトバックログとユーザーストーリーの関連付けを表します。 データベース上の "backlog_id" カラムに対応します。
+   * <p>プロダクトバックログとユーザーストーリーの関連付けを表します。 データベース上の "backlog_id" カラムに対応します。 -- SETTER --
+   * このユーザーストーリーが属するプロダクトバックログを設定します。
+   *
+   * @param productBacklog 設定するプロダクトバックログ
    */
   @ManyToOne
   @JoinColumn(name = "backlog_id", nullable = false)
@@ -70,7 +80,10 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
   /**
    * このユーザーストーリーが属するエピックを表す変数。
    *
-   * <p>エピックとユーザーストーリーの関連付けを表します。 データベース上の "epic_id" カラムに対応します。
+   * <p>エピックとユーザーストーリーの関連付けを表します。 データベース上の "epic_id" カラムに対応します。 -- SETTER --
+   * このユーザーストーリーが属するエピックを設定します。
+   *
+   * @param epic 設定するエピック
    */
   @ManyToOne
   @JoinColumn(name = "epic_id")
@@ -145,7 +158,13 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
   /**
    * バックログ内での順序を表す変数。
    *
-   * <p>プロダクトバックログ内でのユーザーストーリーの順序を示します。 データベース上の "backlog_order" カラムに対応します。
+   * <p>プロダクトバックログ内でのユーザーストーリーの順序を示します。 データベース上の "backlog_order" カラムに対応します。 -- GETTER --
+   * バックログ内での順序を取得します。
+   *
+   * <p>-- SETTER -- バックログ内での順序を設定します。
+   *
+   * @return バックログ内での順序
+   * @param backlogOrder 設定するバックログ内での順序
    */
   @Getter
   @Column(name = "backlog_order")
@@ -161,60 +180,6 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
   private Set<Task> tasks = new HashSet<>();
 
   /**
-   * ユーザーストーリーIDを取得します。
-   *
-   * @return ユーザーストーリーID
-   */
-  public SnowflakeId getStoryId() {
-    return storyId;
-  }
-
-  /**
-   * ユーザーストーリーIDを設定します。
-   *
-   * @param storyId 設定するユーザーストーリーID
-   */
-  public void setStoryId(SnowflakeId storyId) {
-    this.storyId = storyId;
-  }
-
-  /**
-   * このユーザーストーリーが属するプロダクトバックログを設定します。
-   *
-   * @param productBacklog 設定するプロダクトバックログ
-   */
-  public void setProductBacklog(ProductBacklog productBacklog) {
-    this.productBacklog = productBacklog;
-  }
-
-  /**
-   * このユーザーストーリーが属するエピックを設定します。
-   *
-   * @param epic 設定するエピック
-   */
-  public void setEpic(Epic epic) {
-    this.epic = epic;
-  }
-
-  /**
-   * バックログ内での順序を取得します。
-   *
-   * @return バックログ内での順序
-   */
-  public Integer getBacklogOrder() {
-    return backlogOrder;
-  }
-
-  /**
-   * バックログ内での順序を設定します。
-   *
-   * @param backlogOrder 設定するバックログ内での順序
-   */
-  public void setBacklogOrder(Integer backlogOrder) {
-    this.backlogOrder = backlogOrder;
-  }
-
-  /**
    * このユーザーストーリーを分割して新しいユーザーストーリーを作成します。
    *
    * <p>元のユーザーストーリーの一部を新しいユーザーストーリーに移動します。
@@ -228,8 +193,8 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
   public UserStory split(
       String newTitle, String newDescription, Integer newStoryPoints, Integer newValue) {
     UserStory newStory = new UserStory();
-    newStory.setProductBacklog(this.productBacklog);
-    newStory.setEpic(this.epic);
+    newStory.productBacklog = this.productBacklog;
+    newStory.epic = this.epic;
     newStory.title = newTitle;
     newStory.description = newDescription;
     newStory.storyPoints = newStoryPoints;
@@ -239,12 +204,12 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
 
     // 元のストーリーのポイントを調整（分割後のポイントは元のポイントから新しいポイントを引いた値）
     if (this.storyPoints != null && newStoryPoints != null) {
-      this.storyPoints = Math.max(0, this.storyPoints - newStoryPoints);
+      this.storyPoints = (Integer) Math.max(0, this.storyPoints - newStoryPoints);
     }
 
     // 元のストーリーの価値を調整（分割後の価値は元の価値から新しい価値を引いた値）
     if (this.value != null && newValue != null) {
-      this.value = Math.max(0, this.value - newValue);
+      this.value = (Integer) Math.max(0, this.value - newValue);
     }
 
     return newStory;
