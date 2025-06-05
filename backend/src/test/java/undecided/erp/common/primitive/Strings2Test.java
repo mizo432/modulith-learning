@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Collection;
+import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -883,6 +885,79 @@ class Strings2Test {
       assertThat(result)
           .as("Expected original string when search text in pair is empty")
           .isEqualTo("no changes");
+    }
+  }
+
+  @Nested
+  @DisplayName("containsAnyメソッドのテスト")
+  class ContainsAnyTest {
+
+    @Test
+    @DisplayName("文字列がnullの場合、falseを返す")
+    void shouldReturnFalseWhenInputStringIsNull() {
+      String str = null;
+      Collection<String> searchStrs = List.of("a", "b", "c");
+      assertThat(Strings2.containsAny(str, searchStrs)).as("文字列がnullの場合、falseが期待されます").isFalse();
+    }
+
+    @Test
+    @DisplayName("検索対象コレクションがnullの場合、falseを返す")
+    void shouldReturnFalseWhenSearchCollectionIsNull() {
+      String str = "abc";
+      Collection<String> searchStrs = null;
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("検索対象コレクションがnullの場合、falseが期待されます")
+          .isFalse();
+    }
+
+    @Test
+    @DisplayName("検索対象コレクションが空の場合、falseを返す")
+    void shouldReturnFalseWhenSearchCollectionIsEmpty() {
+      String str = "abc";
+      Collection<String> searchStrs = List.of();
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("検索対象コレクションが空の場合、falseが期待されます")
+          .isFalse();
+    }
+
+    @Test
+    @DisplayName("文字列が検索対象のいずれとも一致しない場合、falseを返す")
+    void shouldReturnFalseWhenNoneOfSearchStringsAreFound() {
+      String str = "abc";
+      Collection<String> searchStrs = List.of("x", "y", "z");
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("文字列が検索対象のいずれとも一致しない場合、falseが期待されます")
+          .isFalse();
+    }
+
+    @Test
+    @DisplayName("文字列が検索対象のいずれかと一致する場合、trueを返す")
+    void shouldReturnTrueWhenAtLeastOneSearchStringIsFound() {
+      String str = "abc";
+      Collection<String> searchStrs = List.of("x", "b", "z");
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("文字列が検索対象のいずれかと一致する場合、trueが期待されます")
+          .isTrue();
+    }
+
+    @Test
+    @DisplayName("検索対象コレクションや文字列がnullまたは空の混在の場合、適切に処理される")
+    void shouldHandleMixedNullAndEmptyInputsProperly() {
+      assertThat(Strings2.containsAny(null, null))
+          .as("文字列と検索対象コレクションの両方がnullの場合、falseが期待されます")
+          .isFalse();
+
+      assertThat(Strings2.containsAny("", null))
+          .as("文字列が空、検索対象コレクションがnullの場合、falseが期待されます")
+          .isFalse();
+
+      assertThat(Strings2.containsAny(null, List.of()))
+          .as("文字列がnull、検索対象コレクションが空の場合、falseが期待されます")
+          .isFalse();
+
+      assertThat(Strings2.containsAny("", List.of()))
+          .as("文字列と検索対象コレクションの両方が空の場合、falseが期待されます")
+          .isFalse();
     }
   }
 }
