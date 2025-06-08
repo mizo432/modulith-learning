@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Collection;
+import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,9 +21,7 @@ class Strings2Test {
     @DisplayName("入力がnullの場合nullを返す")
     void shouldReturnNullWhenStringIsNull() {
       String input = null;
-      assertThat(Strings2.nullIfBlank(input))
-          .as("Expected null when input is null")
-          .isNull();
+      assertThat(Strings2.nullIfBlank(input)).as("Expected null when input is null").isNull();
     }
 
     @Test
@@ -51,9 +52,7 @@ class Strings2Test {
     }
   }
 
-  /**
-   * Method under test: {@link Strings2#getHalfWidthCharCount(String)}
-   */
+  /** Method under test: {@link Strings2#getHalfWidthCharCount(String)} */
   @Nested
   @DisplayName("getHalfWidthCharCountメソッドのテスト")
   class GetHalfWidthCharCountTest {
@@ -82,8 +81,8 @@ class Strings2Test {
 
   /**
    * Method under test: {@link Strings2#ltrim(String)}
-   * <p>
-   * Method under test: {@link Strings2#ltrim(String, String)}
+   *
+   * <p>Method under test: {@link Strings2#ltrim(String, String)}
    */
   @Nested
   class lTrimTest {
@@ -149,9 +148,7 @@ class Strings2Test {
     }
   }
 
-  /**
-   * Method under test: {@link Strings2#trimPrefix(String, String)}
-   */
+  /** Method under test: {@link Strings2#trimPrefix(String, String)} */
   @Nested
   class TrimPrefixTest {
 
@@ -163,12 +160,9 @@ class Strings2Test {
       assertThat(Strings2.trimPrefix("Text", null)).isEqualTo("Text");
       assertThat(Strings2.trimPrefix("Text", Strings2.EMPTY)).isEqualTo("Text");
     }
-
   }
 
-  /**
-   * Method under test: {@link Strings2#trim(String)}
-   */
+  /** Method under test: {@link Strings2#trim(String)} */
   @Nested
   class TrimTest {
 
@@ -203,9 +197,7 @@ class Strings2Test {
     }
   }
 
-  /**
-   * Method under test: {@link Strings2#repeat(String, int)}
-   */
+  /** Method under test: {@link Strings2#repeat(String, int)} */
   @Nested
   class RepeatTest {
 
@@ -224,8 +216,8 @@ class Strings2Test {
     @Test
     void shouldThrowExceptionWhenRepeatNegativeTimes() {
       // Arrange, Act and Assert
-      assertThatThrownBy(() -> Strings2.repeat("Str", -1)).isInstanceOf(
-              IllegalArgumentException.class)
+      assertThatThrownBy(() -> Strings2.repeat("Str", -1))
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("times must not negative times=-1");
     }
 
@@ -244,31 +236,28 @@ class Strings2Test {
     @Test
     void shouldThrowExceptionWhenRepeatNegativeTimesWithSeparator() {
       // Arrange, Act and Assert
-      assertThatThrownBy(() -> Strings2.repeat("Str", -1, "Separator")).isInstanceOf(
-              IllegalArgumentException.class)
+      assertThatThrownBy(() -> Strings2.repeat("Str", -1, "Separator"))
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("times must not negative times=-1");
     }
   }
 
-  /**
-   * Method under test: {@link Strings2#surround(String, String)}
-   */
+  /** Method under test: {@link Strings2#surround(String, String)} */
   @Nested
   class SurroundTest {
 
     @Test
     void surround() {
       // Arrange, Act and Assert
-      assertThat(Strings2.surround("Str", "Surround String")).isEqualTo(
-          "Surround StringStrSurround String");
+      assertThat(Strings2.surround("Str", "Surround String"))
+          .isEqualTo("Surround StringStrSurround String");
     }
-
   }
 
   /**
    * Method under test: {@link Strings2#rtrim(String, String)}
-   * <p>
-   * Method under test: {@link Strings2#rtrim(String)}
+   *
+   * <p>Method under test: {@link Strings2#rtrim(String)}
    */
   @Nested
   class RtrimTest {
@@ -324,9 +313,7 @@ class Strings2Test {
     }
   }
 
-  /**
-   * Tests for the `getHalfWidthLength` method in Strings2 class.
-   */
+  /** Tests for the `getHalfWidthLength` method in Strings2 class. */
   @Nested
   class GetHalfWidthLengthTest {
 
@@ -357,7 +344,6 @@ class Strings2Test {
       int result = Strings2.getHalfWidthLength(str);
       assertThat(result).as("Expected length is 0 as input string is empty").isEqualTo(0);
     }
-
   }
 
   @Nested
@@ -390,7 +376,6 @@ class Strings2Test {
       boolean result = Strings2.isAllCharacterHalfWidth(str);
       assertThat(result).as("Expected result is true for null string").isTrue();
     }
-
   }
 
   @Nested
@@ -432,9 +417,7 @@ class Strings2Test {
       String str = "Not Empty";
       String defaultValue = "";
       String result = Strings2.defaultIfEmpty(str, defaultValue);
-      assertThat(result)
-          .as("Expected original string, because it is not empty")
-          .isEqualTo(str);
+      assertThat(result).as("Expected original string, because it is not empty").isEqualTo(str);
     }
 
     @Test
@@ -443,8 +426,7 @@ class Strings2Test {
       String defaultValue = null;
       String result = Strings2.defaultIfEmpty(str, defaultValue);
       assertThat(result)
-          .as(
-              "Expected null string, because input string and default string are null")
+          .as("Expected null string, because input string and default string are null")
           .isNull();
     }
 
@@ -454,8 +436,7 @@ class Strings2Test {
       String defaultValue = null;
       String result = Strings2.defaultIfEmpty(str, defaultValue);
       assertThat(result)
-          .as(
-              "Expected null string, because input string and default string are null")
+          .as("Expected null string, because input string and default string are null")
           .isNull();
     }
   }
@@ -571,8 +552,8 @@ class Strings2Test {
     @DisplayName("空白を含むがそれ以外の文字を含む場合falseを返す")
     void shouldReturnFalseForStringWithNonBlankAndBlankSpaces() {
       String input = "  test  ";
-      assertThat(Strings2.isBlank(input)).as(
-              "Expected false for a string with spaces and non-blank characters")
+      assertThat(Strings2.isBlank(input))
+          .as("Expected false for a string with spaces and non-blank characters")
           .isFalse();
     }
   }
@@ -584,24 +565,26 @@ class Strings2Test {
     void shouldReturnTrueWhenStringStartsWithPrefix() {
       String str = "Hello World";
       String prefix = "Hello";
-      assertThat(Strings2.startWith(str, prefix)).as(
-          "Expected true as the string starts with the prefix.").isTrue();
+      assertThat(Strings2.startWith(str, prefix))
+          .as("Expected true as the string starts with the prefix.")
+          .isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenStringStartsWithPrefix2() {
       String str = "Hello";
       String prefix = "Hello World";
-      assertThat(Strings2.startWith(str, prefix)).as(
-          "Expected true as the string starts with the prefix.").isFalse();
+      assertThat(Strings2.startWith(str, prefix))
+          .as("Expected true as the string starts with the prefix.")
+          .isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenStringDoesNotStartsWithPrefix() {
       String str = "Hello World";
       String prefix = "World";
-      assertThat(Strings2.startWith(str, prefix)).as(
-              "Expected false as the string does not start with the prefix.")
+      assertThat(Strings2.startWith(str, prefix))
+          .as("Expected false as the string does not start with the prefix.")
           .isFalse();
     }
 
@@ -609,15 +592,17 @@ class Strings2Test {
     void shouldReturnFalseWhenStringAndPrefixAreNull() {
       String str = null;
       String prefix = null;
-      assertThat(Strings2.startWith(str, prefix)).as(
-          "Expected false as both string and prefix are null.").isFalse();
+      assertThat(Strings2.startWith(str, prefix))
+          .as("Expected false as both string and prefix are null.")
+          .isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenStringIsNull() {
       String str = null;
       String prefix = "Hello";
-      assertThat(Strings2.startWith(str, prefix)).as("Expected false as the string is null.")
+      assertThat(Strings2.startWith(str, prefix))
+          .as("Expected false as the string is null.")
           .isFalse();
     }
 
@@ -625,7 +610,8 @@ class Strings2Test {
     void shouldReturnFalseWhenPrefixIsNull() {
       String str = "Hello World";
       String prefix = null;
-      assertThat(Strings2.startWith(str, prefix)).as("Expected false as the prefix is null.")
+      assertThat(Strings2.startWith(str, prefix))
+          .as("Expected false as the prefix is null.")
           .isFalse();
     }
   }
@@ -664,8 +650,8 @@ class Strings2Test {
     void shouldReturnFalseWhenStringAndPrefixAreNull() {
       String str = null;
       String prefix = null;
-      assertThat(Strings2.startsWithIgnoreCase(str, prefix)).as(
-              "Expected false as both string and prefix are null.")
+      assertThat(Strings2.startsWithIgnoreCase(str, prefix))
+          .as("Expected false as both string and prefix are null.")
           .isFalse();
     }
 
@@ -673,16 +659,18 @@ class Strings2Test {
     void shouldReturnFalseWhenStringIsNull() {
       String str = null;
       String prefix = "Hello";
-      assertThat(Strings2.startsWithIgnoreCase(str, prefix)).as(
-          "Expected false as the string is null.").isFalse();
+      assertThat(Strings2.startsWithIgnoreCase(str, prefix))
+          .as("Expected false as the string is null.")
+          .isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenPrefixIsNull() {
       String str = "Hello World";
       String prefix = null;
-      assertThat(Strings2.startsWithIgnoreCase(str, prefix)).as(
-          "Expected false as the prefix is null.").isFalse();
+      assertThat(Strings2.startsWithIgnoreCase(str, prefix))
+          .as("Expected false as the prefix is null.")
+          .isFalse();
     }
   }
 
@@ -693,16 +681,17 @@ class Strings2Test {
     void shouldReturnTrueWhenStringEndsWithSuffix() {
       String str = "Hello World";
       String suffix = "World";
-      assertThat(Strings2.endsWith(str, suffix)).as(
-          "Expected true as the string ends with the suffix.").isTrue();
+      assertThat(Strings2.endsWith(str, suffix))
+          .as("Expected true as the string ends with the suffix.")
+          .isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenStringDoesNotEndsWithSuffix() {
       String str = "Hello World";
       String suffix = "Hello";
-      assertThat(Strings2.endsWith(str, suffix)).as(
-              "Expected false as the string does not end with the suffix.")
+      assertThat(Strings2.endsWith(str, suffix))
+          .as("Expected false as the string does not end with the suffix.")
           .isFalse();
     }
 
@@ -710,8 +699,8 @@ class Strings2Test {
     void shouldReturnFalseWhenStringDoesNotEndsWithSuffix2() {
       String str = "Hello";
       String suffix = "Hello World";
-      assertThat(Strings2.endsWith(str, suffix)).as(
-              "Expected false as the string does not end with the suffix.")
+      assertThat(Strings2.endsWith(str, suffix))
+          .as("Expected false as the string does not end with the suffix.")
           .isFalse();
     }
 
@@ -719,15 +708,17 @@ class Strings2Test {
     void shouldReturnFalseWhenStringAndSuffixAreNull() {
       String str = null;
       String suffix = null;
-      assertThat(Strings2.endsWith(str, suffix)).as(
-          "Expected false as both string and suffix are null.").isFalse();
+      assertThat(Strings2.endsWith(str, suffix))
+          .as("Expected false as both string and suffix are null.")
+          .isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenStringIsNull() {
       String str = null;
       String suffix = "World";
-      assertThat(Strings2.endsWith(str, suffix)).as("Expected false as the string is null.")
+      assertThat(Strings2.endsWith(str, suffix))
+          .as("Expected false as the string is null.")
           .isFalse();
     }
 
@@ -735,7 +726,8 @@ class Strings2Test {
     void shouldReturnFalseWhenSuffixIsNull() {
       String str = "Hello World";
       String suffix = null;
-      assertThat(Strings2.endsWith(str, suffix)).as("Expected false as the suffix is null.")
+      assertThat(Strings2.endsWith(str, suffix))
+          .as("Expected false as the suffix is null.")
           .isFalse();
     }
   }
@@ -747,16 +739,17 @@ class Strings2Test {
     void shouldReturnTrueWhenStringEndsWithSuffixIgnoringCase() {
       String str = "Hello World";
       String suffix = "WORLD";
-      assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-          "文字列が大文字小文字を無視して接尾辞で終わっているため、trueを期待します。").isTrue();
+      assertThat(Strings2.endsWithIgnoreCase(str, suffix))
+          .as("文字列が大文字小文字を無視して接尾辞で終わっているため、trueを期待します。")
+          .isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenStringDoesNotEndsWithSuffixIgnoringCase() {
       String str = "Hello World";
       String suffix = "HELLO";
-      assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-              "文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。")
+      assertThat(Strings2.endsWithIgnoreCase(str, suffix))
+          .as("文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。")
           .isFalse();
     }
 
@@ -764,8 +757,8 @@ class Strings2Test {
     void shouldReturnFalseWhenStringDoesNotEndsWithSuffixIgnoringCase2() {
       String str = "hello";
       String suffix = "Hello World";
-      assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-              "文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。")
+      assertThat(Strings2.endsWithIgnoreCase(str, suffix))
+          .as("文字列が大文字小文字を無視して接尾辞で終わっていないため、falseを期待します。")
           .isFalse();
     }
 
@@ -773,24 +766,27 @@ class Strings2Test {
     void shouldReturnFalseWhenStringAndSuffixAreNull() {
       String str = null;
       String suffix = null;
-      assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-          "文字列と接尾辞の両方がnullであるため、falseを期待します。").isFalse();
+      assertThat(Strings2.endsWithIgnoreCase(str, suffix))
+          .as("文字列と接尾辞の両方がnullであるため、falseを期待します。")
+          .isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenStringIsNull() {
       String str = null;
       String suffix = "World";
-      assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-          "文字列がnullであるため、falseを期待します。").isFalse();
+      assertThat(Strings2.endsWithIgnoreCase(str, suffix))
+          .as("文字列がnullであるため、falseを期待します。")
+          .isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenSuffixIsNull() {
       String str = "Hello World";
       String suffix = null;
-      assertThat(Strings2.endsWithIgnoreCase(str, suffix)).as(
-          "接尾辞がnullであるため、falseを期待します。").isFalse();
+      assertThat(Strings2.endsWithIgnoreCase(str, suffix))
+          .as("接尾辞がnullであるため、falseを期待します。")
+          .isFalse();
     }
   }
 
@@ -810,8 +806,8 @@ class Strings2Test {
       String str = "Hello World";
       String suffix = "Hello";
       String result = Strings2.trimSuffix(str, suffix);
-      assertThat(result).as(
-              "Expected original string as the string does not end with the suffix")
+      assertThat(result)
+          .as("Expected original string as the string does not end with the suffix")
           .isEqualTo(str);
     }
 
@@ -820,7 +816,8 @@ class Strings2Test {
       String str = "Hello World";
       String suffix = "World";
       String result = Strings2.trimSuffix(str, suffix);
-      assertThat(result).as("Expected trimmed string as the string ends with the suffix")
+      assertThat(result)
+          .as("Expected trimmed string as the string ends with the suffix")
           .isEqualTo("Hello ");
     }
 
@@ -830,6 +827,137 @@ class Strings2Test {
       String suffix = "World";
       String result = Strings2.trimSuffix(str, suffix);
       assertThat(result).as("Expected null as the input string is null").isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("replaceメソッドのテスト")
+  class ReplaceTest {
+
+    @Test
+    @DisplayName("入力文字列がnullの場合、nullを返す")
+    void shouldReturnNullWhenInputStringIsNull() {
+      String result = Strings2.replace(null, "old", "new");
+      assertThat(result).as("Expected null when input string is null").isNull();
+    }
+
+    @Test
+    @DisplayName("文字列内の一致する部分を全て置換する")
+    void shouldReplaceAllOccurrencesOfSearchText() {
+      String result = Strings2.replace("this is a test", "is", "was");
+      assertThat(result)
+          .as("Expected all occurrences of the search text to be replaced")
+          .isEqualTo("thwas was a test");
+    }
+
+    @Test
+    @DisplayName("置換対象が存在しない場合、元の文字列を返す")
+    void shouldReturnInputWhenSearchTextNotFound() {
+      String result = Strings2.replace("no match here", "unmatched", "replace");
+      assertThat(result)
+          .as("Expected the original string when search text is not present")
+          .isEqualTo("no match here");
+    }
+
+    @Test
+    @DisplayName("入力がnullの場合、nullを返す (多重ペア置換)")
+    void shouldReturnNullWhenInputIsNullForMultiplePairs() {
+      String result = Strings2.replace(null, Pair.of("old1", "new1"), Pair.of("old2", "new2"));
+      assertThat(result)
+          .as("Expected null when input string is null for multiple replacements")
+          .isNull();
+    }
+
+    @Test
+    @DisplayName("文字列内の複数の部分を順次置換する")
+    void shouldApplyMultipleReplacementsSequentially() {
+      String result =
+          Strings2.replace("this is a test", Pair.of("is", "was"), Pair.of("test", "example"));
+      assertThat(result)
+          .as("Expected string with multiple replacements applied sequentially")
+          .isEqualTo("thwas was a example");
+    }
+
+    @Test
+    @DisplayName("置換対象が空文字の場合、元の文字列を返す")
+    void shouldReturnInputIfSearchTextInPairIsEmpty() {
+      String result = Strings2.replace("no changes", Pair.of("A", "new"));
+      assertThat(result)
+          .as("Expected original string when search text in pair is empty")
+          .isEqualTo("no changes");
+    }
+  }
+
+  @Nested
+  @DisplayName("containsAnyメソッドのテスト")
+  class ContainsAnyTest {
+
+    @Test
+    @DisplayName("文字列がnullの場合、falseを返す")
+    void shouldReturnFalseWhenInputStringIsNull() {
+      String str = null;
+      Collection<String> searchStrs = List.of("a", "b", "c");
+      assertThat(Strings2.containsAny(str, searchStrs)).as("文字列がnullの場合、falseが期待されます").isFalse();
+    }
+
+    @Test
+    @DisplayName("検索対象コレクションがnullの場合、falseを返す")
+    void shouldReturnFalseWhenSearchCollectionIsNull() {
+      String str = "abc";
+      Collection<String> searchStrs = null;
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("検索対象コレクションがnullの場合、falseが期待されます")
+          .isFalse();
+    }
+
+    @Test
+    @DisplayName("検索対象コレクションが空の場合、falseを返す")
+    void shouldReturnFalseWhenSearchCollectionIsEmpty() {
+      String str = "abc";
+      Collection<String> searchStrs = List.of();
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("検索対象コレクションが空の場合、falseが期待されます")
+          .isFalse();
+    }
+
+    @Test
+    @DisplayName("文字列が検索対象のいずれとも一致しない場合、falseを返す")
+    void shouldReturnFalseWhenNoneOfSearchStringsAreFound() {
+      String str = "abc";
+      Collection<String> searchStrs = List.of("x", "y", "z");
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("文字列が検索対象のいずれとも一致しない場合、falseが期待されます")
+          .isFalse();
+    }
+
+    @Test
+    @DisplayName("文字列が検索対象のいずれかと一致する場合、trueを返す")
+    void shouldReturnTrueWhenAtLeastOneSearchStringIsFound() {
+      String str = "abc";
+      Collection<String> searchStrs = List.of("x", "b", "z");
+      assertThat(Strings2.containsAny(str, searchStrs))
+          .as("文字列が検索対象のいずれかと一致する場合、trueが期待されます")
+          .isTrue();
+    }
+
+    @Test
+    @DisplayName("検索対象コレクションや文字列がnullまたは空の混在の場合、適切に処理される")
+    void shouldHandleMixedNullAndEmptyInputsProperly() {
+      assertThat(Strings2.containsAny(null, null))
+          .as("文字列と検索対象コレクションの両方がnullの場合、falseが期待されます")
+          .isFalse();
+
+      assertThat(Strings2.containsAny("", null))
+          .as("文字列が空、検索対象コレクションがnullの場合、falseが期待されます")
+          .isFalse();
+
+      assertThat(Strings2.containsAny(null, List.of()))
+          .as("文字列がnull、検索対象コレクションが空の場合、falseが期待されます")
+          .isFalse();
+
+      assertThat(Strings2.containsAny("", List.of()))
+          .as("文字列と検索対象コレクションの両方が空の場合、falseが期待されます")
+          .isFalse();
     }
   }
 }
