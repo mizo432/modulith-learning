@@ -3,6 +3,34 @@
 これは Modulith Learning プロジェクトのフロントエンドモジュールです。Material-UI (MUI)
 をコンポーネントライブラリとして使用する React ベースのシングルページアプリケーション (SPA) です。
 
+## 開発コマンド一覧
+
+### npm コマンド
+
+| コマンド                       | 説明                 |
+|----------------------------|--------------------|
+| `npm install`              | 依存関係のインストール        |
+| `npm start`                | デフォルト環境での開発サーバーの起動 |
+| `npm run start:local`      | ローカル環境での開発サーバーの起動  |
+| `npm run start:dev`        | 開発環境での開発サーバーの起動    |
+| `npm run build`            | デフォルト環境用ビルド        |
+| `npm run build:staging`    | ステージング環境用ビルド       |
+| `npm run build:production` | 本番環境用ビルド           |
+| `npm test`                 | テストの実行             |
+
+### Gradle コマンド
+
+| コマンド                                  | 説明                 |
+|---------------------------------------|--------------------|
+| `./gradlew :frontend:npmInstall`      | 依存関係のインストール        |
+| `./gradlew :frontend:npmStart`        | デフォルト環境での開発サーバーの起動 |
+| `./gradlew :frontend:npmStartLocal`   | ローカル環境での開発サーバーの起動  |
+| `./gradlew :frontend:npmStartDev`     | 開発環境での開発サーバーの起動    |
+| `./gradlew :frontend:npmBuild`        | 本番環境用ビルド           |
+| `./gradlew :frontend:npmBuildStaging` | ステージング環境用ビルド       |
+| `./gradlew :frontend:npmTest`         | テストの実行             |
+| `./gradlew :frontend:clean`           | ビルド成果物のクリーン        |
+
 ## 技術スタック
 
 - **React 18**: ユーザーインターフェースを構築するための JavaScript ライブラリ
