@@ -73,6 +73,14 @@ const SideMenu: React.FC<SideMenuProps> = ({open, onClose, selectedTab}) => {
         return (
             <List>
               <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/products" onClick={onClose}>
+                  <ListItemIcon>
+                    <ProjectIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="製品選択"/>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
                 <ListItemButton component={RouterLink} to="/projects/all" onClick={onClose}>
                   <ListItemIcon>
                     <ProjectIcon/>

@@ -8,6 +8,7 @@ import NotFound from './pages/NotFound';
 import UserList from './pages/users/UserList';
 import UserCreate from './pages/users/UserCreate';
 import UserEdit from './pages/users/UserEdit';
+import ProductSelection from './pages/ProductSelection';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
@@ -65,6 +66,11 @@ const AppContent = () => {
               <Route path="/" element={
                 <ProtectedRoute>
                   <Dashboard/>
+                </ProtectedRoute>
+              }/>
+              <Route path="/products" element={
+                <ProtectedRoute>
+                  <ProductSelection/>
                 </ProtectedRoute>
               }/>
               {/* User management routes - admin only */}
