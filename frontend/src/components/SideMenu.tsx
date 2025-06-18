@@ -81,7 +81,7 @@ const SideMenu: React.FC<SideMenuProps> = ({open, onClose, selectedTab}) => {
                 </ListItemButton>
               </ListItem>
               <ListItem disablePadding>
-                <ListItemButton component={RouterLink} to="/projects/all" onClick={onClose}>
+                <ListItemButton component={RouterLink} to="/projects" onClick={onClose}>
                   <ListItemIcon>
                     <ProjectIcon/>
                   </ListItemIcon>
@@ -89,19 +89,11 @@ const SideMenu: React.FC<SideMenuProps> = ({open, onClose, selectedTab}) => {
                 </ListItemButton>
               </ListItem>
               <ListItem disablePadding>
-                <ListItemButton component={RouterLink} to="/projects/active" onClick={onClose}>
+                <ListItemButton component={RouterLink} to="/projects/create" onClick={onClose}>
                   <ListItemIcon>
                     <ProjectIcon/>
                   </ListItemIcon>
-                  <ListItemText primary="Active Projects"/>
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton component={RouterLink} to="/projects/archived" onClick={onClose}>
-                  <ListItemIcon>
-                    <ProjectIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary="Archived Projects"/>
+                  <ListItemText primary="Create Project"/>
                 </ListItemButton>
               </ListItem>
             </List>
@@ -155,7 +147,7 @@ const SideMenu: React.FC<SideMenuProps> = ({open, onClose, selectedTab}) => {
         return (
             <List>
               <ListItem disablePadding>
-                <ListItemButton component={RouterLink} to="/projects/all" onClick={onClose}>
+                <ListItemButton component={RouterLink} to="/projects" onClick={onClose}>
                   <ListItemIcon>
                     <ProjectIcon/>
                   </ListItemIcon>

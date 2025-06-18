@@ -9,6 +9,10 @@ import UserList from './pages/users/UserList';
 import UserCreate from './pages/users/UserCreate';
 import UserEdit from './pages/users/UserEdit';
 import ProductSelection from './pages/ProductSelection';
+import ProjectList from './pages/projects/ProjectList';
+import ProjectDetail from './pages/projects/ProjectDetail';
+import ProjectCreate from './pages/projects/ProjectCreate';
+import ProjectEdit from './pages/projects/ProjectEdit';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
@@ -88,6 +92,27 @@ const AppContent = () => {
                 <AdminRoute>
                   <UserEdit/>
                 </AdminRoute>
+              }/>
+              {/* Project management routes */}
+              <Route path="/projects" element={
+                <ProtectedRoute>
+                  <ProjectList/>
+                </ProtectedRoute>
+              }/>
+              <Route path="/projects/create" element={
+                <ProtectedRoute>
+                  <ProjectCreate/>
+                </ProtectedRoute>
+              }/>
+              <Route path="/projects/edit/:id" element={
+                <ProtectedRoute>
+                  <ProjectEdit/>
+                </ProtectedRoute>
+              }/>
+              <Route path="/projects/:id" element={
+                <ProtectedRoute>
+                  <ProjectDetail/>
+                </ProtectedRoute>
               }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
