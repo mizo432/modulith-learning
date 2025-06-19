@@ -1,16 +1,16 @@
-import { createTheme } from '@mui/material/styles';
+import {createTheme} from '@mui/material/styles';
 
 // Create a theme instance
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: process.env.REACT_APP_PRIMARY_COLOR || '#1976d2',
     },
     secondary: {
-      main: '#dc004e',
+      main: process.env.REACT_APP_SECONDARY_COLOR || '#dc004e',
     },
     background: {
-      default: '#f5f5f5',
+      default: process.env.REACT_APP_BACKGROUND_COLOR || '#f5f5f5',
     },
   },
   typography: {
