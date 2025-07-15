@@ -1,85 +1,99 @@
+# Docker Composeファイル バージョン3.8を使用
 version: "3.8"
+
+# 永続化ボリュームの定義
 volumes:
-  postgres_data:
-  valkey_data:
+  postgres_data:  # PostgreSQLデータ用の永続化ボリューム
+  valkey_data: # Valkeyデータ用の永続化ボリューム
     driver: local
 
 services:
+  # PostgreSQLデータベースサービス
   db:
     container_name: ${PROJECT_NAME:-default}-postgresdb
     image: postgres:latest
-    restart: unless-stopped
+    restart: unless-stopped  # 停止されない限り再起動
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      PGPASSWORD: ${PGPASSWORD:-password123}
-      POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      TZ: "Asia/Tokyo"
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}          # PostgreSQLユーザー名
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}  # PostgreSQLパスワード
+      PGPASSWORD: ${PGPASSWORD:-password123}             # PostgreSQL管理者パスワード
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}              # 初期データベース名
+      TZ: "Asia/Tokyo"                                   # タイムゾーン設定
     ports:
-      - "5432:5432"
+      - "5432:5432"  # PostgreSQLの標準ポート
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data  # データの永続化
 
+  # Valkeyサーバー（Redisの代替）
   valkey:
     container_name: ${PROJECT_NAME:-default}-valkey_server
     image: docker.io/bitnami/valkey:8.0
     environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      # 開発環境でのみ空のパスワードを許可
       - ALLOW_EMPTY_PASSWORD=yes
+      # 危険なコマンドを無効化
       - VALKEY_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     ports:
-      - '6379:6379'
+      - '6379:6379'  # Redisの標準ポート
     volumes:
-      - 'valkey_data:/bitnami/valkey/data'
+      - 'valkey_data:/bitnami/valkey/data'  # データの永続化
     depends_on:
-      - db
+      - db  # データベースサービスが起動してから開始
+
+  # 分散トレーシング用のZipkinサーバー
   zipkin:
     image: openzipkin/zipkin
     container_name: ${PROJECT_NAME:-default}-zipkin
     ports:
-      - "9411:9411"
+      - "9411:9411"  # Zipkinの標準ポート
     depends_on:
-      - service-registry
+      - service-registry  # サービスレジストリが起動してから開始
 
+  # Eurekaサービスレジストリ
   service-registry:
     container_name: ${PROJECT_NAME:-default}-service-registry
     build:
-      context: ../service-registry
+      context: ../service-registry  # ビルドコンテキスト
       dockerfile: Dockerfile
     ports:
-      - "8761:8761"
+      - "8761:8761"  # Eurekaの標準ポート
     volumes:
-      - ../..:/workspaces:cached
-    command: sleep infinity
+      - ../..:/workspaces:cached  # 開発用ワークスペースをマウント
+    command: sleep infinity  # 開発環境用：コンテナを永続化
+
+  # APIゲートウェイサービス
   api-gateway:
     container_name: ${PROJECT_NAME:-default}-api-gateway
     build:
-      context: ../api-gateway
+      context: ../api-gateway  # ビルドコンテキスト
       dockerfile: Dockerfile
     ports:
-      - "8085:8085"
+      - "8085:8085"  # APIゲートウェイのポート
     volumes:
-      - ../..:/workspaces:cached
-    command: sleep infinity
+      - ../..:/workspaces:cached  # 開発用ワークスペースをマウント
+    command: sleep infinity  # 開発環境用：コンテナを永続化
     depends_on:
-      - service-registry
+      - service-registry  # サービスレジストリが起動してから開始
+
+  # メインアプリケーション（Java開発環境）
   app:
     container_name: ${PROJECT_NAME:-default}-javadev
     build:
-      context: .
+      context: .  # 現在のディレクトリをビルドコンテキストとして使用
       dockerfile: Dockerfile
     environment:
+      # データベース接続設定
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_HOSTNAME: postgres
     ports:
-      - "8080:8080"
+      - "8080:8080"  # アプリケーションのメインポート
     volumes:
-      - ../..:/workspaces:cached
+      - ../..:/workspaces:cached  # 開発用ワークスペースをマウント
     depends_on:
-      - service-registry
-      - db
-      - valkey
-      - zipkin
-    command: sleep infinity
+      - service-registry  # サービスレジストリ
+      - db               # データベース
+      - valkey          # Valkeyサーバー
+      - zipkin          # Zipkinサーバー
+    command: sleep infinity  # 開発環境用：コンテナを永続化
