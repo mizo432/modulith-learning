@@ -2,7 +2,7 @@ import java.time.Duration
 
 plugins {
     java
-    id("org.springframework.boot") version "3.5.0"
+    id("org.springframework.boot") version "3.5.7"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -25,7 +25,6 @@ extra["springCloudBomVersion"] = "2025.0.0"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
-    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
