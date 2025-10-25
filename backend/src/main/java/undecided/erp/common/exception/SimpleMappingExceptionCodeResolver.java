@@ -10,22 +10,21 @@ import org.springframework.util.CollectionUtils;
 @Setter
 public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver {
 
-  private static final Logger logger = LoggerFactory.getLogger(
-      SimpleMappingExceptionCodeResolver.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(SimpleMappingExceptionCodeResolver.class);
   private LinkedHashMap<String, String> exceptionMappings;
   private String defaultExceptionCode;
 
-  public SimpleMappingExceptionCodeResolver() {
-  }
+  public SimpleMappingExceptionCodeResolver() {}
 
   public String resolveExceptionCode(Exception ex) {
     if (ex == null) {
       logger.warn("target exception is null. return defaultExceptionCode.");
-      return this.defaultExceptionCode;
     } else {
       if (ex instanceof ExceptionCodeProvider) {
         String code = ((ExceptionCodeProvider) ex).getCode();
         if (code != null) {
+
           return code;
         }
       }
@@ -34,16 +33,16 @@ public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver
         for (Map.Entry<String, String> entry : this.exceptionMappings.entrySet()) {
           String targetException = entry.getKey();
 
-          for (Class<?> exceptionClass = ex.getClass(); exceptionClass != Object.class;
+          for (Class<?> exceptionClass = ex.getClass();
+              exceptionClass != Object.class;
               exceptionClass = exceptionClass.getSuperclass()) {
             if (exceptionClass.getName().contains(targetException)) {
               return entry.getValue();
             }
           }
         }
-
       }
-      return this.defaultExceptionCode;
     }
+    return this.defaultExceptionCode;
   }
 }

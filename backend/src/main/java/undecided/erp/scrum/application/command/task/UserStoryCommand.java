@@ -1,6 +1,7 @@
 package undecided.erp.scrum.application.command.task;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,7 +67,7 @@ public class UserStoryCommand {
     Integer maxOrder =
         userStoryRepository.findByProductBacklogOrderByBacklogOrderAsc(productBacklog).stream()
             .map(UserStory::getBacklogOrder)
-            .filter(order -> order != null)
+            .filter(Objects::nonNull)
             .max(Integer::compareTo)
             .orElse(0);
 
@@ -189,7 +190,7 @@ public class UserStoryCommand {
             .findByProductBacklogOrderByBacklogOrderAsc(userStory.getProductBacklog())
             .stream()
             .map(UserStory::getBacklogOrder)
-            .filter(order -> order != null)
+            .filter(Objects::nonNull)
             .max(Integer::compareTo)
             .orElse(0);
 

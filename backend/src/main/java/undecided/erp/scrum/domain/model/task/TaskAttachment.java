@@ -64,7 +64,7 @@ public class TaskAttachment extends PptEntity<TaskAttachment> implements Seriali
    * <p>添付ファイルの名前を示します。 データベース上の "file_name" カラムに対応し、null 値は許可されていません。
    */
   @Getter
-  @Column(name = "file_name", nullable = false, length = 255)
+  @Column(name = "file_name", nullable = false)
   private String fileName;
 
   /**

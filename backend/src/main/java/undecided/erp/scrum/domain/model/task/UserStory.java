@@ -204,12 +204,12 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
 
     // 元のストーリーのポイントを調整（分割後のポイントは元のポイントから新しいポイントを引いた値）
     if (this.storyPoints != null && newStoryPoints != null) {
-      this.storyPoints = (Integer) Math.max(0, this.storyPoints - newStoryPoints);
+      this.storyPoints = Math.max(0, this.storyPoints - newStoryPoints);
     }
 
     // 元のストーリーの価値を調整（分割後の価値は元の価値から新しい価値を引いた値）
     if (this.value != null && newValue != null) {
-      this.value = (Integer) Math.max(0, this.value - newValue);
+      this.value = Math.max(0, this.value - newValue);
     }
 
     return newStory;

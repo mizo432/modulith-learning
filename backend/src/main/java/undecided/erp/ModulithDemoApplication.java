@@ -11,8 +11,8 @@ import undecided.erp.shared.applicatoion.ApplicationInfoInitializer;
 
 /**
  * Modulith Demoアプリケーションのメインクラス。
- * <p>
- * このクラスはSpring Bootアプリケーションの初期化と起動を行います。また、 アプリケーションコンテキストが開始されたイベントを処理し、
+ *
+ * <p>このクラスはSpring Bootアプリケーションの初期化と起動を行います。また、 アプリケーションコンテキストが開始されたイベントを処理し、
  * アプリケーション名やサーバーポートなど、アプリケーション固有の情報を初期化します。
  */
 @SpringBootApplication
@@ -24,10 +24,11 @@ public class ModulithDemoApplication {
    */
   @Value("${spring.application.name}")
   private String applicationName;
+
   /**
    * 変数は、サーバーがリッスンするポート番号を格納します。 この値はSpringのプロパティファイルから取得され、アプリケーションの初期化時に設定されます。
-   * <p>
-   * 具体的には`server.port`プロパティに対応します。サーバーが特定のポートで起動するように構成できます。
+   *
+   * <p>具体的には`server.port`プロパティに対応します。サーバーが特定のポートで起動するように構成できます。
    */
   @Value("${server.port}")
   private String serverPort;
@@ -37,7 +38,7 @@ public class ModulithDemoApplication {
    *
    * @param args コマンドライン引数
    */
-  public static void main(String[] args) {
+  static void main(String[] args) {
     SpringApplication.run(ModulithDemoApplication.class, args);
   }
 
@@ -49,12 +50,10 @@ public class ModulithDemoApplication {
   @EventListener
   public void handleContextRefreshEvent(ContextStartedEvent ctxStartEvt) {
     ApplicationInfoInitializer.initialize(applicationName, Long.valueOf(serverPort));
-
   }
 
   @Bean
   protected ExceptionLogger exceptionLogger() {
     return new ExceptionLogger(ExceptionLogger.class.getName());
   }
-
 }

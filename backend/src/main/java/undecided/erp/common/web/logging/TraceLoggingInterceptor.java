@@ -123,7 +123,7 @@ public class TraceLoggingInterceptor implements HandlerInterceptor {
       @Nonnull HttpServletResponse response,
       @Nonnull Object handler,
       ModelAndView modelAndView) {
-    if (handler instanceof HandlerMethod) {
+    if (handler instanceof HandlerMethod handlerMethod) {
       long startTime = 0L;
       if (request.getAttribute(START_ATTR) != null) {
         startTime = (Long) request.getAttribute(START_ATTR);
@@ -135,7 +135,6 @@ public class TraceLoggingInterceptor implements HandlerInterceptor {
       String formattedHandlingTime = String.format("%1$,3d", handlingTime);
       boolean isWarnHandling = handlingTime > this.warnHandlingNanos;
       if (this.isEnabledLogLevel(isWarnHandling)) {
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method m = handlerMethod.getMethod();
         Object view = null;
         Map<String, Object> model = null;
