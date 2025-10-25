@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import lombok.NonNull;
 import undecided.erp.common.precondition.IntegerPrecondition;
 
-
 /**
  * IntegerValueクラスは、型Integerの単一の値をカプセル化する値オブジェクトを表します。
  * このクラスは、Integer型でパラメータ化されたSingleValueクラスの機能を拡張し、 整数値を処理するための特定の実装を提供します。
