@@ -3,6 +3,7 @@ package undecided.erp.common.primitive;
 import static undecided.erp.common.primitive.Objects2.isNull;
 
 import com.google.common.collect.ImmutableSet;
+import jakarta.validation.constraints.NotNull;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -27,7 +28,6 @@ public class Sets2 {
    */
   public static <T> boolean isEmpty(@NonNull Set<T> set) {
     return set.isEmpty();
-
   }
 
   /**
@@ -53,7 +53,6 @@ public class Sets2 {
       if (isNull(e)) {
         return false;
       }
-
     }
     return true;
   }
@@ -67,12 +66,11 @@ public class Sets2 {
    */
   public static <T> Stream<@NonNull T> stream(@NonNull Set<T> set) {
     return set.stream();
-
   }
 
   /**
    * 2つのセットの共通部分（交差）を返します。
-   * 
+   *
    * @param <E> セット内の要素の型
    * @param set1 最初のセット（nullであってはならない）
    * @param set2 二番目のセット（nullであってはならない）
@@ -81,6 +79,7 @@ public class Sets2 {
   public static <E> Set<E> intersection(@NonNull Set<E> set1, @NonNull Set<E> set2) {
     return new SetView<>() {
       @Override
+      @NotNull
       public UnmodifiableIterator<E> iterator() {
         return new AbstractIterator<>() {
           final Iterator<E> itr = set1.iterator();
@@ -97,7 +96,6 @@ public class Sets2 {
           }
         };
       }
-
     };
   }
 
@@ -133,24 +131,23 @@ public class Sets2 {
 
   /**
    * 2つのセット間の差を返す。
-   * <p>
-   * <ui>
-   * <li>set1に存在しset2に存在しない要素を返す。</li>
-   * <li>set2に存在しset1に存在しない要素は返さない。</li>
-   * </ui>
+   *
+   * <p><ui>
+   * <li>set1に存在しset2に存在しない要素を返す。
+   * <li>set2に存在しset1に存在しない要素は返さない。 </ui>
    *
    * @param <E> セット内の要素の型
    * @param set1 最初のセット（nullであってはならない）
    * @param set2 二番目のセット（nullであってはならない）
    * @return set1とset2間の差を表す新しいSetView
    */
-  public static <E> SetView<E> difference(
-      final Set<E> set1, final Set<?> set2) {
+  public static <E> SetView<E> difference(final Set<E> set1, final Set<?> set2) {
     ObjectPrecondition.checkNotNull(set1, () -> new IllegalArgumentException("set1 is null"));
     ObjectPrecondition.checkNotNull(set2, () -> new IllegalArgumentException("set2 is null"));
 
     return new SetView<>() {
       @Override
+      @NotNull
       public UnmodifiableIterator<E> iterator() {
         return new AbstractIterator<>() {
           final Iterator<E> itr = set1.iterator();
@@ -169,15 +166,15 @@ public class Sets2 {
       }
 
       @Override
+      @NotNull
       public Stream<E> stream() {
         return set1.stream().filter(e -> !set2.contains(e));
-
       }
 
       @Override
+      @NotNull
       public Stream<E> parallelStream() {
         return set1.parallelStream().filter(e -> !set2.contains(e));
-
       }
 
       @Override
@@ -194,28 +191,25 @@ public class Sets2 {
       @Override
       public boolean isEmpty() {
         return set2.containsAll(set1);
-
       }
 
       @Override
       public boolean contains(Object element) {
         return set1.contains(element) && !set2.contains(element);
-
       }
     };
   }
 
   /**
    * SetViewクラスは、セットを操作するための種々の操作を提供するセットのビューを表します。
-   * <p>
-   * これはAbstractSetクラスを拡張し、セットでの作業用のユーティリティメソッドを提供します。
+   *
+   * <p>これはAbstractSetクラスを拡張し、セットでの作業用のユーティリティメソッドを提供します。
    *
    * @param <E> セット内の要素の型
    */
   public abstract static class SetView<E> extends AbstractSet<E> {
 
-    private SetView() {
-    }
+    private SetView() {}
 
     /**
      * このSetViewの不変コピーを作成します。
@@ -304,8 +298,7 @@ public class Sets2 {
     public abstract UnmodifiableIterator<E> iterator();
 
     /**
-     * このSetViewに含まれる要素の数を返します。
-     * デフォルトの実装では常に0を返します。
+     * このSetViewに含まれる要素の数を返します。 デフォルトの実装では常に0を返します。
      *
      * @return このSetViewに含まれる要素の数
      */
@@ -313,6 +306,5 @@ public class Sets2 {
     public int size() {
       return 0;
     }
-
   }
 }

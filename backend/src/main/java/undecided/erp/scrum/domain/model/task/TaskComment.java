@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import undecided.erp.common.entity.PptEntity;
 import undecided.erp.common.entity.SnowflakeId;
 
@@ -29,6 +30,7 @@ import undecided.erp.common.entity.SnowflakeId;
  *   <li>`updatedAt`: コメントの更新日時。
  * </ul>
  */
+@Setter
 @AllArgsConstructor
 @Entity
 @Table(name = "task_comments")
@@ -38,7 +40,8 @@ public class TaskComment extends PptEntity<TaskComment> implements Serializable 
   /**
    * ユニークなコメント識別子を表す変数。
    *
-   * <p>アプリケーションにおける各コメントを一意に識別するために使用されます。 データベース上の "comment_id" カラムに対応し、null 値は許可されていません。
+   * <p>アプリケーションにおける各コメントを一意に識別するために使用されます。 データベース上の "comment_id" カラムに対応し、null 値は許可されていません。 --
+   * SETTER -- コメントIDを設定します。
    */
   @Id
   @Column(name = "comment_id", columnDefinition = "BIGINT", nullable = false)
@@ -48,7 +51,7 @@ public class TaskComment extends PptEntity<TaskComment> implements Serializable 
   /**
    * このコメントが属するタスクを表す変数。
    *
-   * <p>タスクとコメントの関連付けを表します。 データベース上の "task_id" カラムに対応します。
+   * <p>タスクとコメントの関連付けを表します。 データベース上の "task_id" カラムに対応します。 -- SETTER -- このコメントが属するタスクを設定します。
    */
   @ManyToOne
   @JoinColumn(name = "task_id", nullable = false)
@@ -58,7 +61,8 @@ public class TaskComment extends PptEntity<TaskComment> implements Serializable 
   /**
    * コメントの作成者IDを表す変数。
    *
-   * <p>コメントを作成したユーザーのIDを示します。 データベース上の "author_id" カラムに対応し、null 値は許可されていません。
+   * <p>コメントを作成したユーザーのIDを示します。 データベース上の "author_id" カラムに対応し、null 値は許可されていません。 -- SETTER --
+   * コメントの作成者IDを設定します。
    */
   @Getter
   @Column(name = "author_id", nullable = false)
@@ -67,7 +71,8 @@ public class TaskComment extends PptEntity<TaskComment> implements Serializable 
   /**
    * コメントの内容を表す変数。
    *
-   * <p>コメントの実際のテキスト内容を示します。 データベース上の "content" カラムに対応し、null 値は許可されていません。
+   * <p>コメントの実際のテキスト内容を示します。 データベース上の "content" カラムに対応し、null 値は許可されていません。 -- SETTER --
+   * コメントの内容を設定します。
    */
   @Getter
   @Column(name = "content", nullable = false, length = 2000)
@@ -76,7 +81,8 @@ public class TaskComment extends PptEntity<TaskComment> implements Serializable 
   /**
    * コメントの作成日時を表す変数。
    *
-   * <p>コメントが作成された日時を示します。 データベース上の "created_at" カラムに対応し、null 値は許可されていません。
+   * <p>コメントが作成された日時を示します。 データベース上の "created_at" カラムに対応し、null 値は許可されていません。 -- SETTER --
+   * コメントの作成日時を設定します。
    */
   @Getter
   @Column(name = "created_at", nullable = false)
@@ -85,65 +91,11 @@ public class TaskComment extends PptEntity<TaskComment> implements Serializable 
   /**
    * コメントの更新日時を表す変数。
    *
-   * <p>コメントが最後に更新された日時を示します。 データベース上の "updated_at" カラムに対応します。
+   * <p>コメントが最後に更新された日時を示します。 データベース上の "updated_at" カラムに対応します。 -- SETTER -- コメントの更新日時を設定します。
    */
   @Getter
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
-
-  /**
-   * コメントIDを設定します。
-   *
-   * @param commentId 設定するコメントID
-   */
-  public void setCommentId(SnowflakeId commentId) {
-    this.commentId = commentId;
-  }
-
-  /**
-   * このコメントが属するタスクを設定します。
-   *
-   * @param task 設定するタスク
-   */
-  public void setTask(Task task) {
-    this.task = task;
-  }
-
-  /**
-   * コメントの作成者IDを設定します。
-   *
-   * @param authorId 設定する作成者ID
-   */
-  public void setAuthorId(Long authorId) {
-    this.authorId = authorId;
-  }
-
-  /**
-   * コメントの内容を設定します。
-   *
-   * @param content 設定するコメント内容
-   */
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  /**
-   * コメントの作成日時を設定します。
-   *
-   * @param createdAt 設定する作成日時
-   */
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  /**
-   * コメントの更新日時を設定します。
-   *
-   * @param updatedAt 設定する更新日時
-   */
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-  }
 
   /**
    * このメソッドはTaskCommentクラスの文字列表現を生成します。

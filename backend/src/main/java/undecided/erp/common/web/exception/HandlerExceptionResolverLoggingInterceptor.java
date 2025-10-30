@@ -16,62 +16,64 @@ import undecided.erp.common.exception.ExceptionLogger;
 
 /**
  * HandlerExceptionResolverLoggingInterceptorクラスは、SpringフレームワークのMethodInterceptorを実装したクラスです。
- * <p>
- * HandlerExceptionResolverをターゲットにしたメソッド呼び出しをインターセプトし、例外発生時のログ処理を制御します。
- * <p>
- * 主な機能:
- * <p>
- * 1. 指定したターゲットがHandlerExceptionResolverインタフェースを実装していない場合は警告ログを出力します。 2.
+ *
+ * <p>HandlerExceptionResolverをターゲットにしたメソッド呼び出しをインターセプトし、例外発生時のログ処理を制御します。
+ *
+ * <p>主な機能:
+ *
+ * <p>1. 指定したターゲットがHandlerExceptionResolverインタフェースを実装していない場合は警告ログを出力します。 2.
  * 例外情報に基づき、特定の条件下で例外のロギングを実行します。 3. 発生した例外とHTTPレスポンスのステータスコードに応じて、ログレベルを変更してログ出力を行います。
- * <p>
- * 構成要素:
- * <p>
- * - exceptionLogger: 例外メッセージを出力するためのロガー。具体的なロギング実装に委譲されます。 - Logger: ログ出力を制御するためのロガーインスタンス。
- * <p>
- * 注意:
- * <p>
- * - ターゲットオブジェクトがHandlerExceptionResolverを実装していない場合、処理を進めず警告ログのみを出力します。 -
+ *
+ * <p>構成要素:
+ *
+ * <p>- exceptionLogger: 例外メッセージを出力するためのロガー。具体的なロギング実装に委譲されます。 - Logger: ログ出力を制御するためのロガーインスタンス。
+ *
+ * <p>注意:
+ *
+ * <p>- ターゲットオブジェクトがHandlerExceptionResolverを実装していない場合、処理を進めず警告ログのみを出力します。 -
  * レスポンスステータスコードの範囲に基づいて異なるロギングレベルが設定されるため、ロギング設定が適切であることを確認してください。
  */
 @Setter
 @NoArgsConstructor
-public class HandlerExceptionResolverLoggingInterceptor implements MethodInterceptor,
-    InitializingBean {
+public class HandlerExceptionResolverLoggingInterceptor
+    implements MethodInterceptor, InitializingBean {
 
   /**
    * ログ出力を行うためのロガーオブジェクト。
-   * <p>
-   * このクラスにおける主な目的は、{@code HandlerExceptionResolverLoggingInterceptor} クラスの
+   *
+   * <p>このクラスにおける主な目的は、{@code HandlerExceptionResolverLoggingInterceptor} クラスの
    * 実行中に記録が必要な情報や例外のログを記録することです。
-   * <p>
-   * 「ログ出力」には例外やHTTPリクエスト・レスポンスのコンテキストに基づくログ分類が含まれます。 主にサーバーエラーやクライアントエラー、リダイレクト、成功メッセージ等のレベルに応じて
+   *
+   * <p>「ログ出力」には例外やHTTPリクエスト・レスポンスのコンテキストに基づくログ分類が含まれます。 主にサーバーエラーやクライアントエラー、リダイレクト、成功メッセージ等のレベルに応じて
    * 適切にログを記録します。
    */
-  private static final Logger logger = LoggerFactory.getLogger(
-      HandlerExceptionResolverLoggingInterceptor.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(HandlerExceptionResolverLoggingInterceptor.class);
+
   /**
    * 例外のログ記録を処理するためのコンポーネントを保持するフィールドです。
-   * <p>
-   * このオブジェクトは、{@link HandlerExceptionResolverLoggingInterceptor} クラス内で 例外のログ記録を実行する際に使用されます。
-   * <p>
-   * 主に、{@link HandlerExceptionResolver} を実装したオブジェクトに対する メソッド呼び出し処理や、HTTPリクエストおよびレスポンスに関連する
+   *
+   * <p>このオブジェクトは、{@link HandlerExceptionResolverLoggingInterceptor} クラス内で 例外のログ記録を実行する際に使用されます。
+   *
+   * <p>主に、{@link HandlerExceptionResolver} を実装したオブジェクトに対する メソッド呼び出し処理や、HTTPリクエストおよびレスポンスに関連する
    * 例外情報のログ記録に利用されます。
-   * <p>
-   * このフィールドは不変であり、初期化後に変更されることはありません。
+   *
+   * <p>このフィールドは不変であり、初期化後に変更されることはありません。
    */
   private ExceptionLogger exceptionLogger;
+
   /**
    * ログ記録時に無視される例外クラスを保持するセット。
-   * <p>
-   * このセットに含まれる例外クラスに一致する場合、それらの例外は処理対象外として扱われ、 ログ記録が行われません。
-   * <p>
-   * このフィールドは、例外処理の柔軟性を向上させるために使用され、 通常、特定の要件に基づき、無視すべき例外クラスを明示的に設定して使用されます。
+   *
+   * <p>このセットに含まれる例外クラスに一致する場合、それらの例外は処理対象外として扱われ、 ログ記録が行われません。
+   *
+   * <p>このフィールドは、例外処理の柔軟性を向上させるために使用され、 通常、特定の要件に基づき、無視すべき例外クラスを明示的に設定して使用されます。
    */
   private Set<Class<? extends Exception>> ignoreExceptions = new HashSet<>();
 
   /**
-   * 指定された {@link MethodInvocation} を処理し、必要に応じて例外のログ記録を行います。 メソッドの実行結果を返します。ターゲットオブジェクトが
-   * {@link HandlerExceptionResolver} を 実装していない場合、警告ログが出力されます。 特定の例外が処理対象の場合、例外情報を基にログを記録します。
+   * 指定された {@link MethodInvocation} を処理し、必要に応じて例外のログ記録を行います。 メソッドの実行結果を返します。ターゲットオブジェクトが {@link
+   * HandlerExceptionResolver} を 実装していない場合、警告ログが出力されます。 特定の例外が処理対象の場合、例外情報を基にログを記録します。
    *
    * @param invocation 実行対象のメソッド呼び出し情報をカプセル化した {@link MethodInvocation} オブジェクト
    * @return メソッド実行結果のオブジェクト。プロセス内で生成された戻り値が返されます。 戻り値が null の場合は null を返します。
@@ -85,6 +87,7 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
       Object targetObject = invocation.getThis();
       if (!(targetObject instanceof HandlerExceptionResolver)) {
         if (logger.isWarnEnabled()) {
+          assert targetObject != null;
           logger.warn(
               "target object does not implement the HandlerExceptionResolver interface. target object is '{}'.",
               targetObject.getClass().getName());
@@ -98,12 +101,10 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
           Object handler = invocation.getArguments()[2];
           this.log(exception, request, response, handler);
         }
-
       }
       return returnObj;
     }
   }
-
 
   /**
    * 指定された例外がターゲットとして処理されるべき例外であるかを判定します。 `ignoreExceptions` フィールドに設定されている例外クラスに一致する場合は、
@@ -119,7 +120,6 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
           return false;
         }
       }
-
     }
     return true;
   }
@@ -133,7 +133,10 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * @param response ログのコンテキストとなるHttpServletResponse
    * @param handler 対象となるハンドラーオブジェクト（コントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void log(Exception exception, HttpServletRequest request, HttpServletResponse response,
+  protected void log(
+      Exception exception,
+      HttpServletRequest request,
+      HttpServletResponse response,
       Object handler) {
     int statusCode = response.getStatus();
     if (500 <= statusCode) {
@@ -157,8 +160,11 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * @param response ログのコンテキストとなるHttpServletResponse
    * @param handler 対象となるハンドラーオブジェクト（コントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void logInformational(Exception exception, HttpServletRequest request,
-      HttpServletResponse response, Object handler) {
+  protected void logInformational(
+      Exception exception,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Object handler) {
     this.exceptionLogger.info(exception);
   }
 
@@ -170,7 +176,9 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * @param response ログ記録時のコンテキストとなるHttpServletResponse
    * @param handler 実行対象のハンドラーオブジェクト（通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void logSuccess(Exception exception, HttpServletRequest request,
+  protected void logSuccess(
+      Exception exception,
+      HttpServletRequest request,
       HttpServletResponse response,
       Object handler) {
     this.exceptionLogger.info(exception);
@@ -184,8 +192,11 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * @param response ログ記録時のコンテキストとなる HttpServletResponse
    * @param handler 実行対象のハンドラーオブジェクト （通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void logRedirection(Exception exception, HttpServletRequest request,
-      HttpServletResponse response, Object handler) {
+  protected void logRedirection(
+      Exception exception,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Object handler) {
     this.exceptionLogger.info(exception);
   }
 
@@ -197,8 +208,11 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * @param response ログ記録時のコンテキストとなる HttpServletResponse
    * @param handler 実行対象のハンドラーオブジェクト（通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void logClientError(Exception exception, HttpServletRequest request,
-      HttpServletResponse response, Object handler) {
+  protected void logClientError(
+      Exception exception,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Object handler) {
     this.exceptionLogger.warn(exception);
   }
 
@@ -210,8 +224,11 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
    * @param response ログ記録のコンテキストとなる HttpServletResponse
    * @param handler 実行対象のハンドラーオブジェクト（通常はコントローラやそのメソッド、またはハンドラインターセプターなど）
    */
-  protected void logServerError(Exception exception, HttpServletRequest request,
-      HttpServletResponse response, Object handler) {
+  protected void logServerError(
+      Exception exception,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Object handler) {
     this.exceptionLogger.error(exception);
   }
 
@@ -221,12 +238,10 @@ public class HandlerExceptionResolverLoggingInterceptor implements MethodInterce
 
   /**
    * Beanのプロパティが設定された後に呼び出されるメソッドで、Spring InitializingBeanインターフェースの一部として実装されています。
-   * このメソッドをオーバーライドし、初期化処理を実行します。 実装クラスでは、このメソッドを利用して必要な初期化作業を行うことができます。
+   * このメソッドをオーバーライドし、初期化処理を実行します。 実装クラスでは、このメソッドを利用して必要な初期化作業を行せられまます。
    *
    * @throws Exception 初期化処理中に発生した例外
    */
   @Override
-  public void afterPropertiesSet() throws Exception {
-
-  }
+  public void afterPropertiesSet() throws Exception {}
 }

@@ -1,7 +1,9 @@
 package undecided.erp.scrum.presentation.api.product;
 
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -111,55 +113,19 @@ public class ProductBacklogApi {
   }
 
   /** プロダクトバックログ作成リクエスト。 */
+  @Setter
+  @Getter
   public static class CreateProductBacklogRequest {
     private SnowflakeId productId;
     private String name;
     private String description;
-
-    public SnowflakeId getProductId() {
-      return productId;
-    }
-
-    public void setProductId(SnowflakeId productId) {
-      this.productId = productId;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
   }
 
   /** プロダクトバックログ更新リクエスト。 */
+  @Setter
+  @Getter
   public static class UpdateProductBacklogRequest {
     private String name;
     private String description;
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
   }
 }

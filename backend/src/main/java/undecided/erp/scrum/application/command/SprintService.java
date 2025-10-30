@@ -218,25 +218,23 @@ public class SprintService {
         sprintBacklogRepository.findBySprintSprintIdAndRemainingEffortGreaterThan(fromSprintId, 0);
 
     // 新しいスプリントに移動
-    List<SprintBacklog> movedItems =
-        incompleteItems.stream()
-            .map(
-                item -> {
-                  SprintBacklog newItem =
-                      SprintBacklog.builder()
-                          .backlogId(new SnowflakeId())
-                          .sprint(toSprint)
-                          .userStory(item.getUserStory())
-                          .name(item.getName())
-                          .description(item.getDescription())
-                          .estimatedEffort(item.getRemainingEffort()) // 残り工数を新しい見積もり工数として設定
-                          .remainingEffort(item.getRemainingEffort())
-                          .build();
-                  return sprintBacklogRepository.save(newItem);
-                })
-            .collect(Collectors.toList());
 
-    return movedItems;
+    return incompleteItems.stream()
+        .map(
+            item -> {
+              SprintBacklog newItem =
+                  SprintBacklog.builder()
+                      .backlogId(new SnowflakeId())
+                      .sprint(toSprint)
+                      .userStory(item.getUserStory())
+                      .name(item.getName())
+                      .description(item.getDescription())
+                      .estimatedEffort(item.getRemainingEffort()) // 残り工数を新しい見積もり工数として設定
+                      .remainingEffort(item.getRemainingEffort())
+                      .build();
+              return sprintBacklogRepository.save(newItem);
+            })
+        .collect(Collectors.toList());
   }
 
   /**

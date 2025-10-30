@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import undecided.erp.common.entity.PptEntity;
 import undecided.erp.common.entity.SnowflakeId;
 
@@ -33,6 +34,7 @@ import undecided.erp.common.entity.SnowflakeId;
  *   <li>`changedAt`: 変更が行われた日時。
  * </ul>
  */
+@Setter
 @AllArgsConstructor
 @Entity
 @Table(name = "task_histories")
@@ -42,7 +44,8 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * ユニークな履歴識別子を表す変数。
    *
-   * <p>アプリケーションにおける各履歴を一意に識別するために使用されます。 データベース上の "history_id" カラムに対応し、null 値は許可されていません。
+   * <p>アプリケーションにおける各履歴を一意に識別するために使用されます。 データベース上の "history_id" カラムに対応し、null 値は許可されていません。 -- SETTER
+   * -- 履歴IDを設定します。
    */
   @Id
   @Column(name = "history_id", columnDefinition = "BIGINT", nullable = false)
@@ -52,7 +55,7 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * この履歴が属するタスクを表す変数。
    *
-   * <p>タスクと履歴の関連付けを表します。 データベース上の "task_id" カラムに対応します。
+   * <p>タスクと履歴の関連付けを表します。 データベース上の "task_id" カラムに対応します。 -- SETTER -- この履歴が属するタスクを設定します。
    */
   @ManyToOne
   @JoinColumn(name = "task_id", nullable = false)
@@ -62,7 +65,7 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * 変更の種類を表す変数。
    *
-   * <p>履歴の変更種類を示します。 データベース上の "change_type" カラムに対応し、null 値は許可されていません。
+   * <p>履歴の変更種類を示します。 データベース上の "change_type" カラムに対応し、null 値は許可されていません。 -- SETTER -- 変更の種類を設定します。
    */
   @Getter
   @Enumerated(EnumType.STRING)
@@ -72,7 +75,7 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * 変更されたフィールド名を表す変数。
    *
-   * <p>変更が行われたフィールドの名前を示します。 データベース上の "field_name" カラムに対応します。
+   * <p>変更が行われたフィールドの名前を示します。 データベース上の "field_name" カラムに対応します。 -- SETTER -- 変更されたフィールド名を設定します。
    */
   @Getter
   @Column(name = "field_name")
@@ -81,7 +84,7 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * 変更前の値を表す変数。
    *
-   * <p>変更が行われる前のフィールドの値を示します。 データベース上の "old_value" カラムに対応します。
+   * <p>変更が行われる前のフィールドの値を示します。 データベース上の "old_value" カラムに対応します。 -- SETTER -- 変更前の値を設定します。
    */
   @Getter
   @Column(name = "old_value", length = 1000)
@@ -90,7 +93,7 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * 変更後の値を表す変数。
    *
-   * <p>変更が行われた後のフィールドの値を示します。 データベース上の "new_value" カラムに対応します。
+   * <p>変更が行われた後のフィールドの値を示します。 データベース上の "new_value" カラムに対応します。 -- SETTER -- 変更後の値を設定します。
    */
   @Getter
   @Column(name = "new_value", length = 1000)
@@ -99,7 +102,8 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * 変更を行ったユーザーのIDを表す変数。
    *
-   * <p>変更を行ったユーザーのIDを示します。 データベース上の "changed_by" カラムに対応し、null 値は許可されていません。
+   * <p>変更を行ったユーザーのIDを示します。 データベース上の "changed_by" カラムに対応し、null 値は許可されていません。 -- SETTER --
+   * 変更を行ったユーザーのIDを設定します。
    */
   @Getter
   @Column(name = "changed_by", nullable = false)
@@ -108,83 +112,12 @@ public class TaskHistory extends PptEntity<TaskHistory> implements Serializable 
   /**
    * 変更が行われた日時を表す変数。
    *
-   * <p>変更が行われた日時を示します。 データベース上の "changed_at" カラムに対応し、null 値は許可されていません。
+   * <p>変更が行われた日時を示します。 データベース上の "changed_at" カラムに対応し、null 値は許可されていません。 -- SETTER --
+   * 変更が行われた日時を設定します。
    */
   @Getter
   @Column(name = "changed_at", nullable = false)
   private LocalDateTime changedAt;
-
-  /**
-   * 履歴IDを設定します。
-   *
-   * @param historyId 設定する履歴ID
-   */
-  public void setHistoryId(SnowflakeId historyId) {
-    this.historyId = historyId;
-  }
-
-  /**
-   * この履歴が属するタスクを設定します。
-   *
-   * @param task 設定するタスク
-   */
-  public void setTask(Task task) {
-    this.task = task;
-  }
-
-  /**
-   * 変更の種類を設定します。
-   *
-   * @param changeType 設定する変更種類
-   */
-  public void setChangeType(ChangeType changeType) {
-    this.changeType = changeType;
-  }
-
-  /**
-   * 変更されたフィールド名を設定します。
-   *
-   * @param fieldName 設定するフィールド名
-   */
-  public void setFieldName(String fieldName) {
-    this.fieldName = fieldName;
-  }
-
-  /**
-   * 変更前の値を設定します。
-   *
-   * @param oldValue 設定する変更前の値
-   */
-  public void setOldValue(String oldValue) {
-    this.oldValue = oldValue;
-  }
-
-  /**
-   * 変更後の値を設定します。
-   *
-   * @param newValue 設定する変更後の値
-   */
-  public void setNewValue(String newValue) {
-    this.newValue = newValue;
-  }
-
-  /**
-   * 変更を行ったユーザーのIDを設定します。
-   *
-   * @param changedBy 設定する変更者ID
-   */
-  public void setChangedBy(Long changedBy) {
-    this.changedBy = changedBy;
-  }
-
-  /**
-   * 変更が行われた日時を設定します。
-   *
-   * @param changedAt 設定する変更日時
-   */
-  public void setChangedAt(LocalDateTime changedAt) {
-    this.changedAt = changedAt;
-  }
 
   /**
    * このメソッドはTaskHistoryクラスの文字列表現を生成します。
