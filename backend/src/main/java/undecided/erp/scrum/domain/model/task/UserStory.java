@@ -54,9 +54,6 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
    * GETTER -- ユーザーストーリーIDを取得します。
    *
    * <p>-- SETTER -- ユーザーストーリーIDを設定します。
-   *
-   * @return ユーザーストーリーID
-   * @param storyId 設定するユーザーストーリーID
    */
   @Getter
   @Id
@@ -69,8 +66,6 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
    *
    * <p>プロダクトバックログとユーザーストーリーの関連付けを表します。 データベース上の "backlog_id" カラムに対応します。 -- SETTER --
    * このユーザーストーリーが属するプロダクトバックログを設定します。
-   *
-   * @param productBacklog 設定するプロダクトバックログ
    */
   @ManyToOne
   @JoinColumn(name = "backlog_id", nullable = false)
@@ -82,8 +77,6 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
    *
    * <p>エピックとユーザーストーリーの関連付けを表します。 データベース上の "epic_id" カラムに対応します。 -- SETTER --
    * このユーザーストーリーが属するエピックを設定します。
-   *
-   * @param epic 設定するエピック
    */
   @ManyToOne
   @JoinColumn(name = "epic_id")
@@ -162,9 +155,6 @@ public class UserStory extends PptEntity<UserStory> implements Serializable {
    * バックログ内での順序を取得します。
    *
    * <p>-- SETTER -- バックログ内での順序を設定します。
-   *
-   * @return バックログ内での順序
-   * @param backlogOrder 設定するバックログ内での順序
    */
   @Getter
   @Column(name = "backlog_order")

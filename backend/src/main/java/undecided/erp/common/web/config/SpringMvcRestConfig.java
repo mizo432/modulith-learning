@@ -15,13 +15,11 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 
-/**
- * Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。
- */
+/** Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。 */
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 // (7)
-//@ComponentScan("com.example.project.api") // (6)
-//@EnableWebMvc
+// @ComponentScan("com.example.project.api") // (6)
+// @EnableWebMvc
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
 
@@ -34,8 +32,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @return 設定済みのMappingJackson2HttpMessageConverterインスタンス
    */
   @Bean("jsonMessageConverter")
-  public MappingJackson2HttpMessageConverter jsonMessageConverter(
-      ObjectMapper objectMapper) {
+  public MappingJackson2HttpMessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
     MappingJackson2HttpMessageConverter bean = new MappingJackson2HttpMessageConverter();
     bean.setObjectMapper(objectMapper);
     return bean;
@@ -67,14 +64,13 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
 
   /**
    * メッセージコンバータを設定するメソッドです。
-   * <p>
-   * このメソッドでは、HTTPリクエストやレスポンスのJSONのシリアライズ/デシリアライズ処理を 行うためのカスタムメッセージコンバータを追加します。
+   *
+   * <p>このメソッドでは、HTTPリクエストやレスポンスのJSONのシリアライズ/デシリアライズ処理を 行うためのカスタムメッセージコンバータを追加します。
    *
    * @param converters HTTPメッセージコンバータを保持するリスト
    */
   @Override
-  public void configureMessageConverters(
-      List<HttpMessageConverter<?>> converters) {
+  public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
     converters.add(jsonMessageConverter(objectMapper()));
   }
 
@@ -85,14 +81,13 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @param argumentResolvers HandlerMethodArgumentResolverを保持するリスト
    */
   @Override
-  public void addArgumentResolvers(
-      List<HandlerMethodArgumentResolver> argumentResolvers) {
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
     argumentResolvers.add(pageableHandlerMethodArgumentResolver());
   }
 
   /**
-   * PageableHandlerMethodArgumentResolverのインスタンスを作成し、Spring MVCで使用するための
-   * {@link HandlerMethodArgumentResolver}として設定します。このメソッドは、 ページネーションをサポートするデフォルトの設定を提供します。
+   * PageableHandlerMethodArgumentResolverのインスタンスを作成し、Spring MVCで使用するための {@link
+   * HandlerMethodArgumentResolver}として設定します。このメソッドは、 ページネーションをサポートするデフォルトの設定を提供します。
    *
    * @return PageableHandlerMethodArgumentResolverのインスタンス
    */
@@ -110,7 +105,6 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor()).addPathPatterns("/**");
-
   }
 
   /**
@@ -124,16 +118,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
     TraceLoggingInterceptor traceLoggingInterceptor = new TraceLoggingInterceptor();
     traceLoggingInterceptor.setWarnHandlingNanos(3000000000L);
     return traceLoggingInterceptor;
-
   }
 
-  /**
-   * HandlerExceptionResolverLoggingInterceptorを生成し、ExceptionLoggerを設定します。
-   * このInterceptorは例外解決プロセスにログ機能を追加するために使用されます。
-   *
-   * @param exceptionLogger 例外発生時に記録を行うExceptionLoggerのインスタンス
-   * @return 設定済みのHandlerExceptionResolverLoggingInterceptorインスタンス
-   */
   // @Bean("handlerExceptionResolverLoggingInterceptor")
   /* public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
@@ -142,15 +128,6 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
     return bean;
   }*/
 
-  /**
-   * HandlerExceptionResolverLoggingInterceptorを使用して、例外発生時のログ処理を実装するための
-   * Advisorを設定します。このAdvisorは、HandlerExceptionResolverのresolveExceptionメソッドの
-   * 実行時にログ処理を行うためのポイントカットとインターセプターを組み合わせます。
-   *
-   * @param handlerExceptionResolverLoggingInterceptor 例外解決プロセス中にログ処理を行う
-   * HandlerExceptionResolverLoggingInterceptorのインスタンス
-   * @return 例外解決プロセスにログ処理を追加するために使用できるAdvisorのインスタンス
-   */
   /* @Bean
   public Advisor handlerExceptionResolverLoggingInterceptorAdvisor(
       HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor) {

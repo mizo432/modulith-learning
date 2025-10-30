@@ -54,7 +54,7 @@ public class SystemExceptionResolver extends SimpleMappingExceptionResolver {
    * 例外コードを解決するための {@link ExceptionCodeResolver} を設定します。
    *
    * <p>このフィールドは、例外が発生した際に適切な例外コードを解決するために使用されます。 {@link ExceptionCodeResolver}
-   * は、例外オブジェクトを基に例外コードを返すインタフェースです。 このフィールドには任意のカスタム実装を設定することができ、デフォルトでは {@code
+   * は、例外オブジェクトを基に例外コードを返すインタフェースです。 このフィールドには任意のカスタム実装を設定できます、デフォルトでは {@code
    * SimpleMappingExceptionCodeResolver} が使用されます。
    *
    * <p>設定された {@code exceptionCodeResolver} は、例外情報の解析やレスポンスに 設定される例外コードの決定を行う内部ロジックで利用されます。

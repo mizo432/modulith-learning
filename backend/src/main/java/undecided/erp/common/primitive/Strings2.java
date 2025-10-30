@@ -70,18 +70,18 @@ public class Strings2 {
    * 指定された文字列が、与えられた文字列のコレクション内のいずれかの文字列を含むかどうかを判定します。
    *
    * @param str チェック対象の文字列。null の場合は false を返します。
-   * @param searchStrs 判定に使用する文字列のコレクション。null または空の場合は false を返します。
+   * @param searchStrings 判定に使用する文字列のコレクション。null または空の場合は false を返します。
    * @return 引数 str が searchStrs 内のいずれかの文字列を含む場合は true、それ以外の場合は false。
    */
-  public static boolean containsAny(final String str, @NotNull Collection<String> searchStrs) {
+  public static boolean containsAny(final String str, @NotNull Collection<String> searchStrings) {
     boolean isStringNull = str == null;
-    boolean isSearchStrsNullOrEmpty = searchStrs == null || searchStrs.isEmpty();
+    boolean isSearchStrsNullOrEmpty = searchStrings == null || searchStrings.isEmpty();
 
     if (isStringNull || isSearchStrsNullOrEmpty) {
       return false;
     }
 
-    for (String searchStr : searchStrs) {
+    for (String searchStr : searchStrings) {
       if (str.contains(searchStr)) {
         return true;
       }
