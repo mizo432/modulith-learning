@@ -41,6 +41,10 @@ public class Longs {
   public static Long decodeFromBase64(String base64String) {
     byte[] decodedBytes = java.util.Base64.getUrlDecoder().decode(base64String);
     ByteBuffer buffer = ByteBuffer.wrap(decodedBytes);
+    if (decodedBytes.length != Long.BYTES) {
+      throw new IllegalArgumentException(
+          "デコードされたバイト配列の長さが不正です。期待値: " + Long.BYTES + "バイト、実際: " + decodedBytes.length + "バイト");
+    }
     return buffer.getLong();
   }
 }

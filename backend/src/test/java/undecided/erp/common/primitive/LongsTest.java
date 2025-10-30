@@ -118,5 +118,32 @@ class LongsTest {
       assertThatThrownBy(() -> Longs.decodeFromBase64(input))
           .isInstanceOf(NullPointerException.class);
     }
+
+    @Test
+    @DisplayName("無効なBase64形式文字列の場合、例外をスローする")
+    void shouldThrowExceptionForInvalidBase64String() {
+      String input = "InvalidBase64";
+      assertThatThrownBy(() -> Longs.decodeFromBase64(input))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Illegal base64 character");
+    }
+
+    @Test
+    @DisplayName("空のBase64文字列の場合、例外をスローする")
+    void shouldThrowExceptionForEmptyBase64String() {
+      String input = "";
+      assertThatThrownBy(() -> Longs.decodeFromBase64(input))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("デコードされたバイト配列の長さが不正です");
+    }
+
+    @Test
+    @DisplayName("Base64文字列の長さが不正の場合、例外をスローする")
+    void shouldThrowExceptionForIncorrectLengthBase64String() {
+      String input = "AAA="; // Incorrect length
+      assertThatThrownBy(() -> Longs.decodeFromBase64(input))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("デコードされたバイト配列の長さが不正です");
+    }
   }
 }
