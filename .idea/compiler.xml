@@ -10,6 +10,14 @@
         </processorPath>
         <module name="modulith-learning.authorization.main" />
       </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.42/8365263844ebb62398e0dc33057ba10ba472d3b8/lombok-1.18.42.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/cc.jilt/jilt/1.8.2/f2118a7ec5550b533e7623f46aba07e2ed2865e4/jilt-1.8.2.jar" />
+        </processorPath>
+        <module name="modulith-learning.backend.main" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="25" />
   </component>
