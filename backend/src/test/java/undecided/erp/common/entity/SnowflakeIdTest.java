@@ -55,7 +55,7 @@ class SnowflakeIdTest {
 
       // Assert
       assertThat(result).isNotNull();
-      assertThat(result.getValue()).isEqualTo(value);
+      assertThat(result.value()).isEqualTo(value);
     }
 
     @Test
@@ -108,7 +108,7 @@ class SnowflakeIdTest {
 
       // Assert
       assertThat(firstInstance).isNotEqualTo(secondInstance);
-      assertThat(firstInstance.getValue()).isNotEqualTo(secondInstance.getValue());
+      assertThat(firstInstance.value()).isNotEqualTo(secondInstance.value());
     }
   }
 
@@ -127,7 +127,7 @@ class SnowflakeIdTest {
 
       // Assert
       assertThat(result).isNotNull();
-      assertThat(result.getValue()).isEqualTo(value);
+      assertThat(result.value()).isEqualTo(value);
     }
 
     @Test

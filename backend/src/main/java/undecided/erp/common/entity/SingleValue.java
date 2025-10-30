@@ -7,5 +7,5 @@ package undecided.erp.common.entity;
  */
 public interface SingleValue<T> extends ValueObject {
 
-  T getValue();
+  T value();
 }

@@ -66,6 +66,11 @@ public class SearchName implements StringValue<SearchName> {
     return Objects2.isNull(value);
   }
 
+  @Override
+  public String value() {
+    return value;
+  }
+
   /**
    * SearchNamePrefixCriteriaクラスは、特定の名前の接頭辞に基づく検索条件を表現するためのクラスです。
    *

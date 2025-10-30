@@ -92,7 +92,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongPrecondition.checkRangeClosed(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeClosed(ref.value(), exceptionSupplier, min, max);
       return ref;
     }
 
@@ -115,7 +115,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongPrecondition.checkRangeOpen(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeOpen(ref.value(), exceptionSupplier, min, max);
       return ref;
     }
 
@@ -138,7 +138,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongPrecondition.checkRangeClosedOpen(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeClosedOpen(ref.value(), exceptionSupplier, min, max);
       return ref;
     }
 
@@ -161,7 +161,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongPrecondition.checkRangeOpenClosed(ref.getValue(), exceptionSupplier, min, max);
+      LongPrecondition.checkRangeOpenClosed(ref.value(), exceptionSupplier, min, max);
       return ref;
     }
 
@@ -183,7 +183,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongPrecondition.checkAtLest(ref.getValue(), exceptionSupplier, min);
+      LongPrecondition.checkAtLest(ref.value(), exceptionSupplier, min);
       return ref;
     }
 
@@ -204,7 +204,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
         return null;
       }
 
-      LongPrecondition.checkAtMost(ref.getValue(), exceptionSupplier, max);
+      LongPrecondition.checkAtMost(ref.value(), exceptionSupplier, max);
       return ref;
     }
 
@@ -224,7 +224,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongPrecondition.checkLessThan(ref.getValue(), exceptionSupplier, max);
+      LongPrecondition.checkLessThan(ref.value(), exceptionSupplier, max);
       return ref;
     }
 
@@ -245,7 +245,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
         return ref;
       }
 
-      LongPrecondition.checkGreaterThan(ref.getValue(), exceptionSupplier, min);
+      LongPrecondition.checkGreaterThan(ref.value(), exceptionSupplier, min);
       return ref;
     }
 
