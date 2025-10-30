@@ -2,6 +2,11 @@ package undecided.erp.common.primitive;
 
 import java.nio.ByteBuffer;
 
+/**
+ * {@code Long} 型の値を処理するユーティリティクラスです。 このクラスでは、長整数値をエンコードやバイト配列への変換といった操作をサポートします。
+ *
+ * <p>このクラスのメソッドはすべて静的であり、インスタンスを生成せずに使用します。
+ */
 public class Longs {
   /**
    * 指定された {@code longValue} を Base64 エンコード形式の文字列に変換します。
