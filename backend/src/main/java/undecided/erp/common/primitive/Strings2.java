@@ -71,13 +71,13 @@ public class Strings2 {
    *
    * @param str チェック対象の文字列。null の場合は false を返します。
    * @param searchStrings 判定に使用する文字列のコレクション。null または空の場合は false を返します。
-   * @return 引数 str が searchStrs 内のいずれかの文字列を含む場合は true、それ以外の場合は false。
+   * @return 引数 str が searchStrings 内のいずれかの文字列を含む場合は true、それ以外の場合は false。
    */
   public static boolean containsAny(final String str, @NotNull Collection<String> searchStrings) {
     boolean isStringNull = str == null;
-    boolean isSearchStrsNullOrEmpty = searchStrings == null || searchStrings.isEmpty();
+    boolean isSearchStringsNullOrEmpty = searchStrings == null || searchStrings.isEmpty();
 
-    if (isStringNull || isSearchStrsNullOrEmpty) {
+    if (isStringNull || isSearchStringsNullOrEmpty) {
       return false;
     }
 

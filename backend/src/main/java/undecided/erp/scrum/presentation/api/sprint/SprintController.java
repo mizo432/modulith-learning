@@ -3,7 +3,9 @@ package undecided.erp.scrum.presentation.api.sprint;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -243,6 +245,8 @@ public class SprintController {
   }
 
   /** スプリント作成リクエスト。 */
+  @Setter
+  @Getter
   public static class CreateSprintRequest {
     private Long productId;
     private String name;
@@ -253,157 +257,47 @@ public class SprintController {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
-
-    public Long getProductId() {
-      return productId;
-    }
-
-    public void setProductId(Long productId) {
-      this.productId = productId;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getGoal() {
-      return goal;
-    }
-
-    public void setGoal(String goal) {
-      this.goal = goal;
-    }
-
-    public LocalDate getStartDate() {
-      return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-      this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-      return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-      this.endDate = endDate;
-    }
   }
 
   /** ゴール設定リクエスト。 */
+  @Setter
+  @Getter
   public static class SetGoalRequest {
     private String goal;
-
-    public String getGoal() {
-      return goal;
-    }
-
-    public void setGoal(String goal) {
-      this.goal = goal;
-    }
   }
 
   /** バックログアイテム追加リクエスト。 */
+  @Setter
+  @Getter
   public static class AddBacklogItemRequest {
     private Long storyId;
     private String name;
     private String description;
     private Integer estimatedEffort;
-
-    public Long getStoryId() {
-      return storyId;
-    }
-
-    public void setStoryId(Long storyId) {
-      this.storyId = storyId;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public Integer getEstimatedEffort() {
-      return estimatedEffort;
-    }
-
-    public void setEstimatedEffort(Integer estimatedEffort) {
-      this.estimatedEffort = estimatedEffort;
-    }
   }
 
   /** 進捗更新リクエスト。 */
+  @Setter
+  @Getter
   public static class UpdateProgressRequest {
     private Integer remainingEffort;
-
-    public Integer getRemainingEffort() {
-      return remainingEffort;
-    }
-
-    public void setRemainingEffort(Integer remainingEffort) {
-      this.remainingEffort = remainingEffort;
-    }
   }
 
   /** ストーリー分割リクエスト。 */
+  @Setter
+  @Getter
   public static class SplitStoryRequest {
     private String newTitle;
     private String newDescription;
     private Integer newStoryPoints;
     private Long toSprintId;
-
-    public String getNewTitle() {
-      return newTitle;
-    }
-
-    public void setNewTitle(String newTitle) {
-      this.newTitle = newTitle;
-    }
-
-    public String getNewDescription() {
-      return newDescription;
-    }
-
-    public void setNewDescription(String newDescription) {
-      this.newDescription = newDescription;
-    }
-
-    public Integer getNewStoryPoints() {
-      return newStoryPoints;
-    }
-
-    public void setNewStoryPoints(Integer newStoryPoints) {
-      this.newStoryPoints = newStoryPoints;
-    }
-
-    public Long getToSprintId() {
-      return toSprintId;
-    }
-
-    public void setToSprintId(Long toSprintId) {
-      this.toSprintId = toSprintId;
-    }
   }
 
   // ヘルパーメソッド
 
   /** スプリントレスポンス。 */
+  @Setter
+  @Getter
   public static class SprintResponse {
     private Long sprintId;
     private Long productId;
@@ -412,65 +306,11 @@ public class SprintController {
     private LocalDate startDate;
     private LocalDate endDate;
     private String status;
-
-    public Long getSprintId() {
-      return sprintId;
-    }
-
-    public void setSprintId(Long sprintId) {
-      this.sprintId = sprintId;
-    }
-
-    public Long getProductId() {
-      return productId;
-    }
-
-    public void setProductId(Long productId) {
-      this.productId = productId;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getGoal() {
-      return goal;
-    }
-
-    public void setGoal(String goal) {
-      this.goal = goal;
-    }
-
-    public LocalDate getStartDate() {
-      return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-      this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-      return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-      this.endDate = endDate;
-    }
-
-    public String getStatus() {
-      return status;
-    }
-
-    public void setStatus(String status) {
-      this.status = status;
-    }
   }
 
   /** バックログアイテムレスポンス。 */
+  @Setter
+  @Getter
   public static class BacklogItemResponse {
     private Long backlogId;
     private Long sprintId;
@@ -480,73 +320,11 @@ public class SprintController {
     private Integer estimatedEffort;
     private Integer remainingEffort;
     private Integer progress;
-
-    public Long getBacklogId() {
-      return backlogId;
-    }
-
-    public void setBacklogId(Long backlogId) {
-      this.backlogId = backlogId;
-    }
-
-    public Long getSprintId() {
-      return sprintId;
-    }
-
-    public void setSprintId(Long sprintId) {
-      this.sprintId = sprintId;
-    }
-
-    public Long getStoryId() {
-      return storyId;
-    }
-
-    public void setStoryId(Long storyId) {
-      this.storyId = storyId;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public Integer getEstimatedEffort() {
-      return estimatedEffort;
-    }
-
-    public void setEstimatedEffort(Integer estimatedEffort) {
-      this.estimatedEffort = estimatedEffort;
-    }
-
-    public Integer getRemainingEffort() {
-      return remainingEffort;
-    }
-
-    public void setRemainingEffort(Integer remainingEffort) {
-      this.remainingEffort = remainingEffort;
-    }
-
-    public Integer getProgress() {
-      return progress;
-    }
-
-    public void setProgress(Integer progress) {
-      this.progress = progress;
-    }
   }
 
   /** ユーザーストーリーレスポンス。 */
+  @Setter
+  @Getter
   public static class UserStoryResponse {
     private Long storyId;
     private Long backlogId;
@@ -558,85 +336,5 @@ public class SprintController {
     private Integer storyPoints;
     private Integer value;
     private String status;
-
-    public Long getStoryId() {
-      return storyId;
-    }
-
-    public void setStoryId(Long storyId) {
-      this.storyId = storyId;
-    }
-
-    public Long getBacklogId() {
-      return backlogId;
-    }
-
-    public void setBacklogId(Long backlogId) {
-      this.backlogId = backlogId;
-    }
-
-    public Long getEpicId() {
-      return epicId;
-    }
-
-    public void setEpicId(Long epicId) {
-      this.epicId = epicId;
-    }
-
-    public String getTitle() {
-      return title;
-    }
-
-    public void setTitle(String title) {
-      this.title = title;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public String getAcceptanceCriteria() {
-      return acceptanceCriteria;
-    }
-
-    public void setAcceptanceCriteria(String acceptanceCriteria) {
-      this.acceptanceCriteria = acceptanceCriteria;
-    }
-
-    public String getPriority() {
-      return priority;
-    }
-
-    public void setPriority(String priority) {
-      this.priority = priority;
-    }
-
-    public Integer getStoryPoints() {
-      return storyPoints;
-    }
-
-    public void setStoryPoints(Integer storyPoints) {
-      this.storyPoints = storyPoints;
-    }
-
-    public Integer getValue() {
-      return value;
-    }
-
-    public void setValue(Integer value) {
-      this.value = value;
-    }
-
-    public String getStatus() {
-      return status;
-    }
-
-    public void setStatus(String status) {
-      this.status = status;
-    }
   }
 }

@@ -87,6 +87,7 @@ public class HandlerExceptionResolverLoggingInterceptor
       Object targetObject = invocation.getThis();
       if (!(targetObject instanceof HandlerExceptionResolver)) {
         if (logger.isWarnEnabled()) {
+          assert targetObject != null;
           logger.warn(
               "target object does not implement the HandlerExceptionResolver interface. target object is '{}'.",
               targetObject.getClass().getName());

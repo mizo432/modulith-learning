@@ -1,7 +1,9 @@
 package undecided.erp.scrum.presentation.api.project;
 
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -165,64 +167,20 @@ public class ProjectApi {
   }
 
   /** プロジェクト作成リクエスト。 */
+  @Setter
+  @Getter
   public static class CreateProjectRequest {
     private String name;
     private String description;
     private Member projectManager;
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public Member getProjectManager() {
-      return projectManager;
-    }
-
-    public void setProjectManager(Member projectManager) {
-      this.projectManager = projectManager;
-    }
   }
 
   /** プロジェクト更新リクエスト。 */
+  @Setter
+  @Getter
   public static class UpdateProjectRequest {
     private String name;
     private String description;
     private Member projectManager;
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public Member getProjectManager() {
-      return projectManager;
-    }
-
-    public void setProjectManager(Member projectManager) {
-      this.projectManager = projectManager;
-    }
   }
 }

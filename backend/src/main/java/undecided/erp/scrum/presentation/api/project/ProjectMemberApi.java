@@ -1,7 +1,9 @@
 package undecided.erp.scrum.presentation.api.project;
 
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -189,95 +191,29 @@ public class ProjectMemberApi {
   }
 
   /** メンバー招待リクエスト。 */
+  @Setter
+  @Getter
   public static class InviteMemberRequest {
     private String projectId;
     private Member member;
     private String roleId;
-
-    public String getProjectId() {
-      return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-      this.projectId = projectId;
-    }
-
-    public Member getMember() {
-      return member;
-    }
-
-    public void setMember(Member member) {
-      this.member = member;
-    }
-
-    public String getRoleId() {
-      return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-      this.roleId = roleId;
-    }
   }
 
   /** ロール変更リクエスト。 */
+  @Setter
+  @Getter
   public static class ChangeRoleRequest {
     private String roleId;
-
-    public String getRoleId() {
-      return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-      this.roleId = roleId;
-    }
   }
 
   /** ロール作成リクエスト。 */
+  @Setter
+  @Getter
   public static class CreateRoleRequest {
     private String name;
     private String description;
     private boolean canEdit;
     private boolean canInvite;
     private boolean canManageRoles;
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public boolean isCanEdit() {
-      return canEdit;
-    }
-
-    public void setCanEdit(boolean canEdit) {
-      this.canEdit = canEdit;
-    }
-
-    public boolean isCanInvite() {
-      return canInvite;
-    }
-
-    public void setCanInvite(boolean canInvite) {
-      this.canInvite = canInvite;
-    }
-
-    public boolean isCanManageRoles() {
-      return canManageRoles;
-    }
-
-    public void setCanManageRoles(boolean canManageRoles) {
-      this.canManageRoles = canManageRoles;
-    }
   }
 }

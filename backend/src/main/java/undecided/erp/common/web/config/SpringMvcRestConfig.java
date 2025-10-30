@@ -121,19 +121,5 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   // @Bean("handlerExceptionResolverLoggingInterceptor")
-  /* public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
-      ExceptionLogger exceptionLogger) {
-    HandlerExceptionResolverLoggingInterceptor bean = new HandlerExceptionResolverLoggingInterceptor();
-    bean.setExceptionLogger(exceptionLogger);
-    return bean;
-  }*/
 
-  /* @Bean
-  public Advisor handlerExceptionResolverLoggingInterceptorAdvisor(
-      HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor) {
-    AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-    pointcut.setExpression(
-        "execution(* org.springframework.web.servlet.HandlerExceptionResolver.resolveException(..))");
-    return new DefaultPointcutAdvisor(pointcut, handlerExceptionResolverLoggingInterceptor);
-  }*/
 }
