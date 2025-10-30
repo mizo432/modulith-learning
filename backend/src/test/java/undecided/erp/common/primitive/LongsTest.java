@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-/** Test class for the {@link Longs#encodeToBase64(Long)} method. */
+/** LongsTest クラスのテストケースを定義したクラスです。 Long 型の値に対するエンコードや変換に関連するユーティリティメソッドの動作を検証します。 */
 class LongsTest {
 
   @Nested
@@ -80,6 +80,70 @@ class LongsTest {
     void shouldThrowExceptionWhenLongValueIsNull() {
       Long input = null;
       assertThatThrownBy(() -> Longs.toByteArray(input)).isInstanceOf(NullPointerException.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("decodeFromBase64メソッドのテスト")
+  class DecodeFromBase64Test {
+
+    @Test
+    @DisplayName("有効な正のBase64形式文字列から対応するLong値を返す")
+    void shouldReturnCorrectPositiveLongForBase64() {
+      String input = "AAAAAAdbzRU=";
+      Long result = Longs.decodeFromBase64(input);
+      assertThat(result).isEqualTo(123456789L);
+    }
+
+    @Test
+    @DisplayName("有効な負のBase64形式文字列から対応するLong値を返す")
+    void shouldReturnCorrectNegativeLongForBase64() {
+      String input = "______ikMus=";
+      Long result = Longs.decodeFromBase64(input);
+      assertThat(result).isEqualTo(-123456789L);
+    }
+
+    @Test
+    @DisplayName("0に対応するBase64形式文字列からLong値0を返す")
+    void shouldReturnZeroForBase64String() {
+      String input = "AAAAAAAAAAA=";
+      Long result = Longs.decodeFromBase64(input);
+      assertThat(result).isEqualTo(0L);
+    }
+
+    @Test
+    @DisplayName("Base64形式文字列がnullの場合、例外をスローする")
+    void shouldThrowExceptionWhenBase64StringIsNull() {
+      String input = null;
+      assertThatThrownBy(() -> Longs.decodeFromBase64(input))
+          .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    @DisplayName("無効なBase64形式文字列の場合、例外をスローする")
+    void shouldThrowExceptionForInvalidBase64String() {
+      String input = "InvalidBase64";
+      assertThatThrownBy(() -> Longs.decodeFromBase64(input))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Illegal base64 character");
+    }
+
+    @Test
+    @DisplayName("空のBase64文字列の場合、例外をスローする")
+    void shouldThrowExceptionForEmptyBase64String() {
+      String input = "";
+      assertThatThrownBy(() -> Longs.decodeFromBase64(input))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("デコードされたバイト配列の長さが不正です");
+    }
+
+    @Test
+    @DisplayName("Base64文字列の長さが不正の場合、例外をスローする")
+    void shouldThrowExceptionForIncorrectLengthBase64String() {
+      String input = "AAA="; // Incorrect length
+      assertThatThrownBy(() -> Longs.decodeFromBase64(input))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("デコードされたバイト配列の長さが不正です");
     }
   }
 }

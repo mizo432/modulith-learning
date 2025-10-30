@@ -31,4 +31,20 @@ public class Longs {
     buffer.putLong(longValue);
     return buffer.array();
   }
+
+  /**
+   * 指定された Base64 エンコード形式の文字列をデコードし、{@code Long} 型の値に変換します。
+   *
+   * @param base64String デコード対象となる Base64 エンコード形式の文字列
+   * @return デコードされた {@code Long} 型の値
+   */
+  public static Long decodeFromBase64(String base64String) {
+    byte[] decodedBytes = java.util.Base64.getUrlDecoder().decode(base64String);
+    ByteBuffer buffer = ByteBuffer.wrap(decodedBytes);
+    if (decodedBytes.length != Long.BYTES) {
+      throw new IllegalArgumentException(
+          "デコードされたバイト配列の長さが不正です。期待値: " + Long.BYTES + "バイト、実際: " + decodedBytes.length + "バイト");
+    }
+    return buffer.getLong();
+  }
 }
