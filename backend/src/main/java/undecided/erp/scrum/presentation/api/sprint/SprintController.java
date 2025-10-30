@@ -233,7 +233,7 @@ public class SprintController {
 
   private UserStoryResponse convertToUserStoryResponse(UserStory userStory) {
     UserStoryResponse response = new UserStoryResponse();
-    response.setStoryId(userStory.getStoryId().getValue());
+    response.setStoryId(userStory.getStoryId().value());
     response.setTitle(userStory.getTitle());
     response.setDescription(userStory.getDescription());
     response.setAcceptanceCriteria(userStory.getAcceptanceCriteria());

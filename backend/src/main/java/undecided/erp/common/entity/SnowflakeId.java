@@ -1,7 +1,9 @@
 package undecided.erp.common.entity;
 
+import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ComparisonChain;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
@@ -9,45 +11,34 @@ import java.beans.Transient;
 import java.io.Serial;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.springframework.lang.Nullable;
-import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
-import static undecided.erp.common.primitive.Objects2.isNull;
 import undecided.erp.common.snowflake.SnowflakeIdProvider;
 
 /**
  * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。
  * IDをラップし、文字列表現や比較、データベースの永続化などのユーティリティメソッドを提供します。 このクラスは不変オブジェクトとして設計されています。
+ *
+ * <p>序列化・デシリアライズの過程でJSON形式で表現される際に利用されます。
  */
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-@EqualsAndHashCode
-public class SnowflakeId implements LongValue<SnowflakeId>,
-    Comparable<SnowflakeId>, Serializable {
-
+public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<SnowflakeId>, Serializable {
   /**
    * 空のSnowflakeIdを表す定数。 この定数は、値を持たないSnowflakeIdオブジェクトを表現するために使用されます。 主に、未設定や初期状態を明示的に示すために利用されます。
-   * <p>
-   * 例外やエッジケースを処理する際に役立ち、空の状態であることを確認したり 比較や操作を実行する際の基準として使用されます。
+   *
+   * <p>例外やエッジケースを処理する際に役立ち、空の状態であることを確認したり 比較や操作を実行する際の基準として使用されます。
    */
   public static final SnowflakeId EMPTY = new SnowflakeId(null);
+
   /**
    * クラスSnowflakeIdにおいて、シリアライズのバージョン管理を行うために使用される直列化識別子。
    * serialVersionUIDは、異なるJava仮想マシン間でのインスタンスの保存および読み込み（シリアライズおよびデシリアライズ）
    * プロセス中に、クラスの互換性を検証するために使用されます。 クラスの構造に大きな変更がない限り、独自に定義された値を保持することで、 シリアライズ済みオブジェクトの互換性を維持ができます。
    */
-  @Serial
-  private static final long serialVersionUID = 1L;
-  /**
-   * SnowflakeIdインスタンスの基盤となる具体的な値を表します。 この値は不変であり、SnowflakeIdの一意性を保証するために使用されます。
-   * <p>
-   * 序列化・デシリアライズの過程でJSON形式で表現される際に利用されます。
-   */
-  @JsonValue
+  @Serial private static final long serialVersionUID = 1L;
+
   private final Long value;
 
   /**
@@ -102,7 +93,6 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
   @Override
   public String toString() {
     return String.valueOf(value);
-
   }
 
   /**
@@ -121,7 +111,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
    *
    * @param other 比較対象の SnowflakeId インスタンス。null の可能性があります。
    * @return この SnowflakeId が指定された SnowflakeId より小さい場合は負の整数、 等しい場合は 0、大きい場合は正の整数を返します。 指定されたオブジェクトが
-   * null の場合は -1 を返します。
+   *     null の場合は -1 を返します。
    */
   @Override
   public int compareTo(@Nullable SnowflakeId other) {
@@ -131,24 +121,25 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
     if (isNull(this.value)) {
       return 1;
     }
-    return ComparisonChain
-        .start()
-        .compare(this.getValue(), other.getValue())
-        .result();
-
+    return ComparisonChain.start().compare(this.value(), other.value()).result();
   }
 
   /**
    * このインスタンスに格納されている値をBase-36エンコードされた文字列に変換します。
-   * <p>
-   * このメソッドは、変換を実行する前に値が空でないことを検証します。
+   *
+   * <p>このメソッドは、変換を実行する前に値が空でないことを検証します。
    *
    * @return 現在のインスタンスの値をBase-36エンコードした文字列。
    * @throws IllegalStateException 値がnullまたは空の場合にスローされます。
    */
   public String toBase36String() {
     LongValues.checkNotEmpty(this, () -> new IllegalStateException("value is empty"));
-    return Long.toString(getValue(), 36);
+    return Long.toString(value(), 36);
+  }
+
+  @Override
+  public Long value() {
+    return value;
   }
 
   /**
@@ -156,8 +147,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
    * このクラスはJPAのAttributeConverterインターフェースを実装しています。
    */
   @Converter(autoApply = true)
-  public static class SnowflakeIdConverter implements
-      AttributeConverter<SnowflakeId, Long> {
+  public static class SnowflakeIdConverter implements AttributeConverter<SnowflakeId, Long> {
 
     /**
      * SnowflakeIdオブジェクトをデータベースに保存可能なLong型に変換します。
@@ -167,9 +157,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>,
      */
     @Override
     public Long convertToDatabaseColumn(SnowflakeId attribute) {
-      return attribute != null ? attribute.getValue() : null;
-
-
+      return attribute != null ? attribute.value() : null;
     }
 
     /**
