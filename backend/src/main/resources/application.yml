@@ -26,7 +26,7 @@ spring:
     #    password: ${POSTGRES_PASSWORD:postgres}
     #    url: ${SYSTEM_JDBC_URL:jdbc:postgresql://localhost:5432/postgres}
     mvc:
-      probremdetails:
+      problemdetails:
         enabled: true
   
   jackson:
