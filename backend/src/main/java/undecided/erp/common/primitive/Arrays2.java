@@ -1,20 +1,27 @@
 package undecided.erp.common.primitive;
 
+import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+
 import java.util.Arrays;
 import java.util.stream.Stream;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
+import undecided.erp.common.exception.SystemException;
 
-/** 配列操作を補助するユーティリティクラスです。 このクラスは、主に配列に関する便利なメソッドを提供します。 すべてのメソッドは静的メソッドであり、インスタンス化する必要がありません。 */
+/**
+ * 配列操作を補助するユーティリティクラスです。
+ *
+ * <p>このクラスは、主に配列に関する便利なメソッドを提供します。 すべてのメソッドは静的メソッドであり、インスタンス化する必要がありません。
+ */
 @UtilityClass
 public class Arrays2 {
 
   /**
-   * Checks if the specified array is empty.
+   * 配列が空であるかどうかを判定します。
    *
-   * @param array the array to check must not be null
-   * @param <T> the type of elements in the array
-   * @return true if the array is empty, false otherwise
+   * @param <T> 配列内の要素の型
+   * @param array 判定対象の非null配列
+   * @return 配列が空の場合はtrue、それ以外の場合はfalse
    */
   public static <T> boolean isEmpty(@NonNull T[] array) {
     return array.length == 0;
@@ -32,11 +39,11 @@ public class Arrays2 {
   }
 
   /**
-   * Checks whether all elements in the provided array are not null.
+   * 指定された配列内のすべての要素が非nullであるかを確認します。
    *
-   * @param array the array to check must not be null
-   * @param <E> the type of elements in the array
-   * @return true if all elements in the array are not null, false otherwise
+   * @param <E> 配列要素の型
+   * @param array 非nullチェックを行う配列
+   * @return 配列のすべての要素が非nullであればtrue、1つでもnullが存在すればfalse
    */
   public static <E> boolean allElementsNotNull(@NonNull E[] array) {
     for (E e : array) {}
@@ -52,14 +59,19 @@ public class Arrays2 {
    * @return 入力配列からの非null要素のストリーム
    */
   public static <T> Stream<@NonNull T> stream(@NonNull T[] array) {
+    checkNotNull(
+        array, () -> new SystemException("array must not be null!", new NullPointerException()));
+
     return Arrays.stream(array);
   }
 
   /**
-   * Computes the hash code for a given array of objects.
+   * 指定されたオブジェクト配列のハッシュコードを計算して返します。
    *
-   * @param args the array of objects for which the hash code is to be computed; can be null
-   * @return the computed hash code for the array, or 0 if the array is null
+   * <p>配列内の各要素のハッシュコードを基に計算が行われます。
+   *
+   * @param args ハッシュコードを計算する対象のオブジェクト配列
+   * @return 引数の配列に基づくハッシュコードの値
    */
   public static int hash(Object[] args) {
     return Arrays.hashCode(args);
@@ -73,14 +85,16 @@ public class Arrays2 {
    * @return 2つの配列が等しい場合はtrue、それ以外の場合はfalse
    */
   public static boolean equal(Object[] args, Object[] args1) {
+
     return Arrays.equals(args, args1);
   }
 
   /**
-   * Converts an object array into its string representation.
+   * 指定された配列を文字列表現に変換します。
    *
-   * @param args the array of objects to be converted into a string; can be null
-   * @return the string representation of the array, or "null" if the array is null
+   * @param args 文字列に変換するオブジェクトの配列。配列内の要素は {@code toString} メソッドを使用して 各要素を文字列化します。{@code null}
+   *     が指定された場合は {@code "null"} を返します。
+   * @return 配列を表す文字列。例えば、配列内の要素が "a", "b", "c" の場合は {@code "[a, b, c]"} が返されます。
    */
   public static String toString(Object[] args) {
     return Arrays.toString(args);
