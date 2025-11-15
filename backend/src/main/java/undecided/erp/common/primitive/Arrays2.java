@@ -12,7 +12,7 @@ public class Arrays2 {
   /**
    * Checks if the specified array is empty.
    *
-   * @param array the array to check, must not be null
+   * @param array the array to check must not be null
    * @param <T> the type of elements in the array
    * @return true if the array is empty, false otherwise
    */
@@ -34,7 +34,7 @@ public class Arrays2 {
   /**
    * Checks whether all elements in the provided array are not null.
    *
-   * @param array the array to check, must not be null
+   * @param array the array to check must not be null
    * @param <E> the type of elements in the array
    * @return true if all elements in the array are not null, false otherwise
    */
