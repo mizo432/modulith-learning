@@ -3,10 +3,8 @@ package undecided.erp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
-import undecided.erp.common.exception.ExceptionLogger;
 import undecided.erp.shared.applicatoion.ApplicationInfoInitializer;
 
 /**
@@ -52,8 +50,4 @@ public class ModulithDemoApplication {
     ApplicationInfoInitializer.initialize(applicationName, Long.valueOf(serverPort));
   }
 
-  @Bean
-  protected ExceptionLogger exceptionLogger() {
-    return new ExceptionLogger(ExceptionLogger.class.getName());
-  }
 }

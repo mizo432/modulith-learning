@@ -1,4 +1,4 @@
-package undecided.erp.common.web.config;
+package undecided.erp.shared.presentation.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
@@ -11,6 +11,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import undecided.erp.common.web.logging.TraceLoggingInterceptor;
@@ -22,20 +23,24 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 // @EnableWebMvc
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
+  /**
+   * TraceLoggingInterceptorのインスタンスを生成し、Spring MVCのHandlerInterceptorとして使用可能にします。
+   * このInterceptorはリクエストをトレースしてログ出力を行い、リクエスト処理の追跡やエラーハンドリングに役立てます。
+   *
+   * @return HandlerInterceptorとして利用可能なTraceLoggingInterceptorの新しいインスタンス
+   */
+  @Bean
+  public HandlerInterceptor handlerExceptionnterceptor() {
+    return new TraceLoggingInterceptor();
+  }
 
   /**
-   * JSONメッセージコンバータを作成します。このメソッドは、指定されたObjectMapperを使用して
-   * MappingJackson2HttpMessageConverterを設定します。これにより、HTTPリクエスト/レスポンスの
-   * JSONのシリアライズ/デシリアライズ処理がカスタマイズされます。
+   * 標準の日付フォーマットを提供するStdDateFormatインスタンスを作成します。 このメソッドは、日付のシリアライズ/デシリアライズ処理を統一された形式で設定するために使用されます。
    *
-   * @param objectMapper JSONのシリアライズ/デシリアライズ処理をカスタマイズするためのObjectMapperのインスタンス
-   * @return 設定済みのMappingJackson2HttpMessageConverterインスタンス
+   * @return 標準の日付フォーマットを表すStdDateFormatインスタンス
    */
-  @Bean("jsonMessageConverter")
-  public MappingJackson2HttpMessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
-    MappingJackson2HttpMessageConverter bean = new MappingJackson2HttpMessageConverter();
-    bean.setObjectMapper(objectMapper);
-    return bean;
+  public StdDateFormat stdDateFormat() {
+    return new StdDateFormat();
   }
 
   /**
@@ -53,13 +58,18 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * 標準の日付フォーマットを提供するStdDateFormatインスタンスを作成します。 このメソッドは、日付のシリアライズ/デシリアライズ処理を統一された形式で設定するために使用されます。
+   * JSONメッセージコンバータを作成します。このメソッドは、指定されたObjectMapperを使用して
+   * MappingJackson2HttpMessageConverterを設定します。これにより、HTTPリクエスト/レスポンスの
+   * JSONのシリアライズ/デシリアライズ処理がカスタマイズされます。
    *
-   * @return 標準の日付フォーマットを表すStdDateFormatインスタンス
+   * @param objectMapper JSONのシリアライズ/デシリアライズ処理をカスタマイズするためのObjectMapperのインスタンス
+   * @return 設定済みのMappingJackson2HttpMessageConverterインスタンス
    */
-  @Bean
-  public StdDateFormat stdDateFormat() {
-    return new StdDateFormat();
+  @Bean("jsonMessageConverter")
+  public MappingJackson2HttpMessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
+    MappingJackson2HttpMessageConverter bean = new MappingJackson2HttpMessageConverter();
+    bean.setObjectMapper(objectMapper);
+    return bean;
   }
 
   /**
@@ -119,7 +129,4 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
     traceLoggingInterceptor.setWarnHandlingNanos(3000000000L);
     return traceLoggingInterceptor;
   }
-
-  // @Bean("handlerExceptionResolverLoggingInterceptor")
-
 }
