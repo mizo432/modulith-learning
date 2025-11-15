@@ -251,7 +251,7 @@ public interface IntegerValue<VO extends IntegerValue<VO>> extends SingleValue<I
         @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
         @NonNull Integer min) {
       if (ref == null) {
-        return ref;
+        return null;
       }
 
       IntegerPrecondition.checkGreaterThan(ref.value(), exceptionSupplier, min);

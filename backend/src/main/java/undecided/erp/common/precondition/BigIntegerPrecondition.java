@@ -8,11 +8,11 @@ import lombok.experimental.UtilityClass;
 
 /**
  * {@link BigInteger}値のプロパティと制約を検証するユーティリティクラス。
- * <p>
- * 指定された値が正の数、負の数、または特定の範囲内に収まるかどうかを確認するメソッドを提供し、 条件を満たさない場合に例外をスローします。
- * <p>
- * このクラスのすべてのメソッドは静的で、バリデーション失敗時にカスタム例外を提供するために
- * {@link Supplier}と連携するように設計されています。様々な条件下で{@link BigInteger}オブジェクトの 制約を確実にするためのヘルパークラスです。
+ *
+ * <p>指定された値が正の数、負の数、または特定の範囲内に収まるかどうかを確認するメソッドを提供し、 条件を満たさない場合に例外をスローします。
+ *
+ * <p>このクラスのすべてのメソッドは静的で、バリデーション失敗時にカスタム例外を提供するために {@link Supplier}と連携するように設計されています。様々な条件下で{@link
+ * BigInteger}オブジェクトの 制約を確実にするためのヘルパークラスです。
  */
 @UtilityClass
 public class BigIntegerPrecondition {
@@ -25,10 +25,10 @@ public class BigIntegerPrecondition {
    * @return 検証に合格した場合は、正数のBigInteger値。
    * @throws RuntimeException 値がnullまたは負であるときにスローされます。
    */
-  public static BigInteger checkPositive(BigInteger ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+  public static BigInteger checkPositive(
+      BigInteger ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (Range.greaterThan(BigInteger.ZERO).contains(ref)) {
       return ref;
@@ -44,10 +44,10 @@ public class BigIntegerPrecondition {
    * @return 値が正またはゼロである場合、元のBigInteger値。
    * @throws RuntimeException 値が正またはゼロでない場合。
    */
-  public static BigInteger checkNonNegative(BigInteger ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+  public static BigInteger checkNonNegative(
+      BigInteger ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (!Range.atLeast(BigInteger.ZERO).contains(ref)) {
       throw exceptionSupplier.get();
@@ -63,10 +63,10 @@ public class BigIntegerPrecondition {
    * @return BigIntegerが負の場合は検証されたBigIntegerを返し、そうでない場合は与えられた参照BigIntegerを返します
    * @throws RuntimeException BigIntegerが負数でない場合
    */
-  public static BigInteger checkNegative(final BigInteger ref,
-      final @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+  public static BigInteger checkNegative(
+      final BigInteger ref, final @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (Range.lessThan(BigInteger.ZERO).contains(ref)) {
       return ref;
@@ -76,17 +76,17 @@ public class BigIntegerPrecondition {
 
   /**
    * 与えられたBigInteger値が非正（ゼロまたは負）であることを検証します。
-   * <p>
-   * 値がnullの場合は、そのまま返されます。値が正の数の場合、 提供された例外サプライヤーを使用してRuntimeExceptionがスローされます。
+   *
+   * <p>値がnullの場合は、そのまま返されます。値が正の数の場合、 提供された例外サプライヤーを使用してRuntimeExceptionがスローされます。
    *
    * @param ref 検証対象のBigInteger（nullも可）
    * @param exceptionSupplier 検証に失敗した場合にスローされる例外を提供するサプライヤー
    * @return 非正またはnullの場合は元のBigInteger
    */
-  public static BigInteger checkNonPositive(BigInteger ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+  public static BigInteger checkNonPositive(
+      BigInteger ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (!Range.atMost(BigInteger.ZERO).contains(ref)) {
       throw exceptionSupplier.get();
@@ -104,15 +104,16 @@ public class BigIntegerPrecondition {
    * @return 検証済みのBigInteger値。
    * @throws RuntimeException BigInteger値が指定された閉範囲内にない場合。
    */
-  public static BigInteger checkRangeClosed(BigInteger ref,
+  public static BigInteger checkRangeClosed(
+      BigInteger ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
-      @NonNull BigInteger min, @NonNull BigInteger max) {
+      @NonNull BigInteger min,
+      @NonNull BigInteger max) {
     if (!Range.closed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -120,21 +121,22 @@ public class BigIntegerPrecondition {
    *
    * @param ref 検証対象となるBigInteger値。
    * @param exceptionSupplier BigInteger値が範囲外である場合にスローするRuntimeExceptionを返すsupplier関数。
-   * このsupplier関数はnullであってはなりません。
+   *     このsupplier関数はnullであってはなりません。
    * @param min 範囲の最小値。
    * @param max 範囲の最大値。
    * @return 検証されたBigInteger値。
    * @throws RuntimeException BigInteger値が指定した開放範囲内にない場合。
    */
-  public static BigInteger checkRangeOpen(BigInteger ref,
+  public static BigInteger checkRangeOpen(
+      BigInteger ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
-      @NonNull BigInteger min, @NonNull BigInteger max) {
+      @NonNull BigInteger min,
+      @NonNull BigInteger max) {
     if (!Range.open(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -142,21 +144,22 @@ public class BigIntegerPrecondition {
    *
    * @param ref 検証するBigInteger型の値。
    * @param exceptionSupplier BigInteger型の値が範囲外の場合にRuntimeExceptionを返すサプライヤー関数。
-   * このサプライヤー関数は非nullでなければなりません。
+   *     このサプライヤー関数は非nullでなければなりません。
    * @param min 閉区間-開区間の範囲の最小値。
    * @param max 閉区間-開区間の範囲の最大値。
    * @return 検証済みのBigInteger型の値。
    * @throws RuntimeException BigInteger型の値が指定された閉区間-開区間の範囲内にない場合。
    */
-  public static BigInteger checkRangeClosedOpen(BigInteger ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull BigInteger min,
+  public static BigInteger checkRangeClosedOpen(
+      BigInteger ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull BigInteger min,
       @NonNull BigInteger max) {
     if (!Range.closedOpen(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -164,27 +167,28 @@ public class BigIntegerPrecondition {
    *
    * @param ref 検証するBigInteger値。
    * @param exceptionSupplier BigInteger値が範囲外の場合に投げられるRuntimeExceptionを返すサプライヤー関数。
-   * このサプライヤー関数はnullであってはなりません。
+   *     このサプライヤー関数はnullであってはなりません。
    * @param min 開放-閉鎖範囲の最小値。
    * @param max 開放-閉鎖範囲の最大値。
    * @return 検証したBigInteger値。
    * @throws RuntimeException BigInteger値が指定した開放-閉鎖範囲内にない場合。
    */
-  public static BigInteger checkRangeOpenClosed(BigInteger ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull BigInteger min,
+  public static BigInteger checkRangeOpenClosed(
+      BigInteger ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull BigInteger min,
       @NonNull BigInteger max) {
     if (!Range.openClosed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
    * 指定された整数値が範囲の最小値以上であることを検証します。
-   * <p>
-   * 値が範囲内にない場合、exceptionSupplierによって提供されるRuntimeExceptionをスローします。
+   *
+   * <p>値が範囲内にない場合、exceptionSupplierによって提供されるRuntimeExceptionをスローします。
    *
    * @param ref 検証する整数値です。
    * @param exceptionSupplier 値が範囲外の場合にRuntimeExceptionを返す関数です。 この関数は null であってはなりません。
@@ -192,18 +196,18 @@ public class BigIntegerPrecondition {
    * @return 検証された整数値。
    * @throws RuntimeException 整数値が指定された最小値以上でない場合にスローされます。
    */
-  public static BigInteger checkAtLest(final BigInteger ref,
+  public static BigInteger checkAtLest(
+      final BigInteger ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       final @NonNull BigInteger min) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (!Range.atLeast(min).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -215,17 +219,18 @@ public class BigIntegerPrecondition {
    * @return 検証されたBigInteger値を返します。
    * @throws RuntimeException BigInteger値が指定範囲内に存在しない場合にスローされます。
    */
-  public static BigInteger checkAtMost(BigInteger ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull BigInteger max) {
+  public static BigInteger checkAtMost(
+      BigInteger ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull BigInteger max) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (!Range.atMost(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -237,18 +242,18 @@ public class BigIntegerPrecondition {
    * @return 検証されたBigInteger値。
    * @throws RuntimeException BigInteger値が最小値よりも大きくない場合。
    */
-  public static BigInteger checkGreaterThan(final BigInteger ref,
+  public static BigInteger checkGreaterThan(
+      final BigInteger ref,
       final @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       final @NonNull BigInteger min) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (!Range.greaterThan(min).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -260,17 +265,17 @@ public class BigIntegerPrecondition {
    * @return 検証済みのBigIntegerの値。
    * @throws RuntimeException BigIntegerの値が指定された最大値未満でない場合。
    */
-  public static BigInteger checkLessThan(final BigInteger ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull BigInteger max) {
+  public static BigInteger checkLessThan(
+      final BigInteger ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull BigInteger max) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (!Range.lessThan(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
-
 }

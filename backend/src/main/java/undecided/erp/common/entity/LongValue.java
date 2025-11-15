@@ -242,7 +242,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
         @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
         @NonNull Long min) {
       if (ref == null) {
-        return ref;
+        return null;
       }
 
       LongPrecondition.checkGreaterThan(ref.value(), exceptionSupplier, min);
