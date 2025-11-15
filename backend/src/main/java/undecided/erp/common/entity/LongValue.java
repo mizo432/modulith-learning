@@ -183,7 +183,7 @@ public interface LongValue<VO extends LongValue<VO>> extends SingleValue<Long> {
       if (isNull(ref)) {
         return null;
       }
-      LongPrecondition.checkAtLest(ref.value(), exceptionSupplier, min);
+      LongPrecondition.checkAtLeast(ref.value(), exceptionSupplier, min);
       return ref;
     }
 

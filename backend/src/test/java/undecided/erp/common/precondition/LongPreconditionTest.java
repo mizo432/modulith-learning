@@ -23,17 +23,21 @@ class LongPreconditionTest {
     @Test
     public void withZero() {
       long input = 0;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
-        LongPrecondition.checkPositive(input, NoSuchElementException::new);
-      });
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> {
+                LongPrecondition.checkPositive(input, NoSuchElementException::new);
+              });
     }
 
     @Test
     public void withNegativeValue() {
       long input = -5;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
-        LongPrecondition.checkPositive(input, NoSuchElementException::new);
-      });
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> {
+                LongPrecondition.checkPositive(input, NoSuchElementException::new);
+              });
     }
 
     @Test
@@ -42,7 +46,6 @@ class LongPreconditionTest {
       Long output = LongPrecondition.checkPositive(input, NoSuchElementException::new);
       assertThat(output).isNull();
     }
-
   }
 
   @Nested
@@ -51,28 +54,29 @@ class LongPreconditionTest {
     @Test
     public void withPositiveValue() {
       Long input = 5L;
-      Long output = LongPrecondition.verifyPositiveOrZero(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkPositiveOrZero(input, NoSuchElementException::new);
       assertThat(output).isEqualTo(input);
     }
 
     @Test
     public void withZero() {
       Long input = 0L;
-      Long output = LongPrecondition.verifyPositiveOrZero(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkPositiveOrZero(input, NoSuchElementException::new);
       assertThat(output).isEqualTo(input);
     }
 
     @Test
     public void withNegativeValue() {
       Long input = -5L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-          () -> LongPrecondition.verifyPositiveOrZero(input, NoSuchElementException::new));
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> LongPrecondition.checkPositiveOrZero(input, NoSuchElementException::new));
     }
 
     @Test
     public void withNull() {
       Long input = null;
-      Long output = LongPrecondition.verifyPositiveOrZero(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkPositiveOrZero(input, NoSuchElementException::new);
       assertThat(output).isNull();
     }
   }
@@ -83,28 +87,28 @@ class LongPreconditionTest {
     @Test
     public void withNegativeValue() {
       Long input = -5L;
-      Long output = LongPrecondition.verifyNegative(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkNegative(input, NoSuchElementException::new);
       assertThat(output).isEqualTo(input);
     }
 
     @Test
     public void withZero() {
       Long input = 0L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-          () -> LongPrecondition.verifyNegative(input, NoSuchElementException::new));
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(() -> LongPrecondition.checkNegative(input, NoSuchElementException::new));
     }
 
     @Test
     public void withPositiveValue() {
       Long input = 5L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-          () -> LongPrecondition.verifyNegative(input, NoSuchElementException::new));
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(() -> LongPrecondition.checkNegative(input, NoSuchElementException::new));
     }
 
     @Test
     public void withNull() {
       Long input = null;
-      Long output = LongPrecondition.verifyNegative(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkNegative(input, NoSuchElementException::new);
       assertThat(output).isNull();
     }
   }
@@ -115,28 +119,29 @@ class LongPreconditionTest {
     @Test
     public void withNegativeValue() {
       Long input = -5L;
-      Long output = LongPrecondition.verifyNegativeOrZero(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkNegativeOrZero(input, NoSuchElementException::new);
       assertThat(output).isEqualTo(input);
     }
 
     @Test
     public void withZero() {
       Long input = 0L;
-      Long output = LongPrecondition.verifyNegativeOrZero(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkNegativeOrZero(input, NoSuchElementException::new);
       assertThat(output).isEqualTo(input);
     }
 
     @Test
     public void withPositiveValue() {
       Long input = 5L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-          () -> LongPrecondition.verifyNegativeOrZero(input, NoSuchElementException::new));
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> LongPrecondition.checkNegativeOrZero(input, NoSuchElementException::new));
     }
 
     @Test
     public void withNull() {
       Long input = null;
-      Long output = LongPrecondition.verifyNegativeOrZero(input, NoSuchElementException::new);
+      Long output = LongPrecondition.checkNegativeOrZero(input, NoSuchElementException::new);
       assertThat(output).isNull();
     }
   }
@@ -149,8 +154,8 @@ class LongPreconditionTest {
       Long min = 1L;
       Long max = 10L;
       Long input = 2L;
-      Long output = LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min,
-          max);
+      Long output =
+          LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min, max);
       assertThat(output).isEqualTo(input);
     }
 
@@ -159,9 +164,11 @@ class LongPreconditionTest {
       Long min = 1L;
       Long max = 10L;
       Long input = 11L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
-        LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min, max);
-      });
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> {
+                LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min, max);
+              });
     }
 
     @Test
@@ -169,8 +176,8 @@ class LongPreconditionTest {
       Long min = 1L;
       Long max = 10L;
       Long input = null;
-      Long output = LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min,
-          max);
+      Long output =
+          LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min, max);
       assertThat(output).isNull();
     }
 
@@ -179,8 +186,8 @@ class LongPreconditionTest {
       Long min = 1L;
       Long max = 10L;
       Long input = min;
-      Long output = LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min,
-          max);
+      Long output =
+          LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min, max);
       assertThat(output).isEqualTo(input);
     }
 
@@ -190,8 +197,10 @@ class LongPreconditionTest {
       Long max = 10L;
       Long input = max;
       assertThatThrownBy(
-          () -> LongPrecondition.checkRangeClosedOpen(input, NoSuchElementException::new, min,
-              max)).isInstanceOf(NoSuchElementException.class);
+              () ->
+                  LongPrecondition.checkRangeClosedOpen(
+                      input, NoSuchElementException::new, min, max))
+          .isInstanceOf(NoSuchElementException.class);
     }
   }
 
@@ -212,9 +221,11 @@ class LongPreconditionTest {
       Long min = 1L;
       Long max = 10L;
       Long input = 1L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
-        LongPrecondition.checkRangeOpen(input, NoSuchElementException::new, min, max);
-      });
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> {
+                LongPrecondition.checkRangeOpen(input, NoSuchElementException::new, min, max);
+              });
     }
 
     @Test
@@ -222,9 +233,11 @@ class LongPreconditionTest {
       Long min = 1L;
       Long max = 10L;
       Long input = 10L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
-        LongPrecondition.checkRangeOpen(input, NoSuchElementException::new, min, max);
-      });
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> {
+                LongPrecondition.checkRangeOpen(input, NoSuchElementException::new, min, max);
+              });
     }
 
     @Test
@@ -262,16 +275,18 @@ class LongPreconditionTest {
     public void withLessValue() {
       Long min = 5L;
       Long input = 4L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-          () -> LongPrecondition.checkGreaterThan(input, NoSuchElementException::new, min));
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> LongPrecondition.checkGreaterThan(input, NoSuchElementException::new, min));
     }
 
     @Test
     public void withEqualValue() {
       Long min = 5L;
       Long input = 5L;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-          () -> LongPrecondition.checkGreaterThan(input, NoSuchElementException::new, min));
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> LongPrecondition.checkGreaterThan(input, NoSuchElementException::new, min));
     }
 
     @Test
@@ -294,8 +309,9 @@ class LongPreconditionTest {
     public void withMinValue() {
       Long min = 5L;
       Long input = min;
-      assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-          () -> LongPrecondition.checkGreaterThan(input, NoSuchElementException::new, min));
+      assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(
+              () -> LongPrecondition.checkGreaterThan(input, NoSuchElementException::new, min));
     }
   }
 }

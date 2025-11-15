@@ -4,7 +4,7 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
-import lombok.NonNull;
+import org.jspecify.annotations.NonNull;
 
 public class LongPrecondition {
 
@@ -29,9 +29,9 @@ public class LongPrecondition {
    * @return 与えられた値が正またはゼロである場合、同じLongの値が返ります。それ以外の場合、exceptionSupplierに基づいて例外が投げられます。
    * @throws RuntimeException 与えられた値が負の場合、exceptionSupplierに基づいて投げられます。
    */
-  public static Long verifyPositiveOrZero(
+  public static Long checkPositiveOrZero(
       Long ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return checkAtLest(ref, exceptionSupplier, 0L);
+    return checkAtLeast(ref, exceptionSupplier, 0L);
   }
 
   /**
@@ -44,7 +44,7 @@ public class LongPrecondition {
    * @return 参照が負の場合は参照を、nullであればnullを返します
    * @throws RuntimeException 参照が負でない場合
    */
-  public static Long verifyNegative(
+  public static Long checkNegative(
       Long ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkLessThan(ref, exceptionSupplier, 0L);
   }
@@ -59,7 +59,7 @@ public class LongPrecondition {
    * @return 数値がnullまたはゼロ以下である場合、同じ数値を返します。それ以外の場合は、例外が投げられます。
    * @throws RuntimeException 数値がゼロより大きい場合。
    */
-  public static Long verifyNegativeOrZero(
+  public static Long checkNegativeOrZero(
       final Long ref, final @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkAtMost(ref, exceptionSupplier, 0L);
   }
@@ -178,7 +178,7 @@ public class LongPrecondition {
    * @return 検証された整数値。
    * @throws RuntimeException 整数値が指定された最小値以上でない場合にスローされます。
    */
-  public static Long checkAtLest(
+  public static Long checkAtLeast(
       Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Long min) {
@@ -251,7 +251,7 @@ public class LongPrecondition {
       Long ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Long min) {
-    if (ref == null) {
+    if (isNull(ref)) {
       return null;
     }
 
