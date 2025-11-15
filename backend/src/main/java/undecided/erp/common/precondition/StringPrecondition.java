@@ -21,10 +21,10 @@ public class StringPrecondition {
    * @return 文字列が非空の場合は、同じ文字列の参照を返します
    * @throws E 文字列が空の場合にスローされます
    */
-  public static <E extends RuntimeException> String checkNonEmpty(String ref,
-      @NonNull Supplier<E> exceptionSupplier) {
+  public static <E extends RuntimeException> String checkNonEmpty(
+      String ref, @NonNull Supplier<E> exceptionSupplier) {
     if (ref == null) {
-      return ref;
+      return null;
     }
     if (ref.isEmpty()) {
       throw exceptionSupplier.get();
@@ -43,11 +43,10 @@ public class StringPrecondition {
    * @return 半角長が許可された範囲内である場合、同じ文字列への参照。
    * @throws E 半角長が許可された範囲内でない場合。
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthOpen(String ref,
-      @NonNull Supplier<E> exceptionSupplier, int min, int max) {
+  public static <E extends RuntimeException> String verifyHalfWidthLengthOpen(
+      String ref, @NonNull Supplier<E> exceptionSupplier, int min, int max) {
     if (ref == null) {
-      return ref;
-
+      return null;
     }
     int length = Strings2.getHalfWidthLength(ref);
     if (!Range.open(min, max).contains(length)) {
@@ -55,7 +54,6 @@ public class StringPrecondition {
     }
 
     return ref;
-
   }
 
   /**
@@ -69,11 +67,10 @@ public class StringPrecondition {
    * @return 半角長が許容範囲内である場合、同じ文字列への参照を返します。
    * @throws E 半角長が許容範囲内でない場合
    */
-  public static <E extends RuntimeException> String checkHalfWidthLengthClosed(String ref,
-      @NonNull Supplier<E> exceptionSupplier, int min, int max) {
+  public static <E extends RuntimeException> String checkHalfWidthLengthClosed(
+      String ref, @NonNull Supplier<E> exceptionSupplier, int min, int max) {
     if (ref == null) {
-      return ref;
-
+      return null;
     }
     int length = Strings2.getHalfWidthLength(ref);
     if (!Range.closed(min, max).contains(length)) {
@@ -81,7 +78,6 @@ public class StringPrecondition {
     }
 
     return ref;
-
   }
 
   /**
@@ -94,11 +90,10 @@ public class StringPrecondition {
    * @return 半角長が最小値以上であれば同じ文字列への参照を返します
    * @throws E 半角長が最小値以上でない場合
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthAtLest(String ref,
-      @NonNull Supplier<E> exceptionSupplier, int min) {
+  public static <E extends RuntimeException> String verifyHalfWidthLengthAtLest(
+      String ref, @NonNull Supplier<E> exceptionSupplier, int min) {
     if (ref == null) {
-      return ref;
-
+      return null;
     }
     int length = Strings2.getHalfWidthLength(ref);
     if (!Range.atLeast(min).contains(length)) {
@@ -106,7 +101,6 @@ public class StringPrecondition {
     }
 
     return ref;
-
   }
 
   /**
@@ -119,11 +113,10 @@ public class StringPrecondition {
    * @return 半角長が最小値より大きければ同じ文字列への参照を返します。{@code ref} が {@code null} の場合は {@code null} を返します。
    * @throws E 半角長が最小値より大きくない場合
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthGraterThan(String ref,
-      @NonNull Supplier<E> exceptionSupplier, int min) {
+  public static <E extends RuntimeException> String verifyHalfWidthLengthGraterThan(
+      String ref, @NonNull Supplier<E> exceptionSupplier, int min) {
     if (ref == null) {
-      return ref;
-
+      return null;
     }
     int length = Strings2.getHalfWidthLength(ref);
     if (!Range.greaterThan(min).contains(length)) {
@@ -131,7 +124,6 @@ public class StringPrecondition {
     }
 
     return ref;
-
   }
 
   /**
@@ -144,11 +136,10 @@ public class StringPrecondition {
    * @return 半角長が最大値以下であれば同じ文字列への参照を返します
    * @throws E 半角長が最大値以下でない場合
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthAtMost(String ref,
-      @NonNull Supplier<E> exceptionSupplier, int max) {
+  public static <E extends RuntimeException> String verifyHalfWidthLengthAtMost(
+      String ref, @NonNull Supplier<E> exceptionSupplier, int max) {
     if (ref == null) {
-      return ref;
-
+      return null;
     }
     int length = Strings2.getHalfWidthLength(ref);
     if (!Range.atMost(max).contains(length)) {
@@ -156,7 +147,6 @@ public class StringPrecondition {
     }
 
     return ref;
-
   }
 
   /**
@@ -169,11 +159,10 @@ public class StringPrecondition {
    * @return 半角長さが最大値より小さい場合、同じ文字列への参照を返します。
    * @throws E 半角長さが最大値よりも小さくなければならない場合、例外がスローされます。
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthLessThan(String ref,
-      @NonNull Supplier<E> exceptionSupplier, int max) {
+  public static <E extends RuntimeException> String verifyHalfWidthLengthLessThan(
+      String ref, @NonNull Supplier<E> exceptionSupplier, int max) {
     if (ref == null) {
-      return ref;
-
+      return null;
     }
     int length = Strings2.getHalfWidthLength(ref);
     if (!Range.lessThan(max).contains(length)) {
@@ -181,7 +170,6 @@ public class StringPrecondition {
     }
 
     return ref;
-
   }
 
   /**
@@ -194,31 +182,28 @@ public class StringPrecondition {
    * @return それが有効な10進数の文字列である場合は、同じ値。
    * @throws E 値が有効な10進数の文字列でない場合。
    */
-  public static <E extends RuntimeException> String verifyAllDecimal(String value,
-      @NonNull Supplier<E> exceptionSupplier) {
+  public static <E extends RuntimeException> String verifyAllDecimal(
+      String value, @NonNull Supplier<E> exceptionSupplier) {
     if (value == null) {
-      return value;
+      return null;
     }
     if (!Strings2.isDecimal(value)) {
       throw exceptionSupplier.get();
     }
     return value;
-
   }
 
-  public static <E extends RuntimeException> String checkHalfWidthFixedLength(String value,
-      @NonNull Supplier<E> exceptionSupplier, int length) {
+  public static <E extends RuntimeException> String checkHalfWidthFixedLength(
+      String value, @NonNull Supplier<E> exceptionSupplier, int length) {
     if (value == null) {
-      return value;
+      return null;
     }
     if (!isAllCharacterHalfWidth(value)) {
       throw exceptionSupplier.get();
-
     }
     if (getHalfWidthCharCount(value) != length) {
       throw exceptionSupplier.get();
     }
     return value;
   }
-
 }

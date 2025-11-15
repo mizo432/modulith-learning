@@ -17,8 +17,8 @@ plugins {
     id("org.springframework.boot") version "3.5.7"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
-    id("se.patrikerdes.use-latest-versions") version "0.2.18"
-    id("com.github.ben-manes.versions") version "0.52.0"
+    id("se.patrikerdes.use-latest-versions") version "0.2.19"
+    id("com.github.ben-manes.versions") version "0.53.0"
     // Flywayプラグイン（DBマイグレーション）
     // id("org.flywaydb.flyway") version "11.3.4"
     jacoco
@@ -61,6 +61,7 @@ extra["springCloudBomVersion"] = "2025.0.0"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.4.1"
+extra["jspecifyVersion"] = "1.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -92,7 +93,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
-
+    implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     testRuntimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/am.ik.yavi/yavi

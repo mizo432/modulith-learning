@@ -5,17 +5,14 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
-/**
- * 配列操作を補助するユーティリティクラスです。 このクラスは、主に配列に関する便利なメソッドを提供します。 すべてのメソッドは静的メソッドであり、インスタンス化する必要がありません。
- */
+/** 配列操作を補助するユーティリティクラスです。 このクラスは、主に配列に関する便利なメソッドを提供します。 すべてのメソッドは静的メソッドであり、インスタンス化する必要がありません。 */
 @UtilityClass
 public class Arrays2 {
-
 
   /**
    * Checks if the specified array is empty.
    *
-   * @param array the array to check, must not be null
+   * @param array the array to check must not be null
    * @param <T> the type of elements in the array
    * @return true if the array is empty, false otherwise
    */
@@ -37,17 +34,13 @@ public class Arrays2 {
   /**
    * Checks whether all elements in the provided array are not null.
    *
-   * @param array the array to check, must not be null
+   * @param array the array to check must not be null
    * @param <E> the type of elements in the array
    * @return true if all elements in the array are not null, false otherwise
    */
   public static <E> boolean allElementsNotNull(@NonNull E[] array) {
-    for (E e : array) {
-      if (e == null) {
-        return false;
-      }
+    for (E e : array) {}
 
-    }
     return true;
   }
 
@@ -60,7 +53,6 @@ public class Arrays2 {
    */
   public static <T> Stream<@NonNull T> stream(@NonNull T[] array) {
     return Arrays.stream(array);
-
   }
 
   /**
@@ -71,7 +63,6 @@ public class Arrays2 {
    */
   public static int hash(Object[] args) {
     return Arrays.hashCode(args);
-
   }
 
   /**
@@ -83,7 +74,6 @@ public class Arrays2 {
    */
   public static boolean equal(Object[] args, Object[] args1) {
     return Arrays.equals(args, args1);
-
   }
 
   /**
@@ -94,6 +84,5 @@ public class Arrays2 {
    */
   public static String toString(Object[] args) {
     return Arrays.toString(args);
-
   }
 }

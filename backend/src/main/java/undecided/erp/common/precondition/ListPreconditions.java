@@ -1,12 +1,13 @@
 package undecided.erp.common.precondition;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import static undecided.erp.common.primitive.Objects2.isNull;
 
 @UtilityClass
 public class ListPreconditions {
@@ -21,7 +22,6 @@ public class ListPreconditions {
    */
   public static <T> List<T> checkNotEmpty(List<T> list) {
     return checkNotEmpty(list, () -> new IllegalArgumentException("List must not be empty"));
-
   }
 
   /**
@@ -33,10 +33,10 @@ public class ListPreconditions {
    * @return リストが空でない場合は入力リスト
    * @throws RuntimeException リストが空で、supplierによって生成された場合
    */
-  public static <T> List<T> checkNotEmpty(List<T> list,
-      @NonNull Supplier<? extends RuntimeException> supplier) {
+  public static <T> List<T> checkNotEmpty(
+      List<T> list, @NonNull Supplier<? extends RuntimeException> supplier) {
     if (list == null) {
-      return list;
+      return null;
     }
 
     if (list.isEmpty()) {
@@ -47,8 +47,8 @@ public class ListPreconditions {
 
   /**
    * 与えられたリストのすべての要素がnullでないことを確認します。
-   * <p>
-   * 任意の要素がnullの場合、対応するインデックスの例外を投げます。
+   *
+   * <p>任意の要素がnullの場合、対応するインデックスの例外を投げます。
    *
    * @param <E> リスト内の要素のタイプ
    * @param list チェックするリスト
@@ -56,25 +56,24 @@ public class ListPreconditions {
    * @return すべての要素がnullでない場合は入力リスト
    * @throws IndexedRuntimeException リストの任意の要素がnullの場合、null要素のインデックスと共に
    */
-  public static <E> List<E> checkAllItemNotNull(List<E> list,
-      @NonNull Function<Integer, ? extends IndexedRuntimeException> function) {
+  public static <E> List<E> checkAllItemNotNull(
+      List<E> list, @NonNull Function<Integer, ? extends IndexedRuntimeException> function) {
     if (list == null) {
-      return list;
+      return null;
     }
 
     for (int i = 0; i < list.size(); i++) {
       if (list.get(i) == null) {
         throw function.apply(i);
       }
-
     }
     return list;
   }
 
   /**
    * 与えられたリストの任意の要素が null でないか確認します。
-   * <p>
-   * もし null の要素があれば、指定した例外をスローします。
+   *
+   * <p>もし null の要素があれば、指定した例外をスローします。
    *
    * @param <E> リスト内の要素の型
    * @param list チェックするリスト
@@ -82,10 +81,10 @@ public class ListPreconditions {
    * @return 全ての要素が null でない場合、入力リスト
    * @throws RuntimeException リスト内の任意の要素が null の場合
    */
-  public static <E> List<E> checkAnyItemNotNull(List<E> list,
-      @NonNull Supplier<? extends RuntimeException> supplier) {
+  public static <E> List<E> checkAnyItemNotNull(
+      List<E> list, @NonNull Supplier<? extends RuntimeException> supplier) {
     if (list == null) {
-      return list;
+      return null;
     }
 
     if (list.stream().noneMatch(Objects::nonNull)) {
@@ -97,8 +96,8 @@ public class ListPreconditions {
 
   /**
    * 与えられたリストに厳密に1つの非null要素があることをチェックします。
-   * <p>
-   * 1つ以上の非null要素を含んでいた場合は、例外がスローされます。
+   *
+   * <p>1つ以上の非null要素を含んでいた場合は、例外がスローされます。
    *
    * @param <E> リスト内の要素の型
    * @param list チェックするリスト
@@ -106,10 +105,10 @@ public class ListPreconditions {
    * @return チェックがパスした場合は入力リスト
    * @throws RuntimeException 1つ以上の非null要素を含んでいる場合
    */
-  public static <E> List<E> checkOneItemNotNull(List<E> list,
-      @NonNull Supplier<? extends RuntimeException> supplier) {
+  public static <E> List<E> checkOneItemNotNull(
+      List<E> list, @NonNull Supplier<? extends RuntimeException> supplier) {
     if (list == null) {
-      return list;
+      return null;
     }
 
     long numberOfNonNullElements = list.stream().filter(Objects::nonNull).count();
@@ -123,8 +122,8 @@ public class ListPreconditions {
 
   /**
    * リストのサイズを確認します。
-   * <p>
-   * このメソッドは与えられたリストがnullかどうかを確認します。もしそれがnullならば、nullを返します。
+   *
+   * <p>このメソッドは与えられたリストがnullかどうかを確認します。もしそれがnullならば、nullを返します。
    * リストのサイズが指定されたサイズと等しくない場合、exceptionSupplierによって提供される例外をスローします。 それ以外の場合は、入力リストを返します。
    *
    * @param <ListElementType> リスト内の要素の型
@@ -135,9 +134,11 @@ public class ListPreconditions {
    * @return 入力リストがnullでなく、指定されたサイズを持っている場合は入力リスト
    * @throws ExceptionType リストのサイズが指定されたサイズと等しくない場合
    */
-  public static <ListElementType, ExceptionType extends RuntimeException> List<ListElementType> checkSize(
-      List<ListElementType> providedList,
-      @NonNull Supplier<ExceptionType> exceptionSupplier, int expectedSize) {
+  public static <ListElementType, ExceptionType extends RuntimeException>
+      List<ListElementType> checkSize(
+          List<ListElementType> providedList,
+          @NonNull Supplier<ExceptionType> exceptionSupplier,
+          int expectedSize) {
     if (isNull(providedList)) {
       return null;
     }
@@ -147,5 +148,4 @@ public class ListPreconditions {
     }
     return providedList;
   }
-
 }
