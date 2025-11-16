@@ -192,7 +192,7 @@ public interface IntegerValue<VO extends IntegerValue<VO>> extends SingleValue<I
       if (isNull(ref)) {
         return null;
       }
-      IntegerPrecondition.checkAtLest(ref.value(), exceptionSupplier, min);
+      IntegerPrecondition.checkAtLeast(ref.value(), exceptionSupplier, min);
       return ref;
     }
 
