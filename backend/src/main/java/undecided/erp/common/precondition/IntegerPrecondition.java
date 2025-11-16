@@ -1,66 +1,75 @@
 package undecided.erp.common.precondition;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
+
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
-import lombok.NonNull;
+import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
+/**
+ * 数値型の検証を行うためのユーティリティクラスです。
+ *
+ * <p>指定された条件に基づいて、対象の {@link Integer} 値が適切な範囲や条件を 満たしているかを確認します。条件に違反した場合、指定された例外をスローします。
+ *
+ * <p>このクラスのメソッドは全て静的であり、インスタンス化することはできません。
+ */
+@UtilityClass
 public class IntegerPrecondition {
 
   /**
-   * 与えられた引用が正の整数であるかを検証し、そうでない場合はカスタム例外をスローします。
+   * 指定されたInteger値が正の値であることを確認します。
    *
-   * @param ref 正のものであるかどうかを検証するための参照。null値も許可されます。
-   * @param exceptionSupplier 参照が正でない場合にスローされるカスタム例外を提供する{@code Supplier}。
-   * @return 参照がnullでなく、正の場合は正の参照。
-   * @throws RuntimeException 参照がnullまたは正でない場合。
+   * <p>参照値がnullの場合はnullを返し、何も検証しません。 参照値が正の値でない場合は、指定された例外をスローします。
+   *
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 正の値でない場合にスローするRuntimeExceptionを供給するSupplier。nullは許容されません。
+   * @return 正の値であると検証された参照値。参照値がnullであればnullを返します。
+   * @throws RuntimeException 参照値が正の値でない場合に、exceptionSupplierによって供給される例外をスローします。
    */
-  public static Integer checkPositive(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+  public static Integer checkPositive(
+      @Nullable Integer ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkGreaterThan(ref, exceptionSupplier, 0);
   }
 
   /**
-   * 与えられたIntegerの値が正またはゼロであることを検証します。
+   * 指定されたInteger値が負でない（0以上）かを検証します。
    *
-   * @param ref 検証するIntegerの値。 nullの場合、メソッドは例外を投げずにnullを返します。
-   * @param exceptionSupplier 与えられた値が負である場合に投げられる適切なRuntimeExceptionを提供するSupplier。
-   * @return 与えられた値が正またはゼロである場合、同じIntegerの値が返ります。それ以外の場合、exceptionSupplierに基づいて例外が投げられます。
-   * @throws RuntimeException 与えられた値が負の場合、exceptionSupplierに基づいて投げられます。
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 参照値が負である場合にスローするRuntimeExceptionを供給するSupplier。 nullは許容されません。
+   * @return 参照値が0以上である場合はその値を返します。参照値がnullであればnullを返します。
+   * @throws RuntimeException 参照値が負である場合に、exceptionSupplierによって供給される例外をスローします。
    */
-  public static Integer checkNonNegative(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
-    return checkAtLest(ref, exceptionSupplier, 0);
+  public static Integer checkNonNegative(
+      @Nullable Integer ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    return checkAtLeast(ref, exceptionSupplier, 0);
   }
 
   /**
-   * 与えられた参照が負であるかを確認し、そうでなければRuntimeExceptionをスローします。
-   * <p>
-   * 参照がnullの場合、変更せずに返されます。
+   * 指定されたInteger値が負であるかを検証します。
    *
-   * @param ref 確認する参照
-   * @param exceptionSupplier 参照が負でない場合にRuntimeExceptionを提供するSupplier
-   * @return 参照が負の場合は参照を、nullであればnullを返します
-   * @throws RuntimeException 参照が負でない場合
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 値が負でない場合にスローされるRuntimeExceptionを供給するSupplier。nullは許容されません。
+   * @return 負であると検証された参照値。参照値がnullであればnullを返します。
+   * @throws RuntimeException 参照値が負でない場合に、exceptionSupplierによって供給される例外をスローします。
    */
-  public static Integer checkNegative(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+  public static Integer checkNegative(
+      @Nullable Integer ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkLessThan(ref, exceptionSupplier, 0);
   }
 
   /**
-   * 与えられた数値が負の数またはゼロであるかを確認します。
-   * <p>
-   * 参照数がnullの場合、nullを返します。参照数がゼロより大きい場合、指定された例外を投げます。
+   * 指定されたInteger値が0以下であるかを検証します。
    *
-   * @param ref 検証する数値。
-   * @param exceptionSupplier 数値がゼロより大きい場合に投げる例外を提供するSupplier。
-   * @return 数値がnullまたはゼロ以下である場合、同じ数値を返します。それ以外の場合は、例外が投げられます。
-   * @throws RuntimeException 数値がゼロより大きい場合。
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 参照値が0以下でない場合にスローされるRuntimeExceptionを供給するSupplier。 nullは許容されません。
+   * @return 参照値が0以下である場合はその値を返します。参照値がnullであればnullを返します。
+   * @throws RuntimeException 参照値が0より大きい場合に、exceptionSupplierによって供給される例外をスローします。
    */
-  public static Integer checkNegativeOrZero(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+  public static Integer checkNegativeOrZero(
+      @Nullable Integer ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
     return checkAtMost(ref, exceptionSupplier, 0);
-
   }
 
   /**
@@ -73,37 +82,41 @@ public class IntegerPrecondition {
    * @return 検証済みのInteger値。
    * @throws RuntimeException Integer値が指定された閉範囲内にない場合。
    */
-  public static Integer checkRangeClosed(Integer ref,
+  public static Integer checkRangeClosed(
+      @Nullable Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
-      @NonNull Integer min, @NonNull Integer max) {
+      @NonNull Integer min,
+      @NonNull Integer max) {
+    if (isNull(ref)) return null;
     if (!Range.closed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
-   * 特定のInteger値が最小値と最大値で定義された範囲内にあるかどうかを検証します。
+   * 指定されたIntegerの値が開区間(min, max)内にあるかを確認します。 参照値がnullの場合、そのままnullを返します。
+   * 参照値が範囲外にある場合は、指定された例外をスローします。
    *
-   * @param ref 検証対象となるInteger値。
-   * @param exceptionSupplier Integer値が範囲外である場合にスローするRuntimeExceptionを返すsupplier関数。
-   * このsupplier関数はnullであってはなりません。
-   * @param min 範囲の最小値。
-   * @param max 範囲の最大値。
-   * @return 検証されたInteger値。
-   * @throws RuntimeException Integer値が指定した開放範囲内にない場合。
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 範囲外の場合にスローするRuntimeExceptionを供給するSupplier。nullは許容されません。
+   * @param min 開区間の下限値。nullは許容されません。
+   * @param max 開区間の上限値。nullは許容されません。
+   * @return 開区間内であると検証されたInteger値。参照値がnullであればnullを返します。
+   * @throws RuntimeException 指定された範囲に値が存在しない場合、exceptionSupplierによって供給される例外をスローします。
    */
-  public static Integer checkRangeOpen(Integer ref,
+  public static Integer checkRangeOpen(
+      @Nullable Integer ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
-      @NonNull Integer min, @NonNull Integer max) {
+      @NonNull Integer min,
+      @NonNull Integer max) {
+    if (isNull(ref)) return null;
     if (!Range.open(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -111,83 +124,90 @@ public class IntegerPrecondition {
    *
    * @param ref 検証するInteger型の値。
    * @param exceptionSupplier Integer型の値が範囲外の場合にRuntimeExceptionを返すサプライヤー関数。
-   * このサプライヤー関数は非nullでなければなりません。
+   *     このサプライヤー関数は非nullでなければなりません。
    * @param min 閉区間-開区間の範囲の最小値。
    * @param max 閉区間-開区間の範囲の最大値。
    * @return 検証済みのInteger型の値。
    * @throws RuntimeException Integer型の値が指定された閉区間-開区間の範囲内にない場合。
    */
-  public static Integer checkRangeClosedOpen(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min,
+  public static Integer checkRangeClosedOpen(
+      Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull Integer min,
       @NonNull Integer max) {
+    if (isNull(ref)) return null;
     if (!Range.closedOpen(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
-   * 指定された開放-閉鎖範囲（最小値と最大値によって定義される）内に、与えられたInteger値が存在するかどうかを確認します。
+   * 指定されたInteger値が、指定された最小値 (排他) と最大値 (包括) の範囲内に収まるかどうかを検証します。
    *
-   * @param ref 検証するInteger値。
-   * @param exceptionSupplier Integer値が範囲外の場合に投げられるRuntimeExceptionを返すサプライヤー関数。
-   * このサプライヤー関数はnullであってはなりません。
-   * @param min 開放-閉鎖範囲の最小値。
-   * @param max 開放-閉鎖範囲の最大値。
-   * @return 検証したInteger値。
-   * @throws RuntimeException Integer値が指定した開放-閉鎖範囲内にない場合。
+   * <p>参照値がnullの場合は、検証をスキップしnullを返します。 範囲外の場合は例外をスローします。
+   *
+   * @param ref 検証するInteger値。nullを許容します。
+   * @param exceptionSupplier Integer値が範囲外だった場合にスローするRuntimeExceptionを供給するSupplier。 nullは許容されません。
+   * @param min 範囲の最小値（排他）。nullは許容されません。
+   * @param max 範囲の最大値（包括）。nullは許容されません。
+   * @return 範囲内であると検証されたInteger値。また、null値の場合もそのまま返します。
+   * @throws RuntimeException Integer値が範囲外の場合にexceptionSupplierによって供給される例外をスローします。
    */
-  public static Integer checkRangeOpenClosed(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min,
+  public static Integer checkRangeOpenClosed(
+      @Nullable Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull Integer min,
       @NonNull Integer max) {
+    if (isNull(ref)) return null;
     if (!Range.openClosed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
-   * 指定された整数値が範囲の最小値以上であることを検証します。
-   * <p>
-   * 値が範囲内にない場合、exceptionSupplierによって提供されるRuntimeExceptionをスローします。
+   * 指定された参照値が指定された最小値以上であることを確認します。 参照値がnullの場合はnullを返し、何も検証しません。 参照値が最小値未満である場合は、指定された例外をスローします。
    *
-   * @param ref 検証する整数値です。
-   * @param exceptionSupplier 値が範囲外の場合にRuntimeExceptionを返す関数です。 この関数は null であってはなりません。
-   * @param min 範囲の最小値です。
-   * @return 検証された整数値。
-   * @throws RuntimeException 整数値が指定された最小値以上でない場合にスローされます。
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 最小値以上でない場合にスローするRuntimeExceptionを提供するSupplier。nullは許容されません。
+   * @param min 許容される最小値。nullは許容されません。
+   * @return 指定された最小値以上である参照値。参照値がnullであればnullを返します。
+   * @throws RuntimeException 参照値が指定された最小値未満の場合にスローされます。
    */
-  public static Integer checkAtLest(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min) {
+  public static Integer checkAtLeast(
+      @Nullable Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull Integer min) {
+    if (isNull(ref)) return null;
     if (!Range.atLeast(min).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
-   * 指定されたInteger値が、最大値によって定義された範囲内にあるかどうかを検証します。
+   * 指定された参照値が、指定された最大値以下であるかを検証します。
    *
-   * @param ref 検証するInteger値。
-   * @param exceptionSupplier Integer値が範囲外の場合に、RuntimeExceptionを返すサプライヤー関数。
-   * @param max 範囲の最大値。
-   * @return 検証されたInteger値を返します。
-   * @throws RuntimeException Integer値が指定範囲内に存在しない場合にスローされます。
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 最大値以下でない場合にスローするRuntimeExceptionを供給するSupplier。nullは許容されません。
+   * @param max 許容される最大値。nullは許容されません。
+   * @return 最大値以下であると検証された参照値。参照値がnullであればnullを返します。
+   * @throws RuntimeException 参照値が指定された最大値よりも大きい場合にスローされます。
    */
-  public static Integer checkAtMost(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer max) {
+  public static Integer checkAtMost(
+      @Nullable Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull Integer max) {
+    if (isNull(ref)) return null;
     if (!Range.atMost(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
@@ -199,33 +219,38 @@ public class IntegerPrecondition {
    * @return 検証済みのIntegerの値。
    * @throws RuntimeException Integerの値が指定された最大値未満でない場合。
    */
-  public static Integer checkLessThan(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer max) {
+  public static Integer checkLessThan(
+      @Nullable Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull Integer max) {
+    if (isNull(ref)) return null;
     if (!Range.lessThan(max).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
 
   /**
-   * 指定されたInteger値が最小値よりも大きいかどうかを検証します。
+   * 指定された参照値が指定された最小値より大きいことを確認します。
    *
-   * @param ref 検証するInteger値。
-   * @param exceptionSupplier 範囲内に値がない場合にスローされるRuntimeExceptionを返す供給関数。
-   * @param min 最小値。
-   * @return 検証されたInteger値。
-   * @throws RuntimeException Integer値が最小値よりも大きくない場合。
+   * <p>参照値がnullの場合はnullを返し、何も検証しません。 参照値が最小値以下である場合は、指定された例外をスローします。
+   *
+   * @param ref 検証対象のInteger値。nullを許容します。
+   * @param exceptionSupplier 最小値より大きくない場合にスローするRuntimeExceptionを提供するSupplier。nullは許容されません。
+   * @param min 許容される最小値。nullは許容されません。
+   * @return 指定された最小値より大きい参照値。参照値がnullであればnullを返します。
+   * @throws RuntimeException 参照値が指定された最小値以下の場合にスローされます。
    */
-  public static Integer checkGreaterThan(Integer ref,
-      @NonNull Supplier<? extends RuntimeException> exceptionSupplier, @NonNull Integer min) {
+  public static Integer checkGreaterThan(
+      @Nullable Integer ref,
+      @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
+      @NonNull Integer min) {
+    if (isNull(ref)) return null;
     if (!Range.greaterThan(min).contains(ref)) {
       throw exceptionSupplier.get();
     }
 
     return ref;
-
   }
-
 }
