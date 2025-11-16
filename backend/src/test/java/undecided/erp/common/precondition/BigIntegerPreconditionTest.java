@@ -13,35 +13,35 @@ public class BigIntegerPreconditionTest {
   private static final BigInteger ZERO = BigInteger.ZERO;
   private static final BigInteger POSITIVE = BigInteger.ONE;
   private static final BigInteger NEGATIVE = BigInteger.valueOf(-1);
-  private static final Supplier<RuntimeException> RUNTIME_EXCEPTION_SUPPLIER = RuntimeException::new;
+  private static final Supplier<RuntimeException> RUNTIME_EXCEPTION_SUPPLIER =
+      RuntimeException::new;
 
   @Nested
   class VerifyPositiveTest {
 
-
     @Test
     public void whenPositiveValue() {
-      assertThat(BigIntegerPrecondition.checkPositive(POSITIVE,
-          RUNTIME_EXCEPTION_SUPPLIER)).isEqualTo(POSITIVE);
+      assertThat(BigIntegerPrecondition.checkPositive(POSITIVE, RUNTIME_EXCEPTION_SUPPLIER))
+          .isEqualTo(POSITIVE);
     }
 
     @Test
     public void whenZeroValue() {
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkPositive(ZERO, RUNTIME_EXCEPTION_SUPPLIER));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(() -> BigIntegerPrecondition.checkPositive(ZERO, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     public void whenNegativeValue() {
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkPositive(NEGATIVE, RUNTIME_EXCEPTION_SUPPLIER));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkPositive(NEGATIVE, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     public void whenNull() {
       assertThat(BigIntegerPrecondition.checkPositive(null, RUNTIME_EXCEPTION_SUPPLIER)).isNull();
     }
-
   }
 
   @Nested
@@ -49,29 +49,28 @@ public class BigIntegerPreconditionTest {
 
     @Test
     public void whenPositiveValue() {
-      assertThat(BigIntegerPrecondition.checkNonNegative(POSITIVE,
-          RUNTIME_EXCEPTION_SUPPLIER)).isEqualTo(POSITIVE);
+      assertThat(BigIntegerPrecondition.checkNonNegative(POSITIVE, RUNTIME_EXCEPTION_SUPPLIER))
+          .isEqualTo(POSITIVE);
     }
 
     @Test
     public void whenZeroValue() {
-      assertThat(
-          BigIntegerPrecondition.checkNonNegative(ZERO, RUNTIME_EXCEPTION_SUPPLIER)).isEqualTo(
-          ZERO);
+      assertThat(BigIntegerPrecondition.checkNonNegative(ZERO, RUNTIME_EXCEPTION_SUPPLIER))
+          .isEqualTo(ZERO);
     }
 
     @Test
     public void whenNegativeValue() {
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkNonNegative(NEGATIVE, RUNTIME_EXCEPTION_SUPPLIER));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkNonNegative(NEGATIVE, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     public void whenNull() {
-      assertThat(
-          BigIntegerPrecondition.checkNonNegative(null, RUNTIME_EXCEPTION_SUPPLIER)).isNull();
+      assertThat(BigIntegerPrecondition.checkNonNegative(null, RUNTIME_EXCEPTION_SUPPLIER))
+          .isNull();
     }
-
   }
 
   @Nested
@@ -79,20 +78,21 @@ public class BigIntegerPreconditionTest {
 
     @Test
     public void whenPositiveValue() {
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkNegative(POSITIVE, RUNTIME_EXCEPTION_SUPPLIER));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkNegative(POSITIVE, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     public void whenZeroValue() {
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkNegative(ZERO, RUNTIME_EXCEPTION_SUPPLIER));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(() -> BigIntegerPrecondition.checkNegative(ZERO, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     public void whenNegativeValue() {
-      assertThat(BigIntegerPrecondition.checkNegative(NEGATIVE,
-          RUNTIME_EXCEPTION_SUPPLIER)).isEqualTo(NEGATIVE);
+      assertThat(BigIntegerPrecondition.checkNegative(NEGATIVE, RUNTIME_EXCEPTION_SUPPLIER))
+          .isEqualTo(NEGATIVE);
     }
 
     @Test
@@ -106,29 +106,27 @@ public class BigIntegerPreconditionTest {
 
     @Test
     public void whenPositiveValue() {
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkNonPositive(POSITIVE, RUNTIME_EXCEPTION_SUPPLIER));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkNonPositive(POSITIVE, RUNTIME_EXCEPTION_SUPPLIER));
     }
 
     @Test
     public void whenZeroValue() {
-      assertThat(
-          BigIntegerPrecondition.checkNonPositive(ZERO, RUNTIME_EXCEPTION_SUPPLIER)).isEqualTo(
-          ZERO);
+      assertThat(BigIntegerPrecondition.checkNonPositive(ZERO, RUNTIME_EXCEPTION_SUPPLIER))
+          .isEqualTo(ZERO);
     }
 
     @Test
     public void whenNegativeValue() {
-      assertThat(
-          BigIntegerPrecondition.checkNonPositive(NEGATIVE,
-              RUNTIME_EXCEPTION_SUPPLIER)).isEqualTo(
-          NEGATIVE);
+      assertThat(BigIntegerPrecondition.checkNonPositive(NEGATIVE, RUNTIME_EXCEPTION_SUPPLIER))
+          .isEqualTo(NEGATIVE);
     }
 
     @Test
     public void whenNull() {
-      assertThat(
-          BigIntegerPrecondition.checkNonPositive(null, RUNTIME_EXCEPTION_SUPPLIER)).isNull();
+      assertThat(BigIntegerPrecondition.checkNonPositive(null, RUNTIME_EXCEPTION_SUPPLIER))
+          .isNull();
     }
   }
 
@@ -146,16 +144,18 @@ public class BigIntegerPreconditionTest {
     @Test
     public void whenValueEqualsToMax() {
       BigInteger ref = BigInteger.TEN;
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkLessThan(ref, RUNTIME_EXCEPTION_SUPPLIER, ref));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkLessThan(ref, RUNTIME_EXCEPTION_SUPPLIER, ref));
     }
 
     @Test
     public void whenValueGreaterThanMax() {
       BigInteger ref = BigInteger.TEN;
       BigInteger max = BigInteger.ONE;
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkLessThan(ref, RUNTIME_EXCEPTION_SUPPLIER, max));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkLessThan(ref, RUNTIME_EXCEPTION_SUPPLIER, max));
     }
 
     @Test
@@ -180,16 +180,18 @@ public class BigIntegerPreconditionTest {
     @Test
     public void whenValueEqualsToMin() {
       BigInteger ref = BigInteger.ONE;
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkGreaterThan(ref, RUNTIME_EXCEPTION_SUPPLIER, ref));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkGreaterThan(ref, RUNTIME_EXCEPTION_SUPPLIER, ref));
     }
 
     @Test
     public void whenValueLessThanMax() {
       BigInteger ref = BigInteger.ONE;
       BigInteger min = BigInteger.TEN;
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
-          () -> BigIntegerPrecondition.checkGreaterThan(ref, RUNTIME_EXCEPTION_SUPPLIER, min));
+      assertThatExceptionOfType(RuntimeException.class)
+          .isThrownBy(
+              () -> BigIntegerPrecondition.checkGreaterThan(ref, RUNTIME_EXCEPTION_SUPPLIER, min));
     }
 
     @Test
