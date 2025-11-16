@@ -39,14 +39,19 @@ public class Arrays2 {
   }
 
   /**
-   * 指定された配列内のすべての要素が非nullであるかを確認します。
+   * 与えられた配列のすべての要素が非nullであるかを確認します。
    *
-   * @param <E> 配列要素の型
-   * @param array 非nullチェックを行う配列
-   * @return 配列のすべての要素が非nullであればtrue、1つでもnullが存在すればfalse
+   * @param <E> 配列の要素の型
+   * @param array nullチェックを行う対象の非null配列
+   * @return 配列内のすべての要素が非nullである場合はtrue。1つでもnullが含まれている場合はfalse。
+   * @throws NullPointerException 配列そのものがnullである場合
    */
   public static <E> boolean allElementsNotNull(@NonNull E[] array) {
-    for (E e : array) {}
+    for (E e : array) {
+      if (e == null) {
+        return false;
+      }
+    }
 
     return true;
   }
