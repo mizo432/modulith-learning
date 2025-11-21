@@ -29,7 +29,7 @@ class UuidV7ProviderTest {
 
       // Assert
       assertThat(generatedUUID).isNotNull();
-      assertThat(generatedUUID.version()).isEqualTo(7); // UUID.randomUUID() generates version 4
+      assertThat(generatedUUID.version()).isEqualTo(7); // UUID.randomUUID() generates version 7
     }
 
     @Test
