@@ -63,7 +63,7 @@ public class UuidV7Provider {
     return UUID_V7_PROVIDER_ATOMIC_REFERENCE.get().internalNewInstance();
   }
 
-  protected static void clear() {
+  public static void clear() {
     UUID_V7_PROVIDER_ATOMIC_REFERENCE.set(new UuidV7Provider());
   }
 

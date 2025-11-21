@@ -3,12 +3,18 @@ package undecided.erp.common.uuidV7Provider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("FixedUuidV7IdProviderのテスト")
 class FixedUuidV7IdProviderTest {
+
+  @AfterEach
+  void tearEache() {
+    FixedUuidV7IdProvider.clear();
+  }
 
   @Nested
   @DisplayName("initializeメソッドのテスト")

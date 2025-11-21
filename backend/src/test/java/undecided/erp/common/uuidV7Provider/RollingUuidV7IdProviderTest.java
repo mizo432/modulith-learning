@@ -1,90 +1,106 @@
 package undecided.erp.common.uuidV7Provider;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import undecided.erp.common.precondition.IndexedRuntimeException;
 
-@DisplayName("RollingUuidV7IdProviderのテスト")
+@DisplayName("RollingUuidV7IdProviderTest 内部ロジックのテスト")
 class RollingUuidV7IdProviderTest {
+  @AfterEach
+  void tearEache() {
+    UuidV7Provider.clear();
+  }
 
   @Nested
   @DisplayName("internalNewInstanceメソッドのテスト")
   class InternalNewInstanceTests {
 
     @Test
-    @DisplayName("事前定義済みUUIDが順番に返されるべき")
-    void shouldReturnUUIDsInOrder() {
+    @DisplayName("指定されたUUID順に生成されること")
+    void shouldGenerateUuidsInProvidedOrder() {
       // Arrange
-      String[] predefinedUUIDs = {
-        "123e4567-e89b-12d3-a456-426614174000",
-        "123e4567-e89b-12d3-a456-426614174001",
-        "123e4567-e89b-12d3-a456-426614174002"
+      String[] uuids = {
+        "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "a8098c1a-f86e-11da-bd1a-00112444be1e",
+        "16fd2706-8baf-433b-82eb-8c7fada847da"
       };
-      RollingUuidV7IdProvider.initialize(predefinedUUIDs);
+      RollingUuidV7IdProvider.initialize(uuids);
 
       // Act & Assert
-      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[0]);
-      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[1]);
-      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[2]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(uuids[0]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(uuids[1]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(uuids[2]);
+      // Circular behavior check
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(uuids[0]);
     }
 
     @Test
-    @DisplayName("UUIDリストが環状に処理されるべき")
-    void shouldCycleThroughUUIDs() {
+    @DisplayName("UUIDリストが1つの場合でも正しく循環すること")
+    void shouldCycleCorrectlyWithSingleUuid() {
       // Arrange
-      String[] predefinedUUIDs = {
-        "123e4567-e89b-12d3-a456-426614174000", "123e4567-e89b-12d3-a456-426614174001"
-      };
-      RollingUuidV7IdProvider.initialize(predefinedUUIDs);
+      String uuid = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+      RollingUuidV7IdProvider.initialize(uuid);
 
       // Act & Assert
-      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[0]);
-      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[1]);
-      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[0]);
-      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[1]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(uuid);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(uuid);
     }
 
     @Test
-    @DisplayName("UUIDリストにnullを含む場合は例外がスローされるべき")
-    void shouldThrowExceptionWhenUUIDListContainsNull() {
-      // Arrange
-      String[] invalidUUIDs = {
-        "123e4567-e89b-12d3-a456-426614174000", null, "123e4567-e89b-12d3-a456-426614174002"
-      };
+    @DisplayName("引数がnullの場合はIllegalArgumentExceptionがスローされること")
+    void shouldThrowIllegalArgumentExceptionWhenArgumentIsNull() {
+      // Act & Assert
+      assertThatThrownBy(() -> RollingUuidV7IdProvider.initialize((String[]) null))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("UUIDs must not be empty");
+    }
 
-      // Assert
-      assertThatThrownBy(() -> RollingUuidV7IdProvider.initialize(invalidUUIDs))
+    @Test
+    @DisplayName("空のリストが引数の場合はIllegalArgumentExceptionがスローされること")
+    void shouldThrowIllegalArgumentExceptionWhenArgumentIsEmpty() {
+      // Act & Assert
+      assertThatThrownBy(() -> RollingUuidV7IdProvider.initialize())
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("UUIDs must not be empty");
+    }
+
+    @Test
+    @DisplayName("nullを含むリストが渡された場合にIndexedRuntimeExceptionがスローされること")
+    void shouldThrowIndexedRuntimeExceptionWhenListContainsNull() {
+      // Arrange
+      String[] uuids = {"f47ac10b-58cc-4372-a567-0e02b2c3d479", null};
+
+      // Act & Assert
+      assertThatThrownBy(() -> RollingUuidV7IdProvider.initialize(uuids))
           .isInstanceOf(IndexedRuntimeException.class)
+          .hasCauseInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("UUIDs must not contain null");
     }
 
     @Test
-    @DisplayName("UUIDリストが空の場合は例外がスローされるべき")
-    void shouldThrowExceptionWhenUUIDListIsEmpty() {
-      // Arrange & Act & Assert
-      assertThatThrownBy(() -> RollingUuidV7IdProvider.initialize())
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("UUIDs must not be empty");
-    }
-
-    @Test
-    @DisplayName("UUIDリストが初期化されていない場合、デフォルト生成にフォールバックされるべき")
-    void shouldFallbackToDefaultWhenNotInitialized() {
+    @DisplayName("clearメソッドで状態がリセットされること")
+    void shouldResetStateWhenCleared() {
       // Arrange
-      RollingUuidV7IdProvider.clear();
+      String[] uuids = {
+        "f47ac10b-58cc-4372-a567-0e02b2c3d479", "a8098c1a-f86e-11da-bd1a-00112444be1e"
+      };
+      RollingUuidV7IdProvider.initialize(uuids);
 
       // Act
-      UUID generatedUUID = UuidV7Provider.newInstance();
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(uuids[0]);
+      RollingUuidV7IdProvider.clear();
 
       // Assert
-      assertThat(generatedUUID).isNotNull();
-      assertThat(generatedUUID.version())
-          .isEqualTo(7); // Ensures it's a randomly generated UUID (version 4)
-      RollingUuidV7IdProvider.clear();
+      UUID newUuid = UuidV7Provider.newInstance(); // Should use the fallback generator
+      assertThat(newUuid).isNotNull();
+      assertThat(newUuid.toString()).isNotEqualTo(uuids[0]);
+      assertThat(newUuid.toString()).isNotEqualTo(uuids[1]);
     }
   }
 }

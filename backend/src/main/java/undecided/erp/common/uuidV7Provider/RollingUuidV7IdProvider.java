@@ -81,21 +81,23 @@ public class RollingUuidV7IdProvider extends UuidV7Provider {
   }
 
   /**
-   * 内部リストに保持されているUUIDを順に返します。
+   * 内部的にUUIDの新しいインスタンスを生成して返します。
    *
-   * <p>このメソッドはスレッドセーフであり、内部的に管理されたリストからUUIDを順番に取得します。
-   * リストの末尾に到達した場合、最初の要素に戻ります。この振る舞いにより、リスト内のUUIDを循環的に提供します。
+   * <p>このメソッドはスレッドセーフであり、提供されたUUIDリストから順番にUUIDを選択し、リストの末尾に到達すると再度先頭に戻ります。
+   * 循環的なアクセスを行い、リストに基づくUUIDの提供を保証します。
    *
-   * @return 内部リストの現在のインデックスに対応するUUIDオブジェクト
+   * @return 選択されたリスト内のUUIDの新しいインスタンス
    */
   @Override
   protected synchronized UUID internalNewInstance() {
+
     UUID result = UUID.fromString(idList.get(index));
     if (index == idList.size() - 1) {
       index = 0;
     } else {
       index++;
     }
+    index = (index + 1) % idList.size();
     return result;
   }
 }

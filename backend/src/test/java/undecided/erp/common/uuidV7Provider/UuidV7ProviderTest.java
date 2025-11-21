@@ -4,12 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("UuidV7Providerのテスト")
 class UuidV7ProviderTest {
+
+  @AfterEach
+  void tearEache() {
+    UuidV7Provider.clear();
+  }
 
   @Nested
   @DisplayName("newInstanseメソッドのテスト")
@@ -23,7 +29,7 @@ class UuidV7ProviderTest {
 
       // Assert
       assertThat(generatedUUID).isNotNull();
-      assertThat(generatedUUID.version()).isEqualTo(4); // UUID.randomUUID() generates version 4
+      assertThat(generatedUUID.version()).isEqualTo(7); // UUID.randomUUID() generates version 4
     }
 
     @Test
