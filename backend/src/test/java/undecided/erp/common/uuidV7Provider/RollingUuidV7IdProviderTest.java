@@ -1,7 +1,6 @@
 package undecided.erp.common.uuidV7Provider;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +27,9 @@ class RollingUuidV7IdProviderTest {
       RollingUuidV7IdProvider.initialize(predefinedUUIDs);
 
       // Act & Assert
-      assertThat(UuidV7Provider.newInstanse().toString()).isEqualTo(predefinedUUIDs[0]);
-      assertThat(UuidV7Provider.newInstanse().toString()).isEqualTo(predefinedUUIDs[1]);
-      assertThat(UuidV7Provider.newInstanse().toString()).isEqualTo(predefinedUUIDs[2]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[0]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[1]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[2]);
     }
 
     @Test
@@ -43,10 +42,10 @@ class RollingUuidV7IdProviderTest {
       RollingUuidV7IdProvider.initialize(predefinedUUIDs);
 
       // Act & Assert
-      assertThat(UuidV7Provider.newInstanse().toString()).isEqualTo(predefinedUUIDs[0]);
-      assertThat(UuidV7Provider.newInstanse().toString()).isEqualTo(predefinedUUIDs[1]);
-      assertThat(UuidV7Provider.newInstanse().toString()).isEqualTo(predefinedUUIDs[0]);
-      assertThat(UuidV7Provider.newInstanse().toString()).isEqualTo(predefinedUUIDs[1]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[0]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[1]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[0]);
+      assertThat(UuidV7Provider.newInstance().toString()).isEqualTo(predefinedUUIDs[1]);
     }
 
     @Test
@@ -79,7 +78,7 @@ class RollingUuidV7IdProviderTest {
       RollingUuidV7IdProvider.clear();
 
       // Act
-      UUID generatedUUID = UuidV7Provider.newInstanse();
+      UUID generatedUUID = UuidV7Provider.newInstance();
 
       // Assert
       assertThat(generatedUUID).isNotNull();

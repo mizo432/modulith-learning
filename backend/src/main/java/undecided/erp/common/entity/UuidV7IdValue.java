@@ -54,7 +54,7 @@ public class UuidV7IdValue implements UuidValue<UuidV7IdValue>, Serializable {
    * @return 新しく生成されたUuidV7IdValueインスタンス
    */
   public static UuidValue<UuidV7IdValue> newInstance() {
-    return new UuidV7IdValue(UuidV7Provider.newInstanse());
+    return new UuidV7IdValue(UuidV7Provider.newInstance());
   }
 
   /**

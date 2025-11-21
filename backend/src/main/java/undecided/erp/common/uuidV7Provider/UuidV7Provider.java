@@ -59,8 +59,8 @@ public class UuidV7Provider {
    *
    * @return 新しく生成されたUUIDのインスタンス
    */
-  public static @NonNull UUID newInstanse() {
-    return UUID_V7_PROVIDER_ATOMIC_REFERENCE.get().internalNewInstanse();
+  public static @NonNull UUID newInstance() {
+    return UUID_V7_PROVIDER_ATOMIC_REFERENCE.get().internalNewInstance();
   }
 
   protected static void clear() {
@@ -68,13 +68,14 @@ public class UuidV7Provider {
   }
 
   /**
-   * 新しいUUIDのインスタンスを生成して返します。
+   * UUIDバージョン7の新しいインスタンスを生成して返します。
    *
-   * <p>このメソッドは、内部的にUUIDの生成処理を行う役割を持ちます。 生成されたUUIDは、UUID.randomUUID()を使用して作成されます。
+   * <p>このメソッドは {@link UuidV7Provider} クラスやそのサブクラス内で使用され、UUID生成ロジックを提供します。
+   * スレッドセーフな方法でUUIDを生成することを目的とし、内部的に設定されたUUID生成器を用いて新しいUUIDを作成します。
    *
-   * @return 新しく生成されたUUIDのインスタンス
+   * @return 新しく生成されたUUIDオブジェクト
    */
-  protected @NonNull UUID internalNewInstanse() {
+  protected @NonNull UUID internalNewInstance() {
     return GENERATOR.generate();
   }
 }

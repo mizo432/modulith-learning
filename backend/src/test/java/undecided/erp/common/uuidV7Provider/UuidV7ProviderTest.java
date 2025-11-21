@@ -19,7 +19,7 @@ class UuidV7ProviderTest {
     @DisplayName("UUIDが正常に生成されるべき")
     void shouldGenerateValidUUID() {
       // Arrange & Act
-      UUID generatedUUID = UuidV7Provider.newInstanse();
+      UUID generatedUUID = UuidV7Provider.newInstance();
 
       // Assert
       assertThat(generatedUUID).isNotNull();
@@ -32,16 +32,16 @@ class UuidV7ProviderTest {
       // Arrange
       UuidV7Provider mockProvider = mock(UuidV7Provider.class);
       UUID mockUUID = UUID.randomUUID();
-      when(mockProvider.internalNewInstanse()).thenReturn(mockUUID);
+      when(mockProvider.internalNewInstance()).thenReturn(mockUUID);
 
       new UuidV7Provider(mockProvider); // Set custom provider
 
       // Act
-      UUID generatedUUID = UuidV7Provider.newInstanse();
+      UUID generatedUUID = UuidV7Provider.newInstance();
 
       // Assert
       assertThat(generatedUUID).isNotNull().isEqualTo(mockUUID);
-      verify(mockProvider).internalNewInstanse();
+      verify(mockProvider).internalNewInstance();
     }
   }
 }

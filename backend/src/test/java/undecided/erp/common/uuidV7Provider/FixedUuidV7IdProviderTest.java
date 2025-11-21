@@ -22,7 +22,7 @@ class FixedUuidV7IdProviderTest {
 
       // Act
       FixedUuidV7IdProvider.initialize(fixedUuid);
-      UUID result = UuidV7Provider.newInstanse();
+      UUID result = UuidV7Provider.newInstance();
 
       // Assert
       assertThat(result).isNotNull().isEqualTo(fixedUuid);
