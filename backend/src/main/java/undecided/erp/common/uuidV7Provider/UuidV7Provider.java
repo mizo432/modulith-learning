@@ -60,7 +60,7 @@ public class UuidV7Provider {
    * @return 新しく生成されたUUIDのインスタンス
    */
   public static @NonNull UUID newInstanse() {
-    return UUID_V7_PROVIDER_ATOMIC_REFERENCE.get().internalNewInstance();
+    return UUID_V7_PROVIDER_ATOMIC_REFERENCE.get().internalNewInstanse();
   }
 
   protected static void clear() {
@@ -74,7 +74,7 @@ public class UuidV7Provider {
    *
    * @return 新しく生成されたUUIDのインスタンス
    */
-  protected @NonNull UUID internalNewInstance() {
+  protected @NonNull UUID internalNewInstanse() {
     return GENERATOR.generate();
   }
 }

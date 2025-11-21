@@ -32,7 +32,7 @@ class UuidV7ProviderTest {
       // Arrange
       UuidV7Provider mockProvider = mock(UuidV7Provider.class);
       UUID mockUUID = UUID.randomUUID();
-      when(mockProvider.internalNewInstance()).thenReturn(mockUUID);
+      when(mockProvider.internalNewInstanse()).thenReturn(mockUUID);
 
       new UuidV7Provider(mockProvider); // Set custom provider
 
@@ -41,7 +41,7 @@ class UuidV7ProviderTest {
 
       // Assert
       assertThat(generatedUUID).isNotNull().isEqualTo(mockUUID);
-      verify(mockProvider).internalNewInstance();
+      verify(mockProvider).internalNewInstanse();
     }
   }
 }

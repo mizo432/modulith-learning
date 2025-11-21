@@ -19,7 +19,7 @@ public class FixedUuidV7IdProvider extends UuidV7Provider {
    * <p>この変数は、{@link FixedUuidV7IdProvider}クラスにおいて、常に一定のUUID値を返す
    * プロバイダとして機能するために使用される。インスタンス生成時にセットされ、 変更されることはない。
    *
-   * <p>また、この変数は{@link FixedUuidV7IdProvider#internalNewInstance()}メソッド内で
+   * <p>また、この変数は{@link FixedUuidV7IdProvider#internalNewInstanse()}メソッド内で
    * 使用され、UUIDバージョン7のインスタンス生成時に固定値として提供される。
    *
    * <p>主な特徴: - 不変性: インスタンス生成時に初期化され、以降の変更は不可。 - カスタムUUIDの固定提供: 一貫性のあるUUID値を返却するための基盤を提供。
@@ -66,7 +66,7 @@ public class FixedUuidV7IdProvider extends UuidV7Provider {
    * @return 固定されたUUID値
    */
   @Override
-  protected @NonNull UUID internalNewInstance() {
+  protected @NonNull UUID internalNewInstanse() {
     return value;
   }
 }

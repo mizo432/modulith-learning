@@ -89,7 +89,7 @@ public class RollingUuidV7IdProvider extends UuidV7Provider {
    * @return 内部リストの現在のインデックスに対応するUUIDオブジェクト
    */
   @Override
-  protected synchronized UUID internalNewInstance() {
+  protected synchronized UUID internalNewInstanse() {
     UUID result = UUID.fromString(idList.get(index));
     if (index == idList.size() - 1) {
       index = 0;
