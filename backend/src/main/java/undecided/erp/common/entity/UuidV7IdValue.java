@@ -7,10 +7,11 @@ import java.util.UUID;
 import undecided.erp.common.uuidV7Provider.UuidV7Provider;
 
 /**
- * UuidV7IdValueクラスは、UUIDバージョン7に基づいた識別子を表現するクラスです。 このクラスは不変であり、一度生成されたインスタンスの値を変更することはできません。
- * UuidValueインターフェースおよびSerializableインターフェースを実装しています。
+ * UuidV7IdValueクラスは、UUIDバージョン7を取り扱うための値オブジェクトクラスです。
  *
- * <p>主な役割: - UUIDバージョン7に基づく一意な識別子を管理する - 空のIDおよびUUIDを簡便に生成するためのメソッドを提供する
+ * <p>このクラスはUUIDをラップし、UUID値に関連する操作を提供します。また、このクラスの インスタンスは不変であり、スレッドセーフな設計がされています。
+ *
+ * <p>このクラスの主な機能: - UUIDの生成 - UUIDの値の取得 - 空オブジェクトの判定 - オブジェクト間の等価性の検証
  */
 public class UuidV7IdValue implements UuidValue<UuidV7IdValue>, Serializable {
   /**
