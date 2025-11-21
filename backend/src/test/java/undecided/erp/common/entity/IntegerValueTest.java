@@ -1,6 +1,7 @@
 package undecided.erp.common.entity;
 
 import static org.assertj.core.api.Assertions.*;
+import static undecided.erp.common.primitive.Objects2.isNull;
 
 import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,11 @@ class IntegerValueTest {
     @Override
     public Integer value() {
       return value;
+    }
+
+    @Override
+    public boolean isEmpty() {
+      return isNull(value);
     }
   }
 
@@ -53,8 +59,7 @@ class IntegerValueTest {
       TestIntegerValue value = new TestIntegerValue(0);
 
       // Act & Assert
-      assertThatThrownBy(
-              () -> IntegerValue.IntegerValues.checkPositive(value, EXCEPTION_SUPPLIER))
+      assertThatThrownBy(() -> IntegerValue.IntegerValues.checkPositive(value, EXCEPTION_SUPPLIER))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -65,8 +70,7 @@ class IntegerValueTest {
       TestIntegerValue value = new TestIntegerValue(-5);
 
       // Act & Assert
-      assertThatThrownBy(
-              () -> IntegerValue.IntegerValues.checkPositive(value, EXCEPTION_SUPPLIER))
+      assertThatThrownBy(() -> IntegerValue.IntegerValues.checkPositive(value, EXCEPTION_SUPPLIER))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -174,8 +178,7 @@ class IntegerValueTest {
       TestIntegerValue value = new TestIntegerValue(0);
 
       // Act & Assert
-      assertThatThrownBy(
-              () -> IntegerValue.IntegerValues.checkNegative(value, EXCEPTION_SUPPLIER))
+      assertThatThrownBy(() -> IntegerValue.IntegerValues.checkNegative(value, EXCEPTION_SUPPLIER))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -186,8 +189,7 @@ class IntegerValueTest {
       TestIntegerValue value = new TestIntegerValue(5);
 
       // Act & Assert
-      assertThatThrownBy(
-              () -> IntegerValue.IntegerValues.checkNegative(value, EXCEPTION_SUPPLIER))
+      assertThatThrownBy(() -> IntegerValue.IntegerValues.checkNegative(value, EXCEPTION_SUPPLIER))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -423,7 +425,8 @@ class IntegerValueTest {
       // Act & Assert
       assertThatThrownBy(
               () ->
-                  IntegerValue.IntegerValues.checkRangeClosedOpen(value, EXCEPTION_SUPPLIER, 10, 20))
+                  IntegerValue.IntegerValues.checkRangeClosedOpen(
+                      value, EXCEPTION_SUPPLIER, 10, 20))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -466,7 +469,8 @@ class IntegerValueTest {
       // Act & Assert
       assertThatThrownBy(
               () ->
-                  IntegerValue.IntegerValues.checkRangeOpenClosed(value, EXCEPTION_SUPPLIER, 10, 20))
+                  IntegerValue.IntegerValues.checkRangeOpenClosed(
+                      value, EXCEPTION_SUPPLIER, 10, 20))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -544,7 +548,8 @@ class IntegerValueTest {
     @DisplayName("nullの場合、nullを返すべき")
     void shouldReturnNullWhenNull() {
       // Act
-      TestIntegerValue result = IntegerValue.IntegerValues.checkAtLest(null, EXCEPTION_SUPPLIER, 10);
+      TestIntegerValue result =
+          IntegerValue.IntegerValues.checkAtLest(null, EXCEPTION_SUPPLIER, 10);
 
       // Assert
       assertThat(result).isNull();
@@ -599,7 +604,8 @@ class IntegerValueTest {
     @DisplayName("nullの場合、nullを返すべき")
     void shouldReturnNullWhenNull() {
       // Act
-      TestIntegerValue result = IntegerValue.IntegerValues.checkAtMost(null, EXCEPTION_SUPPLIER, 20);
+      TestIntegerValue result =
+          IntegerValue.IntegerValues.checkAtMost(null, EXCEPTION_SUPPLIER, 20);
 
       // Assert
       assertThat(result).isNull();
