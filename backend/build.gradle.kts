@@ -97,6 +97,7 @@ dependencies {
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     testRuntimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/am.ik.yavi/yavi
+    implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
     implementation("am.ik.yavi:yavi:${property("yaviVersion")}")
     annotationProcessor("cc.jilt:jilt:${property("jiltVersion")}")
