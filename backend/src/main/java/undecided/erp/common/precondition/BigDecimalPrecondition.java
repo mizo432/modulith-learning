@@ -1,5 +1,6 @@
 package undecided.erp.common.precondition;
 
+import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.erp.common.primitive.Objects2.isNull;
 
 import com.google.common.collect.Range;
@@ -29,6 +30,8 @@ public class BigDecimalPrecondition {
   public static @Nullable BigDecimal checkPositive(
       @Nullable final BigDecimal ref,
       @NonNull final Supplier<? extends RuntimeException> exceptionSupplier) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
     if (isNull(ref)) return null;
     return checkGreaterThan(ref, exceptionSupplier, BigDecimal.ZERO);
   }
@@ -45,6 +48,8 @@ public class BigDecimalPrecondition {
    */
   public static @Nullable BigDecimal checkNotNegative(
       @Nullable BigDecimal ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
     if (isNull(ref)) return null;
     return checkAtLeast(ref, exceptionSupplier, BigDecimal.ZERO);
   }
@@ -61,6 +66,8 @@ public class BigDecimalPrecondition {
    */
   public static @Nullable BigDecimal checkNegative(
       @Nullable BigDecimal ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
     if (isNull(ref)) return null;
     return checkLessThan(ref, exceptionSupplier, BigDecimal.ZERO);
   }
@@ -77,6 +84,8 @@ public class BigDecimalPrecondition {
    */
   public static @Nullable BigDecimal checkNotPositive(
       @Nullable BigDecimal ref, @NonNull Supplier<? extends RuntimeException> exceptionSupplier) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
     if (isNull(ref)) return null;
     return checkAtMost(ref, exceptionSupplier, BigDecimal.ZERO);
   }
@@ -96,6 +105,10 @@ public class BigDecimalPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull BigDecimal min,
       @NonNull BigDecimal max) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(min, () -> new NullPointerException("min must not be null."));
+    checkNotNull(max, () -> new NullPointerException("max must not be null."));
     if (isNull(ref)) return null;
     if (!Range.closed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -121,6 +134,10 @@ public class BigDecimalPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull BigDecimal min,
       @NonNull BigDecimal max) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(min, () -> new NullPointerException("min must not be null."));
+    checkNotNull(max, () -> new NullPointerException("max must not be null."));
     if (isNull(ref)) return null;
     if (!Range.open(min, max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -145,6 +162,10 @@ public class BigDecimalPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull BigDecimal min,
       @NonNull BigDecimal max) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(min, () -> new NullPointerException("min must not be null."));
+    checkNotNull(max, () -> new NullPointerException("max must not be null."));
     if (isNull(ref)) return null;
     if (!Range.closedOpen(min, max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -169,6 +190,10 @@ public class BigDecimalPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull BigDecimal min,
       @NonNull BigDecimal max) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(min, () -> new NullPointerException("min must not be null."));
+    checkNotNull(max, () -> new NullPointerException("max must not be null."));
     if (isNull(ref)) return null;
     if (!Range.openClosed(min, max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -192,6 +217,9 @@ public class BigDecimalPrecondition {
       @Nullable final BigDecimal ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       final @NonNull BigDecimal min) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(min, () -> new NullPointerException("min must not be null."));
     if (isNull(ref)) return null;
     if (!Range.atLeast(min).contains(ref)) {
       throw exceptionSupplier.get();
@@ -215,6 +243,9 @@ public class BigDecimalPrecondition {
       @Nullable BigDecimal ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull BigDecimal max) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(max, () -> new NullPointerException("max must not be null."));
     if (isNull(ref)) return null;
     if (!Range.atMost(max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -238,6 +269,9 @@ public class BigDecimalPrecondition {
       @Nullable BigDecimal ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull BigDecimal max) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(max, () -> new NullPointerException("max must not be null."));
     if (isNull(ref)) return null;
     if (!Range.lessThan(max).contains(ref)) {
       throw exceptionSupplier.get();
@@ -247,20 +281,23 @@ public class BigDecimalPrecondition {
   }
 
   /**
-   * 指定されたBigDecimal値が最小値より大きいことを検証します。
+   * 指定されたBigDecimal値が、指定された最小値より大きいことを検証します。
    *
-   * <p>検証対象の値がnullの場合はnullを返します。 値が最小値以下の場合、提供された例外サプライヤーに従って例外がスローされます。
+   * <p>検証対象の値がnullの場合はnullを返します。値が最小値以下の場合、提供された例外 サプライヤーに従って例外がスローされます。
    *
    * @param ref 検証するBigDecimal値。nullを許容します。
-   * @param exceptionSupplier 値が最小値より大きくない場合にスローされる例外を提供するサプライヤー。nullであってはなりません。
-   * @param min 最小値（開区間の下限）。nullであってはなりません。
-   * @return refがnullの場合はnull、minより大きい場合は同じrefを返します。
-   * @throws RuntimeException refがmin以下の場合にスローされます。
+   * @param exceptionSupplier 値が最小値以下の場合にスローされる例外を提供するサプライヤー。nullであってはなりません。
+   * @param min 最小値（この値より大きい必要があります）。nullであってはなりません。
+   * @return refがnullの場合はnull、最小値より大きい場合は同じrefを返します。
+   * @throws RuntimeException refが最小値以下の場合にスローされます。
    */
   public static @Nullable BigDecimal checkGreaterThan(
       @Nullable final BigDecimal ref,
       final @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       final @NonNull BigDecimal min) {
+    checkNotNull(
+        exceptionSupplier, () -> new NullPointerException("exceptionSupplier must not be null."));
+    checkNotNull(min, () -> new NullPointerException("min must not be null."));
     if (isNull(ref)) return null;
     if (!Range.greaterThan(min).contains(ref)) {
       throw exceptionSupplier.get();
