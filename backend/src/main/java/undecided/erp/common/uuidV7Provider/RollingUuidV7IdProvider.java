@@ -1,12 +1,14 @@
 package undecided.erp.common.uuidV7Provider;
 
+import static undecided.erp.common.precondition.ArrayPrecondition.*;
+import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.jspecify.annotations.NonNull;
-import undecided.erp.common.precondition.ArrayPrecondition;
 import undecided.erp.common.precondition.IndexedRuntimeException;
 
 /**
@@ -59,9 +61,9 @@ public class RollingUuidV7IdProvider extends UuidV7Provider {
    * @throws IndexedRuntimeException 配列内の特定のインデックスにnullが存在する場合
    */
   public static void initialize(@NonNull String... uuids) {
-    ArrayPrecondition.checkNotEmpty(
-        uuids, () -> new IllegalArgumentException("UUIDs must not be empty"));
-    ArrayPrecondition.checkAllElementNotNull(
+    checkNotNull(uuids, () -> new NullPointerException("uuids must not be null."));
+    checkNotEmpty(uuids, () -> new IllegalArgumentException("UUIDs must not be empty"));
+    checkAllElementNotNull(
         uuids,
         (index) ->
             new IndexedRuntimeException(
@@ -92,12 +94,10 @@ public class RollingUuidV7IdProvider extends UuidV7Provider {
   protected synchronized UUID internalNewInstance() {
 
     UUID result = UUID.fromString(idList.get(index));
-    if (index == idList.size() - 1) {
+    index++;
+    if (index >= idList.size()) {
       index = 0;
-    } else {
-      index++;
     }
-    index = (index + 1) % idList.size();
     return result;
   }
 }

@@ -1,46 +1,61 @@
 package undecided.erp.shared.presentation.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.context.WebApplicationContext;
+import undecided.erp.common.exception.BusinessException;
+import undecided.erp.common.message.ResultMessage;
+import undecided.erp.common.message.ResultMessages;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@DisplayName("GlobalExceptionHandlerの単体テスト")
+@DisplayName("GlobalExceptionHandlerTestクラスのテスト")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class GlobalExceptionHandlerTest {
 
-  @Autowired private WebApplicationContext context;
+  private GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 
   @Nested
-  @DisplayName("handleExceptionメソッドのテスト")
-  class HandleExceptionTests {
+  @DisplayName("handleBusinessExceptionメソッド")
+  class HandleBusinessException {
 
     @Test
-    @DisplayName("例外が投げられた場合、エラーレスポンスを返却する")
-    void shouldReturnErrorResponseWhenExceptionIsThrown() {
+    @DisplayName("BusinessExceptionを適切に処理できること")
+    void shouldHandleBusinessExceptionProperly() {
       // Arrange
-      GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
-      Exception exception = new Exception("サーバーでエラーが発生しました");
+      String errorMessage = "Business error occurred";
+      ResultMessages resultMessages =
+          ResultMessages.error().add(ResultMessage.fromText(errorMessage));
+
+      BusinessException exception = new BusinessException(resultMessages);
+      ResultMessage lastMessage = ResultMessage.fromText(errorMessage);
 
       // Act
-      ResponseEntity<Map<String, Object>> response =
-          globalExceptionHandler.handleException(exception);
+      ResponseEntity<ProblemDetail> response =
+          globalExceptionHandler.handleBusinessException(exception);
 
       // Assert
-      assertThat(response).isNotNull();
-      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
       assertThat(response.getBody()).isNotNull();
-      assertThat(response.getBody()).containsKey("error");
-      assertThat(response.getBody().get("error")).isEqualTo("サーバーでエラーが発生しました");
+      assertThat(response.getBody().getDetail()).isEqualTo(errorMessage);
+    }
+
+    @Test
+    @DisplayName("引数がnullのBusinessExceptionの場合にNullPointerExceptionをスローすること")
+    void shouldThrowNullPointerExceptionWhenArgumentIsNull() {
+      // Arrange
+      BusinessException exception = null;
+
+      // Act & Assert000
+      assertThatThrownBy(() -> globalExceptionHandler.handleBusinessException(exception))
+          .isInstanceOf(NullPointerException.class)
+          .hasMessage("e must not be null.");
     }
   }
 }
