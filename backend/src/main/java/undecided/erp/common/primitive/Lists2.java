@@ -1,6 +1,7 @@
 package undecided.erp.common.primitive;
 
 import static undecided.erp.common.precondition.IntegerPrecondition.checkNonNegative;
+import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.erp.common.primitive.Objects2.isNull;
 
 import java.util.ArrayList;
@@ -9,9 +10,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import undecided.erp.common.precondition.ObjectPrecondition;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Lists2クラスはリストに関するユーティリティメソッドを提供します。
@@ -87,7 +87,7 @@ public class Lists2 {
    */
   @SafeVarargs
   public static <E> ArrayList<E> newArrayList(E... elements) {
-    ObjectPrecondition.checkNotNull(elements,
+    checkNotNull(elements,
         () -> new IllegalArgumentException("elements is null"));
     int capacity = computeArrayListCapacity(elements.length);
     ArrayList<E> list = new ArrayList<>(capacity);
@@ -104,7 +104,7 @@ public class Lists2 {
    * @throws IllegalArgumentException elementsがnullの場合
    */
   public static <E> ArrayList<E> newArrayList(Iterable<? extends E> elements) {
-    ObjectPrecondition.checkNotNull(elements,
+    checkNotNull(elements,
         () -> new IllegalArgumentException("elements is null")); // for GWT
     return (elements instanceof Collection)
         ? new ArrayList<>((Collection<? extends E>) elements)
@@ -152,5 +152,15 @@ public class Lists2 {
     checkNonNegative(initialArraySize,
         () -> new IllegalArgumentException("initialArraySize must positive or zero"));
     return new ArrayList<>(initialArraySize);
+  }
+
+  public static <E> E getLast(@NonNull List<E> list) {
+    checkNotNull(list, () -> new IllegalArgumentException("list must not be null."));
+    if (list.isEmpty()) {
+      return null;
+    } else {
+      if(isEmpty(list)) return null;
+      return list.get(list.size() - 1);
+    }
   }
 }
