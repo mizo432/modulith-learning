@@ -1,5 +1,7 @@
 package undecided.erp.shared.presentation.exception;
 
+import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.jspecify.annotations.NonNull;
@@ -30,9 +32,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(BusinessException.class)
   public @NonNull ResponseEntity<ProblemDetail> handleBusinessException(
       @NonNull BusinessException e) {
+    checkNotNull(e, () -> new NullPointerException("e must not be null."));
     Map<String, Object> error = new HashMap<>();
     error.put("error", e.getMessage());
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(
             ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, Lists2.getLast(e.getResultMessages().getList()).text()));

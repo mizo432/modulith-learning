@@ -13,7 +13,7 @@ import undecided.erp.common.precondition.IndexedRuntimeException;
 @DisplayName("RollingUuidV7IdProviderTest 内部ロジックのテスト")
 class RollingUuidV7IdProviderTest {
   @AfterEach
-  void tearEache() {
+  void tearEach() {
     UuidV7Provider.clear();
   }
 
@@ -53,12 +53,12 @@ class RollingUuidV7IdProviderTest {
     }
 
     @Test
-    @DisplayName("引数がnullの場合はIllegalArgumentExceptionがスローされること")
+    @DisplayName("引数がnullの場合はNullPointerExceptionがスローされること")
     void shouldThrowIllegalArgumentExceptionWhenArgumentIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> RollingUuidV7IdProvider.initialize((String[]) null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("UUIDs must not be empty");
+          .isInstanceOf(NullPointerException.class)
+          .hasMessage("uuids must not be null.");
     }
 
     @Test
