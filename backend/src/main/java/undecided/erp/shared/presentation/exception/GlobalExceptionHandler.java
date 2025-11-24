@@ -2,10 +2,15 @@ package undecided.erp.shared.presentation.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import undecided.erp.common.exception.BusinessException;
+import undecided.erp.common.primitive.Lists2;
 
 /**
  * アプリケーション全体で発生する例外をハンドリングするクラス。
@@ -15,17 +20,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * <p>主に、予期しない例外をキャッチし、適切なエラーレスポンスをクライアントに返却します。
  */
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   /**
-   * 例外を処理し、HTTPレスポンスとしてエラーメッセージを返却します。
+   * BusinessExceptionをハンドリングし、適切なエラーレスポンスをクライアントに返却します。
    *
-   * @param e 処理中に発生した例外
-   * @return 内部サーバエラー (500) ステータスコードとエラーメッセージを含むレスポンスエンティティ
+   * @param e ハンドリング対象のBusinessExceptionオブジェクト。この例外にはエラーに関連する詳細情報が含まれます。
+   * @return エラーレスポンスを表すResponseEntityオブジェクト。エラーの詳細をProblemDetail形式で含みます。
    */
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<Map<String, Object>> handleException(Exception e) {
+  @ExceptionHandler(BusinessException.class)
+  public @NonNull ResponseEntity<ProblemDetail> handleBusinessException(
+      @NonNull BusinessException e) {
     Map<String, Object> error = new HashMap<>();
     error.put("error", e.getMessage());
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(
+            ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, Lists2.getLast(e.getResultMessages().getList()).text()));
   }
 }
