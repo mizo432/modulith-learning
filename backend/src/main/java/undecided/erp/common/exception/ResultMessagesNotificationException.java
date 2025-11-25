@@ -3,6 +3,8 @@ package undecided.erp.common.exception;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import undecided.erp.common.message.ResultMessage;
+import undecided.erp.common.message.ResultMessageType;
 import undecided.erp.common.message.ResultMessages;
 
 /**
@@ -52,6 +54,66 @@ public abstract class ResultMessagesNotificationException extends RuntimeExcepti
       throw new IllegalArgumentException("messages must not be null");
     }
     this.resultMessages = messages;
+  }
+
+  /**
+   * {@code ResultMessagesNotificationException} クラスの3つの引数を持つコンストラクタ。
+   *
+   * @param resultMessageType 結果メッセージのタイプを表す {@link ResultMessageType} のインスタンス
+   * @param message 結果メッセージを表す {@link ResultMessage} のインスタンス
+   * @param cause この例外を発生させた原因となった {@link Throwable} のインスタンス
+   */
+  public ResultMessagesNotificationException(
+      @NonNull ResultMessageType resultMessageType,
+      @NonNull ResultMessage message,
+      @NonNull Throwable cause) {
+    ;
+    this(new ResultMessages(resultMessageType, message), cause);
+  }
+
+  /**
+   * {@code ResultMessagesNotificationException} クラスの2つの引数を持つコンストラクタ。
+   *
+   * @param resultMessageType 結果メッセージのタイプを表す {@link ResultMessageType} のインスタンス。null ではない必要があります。
+   * @param message 結果メッセージを表す {@link ResultMessage} のインスタンス。null ではない必要があります。
+   */
+  public ResultMessagesNotificationException(
+      @NonNull ResultMessageType resultMessageType, @NonNull ResultMessage message) {
+    ;
+    this(new ResultMessages(resultMessageType, message));
+  }
+
+  /**
+   * {@code ResultMessagesNotificationException} クラスの4つの引数を持つコンストラクタ。
+   *
+   * @param resultMessageType 結果メッセージのタイプを表す {@link ResultMessageType} のインスタンス。null ではない必要があります。
+   * @param errorCode エラーメッセージを識別するためのコード。null ではない必要があります。
+   * @param verrorArgs メッセージの引数。null ではない必要があります。
+   * @param cause この例外を発生させた原因となった {@link Throwable} のインスタンス。null ではない必要があります。
+   */
+  public ResultMessagesNotificationException(
+      @NonNull ResultMessageType resultMessageType,
+      @NonNull String errorCode,
+      @NonNull Object[] verrorArgs,
+      @NonNull Throwable cause) {
+    ;
+    this(
+        new ResultMessages(resultMessageType, ResultMessage.fromCode(errorCode, verrorArgs)),
+        cause);
+  }
+
+  /**
+   * {@code ResultMessagesNotificationException} クラスの3つの引数を持つコンストラクタ。
+   *
+   * @param resultMessageType 結果メッセージのタイプを表す {@link ResultMessageType} のインスタンス。null ではない必要があります。
+   * @param errorCode エラーメッセージを識別するためのコード。null ではない必要があります。
+   * @param verrorArgs メッセージの引数。null ではない必要があります。
+   */
+  public ResultMessagesNotificationException(
+      @NonNull ResultMessageType resultMessageType,
+      @NonNull String errorCode,
+      @NonNull Object... verrorArgs) {
+    this(new ResultMessages(resultMessageType, ResultMessage.fromCode(errorCode, verrorArgs)));
   }
 
   /**
