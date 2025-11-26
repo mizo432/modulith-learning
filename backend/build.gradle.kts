@@ -46,9 +46,9 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.4.1"
-extra["springModulithInsightVersion"] = "1.4.3"
-extra["guavaVersion"] = "33.4.8-jre"
+extra["springModulithVersion"] = "1.4.5"
+extra["springModulithInsightVersion"] = "1.4.5"
+extra["guavaVersion"] = "33.5.0-jre"
 extra["icu4jVersion"] = "77.1"
 extra["yaviVersion"] = "0.16.0"
 extra["jiltVersion"] = "1.8.2"
