@@ -67,7 +67,6 @@ public abstract class ResultMessagesNotificationException extends RuntimeExcepti
       @NonNull ResultMessageType resultMessageType,
       @NonNull ResultMessage message,
       @NonNull Throwable cause) {
-    ;
     this(new ResultMessages(resultMessageType, message), cause);
   }
 
@@ -79,7 +78,6 @@ public abstract class ResultMessagesNotificationException extends RuntimeExcepti
    */
   public ResultMessagesNotificationException(
       @NonNull ResultMessageType resultMessageType, @NonNull ResultMessage message) {
-    ;
     this(new ResultMessages(resultMessageType, message));
   }
 
@@ -96,7 +94,6 @@ public abstract class ResultMessagesNotificationException extends RuntimeExcepti
       @NonNull String errorCode,
       @NonNull Object[] verrorArgs,
       @NonNull Throwable cause) {
-    ;
     this(
         new ResultMessages(resultMessageType, ResultMessage.fromCode(errorCode, verrorArgs)),
         cause);

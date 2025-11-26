@@ -155,7 +155,7 @@ public class Lists2 {
       return null;
     } else {
       if (isEmpty(list)) return null;
-      return list.get(list.size() - 1);
+      return list.getLast();
     }
   }
 }

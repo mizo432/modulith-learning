@@ -30,7 +30,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @return HandlerInterceptorとして利用可能なTraceLoggingInterceptorの新しいインスタンス
    */
   @Bean
-  public HandlerInterceptor handlerExceptionnterceptor() {
+  public HandlerInterceptor handlerExceptionIterceptor() {
     return new TraceLoggingInterceptor();
   }
 
