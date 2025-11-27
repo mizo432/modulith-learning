@@ -46,8 +46,8 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.4.1"
-extra["springModulithInsightVersion"] = "1.4.3"
+extra["springModulithVersion"] = "2.0.0"
+extra["springModulithInsightVersion"] = "2.0.0"
 extra["guavaVersion"] = "33.4.8-jre"
 extra["icu4jVersion"] = "77.1"
 extra["yaviVersion"] = "0.16.0"
@@ -56,11 +56,11 @@ extra["jdbcPostgresqlVersion"] = "11.3.4"
 extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
-extra["junitVersion"] = "5.13.3"
+extra["junitVersion"] = "6.0.0"
 extra["springCloudBomVersion"] = "2025.0.0"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
-extra["poiVersion"] = "5.4.1"
+extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
 
 dependencies {
