@@ -62,12 +62,10 @@ public abstract class AuditResource {
   protected LocalDateTime updatedAt;
 
   /**
-   * エンティティが永続化される前に呼び出されるコールバックメソッドです。
+   * Populate creation audit fields before the entity is persisted.
    *
-   * <p>このメソッドは、エンティティの生成日時(createdAt)と生成者(createdBy)を設定します。
-   * 具体的には、生成日時には現在の日時を設定し、生成者には「system」という固定値を設定します。
-   *
-   * <p>永続化される際に、このメソッドが呼び出されることで自動的にこれらの情報が更新され、 主に監査目的で利用されます。
+   * <p>Sets the entity's creation timestamp and creator identifier so createdAt contains the current
+   * local date-time and createdBy is set to the fixed value "system".
    *
    * @see PrePersist
    */
@@ -78,14 +76,12 @@ public abstract class AuditResource {
   }
 
   /**
-   * エンティティが更新される前に呼び出されるコールバックメソッドです。
+   * Invoked before the entity is updated to refresh audit fields.
    *
-   * <p>このメソッドは更新日時(updatedAt)を現在の日時に設定し、更新者(createdBy)を 固定値「system」に設定します。これにより、エンティティが更新される際に監査情報が
-   * 自動的に更新される仕組みを提供します。
+   * <p>Sets {@code updatedAt} to the current local date-time and sets {@code createdBy} to the fixed
+   * value {@code "system"} to maintain audit information on updates.
    *
-   * <p>主に監査目的で使用され、エンティティの更新履歴を追跡するために利用されます。
-   *
-   * @see PreUpdate
+   * @see javax.persistence.PreUpdate
    */
   @PreUpdate
   public void preUpdate() {

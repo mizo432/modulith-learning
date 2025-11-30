@@ -26,16 +26,31 @@ import org.springframework.web.servlet.function.ServerResponse;
 public class GatewayServerApplication {
 
   /**
-   * メインメソッドはSpring Bootアプリケーションのエントリーポイントとして機能します。
+   * Application entry point for the Spring Boot gateway server.
    *
-   * <p>これはGatewayServerApplicationを初期化し、実行します。
-   *
-   * @param args アプリケーションに渡されるコマンドライン引数。
+   * @param args command-line arguments passed to the application
    */
   public static void main(String[] args) {
     SpringApplication.run(GatewayServerApplication.class, args);
   }
 
+  /**
+   * Configure the gateway's functional routes used by the application.
+   *
+   * <p>Creates a RouterFunction that:
+   * <ul>
+   *   <li>Routes GET /get to https://httpbin.org (path_route).</li>
+   *   <li>Forwards requests for hosts matching *.myhost.org to https://httpbin.org (host_route).</li>
+   *   <li>For hosts matching *.rewrite.org forwards to https://httpbin.org and rewrites paths matching
+   *       /foo/{segment} to /{segment} (rewrite_route).</li>
+   *   <li>For hosts matching *.circuitbreaker.org forwards to https://httpbin.org and applies a
+   *       circuit breaker named "slowcmd" (circuitbreaker_route).</li>
+   *   <li>For hosts matching *.circuitbreakerfallback.org applies a circuit breaker with id "slowcmd"
+   *       and a fallback forwarded to /fallback (circuitbreaker_fallback_route).</li>
+   * </ul>
+   *
+   * @return the RouterFunction that implements the gateway routing rules
+   */
   @Bean
   public RouterFunction<ServerResponse> customRoutes() {
     // @formatter:off
