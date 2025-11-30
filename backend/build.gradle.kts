@@ -14,7 +14,7 @@ plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "3.5.7"
+    id("org.springframework.boot") version "4.0.0"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
@@ -46,9 +46,9 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.4.5"
-extra["springModulithInsightVersion"] = "1.4.5"
-extra["guavaVersion"] = "33.5.0-jre"
+extra["springModulithVersion"] = "2.0.0"
+extra["springModulithInsightVersion"] = "2.0.0"
+extra["guavaVersion"] = "33.4.8-jre"
 extra["icu4jVersion"] = "77.1"
 extra["yaviVersion"] = "0.16.0"
 extra["jiltVersion"] = "1.8.2"
@@ -56,20 +56,20 @@ extra["jdbcPostgresqlVersion"] = "11.3.4"
 extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
-extra["junitVersion"] = "5.13.3"
-extra["springCloudBomVersion"] = "2025.0.0"
+extra["junitVersion"] = "6.0.0"
+extra["springCloudBomVersion"] = "2025.1.0"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
-extra["poiVersion"] = "5.4.1"
+extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     //   runtimeOnly("org.flywaydb:flyway-database-postgresql:${property("jdbcPostgresqlVersion")}")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa")
     compileOnly("org.projectlombok:lombok")
@@ -79,7 +79,9 @@ dependencies {
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
     annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    implementation("org.hibernate.orm:hibernate-envers:7.1.10.Final")
+    implementation("org.hibernate.orm:hibernate-core:7.1.10.Final")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     implementation("org.jmolecules:jmolecules-onion-architecture")
 //    implementation("org.jmolecules:jmolecules-ddd")
