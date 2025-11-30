@@ -8,7 +8,9 @@ import com.ibm.icu.lang.UProperty;
 import com.ibm.icu.text.UnicodeSet;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.Objects;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jspecify.annotations.Nullable;
 import undecided.erp.common.precondition.IntegerPrecondition;
 
 /**
@@ -622,5 +624,16 @@ public class Strings2 {
    */
   public static String nullIfBlank(String str) {
     return defaultIfBlank(str, null);
+  }
+
+  /**
+   * 2つの文字列が等しいかどうかを判定します。
+   *
+   * @param str1 比較対象の最初の文字列。nullが許容されます。
+   * @param str2 比較対象の2番目の文字列。nullが許容されます。
+   * @return 2つの文字列が等しい場合はtrue、それ以外の場合はfalseを返します。
+   */
+  public static boolean equal(@Nullable String str1, @Nullable String str2) {
+    return Objects.equals(str1, str2);
   }
 }
