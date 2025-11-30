@@ -2,7 +2,7 @@ import java.time.Duration
 
 plugins {
     java
-    id("org.springframework.boot") version "3.5.7"
+    id("org.springframework.boot") version "4.0.0"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -20,13 +20,13 @@ repositories {
     mavenCentral()
 }
 
-extra["junitVersion"] = "5.12.0"
-extra["springCloudBomVersion"] = "2025.0.0"
+extra["junitVersion"] = "6.0.1"
+extra["springCloudBomVersion"] = "2025.1.0"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
@@ -51,7 +51,7 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
     useJUnitPlatform {
         includeTags("medium")
     }
-    timeout.set(Duration.ofSeconds(300))
+    timeout.set(Duration.ofMinutes(5))
     shouldRunAfter("test")
 }
 val largeTest = tasks.register("largeTest", Test::class.java) {
