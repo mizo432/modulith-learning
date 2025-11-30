@@ -64,32 +64,33 @@ public abstract class AuditResource {
   /**
    * エンティティが永続化される前に呼び出されるコールバックメソッドです。
    *
-   * <p>このメソッドは、エンティティの生成日時(createdAt)と生成者(createdBy)を設定します。
-   * 具体的には、生成日時には現在の日時を設定し、生成者には「system」という固定値を設定します。
+   * <p>このメソッドは、作成日時(createdAt)と作成者(createdBy)を自動的に設定します。
+   * 作成日時は現在の日時(LocalDateTime)が設定され、作成者は「system」という固定値が設定されます。
    *
-   * <p>永続化される際に、このメソッドが呼び出されることで自動的にこれらの情報が更新され、 主に監査目的で利用されます。
+   * <p>主に監査目的で使用され、エンティティが作成される際の履歴を追跡できるように設計されています。
    *
    * @see PrePersist
    */
   @PrePersist
   public void prePersist() {
-    createdAt = LocalDateTime.now();
+    createdAt = DateProvider.currentLocalDateTime();
+    ;
     createdBy = "system";
   }
 
   /**
-   * エンティティが更新される前に呼び出されるコールバックメソッドです。
+   * エンティティの更新が行われる直前に呼び出されるコールバックメソッドです。
    *
-   * <p>このメソッドは更新日時(updatedAt)を現在の日時に設定し、更新者(createdBy)を 固定値「system」に設定します。これにより、エンティティが更新される際に監査情報が
-   * 自動的に更新される仕組みを提供します。
+   * <p>このメソッドは、更新日時(updatedAt)および更新者(updatedBy)を自動的に設定します。 更新日時は現在の日時(LocalDateTime)を、更新者は "system"
+   * を固定値として設定します。
    *
-   * <p>主に監査目的で使用され、エンティティの更新履歴を追跡するために利用されます。
+   * <p>このメソッドは主に監査目的で使用され、エンティティの更新履歴を追跡できるように設計されています。
    *
    * @see PreUpdate
    */
   @PreUpdate
   public void preUpdate() {
     updatedAt = DateProvider.currentLocalDateTime();
-    createdBy = "system";
+    updatedBy = "system";
   }
 }
