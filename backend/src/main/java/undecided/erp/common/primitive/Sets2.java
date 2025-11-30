@@ -10,8 +10,8 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 import undecided.erp.common.annotation.CanIgnoreReturnValue;
 import undecided.erp.common.annotation.DoNotCall;
 import undecided.erp.common.precondition.ObjectPrecondition;
@@ -141,7 +141,7 @@ public class Sets2 {
    * @param set2 二番目のセット（nullであってはならない）
    * @return set1とset2間の差を表す新しいSetView
    */
-  public static <E> SetView<E> difference(final Set<E> set1, final Set<?> set2) {
+  public static <E> SetView<E> difference(@NonNull final Set<E> set1, @NonNull final Set<?> set2) {
     ObjectPrecondition.checkNotNull(set1, () -> new IllegalArgumentException("set1 is null"));
     ObjectPrecondition.checkNotNull(set2, () -> new IllegalArgumentException("set2 is null"));
 

@@ -3,12 +3,13 @@ package undecided.erp.common.snowflake;
 import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import org.jspecify.annotations.NonNull;
 import undecided.erp.common.application.ApplicationInfo;
 import undecided.erp.common.ipaddress.IpAddressProvider;
 
 public class NodeIdProvider {
 
-  private final static AtomicReference<NodeIdProvider> nodeIdProvider =
+  private static final AtomicReference<NodeIdProvider> nodeIdProvider =
       new AtomicReference<>(new NodeIdProvider());
 
   private Long nodeId;
@@ -24,36 +25,28 @@ public class NodeIdProvider {
       nodeId = (long) (Math.random() * (Math.pow(2, 10) - 1));
     }
     nodeId = nodeId & 1023;
-
   }
 
-
-  protected Long nodeId() {
-    return nodeId;
+  NodeIdProvider(@NonNull NodeIdProvider nodeIdProvider) {
+    NodeIdProvider.setNodeIdProvider(nodeIdProvider);
   }
 
   public static Long getNodeId() {
     return NodeIdProvider.nodeIdProvider.get().nodeId();
   }
 
-
-  NodeIdProvider(NodeIdProvider nodeIdProvider) {
-    NodeIdProvider.setNodeIdProvider(nodeIdProvider);
-  }
-
   public static void setNodeIdProvider(NodeIdProvider nodeIdProvider) {
     NodeIdProvider.nodeIdProvider.set(nodeIdProvider);
   }
 
-
-  /**
-   * DateProviderを初期化する
-   */
+  /** DateProviderを初期化する */
   public static void clear() {
     IpAddressProvider.clear();
     ApplicationInfo.clear();
     NodeIdProvider.nodeIdProvider.set(new NodeIdProvider());
-
   }
 
+  protected Long nodeId() {
+    return nodeId;
+  }
 }
