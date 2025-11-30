@@ -163,10 +163,10 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
     }
 
     /**
-     * データベースから取得したLong型の値をSnowflakeIdエンティティに変換します。
+     * Convert a Long value retrieved from the database into a SnowflakeId entity.
      *
-     * @param dbData データベースから取得したLong型の値
-     * @return 変換されたSnowflakeIdオブジェクト。dbDataがnullの場合はSnowflakeId.EMPTYを返します。
+     * @param dbData the Long value read from the database; may be null
+     * @return `SnowflakeId.EMPTY` if `dbData` is null, otherwise a `SnowflakeId` wrapping `dbData`
      */
     @Override
     public SnowflakeId convertToEntityAttribute(@org.jspecify.annotations.Nullable Long dbData) {

@@ -15,15 +15,21 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
+  /**
+   * Registers MVC interceptors on the given registry by adding the TraceLoggingInterceptor.
+   *
+   * @param registry the InterceptorRegistry to configure with application interceptors
+   */
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor());
   }
 
   /**
-   * TraceLoggingInterceptorのインスタンスを生成し、Spring MVCのHandlerInterceptorとして使用可能にします。
-   * このInterceptorはリクエストをトレースしてログ出力を行い、リクエスト処理の追跡やエラーハンドリングに役立てます。
+   * Create a TraceLoggingInterceptor for use as a Spring MVC HandlerInterceptor.
    *
-   * @return HandlerInterceptorとして利用可能なTraceLoggingInterceptorの新しいインスタンス
+   * The interceptor traces incoming requests and records processing and error-related logs to aid request tracking.
+   *
+   * @return a new TraceLoggingInterceptor instance suitable as a HandlerInterceptor
    */
   @Bean
   public HandlerInterceptor handlerExceptionnterceptor() {
@@ -31,19 +37,18 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * 標準の日付フォーマットを提供するStdDateFormatインスタンスを作成します。 このメソッドは、日付のシリアライズ/デシリアライズ処理を統一された形式で設定するために使用されます。
+   * Provides a standard date format for consistent date serialization and deserialization.
    *
-   * @return 標準の日付フォーマットを表すStdDateFormatインスタンス
+   * @return a StdDateFormat instance for standardized date parsing and formatting
    */
   public StdDateFormat stdDateFormat() {
     return new StdDateFormat();
   }
 
   /**
-   * PageableHandlerMethodArgumentResolverのインスタンスを作成し、Spring MVCで使用するための {@link
-   * HandlerMethodArgumentResolver}として設定します。このメソッドは、 ページネーションをサポートするデフォルトの設定を提供します。
+   * Provides a pageable argument resolver for controller methods to enable pagination support.
    *
-   * @return PageableHandlerMethodArgumentResolverのインスタンス
+   * @return a PageableHandlerMethodArgumentResolver configured with default pagination settings
    */
   @Bean
   public PageableHandlerMethodArgumentResolver pageableHandlerMethodArgumentResolver() {
@@ -51,10 +56,11 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * TraceLoggingInterceptorのインスタンスを生成し、Spring MVCのInterceptorとして利用可能にします。
-   * このInterceptorはリクエストの処理時間をトレースし、必要に応じてログ出力を行います。
+   * Creates and configures a TraceLoggingInterceptor for use as a Spring MVC interceptor.
    *
-   * @return TraceLoggingInterceptorの新しいインスタンス
+   * Configures the interceptor to warn when request handling exceeds 3,000,000,000 nanoseconds.
+   *
+   * @return a configured TraceLoggingInterceptor instance
    */
   @Bean
   public TraceLoggingInterceptor traceLoggingInterceptor() {
