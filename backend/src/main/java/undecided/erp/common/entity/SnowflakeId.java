@@ -6,6 +6,7 @@ import static undecided.erp.common.primitive.Objects2.isNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.ComparisonChain;
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Converter;
 import java.beans.Transient;
 import java.io.Serial;
@@ -24,6 +25,7 @@ import undecided.erp.common.snowflake.SnowflakeIdProvider;
  */
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
+@Convert(converter = SnowflakeId.SnowflakeIdConverter.class)
 public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<SnowflakeId>, Serializable {
   /**
    * 空のSnowflakeIdを表す定数。 この定数は、値を持たないSnowflakeIdオブジェクトを表現するために使用されます。 主に、未設定や初期状態を明示的に示すために利用されます。
@@ -167,7 +169,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
      * @return 変換されたSnowflakeIdオブジェクト。dbDataがnullの場合はSnowflakeId.EMPTYを返します。
      */
     @Override
-    public SnowflakeId convertToEntityAttribute(Long dbData) {
+    public SnowflakeId convertToEntityAttribute(@org.jspecify.annotations.Nullable Long dbData) {
       return SnowflakeId.reconstruct(dbData);
     }
   }
