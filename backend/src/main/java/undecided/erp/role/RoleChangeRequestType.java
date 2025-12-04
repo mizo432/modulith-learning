@@ -28,10 +28,10 @@ public enum RoleChangeRequestType {
   private final String code;
 
   /**
-   * 指定されたコードおよびソート順を使用してRoleChangeRequestType列挙型のインスタンスを初期化します。
+   * Initialize this enum constant with its external code and display order.
    *
-   * @param code 種類を識別するためのコード
-   * @param sortOrder 種類のソート順を示す数値
+   * @param code      the string code that identifies the request type
+   * @param sortOrder the numeric sort order used when ordering request types
    */
   RoleChangeRequestType(String code, int sortOrder) {
     this.code = code;
@@ -39,13 +39,11 @@ public enum RoleChangeRequestType {
   }
 
   /**
-   * 指定されたコードに基づいてRoleChangeRequestTypeを評価し、対応する列挙型を返します。
+   * Map a code string to its corresponding RoleChangeRequestType.
    *
-   * <p>コードが無効な場合はUNKNOWNを返します。
-   *
-   * @param code ロール変更要求の種類を識別するためのコード（必須）
-   * @return 指定されたコードに対応するRoleChangeRequestType列挙型。 コードに対応する値が存在しない場合はUNKNOWNを返します。
-   * @throws IllegalArgumentException 引数codeがnullの場合
+   * @param code the code identifying the role change request type
+   * @return the matching RoleChangeRequestType; `UNKNOWN` if the code is not recognized
+   * @throws IllegalArgumentException if `code` is null
    */
   @JsonCreator
   public static RoleChangeRequestType valueOfCode(@NonNull String code) {
@@ -59,9 +57,9 @@ public enum RoleChangeRequestType {
   }
 
   /**
-   * このメソッドは、RoleChangeRequestTypeを識別するコードを取得します。
+   * Provides the identifier code for this role change request type.
    *
-   * @return このRoleChangeRequestTypeに関連付けられた識別コード
+   * @return the identifier code associated with this enum constant
    */
   @JsonValue
   public String getCode() {
@@ -69,9 +67,9 @@ public enum RoleChangeRequestType {
   }
 
   /**
-   * このメソッドは、RoleChangeRequestTypeのソート順を取得します。
+   * The numeric sort order associated with this role change request type.
    *
-   * @return このRoleChangeRequestTypeに関連付けられたソート順の数値
+   * @return the sort order value for this enum constant
    */
   public int getSortOrder() {
     return sortOrder;
