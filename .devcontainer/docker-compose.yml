@@ -4,14 +4,14 @@ version: "3.8"
 # 永続化ボリュームの定義
 volumes:
   postgres_data:  # PostgreSQLデータ用の永続化ボリューム
-  valkey_data: # Valkeyデータ用の永続化ボリューム
+  redis_data: # Valkeyデータ用の永続化ボリューム
     driver: local
 
 services:
   # PostgreSQLデータベースサービス
   db:
     container_name: ${PROJECT_NAME:-default}-postgresdb
-    image: postgres:latest
+    image: postgres:17.0
     restart: unless-stopped  # 停止されない限り再起動
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}          # PostgreSQLユーザー名
@@ -25,9 +25,9 @@ services:
       - postgres_data:/var/lib/postgresql/data  # データの永続化
 
   # Valkeyサーバー（Redisの代替）
-  valkey:
-    container_name: ${PROJECT_NAME:-default}-valkey_server
-    image: docker.io/bitnami/valkey:8.0
+  redis:
+    container_name: ${PROJECT_NAME:-default}-redis_server
+    image: redis/redis-stack-server:latest
     environment:
       # 開発環境でのみ空のパスワードを許可
       - ALLOW_EMPTY_PASSWORD=yes
@@ -36,7 +36,7 @@ services:
     ports:
       - '6379:6379'  # Redisの標準ポート
     volumes:
-      - 'valkey_data:/bitnami/valkey/data'  # データの永続化
+      - 'redis_data:/bitnami/redis/data'  # データの永続化
     depends_on:
       - db  # データベースサービスが起動してから開始
 
@@ -94,6 +94,6 @@ services:
     depends_on:
       - service-registry  # サービスレジストリ
       - db               # データベース
-      - valkey          # Valkeyサーバー
+      - redis          # Valkeyサーバー
       - zipkin          # Zipkinサーバー
     command: sleep infinity  # 開発環境用：コンテナを永続化
