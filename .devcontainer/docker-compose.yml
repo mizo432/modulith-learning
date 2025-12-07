@@ -24,7 +24,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data  # データの永続化
 
-  # Valkeyサーバー（Redisの代替）
+  # Redisサーバー
   redis:
     container_name: ${PROJECT_NAME:-default}-redis_server
     image: redis/redis-stack-server:latest
@@ -32,7 +32,7 @@ services:
       # 開発環境でのみ空のパスワードを許可
       - ALLOW_EMPTY_PASSWORD=yes
       # 危険なコマンドを無効化
-      - VALKEY_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     ports:
       - '6379:6379'  # Redisの標準ポート
     volumes:
