@@ -70,6 +70,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("org.springframework.security:spring-security-oauth2-authorization-server:7.0.0")
 }
 
 tasks.withType<Javadoc> {
