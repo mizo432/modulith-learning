@@ -4,7 +4,7 @@ version: "3.8"
 # 永続化ボリュームの定義
 volumes:
   postgres_data:  # PostgreSQLデータ用の永続化ボリューム
-  redis_data: # Valkeyデータ用の永続化ボリューム
+  redis_data: # Redisデータ用の永続化ボリューム
     driver: local
 
 services:
@@ -94,6 +94,6 @@ services:
     depends_on:
       - service-registry  # サービスレジストリ
       - db               # データベース
-      - redis          # Valkeyサーバー
+      - redis          # Redisサーバー
       - zipkin          # Zipkinサーバー
     command: sleep infinity  # 開発環境用：コンテナを永続化
