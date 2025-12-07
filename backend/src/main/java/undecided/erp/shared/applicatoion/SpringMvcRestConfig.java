@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,39 +15,50 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
   /**
-   * Registers MVC interceptors on the given registry by adding the TraceLoggingInterceptor.
+   * Spring MVCにおけるインターセプターを追加するためのメソッド。
    *
-   * @param registry the InterceptorRegistry to configure with application interceptors
+   * <p>このメソッドでは、InterceptorRegistryを使用して、 必要なインターセプターを登録します。 主にリクエストのトレースログを記録するための
+   * TraceLoggingInterceptorが追加されます。
+   *
+   * @param registry インターセプターを登録するためのInterceptorRegistryオブジェクト
    */
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor());
   }
 
   /**
-   * Create a TraceLoggingInterceptor for use as a Spring MVC HandlerInterceptor.
+   * 例外およびリクエストのトレースログを記録するためのHandlerInterceptorを提供します。
    *
-   * The interceptor traces incoming requests and records processing and error-related logs to aid request tracking.
+   * <p>このメソッドは、トレースログの記録機能を持つカスタムインターセプターである {@link TraceLoggingInterceptor} を生成して返します。このインターセプターは、
+   * HTTPリクエストの処理開始から終了までの実行時間を測定し、ログに出力します。
    *
-   * @return a new TraceLoggingInterceptor instance suitable as a HandlerInterceptor
+   * <p>また、実行時間があらかじめ設定された閾値を超えた場合には、警告ログとして 出力される機能も含まれています。
+   *
+   * @return 例外記録およびリクエスト処理時間測定用のHandlerInterceptor
    */
   @Bean
-  public HandlerInterceptor handlerExceptionnterceptor() {
+  public HandlerInterceptor handlerExceptionInterceptor() {
     return new TraceLoggingInterceptor();
   }
 
   /**
-   * Provides a standard date format for consistent date serialization and deserialization.
+   * 標準的な日付フォーマットオブジェクトを生成して返します。
    *
-   * @return a StdDateFormat instance for standardized date parsing and formatting
+   * <p>このメソッドで生成されるStdDateFormatは、日付および時刻を文字列に 変換する際に使用されます。
+   *
+   * @return 新しいStdDateFormatインスタンス
    */
   public StdDateFormat stdDateFormat() {
     return new StdDateFormat();
   }
 
   /**
-   * Provides a pageable argument resolver for controller methods to enable pagination support.
+   * PageableHandlerMethodArgumentResolverを生成し、返します。
    *
-   * @return a PageableHandlerMethodArgumentResolver configured with default pagination settings
+   * <p>このメソッドで提供されるPageableHandlerMethodArgumentResolverは、 Spring
+   * MVCでページング機能を使用するためのリクエストパラメータ解析を行う役割を持ちます。
+   *
+   * @return PageableHandlerMethodArgumentResolverの新しいインスタンス
    */
   @Bean
   public PageableHandlerMethodArgumentResolver pageableHandlerMethodArgumentResolver() {
@@ -56,11 +66,12 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Creates and configures a TraceLoggingInterceptor for use as a Spring MVC interceptor.
+   * TraceLoggingInterceptorを生成し、指定の設定を適用して返します。
    *
-   * Configures the interceptor to warn when request handling exceeds 3,000,000,000 nanoseconds.
+   * <p>このメソッドで構築されたTraceLoggingInterceptorは、リクエストの処理時間を計測し、
+   * ログに記録する機能を提供します。また、処理時間が指定の閾値（デフォルトで3秒）を 超えた場合に警告ログを出力します。
    *
-   * @return a configured TraceLoggingInterceptor instance
+   * @return 初期化されたTraceLoggingInterceptorのインスタンス
    */
   @Bean
   public TraceLoggingInterceptor traceLoggingInterceptor() {
