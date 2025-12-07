@@ -27,16 +27,17 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * handlerExceptionnterceptorメソッドは、リクエストおよびレスポンスの処理中に
-   * ログを記録するためのHandlerInterceptorを初期化し、Beanとして登録します。
+   * 例外およびリクエストのトレースログを記録するためのHandlerInterceptorを提供します。
    *
-   * <p>主にTraceLoggingInterceptorを使用し、コントローラーハンドラーの実行時間 や必要なトレース情報をログに記録します。また、処理時間が長い場合には
-   * WARNレベルのログを出力する機能を提供します。
+   * <p>このメソッドは、トレースログの記録機能を持つカスタムインターセプターである {@link TraceLoggingInterceptor} を生成して返します。このインターセプターは、
+   * HTTPリクエストの処理開始から終了までの実行時間を測定し、ログに出力します。
    *
-   * @return ログトレースを行うために構成されたHandlerInterceptorのインスタンス
+   * <p>また、実行時間があらかじめ設定された閾値を超えた場合には、警告ログとして 出力される機能も含まれています。
+   *
+   * @return 例外記録およびリクエスト処理時間測定用のHandlerInterceptor
    */
   @Bean
-  public HandlerInterceptor handlerExceptionnterceptor() {
+  public HandlerInterceptor handlerExceptionInterceptor() {
     return new TraceLoggingInterceptor();
   }
 
