@@ -1,6 +1,10 @@
 package undecided.erp.shared.applicatoion;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import org.springframework.boot.tomcat.reactive.TomcatReactiveWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -14,6 +18,13 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
+
+  private final Executor executor;
+
+  public SpringMvcRestConfig(Executor executor) {
+    this.executor = executor;
+  }
+
   /**
    * Spring MVCにおけるインターセプターを追加するためのメソッド。
    *
@@ -78,5 +89,23 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
     TraceLoggingInterceptor traceLoggingInterceptor = new TraceLoggingInterceptor();
     traceLoggingInterceptor.setWarnHandlingNanos(3000000000L);
     return traceLoggingInterceptor;
+  }
+
+  /**
+   * TomcatのリアクティブWebサーバーをカスタマイズするためのメソッド。
+   *
+   * <p>このメソッドは、Tomcatのコネクター設定を変更し、仮想スレッド（Virtual Thread）を使用する
+   * Executorをプロトコルハンドラーに設定します。これにより、スレッド管理を効率化します。
+   *
+   * @return TomcatReactiveWebServerFactoryのカスタマイズを行うためのWebServerFactoryCustomizerオブジェクト
+   */
+  @Bean
+  public WebServerFactoryCustomizer<TomcatReactiveWebServerFactory> tomCatCustomizeer() {
+    return factory ->
+        factory.addConnectorCustomizers(
+            connector ->
+                connector
+                    .getProtocolHandler()
+                    .setExecutor(Executors.newVirtualThreadPerTaskExecutor()));
   }
 }
