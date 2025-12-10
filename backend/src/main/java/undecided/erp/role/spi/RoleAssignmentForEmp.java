@@ -29,5 +29,5 @@ public class RoleAssignmentForEmp {
 
   @ManyToOne
   @JoinColumn(name = "employee_id")
-  private Employee organization;
+  private Employee employee;
 }
