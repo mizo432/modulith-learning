@@ -17,7 +17,7 @@ public class Employee {
   @Id private UUID employeeId;
 
   @Column(nullable = false)
-  private String lastBane;
+  private String lastNane;
 
   @Column(nullable = false)
   private String firstName;
