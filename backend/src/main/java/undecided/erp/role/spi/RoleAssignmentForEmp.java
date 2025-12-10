@@ -22,7 +22,7 @@ import undecided.erp.employee.Employee;
 @Getter
 @Setter
 public class RoleAssignmentForEmp {
-  @Id private UUID RoleAssignmentForEmpId;
+  @Id private UUID roleAssignmentForEmpId;
 
   @Column(name = "role_id")
   private UUID roleId;

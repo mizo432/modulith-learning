@@ -22,7 +22,7 @@ import undecided.erp.organization.spi.Organization;
 @Getter
 @Setter
 public class RoleAssignmentForOrg {
-  @Id private UUID RoleAssignmentForOrgId;
+  @Id private UUID roleAssignmentForOrgId;
 
   @Column(name = "role_id")
   private UUID roleId;
