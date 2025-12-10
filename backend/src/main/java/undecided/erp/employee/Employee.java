@@ -23,7 +23,7 @@ public class Employee {
   private String firstName;
 
   @Column(nullable = false)
-  private LocalDateTime validÏrom;
+  private LocalDateTime validFrom;
 
   private LocalDateTime validTo;
 }
