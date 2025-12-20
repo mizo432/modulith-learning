@@ -1,7 +1,6 @@
 package undecided.erp.shared.applicatoion;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import org.springframework.boot.tomcat.reactive.TomcatReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -19,11 +18,6 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
 
-  private final Executor executor;
-
-  public SpringMvcRestConfig(Executor executor) {
-    this.executor = executor;
-  }
 
   /**
    * Spring MVCにおけるインターセプターを追加するためのメソッド。

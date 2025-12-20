@@ -64,7 +64,7 @@ extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    //   implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
@@ -80,8 +80,8 @@ dependencies {
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-    implementation("org.hibernate.orm:hibernate-envers:7.1.10.Final")
-    implementation("org.hibernate.orm:hibernate-core:7.1.10.Final")
+//    implementation("org.hibernate.orm:hibernate-envers:7.1.10.Final")
+//    implementation("org.hibernate.orm:hibernate-core:7.1.10.Final")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     implementation("org.jmolecules:jmolecules-onion-architecture")
 //    implementation("org.jmolecules:jmolecules-ddd")

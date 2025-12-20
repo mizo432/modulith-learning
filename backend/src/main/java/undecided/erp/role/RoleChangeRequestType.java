@@ -4,6 +4,7 @@ import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -24,13 +25,19 @@ public enum RoleChangeRequestType {
   /** UNKNOWNは、未定義または不明なロール変更要求の種類を表します。 この種類は、コード"00"およびソート順999として識別されます。 */
   UNKNOWN("00", 999);
 
-  private final int sortOrder;
+  /**
+   * -- GETTER -- The numeric sort order associated with this role change request type.
+   *
+   * @return the sort order value for this enum constant
+   */
+  @Getter private final int sortOrder;
+
   private final String code;
 
   /**
    * Initialize this enum constant with its external code and display order.
    *
-   * @param code      the string code that identifies the request type
+   * @param code the string code that identifies the request type
    * @param sortOrder the numeric sort order used when ordering request types
    */
   RoleChangeRequestType(String code, int sortOrder) {
@@ -64,14 +71,5 @@ public enum RoleChangeRequestType {
   @JsonValue
   public String getCode() {
     return code;
-  }
-
-  /**
-   * The numeric sort order associated with this role change request type.
-   *
-   * @return the sort order value for this enum constant
-   */
-  public int getSortOrder() {
-    return sortOrder;
   }
 }

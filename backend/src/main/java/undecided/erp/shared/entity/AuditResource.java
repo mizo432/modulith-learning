@@ -5,7 +5,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import org.hibernate.envers.Audited;
 import undecided.erp.common.dateProvider.DateProvider;
 
 /**
@@ -18,7 +17,6 @@ import undecided.erp.common.dateProvider.DateProvider;
  * <p>このクラスは、@MappedSuperclassとしてアノテートされており、 基底クラスとして利用できます。また、@Auditedアノテーションを
  * 使用して監査対象としてマークされています。
  */
-@Audited
 @MappedSuperclass
 @Getter
 public abstract class AuditResource {
@@ -74,7 +72,7 @@ public abstract class AuditResource {
   @PrePersist
   public void prePersist() {
     createdAt = DateProvider.currentLocalDateTime();
-    ;
+
     createdBy = "system";
   }
 

@@ -91,7 +91,7 @@ public class RollingUuidV7IdProvider extends UuidV7Provider {
    * @return 選択されたリスト内のUUIDの新しいインスタンス
    */
   @Override
-  protected synchronized UUID internalNewInstance() {
+  protected synchronized @NonNull UUID internalNewInstance() {
 
     UUID result = UUID.fromString(idList.get(index));
     index++;

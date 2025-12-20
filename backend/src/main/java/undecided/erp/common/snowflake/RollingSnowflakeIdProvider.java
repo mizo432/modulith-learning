@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * RollingListSnowflakeIdProviderは、Snowflakeアルゴリズムに基づいてユニークなIDを生成するSnowflakeIdProviderのサブクラスです。
- * <p>
- * ユニークなIDを生成するために、Snowflake IDのローリングリストを維持します。
+ *
+ * <p>ユニークなIDを生成するために、Snowflake IDのローリングリストを維持します。
  */
 public class RollingSnowflakeIdProvider extends SnowflakeIdProvider {
 
@@ -20,7 +20,6 @@ public class RollingSnowflakeIdProvider extends SnowflakeIdProvider {
   private RollingSnowflakeIdProvider(Collection<Long> idList) {
     this.idList.addAll(idList);
     index = 0;
-
   }
 
   public static void initialize(@NonNull Long... snowflakeIds) {
@@ -28,15 +27,11 @@ public class RollingSnowflakeIdProvider extends SnowflakeIdProvider {
       throw new IllegalArgumentException("Snowflake IDs must not be empty");
     }
     new SnowflakeIdProvider(new RollingSnowflakeIdProvider(Arrays.asList(snowflakeIds)));
-
   }
 
-  /**
-   * このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。
-   */
+  /** このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。 */
   public static void clear() {
     SnowflakeIdProvider.clear();
-
   }
 
   /**
@@ -54,6 +49,5 @@ public class RollingSnowflakeIdProvider extends SnowflakeIdProvider {
       index++;
     }
     return result;
-
   }
 }

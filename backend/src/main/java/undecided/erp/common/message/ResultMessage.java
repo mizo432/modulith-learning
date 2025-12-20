@@ -1,8 +1,7 @@
 package undecided.erp.common.message;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
-import lombok.NonNull;
+import org.jspecify.annotations.NonNull;
 import undecided.erp.common.primitive.Objects2;
 
 public record ResultMessage(String code, Object[] args, String text) {
@@ -46,7 +45,7 @@ public record ResultMessage(String code, Object[] args, String text) {
   }
 
   @Override
-  @NotNull
+  @org.jspecify.annotations.NonNull
   public String toString() {
     return "ResultMessage{"
         + "code='"
