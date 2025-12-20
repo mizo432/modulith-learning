@@ -14,7 +14,7 @@ plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "4.0.0"
+    id("org.springframework.boot") version "4.0.1"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
@@ -64,7 +64,7 @@ extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    //   implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
@@ -80,8 +80,8 @@ dependencies {
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-    implementation("org.hibernate.orm:hibernate-envers:7.1.10.Final")
-    implementation("org.hibernate.orm:hibernate-core:7.1.10.Final")
+//    implementation("org.hibernate.orm:hibernate-envers:7.1.10.Final")
+//    implementation("org.hibernate.orm:hibernate-core:7.1.10.Final")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     implementation("org.jmolecules:jmolecules-onion-architecture")
 //    implementation("org.jmolecules:jmolecules-ddd")
