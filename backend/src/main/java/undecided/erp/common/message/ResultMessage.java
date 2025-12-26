@@ -45,7 +45,7 @@ public record ResultMessage(String code, Object[] args, String text) {
   }
 
   @Override
-  @org.jspecify.annotations.NonNull
+  @NonNull
   public String toString() {
     return "ResultMessage{"
         + "code='"
