@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import undecided.erp.common.exception.ExceptionLogger;
@@ -38,22 +37,6 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    */
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor());
-    registry.addInterceptor(handlerExceptionInterceptor());
-  }
-
-  /**
-   * 例外およびリクエストのトレースログを記録するためのHandlerInterceptorを提供します。
-   *
-   * <p>このメソッドは、トレースログの記録機能を持つカスタムインターセプターである {@link TraceLoggingInterceptor} を生成して返します。このインターセプターは、
-   * HTTPリクエストの処理開始から終了までの実行時間を測定し、ログに出力します。
-   *
-   * <p>また、実行時間があらかじめ設定された閾値を超えた場合には、警告ログとして 出力される機能も含まれています。
-   *
-   * @return 例外記録およびリクエスト処理時間測定用のHandlerInterceptor
-   */
-  @Bean
-  public HandlerInterceptor handlerExceptionInterceptor() {
-    return new TraceLoggingInterceptor();
   }
 
   /**
