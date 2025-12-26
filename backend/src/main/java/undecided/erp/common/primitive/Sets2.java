@@ -270,7 +270,7 @@ public class Sets2 {
     @Deprecated
     @Override
     @DoNotCall("Always throws UnsupportedOperationException")
-    public final boolean removeIf(java.util.function.Predicate<? super E> filter) {
+    public final boolean removeIf(java.util.function.@NonNull Predicate<? super E> filter) {
       throw new UnsupportedOperationException();
     }
 

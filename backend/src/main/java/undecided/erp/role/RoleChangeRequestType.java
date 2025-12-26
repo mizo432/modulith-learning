@@ -25,11 +25,7 @@ public enum RoleChangeRequestType {
   /** UNKNOWNは、未定義または不明なロール変更要求の種類を表します。 この種類は、コード"00"およびソート順999として識別されます。 */
   UNKNOWN("00", 999);
 
-  /**
-   * -- GETTER -- The numeric sort order associated with this role change request type.
-   *
-   * @return the sort order value for this enum constant
-   */
+  /** -- GETTER -- The numeric sort order associated with this role change request type. */
   @Getter private final int sortOrder;
 
   private final String code;
