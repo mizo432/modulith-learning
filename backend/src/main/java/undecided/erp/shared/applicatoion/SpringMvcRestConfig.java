@@ -20,7 +20,7 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
   @Bean
-  protected HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
+  public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
     HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor =
         new HandlerExceptionResolverLoggingInterceptor();

@@ -44,16 +44,25 @@ public class ApplicationConfig {
     return exceptionLoggingFilter;
   }
 
+  /**
+   * resultMessagesLoggingInterceptorメソッドは、{@link ResultMessagesLoggingInterceptor}のインスタンスを作成し、
+   * 結果メッセージや例外に関するログ記録を行う機能を提供します。
+   *
+   * @return 結果メッセージおよび例外のログ記録機能を持つResultMessagesLoggingInterceptorインスタンス
+   */
   @Bean
   public ResultMessagesLoggingInterceptor resultMessagesLoggingInterceptor() {
     return new ResultMessagesLoggingInterceptor();
   }
 
-  // @Bean
-  // HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor() {
-  //  return new HandlerExceptionResolverLoggingInterceptor();
-  // }
-
+  /**
+   * simpleMappingExceptionResolverメソッドは、例外処理を行うための {@link
+   * SimpleMappingExceptionResolver}インスタンスを生成および提供します。
+   *
+   * <p>このクラスを使用すると、例外とビューのマッピングを簡単に構成でき、 特定の例外発生時に自動的に適切なビューをレンダリングすることが可能です。
+   *
+   * @return 例外とビューのマッピング機能を提供するSimpleMappingExceptionResolverインスタンス
+   */
   @Bean
   public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
     return new SimpleMappingExceptionResolver();
