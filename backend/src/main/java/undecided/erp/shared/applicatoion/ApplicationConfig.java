@@ -4,7 +4,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import undecided.erp.common.exception.ExceptionLogger;
+import undecided.erp.common.exception.ResultMessagesLoggingInterceptor;
+import undecided.erp.common.web.exception.ExceptionLoggingFilter;
 
 @Configuration
 public class ApplicationConfig {
@@ -24,5 +27,35 @@ public class ApplicationConfig {
   @Bean
   public Executor taskExecutor() {
     return Executors.newVirtualThreadPerTaskExecutor();
+  }
+
+  /**
+   * exceptionLoggingFilterメソッドは、例外をキャッチしてログに記録するための {@link
+   * ExceptionLoggingFilter}インスタンスを生成し、設定を行います。
+   *
+   * @param exceptionLogger ログ記録のために使用されるExceptionLoggerインスタンス
+   * @return 例外ログ出力用に初期化されたExceptionLoggingFilterインスタンス
+   */
+  @Bean
+  public ExceptionLoggingFilter exceptionLoggingFilter(ExceptionLogger exceptionLogger) {
+    ExceptionLoggingFilter exceptionLoggingFilter = new ExceptionLoggingFilter();
+    exceptionLoggingFilter.setExceptionLogger(exceptionLogger);
+
+    return exceptionLoggingFilter;
+  }
+
+  @Bean
+  public ResultMessagesLoggingInterceptor resultMessagesLoggingInterceptor() {
+    return new ResultMessagesLoggingInterceptor();
+  }
+
+  // @Bean
+  // HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor() {
+  //  return new HandlerExceptionResolverLoggingInterceptor();
+  // }
+
+  @Bean
+  public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
+    return new SimpleMappingExceptionResolver();
   }
 }

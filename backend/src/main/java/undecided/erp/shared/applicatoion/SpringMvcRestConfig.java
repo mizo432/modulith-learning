@@ -11,13 +11,22 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import undecided.erp.common.exception.ExceptionLogger;
+import undecided.erp.common.web.exception.HandlerExceptionResolverLoggingInterceptor;
 import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 
 /** Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。 */
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
-
+  @Bean
+  protected HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
+      ExceptionLogger exceptionLogger) {
+    HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor =
+        new HandlerExceptionResolverLoggingInterceptor();
+    handlerExceptionResolverLoggingInterceptor.setExceptionLogger(exceptionLogger);
+    return handlerExceptionResolverLoggingInterceptor;
+  }
 
   /**
    * Spring MVCにおけるインターセプターを追加するためのメソッド。
@@ -29,6 +38,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    */
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor());
+    registry.addInterceptor(handlerExceptionInterceptor());
   }
 
   /**
