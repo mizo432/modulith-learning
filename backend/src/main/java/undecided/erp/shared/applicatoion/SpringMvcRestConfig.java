@@ -37,19 +37,17 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   }
 
   /**
-   * 例外を処理するためのLoggingInterceptorを含むAdvisorを提供します。
+   * HandlerExceptionResolverLoggingInterceptorを利用して、例外解決時のロギングを行う アドバイザーを生成します。
    *
-   * <p>このAdvisorは、指定されたパターンに一致するクラスおよびメソッドに適用されます。 例外が発生した場合に、それをログとして記録する機能を提供します。
-   *
-   * @param exceptionLogger 例外をログに記録するためのExceptionLoggerオブジェクト
-   * @return 設定されたポイントカットおよびInterceptorを含むAdvisor
+   * @param interceptor HandlerExceptionResolverLoggingInterceptorインスタンス。 例外処理時のロギング機能を提供します。
+   * @return ExceptionResolverLoggingInterceptorを適用するAdvisorインスタンス。
    */
   @Bean
-  public Advisor exceptionResolverLoggingInterceptorAdvisor(ExceptionLogger exceptionLogger) {
+  public Advisor exceptionResolverLoggingInterceptorAdvisor(
+      HandlerExceptionResolverLoggingInterceptor interceptor) {
     JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
     pointcut.setPattern("undecided.erp.*.internal.*Api.*");
-    return new DefaultPointcutAdvisor(
-        pointcut, handlerExceptionResolverLoggingInterceptor(exceptionLogger));
+    return new DefaultPointcutAdvisor(pointcut, interceptor);
   }
 
   /**
