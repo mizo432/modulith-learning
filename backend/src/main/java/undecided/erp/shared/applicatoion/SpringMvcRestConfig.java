@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import undecided.erp.common.exception.ExceptionLogger;
 import undecided.erp.common.web.exception.HandlerExceptionResolverLoggingInterceptor;
-import undecided.erp.common.web.logging.TraceLoggingInterceptor;
+import undecided.erp.common.web.logging.RestTraceLoggingInterceptor;
 
 /** Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。 */
 @EnableAspectJAutoProxy(proxyTargetClass = true)
@@ -95,8 +95,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @return 初期化されたTraceLoggingInterceptorのインスタンス
    */
   @Bean
-  public TraceLoggingInterceptor traceLoggingInterceptor() {
-    TraceLoggingInterceptor traceLoggingInterceptor = new TraceLoggingInterceptor();
+  public RestTraceLoggingInterceptor traceLoggingInterceptor() {
+    RestTraceLoggingInterceptor traceLoggingInterceptor = new RestTraceLoggingInterceptor();
     traceLoggingInterceptor.setWarnHandlingNanos(3000000000L);
     return traceLoggingInterceptor;
   }

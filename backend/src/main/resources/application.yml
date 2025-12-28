@@ -57,7 +57,7 @@ logging:
     root: warn
     web: info
     org.zalando.logbook: trace
-    undecided.erp.common.web.logging.TraceLoggingInterceptor: trace
+    undecided.erp.common.web.logging.RestTraceLoggingInterceptor: trace
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.hibernate.SQL: DEBUG
 
