@@ -2,6 +2,9 @@ package undecided.erp.shared.applicatoion;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import java.util.concurrent.Executors;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.JdkRegexpMethodPointcut;
 import org.springframework.boot.tomcat.reactive.TomcatReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +21,12 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
+  /**
+   * HandlerExceptionResolverLoggingInterceptorを生成し、例外ログ設定を適用した後に返します。
+   *
+   * @param exceptionLogger 例外をログに記録するためのExceptionLoggerオブジェクト
+   * @return 初期化されたHandlerExceptionResolverLoggingInterceptorのインスタンス
+   */
   @Bean
   public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
@@ -25,6 +34,22 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
         new HandlerExceptionResolverLoggingInterceptor();
     handlerExceptionResolverLoggingInterceptor.setExceptionLogger(exceptionLogger);
     return handlerExceptionResolverLoggingInterceptor;
+  }
+
+  /**
+   * 例外を処理するためのLoggingInterceptorを含むAdvisorを提供します。
+   *
+   * <p>このAdvisorは、指定されたパターンに一致するクラスおよびメソッドに適用されます。 例外が発生した場合に、それをログとして記録する機能を提供します。
+   *
+   * @param exceptionLogger 例外をログに記録するためのExceptionLoggerオブジェクト
+   * @return 設定されたポイントカットおよびInterceptorを含むAdvisor
+   */
+  @Bean
+  public Advisor exceptionResolverLoggingInterceptorAdvisor(ExceptionLogger exceptionLogger) {
+    JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
+    pointcut.setPattern("undecided.erp.*.application.*Api.*");
+    return new DefaultPointcutAdvisor(
+        pointcut, handlerExceptionResolverLoggingInterceptor(exceptionLogger));
   }
 
   /**
