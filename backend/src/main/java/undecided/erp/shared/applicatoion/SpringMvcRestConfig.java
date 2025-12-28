@@ -2,6 +2,9 @@ package undecided.erp.shared.applicatoion;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import java.util.concurrent.Executors;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.JdkRegexpMethodPointcut;
 import org.springframework.boot.tomcat.reactive.TomcatReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +21,12 @@ import undecided.erp.common.web.logging.TraceLoggingInterceptor;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
+  /**
+   * HandlerExceptionResolverLoggingInterceptorを生成し、例外ログ設定を適用した後に返します。
+   *
+   * @param exceptionLogger 例外をログに記録するためのExceptionLoggerオブジェクト
+   * @return 初期化されたHandlerExceptionResolverLoggingInterceptorのインスタンス
+   */
   @Bean
   public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
@@ -25,6 +34,20 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
         new HandlerExceptionResolverLoggingInterceptor();
     handlerExceptionResolverLoggingInterceptor.setExceptionLogger(exceptionLogger);
     return handlerExceptionResolverLoggingInterceptor;
+  }
+
+  /**
+   * HandlerExceptionResolverLoggingInterceptorを利用して、例外解決時のロギングを行う アドバイザーを生成します。
+   *
+   * @param interceptor HandlerExceptionResolverLoggingInterceptorインスタンス。 例外処理時のロギング機能を提供します。
+   * @return ExceptionResolverLoggingInterceptorを適用するAdvisorインスタンス。
+   */
+  @Bean
+  public Advisor exceptionResolverLoggingInterceptorAdvisor(
+      HandlerExceptionResolverLoggingInterceptor interceptor) {
+    JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
+    pointcut.setPattern("undecided.erp..internal.*Api.*");
+    return new DefaultPointcutAdvisor(pointcut, interceptor);
   }
 
   /**
