@@ -1,11 +1,11 @@
 package undecided.erp.organization.internal;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.websocket.server.PathParam;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.erp.organization.spi.Organization;
@@ -36,7 +36,7 @@ public class OrganizationApi {
    * @throws EntityNotFoundException 指定されたIDに対応する組織が見つからない場合
    */
   @GetMapping("/{id}")
-  Organization findById(@PathParam("id") UUID id) {
+  Organization findById(@PathVariable("id") UUID id) {
     return organizationQuery
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Organization not found: " + id + ""));
