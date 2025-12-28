@@ -47,7 +47,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   @Bean
   public Advisor exceptionResolverLoggingInterceptorAdvisor(ExceptionLogger exceptionLogger) {
     JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
-    pointcut.setPattern("undecided.erp.*.application.*Api.*");
+    pointcut.setPattern("undecided.erp.*.internal.*Api.*");
     return new DefaultPointcutAdvisor(
         pointcut, handlerExceptionResolverLoggingInterceptor(exceptionLogger));
   }
