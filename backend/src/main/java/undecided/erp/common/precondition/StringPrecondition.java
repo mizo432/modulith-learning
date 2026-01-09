@@ -5,8 +5,9 @@ import static undecided.erp.common.primitive.Strings2.isAllCharacterHalfWidth;
 
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
+import undecided.erp.common.primitive.Objects2;
 import undecided.erp.common.primitive.Strings2;
 
 @UtilityClass
@@ -23,9 +24,13 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkNonEmpty(
       String ref, @NonNull Supplier<E> exceptionSupplier) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (ref == null) {
       return null;
     }
+
     if (ref.isEmpty()) {
       throw exceptionSupplier.get();
     }
@@ -43,8 +48,11 @@ public class StringPrecondition {
    * @return 半角長が許可された範囲内である場合、同じ文字列への参照。
    * @throws E 半角長が許可された範囲内でない場合。
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthOpen(
+  public static <E extends RuntimeException> String checkHalfWidthLengthOpen(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min, int max) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (ref == null) {
       return null;
     }
@@ -69,6 +77,9 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkHalfWidthLengthClosed(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min, int max) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (ref == null) {
       return null;
     }
@@ -90,8 +101,11 @@ public class StringPrecondition {
    * @return 半角長が最小値以上であれば同じ文字列への参照を返します
    * @throws E 半角長が最小値以上でない場合
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthAtLest(
+  public static <E extends RuntimeException> String checkHalfWidthLengthAtLest(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (ref == null) {
       return null;
     }
@@ -113,8 +127,11 @@ public class StringPrecondition {
    * @return 半角長が最小値より大きければ同じ文字列への参照を返します。{@code ref} が {@code null} の場合は {@code null} を返します。
    * @throws E 半角長が最小値より大きくない場合
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthGraterThan(
+  public static <E extends RuntimeException> String checkHalfWidthLengthGraterThan(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (ref == null) {
       return null;
     }
@@ -136,8 +153,11 @@ public class StringPrecondition {
    * @return 半角長が最大値以下であれば同じ文字列への参照を返します
    * @throws E 半角長が最大値以下でない場合
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthAtMost(
+  public static <E extends RuntimeException> String checkHalfWidthLengthAtMost(
       String ref, @NonNull Supplier<E> exceptionSupplier, int max) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (ref == null) {
       return null;
     }
@@ -159,8 +179,11 @@ public class StringPrecondition {
    * @return 半角長さが最大値より小さい場合、同じ文字列への参照を返します。
    * @throws E 半角長さが最大値よりも小さくなければならない場合、例外がスローされます。
    */
-  public static <E extends RuntimeException> String verifyHalfWidthLengthLessThan(
+  public static <E extends RuntimeException> String checkHalfWidthLengthLessThan(
       String ref, @NonNull Supplier<E> exceptionSupplier, int max) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (ref == null) {
       return null;
     }
@@ -182,8 +205,11 @@ public class StringPrecondition {
    * @return それが有効な10進数の文字列である場合は、同じ値。
    * @throws E 値が有効な10進数の文字列でない場合。
    */
-  public static <E extends RuntimeException> String verifyAllDecimal(
+  public static <E extends RuntimeException> String checkAllDecimal(
       String value, @NonNull Supplier<E> exceptionSupplier) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (value == null) {
       return null;
     }
@@ -195,6 +221,9 @@ public class StringPrecondition {
 
   public static <E extends RuntimeException> String checkHalfWidthFixedLength(
       String value, @NonNull Supplier<E> exceptionSupplier, int length) {
+    if (Objects2.isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
     if (value == null) {
       return null;
     }

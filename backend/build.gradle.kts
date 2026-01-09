@@ -64,11 +64,9 @@ extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
 
 dependencies {
-    //   implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
-    //   runtimeOnly("org.flywaydb:flyway-database-postgresql:${property("jdbcPostgresqlVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa")
@@ -80,16 +78,9 @@ dependencies {
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-//    implementation("org.hibernate.orm:hibernate-envers:7.1.10.Final")
-//    implementation("org.hibernate.orm:hibernate-core:7.1.10.Final")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     implementation("org.jmolecules:jmolecules-onion-architecture")
-//    implementation("org.jmolecules:jmolecules-ddd")
-    // https://mvnrepository.com/artifact/org.jmolecules/jmolecules-layered-architecture
-//    implementation("org.jmolecules:jmolecules-layered-architecture")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
-//    testImplementation("org.jmolecules.integrations:jmolecules-archunit:1.6.0")
-    //  testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
