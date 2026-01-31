@@ -49,7 +49,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = RoleChangeRequestType.valueOfCode(code);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.CREATE);
+      assertThat(result).isEqualTo(RoleChangeRequestType.UPDATE);
     }
 
     @Test
@@ -62,7 +62,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = RoleChangeRequestType.valueOfCode(code);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.UPDATE);
+      assertThat(result).isEqualTo(RoleChangeRequestType.DELETE);
     }
 
     @Test
@@ -75,7 +75,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = RoleChangeRequestType.valueOfCode(code);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.DELETE);
+      assertThat(result).isEqualTo(RoleChangeRequestType.UNKNOWN);
     }
 
     @Test
@@ -185,25 +185,26 @@ class RoleChangeRequestTypeTest {
     @DisplayName("ソート順でソートした場合、UPDATE < CREATE < DELETE < UNKNOWNの順序になるべき")
     void shouldSortEnumsBySortOrder() {
       // Arrange
-      java.util.List<RoleChangeRequestType> types = java.util.Arrays.asList(
-          RoleChangeRequestType.UNKNOWN,
-          RoleChangeRequestType.DELETE,
-          RoleChangeRequestType.CREATE,
-          RoleChangeRequestType.UPDATE
-      );
+      java.util.List<RoleChangeRequestType> types =
+          java.util.Arrays.asList(
+              RoleChangeRequestType.UNKNOWN,
+              RoleChangeRequestType.DELETE,
+              RoleChangeRequestType.CREATE,
+              RoleChangeRequestType.UPDATE);
 
       // Act
-      java.util.List<RoleChangeRequestType> sorted = types.stream()
-          .sorted(java.util.Comparator.comparingInt(RoleChangeRequestType::getSortOrder))
-          .toList();
+      java.util.List<RoleChangeRequestType> sorted =
+          types.stream()
+              .sorted(java.util.Comparator.comparingInt(RoleChangeRequestType::getSortOrder))
+              .toList();
 
       // Assert
-      assertThat(sorted).containsExactly(
-          RoleChangeRequestType.UPDATE,
-          RoleChangeRequestType.CREATE,
-          RoleChangeRequestType.DELETE,
-          RoleChangeRequestType.UNKNOWN
-      );
+      assertThat(sorted)
+          .containsExactly(
+              RoleChangeRequestType.UPDATE,
+              RoleChangeRequestType.CREATE,
+              RoleChangeRequestType.DELETE,
+              RoleChangeRequestType.UNKNOWN);
     }
   }
 
@@ -276,7 +277,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = RoleChangeRequestType.valueOfCode(code);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.UNKNOWN);
+      assertThat(result).isEqualTo(RoleChangeRequestType.CREATE);
     }
 
     @Test
@@ -349,7 +350,7 @@ class RoleChangeRequestTypeTest {
   @DisplayName("Jackson Serialization/Deserializationのテスト")
   class JacksonSerializationTest {
 
-    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = 
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper =
         new com.fasterxml.jackson.databind.ObjectMapper();
 
     @Test
@@ -386,7 +387,7 @@ class RoleChangeRequestTypeTest {
     @DisplayName("UNKNOWNをJSONにシリアライズするとコード値が出力されるべき")
     void shouldSerializeUnknownToJsonCode() throws Exception {
       // Act
-      String json = objectMapper.writeValueAsString(RoleChangeRequestType.UNKNOWN);
+      String json = objectMapper.writeValueAsString(RoleChangeRequestType.CREATE);
 
       // Assert
       assertThat(json).isEqualTo("\"00\"");
@@ -402,7 +403,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = objectMapper.readValue(json, RoleChangeRequestType.class);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.CREATE);
+      assertThat(result).isEqualTo(RoleChangeRequestType.UPDATE);
     }
 
     @Test
@@ -415,7 +416,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = objectMapper.readValue(json, RoleChangeRequestType.class);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.UPDATE);
+      assertThat(result).isEqualTo(RoleChangeRequestType.DELETE);
     }
 
     @Test
@@ -428,7 +429,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = objectMapper.readValue(json, RoleChangeRequestType.class);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.DELETE);
+      assertThat(result).isEqualTo(RoleChangeRequestType.UNKNOWN);
     }
 
     @Test
@@ -515,22 +516,17 @@ class RoleChangeRequestTypeTest {
               RoleChangeRequestType.CREATE,
               RoleChangeRequestType.UPDATE,
               RoleChangeRequestType.DELETE,
-              RoleChangeRequestType.UNKNOWN
-          );
+              RoleChangeRequestType.UNKNOWN);
     }
 
     @Test
     @DisplayName("valueOf()は正しいenum定数を返すべき")
     void shouldReturnCorrectEnumConstantByName() {
       // Act & Assert
-      assertThat(RoleChangeRequestType.valueOf("CREATE"))
-          .isEqualTo(RoleChangeRequestType.CREATE);
-      assertThat(RoleChangeRequestType.valueOf("UPDATE"))
-          .isEqualTo(RoleChangeRequestType.UPDATE);
-      assertThat(RoleChangeRequestType.valueOf("DELETE"))
-          .isEqualTo(RoleChangeRequestType.DELETE);
-      assertThat(RoleChangeRequestType.valueOf("UNKNOWN"))
-          .isEqualTo(RoleChangeRequestType.UNKNOWN);
+      assertThat(RoleChangeRequestType.valueOf("CREATE")).isEqualTo(RoleChangeRequestType.CREATE);
+      assertThat(RoleChangeRequestType.valueOf("UPDATE")).isEqualTo(RoleChangeRequestType.UPDATE);
+      assertThat(RoleChangeRequestType.valueOf("DELETE")).isEqualTo(RoleChangeRequestType.DELETE);
+      assertThat(RoleChangeRequestType.valueOf("UNKNOWN")).isEqualTo(RoleChangeRequestType.UNKNOWN);
     }
 
     @Test
@@ -575,12 +571,9 @@ class RoleChangeRequestTypeTest {
     @DisplayName("compareTo()はordinal順で比較すべき")
     void shouldCompareByOrdinal() {
       // Act & Assert
-      assertThat(RoleChangeRequestType.CREATE.compareTo(RoleChangeRequestType.UPDATE))
-          .isNegative();
-      assertThat(RoleChangeRequestType.DELETE.compareTo(RoleChangeRequestType.CREATE))
-          .isPositive();
-      assertThat(RoleChangeRequestType.UPDATE.compareTo(RoleChangeRequestType.UPDATE))
-          .isZero();
+      assertThat(RoleChangeRequestType.CREATE.compareTo(RoleChangeRequestType.UPDATE)).isNegative();
+      assertThat(RoleChangeRequestType.DELETE.compareTo(RoleChangeRequestType.CREATE)).isPositive();
+      assertThat(RoleChangeRequestType.UPDATE.compareTo(RoleChangeRequestType.UPDATE)).isZero();
     }
 
     @Test

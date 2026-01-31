@@ -136,7 +136,7 @@ class SnowflakeIdTest {
       // Act & Assert
       assertThatThrownBy(() -> SnowflakeId.of(null))
           .isInstanceOf(NullPointerException.class)
-          .hasMessage("value is marked non-null but is null");
+          .hasMessage("value must not be null");
     }
   }
 }

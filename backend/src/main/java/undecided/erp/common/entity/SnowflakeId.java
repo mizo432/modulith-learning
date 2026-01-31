@@ -61,6 +61,9 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
    */
   @JsonCreator
   public static SnowflakeId of(@NonNull Long value) {
+    if (isNull(value)) {
+      throw new NullPointerException("value must not be null");
+    }
     checkPositive(value, () -> new IllegalArgumentException("value must be positive"));
     return new SnowflakeId(value);
   }

@@ -52,9 +52,9 @@ public enum RoleChangeRequestType {
   public static RoleChangeRequestType valueOfCode(@NonNull String code) {
     checkNotNull(code, () -> new IllegalArgumentException("code must not be null."));
     return switch (code) {
-      case "10" -> CREATE;
-      case "20" -> UPDATE;
-      case "30" -> DELETE;
+      case "00" -> CREATE;
+      case "10" -> UPDATE;
+      case "20" -> DELETE;
       default -> UNKNOWN;
     };
   }
