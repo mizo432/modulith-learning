@@ -1,5 +1,6 @@
 package undecided.erp.common.precondition;
 
+import static undecided.erp.common.primitive.Objects2.isNull;
 import static undecided.erp.common.primitive.Strings2.getHalfWidthCharCount;
 import static undecided.erp.common.primitive.Strings2.isAllCharacterHalfWidth;
 
@@ -7,7 +8,6 @@ import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
 import org.jspecify.annotations.NonNull;
-import undecided.erp.common.primitive.Objects2;
 import undecided.erp.common.primitive.Strings2;
 
 @UtilityClass
@@ -24,7 +24,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkNonEmpty(
       String ref, @NonNull Supplier<E> exceptionSupplier) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (ref == null) {
@@ -50,7 +50,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkHalfWidthLengthOpen(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min, int max) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (ref == null) {
@@ -77,7 +77,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkHalfWidthLengthClosed(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min, int max) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (ref == null) {
@@ -103,7 +103,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkHalfWidthLengthAtLest(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (ref == null) {
@@ -129,7 +129,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkHalfWidthLengthGraterThan(
       String ref, @NonNull Supplier<E> exceptionSupplier, int min) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (ref == null) {
@@ -155,7 +155,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkHalfWidthLengthAtMost(
       String ref, @NonNull Supplier<E> exceptionSupplier, int max) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (ref == null) {
@@ -181,7 +181,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkHalfWidthLengthLessThan(
       String ref, @NonNull Supplier<E> exceptionSupplier, int max) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (ref == null) {
@@ -207,7 +207,7 @@ public class StringPrecondition {
    */
   public static <E extends RuntimeException> String checkAllDecimal(
       String value, @NonNull Supplier<E> exceptionSupplier) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (value == null) {
@@ -219,9 +219,22 @@ public class StringPrecondition {
     return value;
   }
 
+  /**
+   * 指定された文字列が全て半角であり、指定された長さと一致することを検証します。
+   *
+   * <p>条件を満たさない場合、指定された例外をスローします。
+   *
+   * @param value 検証する文字列。{@code null} の場合はそのまま戻り値として返されます。
+   * @param exceptionSupplier 検証に失敗した場合に例外を生成するサプライヤ。{@code null} であってはなりません。
+   * @param length 要求される半角文字の長さ。
+   * @param <E> カスタム例外の型。
+   * @return 検証に成功した場合、入力された文字列をそのまま返します。
+   * @throws NullPointerException {@code exceptionSupplier} が {@code null} の場合。
+   * @throws E 文字列が全て半角文字でない場合、または指定された長さに一致しない場合。
+   */
   public static <E extends RuntimeException> String checkHalfWidthFixedLength(
       String value, @NonNull Supplier<E> exceptionSupplier, int length) {
-    if (Objects2.isNull(exceptionSupplier)) {
+    if (isNull(exceptionSupplier)) {
       throw new NullPointerException("exceptionSupplier must not be null.");
     }
     if (value == null) {

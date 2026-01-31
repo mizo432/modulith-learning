@@ -22,7 +22,10 @@ public class StringUtilsTest {
   }
 
   /**
-   * Simple utility method to reverse a string. This is just for demonstration purposes.
+   * 指定された文字列を逆順にした新しい文字列を返します。 入力がnullの場合はnullを返します。
+   *
+   * @param input 逆順にする対象の文字列
+   * @return 逆順にした文字列。入力がnullの場合はnull
    */
   private String reverseString(String input) {
     if (input == null) {
