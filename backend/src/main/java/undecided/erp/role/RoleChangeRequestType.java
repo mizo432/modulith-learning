@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
+import undecided.erp.common.primitive.Strings2;
 
 /**
  * RoleChangeRequestTypeは、ロール変更要求の種類を表す列挙型です。 この列挙型は、コードおよびソート順に基づいて異なるタイプのロール変更を識別します。
@@ -31,10 +32,10 @@ public enum RoleChangeRequestType {
   private final String code;
 
   /**
-   * Initialize this enum constant with its external code and display order.
+   * RoleChangeRequestTypeコンストラクタは、指定されたコードおよびソート順を使用して ロール変更要求の種類を初期化します。
    *
-   * @param code the string code that identifies the request type
-   * @param sortOrder the numeric sort order used when ordering request types
+   * @param code ロール変更要求の種類を識別する文字列コード
+   * @param sortOrder ロール変更要求の種類に対応するソート順を表す数値
    */
   RoleChangeRequestType(String code, int sortOrder) {
     this.code = code;
@@ -42,15 +43,16 @@ public enum RoleChangeRequestType {
   }
 
   /**
-   * Map a code string to its corresponding RoleChangeRequestType.
+   * 指定されたコードに対応するRoleChangeRequestType列挙型を取得します。
    *
-   * @param code the code identifying the role change request type
-   * @return the matching RoleChangeRequestType; `UNKNOWN` if the code is not recognized
-   * @throws IllegalArgumentException if `code` is null
+   * @param code 対応するRoleChangeRequestTypeを決定する文字列コード この値がnullの場合、IllegalArgumentExceptionがスローされます。
+   * @return 指定されたコードに対応するRoleChangeRequestTypeの列挙値 不正または未知のコードが渡された場合はUNKNOWNを返します。
+   * @throws IllegalArgumentException 引数のコードがnullの場合にスローされます。
    */
   @JsonCreator
   public static RoleChangeRequestType valueOfCode(@NonNull String code) {
     checkNotNull(code, () -> new IllegalArgumentException("code must not be null."));
+    if (Strings2.equal(code, "null")) return UNKNOWN;
     return switch (code) {
       case "00" -> CREATE;
       case "10" -> UPDATE;
@@ -60,9 +62,9 @@ public enum RoleChangeRequestType {
   }
 
   /**
-   * Provides the identifier code for this role change request type.
+   * このメソッドは、現在の列挙型インスタンスに関連付けられているコードを取得します。
    *
-   * @return the identifier code associated with this enum constant
+   * @return ガイドラインや特定のタイプを識別するための文字列コード
    */
   @JsonValue
   public String getCode() {

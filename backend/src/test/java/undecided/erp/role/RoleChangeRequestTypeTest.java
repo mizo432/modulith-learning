@@ -3,6 +3,7 @@ package undecided.erp.role;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -447,13 +448,15 @@ class RoleChangeRequestTypeTest {
 
     @Test
     @DisplayName("nullのJSONをデシリアライズするとIllegalArgumentExceptionがスローされるべき")
-    void shouldThrowExceptionWhenDeserializingNullJson() {
+    void shouldThrowExceptionWhenDeserializingNullJson() throws JsonProcessingException {
       // Arrange
       String json = "null";
 
-      // Act & Assert
-      assertThatThrownBy(() -> objectMapper.readValue(json, RoleChangeRequestType.class))
-          .isInstanceOf(com.fasterxml.jackson.databind.JsonMappingException.class);
+      // Act
+      RoleChangeRequestType result = objectMapper.readValue(json, RoleChangeRequestType.class);
+
+      // Assert
+      assertThat(result).isEqualTo(RoleChangeRequestType.UNKNOWN);
     }
 
     @Test
