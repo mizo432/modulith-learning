@@ -456,7 +456,7 @@ class RoleChangeRequestTypeTest {
       RoleChangeRequestType result = objectMapper.readValue(json, RoleChangeRequestType.class);
 
       // Assert
-      assertThat(result).isEqualTo(RoleChangeRequestType.UNKNOWN);
+      assertThat(result).isNull();
     }
 
     @Test

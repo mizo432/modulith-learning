@@ -17,7 +17,7 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 このシステムは以下の主要コンポーネントで構成されています：
 
 1. **バックエンド（Backend）**：
-    - Spring Boot 3.4.5ベースのアプリケーション
+    - Spring Boot 4.0.2ベースのアプリケーション
     - Spring Modulithを使用したモジュール化
     - PostgreSQLデータベース
     - JPA/Hibernateによるデータアクセス
@@ -52,10 +52,10 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 
 ### 技術スタック
 
-- **言語**：Java 21
+- **言語**：Java 25 (OpenJDK)
 - **フレームワーク**：
-    - Spring Boot 3.4.5
-    - Spring Modulith
+    - Spring Boot 4.0.2
+    - Spring Modulith 2.0.1
     - Spring Security
     - Spring Data JPA
     - Spring Cloud (Netflix Eureka)
@@ -148,6 +148,96 @@ classとメソッドはpackage-privateで。
 - **中間レビュー**：プロジェクトの中間状況更新
 - **最終レビュー**：プロジェクトの長期的成功評価
 - **計画レビュー**：プロジェクト計画の更新と改訂
+
+## 開発ガイドライン
+
+### ビルドと設定
+
+このプロジェクトは Gradle をビルドシステムとして使用しています。
+
+- **Javaバージョン**: Java 25 が必要です。Gradle Toolchain により自動的に設定されます。
+- **ビルドコマンド**:
+  ```bash
+  ./gradlew build
+  ```
+- **バックエンドの起動**:
+  ```bash
+  ./gradlew :backend:bootRun
+  ```
+
+### テスト実行ガイドライン
+
+テストは JUnit 5 を使用し、サイズ（`small`, `medium`, `large`）ごとにタグ付けされています。
+
+#### テストの実行
+
+- **小規模テスト (Unit Tests)**: デフォルトで実行されます。
+  ```bash
+  ./gradlew :backend:test
+  ```
+- **中規模テスト (Integration Tests)**:
+  ```bash
+  ./gradlew :backend:mediumTest
+  ```
+- **大規模テスト (System/Load Tests)**:
+  ```bash
+  ./gradlew :backend:largeTest
+  ```
+
+#### テスト作成のルール
+
+新しいテストを作成する際は、以下のルールに従ってください：
+
+1. **命名規則**:
+    - メソッド名は `should` で始める。
+    - スネークケース（`_`）は使用しない。
+    - 例: `shouldReturnCorrectValue()`
+2. **アノテーション**:
+    - `@DisplayName` を使用して、クラスとメソッドに日本語で説明を付与する。
+    - `Tag` アノテーションでテストサイズを指定する（例: `@Tag("small")`）。
+3. **構造**:
+    - テスト対象のメソッドごとに `@Nested` クラスでネストする。
+    - `assertJ` を使用してアサーションを記述する。
+4. **品質**:
+    - 引数が `null` の場合の境界値テストを含める。
+    - クラスとメソッドは原則として `package-private` とする。
+
+#### テストの例
+
+```java
+
+@Tag("small")
+@DisplayName("計算機能のテスト")
+class CalculatorTest {
+
+  @Nested
+  @DisplayName("addメソッドのテスト")
+  class AddTest {
+
+    @Test
+    @DisplayName("正の数同士の加算が正しく行われること")
+    void shouldAddPositiveNumbers() {
+      int result = calculator.add(1, 1);
+      assertThat(result).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("引数がnullの場合は例外が発生すること")
+    void shouldThrowExceptionWhenArgumentIsNull() {
+      assertThatThrownBy(() -> calculator.add(null, 1))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+  }
+}
+```
+
+### 追加の開発情報
+
+- **Spring Modulith**: モジュール間の依存関係を確認するために、`./gradlew :backend:test` を実行すると
+  `build/spring-modulith-docs` にドキュメント（PlantUML等）が生成されます。
+- **Lombok**: `Getter`, `Setter`, `AllArgsConstructor` などを積極的に活用し、ボイラープレートコードを削減しています。
+- **コードスタイル**: 既存のコードは Google Java Style
+  に近い形式を採用しています。自動整形ツール（Checkstyle等）の導入も検討されています。
 
 ## 付録
 
