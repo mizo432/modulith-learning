@@ -1,6 +1,7 @@
 package undecided.erp.common.primitive;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
@@ -18,7 +19,6 @@ public class Objects2 {
    */
   public static <T> boolean isNull(T obj) {
     return Objects.isNull(obj);
-
   }
 
   /**
@@ -47,8 +47,8 @@ public class Objects2 {
   }
 
   /**
-   * 条件がtrueの場合、指定された{@code objSupplier}からオブジェクトを返します。
-   * それ以外の場合は{@code defaultValueSupplier}からオブジェクトを返します。
+   * 条件がtrueの場合、指定された{@code objSupplier}からオブジェクトを返します。 それ以外の場合は{@code
+   * defaultValueSupplier}からオブジェクトを返します。
    *
    * @param expression 評価する条件を提供するサプライヤー
    * @param objSupplier 条件がtrueの場合に返すオブジェクトを提供するサプライヤー
@@ -56,12 +56,17 @@ public class Objects2 {
    * @param <T> 提供するオブジェクトの型
    * @return 条件がtrueの場合は{@code objSupplier}からのオブジェクト、それ以外の場合は{@code defaultValueSupplier}からのオブジェクト
    */
-  public static <T> T defaultIfExpression(@NonNull Supplier<Boolean> expression,
-      @NonNull Supplier<T> objSupplier, @NonNull Supplier<T> defaultValueSupplier) {
+  public static <T> T defaultIfExpression(
+      @NonNull Supplier<Boolean> expression,
+      @NonNull Supplier<T> objSupplier,
+      @NonNull Supplier<T> defaultValueSupplier) {
     if (expression.get()) {
       return objSupplier.get();
     }
     return defaultValueSupplier.get();
   }
 
+  public static <T> Predicate<T> isNull() {
+    return Objects::isNull;
+  }
 }
