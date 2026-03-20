@@ -1,4 +1,4 @@
-package undecided.erp.common.snowflake;
+package undecided.shared.common.snowflake;
 
 import java.util.ArrayList;
 import java.util.Arrays;

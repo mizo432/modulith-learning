@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import undecided.erp.common.snowflake.SnowflakeIdProvider;
+import undecided.shared.common.snowflake.SnowflakeIdProvider;
 
 /**
  * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。

@@ -1,4 +1,4 @@
-package undecided.erp.common.snowflake;
+package undecided.shared.common.snowflake;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,7 +10,6 @@ class StaticNodeIdValueProviderTest {
   @BeforeEach
   void setUp() {
     StaticNodeIdProvider.clear();
-
   }
 
   @BeforeEach

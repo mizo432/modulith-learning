@@ -1,4 +1,4 @@
-package undecided.erp.common.snowflake;
+package undecided.shared.common.snowflake;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,9 +26,10 @@ class NodeIdValueProviderTest {
   void testNodeId_whenHostNameIsNotUnknown() throws UnknownHostException {
     String hostName = Inet4Address.getLocalHost().getHostAddress();
     Long nodeId = NodeIdProvider.getNodeId();
-    assertThat(nodeId).isEqualTo(
-        Math.abs((long) Objects.hash(hostName, ApplicationInfo.name(), ApplicationInfo.port()))
-            & 1023);
+    assertThat(nodeId)
+        .isEqualTo(
+            Math.abs((long) Objects.hash(hostName, ApplicationInfo.name(), ApplicationInfo.port()))
+                & 1023);
   }
 
   @Test
@@ -37,5 +38,4 @@ class NodeIdValueProviderTest {
     System.out.println(nodeId);
     assertThat(nodeId >= 0 && nodeId < 1024).isTrue();
   }
-
 }

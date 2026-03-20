@@ -1,4 +1,4 @@
-package undecided.erp.common.snowflake;
+package undecided.shared.common.snowflake;
 
 import java.util.concurrent.atomic.AtomicReference;
 import undecided.shared.common.dateProvider.DateProvider;

@@ -1,4 +1,4 @@
-package undecided.erp.common.snowflake;
+package undecided.shared.common.snowflake;
 
 public class StaticNodeIdProvider extends NodeIdProvider {
 
@@ -12,13 +12,12 @@ public class StaticNodeIdProvider extends NodeIdProvider {
     NodeIdProvider.setNodeIdProvider(new StaticNodeIdProvider(nodeId));
   }
 
+  public static void clear() {
+    NodeIdProvider.clear();
+  }
+
   @Override
   protected Long nodeId() {
     return nodeId;
-  }
-
-  public static void clear() {
-    NodeIdProvider.clear();
-
   }
 }

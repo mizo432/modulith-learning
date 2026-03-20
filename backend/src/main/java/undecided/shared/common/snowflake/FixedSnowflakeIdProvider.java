@@ -1,4 +1,4 @@
-package undecided.erp.common.snowflake;
+package undecided.shared.common.snowflake;
 
 public class FixedSnowflakeIdProvider extends SnowflakeIdProvider {
 
@@ -12,12 +12,9 @@ public class FixedSnowflakeIdProvider extends SnowflakeIdProvider {
     new SnowflakeIdProvider(new FixedSnowflakeIdProvider(snowflakeId));
   }
 
-  /**
-   * このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。
-   */
+  /** このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。 */
   public static void clear() {
     SnowflakeIdProvider.clear();
-
   }
 
   /**
@@ -29,6 +26,5 @@ public class FixedSnowflakeIdProvider extends SnowflakeIdProvider {
   @Override
   protected synchronized long snowflakeId() {
     return value;
-
   }
 }

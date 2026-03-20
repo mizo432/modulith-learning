@@ -1,11 +1,11 @@
-package undecided.erp.common.snowflake;
+package undecided.shared.common.snowflake;
 
 import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import org.jspecify.annotations.NonNull;
 import undecided.erp.common.application.ApplicationInfo;
-import undecided.erp.common.ipaddress.IpAddressProvider;
+import undecided.shared.common.ipaddress.IpAddressProvider;
 
 public class NodeIdProvider {
 

@@ -1,4 +1,4 @@
-package undecided.erp.common.ipaddress;
+package undecided.shared.common.ipaddress;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
