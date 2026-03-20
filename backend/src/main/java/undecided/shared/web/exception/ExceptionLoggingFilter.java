@@ -1,4 +1,4 @@
-package undecided.erp.common.web.exception;
+package undecided.shared.web.exception;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,15 +13,14 @@ import undecided.erp.common.exception.ExceptionLogger;
 /**
  * ExceptionLoggingFilterは、フィルタチェーン内で発生する例外をキャッチし、ログへ記録するためのフィルタクラスです。
  * 主にIOException、ServletException、およびRuntimeExceptionを処理します。
- * <p>
- * フィルタチェーン内の次のエレメントを実行中にスローされた例外は、適切なログメソッドによって記録されます。 捕捉した例外は再スローされるため、例外の伝播に影響を与えません。
+ *
+ * <p>フィルタチェーン内の次のエレメントを実行中にスローされた例外は、適切なログメソッドによって記録されます。 捕捉した例外は再スローされるため、例外の伝播に影響を与えません。
  */
 @Setter
 @RequiredArgsConstructor
 public class ExceptionLoggingFilter extends GenericFilterBean {
 
   private ExceptionLogger exceptionLogger;
-
 
   /**
    * フィルタチェーン内でリクエストとレスポンスを処理します。 処理の途中で発生する特定の例外(IOException, ServletException,
@@ -50,7 +49,6 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
     }
   }
 
-
   /**
    * IOExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
    *
@@ -58,8 +56,8 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
    * @param request エラーログのコンテキストとなるServletRequest
    * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logIOException(IOException ioException, ServletRequest request,
-      ServletResponse response) {
+  protected void logIOException(
+      IOException ioException, ServletRequest request, ServletResponse response) {
     this.exceptionLogger.error(ioException);
   }
 
@@ -70,8 +68,8 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
    * @param request エラーログのコンテキストとなるServletRequest
    * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logServletException(ServletException servletException, ServletRequest request,
-      ServletResponse response) {
+  protected void logServletException(
+      ServletException servletException, ServletRequest request, ServletResponse response) {
     this.exceptionLogger.error(servletException);
   }
 
@@ -82,8 +80,8 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
    * @param request エラーログのコンテキストとなるServletRequest
    * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logRuntimeException(RuntimeException runtimeException, ServletRequest request,
-      ServletResponse response) {
+  protected void logRuntimeException(
+      RuntimeException runtimeException, ServletRequest request, ServletResponse response) {
     this.exceptionLogger.error(runtimeException);
   }
 
@@ -95,5 +93,4 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
   protected ExceptionLogger getExceptionLogger() {
     return this.exceptionLogger;
   }
-
 }

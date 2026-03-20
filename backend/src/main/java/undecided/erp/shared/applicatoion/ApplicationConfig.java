@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import undecided.erp.common.exception.ExceptionLogger;
 import undecided.erp.common.exception.ResultMessagesLoggingInterceptor;
-import undecided.erp.common.web.exception.ExceptionLoggingFilter;
+import undecided.shared.web.exception.ExceptionLoggingFilter;
 
 @Configuration
 public class ApplicationConfig {

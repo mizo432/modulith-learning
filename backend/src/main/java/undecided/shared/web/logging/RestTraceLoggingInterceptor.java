@@ -1,4 +1,4 @@
-package undecided.erp.common.web.logging;
+package undecided.shared.web.logging;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
