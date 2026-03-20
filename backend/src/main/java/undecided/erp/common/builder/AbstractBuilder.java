@@ -1,6 +1,6 @@
 package undecided.erp.common.builder;
 
-import static undecided.erp.common.primitive.Lists2.newArrayList;
+import static undecided.shared.common.primitiveOld.Lists2.newArrayList;
 
 import java.util.List;
 
@@ -12,9 +12,7 @@ import java.util.List;
  */
 public abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
 
-  /**
-   * ビルダーを構成するために使用される BuilderConfigurator のリスト。
-   */
+  /** ビルダーを構成するために使用される BuilderConfigurator のリスト。 */
   protected final List<BuilderConfigurator<B>> configurators = newArrayList();
 
   /**
@@ -64,10 +62,9 @@ public abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
 
   /**
    * ビルダの設定に基づいてValueObjectの新しいインスタンスを生成する。
-   * <p>
-   * {@link #build}内でこのビルダに追加された{@link BuilderConfigurator}を全て実行した後に、このメソッドが呼ばれる。<br>
+   *
+   * <p>{@link #build}内でこのビルダに追加された{@link BuilderConfigurator}を全て実行した後に、このメソッドが呼ばれる。<br>
    * その為、このビルダに対する変更を行うロジックはこのメソッド内に記述せず、目的となるValueObjectを生成し返すロジックを記述することが望まれる。
-   * </p>
    *
    * @return ValueObjectの新しいインスタンス
    */
@@ -87,7 +84,6 @@ public abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
    */
   protected abstract B newInstance();
 
-
   /**
    * {@link AbstractBuilder#build()}内で順次実行されるビルダの設定を定義するインタフェース。
    *
@@ -101,6 +97,5 @@ public abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
      * @param builder ビルダーインスタンス
      */
     void configure(S builder);
-
   }
 }

@@ -5,20 +5,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import undecided.erp.common.message.ResultMessage;
-import undecided.erp.common.message.ResultMessageType;
-import undecided.erp.common.message.ResultMessages;
-import undecided.erp.common.message.StandardResultMessageType;
+import undecided.shared.common.message.ResultMessage;
+import undecided.shared.common.message.ResultMessageType;
+import undecided.shared.common.message.ResultMessages;
+import undecided.shared.common.message.StandardResultMessageType;
 
 class BusinessExceptionTest {
-
 
   @Nested
   class ConstructorTest {
 
-    /**
-     * Method under test: {@link BusinessException#BusinessException(String)}
-     */
+    /** Method under test: {@link BusinessException#BusinessException(String)} */
     @Test
     void constructor() {
       // Arrange and Act
@@ -47,9 +44,7 @@ class BusinessExceptionTest {
       assertThat(resultMessages.isNotEmpty()).isTrue();
     }
 
-    /**
-     * Method under test: {@link BusinessException#BusinessException(ResultMessages)}
-     */
+    /** Method under test: {@link BusinessException#BusinessException(ResultMessages)} */
     @Test
     void constructor2() {
       // Arrange
@@ -63,17 +58,12 @@ class BusinessExceptionTest {
           .isEqualTo("ResultMessages [type=danger, list=[]]");
       assertThat(actualBusinessException.getMessage())
           .isEqualTo("ResultMessages [type=danger, list=[]]");
-      assertThat(actualBusinessException.getCause())
-          .isNull();
-      assertThat(actualBusinessException.getSuppressed().length)
-          .isEqualTo(0);
-      assertThat(actualBusinessException.getResultMessages())
-          .isSameAs(messages);
+      assertThat(actualBusinessException.getCause()).isNull();
+      assertThat(actualBusinessException.getSuppressed().length).isEqualTo(0);
+      assertThat(actualBusinessException.getResultMessages()).isSameAs(messages);
     }
 
-    /**
-     * Method under test: {@link BusinessException#BusinessException(ResultMessages, Throwable)}
-     */
+    /** Method under test: {@link BusinessException#BusinessException(ResultMessages, Throwable)} */
     @Test
     void constructor3() {
       // Arrange
@@ -84,10 +74,10 @@ class BusinessExceptionTest {
       BusinessException actualBusinessException = new BusinessException(messages, cause);
 
       // Assert
-      assertThat(actualBusinessException.getLocalizedMessage()).isEqualTo(
-          "ResultMessages [type=danger, list=[]]");
-      assertThat(actualBusinessException.getMessage()).isEqualTo(
-          "ResultMessages [type=danger, list=[]]");
+      assertThat(actualBusinessException.getLocalizedMessage())
+          .isEqualTo("ResultMessages [type=danger, list=[]]");
+      assertThat(actualBusinessException.getMessage())
+          .isEqualTo("ResultMessages [type=danger, list=[]]");
       assertThat(actualBusinessException.getSuppressed().length).isEqualTo(0);
       assertThat(actualBusinessException.getCause()).isSameAs(cause);
       assertThat(actualBusinessException.getResultMessages()).isSameAs(messages);
@@ -103,8 +93,8 @@ class BusinessExceptionTest {
 
     @Test
     public void constructorWithResultMessages() {
-      ResultMessages messages = ResultMessages.error()
-          .add(ResultMessage.fromText("Business Exception Message"));
+      ResultMessages messages =
+          ResultMessages.error().add(ResultMessage.fromText("Business Exception Message"));
       BusinessException exception = new BusinessException(messages);
       assertThat(exception).isNotNull();
       assertThat(exception.getResultMessages()).isEqualTo(messages);
@@ -112,14 +102,13 @@ class BusinessExceptionTest {
 
     @Test
     public void constructorWithResultMessagesAndThrowable() {
-      ResultMessages messages = ResultMessages.error()
-          .add(ResultMessage.fromText("Business Exception Message"));
+      ResultMessages messages =
+          ResultMessages.error().add(ResultMessage.fromText("Business Exception Message"));
       Throwable cause = new Throwable("Cause");
       BusinessException exception = new BusinessException(messages, cause);
       assertThat(exception).isNotNull();
       assertThat(exception.getResultMessages()).isEqualTo(messages);
       assertThat(exception.getCause()).isEqualTo(cause);
     }
-
   }
 }

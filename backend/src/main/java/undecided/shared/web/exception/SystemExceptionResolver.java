@@ -14,7 +14,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import undecided.erp.common.exception.ExceptionCodeResolver;
 import undecided.erp.common.exception.ResultMessagesNotificationException;
 import undecided.erp.common.exception.SimpleMappingExceptionCodeResolver;
-import undecided.erp.common.message.ResultMessages;
+import undecided.shared.common.message.ResultMessages;
 
 /**
  * SystemExceptionResolverは、Spring MVCのSimpleMappingExceptionResolverを拡張したクラスです。

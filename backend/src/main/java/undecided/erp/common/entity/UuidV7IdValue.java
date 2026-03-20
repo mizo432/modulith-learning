@@ -1,6 +1,6 @@
 package undecided.erp.common.entity;
 
-import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import java.io.Serializable;
 import java.util.UUID;

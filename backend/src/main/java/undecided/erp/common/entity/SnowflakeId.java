@@ -1,7 +1,7 @@
 package undecided.erp.common.entity;
 
 import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
-import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.ComparisonChain;

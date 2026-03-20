@@ -3,9 +3,9 @@ package undecided.erp.common.exception;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import undecided.erp.common.message.ResultMessage;
-import undecided.erp.common.message.ResultMessageType;
-import undecided.erp.common.message.ResultMessages;
+import undecided.shared.common.message.ResultMessage;
+import undecided.shared.common.message.ResultMessageType;
+import undecided.shared.common.message.ResultMessages;
 
 /**
  * {@code ResultMessagesNotificationException} クラスは、{@code RuntimeException} クラスの抽象サブクラスです。

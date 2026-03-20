@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import undecided.erp.common.exception.BusinessException;
-import undecided.erp.common.primitive.Lists2;
+import undecided.shared.common.primitiveOld.Lists2;
 
 /**
  * アプリケーション全体で発生する例外をハンドリングするクラス。

@@ -1,6 +1,6 @@
 package undecided.erp.common.exception;
 
-import undecided.erp.common.message.ResultMessages;
+import undecided.shared.common.message.ResultMessages;
 
 /**
  * NotFoundBusinessException クラスは、指定されたリソースが見つからない場合にスローされる業務例外です。

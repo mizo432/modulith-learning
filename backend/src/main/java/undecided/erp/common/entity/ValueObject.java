@@ -3,14 +3,13 @@ package undecided.erp.common.entity;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import lombok.NonNull;
-import undecided.erp.common.primitive.Objects2;
+import undecided.shared.common.primitiveOld.Objects2;
 
 /**
  * ドメイン駆動設計 (Domain-Driven Design) の文脈における値オブジェクトを表します。 値オブジェクトは不変（immutable）な型であり、属性のみで定義され、
  * 個別の識別子（identity）を持ちません。
  */
 public interface ValueObject {
-
 
   /**
    * 値オブジェクトが空であるかどうかを判定します。
@@ -36,7 +35,6 @@ public interface ValueObject {
     @SafeVarargs
     public static <V extends ValueObject> boolean isAllValuesNotEmpty(V... valueObjects) {
       return Arrays.stream(valueObjects).allMatch(ValueObjects::nonEmpty);
-
     }
 
     /**
@@ -48,7 +46,6 @@ public interface ValueObject {
     @undecided.erp.common.annotation.VisibleForTesting
     static <V extends ValueObject> boolean nonEmpty(V valueObject) {
       return !isEmpty(valueObject);
-
     }
 
     /**
@@ -59,14 +56,12 @@ public interface ValueObject {
      */
     public static <V extends ValueObject> boolean isEmpty(V valueObject) {
       return valueObject.isEmpty();
-
     }
-
 
     /**
      * 指定された値オブジェクトが空でないかどうかをチェックします。
-     * <p>
-     * 値オブジェクトが空の場合、指定された例外サプライヤで提供されたランタイム例外をスローします。
+     *
+     * <p>値オブジェクトが空の場合、指定された例外サプライヤで提供されたランタイム例外をスローします。
      *
      * @param ref 空でないかをチェックする値オブジェクト
      * @param exceptionSupplier 値オブジェクトが空の場合にスローされるランタイム例外を提供するサプライヤ
@@ -76,8 +71,7 @@ public interface ValueObject {
      * @throws E 値オブジェクトが空の場合にスローされる例外
      */
     public static <E extends RuntimeException, V extends ValueObject> V checkNotEmpty(
-        @NonNull V ref,
-        @NonNull Supplier<E> exceptionSupplier) {
+        @NonNull V ref, @NonNull Supplier<E> exceptionSupplier) {
       if (ref.isEmpty()) {
         throw exceptionSupplier.get();
       }
@@ -97,7 +91,6 @@ public interface ValueObject {
         return defaultValue;
       }
       return ref;
-
     }
 
     /**
@@ -113,5 +106,4 @@ public interface ValueObject {
       return isEmpty(resolvedRef) ? defaultValue : resolvedRef;
     }
   }
-
 }

@@ -1,6 +1,6 @@
 package undecided.erp.common.precondition;
 
-import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import java.util.List;
 import java.util.Objects;

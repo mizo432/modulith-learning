@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
-import undecided.erp.common.primitive.Strings2;
+import undecided.shared.common.primitiveOld.Strings2;
 
 /**
  * RoleChangeRequestTypeは、ロール変更要求の種類を表す列挙型です。 この列挙型は、コードおよびソート順に基づいて異なるタイプのロール変更を識別します。

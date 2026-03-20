@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import undecided.erp.common.exception.BusinessException;
-import undecided.erp.common.message.ResultMessage;
-import undecided.erp.common.message.ResultMessages;
+import undecided.shared.common.message.ResultMessage;
+import undecided.shared.common.message.ResultMessages;
 
 @DisplayName("GlobalExceptionHandlerTestクラスのテスト")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

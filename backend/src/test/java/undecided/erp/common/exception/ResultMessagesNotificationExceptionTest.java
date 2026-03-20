@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
-import undecided.erp.common.message.ResultMessages;
+import undecided.shared.common.message.ResultMessages;
 
 /**
  * {@code ResultMessagesNotificationExceptionTest} クラスは、{@link ResultMessagesNotificationException}
