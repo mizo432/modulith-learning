@@ -1,12 +1,12 @@
 package undecided.shared.common.primitiveOld;
 
-import static undecided.erp.common.precondition.ArrayPrecondition.checkAllElementNotNull;
-import static undecided.erp.common.precondition.ArrayPrecondition.checkLengthAtLeast;
+import static undecided.shared.common.precondition.ArrayPrecondition.checkAllElementNotNull;
+import static undecided.shared.common.precondition.ArrayPrecondition.checkLengthAtLeast;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import undecided.erp.common.precondition.IndexedRuntimeException;
+import undecided.shared.common.precondition.IndexedRuntimeException;
 
 /** 列挙型およびそれに関連する機能を扱うためのユーティリティクラスです。 */
 @UtilityClass

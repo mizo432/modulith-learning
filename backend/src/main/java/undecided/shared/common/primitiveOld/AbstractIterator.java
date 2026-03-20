@@ -1,6 +1,6 @@
 package undecided.shared.common.primitiveOld;
 
-import static undecided.erp.common.precondition.ObjectPrecondition.checkState;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkState;
 import static undecided.shared.common.primitiveOld.NullnessCasts.uncheckedCastNullableTToT;
 
 import java.util.NoSuchElementException;

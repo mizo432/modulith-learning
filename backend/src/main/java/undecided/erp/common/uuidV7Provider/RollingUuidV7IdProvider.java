@@ -1,7 +1,6 @@
 package undecided.erp.common.uuidV7Provider;
 
-import static undecided.erp.common.precondition.ArrayPrecondition.*;
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.jspecify.annotations.NonNull;
-import undecided.erp.common.precondition.IndexedRuntimeException;
+import undecided.shared.common.precondition.IndexedRuntimeException;
 
 /**
  * RollingUuidV7IdProviderは、事前定義されたUUIDリストを基に、UUIDバージョン7を循環的に提供するプロバイダークラスです。

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import undecided.erp.common.precondition.IndexedRuntimeException;
+import undecided.shared.common.precondition.IndexedRuntimeException;
 
 @DisplayName("RollingUuidV7IdProviderTest 内部ロジックのテスト")
 class RollingUuidV7IdProviderTest {

@@ -1,10 +1,10 @@
 package undecided.shared.common.message;
 
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.shared.common.message.StandardResultMessageType.DANGER;
 import static undecided.shared.common.message.StandardResultMessageType.INFO;
 import static undecided.shared.common.message.StandardResultMessageType.SUCCESS;
 import static undecided.shared.common.message.StandardResultMessageType.WARNING;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.shared.common.primitiveOld.Lists2.newArrayList;
 import static undecided.shared.common.primitiveOld.Objects2.nonNull;
 

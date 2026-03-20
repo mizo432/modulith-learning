@@ -4,7 +4,7 @@ import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
-import undecided.erp.common.precondition.LongPrecondition;
+import undecided.shared.common.precondition.LongPrecondition;
 
 /**
  * インターフェース LongValue は、Long 型の単一の値を表します。

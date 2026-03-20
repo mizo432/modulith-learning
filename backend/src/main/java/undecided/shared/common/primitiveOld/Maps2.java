@@ -1,6 +1,6 @@
 package undecided.shared.common.primitiveOld;
 
-import static undecided.erp.common.precondition.IntegerPrecondition.checkNonNegative;
+import static undecided.shared.common.precondition.IntegerPrecondition.checkNonNegative;
 import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import com.google.common.primitives.Ints;

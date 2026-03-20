@@ -14,7 +14,7 @@ import lombok.experimental.UtilityClass;
 import org.jspecify.annotations.NonNull;
 import undecided.erp.common.annotation.CanIgnoreReturnValue;
 import undecided.erp.common.annotation.DoNotCall;
-import undecided.erp.common.precondition.ObjectPrecondition;
+import undecided.shared.common.precondition.ObjectPrecondition;
 
 @UtilityClass
 public class Sets2 {

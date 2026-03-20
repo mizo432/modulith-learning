@@ -1,6 +1,6 @@
 package undecided.erp.role;
 
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

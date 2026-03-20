@@ -1,7 +1,7 @@
 package undecided.shared.common.primitiveOld;
 
-import static undecided.erp.common.precondition.IntegerPrecondition.checkNonNegative;
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.common.precondition.IntegerPrecondition.checkNonNegative;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import java.util.ArrayList;

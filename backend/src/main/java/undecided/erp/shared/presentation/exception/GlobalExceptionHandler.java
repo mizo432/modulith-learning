@@ -1,6 +1,6 @@
 package undecided.erp.shared.presentation.exception;
 
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package undecided.shared.common.primitiveOld;
 
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.Arrays;
 import java.util.stream.Stream;

@@ -4,7 +4,7 @@ import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import java.util.function.Supplier;
 import lombok.NonNull;
-import undecided.erp.common.precondition.IntegerPrecondition;
+import undecided.shared.common.precondition.IntegerPrecondition;
 
 /**
  * IntegerValueクラスは、型Integerの単一の値をカプセル化する値オブジェクトを表します。

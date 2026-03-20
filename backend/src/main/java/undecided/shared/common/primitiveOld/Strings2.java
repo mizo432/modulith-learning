@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Objects;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jspecify.annotations.Nullable;
-import undecided.erp.common.precondition.IntegerPrecondition;
+import undecided.shared.common.precondition.IntegerPrecondition;
 
 /**
  * Strings2 クラスは、文字列操作を簡単に行うためのユーティリティメソッドを提供します。

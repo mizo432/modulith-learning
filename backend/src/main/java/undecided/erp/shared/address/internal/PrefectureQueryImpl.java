@@ -1,6 +1,6 @@
 package undecided.erp.shared.address.internal;
 
-import static undecided.erp.common.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.Optional;
 import lombok.NonNull;
