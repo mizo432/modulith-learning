@@ -1,4 +1,4 @@
-package undecided.erp.common.builder;
+package undecided.shared.common.builder;
 
 public class ConcreteClass {
 
@@ -10,13 +10,6 @@ public class ConcreteClass {
     this.name = name;
   }
 
-  public String toString() {
-    return "ConcreteClass{" +
-        "id=" + id +
-        ", name=" + name +
-        "}";
-  }
-
   /**
    * ConcreteBuilderの新しいインスタンスを返します。
    *
@@ -26,19 +19,26 @@ public class ConcreteClass {
     return new ConcreteClassBuilder();
   }
 
+  public String toString() {
+    return "ConcreteClass{" + "id=" + id + ", name=" + name + "}";
+  }
+
   /**
    * ConcreteClassBuilderは、ConcreteClassのインスタンスを作成するためのAbstractBuilderの具体的な実装です。
+   *
    * <p>以下のように利用します:
+   *
    * <pre>
    * ConcreteClass concreteClass = ConcreteClass.builder()
    *     .withId(1)
    *     .withName("example")
    *     .build();
    * </pre>
+   *
    * <p>withId() メソッドと withName() メソッドを使用して、それぞれidとnameの値を設定することが可能です。
    */
-  public static class ConcreteClassBuilder extends
-      AbstractBuilder<ConcreteClass, ConcreteClassBuilder> {
+  public static class ConcreteClassBuilder
+      extends AbstractBuilder<ConcreteClass, ConcreteClassBuilder> {
 
     private Integer id;
     private String name;
@@ -53,7 +53,6 @@ public class ConcreteClass {
     protected void apply(ConcreteClass vo, ConcreteClassBuilder builder) {
       builder.withId(vo.id);
       builder.withName(vo.name);
-
     }
 
     /**
@@ -65,7 +64,6 @@ public class ConcreteClass {
     public ConcreteClassBuilder withId(Integer id) {
       configurators.add(builder -> builder.id = id);
       return getThis();
-
     }
 
     /**
@@ -109,5 +107,4 @@ public class ConcreteClass {
       return new ConcreteClassBuilder();
     }
   }
-
 }

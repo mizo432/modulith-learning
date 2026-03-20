@@ -1,4 +1,4 @@
-package undecided.erp.common.builder;
+package undecided.shared.common.builder;
 
 import static undecided.shared.common.primitiveOld.Lists2.newArrayList;
 

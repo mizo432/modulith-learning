@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import org.jspecify.annotations.NonNull;
-import undecided.erp.common.annotation.CanIgnoreReturnValue;
-import undecided.erp.common.annotation.DoNotCall;
+import undecided.shared.common.annotation.CanIgnoreReturnValue;
+import undecided.shared.common.annotation.DoNotCall;
 import undecided.shared.common.precondition.ObjectPrecondition;
 
 @UtilityClass

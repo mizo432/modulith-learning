@@ -1,4 +1,4 @@
-package undecided.erp.common.annotation;
+package undecided.shared.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,11 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * このアノテーションは、メソッドがテスト目的で可視であることを示すために使用されます。
- * <p>
- * このアノテーションは、メソッドに適用できます。
+ *
+ * <p>このアノテーションは、メソッドに適用できます。
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface VisibleForTesting {
-
-}
+public @interface VisibleForTesting {}

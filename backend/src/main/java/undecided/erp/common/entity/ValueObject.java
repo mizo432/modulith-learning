@@ -3,6 +3,7 @@ package undecided.erp.common.entity;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import undecided.shared.common.annotation.VisibleForTesting;
 import undecided.shared.common.primitiveOld.Objects2;
 
 /**
@@ -43,7 +44,7 @@ public interface ValueObject {
      * @param valueObject 空でないかを確認する値オブジェクト
      * @return 値オブジェクトが空でない場合はtrue、そうでない場合はfalse
      */
-    @undecided.erp.common.annotation.VisibleForTesting
+    @VisibleForTesting
     static <V extends ValueObject> boolean nonEmpty(V valueObject) {
       return !isEmpty(valueObject);
     }

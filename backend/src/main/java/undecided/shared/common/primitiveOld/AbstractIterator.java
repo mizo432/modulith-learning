@@ -4,7 +4,7 @@ import static undecided.shared.common.precondition.ObjectPrecondition.checkState
 import static undecided.shared.common.primitiveOld.NullnessCasts.uncheckedCastNullableTToT;
 
 import java.util.NoSuchElementException;
-import undecided.erp.common.annotation.CanIgnoreReturnValue;
+import undecided.shared.common.annotation.CanIgnoreReturnValue;
 
 /**
  * An abstract base class to simplify the implementation of iterators that do not support

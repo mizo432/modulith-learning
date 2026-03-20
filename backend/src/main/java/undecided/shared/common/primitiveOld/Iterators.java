@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import undecided.erp.common.annotation.CanIgnoreReturnValue;
+import undecided.shared.common.annotation.CanIgnoreReturnValue;
 
 @UtilityClass
 public class Iterators {

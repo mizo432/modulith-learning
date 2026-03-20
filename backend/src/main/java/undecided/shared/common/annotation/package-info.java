@@ -3,4 +3,4 @@
  *
  * <pre>業務的な観点のチェックよりもメソッドレベルでの入力パラメータ値などをチェックするのにご利用ください</pre>
  */
-package undecided.erp.common.annotation;
+package undecided.shared.common.annotation;
