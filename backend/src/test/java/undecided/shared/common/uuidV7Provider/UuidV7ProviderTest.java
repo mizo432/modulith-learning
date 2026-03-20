@@ -1,4 +1,4 @@
-package undecided.erp.common.uuidV7Provider;
+package undecided.shared.common.uuidV7Provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;

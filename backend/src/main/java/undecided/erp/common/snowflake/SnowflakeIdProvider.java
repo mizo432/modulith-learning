@@ -1,7 +1,7 @@
 package undecided.erp.common.snowflake;
 
 import java.util.concurrent.atomic.AtomicReference;
-import undecided.erp.common.dateProvider.DateProvider;
+import undecided.shared.common.dateProvider.DateProvider;
 
 /**
  * SnowflakeIdGeneratorクラスは、Snowflakeアルゴリズムに基づいてユニークなIDを生成するために使われます。
@@ -9,50 +9,48 @@ import undecided.erp.common.dateProvider.DateProvider;
  */
 public class SnowflakeIdProvider {
 
-  private final static AtomicReference<SnowflakeIdProvider> SNOWFLAKE_ID_PROVIDER =
+  private static final AtomicReference<SnowflakeIdProvider> SNOWFLAKE_ID_PROVIDER =
       new AtomicReference<>(new SnowflakeIdProvider());
 
   /**
    * EPOCH変数は、Snowflakeアルゴリズムを使用して一意のIDを生成する際の時間の起点を表しています。
-   * <p>
-   * この定数は1609459200000Lに設定されており、これは2021年1月1日の00:00:00 UTCをミリ秒で表したものです。
-   * <p>
-   * この変数は{@link
+   *
+   * <p>この定数は1609459200000Lに設定されており、これは2021年1月1日の00:00:00 UTCをミリ秒で表したものです。
+   *
+   * <p>この変数は{@link
    * SnowflakeIdProvider}クラスで一意のIDを生成する際に使用されます。現在のタイムスタンプからEPOCHを引いてから経過時間を算出し、その結果の値は22ビット左シフトされてから、ワーカーIDとシーケンス番号と組み合わされて一意のIDが生成されます。
-   * <p>
-   * 使い方の例:
+   *
+   * <p>使い方の例:
+   *
    * <pre>{@code
-   *     long timestamp = System.currentTimeMillis();
-   *     long id = ((timestamp - EPOCH) << 22) | (workerId << 12) | sequence;
+   * long timestamp = System.currentTimeMillis();
+   * long id = ((timestamp - EPOCH) << 22) | (workerId << 12) | sequence;
    * }</pre>
    *
    * @see SnowflakeIdProvider
    */
   private static final Long EPOCH = 1609459200000L;
-  /**
-   *
-   */
+
+  /** */
   private static long sequence = 0L;
+
   /**
    * lastTimestampという変数は、ユニークなID生成に使用されるSnowflakeアルゴリズムに基づいた 最後のタイムスタンプ（ミリ秒単位）を表します。
    * 初期値は-62167252739000Lです。 IDが生成されるたびにlastTimestampの値は更新されます。
    */
   private static long lastTimestamp = -62167252739000L;
-  /**
-   * Represents the unique ID of a worker.
-   */
+
+  /** Represents the unique ID of a worker. */
   private final long workerId;
 
   public SnowflakeIdProvider() {
     workerId = NodeIdProvider.getNodeId();
-
   }
 
   public SnowflakeIdProvider(SnowflakeIdProvider snowflakeIdProvider) {
     workerId = NodeIdProvider.getNodeId();
 
     SNOWFLAKE_ID_PROVIDER.set(snowflakeIdProvider);
-
   }
 
   /**
@@ -63,18 +61,14 @@ public class SnowflakeIdProvider {
    */
   public static long generateId() {
     return SnowflakeIdProvider.SNOWFLAKE_ID_PROVIDER.get().snowflakeId();
-
   }
 
-  /**
-   * このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。
-   */
+  /** このメソッドは、lastTimestamp変数を-62167252739000Lに初期化します。 */
   public static void clear() {
     lastTimestamp = -62167252739000L;
     DateProvider.clear();
     NodeIdProvider.clear();
     SNOWFLAKE_ID_PROVIDER.set(new SnowflakeIdProvider());
-
   }
 
   /**
@@ -88,8 +82,10 @@ public class SnowflakeIdProvider {
 
     if (timestamp < lastTimestamp) {
       throw new RuntimeException(
-          "Clock moved backwards. Refusing to generate ID. timestamp:" + timestamp
-              + ", lastTimestamp:" + lastTimestamp);
+          "Clock moved backwards. Refusing to generate ID. timestamp:"
+              + timestamp
+              + ", lastTimestamp:"
+              + lastTimestamp);
     }
     if (timestamp == lastTimestamp) {
       sequence = (sequence + 1) & 4095L;
@@ -101,7 +97,6 @@ public class SnowflakeIdProvider {
     }
     lastTimestamp = timestamp;
     return ((timestamp - EPOCH) << 22) | (workerId << 12) | sequence;
-
   }
 
   /**

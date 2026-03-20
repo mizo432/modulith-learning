@@ -1,4 +1,4 @@
-package undecided.erp.common.uuidV7Provider;
+package undecided.shared.common.uuidV7Provider;
 
 import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 

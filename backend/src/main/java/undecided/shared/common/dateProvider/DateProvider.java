@@ -1,4 +1,4 @@
-package undecided.erp.common.dateProvider;
+package undecided.shared.common.dateProvider;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -11,23 +11,19 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * DateProviderクラスは現在の日付と時刻を提供する役割を担っています。
- */
+/** DateProviderクラスは現在の日付と時刻を提供する役割を担っています。 */
 public class DateProvider {
 
-  private static final AtomicReference<DateProvider> DATE_PROVIDER = new AtomicReference<>(
-      new DateProvider());
+  private static final AtomicReference<DateProvider> DATE_PROVIDER =
+      new AtomicReference<>(new DateProvider());
 
   /**
    * DateProviderクラスのコンストラクタです。
-   * <p>
-   * このコンストラクタは保護されたアクセス修飾子を持ち、DateProviderクラスを サブクラス化する場合に使用されます。このデフォルトコンストラクタは
+   *
+   * <p>このコンストラクタは保護されたアクセス修飾子を持ち、DateProviderクラスを サブクラス化する場合に使用されます。このデフォルトコンストラクタは
    * 外部から直接呼び出すことはできず、クラス内または同一パッケージ内、 もしくはサブクラスでのみアクセス可能です。
    */
-  protected DateProvider() {
-
-  }
+  protected DateProvider() {}
 
   /**
    * 指定されたDateProviderを用いて新しいDateProviderを設定します。
@@ -36,7 +32,6 @@ public class DateProvider {
    */
   protected DateProvider(DateProvider dateProvider) {
     DATE_PROVIDER.set(dateProvider);
-
   }
 
   /**
@@ -58,7 +53,6 @@ public class DateProvider {
   public static Date currentDate() {
     ZonedDateTime zdt = currentLocalDateTime().atZone(ZoneId.systemDefault());
     return Date.from(zdt.toInstant());
-
   }
 
   /**
@@ -68,7 +62,6 @@ public class DateProvider {
    */
   public static LocalDate currentLocalDate() {
     return LocalDate.from(currentLocalDateTime());
-
   }
 
   /**
@@ -78,7 +71,6 @@ public class DateProvider {
    */
   public static LocalTime currentLocalTime() {
     return LocalTime.from(currentLocalDateTime());
-
   }
 
   /**
@@ -100,14 +92,13 @@ public class DateProvider {
     LocalDateTime currentLocalDateTime = currentLocalDateTime();
     Instant instant = currentLocalDateTime.atZone(ZoneId.systemDefault()).toInstant();
     return instant.toEpochMilli();
-
   }
 
   /**
    * Resets the DateProvider instance to its default state.
-   * <p>
-   * This method calls the initialize method to replace the current DateProvider instance with a new
-   * instance, effectively clearing any customized date provider settings and reverting to the
+   *
+   * <p>This method calls the initialize method to replace the current DateProvider instance with a
+   * new instance, effectively clearing any customized date provider settings and reverting to the
    * default behavior.
    */
   public static void clear() {
@@ -131,5 +122,4 @@ public class DateProvider {
   protected LocalDateTime now() {
     return LocalDateTime.now();
   }
-
 }

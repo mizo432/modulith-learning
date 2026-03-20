@@ -1,4 +1,4 @@
-package undecided.erp.common.uuidV7Provider;
+package undecided.shared.common.uuidV7Provider;
 
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedEpochGenerator;

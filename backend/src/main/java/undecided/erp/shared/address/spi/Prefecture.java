@@ -9,10 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import undecided.erp.common.uuidV7Provider.UuidV7Provider;
 import undecided.erp.shared.entity.AuditResource;
 import undecided.shared.common.precondition.ObjectPrecondition;
 import undecided.shared.common.primitiveOld.Strings2;
+import undecided.shared.common.uuidV7Provider.UuidV7Provider;
 
 /**
  * Prefectureクラスは、日本の地理的な都道府県を表現するエンティティクラスです。

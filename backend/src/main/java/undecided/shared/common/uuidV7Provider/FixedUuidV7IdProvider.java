@@ -1,4 +1,4 @@
-package undecided.erp.common.uuidV7Provider;
+package undecided.shared.common.uuidV7Provider;
 
 import java.util.UUID;
 import org.jspecify.annotations.NonNull;
