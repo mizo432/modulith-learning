@@ -2,7 +2,7 @@ package undecided.erp.shared.presentation.web.session;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import undecided.erp.common.web.logging.HttpSessionEventLoggingListener;
+import undecided.shared.web.logging.HttpSessionEventLoggingListener;
 
 @Configuration
 public class SessionConfig {

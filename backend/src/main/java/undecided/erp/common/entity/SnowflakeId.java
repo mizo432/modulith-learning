@@ -1,7 +1,7 @@
 package undecided.erp.common.entity;
 
-import static undecided.erp.common.precondition.LongPrecondition.checkPositive;
-import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.shared.common.precondition.LongPrecondition.checkPositive;
+import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.ComparisonChain;
@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import undecided.erp.common.snowflake.SnowflakeIdProvider;
+import undecided.shared.common.snowflake.SnowflakeIdProvider;
 
 /**
  * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。

@@ -1,10 +1,10 @@
 package undecided.erp.common.entity;
 
-import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import java.io.Serializable;
 import java.util.UUID;
-import undecided.erp.common.uuidV7Provider.UuidV7Provider;
+import undecided.shared.common.uuidV7Provider.UuidV7Provider;
 
 /**
  * UuidV7IdValueクラスは、UUIDバージョン7を取り扱うための値オブジェクトクラスです。

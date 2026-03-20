@@ -5,7 +5,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import undecided.erp.common.dateProvider.DateProvider;
+import undecided.shared.common.dateProvider.DateProvider;
 
 /**
  * AuditResourceは、エンティティが生成および更新された際の 監査情報を管理するための抽象クラスです。

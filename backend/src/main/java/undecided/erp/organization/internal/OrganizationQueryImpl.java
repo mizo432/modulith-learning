@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.erp.common.primitive.Lists2;
 import undecided.erp.organization.spi.Organization;
 import undecided.erp.organization.spi.OrganizationQuery;
+import undecided.shared.common.primitiveOld.Lists2;
 
 @Service
 @RequiredArgsConstructor

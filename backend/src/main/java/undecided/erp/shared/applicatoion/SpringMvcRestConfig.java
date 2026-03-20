@@ -13,9 +13,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import undecided.erp.common.exception.ExceptionLogger;
-import undecided.erp.common.web.exception.HandlerExceptionResolverLoggingInterceptor;
-import undecided.erp.common.web.logging.RestTraceLoggingInterceptor;
+import undecided.shared.common.exception.ExceptionLogger;
+import undecided.shared.web.exception.HandlerExceptionResolverLoggingInterceptor;
+import undecided.shared.web.logging.RestTraceLoggingInterceptor;
 
 /** Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。 */
 @EnableAspectJAutoProxy(proxyTargetClass = true)

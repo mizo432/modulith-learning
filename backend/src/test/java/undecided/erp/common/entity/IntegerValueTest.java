@@ -1,7 +1,7 @@
 package undecided.erp.common.entity;
 
 import static org.assertj.core.api.Assertions.*;
-import static undecided.erp.common.primitive.Objects2.isNull;
+import static undecided.shared.common.primitiveOld.Objects2.isNull;
 
 import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
