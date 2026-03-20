@@ -5,8 +5,8 @@ import java.util.concurrent.Executors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
-import undecided.erp.common.exception.ExceptionLogger;
-import undecided.erp.common.exception.ResultMessagesLoggingInterceptor;
+import undecided.shared.common.exception.ExceptionLogger;
+import undecided.shared.common.exception.ResultMessagesLoggingInterceptor;
 import undecided.shared.web.exception.ExceptionLoggingFilter;
 
 @Configuration

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import org.jspecify.annotations.NonNull;
-import undecided.erp.common.exception.SystemException;
+import undecided.shared.common.exception.SystemException;
 
 /**
  * 配列操作を補助するユーティリティクラスです。

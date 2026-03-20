@@ -8,7 +8,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.filter.GenericFilterBean;
-import undecided.erp.common.exception.ExceptionLogger;
+import undecided.shared.common.exception.ExceptionLogger;
 
 /**
  * ExceptionLoggingFilterは、フィルタチェーン内で発生する例外をキャッチし、ログへ記録するためのフィルタクラスです。

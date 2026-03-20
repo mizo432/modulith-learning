@@ -13,7 +13,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import undecided.erp.common.exception.ExceptionLogger;
+import undecided.shared.common.exception.ExceptionLogger;
 import undecided.shared.web.exception.HandlerExceptionResolverLoggingInterceptor;
 import undecided.shared.web.logging.RestTraceLoggingInterceptor;
 

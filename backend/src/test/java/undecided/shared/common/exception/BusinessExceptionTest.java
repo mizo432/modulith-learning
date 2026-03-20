@@ -1,4 +1,4 @@
-package undecided.erp.common.exception;
+package undecided.shared.common.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

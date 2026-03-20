@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import undecided.erp.common.exception.ExceptionLogger;
+import undecided.shared.common.exception.ExceptionLogger;
 
 /**
  * HandlerExceptionResolverLoggingInterceptorクラスは、SpringフレームワークのMethodInterceptorを実装したクラスです。

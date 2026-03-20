@@ -1,4 +1,4 @@
-package undecided.erp.common.exception;
+package undecided.shared.common.exception;
 
 import jakarta.annotation.Nonnull;
 import lombok.Setter;

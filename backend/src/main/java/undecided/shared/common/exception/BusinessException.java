@@ -1,4 +1,4 @@
-package undecided.erp.common.exception;
+package undecided.shared.common.exception;
 
 import undecided.shared.common.message.ResultMessage;
 import undecided.shared.common.message.ResultMessages;

@@ -1,11 +1,11 @@
-package undecided.erp.common.exception;
+package undecided.shared.common.exception;
 
 import static org.springframework.util.StringUtils.hasText;
 
 /**
  * 例外のレベルを解決するデフォルトの実装クラス。
- * <p>
- * このクラスは {@link ExceptionLevelResolver} インターフェースを実装しており、 指定された例外から適切な例外レベルを判定して返します。
+ *
+ * <p>このクラスは {@link ExceptionLevelResolver} インターフェースを実装しており、 指定された例外から適切な例外レベルを判定して返します。
  * 必要に応じて、{@link ExceptionCodeResolver} を利用して例外コードを解決できます。
  */
 public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
@@ -14,17 +14,16 @@ public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
 
   /**
    * デフォルトの例外レベルを解決するためのクラスのデフォルトコンストラクタ。
-   * <p>
-   * このコンストラクタは、特定の {@link ExceptionCodeResolver} を使用せずにインスタンスを生成します。 例外の分類に必要なコードの解決機能を持たせる場合は、
+   *
+   * <p>このコンストラクタは、特定の {@link ExceptionCodeResolver} を使用せずにインスタンスを生成します。 例外の分類に必要なコードの解決機能を持たせる場合は、
    * パラメータ付きコンストラクタを使用してください。
    */
-  public DefaultExceptionLevelResolver() {
-  }
+  public DefaultExceptionLevelResolver() {}
 
   /**
    * {@code DefaultExceptionLevelResolver} クラスのコンストラクタ。
-   * <p>
-   * 指定された {@code ExceptionCodeResolver} を使用して例外コードを解決します。
+   *
+   * <p>指定された {@code ExceptionCodeResolver} を使用して例外コードを解決します。
    *
    * @param exceptionCodeResolver 例外コードを解決するための {@code ExceptionCodeResolver} の実装
    */
@@ -49,7 +48,8 @@ public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
       } else if ("w".equalsIgnoreCase(exceptionCodePrefix)) {
         return ExceptionLevel.WARN;
       } else {
-        return "i".equalsIgnoreCase(exceptionCodePrefix) ? ExceptionLevel.INFO
+        return "i".equalsIgnoreCase(exceptionCodePrefix)
+            ? ExceptionLevel.INFO
             : ExceptionLevel.ERROR;
       }
     }

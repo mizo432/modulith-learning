@@ -1,4 +1,4 @@
-package undecided.erp.common.exception;
+package undecided.shared.common.exception;
 
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;

@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.erp.common.exception.NotFoundBusinessException;
 import undecided.erp.shared.address.spi.Prefecture;
 import undecided.erp.shared.address.spi.PrefectureQuery;
+import undecided.shared.common.exception.NotFoundBusinessException;
 
 @RestController
 @RequiredArgsConstructor

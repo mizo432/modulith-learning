@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import undecided.erp.common.exception.BusinessException;
+import undecided.shared.common.exception.BusinessException;
 import undecided.shared.common.primitiveOld.Lists2;
 
 /**

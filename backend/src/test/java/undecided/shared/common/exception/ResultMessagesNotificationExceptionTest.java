@@ -1,4 +1,4 @@
-package undecided.erp.common.exception;
+package undecided.shared.common.exception;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;

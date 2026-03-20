@@ -1,4 +1,4 @@
-package undecided.erp.common.exception;
+package undecided.shared.common.exception;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

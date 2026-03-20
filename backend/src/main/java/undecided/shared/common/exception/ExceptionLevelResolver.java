@@ -1,12 +1,11 @@
-package undecided.erp.common.exception;
-
+package undecided.shared.common.exception;
 
 /**
  * 例外のレベルを解決するためのインタフェース。
- * <p>
- * このインタフェースを実装することで、指定された例外に応じて適切な例外のレベルを判定し、 {@link ExceptionLevel} を返す機能を提供します。
- * <p>
- * 実装クラスは、カスタムのルールに基づいて例外レベルを解決することが可能です。
+ *
+ * <p>このインタフェースを実装することで、指定された例外に応じて適切な例外のレベルを判定し、 {@link ExceptionLevel} を返す機能を提供します。
+ *
+ * <p>実装クラスは、カスタムのルールに基づいて例外レベルを解決することが可能です。
  */
 public interface ExceptionLevelResolver {
 

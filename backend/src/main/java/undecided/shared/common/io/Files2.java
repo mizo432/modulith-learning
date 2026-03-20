@@ -1,4 +1,4 @@
-package undecided.erp.common.io;
+package undecided.shared.common.io;
 
 import java.io.File;
 import lombok.experimental.UtilityClass;
@@ -10,8 +10,8 @@ public class Files2 {
 
   /**
    * Javaランタイム環境によって使用されるデフォルトの一時ディレクトリ用の システムプロパティキーを表します。
-   * <p>
-   * この文字列の値は、一時ファイルをプログラムの実行中に保存できる ディレクトリパスを取得するために利用できます。
+   *
+   * <p>この文字列の値は、一時ファイルをプログラムの実行中に保存できる ディレクトリパスを取得するために利用できます。
    */
   public static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
@@ -23,5 +23,4 @@ public class Files2 {
   public static File tmpDir() {
     return new File(System.getProperty(JAVA_IO_TMPDIR));
   }
-
 }
