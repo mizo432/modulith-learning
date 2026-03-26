@@ -15,6 +15,8 @@ public class Objects2 {
   /** 特定の意味を持つ定数としての null 値を表します。 この定数は、null 値が必要なケースで明示的に使用されることを想定しています。 */
   public static final Object NULL = null;
 
+  public static final Object[] EMPTY_ARRAY = {};
+
   public static final IsNull IS_NULL = new IsNull();
   public static final CheckNotNull CHECK_NOT_NULL = new CheckNotNull();
 

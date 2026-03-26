@@ -1,5 +1,7 @@
 package undecided.shared.common.uuidV7Provider;
 
+import static undecided.shared.common.precondition.ObjectPrecondition.checkAllElementNotNull;
+import static undecided.shared.common.precondition.ObjectPrecondition.checkNotEmpty;
 import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.ArrayList;
