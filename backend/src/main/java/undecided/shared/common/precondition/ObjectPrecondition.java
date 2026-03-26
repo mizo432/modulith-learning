@@ -1,5 +1,6 @@
 package undecided.shared.common.precondition;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -92,6 +93,41 @@ public class ObjectPrecondition {
   public static <T> void checkState(boolean expression, @NonNull String label) {
     if (!expression) {
       throw new IllegalStateException(String.format("%s の状態が不正です。", label));
+    }
+  }
+
+  /**
+   * 指定された配列が空でないことを確認します。
+   *
+   * @param array 検証する配列
+   * @param supplier 配列が空の場合にスローされる例外を提供するサプライヤ
+   * @param <T> 配列の要素の型
+   * @throws RuntimeException 配列が空の場合
+   */
+  public static <T> void checkNotEmpty(
+      T[] array, @NonNull Supplier<? extends RuntimeException> supplier) {
+    if (array == null || array.length == 0) {
+      throw supplier.get();
+    }
+  }
+
+  /**
+   * 配列のすべての要素がnullでないことを確認します。
+   *
+   * @param array 検証する配列
+   * @param exceptionFunction nullが見つかった場合にスローされる例外を生成する関数。引数はインデックス。
+   * @param <T> 配列の要素の型
+   * @throws RuntimeException nullの要素が見つかった場合
+   */
+  public static <T> void checkAllElementNotNull(
+      T[] array, @NonNull Function<Integer, ? extends RuntimeException> exceptionFunction) {
+    if (array == null) {
+      return;
+    }
+    for (int i = 0; i < array.length; i++) {
+      if (array[i] == null) {
+        throw exceptionFunction.apply(i);
+      }
     }
   }
 }
