@@ -62,6 +62,7 @@ extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
+extra["assertjDbVersion"] = "3.0.2"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -101,6 +102,7 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")
 
     // Apache POI for Excel processing
     implementation("org.apache.poi:poi:${property("poiVersion")}")
