@@ -101,6 +101,7 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    testImplementation("org.assertj:assertj-db")
 
     // Apache POI for Excel processing
     implementation("org.apache.poi:poi:${property("poiVersion")}")
@@ -122,6 +123,7 @@ dependencyManagement {
         mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
         mavenBom("org.jmolecules:jmolecules-bom:${property("jmoleculesBomVersion")}")
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
+//        mavenBom(p0 = "org.assertj:assertj-core:${property("assertjVersion")}")
     }
 }
 jacoco {
