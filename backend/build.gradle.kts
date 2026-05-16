@@ -123,7 +123,6 @@ dependencyManagement {
         mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
         mavenBom("org.jmolecules:jmolecules-bom:${property("jmoleculesBomVersion")}")
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
-//        mavenBom(p0 = "org.assertj:assertj-core:${property("assertjVersion")}")
     }
 }
 jacoco {
