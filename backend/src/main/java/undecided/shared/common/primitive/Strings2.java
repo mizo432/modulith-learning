@@ -117,4 +117,58 @@ public class Strings2 {
             return s.indexOf(subString);
         }
     }
+
+    public enum CaseFormat {
+        UPPER_CAMEL, LOWER_CAMEL, UPPER_UNDERSCORE, LOWER_UNDERSCORE
+    }
+
+    public static interface LowerCamel {
+        String convertToString(String s);
+
+    }
+
+    /**
+     * LowerCamelImplは、入力文字列をLowerCamel形式に変換するための実装クラスです。
+     */
+    public static class LowerCamelImpl implements LowerCamel {
+
+        /**
+         * 入力された文字列をLowerCamel形式に変換します。
+         * <p>
+         * 入力文字列がnullの場合、空文字を返します。
+         * 入力文字列が非nullの場合、先頭文字を小文字に変換し、それ以外の部分はそのまま返します。
+         *
+         * @param s 変換対象の文字列。nullが許容されます。
+         * @return LowerCamel形式に変換された文字列。入力がnullの場合は空文字を返します。
+         */
+        @Override
+        public String convertToString(String s) {
+            if (IS_NULL.test(s)) {
+                return "";
+            }
+            if (s.isEmpty()) {
+                return "";
+            }
+            if (s.contains(UNDERSCORE)) {
+                String[] words = s.toLowerCase().split(UNDERSCORE);
+                if (words.length == 0) {
+                    return "";
+                }
+                StringBuilder builder = new StringBuilder(words[0]);
+                for (int i = 1; i < words.length; i++) {
+                    if (words[i].isEmpty()) {
+                        continue;
+                    }
+                    builder.append(words[i].substring(0, 1).toUpperCase());
+                    builder.append(words[i].substring(1));
+                }
+                return builder.toString();
+            }
+            if (s.matches("[A-Z]+")) {
+                return s.toLowerCase();
+            }
+            return s.substring(0, 1).toLowerCase() + s.substring(1);
+        }
+    }
+
 }
