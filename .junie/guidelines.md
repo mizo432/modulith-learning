@@ -115,7 +115,7 @@ assertJを使用して。
 Junit5で実装して。
 classとメソッドはpackage-privateで。
 
-### DevOpsプラグイン
+### DevOps プラグイン
 
 - **Ansible/Inventory**：CI/CDパイプラインを管理
 - **Dockerfile**：Dockerコンテナの配置とデプロイ
@@ -210,30 +210,30 @@ classとメソッドはpackage-privateで。
 @DisplayName("計算機能のテスト")
 class CalculatorTest {
 
-  @Nested
-  @DisplayName("addメソッドのテスト")
-  class AddTest {
+    @Nested
+    @DisplayName("addメソッドのテスト")
+    class AddTest {
 
-    @Test
-    @DisplayName("正の数同士の加算が正しく行われること")
-    void shouldAddPositiveNumbers() {
-      int result = calculator.add(1, 1);
-      assertThat(result).isEqualTo(2);
-    }
+        @Test
+        @DisplayName("正の数同士の加算が正しく行われること")
+        void shouldAddPositiveNumbers() {
+            int result = calculator.add(1, 1);
+            assertThat(result).isEqualTo(2);
+        }
 
-    @Test
-    @DisplayName("引数がnullの場合は例外が発生すること")
-    void shouldThrowExceptionWhenArgumentIsNull() {
-      assertThatThrownBy(() -> calculator.add(null, 1))
-          .isInstanceOf(IllegalArgumentException.class);
+        @Test
+        @DisplayName("引数がnullの場合は例外が発生すること")
+        void shouldThrowExceptionWhenArgumentIsNull() {
+            assertThatThrownBy(() -> calculator.add(null, 1))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
-  }
 }
 ```
 
 ### 追加の開発情報
 
-- **Spring Modulith**: モジュール間の依存関係を確認するために、`./gradlew :backend:test` を実行すると
+- **Spring Modulith **: モジュール間の依存関係を確認するために、`./gradlew :backend:test` を実行すると
   `build/spring-modulith-docs` にドキュメント（PlantUML等）が生成されます。
 - **Lombok**: `Getter`, `Setter`, `AllArgsConstructor` などを積極的に活用し、ボイラープレートコードを削減しています。
 - **コードスタイル**: 既存のコードは Google Java Style
