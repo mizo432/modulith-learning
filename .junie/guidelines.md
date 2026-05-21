@@ -19,9 +19,9 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 1. **バックエンド（Backend）**：
     - Spring Boot 4.0.2ベースのアプリケーション
     - Spring Modulithを使用したモジュール化
-    - PostgreSQLデータベース
-    - JPA/Hibernateによるデータアクセス
-    - Flywayによるデータベースマイグレーション
+    - PostgreSQL データベース
+    - JPA/Hibernate によるデータアクセス
+    - Flyway によるデータベースマイグレーション
 
 2. **APIゲートウェイ（API Gateway）**：
     - クライアントリクエストのルーティングと管理
@@ -30,7 +30,7 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
     - Netflix Eurekaを使用したサービスディスカバリー
 
 4. **フロントエンド（Frontend）**：
-    - Reactベースのアプリケーション
+    - React ベースのアプリケーション
     - SPAとして作成する
     - コンポーネントライブラリーとして最新のMUIを使用する
 
@@ -167,7 +167,7 @@ classとメソッドはpackage-privateで。
 
 ### テスト実行ガイドライン
 
-テストは JUnit 5 を使用し、サイズ（`small`, `medium`, `large`）ごとにタグ付けされています。
+テストは JUnit 5 を使用しサイズ毎に（`small`/ `medium`/ `large`）にタグ付けされています。
 
 #### テストの実行
 
@@ -211,7 +211,7 @@ classとメソッドはpackage-privateで。
 class CalculatorTest {
 
     @Nested
-    @DisplayName("addメソッドのテスト")
+    @DisplayName("add メソッドのテスト")
     class AddTest {
 
         @Test
