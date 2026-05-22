@@ -3,6 +3,7 @@ package undecided.shared.common.exception;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import undecided.shared.common.message.ResultMessages;
 
@@ -15,6 +16,7 @@ import undecided.shared.common.message.ResultMessages;
  *
  * <p>主なテストケース: - 単一引数コンストラクタのテスト - 2つの引数を持つコンストラクタのテスト - {@code getMessage()} メソッドの動作確認
  */
+@Tag("small")
 class ResultMessagesNotificationExceptionTest {
 
   @Test
