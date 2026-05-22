@@ -99,10 +99,13 @@ class Arrays2Test {
     }
 
     @Test
-    @DisplayName("null引数の場合、NullPointerExceptionが発生すること")
+    @DisplayName("null引数の場合、nullという文字列を返すこと")
     void shouldThrowNullPointerExceptionWhenArgumentIsNull() {
-      assertThatThrownBy(() -> Arrays2.toStrings().apply(null))
-          .isInstanceOf(NullPointerException.class);
+      // given & when
+      String actual = Arrays2.toStrings().apply(null);
+
+      // then
+      assertThat(actual).isEqualTo("null");
     }
   }
 }

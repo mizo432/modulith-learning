@@ -7,7 +7,6 @@ import org.jspecify.annotations.NonNull;
  * 関数型インタフェイス FunctionalA は、渡された入力および例外サプライヤを利用して特定の処理を実行する抽象メソッドを定義します。
  *
  * @param <T> 処理の入力となる引数の型
- * @param <R> 処理の結果として返される値の型
  * @param <E> 処理中にスローされる可能性のある実行時例外の型
  */
 @FunctionalInterface

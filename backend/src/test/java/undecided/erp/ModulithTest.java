@@ -1,14 +1,15 @@
 package undecided.erp;
 
 import java.io.File;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
 
+@Tag("small")
 class ModulithTest {
 
-  ApplicationModules modules =
-      ApplicationModules.of(ModulithDemoApplication.class);
+  ApplicationModules modules = ApplicationModules.of(ModulithDemoApplication.class);
 
   @Test
   void verifyPackageConformity() {
@@ -20,9 +21,6 @@ class ModulithTest {
 
   @Test
   void createModulithsDocumentation() {
-    new Documenter(modules)
-        .writeModulesAsPlantUml()
-        .writeIndividualModulesAsPlantUml();
+    new Documenter(modules).writeModulesAsPlantUml().writeIndividualModulesAsPlantUml();
   }
-
 }
