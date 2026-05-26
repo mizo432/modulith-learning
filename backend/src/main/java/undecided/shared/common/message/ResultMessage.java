@@ -2,6 +2,7 @@ package undecided.shared.common.message;
 
 import java.util.Arrays;
 import org.jspecify.annotations.NonNull;
+import undecided.shared.common.primitive.Strings2;
 import undecided.shared.common.primitiveOld.Objects2;
 
 /** メッセージを格納するためのクラス。メッセージコード、引数、デフォルトメッセージを保持します。 */
@@ -44,22 +45,24 @@ public record ResultMessage(String code, Object[] args, String text) {
   }
 
   /**
-   * このメソッドはResultMessageオブジェクトの文字列表現を返します。
+   * オブジェクトの文字列表現を生成します。
    *
-   * @return メッセージコード、引数の配列、テキストを含むResultMessageオブジェクトの文字列表現
+   * <p>
+   * 以下の条件に応じて異なる文字列を返します:
+   * 1. テキストが空でない場合、またはnullでない場合は当該テキストをそのまま返します。
+   * 2. テキストが空またはnullの場合、オブジェクトフィールドを含む詳細な形式 (codeとargs) を返します。
+   *
+   * @return オブジェクトの文字列表現。テキストが非空の場合はその文字列、それ以外の場合は
+   *         結果オブジェクトの詳細な情報 (codeとargs) を含む文字列を返します。
    */
   @Override
   @NonNull
   public String toString() {
-    return "ResultMessage{"
+    return Strings2.IS_EMPTY.test(text) ? "ResultMessage{"
         + "code='"
         + code
-        + '\''
-        + ", args="
+        + "', args="
         + Arrays.toString(args)
-        + ", text='"
-        + text
-        + '\''
-        + '}';
+        + "}": text;
   }
 }
