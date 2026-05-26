@@ -130,7 +130,7 @@ class BusinessExceptionTest {
     }
 
     @Nested
-    @DisplayName("toStringメソッドのテスト")
+    @DisplayName("toString メソッドのテスト")
     class ToStringTest {
         @Test
         @DisplayName("期待どおりの文字列表現を返すこと")
