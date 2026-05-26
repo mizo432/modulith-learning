@@ -87,6 +87,7 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
    * @param handler 処理対象のハンドラー（通常はHandlerMethodインスタンス）
    * @return 処理を続行する場合はtrueを返します。それ以外の場合はfalseを返します。
    */
+  @Override
   public boolean preHandle(
       @Nonnull HttpServletRequest request,
       @Nonnull HttpServletResponse response,
@@ -118,6 +119,7 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
    * @param handler 現在のリクエストに対するハンドラー（通常はHandlerMethodインスタンス）
    * @param modelAndView 処理後のモデルとビューの情報（必要に応じてnullの場合もあります）
    */
+  @Override
   public void postHandle(
       @Nonnull HttpServletRequest request,
       @Nonnull HttpServletResponse response,
