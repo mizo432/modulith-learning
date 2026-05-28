@@ -4,9 +4,11 @@ import static undecided.shared.common.primitive.Ints.CHECK_POSITIVE;
 import static undecided.shared.common.primitive.Objects2.CHECK_NOT_NULL;
 import static undecided.shared.common.primitive.Objects2.IS_NULL;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import undecided.shared.functional.TwoFunction;
 
 public class Strings2 {
@@ -39,6 +41,8 @@ public class Strings2 {
   public interface IndexOf {
     int apply(String s, String subString);
   }
+
+  public static final Function<Collection<?> ,String> COLLECTION_TO_COMMA_DELIMITED_STRING = coll -> StringUtils.collectionToDelimitedString(coll, ",");
 
   public static interface LowerCamel {
     String convertToString(String s);

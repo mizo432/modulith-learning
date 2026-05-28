@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.Setter;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
@@ -15,6 +16,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import undecided.shared.common.primitive.Strings2;
+
+import static undecided.shared.common.primitive.Strings2.COLLECTION_TO_COMMA_DELIMITED_STRING;
 
 /**
  * コントローラーハンドラーの実行時間をログに記録するためのインターセプターです。
@@ -68,7 +72,7 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
    * @param handlerMethod 対象となるHandlerMethodオブジェクト
    * @return メソッドパラメータの型名をカンマ区切りで結合した文字列
    */
-  protected static String buildMethodParams(HandlerMethod handlerMethod) {
+  protected @NonNull String buildMethodParams(@NonNull HandlerMethod handlerMethod) {
     MethodParameter[] params = handlerMethod.getMethodParameters();
     List<String> lst = new ArrayList<>(params.length);
 
@@ -76,14 +80,15 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
       lst.add(p.getParameterType().getSimpleName());
     }
 
-    return StringUtils.collectionToCommaDelimitedString(lst);
+    return COLLECTION_TO_COMMA_DELIMITED_STRING.apply(lst);
+
   }
 
   /**
    * リクエストが処理される前に実行されるメソッドです。 HandlerMethodの情報をログに記録し、リクエスト開始時刻をリクエスト属性に設定します。
    *
-   * @param request クライアントからのHTTPリクエスト
-   * @param response クライアントへのHTTPレスポンス
+   * @param request クライアントからのHTTP リクエスト
+   * @param response クライアントへのHTTP レスポンス
    * @param handler 処理対象のハンドラー（通常はHandlerMethodインスタンス）
    * @return 処理を続行する場合はtrueを返します。それ以外の場合はfalseを返します。
    */
@@ -114,8 +119,8 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
    *
    * <p>リクエストとレスポンスに基づいて、処理時間を計測しログに出力します。 必要に応じて警告ログを記録し、モデルおよびビューの情報を含む詳細なログも出力します。
    *
-   * @param request クライアントからのHTTPリクエスト
-   * @param response クライアントへのHTTPレスポンス
+   * @param request クライアントからのHTTP リクエスト
+   * @param response クライアントへのHTTP レスポンス
    * @param handler 現在のリクエストに対するハンドラー（通常はHandlerMethodインスタンス）
    * @param modelAndView 処理後のモデルとビューの情報（必要に応じてnullの場合もあります）
    */
