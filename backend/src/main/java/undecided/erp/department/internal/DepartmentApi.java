@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import undecided.erp.department.Department;
 
+
 import java.net.URI;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/departments")
@@ -31,7 +33,7 @@ public class DepartmentApi {
      * @return
      */
     @GetMapping("/{depertmentCode}")
-    Department getById(DepartmentCode departmentCode) {
+    Department getById(@PathVariable DepartmentCode departmentCode) {
         return query.findByCode(departmentCode).orElseThrow(() -> new EntityNotFoundException("Department not found"));
 
     }
@@ -44,18 +46,27 @@ public class DepartmentApi {
     @PostMapping
     ResponseEntity<Department> post(Department department, UriComponentsBuilder uriComponentsBuilder) {
         command.insert(department);
-        URI uri = uriComponentsBuilder.path("api/departments/{depertmentCode}").build(department.getDepartmentCode().value());
+        URI uri = uriComponentsBuilder.path("api/departments/{departmentCode}").build(department.getCode().value());
         return ResponseEntity.created(uri).build();
 
     }
 
-    @PutMapping("/{depertmentCode}")
+    /**
+     * @param departmentCode
+     * @param department
+     * @return
+     */
+    @PutMapping("/{departmentCode}")
     ResponseEntity<Void> put(@PathVariable DepartmentCode departmentCode, Department department) {
         command.update(departmentCode, department);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{depertmentCode}")
+    /**
+     * @param departmentCode
+     * @return
+     */
+    @DeleteMapping("/{departmentCode}")
     ResponseEntity<Void> delete(@PathVariable DepartmentCode departmentCode) {
         command.delete(departmentCode);
         return ResponseEntity.noContent().build();
