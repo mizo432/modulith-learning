@@ -117,7 +117,7 @@ public class SystemExceptionResolver extends SimpleMappingExceptionResolver {
    * 例外を解決し、適切なビューを返すメソッドです。 指定された例外に基づき、{@link ModelAndView} を生成します。 必要に応じて例外情報をリクエストやレスポンスに設定します。
    *
    * @param request クライアントから送信されたHTTPリクエスト
-   * @param response サーバーからクライアントへのHTTPレスポンス
+   * @param response サーバーからクライアントへのHTTP レスポンス
    * @param handler 例外が発生したハンドラーオブジェクト（nullの場合もあります）
    * @param ex 処理対象の例外
    * @return 解決された例外に基づくビューを表す {@link ModelAndView} オブジェクト。解決できない場合は null を返します。

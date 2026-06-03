@@ -17,10 +17,15 @@ import undecided.shared.common.exception.ExceptionLogger;
 import undecided.shared.web.exception.HandlerExceptionResolverLoggingInterceptor;
 import undecided.shared.web.logging.RestTraceLoggingInterceptor;
 
-/** Spring MVCの設定を行うための構成クラス。 このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。 */
+/**
+ * Spring MVCの設定を行うための構成クラス。
+ *
+ * <p>このクラスはSpring MVCのWeb設定や、カスタムビーンの登録を行い、 REST APIを構築する際の主要な設定を提供します。
+ */
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @Configuration
 public class SpringMvcRestConfig implements WebMvcConfigurer {
+
   /**
    * HandlerExceptionResolverLoggingInterceptorを生成し、例外ログ設定を適用した後に返します。
    *
