@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.Setter;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * コントローラーハンドラーの実行時間をログに記録するためのインターセプターです。
@@ -109,20 +109,20 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
   }
 
   /**
-   * コントローラーの処理が終了した後に呼び出されるメソッドです。
-   *
-   * <p>リクエストとレスポンスに基づいて、処理時間を計測しログに出力します。 必要に応じて警告ログを記録し、モデルおよびビューの情報を含む詳細なログも出力します。
+   * リクエスト処理の完了後に実行されるメソッドです。
+   * <p>
+   * 処理時間の計測結果をログに記録し、必要に応じて警告ログを出力します。
    *
    * @param request クライアントからのHTTP リクエスト
    * @param response クライアントへのHTTP レスポンス
-   * @param handler 現在のリクエストに対するハンドラー（通常はHandlerMethodインスタンス）
-   * @param modelAndView 処理後のモデルとビューの情報（必要に応じてnullの場合もあります）
+   * @param handler 処理対象のハンドラー（通常はHandlerMethodのインスタンス）
+   * @param ex 発生した例外オブジェクト（例外が発生していない場合はnull）
+   * @throws Exception 実行中にエラーが発生した場合
    */
-  public void postHandle(
-      @Nonnull HttpServletRequest request,
-      @Nonnull HttpServletResponse response,
-      @Nonnull Object handler,
-      ModelAndView modelAndView) {
+  @Override
+  public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+      Object handler, @Nullable Exception ex) throws Exception {
+    logger.trace("afterCompletion");
     if (handler instanceof HandlerMethod handlerMethod) {
       long startTime = 0L;
       if (request.getAttribute(START_ATTR) != null) {

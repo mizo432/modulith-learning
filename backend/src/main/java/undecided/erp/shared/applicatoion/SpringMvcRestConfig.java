@@ -5,11 +5,13 @@ import java.util.concurrent.Executors;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.JdkRegexpMethodPointcut;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.tomcat.reactive.TomcatReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Role;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -33,6 +35,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @return 初期化されたHandlerExceptionResolverLoggingInterceptorのインスタンス
    */
   @Bean
+  @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
   public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
     HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor =
