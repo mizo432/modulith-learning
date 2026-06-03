@@ -19,9 +19,9 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
 1. **バックエンド（Backend）**：
     - Spring Boot 4.0.2ベースのアプリケーション
     - Spring Modulithを使用したモジュール化
-    - PostgreSQLデータベース
-    - JPA/Hibernateによるデータアクセス
-    - Flywayによるデータベースマイグレーション
+    - PostgreSQL データベース
+    - JPA/Hibernate によるデータアクセス
+    - Flyway によるデータベースマイグレーション
 
 2. **APIゲートウェイ（API Gateway）**：
     - クライアントリクエストのルーティングと管理
@@ -30,7 +30,7 @@ Monolith）アプローチを採用し、マイクロサービスとモノリシ
     - Netflix Eurekaを使用したサービスディスカバリー
 
 4. **フロントエンド（Frontend）**：
-    - Reactベースのアプリケーション
+    - React ベースのアプリケーション
     - SPAとして作成する
     - コンポーネントライブラリーとして最新のMUIを使用する
 
@@ -115,7 +115,7 @@ assertJを使用して。
 Junit5で実装して。
 classとメソッドはpackage-privateで。
 
-### DevOpsプラグイン
+### DevOps プラグイン
 
 - **Ansible/Inventory**：CI/CDパイプラインを管理
 - **Dockerfile**：Dockerコンテナの配置とデプロイ
@@ -167,7 +167,7 @@ classとメソッドはpackage-privateで。
 
 ### テスト実行ガイドライン
 
-テストは JUnit 5 を使用し、サイズ（`small`, `medium`, `large`）ごとにタグ付けされています。
+テストは JUnit 5 を使用しサイズ毎に（`small`/ `medium`/ `large`）にタグ付けされています。
 
 #### テストの実行
 
@@ -210,30 +210,30 @@ classとメソッドはpackage-privateで。
 @DisplayName("計算機能のテスト")
 class CalculatorTest {
 
-  @Nested
-  @DisplayName("addメソッドのテスト")
-  class AddTest {
+    @Nested
+    @DisplayName("add メソッドのテスト")
+    class AddTest {
 
-    @Test
-    @DisplayName("正の数同士の加算が正しく行われること")
-    void shouldAddPositiveNumbers() {
-      int result = calculator.add(1, 1);
-      assertThat(result).isEqualTo(2);
-    }
+        @Test
+        @DisplayName("正の数同士の加算が正しく行われること")
+        void shouldAddPositiveNumbers() {
+            int result = calculator.add(1, 1);
+            assertThat(result).isEqualTo(2);
+        }
 
-    @Test
-    @DisplayName("引数がnullの場合は例外が発生すること")
-    void shouldThrowExceptionWhenArgumentIsNull() {
-      assertThatThrownBy(() -> calculator.add(null, 1))
-          .isInstanceOf(IllegalArgumentException.class);
+        @Test
+        @DisplayName("引数がnullの場合は例外が発生すること")
+        void shouldThrowExceptionWhenArgumentIsNull() {
+            assertThatThrownBy(() -> calculator.add(null, 1))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
-  }
 }
 ```
 
 ### 追加の開発情報
 
-- **Spring Modulith**: モジュール間の依存関係を確認するために、`./gradlew :backend:test` を実行すると
+- **Spring Modulith **: モジュール間の依存関係を確認するために、`./gradlew :backend:test` を実行すると
   `build/spring-modulith-docs` にドキュメント（PlantUML等）が生成されます。
 - **Lombok**: `Getter`, `Setter`, `AllArgsConstructor` などを積極的に活用し、ボイラープレートコードを削減しています。
 - **コードスタイル**: 既存のコードは Google Java Style

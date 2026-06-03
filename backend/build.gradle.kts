@@ -14,7 +14,7 @@ plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "4.0.4"
+    id("org.springframework.boot") version "4.0.6"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
@@ -46,8 +46,8 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "2.0.3"
-extra["springModulithInsightVersion"] = "2.0.3"
+extra["springModulithVersion"] = "2.0.6"
+extra["springModulithInsightVersion"] = "2.0.6"
 extra["guavaVersion"] = "33.4.8-jre"
 extra["icu4jVersion"] = "77.1"
 extra["yaviVersion"] = "0.16.0"
@@ -56,12 +56,13 @@ extra["jdbcPostgresqlVersion"] = "11.3.4"
 extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
-extra["junitVersion"] = "6.0.0"
+extra["junitVersion"] = "6.1.0"
 extra["springCloudBomVersion"] = "2025.1.0"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
+extra["assertjDbVersion"] = "3.0.2"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -101,6 +102,7 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")
 
     // Apache POI for Excel processing
     implementation("org.apache.poi:poi:${property("poiVersion")}")

@@ -1,71 +1,60 @@
 Exception Handling in Spring Boot: A Complete Guide for Production Applications
 -----
-アプリケーションが午前3時にクラッシュし、アラートで起こされたとき、優れた例外処理と劣悪な例外処理の違いは明白になります。優れた例外処理とは、問題を数分で特定できることを意味します。一方、劣悪な例外処理とは、ログを何時間も調べ、問題を再現しようと試み、顧客を苛立たせることを意味します。
-
 このガイドでは、実際のeコマース注文管理システムを例として、Spring
 Bootで本番環境レベルの例外処理を構築する方法を解説します。基本的な概念から、大規模アプリケーションで使用される高度なパターンまで、すべてを網羅します。
 
-例外処理が重要な理由
-例外処理の基本原則
-例外分類
-Spring Bootアプリケーションにおける例外処理の流れ
-エラー契約設計（APIエラー応答）
-エラーコード設計ガイドライン
-HTTPステータスコードマッピング戦略
-Spring Bootにおけるグローバル例外処理
-検証例外処理
-ビジネス例外処理
-インフラストラクチャと統合のエラー
-例外処理のためのログ記録戦略
-可観測性とモニタリング
-セキュリティに関する考慮事項
-再試行、冪等性、および回復力
-例外処理のテスト
-ドキュメントとAPI契約
-避けるべきよくある間違い
-生産・保守の観点から
+# 1. 例外処理が重要な理由
 
-1. 例外処理が重要な理由
-   実際のシナリオから始めましょう。eコマースプラットフォームを構築していると想像してください。顧客が注文しようとしますが、何らかの問題が発生します。例外処理が不適切な場合、次のようなことが起こります。
+実際のシナリオから始めましょう。eコマースプラットフォームを構築していると想像してください。顧客が注文しようとしますが、何らかの問題が発生します。例外処理が不適切な場合、次のようなことが起こります。
 
 悪いアプローチ：
 
+```java
+
 @PostMapping("/orders")
-public Order createOrder ( @RequestBody OrderRequest request) {
-try {
-return orderService.createOrder(request);
-} catch (Exception e) {
-e.printStackTrace(); // 本番環境ではスタックトレースが出力されます！
-return null ; // クライアントは何が起こったのか分かりません
+public Order createOrder(@RequestBody OrderRequest request) {
+    try {
+        return orderService.createOrder(request);
+    } catch (Exception e) {
+        e.printStackTrace(); // 本番環境ではスタックトレースが出力されます！
+        return null; // クライアントは何が起こったのか分かりません
+    }
 }
-}
+
+```
+
 顧客には何も表示されません。ログにはスタックトレースが記録されています。支払いエラー、在庫不足、または無効な住所のいずれが原因だったのか、誰も分かりません。
 
 良いアプローチ：
 
+```java
+
 @PostMapping("/orders")
-public ResponseEntity<OrderResponse> createOrder ( @RequestBody OrderRequest request) {
-OrderResponse response = orderService.createOrder(request);
-return ResponseEntity.status(HttpStatus.CREATED).body(response);
-} // 例外は、 @RestControllerAdvice を使用して
-、適切なエラーコードとメッセージでグローバルに処理されます。
+public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request) {
+    OrderResponse response = orderService.createOrder(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+} // 例外は、 @RestControllerAdvice を使用して適切なエラーコードとメッセージでグローバルに処理されます。
+```
+
 例外が発生した場合、顧客には「製品XYZは在庫切れです」という明確なメッセージが表示されます。監視システムによって、どのエラーコードが急増したかが正確に把握できるため、迅速に問題を解決できます。
 
-不適切な例外処理がもたらす損失：
-顧客の混乱: 「何らかの問題が発生しました」のような一般的なエラーメッセージは、ユーザーを苛立たせます。
-セキュリティリスク：スタックトレースによって、コード構造、データベース名、内部パスが漏洩する可能性があります。
-デバッグの悪夢：適切なコンテキストがなければ、本番環境のバグを修正するのに何時間もかかります。
-監視体制の不備：適切なコードがないと、どのエラーが増加しているかを追跡できません。
-API契約違反：クライアントはプログラムでエラーを処理できません。
-思考の根本的な変化：
-失敗した場合→ null を返し、例外を無視し、ログを記録して先に進みます
-適切なエラー処理→ 明確なエラー応答、適切なログ記録、実行可能なフィードバック
-例外処理は、単なるエラー処理コードではありません。成功時のレスポンスと同様に、API契約の一部です。
+* 不適切な例外処理がもたらす損失：
+* 顧客の混乱: 「何らかの問題が発生しました」のような一般的なエラーメッセージは、ユーザーを苛立たせます。
+* セキュリティリスク：スタックトレースによって、コード構造、データベース名、内部パスが漏洩する可能性があります。
+* デバッグの悪夢：適切なコンテキストがなければ、本番環境のバグを修正するのに何時間もかかります。
+* 監視体制の不備：適切なコードがないと、どのエラーが増加しているかを追跡できません。
+* API契約違反：クライアントはプログラムでエラーを処理できません。
+* 思考の根本的な変化：
+  失敗した場合→ null を返し、例外を無視し、ログを記録して先に進みます
+  適切なエラー処理→ 明確なエラー応答、適切なログ記録、実行可能なフィードバック
+  例外処理は、単なるエラー処理コードではありません。成功時のレスポンスと同様に、API契約の一部です。
 
-2. 例外処理の基本原則
-   コードを書く前に、以下の重要なルールを理解しておきましょう。
+# 2. 例外処理の基本原則
 
-原則1：例外はシステム設計の一部である
+コードを書く前に、以下の重要なルールを理解しておきましょう。
+
+## 原則1：例外はシステム設計の一部である
+
 例外処理を後回しにしてはいけません。機能を設計する際には、次の点を自問自答してください。
 
 何が問題になる可能性があるだろうか？
@@ -76,7 +65,9 @@ API契約違反：クライアントはプログラムでエラーを処理で�
 チェックアウト時に在庫がなくなったらどうなりますか？
 支払いが失敗した場合はどうなりますか？
 配送先住所が無効な場合はどうなりますか？
-原則2：業務上のミス ≠ システム障害
+
+## 原則2：業務上のミス ≠ システム障害
+
 ビジネスエラー：顧客が100個の商品を購入しようとしたが、在庫は5個しかなかった。
 
 これは想定される動作です
@@ -89,162 +80,223 @@ HTTP 400 または 409
 HTTP 500 または 503
 エラーレベルでログを記録
 お客様はこれを修正できません、あなたは
-原則3：クライアントメッセージ≠開発者メッセージ
+
+## 原則3：クライアントメッセージ≠開発者メッセージ
+
+```java
 // 悪い例: 両方に同じメッセージ
-throw new RuntimeException ( "FK_CONSTRAINT_VIOLATION: orders_customer_id_fkey" );
+throw new RuntimeException( "FK_CONSTRAINT_VIOLATION: orders_customer_id_fkey");
+```
 
 // 良い例: 対象者ごとに異なるメッセージ
-throw new ResourceNotFoundException (
-"顧客が見つかりません" , // クライアント用
-"FK violation: customer_id=123"  // 開発者ログ用
+
+```java
+throw new ResourceNotFoundException(
+"顧客が見つかりません", // クライアント用
+        "FK violation: customer_id=123"  // 開発者ログ用
 );
-原則4：内部の詳細を決して公開しない
+
+```
+
+## 原則4：内部の詳細を決して公開しない
+
 クライアントに送ってはいけないもの：
 
-データベースの列名
-SQLクエリ
-内部ファイルパス
-スタックトレース
-サーバーバージョン
-内部サービス名
-原則5：エラーは一貫性があり、予測可能で、機械可読でなければならない。
+* データベースの列名
+* SQL クエリ
+* 内部ファイルパス
+* スタックトレース
+* サーバーバージョン
+* 内部サービス名
+
+## 原則5：エラーは一貫性があり、予測可能で、機械可読でなければならない。
+
 すべてのエラー応答は同じ構造に従う必要があります。クライアントは以下の操作を実行できる必要があります。
 
-解析エラーをプログラムで処理する
-適切なメッセージを表示する
-再試行ロジックを実装する
-エラーパターンを追跡する
-原則6：一元的な処理（唯一の信頼できる情報源）
+* 解析エラーをプログラムで処理する
+* 適切なメッセージを表示する
+* 再試行ロジックを実装する
+* エラーパターンを追跡する
+
+## 原則6：一元的な処理（唯一の信頼できる情報源）
+
 例外処理ロジックはすべて一箇所にまとめてください。try-catchブロックをあちこちに散在させないでください。そのためには、
 Springの@ControllerAdviceまたは@RestControllerAdviceを使用します。
 
-3. 例外分類
-   当社のeコマースシステムでは、様々な種類の例外に遭遇します。それらを適切に分類していきましょう。
+# 3. 例外分類
 
-A. 責任によって
+当社のeコマースシステムでは、様々な種類の例外に遭遇します。それらを適切に分類していきましょう。
 
-1. 検証例外
-   クライアントから無効なデータが送信されました。
+## A. 責任によって
 
+### 1. 検証例外
+
+クライアントから無効なデータが送信されました。
+
+```java
 public class OrderRequest {
-@NotNull(message = "顧客IDは必須です")
-private Long customerId;
+    @NotNull(message = "顧客IDは必須です")
+    private Long customerId;
 
-    @NotEmpty(message = "注文には少なくとも1つの商品が必要です") 
-    private List<OrderItem> items; 
-    
-    @Valid 
-    private ShippingAddress shippingAddress; 
+    @NotEmpty(message = "注文には少なくとも1つの商品が必要です")
+    private List<OrderItem> items;
+
+    @Valid
+    private ShippingAddress shippingAddress;
 
 }
 
 public class ShippingAddress {
-@NotBlank(message = "番地は必須です")
-private String street;
+    @NotBlank(message = "番地は必須です")
+    private String street;
 
-    @Pattern(regexp = "\\d{6}", message = "PINコードは6桁である必要があります") 
-    private String pinCode; 
+    @Pattern(regexp = "\\d{6}", message = "PINコードは6桁である必要があります")
+    private String pinCode;
 
 }
 
-2. ビジネス/ドメイン例外
-   業務規則違反。
+```
 
+### 2. ビジネス/ドメイン例外
+
+業務規則違反。
+
+```java
 // 顧客が 100 個の商品を注文しようとしたが、在庫は 5 個しかない
-throw new InsufficientInventoryException (
+throw new InsufficientInventoryException(
 "商品: Laptop の在庫は 5 個のみです"
 );
 
 // 顧客が既に発送済みの注文をキャンセルしようとした
-throw new InvalidOrderStateException (
+throw new
+
+InvalidOrderStateException(
 "SHIPPED ステータスの注文はキャンセルできません"
 );
 
 // 顧客のウォレット残高が不足している
-throw new InsufficientBalanceException (
+throw new
+
+InsufficientBalanceException(
 "残高: ₹500、必要額: ₹2000"
 );
 
-3. 認可／認証の例外
-   ユーザーに権限がありません。
+```
 
+### 3. 認可／認証の例外
+
+ユーザーに権限がありません。
+
+```java
 // 顧客が他の顧客の注文を表示しようとした場合
-throw new UnauthorizedException (
+throw new UnauthorizedException(
 "この注文を表示する権限がありません"
 );
+```
 
+```java
 // JWTトークンの有効期限が切れた場合
-throw new AuthenticationException (
+throw new AuthenticationException(
 "セッションの有効期限が切れました。再度ログインしてください。"
 );
 
-4. インフラストラクチャの例外
-   外部依存関係のエラーが発生しています。
+```
 
+### 4. インフラストラクチャの例外
+
+外部依存関係のエラーが発生しています。
+
+```java
 // データベースタイムアウト
-throw new DatabaseConnectionException (
+throw new DatabaseConnectionException(
 "リクエストを処理できません。もう一度お試しください。"
 );
 
+```
+
+```java
 // 決済ゲートウェイタイムアウト
-throw new PaymentGatewayException (
+throw new PaymentGatewayException(
 "決済処理に失敗しました。金額は請求されません。"
 );
 
+```
+
+```java
 // サードパーティの配送APIがダウン
-throw new ShippingServiceException (
+throw new ShippingServiceException(
 "配送料を計算できません。後でもう一度お試しください。"
 );
 
-5. 未知の/予期せぬ例外
-   その他すべて。
+```
 
+### 5. 未知の/予期せぬ例外
+
+その他すべて。
+
+```java
 // NullPointerException、ArrayIndexOutOfBoundsExceptionなど
 // コードの品質が良ければ、本番環境ではこれらの例外はまれにしか発生しないはずです
-B. 回復可能性による
+
+```
+
+## B. 回復可能性による
+
 再試行可能（一時的な障害）
 データベースのデッドロック -> トランザクションを再試行
 ネットワークタイムアウト -> API呼び出しを再試行
 レート制限を超過しました -> 遅延後に再試行
+
+```java
+
 @Retryable(
-value = {TransientDataAccessException.class},
-maxAttempts = 3,
-backoff = @Backoff(delay = 1000)
+        value = {TransientDataAccessException.class},
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 1000)
 )
-public Order createOrder (OrderRequest request) {
+public Order createOrder(OrderRequest request) {
 // 注文作成ロジック
 }
+```
+
 再試行不可（永続的な障害）
 検証エラー -> 自動的に修正されません
 在庫不足 -> すぐには解決しません
 重複注文 -> 再試行しても絶対に修正されません
-C. チェックあり vs チェックなし
+
+## C. チェックあり vs チェックなし
+
 最新のSpring Bootアプリケーションでは、チェックされない例外（RuntimeException）を好んで使用します。
 
 なぜ？
 
+```java
 // チェック例外はメソッドのシグネチャを汚染します
-public Order createOrder (OrderRequest request)  
-throws ValidationException,
-InsufficientInventoryException,
-PaymentException,
-DatabaseException ()
+public Order createOrder(OrderRequest request)
+        throws ValidationException,
+        InsufficientInventoryException,
+        PaymentException,
+        DatabaseException ()
 // すべてのレイヤーでこれらの例外を宣言または処理する必要があります
-}
+        }
 
 // チェックされない例外はコードをクリーンに保ちます
-public Order createOrder (OrderRequest request) {
+public Order createOrder(OrderRequest request) {
 // 例外は自然に伝播します
 // グローバルハンドラがそれらをキャッチします
 }
+
+```
+
 チェック例外はいつ使うべきか？めったに使わない。以下の場合にのみ使う。
 
 発信者に処理を強制したい
 これは、その特定の層における回復可能なエラーです。
 レガシーコードとの統合にはそれが必要です
 
-4. Spring Bootアプリケーションにおける例外処理の流れ
-   弊社のeコマースシステムにおける例外処理の流れを追ってみましょう。
+# 4. Spring Bootアプリケーションにおける例外処理の流れ
+
+弊社のeコマースシステムにおける例外処理の流れを追ってみましょう。
 
 クライアントリクエスト
 ↓
@@ -258,157 +310,177 @@ public Order createOrder (OrderRequest request) {
 例：注文の作成
 コントローラー（薄層、ビジネスロジックなし）：
 
+```java
+
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
-    private  final OrderService orderService; 
-    
-    @PostMapping 
-    public ResponseEntity<OrderResponse> createOrder ( 
-            @Valid  @RequestBody OrderRequest request) { 
-        
-        OrderResponse  response  = orderService.createOrder(request); 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response); 
-    } 
+    private final OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<OrderResponse> createOrder(
+            @Valid @RequestBody OrderRequest request) {
+
+        OrderResponse response = orderService.createOrder(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
 }
+
+```
+
 サービス（ビジネスロジック、ビジネス例外をスローする）：
+
+```java
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class OrderService {
 
-    private  final InventoryService inventoryService; 
-    private  final PaymentService paymentService; 
-    private  final OrderRepository orderRepository; 
-    
-    public OrderResponse createOrder (OrderRequest request) { 
+    private final InventoryService inventoryService;
+    private final PaymentService paymentService;
+    private final OrderRepository orderRepository;
+
+    public OrderResponse createOrder(OrderRequest request) {
         // 1. 在庫を確認する
-        for (OrderItem item : request.getItems()) { 
-            if (!inventoryService.isAvailable(item.getProductId(), item.getQuantity())) { 
-                throw  new  InsufficientInventoryException ( 
-                    "商品 " + item.getProductId() + " の在庫が不足しています"
-                 ); 
-            } 
-        } 
-        
+        for (OrderItem item : request.getItems()) {
+            if (!inventoryService.isAvailable(item.getProductId(), item.getQuantity())) {
+                throw new InsufficientInventoryException(
+                        "商品 " + item.getProductId() + " の在庫が不足しています"
+                );
+            }
+        }
+
         // 2. 合計を計算する
-        BigDecimal  total  = calculateTotal(request.getItems()); 
-        
+        BigDecimal total = calculateTotal(request.getItems());
+
         // 3. 支払いを処理する
-        if (!paymentService.processPayment(request.getCustomerId(), total)) { 
-            throw  new  PaymentFailedException ( 
-                "支払いが失敗しました。支払い方法を確認してください。"
-             ); 
-        } 
-        
+        if (!paymentService.processPayment(request.getCustomerId(), total)) {
+            throw new PaymentFailedException(
+                    "支払いが失敗しました。支払い方法を確認してください。"
+            );
+        }
+
         // 4. 注文を作成する
-        Order  order  = buildOrder(request, total); 
+        Order order = buildOrder(request, total);
         order = orderRepository.save(order); // DataAccessException が発生する場合があります
-        
+
         // 5. 在庫を予約する
-        inventoryService.reserveInventory(request.getItems()); 
-        
-        return OrderResponse.from(order); 
-    } 
+        inventoryService.reserveInventory(request.getItems());
+
+        return OrderResponse.from(order);
+    }
 
 }
+
 public class InsufficientInventoryException extends RuntimeException {
-public InsufficientInventoryException (String message) {
-super (message);
-}
+    public InsufficientInventoryException(String message) {
+        super(message);
+    }
 }
 
 public class PaymentFailedException extends RuntimeException {
-public PaymentFailedException (String message) {
-super (message);
+    public PaymentFailedException(String message) {
+        super(message);
+    }
 }
-}
+```
+
 リポジトリ（データアクセス、インフラストラクチャ例外をスロー）：
 
+```java
+
 @Repository
-public interface OrderRepository extends JpaRepository <Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 // Spring Data JPA は DataAccessException を階層的にスローします
 // ここではそれらをキャッチせず、伝播させます
 }
+```
+
 グローバル例外ハンドラ
 
+```java
 標準誤差応答DTO
 
 @Getter
 @AllArgsConstructor
+
 public class ApiErrorResponse {
-private String message;
-private String errorCode;
-private Instant timestamp;
+    private String message;
+    private String errorCode;
+    private Instant timestamp;
 }
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /* =======================
        ビジネス例外
-       ====================== */ 
+       ====================== */
 
-    @ExceptionHandler(InsufficientInventoryException.class) 
-    public ResponseEntity<ApiErrorResponse> handleInventoryException ( 
-            InsufficientInventoryException ex) { 
+    @ExceptionHandler(InsufficientInventoryException.class)
+    public ResponseEntity<ApiErrorResponse> handleInventoryException(
+            InsufficientInventoryException ex) {
 
-        return ResponseEntity.status(HttpStatus.CONFLICT) 
-                .body( new  ApiErrorResponse ( 
-                        ex.getMessage(), 
-                        "INSUFFICIENT_INVENTORY" , 
-                        Instant.now() 
-                )); 
-    } 
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse(
+                        ex.getMessage(),
+                        "INSUFFICIENT_INVENTORY",
+                        Instant.now()
+                ));
+    }
 
-    @ExceptionHandler(PaymentFailedException.class) 
-    public ResponseEntity<ApiErrorResponse> handlePaymentException ( 
-            PaymentFailedException ex) { 
+    @ExceptionHandler(PaymentFailedException.class)
+    public ResponseEntity<ApiErrorResponse> handlePaymentException(
+            PaymentFailedException ex) {
 
-        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED) 
-                .body( new  ApiErrorResponse ( 
-                        ex.getMessage(), 
-                        "PAYMENT_FAILED" , 
-                        Instant.now() 
-                )); 
+        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED)
+                .body(new ApiErrorResponse(
+                        ex.getMessage(),
+                        "PAYMENT_FAILED",
+                        Instant.now()
+                ));
     } 
 
     /* =======================
        インフラストラクチャ例外
-       ====================== */ 
+       ====================== */
 
-    @ExceptionHandler(DataAccessException.class) 
-    public ResponseEntity<ApiErrorResponse> handleDatabaseException ( 
-            DataAccessException ex) { 
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ApiErrorResponse> handleDatabaseException(
+            DataAccessException ex) {
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) 
-                .body( new  ApiErrorResponse ( 
-                        "データベースエラーが発生しました。しばらくしてからもう一度お試しください。 " , 
-                        "DATABASE_ERROR" , 
-                        Instant.now() 
-                )); 
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiErrorResponse(
+                        "データベースエラーが発生しました。しばらくしてからもう一度お試しください。 ",
+                        "DATABASE_ERROR",
+                        Instant.now()
+                ));
     } 
 
     /* =======================
        フォールバック (セーフティネット) 
-       ======================= */ 
+       ======================= */
 
-    @ExceptionHandler(Exception.class) 
-    public ResponseEntity<ApiErrorResponse> handleGenericException ( 
-            Exception ex) { 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleGenericException(
+            Exception ex) {
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) 
-                .body( new  ApiErrorResponse ( 
-                        "予期しないエラーが発生しました" , 
-                        "INTERNAL_ERROR" , 
-                        Instant.now() 
-                )); 
-    } 
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiErrorResponse(
+                        "予期しないエラーが発生しました",
+                        "INTERNAL_ERROR",
+                        Instant.now()
+                ));
+    }
 
 }
+
+```
+
 要点：
 コントローラーはシンプルさを保つ：try-catchもビジネスロジックもなし
 サービス独自のビジネス例外：ドメインルールを理解している
@@ -416,220 +488,319 @@ public class GlobalExceptionHandler {
 例外は上位に伝播します。適切に処理できる場合を除き、例外をキャッチしないでください。
 グローバルハンドラーの翻訳：例外をエラー応答に変換する場所が1箇所に集約されます
 
-5. エラー契約設計（APIエラー応答）
-   これは優れた例外処理の核心です。すべてのエラー応答は標準的な構造に従う必要があります。
+# 5. エラー契約設計（APIエラー応答）
+
+これは優れた例外処理の核心です。すべてのエラー応答は標準的な構造に従う必要があります。
 
 標準エラー応答が必要な理由：
 悪い（一貫性のない回答）：
 
+```javascript
 // バリデーションエラー
 {
-"error" :  "無効なリクエスト"
+    "error"
+:
+    "無効なリクエスト"
 }
 
+```
+
+```javascript
 // ビジネスエラー
 {
-"message" :  "在庫切れ" ,
-"code" :  409
+    "message"
+:
+    "在庫切れ" ,
+        "code"
+:
+    409
 }
 
+```
+
+```javascript
 // サーバーエラー
 {
-"status" :  500 ,
-"error" :  "内部サーバーエラー"
+    "status"
+:
+    500 ,
+        "error"
+:
+    "内部サーバーエラー"
 }
+
+```
+
 クライアントはこれらのデータを一貫して解析できません。各エンドポイントは異なる構造を返します。
 
 良い（一貫した構造）：
 
+```javascript
 {
-"timestamp" :  "2026-01-30T10:15:30Z" ,
-"status" :  400 ,
-"error" :  "BAD_REQUEST" ,
-"errorCode" :  "VALIDATION_FAILED" ,
-"message" :  "無効な入力が指定されました" ,
-"developerMessage" :  "注文リクエストの検証に失敗しました" ,
-"path" :  "/api/orders" ,
-"traceId" :  "abc123xyz" ,
-"errors" :  [
-{
-"field" :  "items[0].quantity" ,
-"rejectedValue" :  0 ,
-"message" :  "数量は1以上である必要があります"
-} ,
-{
-"field" :  "shippingAddress.pinCode" ,
-"rejectedValue" :  "ABC" ,
-"message" :  "PINコードは6桁である必要があります"
+    "timestamp"
+:
+    "2026-01-30T10:15:30Z" ,
+        "status"
+:
+    400 ,
+        "error"
+:
+    "BAD_REQUEST" ,
+        "errorCode"
+:
+    "VALIDATION_FAILED" ,
+        "message"
+:
+    "無効な入力が指定されました" ,
+        "developerMessage"
+:
+    "注文リクエストの検証に失敗しました" ,
+        "path"
+:
+    "/api/orders" ,
+        "traceId"
+:
+    "abc123xyz" ,
+        "errors"
+:
+    [
+        {
+            "field": "items[0].quantity",
+            "rejectedValue": 0,
+            "message": "数量は1以上である必要があります"
+        },
+        {
+            "field": "shippingAddress.pinCode",
+            "rejectedValue": "ABC",
+            "message": "PINコードは6桁である必要があります"
+        }
+    ]
 }
-]
-}
-エラー応答クラスを定義します。
+
+```
+
+エラー応答クラスを定義します
+
+```java
+
 @Data
 @Builder
 public class ErrorResponse {
 
-    private LocalDateTime timestamp; 
-    private  int status; 
-    private String error; 
+    private LocalDateTime timestamp;
+    private int status;
+    private String error;
     private String errorCode;         // 機械可読で安定したメッセージ
     private String message;            // ユーザーフレンドリーなメッセージ
     private String developerMessage;   // 開発者向けの技術的な詳細
-    private String path; 
+    private String path;
     private String traceId;            // ログの相関用
     private List<FieldError> errors;   // 検証エラー用
-    
-    @Data 
-    @AllArgsConstructor 
-    public  static  class  FieldError { 
-        private String field; 
-        private Object rejectedValue; 
-        private String message; 
-    } 
+
+    @Data
+    @AllArgsConstructor
+    public static class FieldError {
+        private String field;
+        private Object rejectedValue;
+        private String message;
+    }
 
 }
+```
+
 必須項目の説明：
 
-1. タイムスタンプ：エラーが発生した日時（ログの相関関係の把握に役立ちます）
+*
+    1. タイムスタンプ：エラーが発生した日時（ログの相関関係の把握に役立ちます）
 
-2. ステータス：HTTPステータスコード（400、404、500など）
+*
+    2. ステータス：HTTPステータスコード（400、404、500など）
 
-3. エラー：HTTPステータス理由（「BAD_REQUEST」、「NOT_FOUND」）
+*
+    3. エラー：HTTPステータス理由（「BAD_REQUEST」、「NOT_FOUND」）
 
-4. errorCode：最も重要！機械可読で安定した識別子
+*
+    4. errorCode：最も重要！機械可読で安定した識別子
 
 クライアントはこれをプログラム処理に使用します
 これらのコードは絶対に変更しないでください（互換性を損なう変更です）
 例：在庫不足、支払失敗、注文が見つかりません
 
-5. メッセージ：ユーザーフレンドリーなメッセージ
+*
+    5. メッセージ：ユーザーフレンドリーなメッセージ
 
 ユーザーに直接表示できます
 必要に応じてローカライズ
 例：「在庫切れ」、「支払いが拒否されました」
 
-6. 開発者メッセージ：技術的な詳細
+*
+    6. 開発者メッセージ：技術的な詳細
 
 デバッグ用
 エンドユーザーには表示されません
 例：「InventoryService.checkStock は productId=123 に対して false を返しました」
 
-7. パス：エラーの原因となったリクエストURI
+*
+    7. パス：エラーの原因となったリクエストURI
 
-8. traceId：分散トレーシングの相関ID
+*
+    8. traceId：分散トレーシングの相関ID
 
 複数のサービスにわたるリンク要求
 マイクロサービスに不可欠
 
-9. エラー：フィールドレベルの検証エラー
+*
+    9. エラー：フィールドレベルの検証エラー
 
 検証失敗の場合のみ
 各フィールドのどこが問題なのかをクライアントに正確に伝える
 エラーコードとメッセージ：
+
+```java
 // 悪い例: クライアントがメッセージをチェックする (不安定)
-if (errorResponse.getMessage().contains( "out of stock" )) {
+if(errorResponse.getMessage().
+
+contains( "out of stock")){
+
 showRestockNotification();
 }
 
+```
+
+```java
 // 良い例: クライアントがエラーコードをチェックする (安定)
-if (errorResponse.getErrorCode().equals( "INSUFFICIENT_INVENTORY" )) {
+if(errorResponse.getErrorCode().
+
+equals( "INSUFFICIENT_INVENTORY")){
+
 showRestockNotification();
 }
+
+```
+
 メッセージは変更可能（ローカライズ、表現の変更など）。エラーコードは変更してはならない。
 
-6. エラーコード設計ガイドライン
-   エラーコードは、APIのエラーに関する契約書です。慎重に設計してください。
+# 6. エラーコード設計ガイドライン
+
+エラーコードは、APIのエラーに関する契約書です。慎重に設計してください。
 
 命名規則:MODULE_ACTION_REASON
+
+```java
 public class ErrorCodes {
 
     // 注文モジュール
-    public  static  final  String  ORDER_NOT_FOUND  =  "ORDER_NOT_FOUND" ; 
-    public  static  final  String  ORDER_ALREADY_CANCELLED  =  "ORDER_ALREADY_CANCELLED" ; 
-    public  static  final  String  ORDER_CANNOT_CANCEL  =  "ORDER_CANNOT_CANCEL" ; 
-    public  static  final  String  ORDER_CREATION_FAILED  =  "ORDER_CREATION_FAILED" ; 
-    
+    public static final String ORDER_NOT_FOUND = "ORDER_NOT_FOUND";
+    public static final String ORDER_ALREADY_CANCELLED = "ORDER_ALREADY_CANCELLED";
+    public static final String ORDER_CANNOT_CANCEL = "ORDER_CANNOT_CANCEL";
+    public static final String ORDER_CREATION_FAILED = "ORDER_CREATION_FAILED";
+
     // 在庫モジュール
-    public  static  final  String  INSUFFICIENT_INVENTORY  =  "INSUFFICIENT_INVENTORY" ; 
-    public  static  final  String  INVENTORY_UPDATE_FAILED  =  "INVENTORY_UPDATE_FAILED" ; 
-    
+    public static final String INSUFFICIENT_INVENTORY = "INSUFFICIENT_INVENTORY";
+    public static final String INVENTORY_UPDATE_FAILED = "INVENTORY_UPDATE_FAILED";
+
     // 支払いモジュール
-    public  static  final  String  PAYMENT_FAILED  =  "PAYMENT_FAILED" ; 
-    public  static  final  String  PAYMENT_GATEWAY_TIMEOUT  =  "PAYMENT_GATEWAY_TIMEOUT" ; 
-    public  static  final  String  INSUFFICIENT_BALANCE  =  "INSUFFICIENT_BALANCE" ; 
-    
+    public static final String PAYMENT_FAILED = "PAYMENT_FAILED";
+    public static final String PAYMENT_GATEWAY_TIMEOUT = "PAYMENT_GATEWAY_TIMEOUT";
+    public static final String INSUFFICIENT_BALANCE = "INSUFFICIENT_BALANCE";
+
     // 顧客モジュール
-    public  static  final  String  CUSTOMER_NOT_FOUND  =  "CUSTOMER_NOT_FOUND" ; 
-    public  static  final  String  CUSTOMER_INACTIVE  =  "CUSTOMER_INACTIVE" ; 
-    
+    public static final String CUSTOMER_NOT_FOUND = "CUSTOMER_NOT_FOUND";
+    public static final String CUSTOMER_INACTIVE = "CUSTOMER_INACTIVE";
+
     // 検証
-    public  static  final  String  VALIDATION_FAILED  =  "VALIDATION_FAILED" ; 
-    public  static  final  String  INVALID_INPUT  =  "INVALID_INPUT" ; 
-    
+    public static final String VALIDATION_FAILED = "VALIDATION_FAILED";
+    public static final String INVALID_INPUT = "INVALID_INPUT";
+
     // 認証/認可
-    public  static  final  String  UNAUTHORIZED  =  "UNAUTHORIZED" ; 
-    public  static  final  String  ACCESS_DENIED  =  "ACCESS_DENIED" ; 
-    public  static  final  String  TOKEN_EXPIRED  =  "TOKEN_EXPIRED" ; 
-    
+    public static final String UNAUTHORIZED = "UNAUTHORIZED";
+    public static final String ACCESS_DENIED = "ACCESS_DENIED";
+    public static final String TOKEN_EXPIRED = "TOKEN_EXPIRED";
+
     // テクニカルエラー
-    public  static final  String  DATABASE_ERROR  =  "DATABASE_ERROR" ; 
-    public  static  final  String  EXTERNAL_SERVICE_ERROR  =  "EXTERNAL_SERVICE_ERROR" ; 
-    public  static  final  String  INTERNAL_SERVER_ERROR  =  "INTERNAL_SERVER_ERROR" ; 
+    public static final String DATABASE_ERROR = "DATABASE_ERROR";
+    public static final String EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR";
+    public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
 
 }
+
+```
+
 ビジネスエラーコードとテクニカルエラーコード：
+
 ビジネスエラー（4xx）：
 
 クライアントの行動が原因です
 クライアントによる復旧が可能
 例：在庫不足、支払失敗、注文が見つかりません
+
 技術的なエラー (5xx):
 
 システムの問題が原因です
 クライアントによる復旧は不可能
 例：DATABASE_ERROR、PAYMENT_GATEWAY_TIMEOUT、INTERNAL_SERVER_ERROR
 クライアントがメッセージではなくコードに頼る理由：
-// モバイルアプリまたはウェブアプリでさまざまなエラーシナリオを処理する
-switch (response.getErrorCode()) {
-case  "INSUFFICIENT_INVENTORY" :
-showOutOfStockDialog();
-suggestAlternatives();
-break ;
 
-    case  "PAYMENT_FAILED" : 
-        retryPayment(); 
-        break ; 
-        
-    case  "PAYMENT_GATEWAY_TIMEOUT" : 
-        showRetryDialog( "支払い処理中です..." ); 
-        checkPaymentStatus(); 
-        break ; 
-        
-    case  "CUSTOMER_INACTIVE" : 
-        redirectToActivationPage(); 
-        break ; 
-        
-    default : 
-        showGenericError(); 
+```java
+// モバイルアプリまたはウェブアプリでさまざまなエラーシナリオを処理する
+switch(response.getErrorCode()){
+        case"INSUFFICIENT_INVENTORY":
+
+showOutOfStockDialog();
+
+suggestAlternatives();
+        break;
+
+                case"PAYMENT_FAILED":
+
+retryPayment(); 
+        break;
+
+                case"PAYMENT_GATEWAY_TIMEOUT":
+
+showRetryDialog( "支払い処理中です...");
+
+checkPaymentStatus(); 
+        break;
+
+                case"CUSTOMER_INACTIVE":
+
+redirectToActivationPage(); 
+        break;
+
+default :
+
+showGenericError(); 
 
 }
+
+```
+
 バージョン管理戦略：
 エラーコードにはバージョン管理をしないでください。一度公開されると、変更はできません。
 
+```java
 // 不良
 ORDER_NOT_FOUND_V1
-ORDER_NOT_FOUND_V2
+        ORDER_NOT_FOUND_V2
 
+```
+
+```java
 // 良好 - 新しいコードを追加し、古いコードは保持
 ORDER_NOT_FOUND // オリジナル
-ORDER_NOT_FOUND_CANCELLED // より具体的、後から追加
+        ORDER_NOT_FOUND_CANCELLED // より具体的、後から追加
+
+```
+
 ドキュメント:
 エラーコード登録簿を維持する：
 
 Enterキーを押すか、画像をクリックしてフルサイズで表示します。
 
-7. HTTPステータスコードマッピング戦略
-   適切なHTTPステータスを選択することは非常に重要です。ここでは、当社のeコマースシステムにおける例外処理のマッピング方法を説明します。
+# 7. HTTPステータスコードマッピング戦略
+
+適切なHTTPステータスを選択することは非常に重要です。ここでは、当社のeコマースシステムにおける例外処理のマッピング方法を説明します。
 
 黄金律：
 2xx：成功（ここではこれについては議論しません）
@@ -637,21 +808,37 @@ Enterキーを押すか、画像をクリックしてフルサイズで表示し
 5xx：サーバーエラー（クライアント側では修正できません。サーバー側で修正する必要があります）
 一般的なステータスコード：
 400 Bad Request - 無効な入力 / 検証失敗
-// 例:
-throw new ValidationException ( "無効な注文数量" );
-throw new InvalidInputException ( "商品IDは正の値である必要があります" );
 
+```java
+// 例:
+throw new ValidationException( "無効な注文数量");
+throw new
+
+InvalidInputException( "商品IDは正の値である必要があります");
+```
+
+```javascript
 // レスポンス:
 {
-"status" : 400 ,
-"errorCode" : "VALIDATION_FAILED" ,
-"message" : "注文数量は1～100の間でなければなりません"
+    "status"
+:
+    400 ,
+        "errorCode"
+:
+    "VALIDATION_FAILED" ,
+        "message"
+:
+    "注文数量は1～100の間でなければなりません"
 }
+
+```
+
 使用場面：
 
 入力検証に失敗しました
 リクエストボディの形式が正しくありません
 必須項目が欠落しています
+
 401 Unauthorized - 認証失敗
 // 例:
 throw new AuthenticationException ( "無効な認証情報" );
@@ -806,8 +993,9 @@ return ResponseEntity. status ( 500 ). body ( "エラーが発生しました" )
 
 在庫がなくなった場合、それは500 （サーバー側の問題）ではなく、400/409 （クライアント側の問題）です。
 
-8. Spring Bootにおけるグローバル例外処理
-   それでは、 @RestControllerAdviceを使用して、一元化された例外処理を実装してみましょう。
+# 8. Spring Bootにおけるグローバル例外処理
+
+それでは、 @RestControllerAdviceを使用して、一元化された例外処理を実装してみましょう。
 
 @RestControllerAdviceが不可欠な理由：
 それがないと：
@@ -1033,8 +1221,9 @@ public class GlobalExceptionHandler {
 詳細を非表示にする：スタックトレースや機密情報をクライアントに公開しないでください
 一貫した構造：すべてのレスポンスは同じErrorResponse形式に従います
 
-9. 検証例外処理
-   検証は最初の防衛線です。適切に対処しましょう。
+# 9. 検証例外処理
+
+検証は最初の防衛線です。適切に対処しましょう。
 
 Bean検証の基本：
 public class OrderRequest {
@@ -1442,12 +1631,13 @@ CustomerInactiveException 403 CUSTOMER_INACTIVE
 
 これらはすべて4xxエラーです。なぜなら、サーバー障害ではなく、クライアント側の問題だからです。
 
-11. インフラストラクチャと統合のエラー
+# 11. インフラストラクチャと統合のエラー
+
     インフラストラクチャのエラーは、業務上のエラーとは異なります。通常、インフラストラクチャのエラーは一時的なものであり、異なる方法で対処する必要があります。
 
 一般的なインフラストラクチャの例外:
 
-1. データベース例外:
+## 1. データベース例外:
 
 // 接続タイムアウト
 org.springframework.dao.DataAccessResourceFailureException
@@ -1459,7 +1649,7 @@ org.springframework.dao.DataIntegrityViolationException
 // クエリタイムアウト
 org.springframework.dao.QueryTimeoutException
 
-2. ネットワーク/HTTP例外:
+## 2. ネットワーク/HTTP例外:
 
 // 接続タイムアウト
 java.net.SocketTimeoutException
@@ -1467,7 +1657,7 @@ java.net.SocketTimeoutException
 // 接続拒否
 java.net.ConnectException
 
-3. サードパーティAPIの例外：
+## 3. サードパーティAPIの例外：
 
 // 決済ゲートウェイのタイムアウト
 // 配送サービスが利用できません
@@ -1680,12 +1870,13 @@ public class GlobalExceptionHandler {
 5xx (通常503)再試行可能通常は不可 多くの場合可ログレベル警告 エラークライアントのアクション入力を修正して再試行する
 後で再試行する例検証、ビジネスルール DBタイムアウト、APIダウン
 
-12. 例外処理のためのログ記録戦略
+# 12. 例外処理のためのログ記録戦略
+
     ログ記録は、本番環境における問題のデバッグに不可欠です。しかし、あらゆるものをログに記録すると、ノイズが発生します。
 
 記録すべき内容：
 
-1. 想定されるクライアントエラー (4xx): WARNレベルでログに記録する
+## 1. 想定されるクライアントエラー (4xx): WARNレベルでログに記録する
 
 @ExceptionHandler(InsufficientInventoryException.class)
 public ResponseEntity<ErrorResponse> handleInsufficientInventory (
@@ -1698,7 +1889,7 @@ InsufficientInventoryException ex) {
 
 }
 
-2. サーバーエラー (5xx):スタックトレース付きでERRORレベルでログを記録
+## 2. サーバーエラー (5xx):スタックトレース付きでERRORレベルでログを記録
 
 @ExceptionHandler(Exception.class)
 public ResponseEntity<ErrorResponse> handleGenericException (Exception ex) {
@@ -1743,7 +1934,7 @@ customerId, total, reason, traceId);
 相関ID / トレースID:
 すべてのリクエストには、すべてのログに反映される一意のトレースIDが付与されるべきである。
 
-1. トレースIDフィルターを追加する：
+### 1. トレースIDフィルターを追加する：
 
 @Component
 @Order(1)
@@ -1772,7 +1963,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
 
 }
 
-2. ログにトレースIDを含める：
+## 2. ログにトレースIDを含める：
 
 <!-- logback.xml --> 
 < configuration >
@@ -1785,7 +1976,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
 </ appender >
 </ configuration >
 
-3. ログは次のようになります。
+## 3. ログは次のようになります。
 
 2026-01-30 10:15:30 [ http-nio-8080-exec-1 ] WARN o.scOrderService [ traceId=abc-123-xyz ] -
 在庫不足:  productId=456、 要求数=10、 在庫数=5
@@ -1854,12 +2045,13 @@ public class GlobalExceptionHandler {
 }
 経験則として、ログはビジネスロジック内ではなく、境界（グローバルハンドラー）で記録する。
 
-13. 可観測性とモニタリング
+# 13. 可観測性とモニタリング
+
     適切な例外処理は、アプリケーションの状態を監視し、問題を早期に発見するのに役立ちます。
 
 追跡すべき指標：
 
-1. ステータスコード別のエラー件数：
+## 1. ステータスコード別のエラー件数：
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -1883,7 +2075,7 @@ public class GlobalExceptionHandler {
 
 }
 
-2. エラー率：
+## 2. エラー率：
 
 // リクエスト総数を追跡
 meterRegistry.counter( "api.requests.total" ,
@@ -1899,7 +2091,7 @@ meterRegistry.counter( "api.requests.errors" ,
 ).increment();
 // エラー率 = エラー数 / 総数
 
-3. エラーコードによるエラー処理：
+## 3. エラーコードによるエラー処理：
 
 meterRegistry.counter( "api.errors.by.code" ,
 "errorCode" , ErrorCodes.INSUFFICIENT_INVENTORY
@@ -2170,7 +2362,8 @@ public ResponseEntity<ErrorResponse> handleRateLimitExceeded (RateLimitExceededE
 
 }
 
-15. 再試行、冪等性、回復力
+# 15. 再試行、冪等性、回復力
+
     すべてのエラーを同じように扱うべきではありません。再試行できるものもあれば、できないものもあります。
 
 再試行可能なエラーと再試行不可能なエラー：
@@ -2188,7 +2381,7 @@ public ResponseEntity<ErrorResponse> handleRateLimitExceeded (RateLimitExceededE
 認証/認可エラー
 再試行ロジックの実装：
 
-1. Spring Retry を使用する:
+## 1. Spring Retry を使用する:
 
 <dependency> <groupId> org.springframework.retry </groupId> <artifactId> spring - retry </artifactId> </dependency>​
     ​​​​​​​​​
@@ -2384,7 +2577,8 @@ public class OrderService {
 
 }
 
-16. 例外処理のテスト
+# 16. 例外処理のテスト
+
     例外処理は、正常動作と同様にテストする必要があります。
 
 例外マッピングの単体テスト：
@@ -2651,7 +2845,8 @@ when(orderService.getOrder( 999L ))
 
 }
 
-17. ドキュメントとAPI契約
+# 17. ドキュメントとAPI契約
+
     クライアントがどのようなエラーが発生する可能性があるかを知らなければ、優れた例外処理は無意味である。
 
 OpenAPI/Swaggerでエラー応答を文書化する：
@@ -2855,67 +3050,80 @@ Retry-After:レスポンスヘッダーに含まれています
 **テストを使用してドキュメント化を強制します:**
 
 ```java 
-@Test 
-void  allErrorCodesAreDocumented () { 
+
+@Test
+void allErrorCodesAreDocumented() {
     // コードからすべてのエラー コードを取得します
-    Set<String> codeErrorCodes = Arrays.stream(ErrorCodes.class.getDeclaredFields()) 
-            .filter(field -> Modifier.isStatic(field.getModifiers())) 
-            .map(field -> { 
-                try { 
-                    return (String) field.get( null ); 
-                } catch (IllegalAccessException e) { 
-                    return  null ; 
-                } 
-            }) 
-            .filter(Objects::nonNull) 
-            .collect(Collectors.toSet()); 
-    
+    Set<String> codeErrorCodes = Arrays.stream(ErrorCodes.class.getDeclaredFields())
+            .filter(field -> Modifier.isStatic(field.getModifiers()))
+            .map(field -> {
+                try {
+                    return (String) field.get(null);
+                } catch (IllegalAccessException e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
     // ドキュメントからすべてのエラー コードを取得します
-    Set<String> documentedErrorCodes = parseErrorCodesFromMarkdown( "ERROR_CODES.md" ); 
-    
+    Set<String> documentedErrorCodes = parseErrorCodesFromMarkdown("ERROR_CODES.md");
+
     // すべてのコードがドキュメント化されていることを確認します
-    Set<String> undocumented = new  HashSet <>(codeErrorCodes); 
-    undocumented.removeAll(documentedErrorCodes); 
-    
-    assertTrue( 
-        undocumented.isEmpty(), 
-        "以下のエラーコードはドキュメント化されていません: " + undocumented 
-    ); 
+    Set<String> undocumented = new HashSet<>(codeErrorCodes);
+    undocumented.removeAll(documentedErrorCodes);
+
+    assertTrue(
+            undocumented.isEmpty(),
+            "以下のエラーコードはドキュメント化されていません: " + undocumented
+    );
 }
+```
+
 注釈駆動型ドキュメントを使用する：
 
-@Documented 
-@ErrorCode( 
-    code = "INSUFFICIENT_INVENTORY", 
-    httpStatus = 409, 
-    description = "要求された数量が利用可能な在庫を超えています", 
-    recoveryAction = "数量を減らすか、在庫補充をお待ちください", 
-    retryable = true 
-) 
-public  class  InsufficientInventoryException  extends  BusinessException { 
+```java
+
+@Documented
+@ErrorCode(
+        code = "INSUFFICIENT_INVENTORY",
+        httpStatus = 409,
+        description = "要求された数量が利用可能な在庫を超えています",
+        recoveryAction = "数量を減らすか、在庫補充をお待ちください",
+        retryable = true
+)
+public class InsufficientInventoryException extends BusinessException {
     // ...
- }
+}
+```
+
 次に、これらの注釈からドキュメントを生成します。
 
-18．避けるべきよくある間違い
+# 18．避けるべきよくある間違い
+
 アンチパターンとその修正方法について見ていきましょう。
 
 間違い1：あらゆる場所で例外をキャッチする
 悪い：
 
-@Service 
-public  class  OrderService { 
-    
-    public Order createOrder (OrderRequest request) { 
-        try { 
+```java
+
+@Service
+public class OrderService {
+
+    public Order createOrder(OrderRequest request) {
+        try {
             // ビジネスロジック
-            return order; 
-        } catch (Exception e) { 
-            log.error( "注文の作成エラー" , e); 
-            return  null ; // すべての例外を捕捉
-        } 
-    } 
+            return order;
+        } catch (Exception e) {
+            log.error("注文の作成エラー", e);
+            return null; // すべての例外を捕捉
+        }
+    }
 }
+
+```
+
 問題点：
 
 特定のエラータイプを非表示にします
@@ -2924,33 +3132,43 @@ public  class  OrderService {
 異なるエラーを異なる方法で処理することはできません
 良い：
 
-@Service 
-public  class  OrderService { 
-    
-    public Order createOrder (OrderRequest request) { 
+```java
+
+@Service
+public class OrderService {
+
+    public Order createOrder(OrderRequest request) {
         // 例外を伝播させる
         // グローバルハンドラが例外をキャッチして適切に処理します
-        
-        if (inventoryCheck fails) { 
-            throw  new  InsufficientInventoryException ( "..." ); 
-        } 
-        
-        if (payment fails) { 
-            throw  new  PaymentFailedException ( "..." ); 
-        } 
-        
-        return order; 
-    } 
+
+        if (inventoryCheck fails){
+            throw new InsufficientInventoryException("...");
+        }
+
+        if (payment fails){
+            throw new PaymentFailedException("...");
+        }
+
+        return order;
+    }
 }
+
+```
+
 間違い2：生の例外メッセージを返す
 悪い：
 
-@ExceptionHandler(Exception.class) 
-public ResponseEntity<String> handleException (Exception ex) { 
-    return ResponseEntity 
-            .status( 500 ) 
+```java
+
+@ExceptionHandler(Exception.class)
+public ResponseEntity<String> handleException(Exception ex) {
+    return ResponseEntity
+            .status(500)
             .body(ex.getMessage()); // 内部の詳細を公開
 }
+
+```
+
 問題点：
 
 スタックトレースを公開する
@@ -2959,38 +3177,57 @@ public ResponseEntity<String> handleException (Exception ex) {
 機械で読み取れません
 良い：
 
-@ExceptionHandler(Exception.class) 
-public ResponseEntity<ErrorResponse> handleException (Exception ex) { 
-    log.error( "予期しないエラーが発生しました" , ex); // 詳細なログを出力
-    
-    ErrorResponse  error  = ErrorResponse.builder() 
-            .status( 500 ) 
-            .errorCode( "INTERNAL_SERVER_ERROR" ) 
-            .message( "予期しないエラーが発生しました" ) // 安全なメッセージ
-            .traceId(getTraceId()) 
-            .build(); 
-    
-    return ResponseEntity.status( 500 ).body(error); 
+```java
+
+@ExceptionHandler(Exception.class)
+public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+    log.error("予期しないエラーが発生しました", ex); // 詳細なログを出力
+
+    ErrorResponse error = ErrorResponse.builder()
+            .status(500)
+            .errorCode("INTERNAL_SERVER_ERROR")
+            .message("予期しないエラーが発生しました") // 安全なメッセージ
+            .traceId(getTraceId())
+            .build();
+
+    return ResponseEntity.status(500).body(error);
 }
+
+```
+
 間違い3：エンドポイントごとに異なるエラー形式を使用する
 悪い：
 
+```javascript
 // エンドポイント 1 
-{ 
-  "error" :  "無効な入力" 
-} 
+{
+    "error"
+:
+    "無効な入力"
+}
 
 // エンドポイント 2 
-{ 
-  "message" :  "見つかりません" , 
-  "code" :  404 
-} 
+{
+    "message"
+:
+    "見つかりません" ,
+        "code"
+:
+    404
+}
 
 // エンドポイント 3 
-{ 
-  "status" :  "error" , 
-  "reason" :  "支払いに失敗しました" 
+{
+    "status"
+:
+    "error" ,
+        "reason"
+:
+    "支払いに失敗しました"
 }
+
+```
+
 問題点：
 
 クライアントは一貫して解析できない
@@ -2998,41 +3235,71 @@ public ResponseEntity<ErrorResponse> handleException (Exception ex) {
 メンテナンスの悪夢
 良い：
 
+```javascript
 // すべてのエンドポイントは同じ ErrorResponse 構造を使用します
-{ 
-  "timestamp" :  "..." , 
-  "status" :  404 , 
-  "error" :  "NOT_FOUND" , 
-  "errorCode" :  "ORDER_NOT_FOUND" , 
-  "message" :  "..." , 
-  "path" :  "..." , 
-  "traceId" :  "..." 
+{
+    "timestamp"
+:
+    "..." ,
+        "status"
+:
+    404 ,
+        "error"
+:
+    "NOT_FOUND" ,
+        "errorCode"
+:
+    "ORDER_NOT_FOUND" ,
+        "message"
+:
+    "..." ,
+        "path"
+:
+    "..." ,
+        "traceId"
+:
+    "..."
 }
+
+```
+
 間違い4：同じ例外を複数回ログに記録してスローする
 悪い：
 
+```java
 // サービス層
-try { 
-    processPayment(); 
-} catch (PaymentException e) { 
-    log.error( "支払い失敗" , e); // ここでログを出力
+try{
+processPayment(); 
+}catch(
+PaymentException e){
+        log.
+
+error( "支払い失敗",e); // ここでログを出力
     throw e; 
-} 
+}
 
 // コントローラー層
-try { 
-    orderService.createOrder(request); 
-} catch (PaymentException e) { 
-    log.error( "注文作成失敗" , e); // 再度ログを出力
+        try{
+        orderService.
+
+createOrder(request); 
+}catch(
+PaymentException e){
+        log.
+
+error( "注文作成失敗",e); // 再度ログを出力
     throw e; 
-} 
+}
 
 // グローバルハンドラー
-@ExceptionHandler(PaymentException.class) 
-public ResponseEntity<?> handle(PaymentException e) { 
-    log.error( "支払い例外の処理中" , e); // 3回目のログ出力！
-    return ...; 
+@ExceptionHandler(PaymentException.class)
+public ResponseEntity<?> handle(PaymentException e) {
+    log.error("支払い例外の処理中", e); // 3回目のログ出力！
+    return ...;
 }
+
+```
+
 問題点：
 
 散らかった丸太
@@ -3040,30 +3307,39 @@ public ResponseEntity<?> handle(PaymentException e) {
 実際の問題点を特定するのは難しい
 良い：
 
+```java
 // サービス層 - 単に例外をスローする
-if (payment fails) { 
-    throw  new  PaymentFailedException ( "..." ); 
-} 
+if(payment fails){
+        throw new
 
+PaymentFailedException( "..."); 
+} 
+```
+
+```java
 // コントローラー層 - try-catch は使用せず、例外を伝播させる
-public OrderResponse createOrder (OrderRequest request) { 
-    return orderService.createOrder(request); 
+public OrderResponse createOrder(OrderRequest request) {
+    return orderService.createOrder(request);
 } 
+```
 
+```java
 // グローバルハンドラー - 一度だけログに記録する
-@ExceptionHandler(PaymentFailedException.class) 
-public ResponseEntity<ErrorResponse> handle (PaymentFailedException ex) { 
-    log.error( "Payment failed: {}" , ex.getMessage()); // 一度だけログに記録する
-    return ...; 
+@ExceptionHandler(PaymentFailedException.class)
+public ResponseEntity<ErrorResponse> handle(PaymentFailedException ex) {
+    log.error("Payment failed: {}", ex.getMessage()); // 一度だけログに記録する
+    return ...;
 }
+```
+
 間違い5：例外を黙って受け入れる
 悪い：
 
-try { 
-    updateInventory(productId, quantity); 
-} catch (Exception e) { 
-    // サイレントエラー - ログなし、例外スローなし
-} 
+try {
+updateInventory(productId, quantity);
+} catch (Exception e) {
+// サイレントエラー - ログなし、例外スローなし
+}
 
 // 何も起こらなかったかのようにコードが続行されます
 // 在庫は更新されませんが、誰もそれを知りません
@@ -3075,24 +3351,24 @@ try {
 良い：
 
 // オプション 1: 伝播させる
-updateInventory(productId, quantity); 
+updateInventory(productId, quantity);
 
 // オプション 2: キャッチする必要がある場合は、少なくともログに記録する
-try { 
-    updateInventory(productId, quantity); 
-} catch (Exception e) { 
-    log.error( "製品 {} の在庫の更新に失敗しました" , productId, e); 
-    throw  new  InventoryUpdateException ( "在庫の更新に失敗しました" , e); 
+try {
+updateInventory(productId, quantity);
+} catch (Exception e) {
+log.error( "製品 {} の在庫の更新に失敗しました" , productId, e);
+throw new InventoryUpdateException ( "在庫の更新に失敗しました" , e);
 }
 間違い6：制御フローに例外を使用する
 悪い：
 
-public Customer getCustomer (Long id) { 
-    try { 
-        return customerRepository.findById(id).get(); // 見つからない場合は例外をスロー
-    } catch (NoSuchElementException e) { 
-        return createDefaultCustomer(); // 例外をロジックに使用
-    } 
+public Customer getCustomer (Long id) {
+try {
+return customerRepository.findById(id).get(); // 見つからない場合は例外をスロー
+} catch (NoSuchElementException e) {
+return createDefaultCustomer(); // 例外をロジックに使用
+}
 }
 問題点：
 
@@ -3101,16 +3377,16 @@ public Customer getCustomer (Long id) {
 意図を理解するのは難しい
 良い：
 
-public Customer getCustomer (Long id) { 
-    return customerRepository.findById(id) 
-            .orElseGet( this ::createDefaultCustomer); // インテントをクリア
+public Customer getCustomer (Long id) {
+return customerRepository.findById(id)
+.orElseGet( this ::createDefaultCustomer); // インテントをクリア
 }
 間違い7：トレース/相関IDを含めていない
 悪い：
 
-{ 
-  "status" :  500 , 
-  "message" :  "内部サーバーエラー" 
+{
+"status" :  500 ,
+"message" :  "内部サーバーエラー"
 }
 顧客がサポートに問い合わせた場合：
 
@@ -3124,14 +3400,15 @@ public Customer getCustomer (Long id) {
 
 良い：
 
-{ 
-  "status" :  500 , 
-  "message" :  "内部サーバーエラー" , 
-  "traceId" :  "abc-123-xyz" 
+{
+"status" :  500 ,
+"message" :  "内部サーバーエラー" ,
+"traceId" :  "abc-123-xyz"
 }
 顧客：「abc-123-xyzというエラーが発生しました」 サポート：ログをtraceIdで検索→正確なリクエストを見つけ、完全なエラーを確認し、迅速に修正します
 
-19．生産・保守の観点から
+# 19．生産・保守の観点から
+
 適切な例外処理は、本番環境での作業を楽にしてくれます。
 
 アーキテクチャの一部としての例外処理：
@@ -3139,64 +3416,68 @@ public Customer getCustomer (Long id) {
 
 機能: 注文のキャンセル
 
-正常パス: 
-1.注文が存在するか確認する2.
-注文ステータスを確認する
-3.返金を処理する
-4.注文ステータスを更新する
+## 正常パス:
 
-失敗シナリオ: 
+* 1.注文が存在するか確認する
+* 2.注文ステータスを確認する
+* 3.返金を処理する
+* 4.注文ステータスを更新する
+
+## 失敗シナリオ:
+
 1.注文が見つからない -> 404 ORDER_NOT_FOUND 2.
 注文が既にキャンセルされている -> 409 ORDER_ALREADY_CANCELLED 3.
 注文が既に発送されている -> 409 ORDER_CANNOT_CANCEL 4.返金
 が失敗した-> 400 PAYMENT_FAILED 5.
 データベースエラー -> 500 DATABASE_ERROR各
 
-失敗について: 
--クライアントには何が表示されるべきか? 
--何がログに記録されるべきか? 
--再試行すべきか? 
+## 失敗について:
+
+-クライアントには何が表示されるべきか?
+-何がログに記録されるべきか?
+-再試行すべきか?
 -どのように復旧するか?
 エラー応答の後方互換性：
 破壊的変更（避けるべき！）：
 
-// バージョン 1 
-{ 
-  "errorCode" :  "OUT_OF_STOCK" 
-} 
+// バージョン 1
+{
+"errorCode" :  "OUT_OF_STOCK"
+}
 
 // バージョン 2 - 互換性のない変更！
-{ 
-  "errorCode" :  "INSUFFICIENT_INVENTORY"  // OUT_OF_STOCK をチェックするクライアントは動作しなくなります
+{
+"errorCode" :  "INSUFFICIENT_INVENTORY"  // OUT_OF_STOCK をチェックするクライアントは動作しなくなります
 }
 互換性を損なわない変更（問題なし）：
 
-// バージョン 1 
-{ 
-  "errorCode" :  "PAYMENT_FAILED" , 
-  "message" :  "支払い失敗" 
-} 
+// バージョン 1
+{
+"errorCode" :  "PAYMENT_FAILED" ,
+"message" :  "支払い失敗"
+}
 
 // バージョン 2 - 新しいフィールドの追加は問題ありません
-{ 
-  "errorCode" :  "PAYMENT_FAILED" , 
-  "message" :  "支払い失敗" , 
-  "retryable" :  true ,  // 新しいフィールドを追加
-  "retryAfter" :  60    // 新しいフィールドを追加
+{
+"errorCode" :  "PAYMENT_FAILED" ,
+"message" :  "支払い失敗" ,
+"retryable" :  true , // 新しいフィールドを追加
+"retryAfter" :  60 // 新しいフィールドを追加
 }
 戦略：
 
 // 古いエラーコードを保持し、新しいエラーコードを追加する
-public  class  ErrorCodes { 
-    @Deprecated 
-    public  static  final  String  OUT_OF_STOCK  =  "OUT_OF_STOCK" ; // 後方互換性のために保持
-    
+public class ErrorCodes {
+@Deprecated
+public static final String OUT_OF_STOCK =  "OUT_OF_STOCK" ; // 後方互換性のために保持
+
     public  static  final  String  INSUFFICIENT_INVENTORY  =  "INSUFFICIENT_INVENTORY" ; // 新しい推奨コード
-} 
+
+}
 
 // 内部的に古いコードを新しいコードにマッピングする
-if (errorCode.equals( "OUT_OF_STOCK" )) { 
-    errorCode = "INSUFFICIENT_INVENTORY" ; 
+if (errorCode.equals( "OUT_OF_STOCK" )) {
+errorCode = "INSUFFICIENT_INVENTORY" ;
 }
 エラー契約の移行戦略：
 エラー応答を変更する必要がある場合：
@@ -3204,22 +3485,23 @@ if (errorCode.equals( "OUT_OF_STOCK" )) {
 フェーズ1：新しいフィールドを追加する
 
 // 古い構造を維持し、新しい構造を追加する
-{ 
-  "error" : "無効な入力" ,   // 古い形式
-  "errorCode" : "VALIDATION_FAILED" ,   // 新しい形式
-  "errors" : [...]   // 新しい形式
+{
+"error" : "無効な入力" , // 古い形式
+"errorCode" : "VALIDATION_FAILED" , // 新しい形式
+"errors" : [...]   // 新しい形式
 }
 フェーズ2：廃止通知
 
 リリースノート：
+
 - 旧エラー形式は非推奨です-バージョン3.0で
-削除されます-新しい形式に移行してください
- 
+  削除されます-新しい形式に移行してください
+
 フェーズ3：古いフィールドを削除する（メジャーバージョンアップ）
 
-{ 
-  "errorCode" :  "VALIDATION_FAILED" ,   // 新しい形式のみ
-  "errors" :  [ ... ] 
+{
+"errorCode" :  "VALIDATION_FAILED" , // 新しい形式のみ
+"errors" :  [ ... ]
 }
 優れた例外処理がオンコールエンジニアにどのように役立つか：
 例外処理が不適切です。
@@ -3239,22 +3521,24 @@ if (errorCode.equals( "OUT_OF_STOCK" )) {
 午前3時05分 - フォールバック決済方法を有効にする
 午前3時10分 - 就寝
 エラーコードに基づくランブック：
+
 # オンコールランブック
 
 ## 決済ゲートウェイタイムアウト
+
 **重要度:**高
 **症状:**ユーザーが購入を完了できない
 **原因:**決済ゲートウェイがダウンしているか、動作が遅い
-**調査:** 
+**調査:**
 1.決済ゲートウェイのステータスページを確認する
 2.最近のデプロイメントを確認する
 3.ネットワーク接続を確認する
 4.決済ゲートウェイのログを確認する
-**即時対応:** 
+**即時対応:**
 1.フォールバック決済方法を有効にする
 2.顧客にステータス更新を投稿する
 3.決済ゲートウェイのサポートに連絡する
-**解決策:** 
+**解決策:**
 -ゲートウェイの問題の場合: ゲートウェイの解決を待つ
 -当社の問題の場合: 最近の変更を元に戻す
 -ネットワークの問題の場合: ネットワーク構成を修正する
@@ -3264,14 +3548,15 @@ if (errorCode.equals( "OUT_OF_STOCK" )) {
 **症状:**顧客は人気商品に「在庫切れ」と表示される
 **原因:**需要が高いか、在庫同期の問題
 **調査:**
- 1. 倉庫システムの実際の在庫を確認する
+
+1. 倉庫システムの実際の在庫を確認する
 2. 在庫同期ジョブのステータスを確認する
 3. 特定の商品に特有の問題かどうかを確認する
-**アクション:**
- 1. 手動在庫同期をトリガーする
+   **アクション:**
+1. 手動在庫同期をトリガーする
 2. 同期が失敗した場合は、統合を確認する
 3. 必要に応じて顧客のETAを更新する
-これにより、オンコール担当のエンジニアは、チーム全体を起こさずに、特定のエラーに迅速に対応できます。
+   これにより、オンコール担当のエンジニアは、チーム全体を起こさずに、特定のエラーに迅速に対応できます。
 
 取り上げた内容：
 なぜ重要なのか：セキュリティ、デバッグ、ユーザーエクスペリエンス

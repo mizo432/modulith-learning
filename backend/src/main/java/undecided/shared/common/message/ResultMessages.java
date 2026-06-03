@@ -19,10 +19,24 @@ import lombok.Getter;
 import lombok.NonNull;
 import undecided.shared.common.primitiveOld.Strings2;
 
+/**
+ * 複数の結果メッセージを管理するためのクラスです。
+ *
+ * <p>各インスタンスは複数の結果メッセージ（{@link ResultMessage}）とその種類 （{@link ResultMessageType}）を持ちます。
+ * このクラスはメッセージの追加、取得、および反復処理を行うための機能を提供します。
+ *
+ * <p>スレッドセーフではありませんので、必要に応じて適切なスレッド同期を行ってください。
+ */
 @Getter
 public class ResultMessages implements Serializable, Iterable<ResultMessage> {
 
-  /** default attribute name for ResultMessages */
+  /**
+   * {@code DEFAULT_MESSAGES_ATTRIBUTE_NAME} は、{@link ResultMessages} クラスに関する デフォルトのメッセージ属性名を表します。
+   *
+   * <p>このフィールドは、{@link ResultMessages} クラスの単純名を小文字化した値を持つ 静的な定数として定義されています。
+   *
+   * <p>主にフレームワークやツールで、このクラスが利用される際の属性名のデフォルト値として 使用されることを目的としています。
+   */
   public static final String DEFAULT_MESSAGES_ATTRIBUTE_NAME =
       Strings2.uncapitalize(ResultMessages.class.getSimpleName());
 
@@ -45,19 +59,25 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   private final List<ResultMessage> list = newArrayList();
 
   /**
-   * Constructor.
+   * ResultMessagesのコンストラクタです。
    *
-   * @param type message type
+   * <p>指定されたメッセージタイプを使用してResultMessagesのインスタンスを初期化します。
+   * このコンストラクタではメッセージを指定しない場合に使用され、空のメッセージリストが初期化されます。
+   *
+   * @param type メッセージタイプ。この値はnullであってはいけません。
    */
   public ResultMessages(ResultMessageType type) {
     this(type, new ResultMessage[0]);
   }
 
   /**
-   * Constructor.
+   * 指定されたメッセージタイプと複数のメッセージを使用して、ResultMessagesのインスタンスを構築します。
    *
-   * @param type message type
-   * @param messages messages to add
+   * <p>メッセージタイプは必須であり、nullであってはなりません。メッセージ配列がnullでない場合、配列内のすべてのメッセージが追加されます。
+   *
+   * @param type メッセージタイプ。この値はnullであってはなりません。
+   * @param messages ResultMessageの可変長配列。nullが指定されている場合は何も追加されません。
+   * @throws IllegalArgumentException メッセージタイプがnullの場合
    */
   public ResultMessages(ResultMessageType type, ResultMessage... messages) {
     checkNotNull(type, () -> new IllegalArgumentException("type must not be null!"));
@@ -68,91 +88,92 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * factory method for success messages.
+   * 成功メッセージを生成するファクトリメソッドです。
    *
-   * @return success messages
+   * @return 成功メッセージのインスタンス
    */
   public static ResultMessages success() {
     return new ResultMessages(SUCCESS);
   }
 
   /**
-   * factory method for info messages.
+   * 情報メッセージを生成するファクトリメソッドです。
    *
-   * @return info messages
+   * @return 情報メッセージのインスタンス
    */
   public static ResultMessages info() {
     return new ResultMessages(INFO);
   }
 
   /**
-   * factory method for warning messages.
+   * 警告メッセージを生成するファクトリメソッドです。
    *
-   * @return warning messages
+   * @return 警告メッセージのインスタンス
    */
   public static ResultMessages warning() {
     return new ResultMessages(WARNING);
   }
 
   /**
-   * factory method for error messages.
+   * エラーメッセージを生成するファクトリメソッドです。
    *
-   * @return error messages
+   * @return エラーメッセージのインスタンス
    */
   public static ResultMessages error() {
     return new ResultMessages(StandardResultMessageType.ERROR);
   }
 
   /**
-   * factory method for danger messages.
+   * 危険メッセージを生成するファクトリメソッドです。
    *
-   * @return danger messages
+   * @return 危険メッセージのインスタンス
    */
   public static ResultMessages danger() {
     return new ResultMessages(DANGER);
   }
 
   /**
-   * factory method for primary messages.
+   * primaryメッセージを生成するファクトリメソッドです。
    *
-   * @return primary messages
+   * @return primaryメッセージのインスタンス
    */
   public static ResultMessages primary() {
     return new ResultMessages(StandardResultMessageType.PRIMARY);
   }
 
   /**
-   * factory method for secondary messages.
+   * secondaryメッセージを生成するファクトリメソッドです。
    *
-   * @return secondary messages
+   * @return secondaryメッセージのインスタンス
    */
   public static ResultMessages secondary() {
     return new ResultMessages(StandardResultMessageType.SECONDARY);
   }
 
   /**
-   * factory method for light messages.
+   * lightメッセージを生成するファクトリメソッドです。
    *
-   * @return light messages
+   * @return lightメッセージのインスタンス
    */
   public static ResultMessages light() {
     return new ResultMessages(StandardResultMessageType.LIGHT);
   }
 
   /**
-   * factory method for dark messages.
+   * ダークメッセージを生成するファクトリメソッドです。
    *
-   * @return dark messages
+   * @return ダークメッセージのインスタンス
    */
   public static ResultMessages dark() {
     return new ResultMessages(StandardResultMessageType.DARK);
   }
 
   /**
-   * add a ResultMessage
+   * 指定された{@link ResultMessage}をリストに追加します。
    *
-   * @param message ResultMessage instance
-   * @return this result messages
+   * @param message リストに追加するメッセージ。この値はnullであってはいけません。
+   * @return 自身のインスタンスを返します。
+   * @throws IllegalArgumentException 引数がnullである場合
    */
   public ResultMessages add(ResultMessage message) {
     checkNotNull(message, () -> new IllegalArgumentException("message must not be null!"));
@@ -161,10 +182,11 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * add code to create and add ResultMessages
+   * 指定されたメッセージコードを使用してResultMessageを生成し、リストに追加します。
    *
-   * @param code message code
-   * @return this result messages
+   * @param code メッセージコード。この値はnullであってはいけません。
+   * @return 自身のインスタンスを返します。
+   * @throws IllegalArgumentException メッセージコードがnullの場合
    */
   public ResultMessages add(String code) {
     checkNotNull(code, () -> new IllegalArgumentException("code must not be null!"));
@@ -173,11 +195,12 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * add code and args to create and add ResultMessages
+   * 指定されたメッセージコードおよび関連する引数を使用して{@link ResultMessage}を生成し、メッセージリストに追加します。
    *
-   * @param code message code
-   * @param args replacement values of message format
-   * @return this result messages
+   * @param code メッセージコード。この値はnullであってはいけません。
+   * @param args メッセージフォーマットの置換値。nullの場合は空の配列に置換されます。
+   * @return 自身のインスタンスを返します。
+   * @throws IllegalArgumentException メッセージコードがnullの場合
    */
   public ResultMessages add(String code, Object... args) {
     checkNotNull(code, () -> new IllegalArgumentException("code must not be null!"));
@@ -186,12 +209,13 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * add all messages (excludes <code>null</code> message)<br>
+   * 複数の{@link ResultMessage}をリストに追加します。
    *
-   * <p>if <code>messages</code> is <code>null</code>, no message is added.
+   * <p>指定されたメッセージ配列内の全ての{@link ResultMessage}を、このインスタンスに追加します。 引数がnullの場合、例外がスローされます。
    *
-   * @param messages messages to add
-   * @return this messages
+   * @param messages 追加する{@link ResultMessage}の可変長配列。この値はnullであってはいけません。
+   * @return 自身のインスタンスを返します。
+   * @throws IllegalArgumentException 引数がnullである場合
    */
   public ResultMessages addAll(ResultMessage... messages) {
     checkNotNull(messages, () -> new IllegalArgumentException("messages must not be null!"));
@@ -202,12 +226,14 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * add all messages (excludes <code>null</code> message)<br>
+   * 指定された{@link ResultMessage}のコレクションをリストに追加します。
    *
-   * <p>if <code>messages</code> is <code>null</code>, no message is added.
+   * <p>渡されたコレクション内のすべてのメッセージがこのインスタンスに追加されます。コレクションがnullの場合、 {@link
+   * IllegalArgumentException}がスローされます。
    *
-   * @param messages messages to add
-   * @return this messages
+   * @param messages 追加する{@link ResultMessage}のコレクション。この値はnullであってはいけません。
+   * @return 自身のインスタンスを返します。
+   * @throws IllegalArgumentException 引数がnullの場合
    */
   public ResultMessages addAll(Collection<ResultMessage> messages) {
     checkNotNull(messages, () -> new IllegalArgumentException("messages must not be null!"));
@@ -218,18 +244,18 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * returns whether messages are not empty.
+   * リストが空でない場合にtrueを返します。
    *
-   * @return whether messages are not empty
+   * @return リストが空でない場合はtrue、空の場合はfalse
    */
   public boolean isNotEmpty() {
     return !list.isEmpty();
   }
 
   /**
-   * Returns {@link Iterator} instance that iterates over a list of {@link ResultMessage}
+   * このクラス内に保持されている{@link ResultMessage}のイテレータを返します。
    *
-   * @see java.lang.Iterable#iterator()
+   * @return {@link ResultMessage}を順番に走査するためのイテレータ
    */
   @Override
   @NonNull
@@ -238,9 +264,9 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * Outputs type of messages in this {@code ResultMessages} and the list of messages itself
+   * このメソッドは、ResultMessagesオブジェクトの文字列表現を返します。
    *
-   * @see java.lang.Object#toString()
+   * @return メッセージタイプおよびメッセージリストを含む、このオブジェクトの文字列表現
    */
   @Override
   public String toString() {
@@ -248,22 +274,23 @@ public class ResultMessages implements Serializable, Iterable<ResultMessage> {
   }
 
   /**
-   * special handling for the serialization and deserialization process
+   * このメソッドは、`ResultMessages` オブジェクトのシリアライズ時に呼び出され、 オブジェクトのフィールドを `ObjectOutputStream` に書き込む処理を行います。
    *
-   * @param out ObjectOutputStream
-   * @throws IOException see {@link java.io.ObjectOutputStream#defaultWriteObject()}
-   * @see java.io.Serializable
+   * @param out オブジェクトの状態を保存するための {@code ObjectOutputStream}
+   * @throws IOException ストリームへの書き込み中にI/Oエラーが発生した場合
    */
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.defaultWriteObject();
   }
 
   /**
-   * {@code ResultMessages} オブジェクトのデシリアライズを処理します。
+   * ResultMessagesオブジェクトを復元する際に呼び出されるメソッドです。
    *
-   * @param in オブジェクトの状態を読み取るための {@code ObjectInputStream}
-   * @throws IOException ストリームから読み取る際にI/Oエラーが発生した場合
-   * @throws ClassNotFoundException シリアライズされたオブジェクトのクラスが見つからない場合
+   * <p>このメソッドは、シリアライズされたデータストリームを読み取り、 オブジェクトのフィールドを復元します。
+   *
+   * @param in オブジェクトの状態を復元するための {@code ObjectInputStream}
+   * @throws IOException 入力ストリームの読み込みでI/Oエラーが発生した場合
+   * @throws ClassNotFoundException 復元中にクラスが見つからない場合
    */
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
