@@ -42,7 +42,7 @@ public class ApplicationConfig {
    */
   @Bean
   @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-  public ExceptionLogger exceptionLogger() {
+  public static ExceptionLogger exceptionLogger() {
     return new ExceptionLogger(EXCEPTION_LOGGER_NAME);
   }
 

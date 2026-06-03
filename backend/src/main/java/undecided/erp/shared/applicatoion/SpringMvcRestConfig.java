@@ -36,7 +36,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    */
   @Bean
   @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-  public HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
+  public static HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
       ExceptionLogger exceptionLogger) {
     HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor =
         new HandlerExceptionResolverLoggingInterceptor();
@@ -51,7 +51,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @return ExceptionResolverLoggingInterceptorを適用するAdvisorインスタンス。
    */
   @Bean
-  public Advisor exceptionResolverLoggingInterceptorAdvisor(
+  @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+  public static Advisor exceptionResolverLoggingInterceptorAdvisor(
       HandlerExceptionResolverLoggingInterceptor interceptor) {
     JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
     pointcut.setPattern("undecided.erp..internal.*Api.*");
