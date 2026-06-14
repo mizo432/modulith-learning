@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT"> <!-- (1) -->
+    <encoder>
+      <pattern>
+        <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tthread:%thread\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\tlevel:%-5level\tlogger:%-48logger{48}\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern> <!-- (2) -->
+    </encoder>
+  </appender>
+  <root level="warn"> <!-- (11) -->
+    <appender-ref ref="STDOUT"/> <!-- (12) -->
+    <!--    <appender-ref ref="APPLICATION_LOG_FILE" />-->
+  </root>
+</configuration>
