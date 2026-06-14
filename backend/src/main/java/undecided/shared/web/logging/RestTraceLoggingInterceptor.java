@@ -122,7 +122,6 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
   @Override
   public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
       Object handler, @Nullable Exception ex) throws Exception {
-    logger.trace("afterCompletion");
     if (handler instanceof HandlerMethod handlerMethod) {
       long startTime = 0L;
       if (request.getAttribute(START_ATTR) != null) {

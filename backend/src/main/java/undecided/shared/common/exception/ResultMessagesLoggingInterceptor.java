@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.InitializingBean;
+import undecided.shared.common.message.StandardResultMessageType;
 
 /**
  * メソッド呼び出しをインターセプトし、例外のログ記録やスレッドローカルなコンテキスト管理を行うインターセプタです。
@@ -44,7 +45,8 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
    * <p>注意事項: - このフィールドが未設定の場合には、クラスの初期化時にデフォルトの値が設定される 場合があります。 -
    * このインスタンスを利用して例外の詳細を適切にログに記録する責任があります。
    */
-  @Setter private ExceptionLogger exceptionLogger = null;
+  @Setter
+  private ExceptionLogger exceptionLogger = null;
 
   /**
    * メソッド呼び出しをインターセプトし、指定された処理を実行します。
@@ -60,7 +62,21 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
       return invocation.proceed();
     } catch (ResultMessagesNotificationException ex) {
       if (isFirstCall) {
-        exceptionLogger.warn(ex);
+        switch (ex.getResultMessages().getType()) {
+          case StandardResultMessageType.ERROR:
+            exceptionLogger.error(ex);
+            break;
+          case StandardResultMessageType.WARNING:
+            exceptionLogger.warn(ex);
+            break;
+          case StandardResultMessageType.INFO:
+            exceptionLogger.info(ex);
+            break;
+          case StandardResultMessageType.DANGER:
+            exceptionLogger.log(ex);
+            break;
+          default:
+        }
       }
       throw ex;
     } finally {
@@ -74,7 +90,8 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
    * {@code afterPropertiesSet} メソッドは、Springフレームワークの {@link InitializingBean} インターフェースに基づき、
    * プロパティ設定後に呼び出される初期化処理を実行します。
    *
-   * <p>このメソッドの主な機能: - {@code exceptionLogger} プロパティが設定されていない場合、クラス名を使用して新しい {@link ExceptionLogger}
+   * <p>このメソッドの主な機能: - {@code exceptionLogger} プロパティが設定されていない場合、クラス名を使用して新しい
+   * {@link ExceptionLogger}
    * インスタンスを作成し設定します。 - 作成した {@code exceptionLogger} の初期化処理を実行します。
    *
    * <p>この処理により、例外のロギング処理が正常に機能する状態を保証します。
@@ -95,7 +112,7 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
    *
    * @param invocation 判定対象の {@link MethodInvocation} インスタンス
    * @return {@code true} の場合、指定された {@link MethodInvocation} が開始ポイントであることを示します。 {@code false}
-   *     の場合、異なります。
+   * の場合、異なります。
    */
   protected boolean isStartingPoint(MethodInvocation invocation) {
     return this.startingPoint.get() == invocation;
@@ -109,7 +126,7 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
    *
    * @param invocation 開始ポイントとして判定・設定する対象の {@link MethodInvocation} インスタンス
    * @return {@code true} の場合、指定された {@link MethodInvocation} が開始ポイントとして設定されたことを示します。 {@code false}
-   *     の場合、既に開始ポイントが設定されていることを示します。
+   * の場合、既に開始ポイントが設定されていることを示します。
    */
   private boolean markStartingPointIfNecessary(MethodInvocation invocation) {
     if (startingPoint.get() == null) {
