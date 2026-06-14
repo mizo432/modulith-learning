@@ -2,13 +2,13 @@ package undecided.erp.shared.applicatoion;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
+import undecided.shared.common.exception.ExceptionCodeResolver;
 import undecided.shared.common.exception.ExceptionLogger;
 import undecided.shared.common.exception.ResultMessagesLoggingInterceptor;
+import undecided.shared.common.exception.SimpleMappingExceptionCodeResolver;
 import undecided.shared.web.exception.ExceptionLoggingFilter;
 
 /**
@@ -32,6 +32,11 @@ public class ApplicationConfig {
    */
   private static final String EXCEPTION_LOGGER_NAME = "EXCEPTION_LOGGER_NAME";
 
+  @Bean
+  public ExceptionCodeResolver exceptionCodeResolver() {
+    return new SimpleMappingExceptionCodeResolver();
+  }
+
   /**
    * 例外ログを記録するための {@link ExceptionLogger} インスタンスを生成します。
    * <p>
@@ -41,9 +46,10 @@ public class ApplicationConfig {
    * @return 例外ログの記録を行うために初期化された {@link ExceptionLogger} インスタンス
    */
   @Bean
-  @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-  public static ExceptionLogger exceptionLogger() {
-    return new ExceptionLogger(EXCEPTION_LOGGER_NAME);
+  public ExceptionLogger exceptionLogger(ExceptionCodeResolver exceptionCodeResolver) {
+    ExceptionLogger logger = new ExceptionLogger(EXCEPTION_LOGGER_NAME);
+    logger.setExceptionCodeResolver(exceptionCodeResolver);
+    return logger;
   }
 
   /**
