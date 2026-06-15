@@ -4,13 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
-import undecided.erp.employee.Employee;
 
 @Entity
 @Table(
@@ -27,7 +24,6 @@ public class RoleAssignmentForEmp {
   @Column(name = "role_id")
   private UUID roleId;
 
-  @ManyToOne
-  @JoinColumn(name = "employee_id")
-  private Employee employee;
+  @Column(name = "employee_id")
+  private UUID employeeId;
 }
