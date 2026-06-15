@@ -52,16 +52,16 @@ spring:
     properties.hibernate.jdbc.lob.non_contextual_creation: true
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
-logging:
-  level:
-    root: warn
-    web: info
-    org.zalando.logbook: trace
-    undecided.shared.web.exception.HandlerExceptionResolverLoggingInterceptor: trace
-    #    undecided.shared.web.logging.RestTraceLoggingInterceptor: trace
-    undecided.shared.common.exception: trace
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-    org.hibernate.SQL: DEBUG
+# logging:
+#  level:
+#    root: warn
+#    web: info
+#    org.zalando.logbook: trace
+#    undecided.shared.web.exception.HandlerExceptionResolverLoggingInterceptor: trace
+#    #    undecided.shared.web.logging.RestTraceLoggingInterceptor: trace
+#    undecided.shared.common.exception: trace
+#    org.hibernate.type.descriptor.sql.BasicBinder: trace
+#    org.hibernate.SQL: DEBUG
 
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
 management:
