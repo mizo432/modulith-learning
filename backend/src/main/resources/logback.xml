@@ -20,6 +20,11 @@
       <maxHistory>7</maxHistory> <!-- (6) -->
     </rollingPolicy>
   </appender>
+  <!-- Application Loggers -->
+  <logger level="debug" name="undecided.erp"/> <!-- (9) -->
+
+  <!--  <logger name="undecided.erp.domain.repository" level="trace" />-->
+
   <root level="warn"> <!-- (11) -->
     <appender-ref ref="STDOUT"/> <!-- (12) -->
     <appender-ref ref="APPLICATION_LOG_FILE"/>
