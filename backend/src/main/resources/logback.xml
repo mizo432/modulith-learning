@@ -6,8 +6,27 @@
         <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tthread:%thread\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\tlevel:%-5level\tlogger:%-48logger{48}\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern> <!-- (2) -->
     </encoder>
   </appender>
+  <appender class="ch.qos.logback.core.rolling.RollingFileAppender"
+    name="APPLICATION_LOG_FILE"> <!-- (3) -->
+    <encoder>
+      <charset>UTF-8</charset> <!-- (7) -->
+      <pattern>
+        <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tthread:%thread\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\tlevel:%-5level\tlogger:%-48logger{48}\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern>
+    </encoder> <!-- (4) -->
+    <file>${app.log.dir:-log}/projectName-application.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${app.log.dir:-log}/projectName-application-%d{yyyyMMddHH}.log
+      </fileNamePattern> <!-- (5) -->
+      <maxHistory>7</maxHistory> <!-- (6) -->
+    </rollingPolicy>
+  </appender>
+  <!-- Application Loggers -->
+  <logger level="debug" name="undecided.erp"/> <!-- (9) -->
+
+  <!--  <logger name="undecided.erp.domain.repository" level="trace" />-->
+
   <root level="warn"> <!-- (11) -->
     <appender-ref ref="STDOUT"/> <!-- (12) -->
-    <!--    <appender-ref ref="APPLICATION_LOG_FILE" />-->
+    <appender-ref ref="APPLICATION_LOG_FILE"/>
   </root>
 </configuration>
