@@ -15,7 +15,7 @@
     </encoder> <!-- (4) -->
     <file>${app.log.dir:-log}/projectName-application.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${app.log.dir:-log}/projectName-application-%d{yyyyMMddHH}.log
+      <fileNamePattern>${app.log.dir:-log}/projectName-application-%d{yyyyMMdd}.log
       </fileNamePattern> <!-- (5) -->
       <maxHistory>7</maxHistory> <!-- (6) -->
     </rollingPolicy>
