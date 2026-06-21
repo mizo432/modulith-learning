@@ -11,20 +11,20 @@ import org.junit.jupiter.api.Test;
 class SnowflakeIdTest {
 
   @Nested
-  @DisplayName("toBase36String メソッドのテスト")
-  class ToBase36StringTest {
+  @DisplayName("toBase62String メソッドのテスト")
+  class ToBase62StringTest {
 
     @Test
-    @DisplayName("正の値の場合、base36文字列を返す")
-    void shouldReturnBase36StringForPositiveValue() {
+    @DisplayName("正の値の場合、base62文字列を返す")
+    void shouldReturnBase62StringForPositiveValue() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(123456789L);
 
       // Act
-      String result = snowflakeId.toBase36String();
+      String result = snowflakeId.toBase62String();
 
       // Assert
-      assertThat(result).isEqualTo("21i3v9");
+      assertThat(result).isEqualTo("123456789");
     }
 
     @Test
@@ -34,7 +34,7 @@ class SnowflakeIdTest {
       SnowflakeId snowflakeId = SnowflakeId.empty();
 
       // Act & Assert
-      assertThatThrownBy(snowflakeId::toBase36String)
+      assertThatThrownBy(snowflakeId::toBase62String)
           .isInstanceOf(IllegalStateException.class)
           .hasMessage("value is empty");
     }
@@ -135,7 +135,7 @@ class SnowflakeIdTest {
     void shouldThrowExceptionForNullValue() {
       // Act & Assert
       assertThatThrownBy(() -> SnowflakeId.of(null))
-          .isInstanceOf(NullPointerException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("value must not be null");
     }
   }

@@ -15,16 +15,36 @@
     </encoder> <!-- (4) -->
     <file>${app.log.dir:-log}/projectName-application.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${app.log.dir:-log}/projectName-application-%d{yyyyMMddHH}.log
+      <fileNamePattern>${app.log.dir:-log}/projectName-application-%d{yyyyMMdd}.log
       </fileNamePattern> <!-- (5) -->
       <maxHistory>7</maxHistory> <!-- (6) -->
+    </rollingPolicy>
+  </appender>
+  <appender class="ch.qos.logback.core.rolling.RollingFileAppender"
+    name="MONITORING_LOG_FILE"> <!-- (8) -->
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>
+        <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\tlevel:%-5level\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern>
+    </encoder>
+    <file>${app.log.dir:-log}/projectName-monitoring.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${app.log.dir:-log}/projectName-monitoring-%d{yyyyMMdd}.log</fileNamePattern>
+      <maxHistory>7</maxHistory>
     </rollingPolicy>
   </appender>
   <!-- Application Loggers -->
   <logger level="debug" name="undecided.erp"/> <!-- (9) -->
 
   <!--  <logger name="undecided.erp.domain.repository" level="trace" />-->
-
+  <!-- shared -->
+  <logger level="info" name="undecided.shared"/>
+  <logger level="trace" name="undecided.shared.web.logging.RestTraceLoggingInterceptor"/>
+  <logger level="info" name="undecided.shared.common.exception.ExceptionLogger"/>
+  <logger additivity="false" level="error"
+    name="undecided.shared.common.exception.ExceptionLogger.Monitoring"> <!-- (10) -->
+    <appender-ref ref="MONITORING_LOG_FILE"/>
+  </logger>
   <root level="warn"> <!-- (11) -->
     <appender-ref ref="STDOUT"/> <!-- (12) -->
     <appender-ref ref="APPLICATION_LOG_FILE"/>

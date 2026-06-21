@@ -14,7 +14,7 @@ plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "4.0.6"
+    id("org.springframework.boot") version "4.1.0"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
@@ -57,7 +57,7 @@ extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
 extra["junitVersion"] = "6.1.0"
-extra["springCloudBomVersion"] = "2025.1.0"
+extra["springCloudBomVersion"] = "2025.1.2"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.5.0"
@@ -148,6 +148,7 @@ tasks.test {
 }
 
 val mediumTest = tasks.register("mediumTest", Test::class.java) {
+    description = "medium sized test"
     group = "verification"
     useJUnitPlatform {
         includeTags("medium")
@@ -156,6 +157,7 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
     shouldRunAfter("test")
 }
 val largeTest = tasks.register("largeTest", Test::class.java) {
+    description = "large sized test"
     group = "verification"
     useJUnitPlatform {
         includeTags("large")
