@@ -1,5 +1,6 @@
 package undecided.erp.common.entity;
 
+import static undecided.shared.common.io.Base62s.DECODE_FROM_BASE62;
 import static undecided.shared.common.io.Base62s.ENCODE_TO_BASE62;
 import static undecided.shared.common.precondition.LongPrecondition.checkPositive;
 import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
@@ -142,6 +143,10 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
   public String toBase62String() {
     LongValues.checkNotEmpty(this, () -> new IllegalStateException("value is empty"));
     return ENCODE_TO_BASE62.apply(value);
+  }
+
+  public SnowflakeId fromBase62String(String base62String) {
+    return new SnowflakeId(DECODE_FROM_BASE62.apply(base62String));
   }
 
   @Override
