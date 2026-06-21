@@ -133,11 +133,11 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
   }
 
   /**
-   * このインスタンスに格納されている値をBase-36エンコードされた文字列に変換します。
+   * このインスタンスに格納されている値をBase-62エンコードされた文字列に変換します。
    *
    * <p>このメソッドは、変換を実行する前に値が空でないことを検証します。
    *
-   * @return 現在のインスタンスの値をBase-36エンコードした文字列。
+   * @return 現在のインスタンスの値をBase-32エンコードした文字列。
    * @throws IllegalStateException 値がnullまたは空の場合にスローされます。
    */
   public String toBase62String() {
