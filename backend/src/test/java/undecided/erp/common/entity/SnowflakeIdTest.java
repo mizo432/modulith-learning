@@ -24,7 +24,7 @@ class SnowflakeIdTest {
       String result = snowflakeId.toBase62String();
 
       // Assert
-      assertThat(result).isEqualTo("123456789");
+      assertThat(result).isEqualTo("8M0kX");
     }
 
     @Test
