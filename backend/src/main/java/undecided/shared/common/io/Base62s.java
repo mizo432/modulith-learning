@@ -4,6 +4,18 @@ import java.util.function.Function;
 import org.jspecify.annotations.NonNull;
 import undecided.shared.common.primitive.Objects2;
 
+/**
+ * Base62s クラスは、Base62 エンコーディングおよびデコード処理を提供します。
+ *
+ * <p>Base62 は、数字・大文字アルファベット・小文字アルファベットから構成される
+ * 62種類の文字を用いてデータを表現する方式です。このクラスでは、主に以下の機能を提供します:
+ * <ul>
+ *   <li>Base62 エンコーディングされた文字列を数値 (Long 型) にデコードする。</li>
+ *   <li>数値 (Long 型) を Base62 エンコードされた文字列に変換する。</li>
+ * </ul>
+ * <p>
+ * 主な用途としては、短いユニークな識別子の生成や、データの圧縮表現が挙げられます。
+ */
 public class Base62s {
 
   private static final String BASE62_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
