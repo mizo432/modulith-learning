@@ -1,5 +1,7 @@
 package undecided.erp.common.entity;
 
+import static undecided.shared.common.io.Base62s.DECODE_FROM_BASE62;
+import static undecided.shared.common.io.Base62s.ENCODE_TO_BASE62;
 import static undecided.shared.common.precondition.LongPrecondition.checkPositive;
 import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.shared.common.primitiveOld.Objects2.isNull;
@@ -131,16 +133,27 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
   }
 
   /**
-   * このインスタンスに格納されている値をBase-36エンコードされた文字列に変換します。
+   * このインスタンスに格納されている値をBase-62エンコードされた文字列に変換します。
    *
    * <p>このメソッドは、変換を実行する前に値が空でないことを検証します。
    *
-   * @return 現在のインスタンスの値をBase-36エンコードした文字列。
+   * @return 現在のインスタンスの値をBase-62エンコードした文字列。
    * @throws IllegalStateException 値がnullまたは空の場合にスローされます。
    */
   public String toBase62String() {
     LongValues.checkNotEmpty(this, () -> new IllegalStateException("value is empty"));
-    return Long.toString(value(), 62);
+    return ENCODE_TO_BASE62.apply(value);
+  }
+
+  /**
+   * Base-62エンコードされた文字列からSnowflakeIdオブジェクトを生成します。
+   *
+   * @param base62String Base-62エンコード形式の文字列。nullまたは空文字列であってはいけません。
+   * @return 指定されたBase-62エンコードされた文字列をデコードして生成されたSnowflakeIdオブジェクト。
+   * @throws IllegalArgumentException base62Stringが無効な形式である場合にスローされます。
+   */
+  public SnowflakeId fromBase62String(String base62String) {
+    return new SnowflakeId(DECODE_FROM_BASE62.apply(base62String));
   }
 
   @Override
