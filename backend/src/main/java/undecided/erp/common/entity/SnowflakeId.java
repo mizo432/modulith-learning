@@ -145,6 +145,13 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
     return ENCODE_TO_BASE62.apply(value);
   }
 
+  /**
+   * Base-62エンコードされた文字列からSnowflakeIdオブジェクトを生成します。
+   *
+   * @param base62String Base-62エンコード形式の文字列。nullまたは空文字列であってはいけません。
+   * @return 指定されたBase-62エンコードされた文字列をデコードして生成されたSnowflakeIdオブジェクト。
+   * @throws IllegalArgumentException base62Stringが無効な形式である場合にスローされます。
+   */
   public SnowflakeId fromBase62String(String base62String) {
     return new SnowflakeId(DECODE_FROM_BASE62.apply(base62String));
   }
