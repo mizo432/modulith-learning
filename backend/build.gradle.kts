@@ -14,7 +14,7 @@ plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "4.1.0"
+    id("org.springframework.boot") version "4.0.7"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
@@ -46,9 +46,9 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "2.0.6"
-extra["springModulithInsightVersion"] = "2.0.6"
-extra["guavaVersion"] = "33.4.8-jre"
+extra["springModulithVersion"] = "2.1.0"
+extra["springModulithInsightVersion"] = "2.1.0"
+extra["guavaVersion"] = "33.6.0-jre"
 extra["icu4jVersion"] = "77.1"
 extra["yaviVersion"] = "0.16.0"
 extra["jiltVersion"] = "1.8.2"
