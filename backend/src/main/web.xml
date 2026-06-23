@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<web.xml xmlns="http://www.springframeworkframework.org/web/2.3">
+  <filter>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> <!-- (1) -->
+    <filter-name>exceptionLoggingFilter</filter-name> <!-- (2) -->
+  </filter>
+  <filter-mapping>
+    <filter-name>exceptionLoggingFilter</filter-name> <!-- (3) -->
+    <url-pattern>/*</url-pattern> <!-- (4) -->
+  </filter-mapping>
+</web.xml>

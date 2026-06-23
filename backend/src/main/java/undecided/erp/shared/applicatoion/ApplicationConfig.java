@@ -70,7 +70,7 @@ public class ApplicationConfig {
    * @param exceptionLogger ログ記録のために使用されるExceptionLoggerインスタンス
    * @return 例外ログ出力用に初期化されたExceptionLoggingFilterインスタンス
    */
-  @Bean
+  @Bean("exceptionLoggingFilter")
   public ExceptionLoggingFilter exceptionLoggingFilter(ExceptionLogger exceptionLogger) {
     ExceptionLoggingFilter exceptionLoggingFilter = new ExceptionLoggingFilter();
     exceptionLoggingFilter.setExceptionLogger(exceptionLogger);
