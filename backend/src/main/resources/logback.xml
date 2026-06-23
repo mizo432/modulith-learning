@@ -41,8 +41,7 @@
   <logger level="info" name="undecided.shared"/>
   <logger level="trace" name="undecided.shared.web.logging.RestTraceLoggingInterceptor"/>
   <logger level="info" name="undecided.shared.common.exception.ExceptionLogger"/>
-  <logger additivity="false" level="error"
-    name="undecided.shared.common.exception.ExceptionLogger.Monitoring"> <!-- (10) -->
+  <logger additivity="false" level="error" name="EXCEPTION_LOGGER_NAME.Monitoring"> <!-- (10) -->
     <appender-ref ref="MONITORING_LOG_FILE"/>
   </logger>
   <root level="warn"> <!-- (11) -->

@@ -16,9 +16,12 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-test-query: SELECT 1
-      connection-timeout: 60000                  # Default: 30,000 (30 seconds)
-      minimum-idle: 2                            # Default: same as maximumPoolSize
-      maximum-pool-size: 10
+      connection-timeout: 20000                  # Default: 30,000 (30 seconds)
+      minimum-idle: 11                            # Default: same as maximumPoolSize
+      maximum-pool-size: 11
+      max-lifetime: 1800000
+      idle-timeout: 600000
+      keepalive-time: 0
     #  flyway:
     #    enabled: false
     #    outOfOrder: true
@@ -50,7 +53,7 @@ spring:
       ddl-auto: update
     properties.hibernate.format_sql: true
     properties.hibernate.jdbc.lob.non_contextual_creation: true
-    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+#    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
 # logging:
 #  level:
