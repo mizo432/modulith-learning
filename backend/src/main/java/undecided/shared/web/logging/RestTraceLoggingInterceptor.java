@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.Setter;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * コントローラーハンドラーの実行時間をログに記録するためのインターセプターです。
@@ -116,12 +116,12 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
    * @param request クライアントからのHTTP リクエスト
    * @param response クライアントへのHTTP レスポンス
    * @param handler 処理対象のハンドラー（通常はHandlerMethodのインスタンス）
-   * @param ex 発生した例外オブジェクト（例外が発生していない場合はnull）
    * @throws Exception 実行中にエラーが発生した場合
    */
   @Override
-  public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-      Object handler, @Nullable Exception ex) throws Exception {
+  public void postHandle(HttpServletRequest request, HttpServletResponse response,
+      @Nonnull Object handler,
+      ModelAndView modelAndView) throws Exception {
     if (handler instanceof HandlerMethod handlerMethod) {
       long startTime = 0L;
       if (request.getAttribute(START_ATTR) != null) {
@@ -141,22 +141,6 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
             m.getName(),
             buildMethodParams(handlerMethod));
         final String handlingTimeMessage = "[HANDLING TIME   ] {}#{}({})-> {} ns";
-        if (isWarnHandling) {
-          logger.warn(
-              handlingTimeMessage + " > {}",
-              m.getDeclaringClass().getSimpleName(),
-              m.getName(),
-              buildMethodParams(handlerMethod),
-              formattedHandlingTime,
-              this.warnHandlingNanos);
-        } else {
-          logger.trace(
-              handlingTimeMessage,
-              m.getDeclaringClass().getSimpleName(),
-              m.getName(),
-              buildMethodParams(handlerMethod),
-              formattedHandlingTime);
-        }
       }
     }
   }
