@@ -1,16 +1,19 @@
 package undecided.erp.greeting.internal;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.shared.common.exception.BusinessException;
-import undecided.shared.common.message.ResultMessages;
 
 @RestController
 @RequestMapping("/api/greeting1")
+@RequiredArgsConstructor
 public class Greeting1Api {
+
+  private final ExceptionService exceptionService;
+
   @GetMapping
   String get() {
-    throw new BusinessException(ResultMessages.danger().add("CODE"));
+    throw exceptionService.throwDangerException();
   }
 }
