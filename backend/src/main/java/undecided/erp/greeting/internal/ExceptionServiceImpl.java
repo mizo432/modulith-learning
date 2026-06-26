@@ -6,7 +6,7 @@ import undecided.shared.common.exception.SystemException;
 import undecided.shared.common.message.ResultMessages;
 
 @Service
-public class ExceptionServicezimpl implements ExceptionService {
+public class ExceptionServiceImpl implements ExceptionService {
 
   @Override
   public RuntimeException throwDangerException() {
