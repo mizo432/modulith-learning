@@ -2,6 +2,9 @@ package undecided.erp.shared.applicatoion;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
@@ -84,9 +87,21 @@ public class ApplicationConfig {
    *
    * @return 結果メッセージおよび例外のログ記録機能を持つResultMessagesLoggingInterceptorインスタンス
    */
+  @Bean("resultMessagesLoggingInterceptor")
+  public ResultMessagesLoggingInterceptor resultMessagesLoggingInterceptor(
+      ExceptionLogger exceptionLogger) {
+    ResultMessagesLoggingInterceptor bean = new ResultMessagesLoggingInterceptor();
+    bean.setExceptionLogger(exceptionLogger); // (2)
+    return bean;
+  }
+
   @Bean
-  public ResultMessagesLoggingInterceptor resultMessagesLoggingInterceptor() {
-    return new ResultMessagesLoggingInterceptor();
+  public Advisor resultMessagesLoggingInterceptorAdvisor(
+      ResultMessagesLoggingInterceptor resultMessagesLoggingInterceptor) {
+    AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+    pointcut.setExpression(
+        "@within(org.springframework.stereotype.Service)"); // (3)
+    return new DefaultPointcutAdvisor(pointcut, resultMessagesLoggingInterceptor);
   }
 
   /**
