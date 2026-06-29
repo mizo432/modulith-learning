@@ -8,4 +8,7 @@
     <filter-name>exceptionLoggingFilter</filter-name> <!-- (3) -->
     <url-pattern>/*</url-pattern> <!-- (4) -->
   </filter-mapping>
+  <listener>
+    <listener-class>undecided.shared.web.logging.HttpSessionEventLoggingListener</listener-class>
+  </listener>
 </web.xml>
