@@ -2,6 +2,7 @@ package undecided.shared.common.exception;
 
 import jakarta.annotation.Nonnull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,6 +20,7 @@ import undecided.shared.common.message.StandardResultMessageType;
  * <p>注意事項: - 本クラスを使用する場合は、インターセプト対象のメソッドが適切に設定されていることを確認してください。 -
  * スレッドごとに固有のコンテキスト情報を保持するため、複数スレッド環境で正確に動作することを保証します。
  */
+@Slf4j
 public class ResultMessagesLoggingInterceptor implements MethodInterceptor, InitializingBean {
 
   /**
@@ -64,20 +66,28 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
       if (isFirstCall) {
         switch (ex.getResultMessages().getType()) {
           case StandardResultMessageType.ERROR:
+            log.error("msg p1", ex);
             exceptionLogger.error(ex);
             break;
           case StandardResultMessageType.WARNING:
             exceptionLogger.warn(ex);
+            log.error("msg p2", ex);
             break;
           case StandardResultMessageType.INFO:
             exceptionLogger.info(ex);
+            log.error("msg p3", ex);
             break;
           case StandardResultMessageType.DANGER:
             exceptionLogger.log(ex);
+            log.error("msg p4", ex);
             break;
           default:
+            log.error("msg p5", ex);
         }
       }
+      throw ex;
+    } catch (Throwable ex) {
+      log.error("msg p6", ex);
       throw ex;
     } finally {
       if (isFirstCall) {
@@ -91,8 +101,7 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
    * プロパティ設定後に呼び出される初期化処理を実行します。
    *
    * <p>このメソッドの主な機能: - {@code exceptionLogger} プロパティが設定されていない場合、クラス名を使用して新しい
-   * {@link ExceptionLogger}
-   * インスタンスを作成し設定します。 - 作成した {@code exceptionLogger} の初期化処理を実行します。
+   * {@link ExceptionLogger} インスタンスを作成し設定します。 - 作成した {@code exceptionLogger} の初期化処理を実行します。
    *
    * <p>この処理により、例外のロギング処理が正常に機能する状態を保証します。
    *

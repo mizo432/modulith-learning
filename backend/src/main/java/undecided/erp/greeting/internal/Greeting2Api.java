@@ -17,6 +17,5 @@ public class Greeting2Api {
   String get() {
     throw exceptionService.throwErrorException();
 
-    // return "Hello World";
   }
 }
