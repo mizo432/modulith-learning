@@ -10,6 +10,19 @@ spring:
   threads:
     virtual:
       enabled: true
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: api-departments
+              uri: lb://backend/api/departments
+              predicates:
+                - Path=/api/departments/**
+            - id: api-employees
+              uri: lb://backend/api/employees
+              predicates:
+                - Path=/api/employees/**
 
 #  eureka:
 #  client:
