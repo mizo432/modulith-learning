@@ -63,10 +63,10 @@ extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
 extra["assertjDbVersion"] = "3.0.2"
+extra["uuidGeneratorVersion"] = "5.1.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
@@ -91,7 +91,7 @@ dependencies {
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     testRuntimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/am.ik.yavi/yavi
-    implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
+    implementation("com.fasterxml.uuid:java-uuid-generator:${property("uuidGeneratorVersion")}")
 
     implementation("am.ik.yavi:yavi:${property("yaviVersion")}")
     annotationProcessor("cc.jilt:jilt:${property("jiltVersion")}")
