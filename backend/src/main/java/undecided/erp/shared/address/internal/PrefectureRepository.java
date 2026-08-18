@@ -8,5 +8,7 @@ import undecided.erp.shared.address.spi.Prefecture;
 
 @Repository
 public interface PrefectureRepository extends CrudRepository<Prefecture, UUID> {
-  Prefecture findByCode(@NonNull String code);
+
+  Prefecture findByPrefectureCode(@NonNull String prefectureCode);
+
 }

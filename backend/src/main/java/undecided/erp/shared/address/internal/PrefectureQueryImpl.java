@@ -12,11 +12,12 @@ import undecided.erp.shared.address.spi.PrefectureQuery;
 @Service
 @RequiredArgsConstructor
 public class PrefectureQueryImpl implements PrefectureQuery {
+
   private final PrefectureRepository repository;
 
   @Override
   public @NonNull Optional<Prefecture> findByCode(@NonNull String code) {
     checkNotNull(code, () -> new NullPointerException("code must not null"));
-    return Optional.ofNullable(repository.findByCode(code));
+    return Optional.ofNullable(repository.findByPrefectureCode(code));
   }
 }

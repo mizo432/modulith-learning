@@ -4,7 +4,9 @@
     <option name="defaultUnitInitialized" value="true" />
     <option name="newEntityIdStrategy" />
     <option name="newEntityIdType" value="Long" />
+    <option name="reLastEntityCreationPackage" value="backend/src/main/java/undecided/erp" />
     <option name="renamerInitialized" value="true" />
+    <option name="reverseEngineeringLastDbConnectionId" value="b019cb9a-042d-40be-8864-0bfd99ea4da9" />
   </component>
   <component name="JpaPluginProjectSettings" commentSavingStrategy="@Comment アノテーション" reExcludeTablePrefixes="" reExcludeColumnPrefixes="" reExcludeTableSuffixes="" reExcludeColumnSuffixes="" mappingCollectionMethodNamingStrategy="PLURALIZE">
     <option name="entityNameTemplate" />
