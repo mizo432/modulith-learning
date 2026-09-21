@@ -3,8 +3,11 @@ package undecided.erp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import undecided.erp.shared.applicatoion.ApplicationInfoInitializer;
 
 /**
@@ -13,7 +16,9 @@ import undecided.erp.shared.applicatoion.ApplicationInfoInitializer;
  * <p>このクラスはSpring Bootアプリケーションの初期化と起動を行います。また、 アプリケーションコンテキストが開始されたイベントを処理し、
  * アプリケーション名やサーバーポートなど、アプリケーション固有の情報を初期化します。
  */
-@SpringBootApplication
+@SpringBootApplication(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
+@EnableAsync
+@EnableScheduling
 public class ModulithDemoApplication {
 
   /**
