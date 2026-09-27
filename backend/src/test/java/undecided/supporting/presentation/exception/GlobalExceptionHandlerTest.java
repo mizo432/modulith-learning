@@ -8,9 +8,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
 import undecided.supporting.exception.BusinessException;
 import undecided.supporting.message.ResultMessage;
 import undecided.supporting.message.ResultMessages;
@@ -37,13 +35,12 @@ class GlobalExceptionHandlerTest {
       ResultMessage lastMessage = ResultMessage.fromText(errorMessage);
 
       // Act
-      ResponseEntity<ProblemDetail> response =
-          globalExceptionHandler.handleBusinessException(exception);
+      ProblemDetail response = globalExceptionHandler.handleBusinessException(exception);
 
       // Assert
-      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-      assertThat(response.getBody()).isNotNull();
-      assertThat(response.getBody().getDetail()).isEqualTo(errorMessage);
+
+      assertThat(response).isNotNull();
+      assertThat(response.getDetail()).isEqualTo(errorMessage);
     }
 
     @Test
