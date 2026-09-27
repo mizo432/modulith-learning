@@ -1,9 +1,9 @@
 package undecided.erp.greeting.internal;
 
 import org.springframework.stereotype.Service;
-import undecided.shared.common.exception.BusinessException;
-import undecided.shared.common.exception.SystemException;
-import undecided.shared.common.message.ResultMessages;
+import undecided.generic.exception.BusinessException;
+import undecided.generic.exception.SystemException;
+import undecided.generic.message.ResultMessages;
 
 @Service
 public class ExceptionServiceImpl implements ExceptionService {
@@ -21,13 +21,11 @@ public class ExceptionServiceImpl implements ExceptionService {
   @Override
   public RuntimeException throwDarkException() {
     throw new BusinessException(ResultMessages.dark().add("e.xx.yy.3001"));
-
   }
 
   @Override
   public RuntimeException throwPrimaryException() {
     throw new BusinessException(ResultMessages.primary().add("e.xx.yy.3001"));
-
   }
 
   @Override
@@ -38,7 +36,6 @@ public class ExceptionServiceImpl implements ExceptionService {
   @Override
   public RuntimeException throwSecondaryException() {
     throw new BusinessException(ResultMessages.secondary().add("e.xx.yy.3001"));
-
   }
 
   @Override
