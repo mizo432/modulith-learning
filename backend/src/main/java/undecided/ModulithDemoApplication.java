@@ -8,7 +8,7 @@ import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import undecided.generic.applicatoion.ApplicationInfoInitializer;
+import undecided.supporting.application.ApplicationInfoInitializer;
 
 /**
  * Modulith Demoアプリケーションのメインクラス。

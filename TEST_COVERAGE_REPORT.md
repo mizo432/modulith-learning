@@ -11,7 +11,7 @@ branch compared to `develop`.
 
 #### EmployeeApiTest.java
 
-**Location:** `backend/src/test/java/undecided/rerlationshipMgmt/internal`
+**Location:** `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 **Test Count:** 13 tests
 
@@ -68,7 +68,7 @@ branch compared to `develop`.
 
 #### OrganizationApiTest.java
 
-**Location:** `backend/src/test/java/undecided/rerlationshipMgmt/internal`
+**Location:** `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 **Test Count:** 30+ tests
 
@@ -113,7 +113,7 @@ branch compared to `develop`.
 
 #### OrganizationQueryImplTest.java
 
-**Location:** `backend/src/test/java/undecided/rerlationshipMgmt/internal`
+**Location:** `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 **Test Count:** 20+ tests
 
@@ -153,7 +153,7 @@ branch compared to `develop`.
 
 #### RoleApiTest.java
 
-**Location:** `backend/src/test/java/undecided/rerlationshipMgmt/role`
+**Location:** `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 **Test Count:** 14 tests
 
@@ -178,7 +178,7 @@ branch compared to `develop`.
 
 #### RoleAssignmentsForEmpApiTest.java
 
-**Location:** `backend/src/test/java/undecided/rerlationshipMgmt/role`
+**Location:** `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 **Test Count:** 14 tests
 
@@ -200,7 +200,7 @@ branch compared to `develop`.
 
 #### RoleAssignmentsForOrgApiTest.java
 
-**Location:** `backend/src/test/java/undecided/rerlationshipMgmt/role`
+**Location:** `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 **Test Count:** 14 tests
 
@@ -224,7 +224,7 @@ branch compared to `develop`.
 
 #### SpringMvcRestConfigTest.java
 
-**Location:** `backend/src/test/java/undecided/generic/applicatoion`
+**Location:** `backend/src/test/java/undecided/supporting/applicatoion`
 
 **Test Count:** 20+ tests
 

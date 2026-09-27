@@ -1,6 +1,6 @@
 package undecided.supporting.snowflake.spi;
 
-import undecided.generic.entity.SnowflakeId;
+import undecided.supporting.entity.SnowflakeId;
 
 public interface SnowflakeIdGenerator {
 

@@ -1,7 +1,7 @@
 package undecided.supporting.snowflake.internal;
 
-import undecided.generic.dateProvider.DateProvider;
-import undecided.generic.entity.SnowflakeId;
+import undecided.supporting.dateProvider.DateProvider;
+import undecided.supporting.entity.SnowflakeId;
 import undecided.supporting.snowflake.spi.SnowflakeIdGenerator;
 
 public final class SnowflakeIdGeneratorImpl implements SnowflakeIdGenerator {

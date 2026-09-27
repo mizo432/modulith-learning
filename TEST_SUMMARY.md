@@ -107,7 +107,7 @@ branch compared to the `develop` branch.
 - Fixed typo in method call: `checkAtLest` → `checkAtLeast`
 - Method is part of nested `IntegerValues` utility class
 
-**Test File:** `backend/src/test/java/undecided/generic/entity` (NEW)
+**Test File:** `backend/src/test/java/undecided/supporting/entity` (NEW)
 
 **Test Coverage (60+ tests):**
 

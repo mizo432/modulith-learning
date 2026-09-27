@@ -11,22 +11,22 @@ compared to `develop`.
 
 ### Source Files Changed (10 files):
 
-1. ✅ `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+1. ✅ `backend/src/main/java/undecided/generic/rerlationshipMgmt`
 2. ✅ `backend/src/main/java/undecided/erp/greeting/internal/GreetingApi.java`
 3. ✅
-   `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
 4. ✅
-   `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
 5. ✅
-   `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
    (Interface - No tests needed)
-6. ✅ `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+6. ✅ `backend/src/main/java/undecided/generic/rerlationshipMgmt`
    (Interface - No tests needed)
-7. ✅ `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+7. ✅ `backend/src/main/java/undecided/generic/rerlationshipMgmt`
 8. ✅
-   `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
 9. ✅
-   `backend/src/main/java/undecided/supporting/rerlationshipMgmt`
+   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
 10. ✅ `backend/src/main/java/undecided/generic/applicatoion`
 
 ---
@@ -36,7 +36,7 @@ compared to `develop`.
 ### 1. Employee Module
 
 - ✅ **EmployeeApiTest.java** (144 lines, 13 tests)
-    - Location: `backend/src/test/java/undecided/rerlationshipMgmt/internal`
+    - Location: `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 ### 2. Greeting Module
 
@@ -46,23 +46,23 @@ compared to `develop`.
 ### 3. Organization Module
 
 - ✅ **OrganizationApiTest.java** (429 lines, 30+ tests)
-    - Location: `backend/src/test/java/undecided/rerlationshipMgmt/internal`
+    - Location: `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 - ✅ **OrganizationQueryImplTest.java** (317 lines, 20+ tests)
-    - Location: `backend/src/test/java/undecided/rerlationshipMgmt/internal`
+    - Location: `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 ### 4. Role Module
 
 - ✅ **RoleApiTest.java** (167 lines, 14 tests)
-    - Location: `backend/src/test/java/undecided/rerlationshipMgmt/role`
+    - Location: `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 - ✅ **RoleAssignmentsForEmpApiTest.java** (178 lines, 14 tests)
-    - Location: `backend/src/test/java/undecided/rerlationshipMgmt/role`
+    - Location: `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 - ✅ **RoleAssignmentsForOrgApiTest.java** (178 lines, 14 tests)
-    - Location: `backend/src/test/java/undecided/rerlationshipMgmt/role`
+    - Location: `backend/src/test/java/undecided/generic/rerlationshipMgmt`
 
 ### 5. Shared Configuration
 
 - ✅ **SpringMvcRestConfigTest.java** (271 lines, 20+ tests)
-    - Location: `backend/src/test/java/undecided/generic/applicatoion`
+    - Location: `backend/src/test/java/undecided/supporting/applicatoion`
 
 ---
 
