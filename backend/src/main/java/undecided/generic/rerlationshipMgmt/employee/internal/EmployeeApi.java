@@ -1,9 +1,9 @@
-package undecided.generic.rerlationshipMgmt.personRole.employee.internal;
+package undecided.generic.rerlationshipMgmt.employee.internal;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.generic.rerlationshipMgmt.personRole.employee.Employee;
+import undecided.generic.rerlationshipMgmt.employee.Employee;
 
 @RestController
 @RequestMapping("/api/employees")

@@ -1,4 +1,4 @@
-package undecided.generic.rerlationshipMgmt.personRole.employee;
+package undecided.generic.rerlationshipMgmt.employee;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
