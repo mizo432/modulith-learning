@@ -1,4 +1,4 @@
-package undecided.shared.web.exception;
+package undecided.generic.presentation.web.exception;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;

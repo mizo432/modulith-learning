@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import undecided.generic.presentation.exception.GlobalExceptionHandler;
 import undecided.shared.common.exception.BusinessException;
 import undecided.shared.common.message.ResultMessage;
 import undecided.shared.common.message.ResultMessages;

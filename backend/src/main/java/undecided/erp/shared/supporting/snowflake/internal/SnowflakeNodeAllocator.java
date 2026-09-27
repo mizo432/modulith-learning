@@ -9,14 +9,15 @@ import undecided.shared.common.dateProvider.DateProvider;
 
 /**
  * スノーフレークアルゴリズムで使用するノードIDを管理および割り当てるためのクラスです。
- * <p>
- * ノードIDは永続化され、一定期間のリースとして管理されます。
- * <p>
- * このクラスは最大ノードID制限を設けるとともに、リースの有効期間を制御することで、 各スノーフレークノードが一意性を保持したまま運用されることを保証します。
- * <p>
- * 主な機能: - ノードIDの割り当て - ノードリースの更新
- * <p>
- * 使用する主な依存: - SnowflakeNodeJpaRepository: ノード情報を永続化するためのリポジトリ。 - Clock: 時刻管理を行います（テスト可能性向上のため使用）。
+ *
+ * <p>ノードIDは永続化され、一定期間のリースとして管理されます。
+ *
+ * <p>このクラスは最大ノードID制限を設けるとともに、リースの有効期間を制御することで、 各スノーフレークノードが一意性を保持したまま運用されることを保証します。
+ *
+ * <p>主な機能: - ノードIDの割り当て - ノードリースの更新
+ *
+ * <p>使用する主な依存: - SnowflakeNodeJpaRepository: ノード情報を永続化するためのリポジトリ。 - Clock:
+ * 時刻管理を行います（テスト可能性向上のため使用）。
  */
 @Component
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class SnowflakeNodeAllocator {
       }
       SnowflakeNode node = existing.get();
       if (node.getLeaseUntil().isBefore(now)) {
-        var newNode = node.renew(leaseUntil);
+        var newNode = new SnowflakeNode(nodeId, applicationName, leaseUntil);
         repository.save(newNode);
         return newNode;
       }
@@ -57,7 +58,8 @@ public class SnowflakeNodeAllocator {
 
   /**
    * 指定されたスノーフレークノードリースを更新します。 更新は、条件が満たされた場合にのみ行われます。
-   * 条件として、指定されたノードIDが既存のノード情報と一致し、リースの有効期限が現在時刻より過去である必要があります。 一致しない場合、またはノードが存在しない場合は更新を行いません。
+   * 条件として、指定されたノードIDが既存のノード情報と一致し、リースの有効期限が切れていない（現在時刻以降である）必要があります。
+   * 一致しない場合、またはノードが存在しない場合は更新を行いません。
    *
    * @param lease 更新対象のスノーフレークノードリース。 ノードID、インスタンス名、およびリース有効期限が含まれます。
    * @return 更新が正常に行われた場合はtrue、条件が満たされずに更新されなかった場合はfalse。
@@ -76,14 +78,11 @@ public class SnowflakeNodeAllocator {
       return false;
     }
 
-    if (!node.getLeaseUntil().isBefore(now)) {
+    if (node.getLeaseUntil().isBefore(now)) {
       return false;
     }
     var newNode = node.renew(newLeaseUntil);
     repository.save(newNode);
     return true;
-
-
   }
-
 }

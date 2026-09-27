@@ -1,4 +1,4 @@
-package undecided.erp;
+package undecided;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -54,5 +54,4 @@ public class ModulithDemoApplication {
   public void handleContextRefreshEvent(ContextStartedEvent ctxStartEvt) {
     ApplicationInfoInitializer.initialize(applicationName, Long.valueOf(serverPort));
   }
-
 }

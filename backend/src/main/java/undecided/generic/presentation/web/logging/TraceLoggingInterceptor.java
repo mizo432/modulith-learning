@@ -1,4 +1,4 @@
-package undecided.shared.web.logging;
+package undecided.generic.presentation.web.logging;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;

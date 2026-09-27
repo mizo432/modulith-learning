@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.common.snowflake.SnowflakeIdProvider;
 
 /**
  * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。
@@ -43,19 +42,9 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
    * serialVersionUIDは、異なるJava仮想マシン間でのインスタンスの保存および読み込み（シリアライズおよびデシリアライズ）
    * プロセス中に、クラスの互換性を検証するために使用されます。 クラスの構造に大きな変更がない限り、独自に定義された値を保持することで、 シリアライズ済みオブジェクトの互換性を維持ができます。
    */
-  @Serial
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final Long value;
-
-  /**
-   * SnowflakeIdクラスの新しいインスタンスを作成します。
-   *
-   * @return SnowflakeIdクラスの新しいインスタンス
-   */
-  public static SnowflakeId newInstance() {
-    return new SnowflakeId(SnowflakeIdProvider.generateId());
-  }
 
   /**
    * 指定された正の値からSnowflakeIdオブジェクトを生成します。
@@ -119,7 +108,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
    *
    * @param other 比較対象の SnowflakeId インスタンス。null の可能性があります。
    * @return この SnowflakeId が指定された SnowflakeId より小さい場合は負の整数、 等しい場合は 0、大きい場合は正の整数を返します。 指定されたオブジェクトが
-   * null の場合は -1 を返します。
+   *     null の場合は -1 を返します。
    */
   @Override
   public int compareTo(@Nullable SnowflakeId other) {
@@ -180,10 +169,10 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
     }
 
     /**
-     * Convert a Long value retrieved from the database into a SnowflakeId entity.
+     * データベースのLong型の値をSnowflakeIdオブジェクトに変換します。
      *
-     * @param dbData the Long value read from the database; may be null
-     * @return `SnowflakeId.EMPTY` if `dbData` is null, otherwise a `SnowflakeId` wrapping `dbData`
+     * @param dbData データベースから取得されたLong型の値。この値がnullの場合はSnowflakeId.EMPTYが返されます。
+     * @return 変換されたSnowflakeIdオブジェクト。dbDataがnullの場合はSnowflakeId.EMPTYを返します。
      */
     @Override
     public SnowflakeId convertToEntityAttribute(@Nullable Long dbData) {

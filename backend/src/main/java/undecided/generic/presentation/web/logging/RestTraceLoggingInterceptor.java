@@ -1,4 +1,4 @@
-package undecided.shared.web.logging;
+package undecided.generic.presentation.web.logging;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
@@ -110,8 +110,8 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
 
   /**
    * リクエスト処理の完了後に実行されるメソッドです。
-   * <p>
-   * 処理時間の計測結果をログに記録し、必要に応じて警告ログを出力します。
+   *
+   * <p>処理時間の計測結果をログに記録し、必要に応じて警告ログを出力します。
    *
    * @param request クライアントからのHTTP リクエスト
    * @param response クライアントへのHTTP レスポンス
@@ -119,9 +119,12 @@ public class RestTraceLoggingInterceptor implements HandlerInterceptor {
    * @throws Exception 実行中にエラーが発生した場合
    */
   @Override
-  public void postHandle(HttpServletRequest request, HttpServletResponse response,
+  public void postHandle(
+      HttpServletRequest request,
+      HttpServletResponse response,
       @Nonnull Object handler,
-      ModelAndView modelAndView) throws Exception {
+      ModelAndView modelAndView)
+      throws Exception {
     if (handler instanceof HandlerMethod handlerMethod) {
       long startTime = 0L;
       if (request.getAttribute(START_ATTR) != null) {

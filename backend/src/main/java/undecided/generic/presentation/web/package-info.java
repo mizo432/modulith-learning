@@ -3,4 +3,4 @@
  * resolvers, logging interceptors, and filters for handling and logging exceptions that occur
  * during web request processing.
  */
-package undecided.shared.web.exception;
+package undecided.generic.presentation.web;

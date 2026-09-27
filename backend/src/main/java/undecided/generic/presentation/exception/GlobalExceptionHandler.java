@@ -1,4 +1,4 @@
-package undecided.erp.shared.presentation.exception;
+package undecided.generic.presentation.exception;
 
 import static undecided.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
@@ -45,7 +45,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(
             ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST,
-                Lists2.getLast(e.getResultMessages().getList()).text()));
+                HttpStatus.BAD_REQUEST, Lists2.getLast(e.getResultMessages().getList()).text()));
   }
 }

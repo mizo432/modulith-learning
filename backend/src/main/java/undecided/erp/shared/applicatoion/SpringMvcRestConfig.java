@@ -15,9 +15,9 @@ import org.springframework.context.annotation.Role;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import undecided.generic.presentation.web.exception.HandlerExceptionResolverLoggingInterceptor;
+import undecided.generic.presentation.web.logging.RestTraceLoggingInterceptor;
 import undecided.shared.common.exception.ExceptionLogger;
-import undecided.shared.web.exception.HandlerExceptionResolverLoggingInterceptor;
-import undecided.shared.web.logging.RestTraceLoggingInterceptor;
 
 /**
  * Spring MVCの設定を行うための構成クラス。
@@ -36,8 +36,8 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    */
   @Bean
   @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-  public static HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor(
-      ExceptionLogger exceptionLogger) {
+  public static HandlerExceptionResolverLoggingInterceptor
+      handlerExceptionResolverLoggingInterceptor(ExceptionLogger exceptionLogger) {
     HandlerExceptionResolverLoggingInterceptor handlerExceptionResolverLoggingInterceptor =
         new HandlerExceptionResolverLoggingInterceptor();
     handlerExceptionResolverLoggingInterceptor.setExceptionLogger(exceptionLogger);
