@@ -9,7 +9,7 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import undecided.shared.common.exception.IORuntimeException;
+import undecided.generic.exception.IORuntimeException;
 
 public class WorkBookWrapper {
   private SXSSFWorkbook workbook = null;

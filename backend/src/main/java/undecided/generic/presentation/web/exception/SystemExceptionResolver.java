@@ -11,10 +11,10 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
-import undecided.shared.common.exception.ExceptionCodeResolver;
-import undecided.shared.common.exception.ResultMessagesNotificationException;
-import undecided.shared.common.exception.SimpleMappingExceptionCodeResolver;
-import undecided.shared.common.message.ResultMessages;
+import undecided.generic.exception.ExceptionCodeResolver;
+import undecided.generic.exception.ResultMessagesNotificationException;
+import undecided.generic.exception.SimpleMappingExceptionCodeResolver;
+import undecided.generic.message.ResultMessages;
 
 /**
  * SystemExceptionResolverは、Spring MVCのSimpleMappingExceptionResolverを拡張したクラスです。
