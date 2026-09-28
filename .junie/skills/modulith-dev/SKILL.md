@@ -12,6 +12,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 
 ### 1. いつこのスキルを使用するか (When To Use)
 
+- GitHub Issue に基づく機能追加、リファクタリング、テスト作成、バグ修正を実施するとき
 - Spring Modulithおよびバックエンド (`backend`) の機能を開発、修正、拡張するとき
 - 単体テスト（Small）、統合テスト（Medium）、大規模テスト（Large）を新規作成または更新するとき
 - モジュール境界やオニオンアーキテクチャ（Domain / Business / Infrastructure /
@@ -22,9 +23,31 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 
 ---
 
-### 2. アーキテクチャとモジュール設計規則 (Architecture & Modulith Rules)
+### 2. GitHub Issue を起点とした開発フロー (Issue-Driven Workflow)
 
-#### 2.1 モジュール境界 (Spring Modulith)
+1. **Issue の確認と要件把握**:
+    - 対象 GitHub Issue の課題内容、要件、受け入れ基準を明確化し、作業スコープを決定。
+2. **feature ブランチの作成**:
+    - 最新のメインブランチから作業用 feature ブランチ（例:
+      `feature/issue-<number>-<short-description>`）を作成して切り替え。
+3. **設計・テスト方針の策定**:
+    - 変更モジュールおよび層（Domain / Business / Infrastructure / Presentation）を特定。
+    - `should` で始まるテストケースを事前に整理。
+4. **実装とテストの作成**:
+    - モジュール境界（公開 API/SPI と `internal` の厳格な分離）を遵守。
+    - 境界値・異常値系を含む網羅的なテストを作成。
+5. **検証と Issue 紐付けコミット**:
+    - `./gradlew :backend:test` や `./gradlew :backend:mediumTest` で検証。
+    - コミットメッセージに対象 Issue 番号（例: `refs #XX`, `closes #XX`）を記載。
+6. **Pull Request (PR) の作成**:
+    - feature ブランチからベースブランチへの PR を作成。
+    - 変更概要、関連 Issue、テスト・検証結果を記載し、レビューとマージの準備を完了。
+
+---
+
+### 3. アーキテクチャとモジュール設計規則 (Architecture & Modulith Rules)
+
+#### 3.1 モジュール境界 (Spring Modulith)
 
 - 各モジュールはルートパッケージ（例: `undecided.generic.rerlationshipMgmt`）の下に独立して配置されます。
 - **公開API/SPIと内部実装の分離**:
@@ -34,7 +57,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
     - `ApplicationModules.of(ModulithDemoApplication.class).verify()`
       によってモジュール循環や不正な依存関係がないことを検証します。
 
-#### 2.2 オニオンアーキテクチャ / DDD の層構成
+#### 3.2 オニオンアーキテクチャ / DDD の層構成
 
 1. **Domain 層**:
     - エンティティ、値オブジェクト（Value Object）、ドメインイベント、ドメインサービス、リポジトリインターフェース
@@ -48,11 +71,11 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 
 ---
 
-### 3. テスト作成規約 (Testing Guidelines & Standards)
+### 4. テスト作成規約 (Testing Guidelines & Standards)
 
 プロジェクトでは厳格なテスト規約が定められています。すべてのテストはこのルールに厳密に準拠してください。
 
-#### 3.1 テストの基本原則
+#### 4.1 テストの基本原則
 
 - **フレームワーク**: JUnit 5 (`org.junit.jupiter.api.*`), AssertJ
   (`org.assertj.core.api.Assertions.assertThat`)
@@ -62,7 +85,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
     - `@Tag("large")`: システムテスト / 負荷テスト
 - **可視性**: テストクラスおよびテストメソッドはすべて **`package-private`**（アクセス修飾子なし）とします。
 
-#### 3.2 命名規則と DisplayName
+#### 4.2 命名規則と DisplayName
 
 - **テストメソッド名**:
     - 必ず `should` で開始する。
@@ -72,18 +95,18 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
     - **テストクラスおよびテストメソッドの両方に必ず付与する**。
     - 日本語で簡潔かつ具体的に振る舞いを記述する。
 
-#### 3.3 クラス構造とネスト
+#### 4.3 クラス構造とネスト
 
 - 対象メソッドごとに `@Nested` クラスを作成してテストを構造化する。
     - 例: `class AddMethodTest` や `class TestMethodTest`
 - メソッド内の構造は **Arrange / Act / Assert** (Given / When / Then) を意識して整理する。
 
-#### 3.4 網羅性と境界値テスト
+#### 4.4 網羅性と境界値テスト
 
 - 引数が `null` のケース、空文字列 `""` や空コレクションのケースなど、境界値テストを必ず含める。
 - 例外の検証には `assertThatThrownBy(...)` を使用する。
 
-#### 3.5 テスト実行コマンド
+#### 4.5 テスト実行コマンド
 
 ```bash
 # Smallテスト（単体テスト）の実行
@@ -101,15 +124,15 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 
 ---
 
-### 4. コーディング規約とユーティリティ (Coding Standards)
+### 5. コーディング規約とユーティリティ (Coding Standards)
 
-#### 4.1 Java言語仕様とスタイル
+#### 5.1 Java言語仕様とスタイル
 
 - **Java バージョン**: OpenJDK 25 / 26
 - **レコード・Sealed型**: イミュータブルなデータ構造には Java `record` を積極的に活用。
 - **Google Java Style**: インデント、命名規則、import 順序を既存コードに合わせる。
 
-#### 4.2 アノテーション標準
+#### 5.2 アノテーション標準
 
 - **Lombok**:
     - ボイラープレート削減のために `@Getter`, `@Setter`, `@RequiredArgsConstructor`, `@UtilityClass`
@@ -117,19 +140,19 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 - **JSpecify**:
     - Null 安全性を明示するため、`@NonNull`, `@Nullable` を適切に付与。
 
-#### 4.3 例外処理とメッセージング
+#### 5.3 例外処理とメッセージング
 
 - **例外の分類**:
     - 業務エラー（想定される例外）: `BusinessException`, `NotFoundBusinessException`
     - システム障害（予期せぬ例外）: `SystemException`
     - 複数メッセージ通知: `ResultMessagesNotificationException`, `ResultMessages`, `ResultMessage`
-- **事前条件チェック**:
+- **事前���件チェック**:
     - 引数や状態の検証には `undecided.supporting.precondition.*`（例: `StringPrecondition`,
       `ObjectPrecondition`）や `undecided.supporting.primitive.*` を活用。
 
 ---
 
-### 5. 付属テンプレートとチェックリスト (Resources)
+### 6. 付属テンプレートとチェックリスト (Resources)
 
 - **テストテンプレート**:
     - [UnitTestTemplate.java](templates/UnitTestTemplate.java): 単体テスト（Small）の標準テンプレート

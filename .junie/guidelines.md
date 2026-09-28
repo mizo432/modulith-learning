@@ -240,3 +240,44 @@ class Strings2IsEmptyTest {
 | 統合テスト (Medium) の実行    | `./gradlew :backend:mediumTest`                                              |
 | システムテスト (Large) の実行 | `./gradlew :backend:largeTest`                                               |
 | モジュリス構造図の生成        | `./gradlew :backend:test` 実行後 `backend/build/spring-modulith-docs` に出力 |
+
+---
+
+## 8. GitHub Issue ベースの開発手順 (GitHub Issue-Driven Development Workflow)
+
+開発作業（機能追加、リファクタリング、バグ修正、ドキュメント更新など）は、原則として **GitHub Issue**
+を起点として以下のフローで実施します。
+
+### 8.1 開発フロー
+
+1. **Issue の選定・確認 (Issue Identification & Scope)**
+    - 対象とする GitHub Issue の番号・タイトル・本文を確認し、解決すべき課題・要件・受け入れ基準を明確化します。
+    - 関連するモジュールや影響範囲を特定します。
+
+2. **feature ブランチの作成 (Branching)**
+    - 最新のメインブランチから作業用の feature ブランチを作成して切り替えます。
+    - ブランチ命名規則の例: `feature/issue-<number>-<short-description>` (例:
+      `feature/issue-139-prefecture-import`)
+
+3. **設計・方針検討 (Design & Approach)**
+    - Spring Modulith のモジュール境界（公開 API/SPI と internal の分離）およびオニオンアーキテクチャの層構造に準拠した設計を行います。
+    - 必要な単体テスト（Small）および統合テスト（Medium）のテストケースを策定します。
+
+4. **実装とテスト作成 (Implementation & Testing)**
+    - プロジェクト規約（Google Java Style、Lombok、JSpecify、`undecided.supporting.precondition.*`
+      による事前条件検証、例外処理方針）に従って実装します。
+    - テスト作成規約（`should` 命名、日本語 `@DisplayName`、`@Nested` 構造、`package-private`
+      可視性、境界値/異常系網羅）に従いテストコードを作成します。
+
+5. **検証の実行 (Verification)**
+    - `./gradlew :backend:test`（単体テストおよび Modulith 境界検証）を実行します。
+    - 必要に応じて `./gradlew :backend:mediumTest`（統合テスト）を実行し、全テストの成功を確認します。
+
+6. **Issue 番号の紐付けとコミット (Linking & Commit)**
+    - コミットメッセージに対応する Issue 番号（例: `refs #XX`, `closes #XX`）を明記してコミットします。
+
+7. **プルリクエストの作成 (Pull Request Creation)**
+    - 作業完了後、作業ブランチからメインブランチ（または指定のベースブランチ）に向けて Pull Request
+      (PR) を作成します。
+    - PR 本文には変更概要、関連 Issue 番号（`closes #XX` / `fixes #XX`
+      ）、実施したテスト・検証結果を明記し、レビューの効率化と安全な統合を実現します。

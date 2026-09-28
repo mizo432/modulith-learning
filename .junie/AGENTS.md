@@ -73,6 +73,23 @@ class Strings2IsEmptyTest {
 }
 ```
 
+## 開発手順 (Development Procedure)
+
+本プロジェクトの開発作業（機能追加、リファクタリング、バグ修正、テスト作成等）は、原則として **GitHub
+Issue** を起点に進行します。
+
+1. **Issue の選定・把握**: 対象 Issue の要件・受け入れ基準を確認。
+2. **feature ブランチの作成**: 作業用の feature ブランチ（例: `feature/issue-<number>-<description>`
+   ）を作成して作業開始。
+3. **設計・テスト計画**: モジュール境界（Spring Modulith）および層構成（オニオンアーキテクチャ）に準拠した設計とテストケース策定。
+4. **実装・テスト作成**: Google Java Style、Lombok、JSpecify、事前条件検証 (`*Precondition`)
+   、および厳格なテスト規約（`should` 命名、日本語 `@DisplayName`、`@Nested` 構造）に従ったコード作成。
+5. **テスト・検証**: `./gradlew :backend:test` や `./gradlew :backend:mediumTest` による検証。
+6. **Issue 番号の紐付けとコミット**: コミットメッセージに対象 Issue 番号（例: `refs #XX`,
+   `closes #XX`）を記載。
+7. **PR の作成**: 実装と検証完了後、レビューおよびマージのための Pull Request (PR)
+   を作成（概要・関連Issue・テスト結果を記載）。
+
 ## 追加の開発情報 (Additional Development Information)
 
 - **コードスタイル**:
