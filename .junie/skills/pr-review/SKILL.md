@@ -54,6 +54,12 @@ description: Pull Request (PR) の変更内容を、Spring Modulith境界、オ�
 6. **レビュー結果の出力 (Review Output)**:
     - 良い点（Good points）、要修正点（Required changes）、改善提案（Suggestions）を整理して提示。
 
+7. **レビュー指摘事項の修正と再検証 (Fix & Re-verify)**:
+    - レビューで指摘された要修正点を feature ブランチ上で修正。
+    - 単体テスト・統合テスト（`./gradlew :backend:test`, `./gradlew :backend:mediumTest`
+      ）を再実行してパスすることを確認。
+    - 修正コミットを作成し、PR を更新。
+
 ---
 
 ### 3. レビュー観点チェックリスト (Review Checklist)

@@ -287,3 +287,9 @@ class Strings2IsEmptyTest {
     - モジュール境界（Spring Modulith）、オニオンアーキテクチャ、テスト規約（`should` 命名、日本語
       `@DisplayName`、`@Nested` 構造、境界値検証）、Null 安全性（JSpecify）、例外処理、Google Java Style
       の準拠状況を検証・確認します。
+
+9. **レビュー指摘の修正と再検証 (Review Feedback Resolution & Re-verification)**
+    - PR レビューで検出された要修正点（モジュール境界違反、テスト規約違反、Null 安全性、例外処理等の指摘事項）を
+      feature ブランチ上で速やかに修正します。
+    - 修正後、再度 `./gradlew :backend:test` および `./gradlew :backend:mediumTest`
+      を実行して全テストが成功することを確認し、追加コミット・PR更新を行います。

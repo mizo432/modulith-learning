@@ -45,6 +45,10 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 7. **PR レビュースキルによるレビュー**:
     - PR レビュースキル (`pr-review`) を呼び出し、Spring Modulith 境界、オニオンアーキテクチャ、テスト規約（
       `should` 命名、日本語 `@DisplayName`、`@Nested`、境界値網羅）、Null 安全性、例外処理等の観点で多角的にレビュー・検証を実施。
+8. **レビュー指摘事項の修正と再検証**:
+    - レビュー結果で指摘された要修正点（規約違反、境界値テスト漏れ、例外ハンドリングの不備等）を修正。
+    - 再度 `./gradlew :backend:test` や `./gradlew :backend:mediumTest` を実行して全件成功を確認し、コミットして
+      PR を更新。
 
 ---
 
