@@ -280,4 +280,10 @@ class Strings2IsEmptyTest {
     - 作業完了後、作業ブランチからメインブランチ（または指定のベースブランチ）に向けて Pull Request
       (PR) を作成します。
     - PR 本文には変更概要、関連 Issue 番号（`closes #XX` / `fixes #XX`
-      ）、実施したテスト・検証結果を明記し、レビューの効率化と安全な統合を実現します。
+      ）、実施したテスト・検証結果を明記します。
+
+8. **レビューSKILLによるPRレビュー (PR Review with Review Skill)**
+    - PR 作成後は、PR レビュースキル (`pr-review`) を使用して変更内容を多角的にレビューします。
+    - モジュール境界（Spring Modulith）、オニオンアーキテクチャ、テスト規約（`should` 命名、日本語
+      `@DisplayName`、`@Nested` 構造、境界値検証）、Null 安全性（JSpecify）、例外処理、Google Java Style
+      の準拠状況を検証・確認します。

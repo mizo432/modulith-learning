@@ -89,6 +89,8 @@ Issue** を起点に進行します。
    `closes #XX`）を記載。
 7. **PR の作成**: 実装と検証完了後、レビューおよびマージのための Pull Request (PR)
    を作成（概要・関連Issue・テスト結果を記載）。
+8. **レビューSKILLによるPRレビュー**: PR レビュースキル (`pr-review`)
+   を活用し、モジュール境界、オニオンアーキテクチャ、テスト規約、Null 安全性、例外処理等の観点でコードを多角的にレビュー・検証。
 
 ## 追加の開発情報 (Additional Development Information)
 

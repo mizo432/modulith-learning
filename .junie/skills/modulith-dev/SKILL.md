@@ -41,7 +41,10 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
     - コミットメッセージに対象 Issue 番号（例: `refs #XX`, `closes #XX`）を記載。
 6. **Pull Request (PR) の作成**:
     - feature ブランチからベースブランチへの PR を作成。
-    - 変更概要、関連 Issue、テスト・検証結果を記載し、レビューとマージの準備を完了。
+    - 変更概要、関連 Issue、テスト・検証結果を記載。
+7. **PR レビュースキルによるレビュー**:
+    - PR レビュースキル (`pr-review`) を呼び出し、Spring Modulith 境界、オニオンアーキテクチャ、テスト規約（
+      `should` 命名、日本語 `@DisplayName`、`@Nested`、境界値網羅）、Null 安全性、例外処理等の観点で多角的にレビュー・検証を実施。
 
 ---
 
