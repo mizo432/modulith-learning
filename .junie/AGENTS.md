@@ -5,7 +5,7 @@ This document provides technical details for developers and AI agents working on
 ## Build and Configuration
 
 - **Build System**: Gradle
-- **Java Version**: OpenJDK 26 (Configured via Gradle Toolchain in `backend/build.gradle.kts`).
+- **Java Version**: OpenJDK 25 (Configured via Gradle Toolchain in `backend/build.gradle.kts`).
 - **Project Structure**: Modular Monolith using Spring Modulith.
     - `backend`: Core business logic and infrastructure.
     - `frontend`: React/MUI based SPA.
@@ -86,4 +86,4 @@ class Strings2IsEmptyTest {
 - **Modulith Documentation**: Running `./gradlew :backend:test` generates documentation in
   `backend/build/spring-modulith-docs`.
 - **Common Utilities**: Frequently used utility classes are located in
-  `undecided.shared.common.primitive` (e.g., `Strings2`, `Ints`, `Objects2`).
+  `undecided.supporting.primitive` (e.g., `Strings2`, `Ints`, `Objects2`).
