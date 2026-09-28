@@ -1,49 +1,48 @@
-# Project Information for Agents
+# AIエージェント向けプロジェクト情報 (Project Information for Agents)
 
-This document provides technical details for developers and AI agents working on this project.
+このドキュメントは、本プロジェクトで作業する開発者およびAIエージェント向けの技術仕様および開発情報を提供します。
 
-## Build and Configuration
+## ビルドと構成 (Build and Configuration)
 
-- **Build System**: Gradle
-- **Java Version**: OpenJDK 25 (Configured via Gradle Toolchain in `backend/build.gradle.kts`).
-- **Project Structure**: Modular Monolith using Spring Modulith.
-    - `backend`: Core business logic and infrastructure.
-    - `frontend`: React/MUI based SPA.
-    - `api-gateway`: Routing.
-    - `service-registry`: Netflix Eureka.
-    - `authorization`: Security/Auth.
-- **Database**: PostgreSQL (managed via Flyway in some modules).
+- **ビルドシステム**: Gradle
+- **Javaバージョン**: OpenJDK 25 (`backend/build.gradle.kts` 内の Gradle Toolchain で構成)
+- **プロジェクト構造**: Spring Modulith を使用したモジュラーモノリス (Modular Monolith)
+    - `backend`: コア業務ロジックおよびインフラストラクチャ
+    - `frontend`: React / MUI による SPA
+    - `api-gateway`: ルーティング
+    - `service-registry`: Netflix Eureka
+    - `authorization`: セキュリティ / 認証・認可
+- **データベース**: PostgreSQL (一部モジュールで Flyway により管理)
 
-### Key Commands
+### 主要コマンド (Key Commands)
 
-- Build project: `./gradlew build`
-- Run backend: `./gradlew :backend:bootRun`
-- Run Small tests (Unit tests): `./gradlew :backend:test`
-- Run Medium tests (Integration tests): `./gradlew :backend:mediumTest`
-- Run Large tests (System/Load tests): `./gradlew :backend:largeTest`
+- プロジェクトのビルド: `./gradlew build`
+- バックエンドの起動: `./gradlew :backend:bootRun`
+- 単体テスト (Small) の実行: `./gradlew :backend:test`
+- 統合テスト (Medium) の実行: `./gradlew :backend:mediumTest`
+- システム/負荷テスト (Large) の実行: `./gradlew :backend:largeTest`
 
-## Testing Information
+## テスト情報 (Testing Information)
 
-### Test Strategy
+### テスト戦略 (Test Strategy)
 
-- **Framework**: JUnit 5, AssertJ.
-- **Categorization**: Tests are tagged with `@Tag("small")`, `@Tag("medium")`, or `@Tag("large")`.
-- **Modulith Verification**: `SpringModulithTest` is used for verifying module boundaries.
+- **フレームワーク**: JUnit 5, AssertJ
+- **テスト分類**: テストは `@Tag("small")`, `@Tag("medium")`, `@Tag("large")` でタグ付け
+- **モジュリス境界検証**: `SpringModulithTest` を使用してモジュール境界を検証
 
-### Guidelines for Adding Tests
+### テスト作成規約 (Guidelines for Adding Tests)
 
-- **Naming**: Method names must start with `should` and avoid underscores (e.g.,
-  `shouldReturnCorrectValue`).
-- **Annotations**:
-    - Use `@DisplayName` with Japanese descriptions for both classes and methods.
-    - Use `@Tag` to specify the test size.
-- **Structure**:
-    - Nest tests within `@Nested` classes named after the target method (e.g.,
-      `class AddMethodTest`).
-    - Use `package-private` (no modifier) for test classes and methods.
-- **Coverage**: Include boundary tests, such as `null` arguments.
+- **命名規則**: メソッド名は必ず `should` で開始し、アンダースコアは使用しない (例:
+  `shouldReturnCorrectValue`)
+- **アノテーション**:
+    - クラスおよびメソッドの両方に `@DisplayName` で日本語の説明を付与する
+    - `@Tag` でテストサイズを指定する
+- **構造化**:
+    - テスト対象メソッドごとに `@Nested` クラスでネストする (例: `class AddMethodTest`)
+    - テストクラスおよびメソッドは原則として `package-private` (修飾子なし) とする
+- **網羅性**: `null` 引数などの境界値テストを必ず含める
 
-### Demonstration Test Example
+### テストコード作成例 (Demonstration Test Example)
 
 ```java
 
@@ -74,16 +73,16 @@ class Strings2IsEmptyTest {
 }
 ```
 
-## Additional Development Information
+## 追加の開発情報 (Additional Development Information)
 
-- **Code Style**:
-    - Follows Google Java Style.
-    - Extensive use of Lombok (`@Getter`, `@Setter`, `@RequiredArgsConstructor`, `@UtilityClass`).
-    - Use of JSpecify for nullability annotations (`@NonNull`).
-- **Architectural Patterns**:
-    - Onion Architecture (Domain, Business, Infrastructure, Presentation).
-    - Domain-Driven Design (DDD) principles.
-- **Modulith Documentation**: Running `./gradlew :backend:test` generates documentation in
-  `backend/build/spring-modulith-docs`.
-- **Common Utilities**: Frequently used utility classes are located in
-  `undecided.supporting.primitive` (e.g., `Strings2`, `Ints`, `Objects2`).
+- **コードスタイル**:
+    - Google Java Style に準拠
+    - Lombok の積極的な活用 (`@Getter`, `@Setter`, `@RequiredArgsConstructor`, `@UtilityClass`)
+    - JSpecify アノテーションによる Null 安全性の明示 (`@NonNull`)
+- **アーキテクチャパターン**:
+    - オニオンアーキテクチャ (Domain, Business, Infrastructure, Presentation)
+    - ドメイン駆動設計 (DDD) の原則
+- **モジュリスドキュメント**: `./gradlew :backend:test` を実行すると
+  `backend/build/spring-modulith-docs` にドキュメントが生成される
+- **共通ユーティリティ**: 頻繁に使用されるユーティリティクラスは `undecided.supporting.primitive`
+  に配置 (例: `Strings2`, `Ints`, `Objects2`)
