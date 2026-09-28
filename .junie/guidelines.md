@@ -288,8 +288,10 @@ class Strings2IsEmptyTest {
       `@DisplayName`、`@Nested` 構造、境界値検証）、Null 安全性（JSpecify）、例外処理、Google Java Style
       の準拠状況を検証・確認します。
 
-9. **レビュー指摘の修正と再検証 (Review Feedback Resolution & Re-verification)**
+9. **レビュー指摘の修正と3回の反復検証 (Review Feedback Resolution & 3-Iteration Cycle)**
     - PR レビューで検出された要修正点（モジュール境界違反、テスト規約違反、Null 安全性、例外処理等の指摘事項）を
       feature ブランチ上で速やかに修正します。
     - 修正後、再度 `./gradlew :backend:test` および `./gradlew :backend:mediumTest`
       を実行して全テストが成功することを確認し、追加コミット・PR更新を行います。
+    - **レビューと指摘事項修正のサイクルは3回繰り返して実施**
+      し、潜在的な不具合や品質上の課題を徹底的に排除して、システム全体の信頼性と長期的な保守性の便益を最大化します。
