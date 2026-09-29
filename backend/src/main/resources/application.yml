@@ -6,6 +6,11 @@ spring:
     lazy-initialization: on
   application:
     name: backend
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
   threads:
     virtual:
       enabled: true

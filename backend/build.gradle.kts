@@ -64,6 +64,7 @@ extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.0"
 extra["assertjDbVersion"] = "3.0.2"
 extra["uuidGeneratorVersion"] = "5.1.0"
+extra["superCsvVersion"] = "2.4.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -107,6 +108,13 @@ dependencies {
     // Apache POI for Excel processing
     implementation("org.apache.poi:poi:${property("poiVersion")}")
     implementation("org.apache.poi:poi-ooxml:${property("poiVersion")}")
+
+    // Spring Batch & Super CSV
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.batch:spring-batch-core")
+    implementation("org.springframework.batch:spring-batch-infrastructure")
+    implementation("net.sf.supercsv:super-csv:${property("superCsvVersion")}")
+    testImplementation("org.springframework.batch:spring-batch-test")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
@@ -150,6 +158,8 @@ tasks.test {
 val mediumTest = tasks.register("mediumTest", Test::class.java) {
     description = "medium sized test"
     group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("medium")
     }
@@ -159,6 +169,8 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
 val largeTest = tasks.register("largeTest", Test::class.java) {
     description = "large sized test"
     group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("large")
     }
