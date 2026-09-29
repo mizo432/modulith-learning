@@ -309,3 +309,5 @@ modules.xml
 /frontend/yarn-debug.log*
 /frontend/yarn-error.log*
 /backend/log/
+/log/projectName-application.log
+/log/projectName-monitoring.log
