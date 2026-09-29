@@ -38,7 +38,7 @@
 
   <!--  <logger name="undecided.erp.domain.repository" level="trace" />-->
   <!-- shared -->
-  <logger level="info" name="undecided.shared"/>
+  <logger level="info" name="undecided.suppoting"/>
   <logger level="trace"
     name="undecided.supporting.presentation.web.logging.RestTraceLoggingInterceptor"/>
   <logger level="info" name="undecided.supporting.exception.ExceptionLogger"/>
