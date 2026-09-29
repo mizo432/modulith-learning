@@ -14,7 +14,7 @@ import lombok.ToString;
 /**
  * 都道府県情報を管理するエンティティクラス。
  *
- * <p>このクラスは、データベースの「prefectures」テーブルに対応するものであり、 都道府県に関する情報を保持します。各フィールドは、都道府県のID、コード、
+ * <p>このクラスは、データベースの「address_reg.prefectures」テーブルに対応するものであり、 都道府県に関する情報を保持します。各フィールドは、都道府県のID、コード、
  * 名称、法定コード、有効日や廃止日などを表します。
  *
  * <p>エンティティとして、JPAやHibernateを利用してデータベースと連携するための 定義が施されています。
@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-@Table(name = "prefectures", comment = "prefecture table")
+@Table(schema = "address_reg", name = "prefectures", comment = "prefecture table")
 public class Prefecture {
 
   /**

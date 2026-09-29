@@ -1,4 +1,6 @@
-create table prefectures
+create schema if not exists address_reg;
+
+create table address_reg.prefectures
 (
     prefecture_id   BIGINT      not null,
     prefecture_code varchar(2)  not null,
@@ -12,15 +14,15 @@ create table prefectures
     primary key (prefecture_id)
 );
 
-create unique index prefecture_code_uindex on prefectures (prefecture_code);
+create unique index prefecture_code_uindex on address_reg.prefectures (prefecture_code);
 
-comment on table prefectures is 'prefecture table';
-comment on column prefectures.prefecture_id is 'Unique identifier for the prefecture';
-comment on column prefectures.prefecture_code is 'Prefecture code';
-comment on column prefectures.lg_code is 'Legal code';
-comment on column prefectures.pref_name is 'Prefecture name';
-comment on column prefectures.pref_kana is 'Prefecture kana';
-comment on column prefectures.pref_roma is 'Prefecture romaji';
-comment on column prefectures.effective_date is 'Effective date';
-comment on column prefectures.abolition_data is 'Abolition date';
-comment on column prefectures.remarks is 'Remarks';
+comment on table address_reg.prefectures is 'prefecture table';
+comment on column address_reg.prefectures.prefecture_id is 'Unique identifier for the prefecture';
+comment on column address_reg.prefectures.prefecture_code is 'Prefecture code';
+comment on column address_reg.prefectures.lg_code is 'Legal code';
+comment on column address_reg.prefectures.pref_name is 'Prefecture name';
+comment on column address_reg.prefectures.pref_kana is 'Prefecture kana';
+comment on column address_reg.prefectures.pref_roma is 'Prefecture romaji';
+comment on column address_reg.prefectures.effective_date is 'Effective date';
+comment on column address_reg.prefectures.abolition_data is 'Abolition date';
+comment on column address_reg.prefectures.remarks is 'Remarks';
