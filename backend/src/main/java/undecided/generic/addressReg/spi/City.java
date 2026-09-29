@@ -14,7 +14,7 @@ import lombok.ToString;
 /**
  * 市区町村情報を管理するエンティティクラス。
  *
- * <p>このクラスは、データベースの「cities」テーブルに対応するものであり、市区町村に関する情報を保持します。
+ * <p>このクラスは、データベースの「address_reg.cities」テーブルに対応するものであり、市区町村に関する情報を保持します。
  * 各フィールドは、市区町村のID、都道府県ID、法定コード、郡名、市区町村名、政令市区名、有効日や廃止日などを表します。
  *
  * <p>エンティティとして、JPAやHibernateを利用してデータベースと連携するための定義が施されています。
@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-@Table(name = "cities", comment = "city table")
+@Table(schema = "address_reg", name = "cities", comment = "city table")
 public class City {
 
   /**
