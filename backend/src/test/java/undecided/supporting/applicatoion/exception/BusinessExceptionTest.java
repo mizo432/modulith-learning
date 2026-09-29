@@ -132,7 +132,7 @@ class BusinessExceptionTest {
       BusinessException exception = new BusinessException(message);
       assertThat(exception.toString())
           .isEqualTo(
-              "undecided.shared.common.exception.BusinessException: ResultMessages [type=error, list=[Business Exception Message]]");
+              "undecided.supporting.exception.BusinessException: ResultMessages [type=error, list=[Business Exception Message]]");
       logger.warn(exception.toString(), exception);
     }
   }
