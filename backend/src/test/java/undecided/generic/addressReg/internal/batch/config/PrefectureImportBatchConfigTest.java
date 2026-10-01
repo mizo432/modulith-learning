@@ -15,12 +15,14 @@ import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import undecided.generic.addressReg.internal.PrefectureRepository;
 import undecided.generic.addressReg.internal.batch.launcher.PrefectureImportJobLauncher;
 import undecided.generic.addressReg.spi.Prefecture;
 
 @Tag("medium")
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("PrefectureImportBatchConfigの統合テスト")
 class PrefectureImportBatchConfigTest {
 

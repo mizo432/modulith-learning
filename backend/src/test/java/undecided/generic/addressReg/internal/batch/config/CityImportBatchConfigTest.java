@@ -16,12 +16,14 @@ import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import undecided.generic.addressReg.internal.CityRepository;
 import undecided.generic.addressReg.internal.batch.launcher.CityImportJobLauncher;
 import undecided.generic.addressReg.spi.City;
 
 @Tag("medium")
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("CityImportBatchConfigの統合テスト")
 class CityImportBatchConfigTest {
 
