@@ -44,8 +44,11 @@ Monolith）アーキテクチャを実践・学習するためのシステムで
     - Spring Cloud 2025.x (Eureka Client)
 - **データベース**:
     - PostgreSQL (本番・開発)
-    - H2 Database (テスト実行用インメモリ)
-    - Flyway (DBマイグレーション)
+    - Testcontainers + PostgreSQL 17 (統合テスト `@Tag("medium")` 用。Docker が必要)
+    - Flyway (DBマイグレーション。モジュールごとに DB スキーマを分離)
+- **バッチ処理**:
+    - Spring Batch (マスタデータのインポート等)
+    - Super CSV (CSV 読み込み)
 - **主要ライブラリ**:
     - **Lombok**: ボイラープレートコード削減 (`@Getter`, `@Setter`, `@RequiredArgsConstructor`,
       `@UtilityClass` 等)
@@ -54,10 +57,26 @@ Monolith）アーキテクチャを実践・学習するためのシステムで
     - **YAVI**: 型安全なバリデーションライブラリ
     - **Google Guava / ICU4J / libphonenumber / Apache POI**: 共通ユーティリティ
     - **Caffeine**: インメモリキャッシュ
+    - **Jilt**: ビルダー生成 (アノテーションプロセッサ)
+    - **springdoc-openapi**: OpenAPI / Swagger UI
+    - **Spring Modulith Actuator / Observability / Insight**: モジュール構造・イベントの可視化
 - **テストフレームワーク**:
     - JUnit 5 (JUnit Jupiter)
     - AssertJ, AssertJ-DB
     - Spring Modulith Test (`ApplicationModules`, `Documenter`)
+    - Spring Batch Test
+    - Testcontainers (PostgreSQL)
+- **カバレッジ**: JaCoCo (`./gradlew :backend:test` 実行後に `backend/build/reports/jacoco` に出力)
+
+### 2.3 フロントエンド技術スタック
+
+- React 18 / TypeScript 4.9 / Create React App (`react-scripts`)
+- MUI v5 (`@mui/material`, `@mui/icons-material`) + Emotion
+- React Router v6 / axios
+- テーマは `frontend/src/theme.ts` に集約し、環境別の色は `.env.*` (`REACT_APP_*`) で上書きする
+- **テストは Storybook を利用する**（ストーリー + `play` 関数によるインタラクションテスト）。
+  Storybook は未導入のため、最初にテストを追加する際に導入する
+- 画面・コンポーネント設計の詳細は `.claude/skills/frontend-design/SKILL.md` を参照する
 
 ---
 
@@ -68,23 +87,35 @@ Monolith）アーキテクチャを実践・学習するためのシステムで
 ### 3.1 モジュール区分
 
 - **汎用・業務モジュール (`undecided.generic.*`)**:
-    - `addressReg`: 住所・都道府県管理
+    - `addressReg`: 住所管理（都道府県・市区町村・町字。DB スキーマ `address_reg`、CSV インポートバッチあり）
+    - `calendarReg`: カレンダー管理（祝日。DB スキーマ `calendar_reg`、祝日インポートバッチあり）
     - `bankReg`: 銀行・支店管理
-    - `rerlationshipMgmt`: 顧客・組織・従業員関係管理
+    - `rerlationshipMgmt`: 顧客・組織・従業員関係管理（party / partyRole パターン）
     - `productSaleMgmt`: 商品販売管理
+- **業務ドメインモジュール (`undecided.*` 直下)**:
+    - `cashSaleMgmt`: 現金販売管理（パッケージのみ）
+    - `customerAccountMgmt`: 顧客口座管理（パッケージのみ）
 - **ERP モジュール (`undecided.erp.*`)**:
     - 業務処理・メッセージング機能
 - **基盤・共通モジュール (`undecided.supporting.*`)**:
     - `primitive`: プリミティブ拡張ユーティリティ (`Strings2`, `Ints`, `Objects2` 等)
     - `precondition`: 引数・状態検証事前条件 (`StringPrecondition`, `ObjectPrecondition` 等)
-    - `logger`: ログ出力基盤 (`LogIdBasedLogger`)
-    - `snowflake`: 分散ID生成
-    - `uuidV7Provider`: UUIDv7 生成プロバイダー
+    - `exception` / `message`: 例外と結果メッセージ
+        - `logger`: ログ出力基盤 (`LogIdBasedLogger`)
+    - `snowflake`: 分散ID生成（DB スキーマ `id_mgmt`）
+        - `uuidV7Provider`: UUIDv7 生成プロバイダー
+    - `dateProvider`: 現在日時の提供（テストで差し替え可能にする）
+    - その他: `annotation`, `application`, `builder`, `entity`, `functional`, `ipaddress`,
+      `presentation`
+      など
+
+新しいモジュールを追加したら、本節の一覧も更新してください。
 
 ### 3.2 パッケージ境界ルール
 
 1. **公開インターフェース / SPI (`spi` またはモジュールのルート直下)**:
     - 他モジュールから呼び出し可能な DTO、Query/Command インターフェース、ドメインモデルを配置します。
+    - 各パッケージの `package-info.java` に `@NamedInterface` を付与し、公開範囲を明示します。
 2. **内部実装 (`internal`)**:
     - モジュール内部でのみ利用されるリポジトリ実装、サービスクラス、コントローラーを配置します。
     - **他モジュールから `internal` パッケージのクラスを直接 import / 参照することは禁止**です。
@@ -108,6 +139,31 @@ Monolith）アーキテクチャを実践・学習するためのシステムで
 4. **Presentation 層**:
     - REST コントローラー (`@RestController`)、リクエスト/レスポンス DTO、バリデーション、例外ハンドリング
 
+### 4.1 バッチ処理の配置 (Spring Batch)
+
+インポート等のバッチはモジュールの `internal/batch` 配下に、役割ごとのサブパッケージで配置します
+（参考: `addressReg`, `calendarReg`）。
+
+| パッケージ  | 役割                                      |
+|:------------|:------------------------------------------|
+| `config`    | Job / Step の定義 (`*ImportBatchConfig`)  |
+| `reader`    | 入力の読み込み（CSV は Super CSV を利用） |
+| `processor` | 入力 DTO からドメインモデルへの変換・検証 |
+| `writer`    | 永続化                                    |
+| `dto`       | 入力レコードの DTO                        |
+| `launcher`  | Job の起動 (`*ImportJobLauncher`)         |
+
+- 取り込み元データは `backend/src/main/resources/data/` に配置します。
+- `application-test.yml` では `spring.batch.job.enabled: false` とし、テストから明示的に起動します。
+
+### 4.2 データベースマイグレーション (Flyway)
+
+- マイグレーションは `backend/src/main/resources/db/migration/` に
+  `V<yyyyMMddHHmmss>__<snake_case の説明>.sql` の形式で追加します。
+- テーブルはモジュールごとの DB スキーマに配置します（例: `address_reg`, `calendar_reg`, `id_mgmt`）。
+  `public` スキーマには新規テーブルを作りません。
+- 適用済みのマイグレーションは変更せず、修正は新しいマイグレーションで行います。
+
 ---
 
 ## 5. テスト戦略とテスト作成規約 (Testing Guidelines)
@@ -121,6 +177,39 @@ Monolith）アーキテクチャを実践・学習するためのシステムで
 | `@Tag("small")`  | 単体テスト          | Spring コンテキスト起動なし、高速実行、モック利用            | `./gradlew :backend:test`       |
 | `@Tag("medium")` | 統合テスト          | Spring コンテキスト起動、DB/リポジトリ連携、モジュール間結合 | `./gradlew :backend:mediumTest` |
 | `@Tag("large")`  | システム/負荷テスト | E2E、パフォーマンステスト、外部システム連携                  | `./gradlew :backend:largeTest`  |
+
+- `./gradlew :backend:test` はタグなしと `small` を実行し、`medium` / `large` を除外します（タイムアウト
+  60 秒）。
+
+#### Medium テスト（統合テスト）の構成
+
+Medium テストは Testcontainers の PostgreSQL 17 を使い、本番と同じ DB 方言で検証します。 **実行には
+Docker が起動している必要があります。**
+
+```java
+
+@Tag("medium")
+@SpringBootTest
+@ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
+@DisplayName("HolidayImportBatchConfigの統合テスト")
+class HolidayImportBatchConfigTest {
+  // ...
+}
+```
+
+- `undecided.TestcontainersConfiguration` が `@ServiceConnection` で DataSource
+  を自動構成します。独自にコンテナを定義しないでください。
+- `test` プロファイル (`backend/src/test/resources/application-test.yml`) では、スキーマを
+  `ddl-auto: create-drop` + `create_namespaces: true` で生成し、Eureka クライアントを無効化しています。
+
+#### フロントエンドのテスト
+
+- フロントエンド (`frontend`) のテストは **Storybook** で記述します。
+- コンポーネントと同じディレクトリに `*.stories.tsx` を置き、loading / error / empty / success
+  の各状態をストーリーにします。
+- 操作の検証は `play` 関数で行います。Jest 単体の `*.test.tsx` を新規に作る前に、Storybook
+  で書けるか検討してください。
 
 ### 5.2 テストコード作成の厳格ルール
 
@@ -240,6 +329,22 @@ class Strings2IsEmptyTest {
 | 統合テスト (Medium) の実行    | `./gradlew :backend:mediumTest`                                              |
 | システムテスト (Large) の実行 | `./gradlew :backend:largeTest`                                               |
 | モジュリス構造図の生成        | `./gradlew :backend:test` 実行後 `backend/build/spring-modulith-docs` に出力 |
+| カバレッジレポート            | `./gradlew :backend:test` 実行後 `backend/build/reports/jacoco` に出力       |
+| 依存ライブラリの更新確認      | `./gradlew :backend:dependencyUpdates`                                       |
+| フロントエンドの起動          | `cd frontend && npm run start:local`（`.env.local` を使用）                  |
+| フロントエンドのビルド        | `cd frontend && npm run build`                                               |
+
+### 7.1 CI (GitHub Actions)
+
+`.github/workflows/ci.yml` で JDK 25 (Temurin) を用いて以下を実行します。
+
+| ジョブ        | 実行タイミング                              | 内容                   |
+|:--------------|:--------------------------------------------|:-----------------------|
+| `test`        | すべてのブランチへの push / PR              | `./gradlew test`       |
+| `medium-test` | `main` / `develop` 向けの Pull Request のみ | `./gradlew mediumTest` |
+
+PR を作成する前に、ローカルで `./gradlew :backend:test` と `./gradlew :backend:mediumTest`
+が成功することを確認してください。
 
 ---
 
@@ -253,6 +358,7 @@ class Strings2IsEmptyTest {
 1. **Issue の選定・確認 (Issue Identification & Scope)**
     - 対象とする GitHub Issue の番号・タイトル・本文を確認し、解決すべき課題・要件・受け入れ基準を明確化します。
     - 関連するモジュールや影響範囲を特定します。
+    - 要件や受け入れ基準が曖昧な場合は、要求分析スキル (`requirement-analysis`) で要件を整理してから着手します。
 
 2. **feature ブランチの作成 (Branching)**
     - 最新のメインブランチから作業用の feature ブランチを作成して切り替えます。
@@ -300,7 +406,8 @@ class Strings2IsEmptyTest {
 
 ## 9. イミュータブルデータモデル設計指針 (Immutable Data Modeling Guidelines)
 
-本プロジェクトでは、データの信頼性、監査性、および整合性を最大化するため、データモデリングにおいて **イミュータブルデータモデル（不変データモデル）** の設計思想を採用します。
+本プロジェクトでは、データの信頼性、監査性、および整合性を最大化するため、データモデリングにおいて
+**イミュータブルデータモデル（不変データモデル）** の設計思想を採用します。
 
 ### 9.1 基本概念と設計原則
 
@@ -309,20 +416,39 @@ class Strings2IsEmptyTest {
     - 過去の任意の時点における正確な状態を完全に再現可能とし、データの非破壊性と完全な監査証跡（Auditability）を保証します。
 
 2. **リソース (Resource) とイベント (Event) の分離**:
-    - **リソース (R)**: 人、モノ、組織、場所などの実体（名詞・複数形で命名、例: `customers`, `products`, `employees`）。
-    - **イベント (E)**: 発生した取引、判定、処理結果などの出来事（名詞句・動名詞・複数形で命名、例: `orders`, `payments`, `shipments`）。日時の属性を必ず保持します。
+    - **リソース (R)**: 人、モノ、組織、場所などの実体（名詞・複数形で命名、例: `customers`, `products`,
+      `employees`）。
+    - **イベント (E)**: 発生した取引、判定、処理結果などの出来事（名詞句・動名詞・複数形で命名、例:
+      `orders`, `payments`, `shipments`）。日時の属性を必ず保持します。
 
 3. **訂正・キャンセルの扱い (Handling Corrections)**:
-    - 過去のイベントレコードを直接 UPDATE せず、「取消イベント（赤黒処理）」や「訂正イベント（新たなバージョンのイベント）」を新規 INSERT して表現します。
+    - 過去のイベントレコードを直接 UPDATE せず、「取消イベント（赤黒処理）」や「訂正イベント（新たなバージョンのイベント）」を新規
+      INSERT して表現します。
     - 業務分析・業務理解の段階ではイベントの修正（訂正イベント）を扱い、リソースの誤入力訂正や物理削除はシステム設計（CRUD・運用設計）のフェーズで分離して扱います。
 
 4. **技術的関心事（マルチテナンシー等）の分離**:
-    - 業務分析・ドメインモデリング段階では、ドメインの本質的な理解を阻害するマルチテナントID（`tenant_id`）や技術的カラムを排除し、詳細設計・インフラ層設計フェーズで組み込みます。
+    - 業務分析・ドメインモデリング段階では、ドメインの本質的な理解を阻害するマルチテナントID（
+      `tenant_id`）や技術的カラムを排除し、詳細設計・インフラ層設計フェーズで組み込みます。
 
 5. **命名規則と属性ルール**:
-    - **自エンティティ名の省略**: 自身のエンティティ名を属性名に含めません（例: `orders` エンティティの受注日は `order_date` ではなく `occurred_at` または `effective_date`）。
-    - **外部参照時のプレフィックス**: 他エンティティを参照する外部キーには対象エンティティ名をプレフィックスとして明記します（例: `customer_id`, `product_id`）。
+    - **自エンティティ名の省略**: 自身のエンティティ名を属性名に含めません（例: `orders` エンティティの受注日は
+      `order_date` ではなく `occurred_at` または `effective_date`）。
+    - **外部参照時のプレフィックス**:
+      他エンティティを参照する外部キーには対象エンティティ名をプレフィックスとして明記します（例:
+      `customer_id`, `product_id`）。
 
 6. **Java / Spring Modulith 実装との統合**:
     - 不変データキャリアに Java `record` を積極的に使用し、事前条件検証（`*Precondition`）と組み合わせます。
-    - 状態変更はミューテーションではなく、ドメインイベント（`@DomainEvents`）の発行や新しい不変インスタンスの生成として実装します。
+    - 状態変更はミューテーションではなく、ドメインイベント（`@DomainEvents`
+      ）の発行や新しい不変インスタンスの生成として実装します。
+
+---
+
+## 10. エージェント向けスキル一覧 (Agent Skills)
+
+| スキル                 | 配置                                           | 用途                                                        |
+|:-----------------------|:-----------------------------------------------|:------------------------------------------------------------|
+| `modulith-dev`         | `.junie/skills/modulith-dev/SKILL.md`          | バックエンドの実装・テスト作成・アーキテクチャ検証          |
+| `pr-review`            | `.junie/skills/pr-review/SKILL.md`             | PR のレビュー（第 8 章の反復レビュー）                      |
+| `requirement-analysis` | `.claude/skills/requirement-analysis/SKILL.md` | 要求分析・要件定義・受け入れ基準の作成                      |
+| `frontend-design`      | `.claude/skills/frontend-design/SKILL.md`      | フロントエンドの画面・コンポーネント設計と Storybook テスト |
