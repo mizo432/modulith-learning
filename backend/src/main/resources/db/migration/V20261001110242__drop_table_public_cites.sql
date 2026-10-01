@@ -1,1 +1,1 @@
-drop table cites;
+drop table cities;
