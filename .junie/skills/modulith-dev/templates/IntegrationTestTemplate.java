@@ -8,19 +8,25 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import undecided.TestcontainersConfiguration;
 
 /**
  * {@code SampleIntegrationTest} は、統合テスト（Medium）のテンプレートクラスです。
  * <p>
  * 規約要件:
  * 1. @Tag("medium") を付与
- * 2. クラス・メソッドともに日本語 @DisplayName を付与
- * 3. 対象メソッドごとに @Nested クラスでグループ化
- * 4. メソッド名は should で開始し、アンダースコアを使用しない
- * 5. package-private 可視性
+ * 2. @ActiveProfiles("test") および @Import(TestcontainersConfiguration.class) で PostgreSQL コンテナを利用
+ * 3. クラス・メソッドともに日本語 @DisplayName を付与
+ * 4. 対象メソッドごとに @Nested クラスでグループ化
+ * 5. メソッド名は should で開始し、アンダースコアを使用しない
+ * 6. package-private 可視性
  */
 @Tag("medium")
 @SpringBootTest
+@ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 @DisplayName("Sampleモジュールの統合テスト")
 class SampleIntegrationTest {
 

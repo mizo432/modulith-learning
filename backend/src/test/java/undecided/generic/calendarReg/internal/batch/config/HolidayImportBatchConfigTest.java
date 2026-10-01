@@ -16,7 +16,9 @@ import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import undecided.TestcontainersConfiguration;
 import undecided.generic.calendarReg.internal.HolidayRepository;
 import undecided.generic.calendarReg.internal.batch.launcher.HolidayImportJobLauncher;
 import undecided.generic.calendarReg.spi.Holiday;
@@ -24,6 +26,7 @@ import undecided.generic.calendarReg.spi.Holiday;
 @Tag("medium")
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 @DisplayName("HolidayImportBatchConfigの統合テスト")
 class HolidayImportBatchConfigTest {
 

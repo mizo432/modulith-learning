@@ -16,7 +16,9 @@ import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import undecided.TestcontainersConfiguration;
 import undecided.generic.addressReg.internal.ChouAzaRepository;
 import undecided.generic.addressReg.internal.batch.launcher.ChouAzaImportJobLauncher;
 import undecided.generic.addressReg.spi.ChouAza;
@@ -24,6 +26,7 @@ import undecided.generic.addressReg.spi.ChouAza;
 @Tag("medium")
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 @DisplayName("ChouAzaImportBatchConfigの統合テスト")
 class ChouAzaImportBatchConfigTest {
 
