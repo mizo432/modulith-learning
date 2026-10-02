@@ -1,4 +1,4 @@
-package undecided.supporting.entity;
+package undecided.supporting.snowflake.spi;
 
 import static undecided.supporting.annotation.io.Base62s.DECODE_FROM_BASE62;
 import static undecided.supporting.annotation.io.Base62s.ENCODE_TO_BASE62;
@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import undecided.supporting.entity.LongValue;
 
 /**
  * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。

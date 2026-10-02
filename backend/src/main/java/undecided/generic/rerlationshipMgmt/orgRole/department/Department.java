@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import undecided.generic.rerlationshipMgmt.orgRole.department.internal.DepartmentCode;
-import undecided.supporting.entity.SnowflakeId;
+import undecided.supporting.snowflake.spi.SnowflakeId;
 
 @Entity
 @Data
