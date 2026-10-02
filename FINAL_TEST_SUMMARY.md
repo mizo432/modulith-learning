@@ -11,22 +11,22 @@ compared to `develop`.
 
 ### Source Files Changed (10 files):
 
-1. ✅ `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+1. ✅ `relationshipMgmt`
 2. ✅ `backend/src/main/java/undecided/erp/greeting/internal/GreetingApi.java`
 3. ✅
-   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+   `relationshipMgmt`
 4. ✅
-   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+   `relationshipMgmt`
 5. ✅
-   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+   `relationshipMgmt`
    (Interface - No tests needed)
-6. ✅ `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+6. ✅ `relationshipMgmt`
    (Interface - No tests needed)
-7. ✅ `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+7. ✅ `relationshipMgmt`
 8. ✅
-   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+   `relationshipMgmt`
 9. ✅
-   `backend/src/main/java/undecided/generic/rerlationshipMgmt`
+   `relationshipMgmt`
 10. ✅ `backend/src/main/java/undecided/generic/applicatoion`
 
 ---

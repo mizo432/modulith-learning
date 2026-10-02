@@ -90,8 +90,8 @@ Monolith）アーキテクチャを実践・学習するためのシステムで
     - `addressReg`: 住所管理（都道府県・市区町村・町字。DB スキーマ `address_reg`、CSV インポートバッチあり）
     - `calendarReg`: カレンダー管理（祝日。DB スキーマ `calendar_reg`、祝日インポートバッチあり）
     - `bankReg`: 銀行・支店管理
-    - `rerlationshipMgmt`: 顧客・組織・従業員関係管理（party / partyRole パターン）
-    - `productSaleMgmt`: 商品販売管理
+    - `relationshipMgmt`: 顧客・組織・従業員関係管理（party / partyRole パターン）
+        - `productSaleMgmt`: 商品販売管理
 - **業務ドメインモジュール (`undecided.*` 直下)**:
     - `cashSaleMgmt`: 現金販売管理（パッケージのみ）
     - `customerAccountMgmt`: 顧客口座管理（パッケージのみ）

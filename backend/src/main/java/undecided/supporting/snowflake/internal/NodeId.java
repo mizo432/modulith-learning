@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class NodeId {
+class NodeId {
 
   public static final int MAX = 1023;
   @Getter private Integer value;
