@@ -13,7 +13,7 @@ import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.parameters.JobParameters;
 import org.springframework.batch.core.job.parameters.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -30,7 +30,7 @@ import undecided.generic.addressReg.spi.City;
 @DisplayName("CityImportBatchConfigの統合テスト")
 class CityImportBatchConfigTest {
 
-  @Autowired private JobLauncher jobLauncher;
+  @Autowired private JobOperator jobOperator;
 
   @Autowired private Job cityImportJob;
 
@@ -52,7 +52,7 @@ class CityImportBatchConfigTest {
               .toJobParameters();
 
       // Act
-      JobExecution jobExecution = jobLauncher.run(cityImportJob, jobParameters);
+      JobExecution jobExecution = jobOperator.start(cityImportJob, jobParameters);
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
