@@ -1,4 +1,4 @@
 @NamedInterface("customerAccountMgmt")
-package undecided.customerAccountMgmt;
+package undecided.erp.customerAccountMgmt;
 
 import org.springframework.modulith.NamedInterface;

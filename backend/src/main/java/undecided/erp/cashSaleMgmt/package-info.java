@@ -1,4 +1,4 @@
 @NamedInterface("cashSaleMgmt")
-package undecided.cashSaleMgmt;
+package undecided.erp.cashSaleMgmt;
 
 import org.springframework.modulith.NamedInterface;
