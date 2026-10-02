@@ -52,7 +52,8 @@ public class PrefectureImportBatchConfig {
       PrefectureItemProcessor processor,
       PrefectureItemWriter writer) {
     return new StepBuilder(STEP_NAME, jobRepository)
-        .<PrefectureCsvDto, Prefecture>chunk(CHUNK_SIZE, transactionManager)
+        .<PrefectureCsvDto, Prefecture>chunk(CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(reader)
         .processor(processor)
         .writer(writer)

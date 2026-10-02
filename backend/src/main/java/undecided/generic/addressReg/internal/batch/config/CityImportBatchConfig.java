@@ -52,7 +52,8 @@ public class CityImportBatchConfig {
       CityItemProcessor processor,
       CityItemWriter writer) {
     return new StepBuilder(STEP_NAME, jobRepository)
-        .<CityCsvDto, City>chunk(CHUNK_SIZE, transactionManager)
+        .<CityCsvDto, City>chunk(CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(reader)
         .processor(processor)
         .writer(writer)

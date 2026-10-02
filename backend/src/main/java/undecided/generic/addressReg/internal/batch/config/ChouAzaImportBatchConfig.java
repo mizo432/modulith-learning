@@ -52,7 +52,8 @@ public class ChouAzaImportBatchConfig {
       ChouAzaItemProcessor processor,
       ChouAzaItemWriter writer) {
     return new StepBuilder(STEP_NAME, jobRepository)
-        .<ChouAzaCsvDto, ChouAza>chunk(CHUNK_SIZE, transactionManager)
+        .<ChouAzaCsvDto, ChouAza>chunk(CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(reader)
         .processor(processor)
         .writer(writer)

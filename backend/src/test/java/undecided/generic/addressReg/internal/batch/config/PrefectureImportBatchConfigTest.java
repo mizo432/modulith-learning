@@ -12,7 +12,7 @@ import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.parameters.JobParameters;
 import org.springframework.batch.core.job.parameters.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -29,7 +29,7 @@ import undecided.generic.addressReg.spi.Prefecture;
 @DisplayName("PrefectureImportBatchConfigの統合テスト")
 class PrefectureImportBatchConfigTest {
 
-  @Autowired private JobLauncher jobLauncher;
+  @Autowired private JobOperator jobOperator;
 
   @Autowired private Job prefectureImportJob;
 
@@ -51,7 +51,7 @@ class PrefectureImportBatchConfigTest {
               .toJobParameters();
 
       // Act
-      JobExecution jobExecution = jobLauncher.run(prefectureImportJob, jobParameters);
+      JobExecution jobExecution = jobOperator.start(prefectureImportJob, jobParameters);
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
