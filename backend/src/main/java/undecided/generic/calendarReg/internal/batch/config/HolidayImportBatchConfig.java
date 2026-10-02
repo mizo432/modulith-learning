@@ -65,7 +65,8 @@ public class HolidayImportBatchConfig {
       HolidayItemProcessor processor,
       HolidayItemWriter writer) {
     return new StepBuilder(STEP_NAME, jobRepository)
-        .<HolidayCsvDto, Holiday>chunk(CHUNK_SIZE, transactionManager)
+        .<HolidayCsvDto, Holiday>chunk(CHUNK_SIZE)
+        .transactionManager(transactionManager)
         .reader(reader)
         .processor(processor)
         .writer(writer)
