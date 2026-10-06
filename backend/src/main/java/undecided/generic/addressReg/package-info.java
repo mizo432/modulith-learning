@@ -1,4 +1,4 @@
-@NamedInterface(name = "住所レジストリ", propagate = false)
+@NamedInterface()
 package undecided.generic.addressReg;
 
 import org.springframework.modulith.NamedInterface;

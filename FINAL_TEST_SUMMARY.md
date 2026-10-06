@@ -12,7 +12,7 @@ compared to `develop`.
 ### Source Files Changed (10 files):
 
 1. ✅ `relationshipMgmt`
-2. ✅ `backend/src/main/java/undecided/erp/greeting/internal/GreetingApi.java`
+2. ✅ `backend/src/main/java/undecided/generic/greeting`
 3. ✅
    `relationshipMgmt`
 4. ✅

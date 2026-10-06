@@ -17,9 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import undecided.relationshipMgmt.orgRole.internal.organization.OrganizationQueryImpl;
-import undecided.relationshipMgmt.orgRole.internal.organization.OrganizationRepository;
-import undecided.relationshipMgmt.orgRole.spi.Organization;
+import undecided.generic.relationshipMgmt.orgRole.internal.organization.OrganizationQueryImpl;
+import undecided.generic.relationshipMgmt.orgRole.internal.organization.OrganizationRepository;
+import undecided.generic.relationshipMgmt.orgRole.spi.Organization;
 
 /**
  * Unit tests for {@link OrganizationQueryImpl}.

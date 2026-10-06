@@ -1,4 +1,4 @@
-@NamedInterface(name = "金融機関レジストリ")
+@NamedInterface()
 package undecided.generic.bankReg;
 
 import org.springframework.modulith.NamedInterface;

@@ -7,8 +7,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
-import undecided.generic.bankReg.spi.Bank;
-import undecided.generic.bankReg.spi.BankQuery;
+import undecided.generic.bankReg.spi.bank.Bank;
+import undecided.generic.bankReg.spi.bank.BankQuery;
 
 /** {@link BankQuery} の実装クラス。 */
 @Service

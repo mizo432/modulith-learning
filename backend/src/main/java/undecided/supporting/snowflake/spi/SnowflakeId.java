@@ -1,7 +1,7 @@
 package undecided.supporting.snowflake.spi;
 
-import static undecided.supporting.annotation.io.Base62s.DECODE_FROM_BASE62;
-import static undecided.supporting.annotation.io.Base62s.ENCODE_TO_BASE62;
+import static undecided.supporting.io.Base62s.DECODE_FROM_BASE62;
+import static undecided.supporting.io.Base62s.ENCODE_TO_BASE62;
 import static undecided.supporting.precondition.LongPrecondition.checkPositive;
 import static undecided.supporting.precondition.ObjectPrecondition.checkNotNull;
 import static undecided.supporting.primitiveOld.Objects2.isNull;

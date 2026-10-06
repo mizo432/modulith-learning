@@ -1,8 +1,14 @@
 @ApplicationModule(
-    type = ApplicationModule.Type.OPEN,
-    allowedDependencies = {"relationshipMgmt", "cashSaleMgmt", "productSaleMgmt"},
-    displayName = "支援サブドメイン")
+    type = Type.OPEN,
+    allowedDependencies = {
+      "generic.greeting",
+      "relationshipMgmt.party",
+      "relationshipMgmt.orgRole",
+      "relationshipMgmt.personRole",
+      "relationshipMgmt.partyRole"
+    })
 /** ,支援サブドメイン */
 package undecided.supporting;
 
 import org.springframework.modulith.ApplicationModule;
+import org.springframework.modulith.ApplicationModule.Type;
