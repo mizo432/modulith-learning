@@ -63,6 +63,19 @@ public class DepartmentApi {
   }
 
   /**
+   * 部署情報を部分的に更新します。
+   *
+   * @param departmentCode 更新対象の部署コード
+   * @param department 更新する部署情報
+   * @return 更新結果のレスポンス
+   */
+  @PatchMapping("/{departmentCode}")
+  ResponseEntity<Void> patch(@PathVariable DepartmentCode departmentCode, Department department) {
+    command.update(departmentCode, department);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
    * @param departmentCode
    * @return
    */
