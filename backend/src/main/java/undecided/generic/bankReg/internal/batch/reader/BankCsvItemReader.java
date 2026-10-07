@@ -44,6 +44,7 @@ public class BankCsvItemReader implements ItemStreamReader<BankCsvDto> {
 
   @Setter @Getter private java.nio.file.Path zipFile;
 
+  private ZipFile zipFileHandle;
   private ICsvBeanReader csvBeanReader;
 
   public BankCsvItemReader() {}
@@ -55,15 +56,16 @@ public class BankCsvItemReader implements ItemStreamReader<BankCsvDto> {
   @Override
   public void open(@NonNull ExecutionContext executionContext) throws ItemStreamException {
     checkNotNull(zipFile, () -> new ItemStreamException("zipFile must not be null"));
-    try (ZipFile zip = new ZipFile(zipFile.toFile())) {
-      ZipEntry entry = zip.getEntry(CSV_ENTRY_NAME);
+    try {
+      zipFileHandle = new ZipFile(zipFile.toFile());
+      ZipEntry entry = zipFileHandle.getEntry(CSV_ENTRY_NAME);
       if (entry == null) {
         throw new ItemStreamException(
             "ZIP file does not contain '" + CSV_ENTRY_NAME + "': " + zipFile);
       }
       BufferedReader reader =
           new BufferedReader(
-              new InputStreamReader(zip.getInputStream(entry), StandardCharsets.UTF_8));
+              new InputStreamReader(zipFileHandle.getInputStream(entry), StandardCharsets.UTF_8));
       csvBeanReader = new CsvBeanReader(reader, CsvPreference.STANDARD_PREFERENCE);
       // ヘッダー行を読み捨てる
       csvBeanReader.getHeader(true);
@@ -89,14 +91,29 @@ public class BankCsvItemReader implements ItemStreamReader<BankCsvDto> {
 
   @Override
   public void close() throws ItemStreamException {
+    IOException firstException = null;
     if (csvBeanReader != null) {
       try {
         csvBeanReader.close();
       } catch (IOException e) {
-        throw new ItemStreamException("Failed to close CSV reader", e);
+        firstException = e;
       } finally {
         csvBeanReader = null;
       }
+    }
+    if (zipFileHandle != null) {
+      try {
+        zipFileHandle.close();
+      } catch (IOException e) {
+        if (firstException == null) {
+          firstException = e;
+        }
+      } finally {
+        zipFileHandle = null;
+      }
+    }
+    if (firstException != null) {
+      throw new ItemStreamException("Failed to close reader", firstException);
     }
   }
 }
