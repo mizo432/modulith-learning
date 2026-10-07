@@ -81,6 +81,22 @@ class BankItemProcessorTest {
     }
 
     @Test
+    @DisplayName("金融機関コードが4桁でない場合、nullを返すこと")
+    void shouldReturnNullWhenBankCodeLengthIsInvalid() {
+      // Arrange
+      processor.datasetId = "dataset-20261001";
+      BankCsvDto dto = new BankCsvDto();
+      dto.setBankCode("001");
+      dto.setBankName("みずほ銀行");
+
+      // Act
+      Bank result = processor.process(dto);
+
+      // Assert
+      assertThat(result).as("4桁でない金融機関コードはスキップされること").isNull();
+    }
+
+    @Test
     @DisplayName("金融機関名がnullの場合、nullを返すこと")
     void shouldReturnNullWhenBankNameIsNull() {
       // Arrange

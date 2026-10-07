@@ -12,6 +12,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.jspecify.annotations.NonNull;
+import undecided.generic.bankReg.spi.bank.BankCode;
 
 /**
  * 金融機関の支店情報を管理するエンティティクラス。
@@ -46,28 +48,23 @@ public class Branch {
   @Size(min = 4, max = 4)
   @Column(name = "bank_code", comment = "Bank code (4 digits)", nullable = false, length = 4)
   private String bankCode;
-
   /** 支店名（例: "東京営業部"）。 */
   @NotNull
   @Size(max = 128)
   @Column(name = "branch_name", comment = "Branch name", nullable = false, length = 128)
   private String branchName;
-
   /** 支店名の半角カナ表記。 */
   @Size(max = 256)
   @Column(name = "branch_half_kana", comment = "Branch name in half-width katakana", length = 256)
   private String branchHalfKana;
-
   /** 支店名の全角カナ表記。 */
   @Size(max = 256)
   @Column(name = "branch_full_kana", comment = "Branch name in full-width katakana", length = 256)
   private String branchFullKana;
-
   /** 支店名のひらがな表記。 */
   @Size(max = 256)
   @Column(name = "branch_hiragana", comment = "Branch name in hiragana", length = 256)
   private String branchHiragana;
-
   /**
    * この行を最後に更新した Master Export のデータセットID。
    *
@@ -81,6 +78,24 @@ public class Branch {
       nullable = false,
       length = 128)
   private String datasetId;
+
+  /**
+   * 所属する金融機関のコードを値オブジェクトとして取得します。
+   *
+   * @return 金融機関コードの値オブジェクト
+   */
+  public @NonNull BankCode bankCodeValue() {
+    return BankCode.of(bankCode);
+  }
+
+  /**
+   * 所属する金融機関のコードを値オブジェクトから設定します。
+   *
+   * @param code 金融機関コードの値オブジェクト
+   */
+  public void setBankCodeValue(@NonNull BankCode code) {
+    this.bankCode = code.asString();
+  }
 
   /** 支店と金融機関の複合キー。 */
   @Getter

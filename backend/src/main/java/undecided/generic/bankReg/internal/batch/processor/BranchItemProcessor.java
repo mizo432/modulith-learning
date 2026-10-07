@@ -9,6 +9,7 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
 import undecided.generic.bankReg.internal.BranchRepository;
 import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
+import undecided.generic.bankReg.spi.bank.BankCode;
 import undecided.generic.bankReg.spi.branch.Branch;
 
 /**
@@ -32,10 +33,10 @@ public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> 
   public @Nullable Branch process(@NonNull BranchCsvDto item) {
     checkNotNull(item, () -> new IllegalArgumentException("item must not be null"));
 
-    String bankCode = item.getBankCode();
+    String rawBankCode = item.getBankCode();
     String branchCode = item.getBranchCode();
 
-    if (bankCode == null || bankCode.isBlank()) {
+    if (rawBankCode == null || rawBankCode.isBlank()) {
       log.warn("Skipping record due to missing or invalid bank code: {}", item);
       return null;
     }
@@ -44,15 +45,23 @@ public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> 
       return null;
     }
 
+    BankCode bankCode;
+    try {
+      bankCode = BankCode.of(rawBankCode);
+    } catch (IllegalArgumentException ex) {
+      log.warn("Skipping record due to invalid bank code format: {}", item);
+      return null;
+    }
+
     Branch.BranchId branchId = new Branch.BranchId();
-    branchId.setBankCode(bankCode.trim());
+    branchId.setBankCode(bankCode.asString());
     branchId.setBranchCode(branchCode.trim());
 
     Branch existing = branchRepository.findById(branchId).orElse(null);
     Branch branch = existing != null ? existing : new Branch();
 
     if (existing == null) {
-      branch.setBankCode(bankCode.trim());
+      branch.setBankCodeValue(bankCode);
       branch.setBranchCode(branchCode.trim());
     }
 

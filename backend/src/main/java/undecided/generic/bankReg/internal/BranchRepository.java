@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import undecided.generic.bankReg.spi.bank.BankCode;
 import undecided.generic.bankReg.spi.branch.Branch;
 
 /** 支店エンティティに対するデータベースアクセスを提供するリポジトリインターフェース。 */
@@ -19,6 +20,16 @@ public interface BranchRepository extends CrudRepository<Branch, Branch.BranchId
    * @return 支店のリスト
    */
   List<Branch> findByBankCodeOrderByBranchCodeAsc(@Param("bankCode") String bankCode);
+
+  /**
+   * 指定した金融機関コードに属するすべての支店を支店コードの昇順で取得します。
+   *
+   * @param bankCode 金融機関コードの値オブジェクト
+   * @return 支店のリスト
+   */
+  default List<Branch> findByBankCodeValueOrderByBranchCodeAsc(BankCode bankCode) {
+    return findByBankCodeOrderByBranchCodeAsc(bankCode.asString());
+  }
 
   /**
    * 指定したデータセットID以外で最後に更新された支店を削除します。
