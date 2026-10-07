@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.generic.bankReg.internal.BranchRepository;
 import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
 import undecided.generic.bankReg.spi.branch.Branch;
+import undecided.generic.bankReg.spi.branch.BranchCode;
 
 @Tag("small")
 @DisplayName("BranchItemProcessorのテスト")
@@ -78,6 +79,32 @@ class BranchItemProcessorTest {
     }
 
     @Test
+    @DisplayName("branchCodeが空の場合、nullを返すこと")
+    void shouldReturnNullWhenBranchCodeIsBlank() {
+      BranchCsvDto dto = new BranchCsvDto();
+      dto.setBankCode("0001");
+      dto.setBranchCode("  ");
+      dto.setBranchName("東京営業部");
+
+      Branch result = processor.process(dto);
+
+      assertThat(result).isNull();
+    }
+
+    @Test
+    @DisplayName("branchCodeの桁数が不正な場合、nullを返すこと")
+    void shouldReturnNullWhenBranchCodeLengthIsInvalid() {
+      BranchCsvDto dto = new BranchCsvDto();
+      dto.setBankCode("0001");
+      dto.setBranchCode("01");
+      dto.setBranchName("東京営業部");
+
+      Branch result = processor.process(dto);
+
+      assertThat(result).isNull();
+    }
+
+    @Test
     @DisplayName("新規支店が正しく作成されること")
     void shouldCreateNewBranchWhenNotExists() {
       processor.setDatasetId("dataset-001");
@@ -114,7 +141,7 @@ class BranchItemProcessorTest {
 
       Branch existing = new Branch();
       existing.setBankCode("0001");
-      existing.setBranchCode("001");
+      existing.setBranchCodeValue(BranchCode.of("001"));
       existing.setBranchName("旧名称");
       existing.setDatasetId("dataset-001");
 

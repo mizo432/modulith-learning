@@ -11,6 +11,7 @@ import undecided.generic.bankReg.internal.BranchRepository;
 import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
 import undecided.generic.bankReg.spi.bank.BankCode;
 import undecided.generic.bankReg.spi.branch.Branch;
+import undecided.generic.bankReg.spi.branch.BranchCode;
 
 /**
  * CSV から読み込んだ {@link BranchCsvDto} を検証し、既存データと照合して {@link Branch} エンティティを生成・更新する {@link
@@ -34,13 +35,13 @@ public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> 
     checkNotNull(item, () -> new IllegalArgumentException("item must not be null"));
 
     String rawBankCode = item.getBankCode();
-    String branchCode = item.getBranchCode();
+    String rawBranchCode = item.getBranchCode();
 
     if (rawBankCode == null || rawBankCode.isBlank()) {
       log.warn("Skipping record due to missing or invalid bank code: {}", item);
       return null;
     }
-    if (branchCode == null || branchCode.isBlank()) {
+    if (rawBranchCode == null || rawBranchCode.isBlank()) {
       log.warn("Skipping record due to missing or invalid branch code: {}", item);
       return null;
     }
@@ -53,16 +54,24 @@ public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> 
       return null;
     }
 
+    BranchCode branchCode;
+    try {
+      branchCode = BranchCode.of(rawBranchCode);
+    } catch (IllegalArgumentException ex) {
+      log.warn("Skipping record due to invalid branch code format: {}", item);
+      return null;
+    }
+
     Branch.BranchId branchId = new Branch.BranchId();
     branchId.setBankCode(bankCode.asString());
-    branchId.setBranchCode(branchCode.trim());
+    branchId.setBranchCode(branchCode.asString());
 
     Branch existing = branchRepository.findById(branchId).orElse(null);
     Branch branch = existing != null ? existing : new Branch();
 
     if (existing == null) {
       branch.setBankCodeValue(bankCode);
-      branch.setBranchCode(branchCode.trim());
+      branch.setBranchCodeValue(branchCode);
     }
 
     branch.setBranchName(item.getBranchName() != null ? item.getBranchName().trim() : "");
