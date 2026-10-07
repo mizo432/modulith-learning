@@ -65,16 +65,16 @@ class BankImportBatchConfigTest {
       assertThat(bankRepository.count()).isEqualTo(10L);
 
       // 個別データの検証
-      Optional<Bank> mizuho = bankRepository.findById("0001");
+      Optional<Bank> mizuho = bankRepository.findById(BankCode.of("0001"));
       assertThat(mizuho).isPresent();
       assertThat(mizuho.get().getBankName()).isEqualTo("みずほ銀行");
       assertThat(mizuho.get().getDatasetId()).isEqualTo("test-dataset-001");
 
-      Optional<Bank> smbc = bankRepository.findById("0002");
+      Optional<Bank> smbc = bankRepository.findById(BankCode.of("0002"));
       assertThat(smbc).isPresent();
       assertThat(smbc.get().getBankName()).isEqualTo("三井住友銀行");
 
-      Optional<Bank> mufg = bankRepository.findById("0003");
+      Optional<Bank> mufg = bankRepository.findById(BankCode.of("0003"));
       assertThat(mufg).isPresent();
       assertThat(mufg.get().getBankName()).isEqualTo("三菱UFJ銀行");
     }
@@ -115,7 +115,7 @@ class BankImportBatchConfigTest {
       oldBank.setBankName("古い銀行");
       oldBank.setDatasetId("old-dataset");
       bankRepository.save(oldBank);
-      assertThat(bankRepository.findById("9999")).isPresent();
+      assertThat(bankRepository.findById(BankCode.of("9999"))).isPresent();
 
       String zipPath = new ClassPathResource("data/bank-import/test-banks.zip").getFile().getPath();
       JobParameters jobParameters =
@@ -132,7 +132,7 @@ class BankImportBatchConfigTest {
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-      assertThat(bankRepository.findById("9999")).isEmpty();
+      assertThat(bankRepository.findById(BankCode.of("9999"))).isEmpty();
       assertThat(bankRepository.count()).isEqualTo(10L);
     }
   }

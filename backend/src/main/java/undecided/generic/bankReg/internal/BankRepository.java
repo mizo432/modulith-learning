@@ -7,10 +7,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import undecided.generic.bankReg.spi.bank.Bank;
+import undecided.generic.bankReg.spi.bank.BankCode;
 
 /** 金融機関エンティティに対するデータベースアクセスを提供するリポジトリインターフェース。 */
 @Repository
-public interface BankRepository extends CrudRepository<Bank, String> {
+public interface BankRepository extends CrudRepository<Bank, BankCode> {
 
   /**
    * すべての金融機関を金融機関コードの昇順で取得します。

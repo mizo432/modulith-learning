@@ -28,7 +28,6 @@ public class Bank {
    * <p>データベース上では "bank_code" カラムに対応し、プライマリキーとして使用されます（例: "0001"）。
    */
   @Id
-  @Size(min = BankCode.LENGTH, max = BankCode.LENGTH)
   @Column(
       name = "bank_code",
       comment = "Bank code (4 digits)",

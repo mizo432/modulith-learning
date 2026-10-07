@@ -21,7 +21,7 @@ public class BankQueryImpl implements BankQuery {
   @Override
   public @NonNull Optional<Bank> findByBankCode(@NonNull BankCode bankCode) {
     checkNotNull(bankCode, () -> new IllegalArgumentException("bankCode must not be null"));
-    return bankRepository.findById(bankCode.asString());
+    return bankRepository.findById(bankCode);
   }
 
   @Override
