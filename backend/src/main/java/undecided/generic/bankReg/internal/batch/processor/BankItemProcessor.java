@@ -53,7 +53,7 @@ public class BankItemProcessor implements ItemProcessor<BankCsvDto, Bank> {
     }
 
     Bank bank = new Bank();
-    bank.setBankCodeValue(bankCode);
+    bank.setBankCode(bankCode);
     bank.setBankName(bankName.trim());
     bank.setBankHalfKana(trimOrNull(item.getBankHalfKana()));
     bank.setBankFullKana(trimOrNull(item.getBankFullKana()));

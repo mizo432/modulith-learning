@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.jspecify.annotations.NonNull;
 
 /**
  * 金融機関情報を管理するエンティティクラス。
@@ -29,9 +28,13 @@ public class Bank {
    * <p>データベース上では "bank_code" カラムに対応し、プライマリキーとして使用されます（例: "0001"）。
    */
   @Id
-  @Size(min = 4, max = 4)
-  @Column(name = "bank_code", comment = "Bank code (4 digits)", nullable = false, length = 4)
-  private String bankCode;
+  @Size(min = BankCode.LENGTH, max = BankCode.LENGTH)
+  @Column(
+      name = "bank_code",
+      comment = "Bank code (4 digits)",
+      nullable = false,
+      length = BankCode.LENGTH)
+  private BankCode bankCode;
 
   /** 金融機関名（例: "みずほ銀行"）。 */
   @NotNull
@@ -77,22 +80,4 @@ public class Bank {
       nullable = false,
       length = 128)
   private String datasetId;
-
-  /**
-   * 金融機関コードを値オブジェクトとして取得します。
-   *
-   * @return 金融機関コードの値オブジェクト
-   */
-  public @NonNull BankCode bankCodeValue() {
-    return BankCode.of(bankCode);
-  }
-
-  /**
-   * 金融機関コードを値オブジェクトから設定します。
-   *
-   * @param code 金融機関コードの値オブジェクト
-   */
-  public void setBankCodeValue(@NonNull BankCode code) {
-    this.bankCode = code.asString();
-  }
 }

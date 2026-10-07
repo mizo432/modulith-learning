@@ -22,6 +22,7 @@ import undecided.TestcontainersConfiguration;
 import undecided.generic.bankReg.internal.BankMasterImportRepository;
 import undecided.generic.bankReg.internal.BankRepository;
 import undecided.generic.bankReg.spi.bank.Bank;
+import undecided.generic.bankReg.spi.bank.BankCode;
 
 @Tag("medium")
 @SpringBootTest
@@ -110,7 +111,7 @@ class BankImportBatchConfigTest {
     void shouldDeleteOldDatasetRecords() throws Exception {
       // Arrange: 古いデータセットのレコードを挿入
       Bank oldBank = new Bank();
-      oldBank.setBankCode("9999");
+      oldBank.setBankCode(BankCode.of("9999"));
       oldBank.setBankName("古い銀行");
       oldBank.setDatasetId("old-dataset");
       bankRepository.save(oldBank);
