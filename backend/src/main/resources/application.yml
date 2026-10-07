@@ -60,6 +60,14 @@ spring:
     properties.hibernate.jdbc.lob.non_contextual_creation: true
 #    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
+batch:
+  bank-import:
+    cron: "0 0 4 * * ?"
+    zip-dir: ${java.io.tmpdir}
+    bankcode-jp:
+      base-url: https://apis.bankcode-jp.com
+      api-key: ${BANKCODE_JP_API_KEY:}
+
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
 management:
   endpoints:
