@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
-import org.springframework.stereotype.Component;
 import undecided.generic.bankReg.internal.BranchRepository;
 import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
 import undecided.generic.bankReg.spi.branch.Branch;
@@ -17,7 +16,6 @@ import undecided.generic.bankReg.spi.branch.Branch;
  * ItemProcessor} 実装。
  */
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> {
 
