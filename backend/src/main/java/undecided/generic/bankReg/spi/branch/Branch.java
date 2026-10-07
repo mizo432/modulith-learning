@@ -34,9 +34,12 @@ public class Branch {
    * <p>データベース上では "branch_code" カラムに対応し、金融機関コードと組み合わせてプライマリキーとして使用されます（例: "001"）。
    */
   @Id
-  @Size(min = 3, max = 3)
-  @Column(name = "branch_code", comment = "Branch code (3 digits)", nullable = false, length = 3)
-  private String branchCode;
+  @Column(
+      name = "branch_code",
+      comment = "Branch code (3 digits)",
+      nullable = false,
+      length = BranchCode.LENGTH)
+  private BranchCode branchCode;
 
   /**
    * 所属する金融機関のコード（4桁）。
@@ -48,23 +51,28 @@ public class Branch {
   @Size(min = 4, max = 4)
   @Column(name = "bank_code", comment = "Bank code (4 digits)", nullable = false, length = 4)
   private String bankCode;
+
   /** 支店名（例: "東京営業部"）。 */
   @NotNull
   @Size(max = 128)
   @Column(name = "branch_name", comment = "Branch name", nullable = false, length = 128)
   private String branchName;
+
   /** 支店名の半角カナ表記。 */
   @Size(max = 256)
   @Column(name = "branch_half_kana", comment = "Branch name in half-width katakana", length = 256)
   private String branchHalfKana;
+
   /** 支店名の全角カナ表記。 */
   @Size(max = 256)
   @Column(name = "branch_full_kana", comment = "Branch name in full-width katakana", length = 256)
   private String branchFullKana;
+
   /** 支店名のひらがな表記。 */
   @Size(max = 256)
   @Column(name = "branch_hiragana", comment = "Branch name in hiragana", length = 256)
   private String branchHiragana;
+
   /**
    * この行を最後に更新した Master Export のデータセットID。
    *
@@ -78,6 +86,33 @@ public class Branch {
       nullable = false,
       length = 128)
   private String datasetId;
+
+  /**
+   * 支店コードを文字列として返します。
+   *
+   * @return 支店コードの文字列（例: "001"）
+   */
+  public String getBranchCode() {
+    return branchCode.value();
+  }
+
+  /**
+   * 支店コードの値オブジェクトを返します。
+   *
+   * @return 支店コードの値オブジェクト
+   */
+  public BranchCode getBranchCodeValue() {
+    return branchCode;
+  }
+
+  /**
+   * 支店コードを値オブジェクトから設定します。
+   *
+   * @param code 支店コードの値オブジェクト
+   */
+  public void setBranchCodeValue(@NonNull BranchCode code) {
+    this.branchCode = code;
+  }
 
   /**
    * 所属する金融機関のコードを値オブジェクトとして取得します。
@@ -97,6 +132,15 @@ public class Branch {
     this.bankCode = code.asString();
   }
 
+  /**
+   * 所属する金融機関のコードを文字列として返します。
+   *
+   * @return 金融機関コードの文字列（例: "0001"）
+   */
+  public String getBankCode() {
+    return bankCode;
+  }
+
   /** 支店と金融機関の複合キー。 */
   @Getter
   @Setter
@@ -105,7 +149,7 @@ public class Branch {
     @Column(name = "bank_code", nullable = false, length = 4)
     private String bankCode;
 
-    @Column(name = "branch_code", nullable = false, length = 3)
+    @Column(name = "branch_code", nullable = false, length = BranchCode.LENGTH)
     private String branchCode;
   }
 }
