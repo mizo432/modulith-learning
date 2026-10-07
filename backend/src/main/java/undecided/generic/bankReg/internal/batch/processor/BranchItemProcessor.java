@@ -1,0 +1,72 @@
+package undecided.generic.bankReg.internal.batch.processor;
+
+import static undecided.supporting.precondition.ObjectPrecondition.checkNotNull;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
+import org.springframework.stereotype.Component;
+import undecided.generic.bankReg.internal.BranchRepository;
+import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
+import undecided.generic.bankReg.spi.branch.Branch;
+
+/**
+ * CSV から読み込んだ {@link BranchCsvDto} を検証し、既存データと照合して {@link Branch} エンティティを生成・更新する {@link
+ * ItemProcessor} 実装。
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> {
+
+  private final BranchRepository branchRepository;
+
+  /** 最新のデータセットID（ジョブパラメータから注入） */
+  private String datasetId;
+
+  public void setDatasetId(String datasetId) {
+    this.datasetId = datasetId;
+  }
+
+  @Override
+  public @Nullable Branch process(@NonNull BranchCsvDto item) {
+    checkNotNull(item, () -> new IllegalArgumentException("item must not be null"));
+
+    String bankCode = item.getBankCode();
+    String branchCode = item.getBranchCode();
+
+    if (bankCode == null || bankCode.isBlank()) {
+      log.warn("Skipping record due to missing or invalid bank code: {}", item);
+      return null;
+    }
+    if (branchCode == null || branchCode.isBlank()) {
+      log.warn("Skipping record due to missing or invalid branch code: {}", item);
+      return null;
+    }
+
+    Branch.BranchId branchId = new Branch.BranchId();
+    branchId.setBankCode(bankCode.trim());
+    branchId.setBranchCode(branchCode.trim());
+
+    Branch existing = branchRepository.findById(branchId).orElse(null);
+    Branch branch = existing != null ? existing : new Branch();
+
+    if (existing == null) {
+      branch.setBankCode(bankCode.trim());
+      branch.setBranchCode(branchCode.trim());
+    }
+
+    branch.setBranchName(item.getBranchName() != null ? item.getBranchName().trim() : "");
+    branch.setBranchHalfKana(
+        item.getBranchHalfKana() != null ? item.getBranchHalfKana().trim() : null);
+    branch.setBranchFullKana(
+        item.getBranchFullKana() != null ? item.getBranchFullKana().trim() : null);
+    branch.setBranchHiragana(
+        item.getBranchHiragana() != null ? item.getBranchHiragana().trim() : null);
+    branch.setDatasetId(datasetId != null ? datasetId : "");
+
+    return branch;
+  }
+}
