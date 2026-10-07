@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import undecided.generic.bankReg.internal.batch.dto.BankCsvDto;
 import undecided.generic.bankReg.spi.bank.Bank;
+import undecided.generic.bankReg.spi.bank.BankCode;
 
 /**
  * CSV から読み込んだ {@link BankCsvDto} を検証し、{@link Bank} エンティティに変換する {@link ItemProcessor} 実装。
@@ -31,12 +32,19 @@ public class BankItemProcessor implements ItemProcessor<BankCsvDto, Bank> {
   public @Nullable Bank process(@NonNull BankCsvDto item) {
     checkNotNull(item, () -> new IllegalArgumentException("item must not be null"));
 
-    String bankCode = item.getBankCode();
-    if (bankCode == null || bankCode.isBlank()) {
+    String rawBankCode = item.getBankCode();
+    if (rawBankCode == null || rawBankCode.isBlank()) {
       log.warn("Skipping record due to missing or empty bank code: {}", item);
       return null;
     }
-    bankCode = bankCode.trim();
+
+    BankCode bankCode;
+    try {
+      bankCode = BankCode.of(rawBankCode);
+    } catch (IllegalArgumentException ex) {
+      log.warn("Skipping record due to invalid bank code format: {}", item);
+      return null;
+    }
 
     String bankName = item.getBankName();
     if (bankName == null || bankName.isBlank()) {
@@ -45,7 +53,7 @@ public class BankItemProcessor implements ItemProcessor<BankCsvDto, Bank> {
     }
 
     Bank bank = new Bank();
-    bank.setBankCode(bankCode);
+    bank.setBankCodeValue(bankCode);
     bank.setBankName(bankName.trim());
     bank.setBankHalfKana(trimOrNull(item.getBankHalfKana()));
     bank.setBankFullKana(trimOrNull(item.getBankFullKana()));

@@ -10,10 +10,10 @@ public interface BankQuery {
   /**
    * 金融機関コードを指定して金融機関を検索します。
    *
-   * @param bankCode 金融機関コード（4桁）
+   * @param bankCode 金融機関コードの値オブジェクト
    * @return 該当する金融機関の Optional
    */
-  @NonNull Optional<Bank> findByBankCode(@NonNull String bankCode);
+  @NonNull Optional<Bank> findByBankCode(@NonNull BankCode bankCode);
 
   /**
    * すべての金融機関を金融機関コードの昇順で取得します。

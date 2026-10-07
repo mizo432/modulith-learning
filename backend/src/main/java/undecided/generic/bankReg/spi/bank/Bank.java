@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.jspecify.annotations.NonNull;
 
 /**
  * 金融機関情報を管理するエンティティクラス。
@@ -76,4 +77,22 @@ public class Bank {
       nullable = false,
       length = 128)
   private String datasetId;
+
+  /**
+   * 金融機関コードを値オブジェクトとして取得します。
+   *
+   * @return 金融機関コードの値オブジェクト
+   */
+  public @NonNull BankCode bankCodeValue() {
+    return BankCode.of(bankCode);
+  }
+
+  /**
+   * 金融機関コードを値オブジェクトから設定します。
+   *
+   * @param code 金融機関コードの値オブジェクト
+   */
+  public void setBankCodeValue(@NonNull BankCode code) {
+    this.bankCode = code.asString();
+  }
 }
