@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * HttpSessionEventLoggingListener は、HttpSession に関連するライフサイクルイベントおよび属性変更イベントのロギングを提供するクラスです。
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>利用用途: アプリケーション内のセッション操作をトレースし、デバッグ情報を収集するために使用されます。
  */
+@Component
 public class HttpSessionEventLoggingListener
     implements HttpSessionListener, HttpSessionAttributeListener, HttpSessionActivationListener {
 

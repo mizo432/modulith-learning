@@ -1,13 +1,13 @@
 package undecided.supporting.presentation.web.exception;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import java.io.IOException;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.filter.GenericFilterBean;
 import undecided.supporting.exception.ExceptionLogger;
 
 /**
@@ -17,11 +17,20 @@ import undecided.supporting.exception.ExceptionLogger;
  *
  * <p>フィルタチェーン内の次のエレメントを実行中にスローされた例外は、適切なログメソッドによって記録されます。 捕捉した例外は再スローされるため、例外の伝播に影響を与えません。
  */
-@Setter
-@RequiredArgsConstructor
-public class ExceptionLoggingFilter extends GenericFilterBean {
+public class ExceptionLoggingFilter implements Filter {
 
-  private ExceptionLogger exceptionLogger;
+  @Setter private ExceptionLogger exceptionLogger;
+
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+    // Filter インターフェースの実装。GenericFilterBean を拡張しないため、CGLIB プロキシによる
+    // logger の初期化問題を回避する。
+  }
+
+  @Override
+  public void destroy() {
+    // クリーンアップ処理なし
+  }
 
   /**
    * フィルタチェーン内でリクエストとレスポンスを処理します。 処理の途中で発生する特定の例外(IOException, ServletException,
@@ -33,6 +42,7 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
    * @throws IOException 入出力エラーが発生した場合
    * @throws ServletException サーブレットに関するエラーが発生した場合
    */
+  @Override
   public void doFilter(
       ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
       throws IOException, ServletException {
