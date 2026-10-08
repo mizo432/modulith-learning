@@ -94,6 +94,20 @@ public class ApplicationConfig {
     return bean;
   }
 
+  /**
+   * {@link ResultMessagesLoggingInterceptor} を適用する Advice（インターセプタ）を生成し、Springフレームワークに登録するための Bean
+   * を作成します。 本メソッドは、{@code @Service} アノテーションで装飾されたクラス内の全メソッドを対象とする AspectJ Pointcut
+   * を定義し、指定されたインターセプタを適用します。これにより、サービス層のメソッド呼び出し時に例外や結果メッセージのログ記録処理が自動的に行われます。 生成された {@link
+   * Advisor} は、Springの AOP 機能と連携し、指定された Pointcut に一致するメソッドの実行前後でインターセプタの処理を実行します。 注意事項：本メソッドは
+   * {@code @Bean} アノテーションを付与しており、Spring コンテナにより自動的に管理されます。 この構成により、例外ハンドリングやログ出力のロジックを Service
+   * クラスから分離し、単一責任の原則に則ったクリーンなコード構造を維持できます。 本メソッドは {@link ResultMessagesLoggingInterceptor}
+   * によって、{@code @Service} クラス内のメソッド呼び出し時に発生する {@link ResultMessagesNotificationException}
+   * などの例外をログに記録し、正常な処理フローを維持します。
+   *
+   * @param resultMessagesLoggingInterceptor
+   *     適用するインターセプタの実装インスタンス。メソッド呼び出しのインターセプト処理、例外ログ記録、スレッドローカルなコンテキスト管理などを担当します。
+   * @return 指定された Pointcut とインターセプタを組み合わせた {@link Advisor} インスタンス。Spring AOP フレームワークにより自動的に適用されます。
+   */
   @Bean
   public Advisor resultMessagesLoggingInterceptorAdvisor(
       ResultMessagesLoggingInterceptor resultMessagesLoggingInterceptor) {

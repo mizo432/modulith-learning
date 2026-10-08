@@ -104,6 +104,7 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers:${property("testcontainersVersion")}")
