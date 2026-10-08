@@ -26,8 +26,6 @@ public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver
   private LinkedHashMap<String, String> exceptionMappings;
   private String defaultExceptionCode;
 
-  public SimpleMappingExceptionCodeResolver() {}
-
   /**
    * 指定された例外クラスに関連付けられた例外コードを解決します。
    *
@@ -38,7 +36,10 @@ public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver
    * @param ex 処理対象の例外。{@code null}の場合、デフォルトの例外コードを返します。
    * @return 解決された例外コード。該当するコードがない場合は、デフォルトの例外コードを返します。
    */
+  @Override
   public String resolveExceptionCode(Exception ex) {
+    String result = null;
+    boolean finished = false;
     if (ex == null) {
       logger.warn("target exception is null. return defaultExceptionCode.");
     } else {
@@ -46,24 +47,33 @@ public class SimpleMappingExceptionCodeResolver implements ExceptionCodeResolver
         String code = ((ExceptionCodeProvider) ex).getCode();
         if (code != null) {
 
-          return code;
+          result = code;
+          finished = true;
         }
       }
+      if (!finished) {
+        if (CollectionUtils.isEmpty(this.exceptionMappings)) {
+        } else {
+          for (Map.Entry<String, String> entry : this.exceptionMappings.entrySet()) {
+            String targetException = entry.getKey();
 
-      if (!CollectionUtils.isEmpty(this.exceptionMappings)) {
-        for (Map.Entry<String, String> entry : this.exceptionMappings.entrySet()) {
-          String targetException = entry.getKey();
-
-          for (Class<?> exceptionClass = ex.getClass();
-              exceptionClass != Object.class;
-              exceptionClass = exceptionClass.getSuperclass()) {
-            if (exceptionClass.getName().contains(targetException)) {
-              return entry.getValue();
+            for (Class<?> exceptionClass = ex.getClass();
+                exceptionClass != Object.class;
+                exceptionClass = exceptionClass.getSuperclass()) {
+              if (exceptionClass.getName().contains(targetException)) {
+                result = entry.getValue();
+                finished = true;
+                break;
+              }
             }
+            if (finished) break;
           }
         }
       }
     }
-    return this.defaultExceptionCode;
+    if (!finished) {
+      result = this.defaultExceptionCode;
+    }
+    return result;
   }
 }

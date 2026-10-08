@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import undecided.supporting.exception.ResultMessagesNotificationException;
+import undecided.supporting.presentation.web.idempotency.IdempotencyKeyException;
 import undecided.supporting.primitiveOld.Lists2;
 
 /**
@@ -114,6 +115,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    * @return エラーの詳細情報を含む {@code ProblemDetail} オブジェクト。HTTPステータス、エラータイトル、
    *     エラーメッセージ、インスタンスURI、エラーコード、トレースIDが含まれます。
    */
+  /**
+   * {@code IdempotencyKeyException} をハンドリングし、409 Conflict のエラーレスポンスを返却します。
+   *
+   * <p>同じ冪等性キーを持つリクエストが重複して送信された場合に発生します。
+   *
+   * @param e 処理対象の {@code IdempotencyKeyException}
+   * @return 409 Conflict の {@code ProblemDetail} オブジェクト
+   */
+  @ExceptionHandler(IdempotencyKeyException.class)
+  public @NonNull ProblemDetail handleIdempotencyKey(@NonNull IdempotencyKeyException e) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+    problem.setTitle("Idempotency Key Conflict");
+    problem.setProperty("errorCode", "IDEMPOTENCY_KEY_CONFLICT");
+    return problem;
+  }
+
   @ExceptionHandler(Exception.class)
   public @NonNull ProblemDetail handleUnexpected(
       @NonNull Exception ex, @NonNull HttpServletRequest request) {
