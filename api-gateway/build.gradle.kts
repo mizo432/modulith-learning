@@ -24,12 +24,14 @@ repositories {
 
 extra["junitVersion"] = "6.0.1"
 extra["springCloudBomVersion"] = "2025.1.2"
+extra["openapiUiVersion"] = "3.1.1"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
 

@@ -16,13 +16,13 @@ import org.testcontainers.containers.PostgreSQLContainer;
 public class TestcontainersConfiguration {
 
   @Bean
-  @ServiceConnection
+  @ServiceConnection(name = "postgresql")
   public PostgreSQLContainer<?> postgresContainer() {
     return new PostgreSQLContainer<>("postgres:17.0");
   }
 
   @Bean
-  @ServiceConnection
+  @ServiceConnection(name = "redis")
   public GenericContainer<?> redisContainer() {
     return new GenericContainer<>("redis:7.2").withExposedPorts(6379);
   }
