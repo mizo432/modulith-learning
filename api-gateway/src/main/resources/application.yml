@@ -6,7 +6,7 @@ server:
 
 spring:
   application:
-    name: api-gateway-service # アプリケーションの名前を設定します
+    name: api-gateway # アプリケーションの名前を設定します
   threads:
     virtual:
       enabled: true
