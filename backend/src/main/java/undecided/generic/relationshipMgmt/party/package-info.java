@@ -1,5 +1,6 @@
 @ApplicationModule(
     id = "relationshipMgmt.party",
+    displayName = "パーティー",
     allowedDependencies = {
       "relationshipMgmt.partyRole",
       "relationshipMgmt.personRole",

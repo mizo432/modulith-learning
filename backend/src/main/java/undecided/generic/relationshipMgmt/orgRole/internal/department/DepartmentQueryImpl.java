@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import undecided.generic.relationshipMgmt.orgRole.spi.Department;
+import undecided.generic.relationshipMgmt.orgRole.spi.DepartmentCode;
 
 @Service
 public class DepartmentQueryImpl implements DepartmentQuery {

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import undecided.generic.relationshipMgmt.orgRole.spi.Department;
+import undecided.generic.relationshipMgmt.orgRole.spi.DepartmentCode;
 
 @RestController
 @RequestMapping("/api/departments")

@@ -1,4 +1,4 @@
 @NamedInterface(value = "spi")
-package undecided.erp.cashSaleMgmt.spi;
+package undecided.erp.customerAccountMgmt.spi;
 
 import org.springframework.modulith.NamedInterface;

@@ -1,4 +1,4 @@
-package undecided.generic.relationshipMgmt.orgRole.internal.department;
+package undecided.generic.relationshipMgmt.orgRole.spi;
 
 import jakarta.persistence.Embeddable;
 

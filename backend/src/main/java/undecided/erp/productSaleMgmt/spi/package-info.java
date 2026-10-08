@@ -1,4 +1,4 @@
 @NamedInterface(propagate = true)
-package undecided.generic.productSaleMgmt.spi;
+package undecided.erp.productSaleMgmt.spi;
 
 import org.springframework.modulith.NamedInterface;

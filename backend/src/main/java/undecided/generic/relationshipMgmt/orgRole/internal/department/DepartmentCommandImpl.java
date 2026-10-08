@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import undecided.generic.relationshipMgmt.orgRole.spi.Department;
+import undecided.generic.relationshipMgmt.orgRole.spi.DepartmentCode;
 
 @RequiredArgsConstructor
 @Service
