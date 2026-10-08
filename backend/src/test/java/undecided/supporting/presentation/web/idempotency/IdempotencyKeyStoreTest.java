@@ -3,6 +3,7 @@ package undecided.supporting.presentation.web.idempotency;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.ConcurrentMap;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
 
@@ -21,6 +23,17 @@ import undecided.TestcontainersConfiguration;
 class IdempotencyKeyStoreTest {
 
   @Autowired private IdempotencyKeyStore store;
+
+  @Autowired private StringRedisTemplate redisTemplate;
+
+  @BeforeEach
+  void setUp() {
+    // Clear all idempotency keys before each test
+    java.util.Set<String> keys = redisTemplate.keys("idempotency:*");
+    if (keys != null && !keys.isEmpty()) {
+      redisTemplate.delete(keys);
+    }
+  }
 
   @Nested
   @DisplayName("getIfPresentメソッドのテスト")
