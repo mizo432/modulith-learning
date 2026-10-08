@@ -4,6 +4,7 @@ import {Box, Container, CssBaseline} from '@mui/material';
 import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import ChangePassword from './pages/ChangePassword';
 import NotFound from './pages/NotFound';
 import UserList from './pages/users/UserList';
 import UserCreate from './pages/users/UserCreate';
@@ -17,10 +18,30 @@ import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
 const ProtectedRoute = ({children}: { children: React.ReactNode }) => {
-  const {isAuthenticated} = useAuth();
+  const {isAuthenticated, isFirstLogin} = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login"/>;
+  }
+
+  // If user needs to change password on first login, redirect to change-password
+  if (isFirstLogin) {
+    return <Navigate to="/change-password"/>;
+  }
+
+  return <>{children}</>;
+};
+
+// First login route - redirects to change-password if first login, otherwise to dashboard
+const FirstLoginRoute = ({children}: { children: React.ReactNode }) => {
+  const {isAuthenticated, isFirstLogin} = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login"/>;
+  }
+
+  if (!isFirstLogin) {
+    return <Navigate to="/"/>;
   }
 
   return <>{children}</>;
@@ -67,53 +88,58 @@ const AppContent = () => {
           <Container component="main" sx={{flexGrow: 1, py: 4}}>
             <Routes>
               <Route path="/login" element={<Login/>}/>
+              <Route path="/change-password" element={
+                                                <FirstLoginRoute>
+                                                 <ChangePassword/>
+                                               </FirstLoginRoute>
+                                             }/>
               <Route path="/" element={
-                <ProtectedRoute>
-                  <Dashboard/>
-                </ProtectedRoute>
-              }/>
+                                 <ProtectedRoute>
+                                  <Dashboard/>
+                                </ProtectedRoute>
+                              }/>
               <Route path="/products" element={
-                <ProtectedRoute>
-                  <ProductSelection/>
-                </ProtectedRoute>
-              }/>
+                                         <ProtectedRoute>
+                                          <ProductSelection/>
+                                        </ProtectedRoute>
+                                      }/>
               {/* User management routes - admin only */}
               <Route path="/users/all" element={
-                <AdminRoute>
-                  <UserList/>
-                </AdminRoute>
-              }/>
+                                          <AdminRoute>
+                                           <UserList/>
+                                         </AdminRoute>
+                                       }/>
               <Route path="/users/add" element={
-                <AdminRoute>
-                  <UserCreate/>
-                </AdminRoute>
-              }/>
+                                          <AdminRoute>
+                                           <UserCreate/>
+                                         </AdminRoute>
+                                       }/>
               <Route path="/users/edit/:id" element={
-                <AdminRoute>
-                  <UserEdit/>
-                </AdminRoute>
-              }/>
+                                               <AdminRoute>
+                                                <UserEdit/>
+                                              </AdminRoute>
+                                            }/>
               {/* Project management routes */}
               <Route path="/projects" element={
-                <ProtectedRoute>
-                  <ProjectList/>
-                </ProtectedRoute>
-              }/>
+                                         <ProtectedRoute>
+                                          <ProjectList/>
+                                        </ProtectedRoute>
+                                      }/>
               <Route path="/projects/create" element={
-                <ProtectedRoute>
-                  <ProjectCreate/>
-                </ProtectedRoute>
-              }/>
+                                                <ProtectedRoute>
+                                                 <ProjectCreate/>
+                                               </ProtectedRoute>
+                                             }/>
               <Route path="/projects/edit/:id" element={
-                <ProtectedRoute>
-                  <ProjectEdit/>
-                </ProtectedRoute>
-              }/>
+                                                  <ProtectedRoute>
+                                                   <ProjectEdit/>
+                                                 </ProtectedRoute>
+                                               }/>
               <Route path="/projects/:id" element={
-                <ProtectedRoute>
-                  <ProjectDetail/>
-                </ProtectedRoute>
-              }/>
+                                             <ProtectedRoute>
+                                              <ProjectDetail/>
+                                            </ProtectedRoute>
+                                          }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </Container>

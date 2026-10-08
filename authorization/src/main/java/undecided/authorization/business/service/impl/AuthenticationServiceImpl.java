@@ -85,4 +85,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   public boolean isFirstLogin(String username) {
     return userRepository.findByUsername(username).map(User::isFirstLogin).orElse(false);
   }
+
+  @Override
+  public User changePasswordOnFirstLogin(String username, String newPassword) {
+    User user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(
+                () -> new IllegalArgumentException("User not found with username: " + username));
+
+    // 初回ログインでない場合はエラー
+    if (!user.isFirstLogin()) {
+      throw new IllegalArgumentException("User is not on first login");
+    }
+
+    // パスワードの長さ検証
+    if (newPassword == null || newPassword.length() < 8 || newPassword.length() > 64) {
+      throw new IllegalArgumentException("Password must be between 8 and 64 characters");
+    }
+
+    user.setPassword(passwordEncoder.encode(newPassword));
+    user.setFirstLoginComplete();
+    user.setUpdatedAt(LocalDateTime.now());
+    return userRepository.save(user);
+  }
 }

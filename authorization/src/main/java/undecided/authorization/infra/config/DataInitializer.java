@@ -81,11 +81,11 @@ public class DataInitializer implements CommandLineRunner {
     Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
     Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow();
 
-    // 管理者ユーザー（社員）を作成
+    // 管理者ユーザー（社員）を作成 - 初回ログイン時にパスワード設定を強制
     User adminUser =
         User.builder()
             .username("admin")
-            .password(passwordEncoder.encode("admin"))
+            .password("")
             .email("admin@example.com")
             .firstName("Admin")
             .lastName("User")

@@ -105,6 +105,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.security:spring-security-crypto")
     testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers:${property("testcontainersVersion")}")

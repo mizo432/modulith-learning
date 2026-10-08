@@ -155,4 +155,33 @@ public class AuthController {
       return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
     }
   }
+
+  /**
+   * 初回ログイン時のパスワード変更を行います。 現在のパスワードの確認は不要です。
+   *
+   * @param request 初回ログインパスワード変更リクエスト
+   * @param principal 認証済みユーザー
+   * @return 認証レスポンス
+   */
+  @PostMapping("/first-login/change-password")
+  public ResponseEntity<AuthResponse> changePasswordOnFirstLogin(
+      @RequestBody FirstLoginPasswordChangeRequest request, Principal principal) {
+    try {
+      // パスワード一致チェック
+      if (request.getNewPassword() == null
+          || !request.getNewPassword().equals(request.getConfirmPassword())) {
+        return ResponseEntity.badRequest()
+            .body(new AuthResponse(false, null, "Passwords do not match", false));
+      }
+
+      User user =
+          authenticationService.changePasswordOnFirstLogin(
+              principal.getName(), request.getNewPassword());
+      return ResponseEntity.ok(
+          new AuthResponse(
+              true, user.getUsername(), "Password changed successfully", user.isFirstLogin()));
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
+    }
+  }
 }

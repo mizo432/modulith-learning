@@ -55,4 +55,14 @@ public interface AuthenticationService {
    * @return 初回ログインの場合はtrue、そうでない場合はfalse
    */
   boolean isFirstLogin(String username);
+
+  /**
+   * 初回ログイン時のパスワード変更を行います。 現在のパスワードの確認は不要です。
+   *
+   * @param username ユーザー名
+   * @param newPassword 新しいパスワード
+   * @return パスワードが変更されたユーザー
+   * @throws IllegalArgumentException ユーザーが見つからない場合
+   */
+  User changePasswordOnFirstLogin(String username, String newPassword);
 }
