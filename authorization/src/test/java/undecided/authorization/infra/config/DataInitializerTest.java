@@ -38,7 +38,7 @@ class DataInitializerTest {
 
   @Nested
   @DisplayName("アプリケーション起動時の初期化テスト")
-  static class InitializationTest {
+  class InitializationTest {
 
     @Autowired private UserRepository userRepository;
 
