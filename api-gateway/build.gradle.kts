@@ -24,7 +24,7 @@ repositories {
 
 extra["junitVersion"] = "6.0.1"
 extra["springCloudBomVersion"] = "2025.1.2"
-extra["openapiUiVersion"] = "2.8.9"
+extra["openapiUiVersion"] = "3.1.1"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
