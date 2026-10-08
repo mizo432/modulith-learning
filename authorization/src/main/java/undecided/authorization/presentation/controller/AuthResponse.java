@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * 認証レスポンスDTO
- * <p>
- * ユーザー認証レスポンスのデータを保持するDTOクラスです。
+ *
+ * <p>ユーザー認証レスポンスのデータを保持するDTOクラスです。
  */
 @Data
 @NoArgsConstructor
@@ -17,4 +17,5 @@ public class AuthResponse {
   private boolean success;
   private String username;
   private String message;
+  private boolean firstLogin;
 }

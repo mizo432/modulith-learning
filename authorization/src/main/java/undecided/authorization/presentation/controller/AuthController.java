@@ -16,8 +16,8 @@ import undecided.authorization.domain.model.user.User;
 
 /**
  * 認証・認可コントローラー
- * <p>
- * 認証・認可に関するAPIエンドポイントを提供するコントローラークラスです。
+ *
+ * <p>認証・認可に関するAPIエンドポイントを提供するコントローラークラスです。
  */
 @RestController
 @RequestMapping("/api/auth")
@@ -39,11 +39,12 @@ public class AuthController {
 
     if (user == null) {
       return ResponseEntity.badRequest()
-          .body(new AuthResponse(false, null, "Invalid username or password"));
+          .body(new AuthResponse(false, null, "Invalid username or password", false));
     }
 
     return ResponseEntity.ok(
-        new AuthResponse(true, user.getUsername(), "Authentication successful"));
+        new AuthResponse(
+            true, user.getUsername(), "Authentication successful", user.isFirstLogin()));
   }
 
   /**
@@ -55,18 +56,16 @@ public class AuthController {
    */
   @PostMapping("/{userId}/change-password")
   public ResponseEntity<AuthResponse> changePassword(
-      @PathVariable Long userId,
-      @RequestBody PasswordChangeRequest request) {
+      @PathVariable Long userId, @RequestBody PasswordChangeRequest request) {
     try {
-      User user = authenticationService.changePassword(
-          userId,
-          request.getCurrentPassword(),
-          request.getNewPassword()
-      );
+      User user =
+          authenticationService.changePassword(
+              userId, request.getCurrentPassword(), request.getNewPassword());
       return ResponseEntity.ok(
-          new AuthResponse(true, user.getUsername(), "Password changed successfully"));
+          new AuthResponse(
+              true, user.getUsername(), "Password changed successfully", user.isFirstLogin()));
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage()));
+      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
     }
   }
 
@@ -79,15 +78,15 @@ public class AuthController {
    */
   @GetMapping("/check-role")
   public ResponseEntity<AuthResponse> checkRole(
-      @RequestParam String username,
-      @RequestParam String roleName) {
+      @RequestParam String username, @RequestParam String roleName) {
     boolean hasRole = authorizationService.hasRole(username, roleName);
 
     if (hasRole) {
-      return ResponseEntity.ok(new AuthResponse(true, username, "User has the required role"));
+      return ResponseEntity.ok(
+          new AuthResponse(true, username, "User has the required role", false));
     } else {
       return ResponseEntity.ok(
-          new AuthResponse(false, username, "User does not have the required role"));
+          new AuthResponse(false, username, "User does not have the required role", false));
     }
   }
 
@@ -100,16 +99,15 @@ public class AuthController {
    */
   @GetMapping("/check-permission")
   public ResponseEntity<AuthResponse> checkPermission(
-      @RequestParam String username,
-      @RequestParam String permissionName) {
+      @RequestParam String username, @RequestParam String permissionName) {
     boolean hasPermission = authorizationService.hasPermission(username, permissionName);
 
     if (hasPermission) {
       return ResponseEntity.ok(
-          new AuthResponse(true, username, "User has the required permission"));
+          new AuthResponse(true, username, "User has the required permission", false));
     } else {
       return ResponseEntity.ok(
-          new AuthResponse(false, username, "User does not have the required permission"));
+          new AuthResponse(false, username, "User does not have the required permission", false));
     }
   }
 
@@ -123,17 +121,16 @@ public class AuthController {
    */
   @GetMapping("/is-authorized")
   public ResponseEntity<AuthResponse> isAuthorized(
-      @RequestParam String username,
-      @RequestParam String resource,
-      @RequestParam String action) {
+      @RequestParam String username, @RequestParam String resource, @RequestParam String action) {
     boolean isAuthorized = authorizationService.isAuthorized(username, resource, action);
 
     if (isAuthorized) {
       return ResponseEntity.ok(
-          new AuthResponse(true, username, "User is authorized for the requested action"));
+          new AuthResponse(true, username, "User is authorized for the requested action", false));
     } else {
       return ResponseEntity.ok(
-          new AuthResponse(false, username, "User is not authorized for the requested action"));
+          new AuthResponse(
+              false, username, "User is not authorized for the requested action", false));
     }
   }
 
@@ -146,18 +143,16 @@ public class AuthController {
    */
   @PostMapping("/change-password")
   public ResponseEntity<AuthResponse> changeOwnPassword(
-      @RequestBody PasswordChangeRequest request,
-      Principal principal) {
+      @RequestBody PasswordChangeRequest request, Principal principal) {
     try {
-      User user = authenticationService.changePasswordByUsername(
-          principal.getName(),
-          request.getCurrentPassword(),
-          request.getNewPassword()
-      );
+      User user =
+          authenticationService.changePasswordByUsername(
+              principal.getName(), request.getCurrentPassword(), request.getNewPassword());
       return ResponseEntity.ok(
-          new AuthResponse(true, user.getUsername(), "Password changed successfully"));
+          new AuthResponse(
+              true, user.getUsername(), "Password changed successfully", user.isFirstLogin()));
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage()));
+      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
     }
   }
 }

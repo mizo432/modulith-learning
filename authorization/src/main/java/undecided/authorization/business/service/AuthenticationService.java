@@ -4,8 +4,8 @@ import undecided.authorization.domain.model.user.User;
 
 /**
  * 認証サービス
- * <p>
- * ユーザー認証に関するビジネスロジックを提供するサービスインターフェースです。
+ *
+ * <p>ユーザー認証に関するビジネスロジックを提供するサービスインターフェースです。
  */
 public interface AuthenticationService {
 
@@ -47,4 +47,12 @@ public interface AuthenticationService {
    * @throws IllegalArgumentException 現在のパスワードが一致しない場合、またはユーザーが見つからない場合
    */
   User changePasswordByUsername(String username, String currentPassword, String newPassword);
+
+  /**
+   * ユーザーが初回ログインかどうかを確認します。
+   *
+   * @param username ユーザー名
+   * @return 初回ログインの場合はtrue、そうでない場合はfalse
+   */
+  boolean isFirstLogin(String username);
 }

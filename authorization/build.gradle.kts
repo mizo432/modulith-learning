@@ -46,6 +46,7 @@ extra["junitVersion"] = "6.1.3"
 extra["springCloudBomVersion"] = "2025.0.0"
 extra["spotbugsAnnotationVersion"] = "4.10.4"
 extra["libphonenumberVersion"] = "9.0.0"
+extra["testcontainersVersion"] = "1.20.4"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -56,6 +57,8 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:postgresql:${property("testcontainersVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -95,6 +98,9 @@ tasks.test {
 
 val mediumTest = tasks.register("mediumTest", Test::class.java) {
     group = "verification"
+    description = "Runs medium integration tests"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("medium")
     }
@@ -104,6 +110,9 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
 
 val largeTest = tasks.register("largeTest", Test::class.java) {
     group = "verification"
+    description = "Runs large system tests"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("large")
     }

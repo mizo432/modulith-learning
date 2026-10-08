@@ -448,7 +448,7 @@ PR を作成する前に、ローカルで `./gradlew :backend:test` と `./grad
 
 | スキル                 | 配置                                           | 用途                                                        |
 |:-----------------------|:-----------------------------------------------|:------------------------------------------------------------|
-| `modulith-dev`         | `.junie/skills/modulith-dev/SKILL.md`          | バックエンドの実装・テスト作成・アーキテクチャ検証          |
-| `pr-review`            | `.junie/skills/pr-review/SKILL.md`             | PR のレビュー（第 8 章の反復レビュー）                      |
+| `modulith-dev`         | ``                                             | バックエンドの実装・テスト作成・アーキテクチャ検証          |
+| `pr-review`            | ``                                             | PR のレビュー（第 8 章の反復レビュー）                      |
 | `requirement-analysis` | `.claude/skills/requirement-analysis/SKILL.md` | 要求分析・要件定義・受け入れ基準の作成                      |
 | `frontend-design`      | `.claude/skills/frontend-design/SKILL.md`      | フロントエンドの画面・コンポーネント設計と Storybook テスト |

@@ -11,8 +11,8 @@ import undecided.authorization.domain.model.user.UserRepository;
 
 /**
  * 認証サービス実装
- * <p>
- * ユーザー認証に関するビジネスロジックを提供するサービス実装クラスです。
+ *
+ * <p>ユーザー認証に関するビジネスロジックを提供するサービス実装クラスです。
  */
 @Service
 @RequiredArgsConstructor
@@ -24,7 +24,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   @Override
   public User authenticate(String username, String password) {
-    return userRepository.findByUsername(username)
+    return userRepository
+        .findByUsername(username)
         .filter(user -> passwordEncoder.matches(password, user.getPassword()) && user.isEnabled())
         .map(this::updateLoginInfo)
         .orElse(null);
@@ -32,8 +33,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   @Override
   public User changePassword(Long userId, String currentPassword, String newPassword) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
     if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
       throw new IllegalArgumentException("Current password is incorrect");
@@ -46,8 +49,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   @Override
   public User updateLoginInfo(Long userId) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
     return updateLoginInfo(user);
   }
@@ -58,11 +63,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   @Override
-  public User changePasswordByUsername(String username, String currentPassword,
-      String newPassword) {
-    User user = userRepository.findByUsername(username)
-        .orElseThrow(
-            () -> new IllegalArgumentException("User not found with username: " + username));
+  public User changePasswordByUsername(
+      String username, String currentPassword, String newPassword) {
+    User user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(
+                () -> new IllegalArgumentException("User not found with username: " + username));
 
     if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
       throw new IllegalArgumentException("Current password is incorrect");
@@ -71,5 +78,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     user.setPassword(passwordEncoder.encode(newPassword));
     user.setUpdatedAt(LocalDateTime.now());
     return userRepository.save(user);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public boolean isFirstLogin(String username) {
+    return userRepository.findByUsername(username).map(User::isFirstLogin).orElse(false);
   }
 }
