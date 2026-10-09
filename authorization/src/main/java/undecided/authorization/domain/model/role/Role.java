@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,8 +25,8 @@ import undecided.authorization.domain.model.permission.Permission;
 
 /**
  * ロールエンティティ
- * <p>
- * システム内のユーザーロールを表すエンティティクラスです。 ロール名と説明、および関連する権限のコレクションを持ちます。
+ *
+ * <p>システム内のユーザーロールを表すエンティティクラスです。 ロール名と説明、および関連する権限のコレクションを持ちます。
  */
 @Entity
 @Table(name = "roles")
@@ -44,15 +45,14 @@ public class Role {
   @Column(nullable = false, unique = true)
   private String name;
 
-  @Column
-  private String description;
+  @Column private String description;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "role_permissions",
       joinColumns = @JoinColumn(name = "role_id"),
-      inverseJoinColumns = @JoinColumn(name = "permission_id")
-  )
+      inverseJoinColumns = @JoinColumn(name = "permission_id"))
+  @Default
   private Set<Permission> permissions = new HashSet<>();
 
   /**
@@ -92,12 +92,14 @@ public class Role {
     if (o == null) {
       return false;
     }
-    Class<?> oEffectiveClass = o instanceof HibernateProxy
-        ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
-        : o.getClass();
-    Class<?> thisEffectiveClass = this instanceof HibernateProxy
-        ? ((HibernateProxy) this).getHibernateLazyInitializer()
-        .getPersistentClass() : this.getClass();
+    Class<?> oEffectiveClass =
+        o instanceof HibernateProxy
+            ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
+            : o.getClass();
+    Class<?> thisEffectiveClass =
+        this instanceof HibernateProxy
+            ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass()
+            : this.getClass();
     if (thisEffectiveClass != oEffectiveClass) {
       return false;
     }
@@ -107,7 +109,8 @@ public class Role {
 
   @Override
   public final int hashCode() {
-    return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer()
-        .getPersistentClass().hashCode() : getClass().hashCode();
+    return this instanceof HibernateProxy
+        ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+        : getClass().hashCode();
   }
 }
