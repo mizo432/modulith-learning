@@ -26,7 +26,7 @@
 
 ### テスト戦略 (Test Strategy)
 
-- **フレームワーク**: JUnit 5, AssertJ
+- **フレームワーク**: JUnit 6, AssertJ
 - **テスト分類**: テストは `@Tag("small")`, `@Tag("medium")`, `@Tag("large")` でタグ付け
 - **モジュリス境界検証**: `SpringModulithTest` を使用してモジュール境界を検証
 
