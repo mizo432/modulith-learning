@@ -129,6 +129,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return problem;
   }
 
+  /**
+   * 予期しない例外を記録し、リクエストURIとトレースIDを含む500エラーレスポンスを返します。
+   *
+   * @param ex 記録する例外
+   * @param request 例外が発生したHTTPリクエスト
+   * @return 例外の詳細を公開しない汎用メッセージを持つProblemDetail
+   */
   @ExceptionHandler(Exception.class)
   public @NonNull ProblemDetail handleUnexpected(
       @NonNull Exception ex, @NonNull HttpServletRequest request) {

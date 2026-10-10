@@ -17,6 +17,7 @@ class LogIdBasedLoggerTest {
 
   private LogIdBasedLogger logger;
 
+  /** 各テストの前にテストクラス用のロガーを取得します。 */
   @BeforeEach
   void setUp() {
     logger = LogIdBasedLogger.getLogger(LogIdBasedLoggerTest.class);
@@ -26,6 +27,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("getLoggerメソッドのテスト")
   class GetLoggerTest {
 
+    /** クラスを指定してLoggerが取得できることを検証します。 */
     @Test
     @DisplayName("クラスを指定してLoggerが取得できること")
     void shouldGetLoggerForSpecifiedClass() {
@@ -36,6 +38,7 @@ class LogIdBasedLoggerTest {
       assertThat(obtainedLogger).isNotNull();
     }
 
+    /** 異なるクラスで getLogger を呼ぶと異なるインスタンスが返されることを検証します。 */
     @Test
     @DisplayName("異なるクラスで getLogger を呼ぶと異なるインスタンスが返されること")
     void shouldReturnDifferentInstancesForDifferentClasses() {
@@ -52,6 +55,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("isDebugEnabledメソッドのテスト")
   class IsDebugEnabledTest {
 
+    /** isDebugEnabledがboolean値を返すことを検証します。 */
     @Test
     @DisplayName("isDebugEnabledがboolean値を返すこと")
     void shouldReturnBooleanValue() {
@@ -67,6 +71,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("debugメソッドのテスト")
   class DebugTest {
 
+    /** フォーマット文字列でdebugログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("フォーマット文字列でdebugログが出力されること")
     void shouldOutputDebugLogWithFormatString() {
@@ -74,6 +79,7 @@ class LogIdBasedLoggerTest {
       logger.debug("Debug message: {}");
     }
 
+    /** 引数付きでdebugログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("引数付きでdebugログが出力されること")
     void shouldOutputDebugLogWithArguments() {
@@ -86,6 +92,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("infoメソッドのテスト")
   class InfoTest {
 
+    /** 存在するメッセージIDでinfoログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在するメッセージIDでinfoログが出力されること")
     void shouldOutputInfoLogWithExistingMessageId() {
@@ -93,6 +100,7 @@ class LogIdBasedLoggerTest {
       logger.info("log.info.message");
     }
 
+    /** 未定義のメッセージIDでもログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在しないメッセージIDでinfoログが出力される場合、UNDEFINED-MESSAGEが使用されること")
     void shouldOutputUndefinedMessageWhenMessageIdNotFound() {
@@ -100,6 +108,7 @@ class LogIdBasedLoggerTest {
       logger.info("non.existent.message.id");
     }
 
+    /** 引数付きでinfoログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("引数付きでinfoログが出力されること")
     void shouldOutputInfoLogWithArguments() {
@@ -112,6 +121,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("warnメソッドのテスト")
   class WarnTest {
 
+    /** 存在するメッセージIDでwarnログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在するメッセージIDでwarnログが出力されること")
     void shouldOutputWarnLogWithExistingMessageId() {
@@ -119,6 +129,7 @@ class LogIdBasedLoggerTest {
       logger.warn("log.warn.message");
     }
 
+    /** 未定義のメッセージIDでもログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在しないメッセージIDでwarnログが出力される場合、UNDEFINED-MESSAGEが使用されること")
     void shouldOutputUndefinedMessageWhenMessageIdNotFound() {
@@ -126,6 +137,7 @@ class LogIdBasedLoggerTest {
       logger.warn("non.existent.message.id");
     }
 
+    /** Throwable付きでwarnログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("Throwable付きでwarnログが出力されること")
     void shouldOutputWarnLogWithThrowable() {
@@ -136,6 +148,7 @@ class LogIdBasedLoggerTest {
       logger.warn("log.warn.message", throwable);
     }
 
+    /** Throwableと引数付きでwarnログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("Throwableと引数付きでwarnログが出力されること")
     void shouldOutputWarnLogWithThrowableAndArguments() {
@@ -151,6 +164,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("errorメソッドのテスト")
   class ErrorTest {
 
+    /** 存在するメッセージIDでerrorログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在するメッセージIDでerrorログが出力されること")
     void shouldOutputErrorLogWithExistingMessageId() {
@@ -158,6 +172,7 @@ class LogIdBasedLoggerTest {
       logger.error("log.error.message");
     }
 
+    /** 未定義のメッセージIDでもログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在しないメッセージIDでerrorログが出力される場合、UNDEFINED-MESSAGEが使用されること")
     void shouldOutputUndefinedMessageWhenMessageIdNotFound() {
@@ -165,6 +180,7 @@ class LogIdBasedLoggerTest {
       logger.error("non.existent.message.id");
     }
 
+    /** Throwable付きでerrorログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("Throwable付きでerrorログが出力されること")
     void shouldOutputErrorLogWithThrowable() {
@@ -175,6 +191,7 @@ class LogIdBasedLoggerTest {
       logger.error("log.error.message", throwable);
     }
 
+    /** Throwableと引数付きでerrorログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("Throwableと引数付きでerrorログが出力されること")
     void shouldOutputErrorLogWithThrowableAndArguments() {
@@ -190,6 +207,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("traceメソッドのテスト")
   class TraceTest {
 
+    /** 存在するメッセージIDでtraceログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在するメッセージIDでtraceログが出力されること")
     void shouldOutputTraceLogWithExistingMessageId() {
@@ -197,6 +215,7 @@ class LogIdBasedLoggerTest {
       logger.trace("log.trace.message");
     }
 
+    /** 未定義のメッセージIDでもログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("存在しないメッセージIDでtraceログが出力される場合、UNDEFINED-MESSAGEが使用されること")
     void shouldOutputUndefinedMessageWhenMessageIdNotFound() {
@@ -204,6 +223,7 @@ class LogIdBasedLoggerTest {
       logger.trace("non.existent.message.id");
     }
 
+    /** 引数付きでtraceログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("引数付きでtraceログが出力されること")
     void shouldOutputTraceLogWithArguments() {
@@ -216,6 +236,11 @@ class LogIdBasedLoggerTest {
   @DisplayName("メッセージ解決のテスト")
   class MessageResolutionTest {
 
+    /**
+     * 静的なメッセージソースがResourceBundleMessageSourceであることを検証します。
+     *
+     * @throws Exception メッセージソースへのリフレクションによるアクセスに失敗した場合
+     */
     @Test
     @DisplayName("ResourceBundleMessageSourceが静的に初期化されていること")
     void shouldHaveStaticMessageSourceInitialized() throws Exception {
@@ -228,6 +253,11 @@ class LogIdBasedLoggerTest {
       assertThat(messageSource).isInstanceOf(ResourceBundleMessageSource.class);
     }
 
+    /**
+     * 初期化済みのメッセージソースから情報メッセージを取得できることを検証します。
+     *
+     * @throws Exception メッセージソースへのリフレクションによるアクセスに失敗した場合
+     */
     @Test
     @DisplayName("メッセージソースが正常に初期化されていること")
     void shouldHaveMessageSourceInitialized() throws Exception {
@@ -244,6 +274,11 @@ class LogIdBasedLoggerTest {
       assertThat(message).isNotNull();
     }
 
+    /**
+     * 存在するメッセージIDでメッセージが正常に解決されることを検証します。
+     *
+     * @throws Exception メッセージソースへのリフレクションによるアクセスに失敗した場合
+     */
     @Test
     @DisplayName("存在するメッセージIDでメッセージが正常に解決されること")
     void shouldResolveMessageForExistingId() throws Exception {
@@ -260,6 +295,11 @@ class LogIdBasedLoggerTest {
       assertThat(message).isEqualTo("情報メッセージ");
     }
 
+    /**
+     * 引数付きメッセージが正常に解決されることを検証します。
+     *
+     * @throws Exception メッセージソースへのリフレクションによるアクセスに失敗した場合
+     */
     @Test
     @DisplayName("引数付きメッセージが正常に解決されること")
     void shouldResolveMessageWithArguments() throws Exception {
@@ -282,6 +322,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("UNDEFINED-MESSAGEフォーマットのテスト")
   class UndefinedMessageFormatTest {
 
+    /** 存在しないIDでログ出力した場合、例外がスローされないことを検証します。 */
     @Test
     @DisplayName("存在しないIDでログ出力した場合、例外がスローされないこと")
     void shouldNotThrowExceptionForNonExistentMessageId() {
@@ -292,6 +333,7 @@ class LogIdBasedLoggerTest {
       logger.trace("completely.non.existent.id");
     }
 
+    /** 存在しないIDと引数でログ出力した場合、例外がスローされないことを検証します。 */
     @Test
     @DisplayName("存在しないIDと引数でログ出力した場合、例外がスローされないこと")
     void shouldNotThrowExceptionForNonExistentMessageIdWithArgs() {
@@ -302,6 +344,7 @@ class LogIdBasedLoggerTest {
       logger.trace("completely.non.existent.id", "arg1", "arg2");
     }
 
+    /** 存在しないIDとThrowableでログ出力した場合、例外がスローされないことを検証します。 */
     @Test
     @DisplayName("存在しないIDとThrowableでログ出力した場合、例外がスローされないこと")
     void shouldNotThrowExceptionForNonExistentMessageIdWithThrowable() {
@@ -318,6 +361,7 @@ class LogIdBasedLoggerTest {
   @DisplayName("境界値のテスト")
   class BoundaryValuesTest {
 
+    /** 空の引数配列でログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("空の引数配列でログ出力できること")
     void shouldOutputLogWithEmptyArguments() {
@@ -327,6 +371,7 @@ class LogIdBasedLoggerTest {
       logger.error("log.error.message");
     }
 
+    /** null引数を含むメッセージでログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("null引数を含むメッセージでログ出力できること")
     void shouldOutputLogWithNullArguments() {
@@ -334,6 +379,7 @@ class LogIdBasedLoggerTest {
       logger.info("log.test.message", (Object) null);
     }
 
+    /** 複数の引数でログ呼び出しが例外なく完了することを検証します。 */
     @Test
     @DisplayName("複数の引数でログ出力できること")
     void shouldOutputLogWithMultipleArguments() {

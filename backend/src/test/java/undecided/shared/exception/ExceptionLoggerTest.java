@@ -22,6 +22,7 @@ class ExceptionLoggerTest {
   @DisplayName("コンストラクタのテスト")
   class ConstructorTest {
 
+    /** デフォルト設定でExceptionLoggerが初期化されることを検証します。 */
     @Test
     @DisplayName("デフォルト設定でExceptionLoggerが初期化されること")
     void shouldInitializeWithDefaultSettings() {
@@ -33,6 +34,7 @@ class ExceptionLoggerTest {
       assertThat(logger).isNotNull();
     }
 
+    /** logMessageFormatがnullの場合、afterPropertiesSetでIllegalArgumentExceptionがスローされることを検証します。 */
     @Test
     @DisplayName("logMessageFormatがnullの場合、afterPropertiesSetでIllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenLogMessageFormatIsNull() {
@@ -46,6 +48,7 @@ class ExceptionLoggerTest {
           .hasMessageContaining("logMessageFormat must have placeholder");
     }
 
+    /** logMessageFormatに{0}が含まれていない場合、IllegalArgumentExceptionがスローされることを検証します。 */
     @Test
     @DisplayName("logMessageFormatに{0}が含まれていない場合、IllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenLogMessageFormatMissingCodePlaceholder() {
@@ -59,6 +62,7 @@ class ExceptionLoggerTest {
           .hasMessageContaining("logMessageFormat must have placeholder");
     }
 
+    /** logMessageFormatに{1}が含まれていない場合、IllegalArgumentExceptionがスローされることを検証します。 */
     @Test
     @DisplayName("logMessageFormatに{1}が含まれていない場合、IllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenLogMessageFormatMissingMessagePlaceholder() {
@@ -77,6 +81,7 @@ class ExceptionLoggerTest {
   @DisplayName("afterPropertiesSetメソッドのテスト")
   class AfterPropertiesSetTest {
 
+    /** afterPropertiesSetが正常に実行されることを検証します。 */
     @Test
     @DisplayName("afterPropertiesSetが正常に実行されること")
     void shouldExecuteAfterPropertiesSetSuccessfully() {
@@ -90,6 +95,7 @@ class ExceptionLoggerTest {
       assertThat(logger).isNotNull();
     }
 
+    /** レベルリゾルバーを明示せずに初期化しても、例外のログ処理が完了することを検証します。 */
     @Test
     @DisplayName("exceptionLevelResolverが設定されていない場合、デフォルトが設定されること")
     void shouldSetDefaultExceptionLevelResolverWhenNotSet() {
@@ -109,6 +115,7 @@ class ExceptionLoggerTest {
   @DisplayName("validateLogMessageFormatメソッドのテスト")
   class ValidateLogMessageFormatTest {
 
+    /** 有効なフォーマットが渡された場合、例外がスローされないことを検証します。 */
     @Test
     @DisplayName("有効なフォーマットが渡された場合、例外がスローされないこと")
     void shouldNotThrowExceptionWhenFormatIsValid() {
@@ -120,6 +127,7 @@ class ExceptionLoggerTest {
       logger.validateLogMessageFormat(validFormat);
     }
 
+    /** nullフォーマットが渡された場合、IllegalArgumentExceptionがスローされることを検証します。 */
     @Test
     @DisplayName("nullフォーマットが渡された場合、IllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenFormatIsNull() {
@@ -132,6 +140,7 @@ class ExceptionLoggerTest {
           .hasMessageContaining("logMessageFormat must have placeholder");
     }
 
+    /** 空文字列が渡された場合、IllegalArgumentExceptionがスローされることを検証します。 */
     @Test
     @DisplayName("空文字列が渡された場合、IllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenFormatIsEmpty() {
@@ -149,6 +158,7 @@ class ExceptionLoggerTest {
   @DisplayName("formatLogMessageメソッドのテスト")
   class FormatLogMessageTest {
 
+    /** 例外コードとメッセージが正常にフォーマットされることを検証します。 */
     @Test
     @DisplayName("例外コードとメッセージが正常にフォーマットされること")
     void shouldFormatLogMessageWithCodeAndMessage() {
@@ -163,6 +173,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo("[E001] Something went wrong");
     }
 
+    /** 例外コードがnullの場合、デフォルトコードが使用されることを検証します。 */
     @Test
     @DisplayName("例外コードがnullの場合、デフォルトコードが使用されること")
     void shouldUseDefaultCodeWhenCodeIsNull() {
@@ -177,6 +188,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo("[UNDEFINED-CODE] Something went wrong");
     }
 
+    /** 例外メッセージがnullの場合、デフォルトメッセージが使用されることを検証します。 */
     @Test
     @DisplayName("例外メッセージがnullの場合、デフォルトメッセージが使用されること")
     void shouldUseDefaultMessageWhenMessageIsNull() {
@@ -191,6 +203,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo("[E001] UNDEFINED-MESSAGE");
     }
 
+    /** 例外コードとメッセージが両方nullの場合、デフォルト値が使用されることを検証します。 */
     @Test
     @DisplayName("例外コードとメッセージが両方nullの場合、デフォルト値が使用されること")
     void shouldUseDefaultValuesWhenBothAreNull() {
@@ -205,6 +218,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo("[UNDEFINED-CODE] UNDEFINED-MESSAGE");
     }
 
+    /** trimLogMessageがtrueの場合、メッセージがトリムされることを検証します。 */
     @Test
     @DisplayName("trimLogMessageがtrueの場合、メッセージがトリムされること")
     void shouldTrimMessageWhenTrimEnabled() {
@@ -221,6 +235,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo("[E001] Message");
     }
 
+    /** trimLogMessageがfalseの場合、メッセージがトリムされないことを検証します。 */
     @Test
     @DisplayName("trimLogMessageがfalseの場合、メッセージがトリムされないこと")
     void shouldNotTrimMessageWhenTrimDisabled() {
@@ -237,6 +252,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo(" [E001] Message ");
     }
 
+    /** カスタムデフォルトコードが使用されることを検証します。 */
     @Test
     @DisplayName("カスタムデフォルトコードが使用されること")
     void shouldUseCustomDefaultCode() {
@@ -252,6 +268,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo("[CUSTOM-DEFAULT] Message");
     }
 
+    /** カスタムデフォルトメッセージが使用されることを検証します。 */
     @Test
     @DisplayName("カスタムデフォルトメッセージが使用されること")
     void shouldUseCustomDefaultMessage() {
@@ -272,6 +289,7 @@ class ExceptionLoggerTest {
   @DisplayName("makeLogMessageメソッドのテスト")
   class MakeLogMessageTest {
 
+    /** 例外からログメッセージが正常に生成されることを検証します。 */
     @Test
     @DisplayName("例外からログメッセージが正常に生成されること")
     void shouldGenerateLogMessageFromException() {
@@ -287,6 +305,7 @@ class ExceptionLoggerTest {
       assertThat(result).contains("Test error message");
     }
 
+    /** 例外クラス名のマッピングで解決したコードと例外メッセージがログ文に含まれることを検証します。 */
     @Test
     @DisplayName("ExceptionCodeProviderを実装した例外の場合、コードが使用されること")
     void shouldUseCodeFromExceptionCodeProvider() {
@@ -294,6 +313,11 @@ class ExceptionLoggerTest {
       ExceptionLogger logger = new ExceptionLogger("TestLogger");
       Exception testException =
           new RuntimeException("Test message") {
+            /**
+             * テスト例外の固定の文字列表現を返します。
+             *
+             * @return テスト例外を表す文字列
+             */
             @Override
             public String toString() {
               return "TestException";
@@ -320,6 +344,7 @@ class ExceptionLoggerTest {
   @DisplayName("resolveExceptionCodeメソッドのテスト")
   class ResolveExceptionCodeTest {
 
+    /** exceptionCodeResolverが設定されている場合、コードが解決されることを検証します。 */
     @Test
     @DisplayName("exceptionCodeResolverが設定されている場合、コードが解決されること")
     void shouldResolveCodeWhenResolverIsSet() {
@@ -339,6 +364,7 @@ class ExceptionLoggerTest {
       assertThat(result).isEqualTo("E001");
     }
 
+    /** exceptionCodeResolverがnullの場合、nullが返されることを検証します。 */
     @Test
     @DisplayName("exceptionCodeResolverがnullの場合、nullが返されること")
     void shouldReturnNullWhenResolverIsNull() {
@@ -361,6 +387,7 @@ class ExceptionLoggerTest {
   @DisplayName("log/info/warn/errorメソッドのテスト")
   class LoggingMethodsTest {
 
+    /** logメソッドが例外を正常に処理することを検証します。 */
     @Test
     @DisplayName("logメソッドが例外を正常に処理すること")
     void shouldLogExceptionWithoutError() {
@@ -373,6 +400,7 @@ class ExceptionLoggerTest {
       logger.log(testException);
     }
 
+    /** infoメソッドが例外を正常に処理することを検証します。 */
     @Test
     @DisplayName("infoメソッドが例外を正常に処理すること")
     void shouldInfoExceptionWithoutError() {
@@ -385,6 +413,7 @@ class ExceptionLoggerTest {
       logger.info(testException);
     }
 
+    /** warnメソッドが例外を正常に処理することを検証します。 */
     @Test
     @DisplayName("warnメソッドが例外を正常に処理すること")
     void shouldWarnExceptionWithoutError() {
@@ -397,6 +426,7 @@ class ExceptionLoggerTest {
       logger.warn(testException);
     }
 
+    /** errorメソッドが例外を正常に処理することを検証します。 */
     @Test
     @DisplayName("errorメソッドが例外を正常に処理すること")
     void shouldErrorExceptionWithoutError() {
@@ -409,6 +439,7 @@ class ExceptionLoggerTest {
       logger.error(testException);
     }
 
+    /** 解決されたログレベルがnullでも、例外のログ処理が完了することを検証します。 */
     @Test
     @DisplayName("logメソッドで例外レベルがnullの場合、errorLoggerがフォールバックとして使用されること")
     void shouldFallbackToErrorLoggerWhenLevelIsNull() {
@@ -425,6 +456,7 @@ class ExceptionLoggerTest {
       logger.log(testException);
     }
 
+    /** logメソッドで例外レベルがWARNの場合、正常に処理されることを検証します。 */
     @Test
     @DisplayName("logメソッドで例外レベルがWARNの場合、正常に処理されること")
     void shouldHandleWarnLevelException() {
@@ -442,6 +474,7 @@ class ExceptionLoggerTest {
       logger.log(testException);
     }
 
+    /** logメソッドで例外レベルがINFOの場合、正常に処理されることを検証します。 */
     @Test
     @DisplayName("logメソッドで例外レベルがINFOの場合、正常に処理されること")
     void shouldHandleInfoLevelException() {
@@ -464,6 +497,7 @@ class ExceptionLoggerTest {
   @DisplayName("registerExceptionLevelLoggersメソッドのテスト")
   class RegisterExceptionLevelLoggersTest {
 
+    /** INFOレベル用のカスタムロガーを例外なく登録できることを検証します。 */
     @Test
     @DisplayName("カスタムロガーが登録されること")
     void shouldRegisterCustomLogger() {
@@ -473,11 +507,22 @@ class ExceptionLoggerTest {
 
       ExceptionLogger.LogLevelWrappingLogger customLogger =
           new ExceptionLogger.LogLevelWrappingLogger() {
+            /**
+             * カスタムロガーを常に有効として扱います。
+             *
+             * @return 常にtrue
+             */
             @Override
             public boolean isEnabled() {
               return true;
             }
 
+            /**
+             * 登録確認用のロガーとして、受け取ったログを出力せずに破棄します。
+             *
+             * @param var1 出力しないログメッセージ
+             * @param var2 出力しない例外
+             */
             @Override
             public void log(String var1, Exception var2) {}
           };
@@ -494,6 +539,7 @@ class ExceptionLoggerTest {
   @DisplayName("ゲッターメソッドのテスト")
   class GetterMethodsTest {
 
+    /** getApplicationLoggerがロガーを返すことを検証します。 */
     @Test
     @DisplayName("getApplicationLoggerがロガーを返すこと")
     void shouldReturnApplicationLogger() {
@@ -507,6 +553,7 @@ class ExceptionLoggerTest {
       assertThat(result).isNotNull();
     }
 
+    /** getMonitoringLoggerがロガーを返すことを検証します。 */
     @Test
     @DisplayName("getMonitoringLoggerがロガーを返すこと")
     void shouldReturnMonitoringLogger() {

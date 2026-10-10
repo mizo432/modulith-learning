@@ -37,6 +37,7 @@ class GlobalExceptionHandlerTest {
 
   private GlobalExceptionHandler globalExceptionHandler;
 
+  /** 各テストの前にモックの例外ロガーを使用するハンドラーを生成します。 */
   @BeforeEach
   void setUp() {
     globalExceptionHandler = new GlobalExceptionHandler(exceptionLogger);
@@ -46,6 +47,7 @@ class GlobalExceptionHandlerTest {
   @DisplayName("handleBusinessExceptionメソッドのテスト")
   class HandleBusinessExceptionTest {
 
+    /** BusinessExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すことを検証します。 */
     @Test
     @DisplayName("BusinessExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すこと")
     void shouldReturnBadRequestProblemDetailWhenBusinessExceptionOccurs() {
@@ -68,6 +70,7 @@ class GlobalExceptionHandlerTest {
           .isEqualTo(errorMessage);
     }
 
+    /** 引数がnullの場合にNullPointerExceptionをスローすることを検証します。 */
     @Test
     @DisplayName("引数がnullの場合にNullPointerExceptionをスローすること")
     void shouldThrowNullPointerExceptionWhenArgumentIsNull() {
@@ -83,6 +86,7 @@ class GlobalExceptionHandlerTest {
   @DisplayName("handleValidationメソッドのテスト")
   class HandleValidationTest {
 
+    /** MethodArgumentNotValidExceptionを適切に処理し、フィールドエラーを含むProblemDetailを返すことを検証します。 */
     @Test
     @DisplayName("MethodArgumentNotValidExceptionを適切に処理し、フィールドエラーを含むProblemDetailを返すこと")
     void shouldReturnProblemDetailWithFieldErrorsWhenValidationFails() {
@@ -118,6 +122,7 @@ class GlobalExceptionHandlerTest {
       assertThat(fieldErrors.get(0).get("message")).isEqualTo("Field must not be empty");
     }
 
+    /** フィールドエラーが空の場合、空のリストを返すことを検証します。 */
     @Test
     @DisplayName("フィールドエラーが空の場合、空のリストを返すこと")
     void shouldReturnEmptyFieldErrorsListWhenNoFieldErrors() {
@@ -145,6 +150,7 @@ class GlobalExceptionHandlerTest {
   @DisplayName("handleConstraintViolationメソッドのテスト")
   class HandleConstraintViolationTest {
 
+    /** ConstraintViolationExceptionを適切に処理し、違反情報を含むProblemDetailを返すことを検証します。 */
     @Test
     @DisplayName("ConstraintViolationExceptionを適切に処理し、違反情報を含むProblemDetailを返すこと")
     void shouldReturnProblemDetailWithViolationsWhenConstraintViolationOccurs() {
@@ -179,6 +185,7 @@ class GlobalExceptionHandlerTest {
       assertThat(violations.get(0).get("message")).isEqualTo("Must not be null");
     }
 
+    /** 違反が空の場合、空のリストを返すことを検証します。 */
     @Test
     @DisplayName("違反が空の場合、空のリストを返すこと")
     void shouldReturnEmptyViolationsListWhenNoViolations() {
@@ -202,6 +209,7 @@ class GlobalExceptionHandlerTest {
   @DisplayName("handleIdempotencyKeyメソッドのテスト")
   class HandleIdempotencyKeyTest {
 
+    /** IdempotencyKeyExceptionを適切に処理し、409 ConflictのProblemDetailを返すことを検証します。 */
     @Test
     @DisplayName("IdempotencyKeyExceptionを適切に処理し、409 ConflictのProblemDetailを返すこと")
     void shouldReturnConflictProblemDetailWhenIdempotencyKeyExceptionOccurs() {
@@ -231,6 +239,7 @@ class GlobalExceptionHandlerTest {
   @DisplayName("handleUnexpectedメソッドのテスト")
   class HandleUnexpectedTest {
 
+    /** 未処理のExceptionを適切に処理し、500 Internal Server ErrorのProblemDetailを返すことを検証します。 */
     @Test
     @DisplayName("未処理のExceptionを適切に処理し、500 Internal Server ErrorのProblemDetailを返すこと")
     void shouldReturnInternalServerErrorProblemDetailWhenUnexpectedExceptionOccurs() {
@@ -257,6 +266,7 @@ class GlobalExceptionHandlerTest {
       verify(exceptionLogger, times(1)).error(exception);
     }
 
+    /** ExceptionLoggerのerrorメソッドが呼び出されることを検証します。 */
     @Test
     @DisplayName("ExceptionLoggerのerrorメソッドが呼び出されること")
     void shouldCallExceptionLoggerErrorMethodWhenUnexpectedExceptionOccurs() {
