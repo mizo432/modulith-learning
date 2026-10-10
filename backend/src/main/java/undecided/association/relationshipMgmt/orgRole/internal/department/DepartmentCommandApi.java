@@ -1,40 +1,30 @@
 package undecided.association.relationshipMgmt.orgRole.internal.department;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import undecided.association.relationshipMgmt.orgRole.spi.Department;
 import undecided.association.relationshipMgmt.orgRole.spi.DepartmentCode;
 
+/**
+ * 部署情報の変更（Command）を担当するREST APIコントローラーです。
+ *
+ * <p>CQRSパターンに従い、書き込み操作のみを担当します。
+ */
 @RestController
 @RequestMapping("/api/departments")
 @RequiredArgsConstructor
-public class DepartmentApi {
+public class DepartmentCommandApi {
   private final DepartmentCommand command;
-  private final DepartmentQuery query;
-
-  /**
-   * @return
-   */
-  @GetMapping
-  List<Department> findAll() {
-    return query.findAll();
-  }
-
-  /**
-   * @param departmentCode
-   * @return
-   */
-  @GetMapping("/{depertmentCode}")
-  Department getById(@PathVariable DepartmentCode departmentCode) {
-    return query
-        .findByCode(departmentCode)
-        .orElseThrow(() -> new EntityNotFoundException("Department not found"));
-  }
 
   /**
    * @param department
@@ -43,7 +33,7 @@ public class DepartmentApi {
    */
   @PostMapping
   ResponseEntity<Department> post(
-      Department department, UriComponentsBuilder uriComponentsBuilder) {
+      @RequestBody Department department, UriComponentsBuilder uriComponentsBuilder) {
     command.insert(department);
     URI uri =
         uriComponentsBuilder
@@ -58,7 +48,8 @@ public class DepartmentApi {
    * @return
    */
   @PutMapping("/{departmentCode}")
-  ResponseEntity<Void> put(@PathVariable DepartmentCode departmentCode, Department department) {
+  ResponseEntity<Void> put(
+      @PathVariable DepartmentCode departmentCode, @RequestBody Department department) {
     command.update(departmentCode, department);
     return ResponseEntity.noContent().build();
   }
@@ -71,7 +62,8 @@ public class DepartmentApi {
    * @return 更新結果のレスポンス
    */
   @PatchMapping("/{departmentCode}")
-  ResponseEntity<Void> patch(@PathVariable DepartmentCode departmentCode, Department department) {
+  ResponseEntity<Void> patch(
+      @PathVariable DepartmentCode departmentCode, @RequestBody Department department) {
     command.update(departmentCode, department);
     return ResponseEntity.noContent().build();
   }

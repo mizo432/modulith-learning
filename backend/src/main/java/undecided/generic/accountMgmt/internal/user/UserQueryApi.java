@@ -3,19 +3,23 @@ package undecided.generic.accountMgmt.internal.user;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import undecided.generic.accountMgmt.spi.ChangePasswordRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import undecided.generic.accountMgmt.spi.User;
-import undecided.generic.accountMgmt.spi.UserCommand;
 import undecided.generic.accountMgmt.spi.UserQuery;
 
-/** ユーザー管理用のREST APIです。 初回ログイン時のパスワード変更機能を提供します。 */
+/**
+ * ユーザー情報の取得（Query）を担当するREST APIコントローラーです。
+ *
+ * <p>CQRSパターンに従い、読み取り操作のみを担当します。
+ */
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserApi {
+public class UserQueryApi {
 
-  private final UserCommand userCommand;
   private final UserQuery userQuery;
 
   /**
@@ -34,20 +38,6 @@ public class UserApi {
     UserStatusResponse response =
         new UserStatusResponse(user.getUsername(), user.needsPasswordChange());
     return ResponseEntity.ok(response);
-  }
-
-  /**
-   * パスワードを変更します。
-   *
-   * @param username ユーザー名
-   * @param request パスワード変更リクエスト
-   * @return 変更結果
-   */
-  @PutMapping("/{username}/password")
-  ResponseEntity<Void> changePassword(
-      @PathVariable String username, @RequestBody ChangePasswordRequest request) {
-    userCommand.changePassword(username, request);
-    return ResponseEntity.noContent().build();
   }
 
   /** ユーザーステータスレスポンスです。 */

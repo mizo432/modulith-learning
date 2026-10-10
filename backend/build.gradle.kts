@@ -55,7 +55,7 @@ extra["jiltVersion"] = "1.8.2"
 extra["jdbcPostgresqlVersion"] = "11.3.4"
 extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
-extra["archunitVersion"] = "1.3.0"
+extra["archunitVersion"] = "1.5.1"
 extra["junitVersion"] = "6.1.0"
 extra["springCloudBomVersion"] = "2025.1.2"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
@@ -111,6 +111,8 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:${property("testcontainersVersion")}")
     testImplementation("org.testcontainers:postgresql:${property("testcontainersVersion")}")
     testImplementation("org.testcontainers:junit-jupiter:${property("testcontainersVersion")}")
+    implementation("com.tngtech.archunit:archunit:${property("archunitVersion")}")
+    testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
 
     // Apache POI for Excel processing
     implementation("org.apache.poi:poi:${property("poiVersion")}")
@@ -159,6 +161,8 @@ tasks.test {
         excludeTags("medium", "large")
         timeout.set(Duration.ofSeconds(60))
     }
+    // ArchUnitがmainクラスをスキャンできるようにclasspathに追加
+    classpath += sourceSets["main"].output
     finalizedBy(tasks.jacocoTestReport) // a report is always generated after tests run
 }
 
