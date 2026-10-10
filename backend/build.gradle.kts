@@ -37,6 +37,10 @@ tasks {
         // コンパイラの警告を有効化（未チェック警告）
         options.compilerArgs.add("-Xlint:unchecked")
     }
+    // properties ファイルを UTF-8 で処理する
+    processResources {
+        filteringCharset = "UTF-8"
+    }
 }
 configurations.compileOnly {
     extendsFrom(configurations.annotationProcessor.get())
