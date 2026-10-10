@@ -4,10 +4,24 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - 'backend/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle'
+      - 'gradle/**'
+      - 'gradlew'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches:
       - 'main'
       - 'develop'
+    paths:
+      - 'backend/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle'
+      - 'gradle/**'
+      - 'gradlew'
+      - '.github/workflows/ci.yml'
 
 jobs:
   test:
@@ -28,7 +42,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Small Tests (Unit Tests)
-        run: ./gradlew test
+        run: ./gradlew :backend:test
 
   medium-test:
     name: Medium Tests (Integration Tests)
@@ -49,4 +63,4 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Medium Tests (Integration Tests)
-        run: ./gradlew mediumTest
+        run: ./gradlew :backend:mediumTest
