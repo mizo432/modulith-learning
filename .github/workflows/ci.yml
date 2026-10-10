@@ -130,8 +130,8 @@ jobs:
         if: steps.changes.outputs.service-registry == 'true'
         run: ./gradlew :service-registry:mediumTest
 
-  backend-test:
-    name: Backend Small Tests
+  api-gateway-test:
+    name: API Gateway Small Tests
     permissions:
       contents: read
       pull-requests: read
@@ -142,17 +142,17 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Check for backend changes
+      - name: Check for api-gateway changes
         id: changes
         uses: dorny/paths-filter@v3
         with:
           list-files: shell
           filters: |
-            backend:
-              - 'backend/**'
+            api-gateway:
+              - 'api-gateway/**'
 
       - name: Set up JDK 25
-        if: steps.changes.outputs.backend == 'true'
+        if: steps.changes.outputs.api-gateway == 'true'
         uses: actions/setup-java@v5
         with:
           java-version: '25'
@@ -160,15 +160,15 @@ jobs:
           cache: 'gradle'
 
       - name: Grant execute permission for gradlew
-        if: steps.changes.outputs.backend == 'true'
+        if: steps.changes.outputs.api-gateway == 'true'
         run: chmod +x gradlew
 
-      - name: Run Backend Small Tests
-        if: steps.changes.outputs.backend == 'true'
-        run: ./gradlew :backend:test
+      - name: Run API Gateway Small Tests
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: ./gradlew :api-gateway:test
 
-  backend-medium-test:
-    name: Backend Medium Tests
+  api-gateway-medium-test:
+    name: API Gateway Medium Tests
     permissions:
       contents: read
       pull-requests: read
@@ -180,17 +180,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for backend changes
+      - name: Check for api-gateway changes
         id: changes
         uses: dorny/paths-filter@v3
         with:
           list-files: shell
           filters: |
-            backend:
-              - 'backend/**'
+            api-gateway:
+              - 'api-gateway/**'
 
       - name: Set up JDK 25
-        if: steps.changes.outputs.backend == 'true'
+        if: steps.changes.outputs.api-gateway == 'true'
         uses: actions/setup-java@v5
         with:
           java-version: '25'
@@ -198,9 +198,9 @@ jobs:
           cache: 'gradle'
 
       - name: Grant execute permission for gradlew
-        if: steps.changes.outputs.backend == 'true'
+        if: steps.changes.outputs.api-gateway == 'true'
         run: chmod +x gradlew
 
-      - name: Run Backend Medium Tests
-        if: steps.changes.outputs.backend == 'true'
-        run: ./gradlew :backend:mediumTest
+      - name: Run API Gateway Medium Tests
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: ./gradlew :api-gateway:mediumTest
