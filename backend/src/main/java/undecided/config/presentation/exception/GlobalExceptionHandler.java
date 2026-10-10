@@ -132,7 +132,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(Exception.class)
   public @NonNull ProblemDetail handleUnexpected(
       @NonNull Exception ex, @NonNull HttpServletRequest request) {
-    log.error(ex);
+    String method = request.getMethod();
+    String uri = request.getRequestURI();
+    try {
+      MDC.put("httpMethod", method);
+      MDC.put("requestUri", uri);
+      log.error(ex);
+    } finally {
+      MDC.remove("httpMethod");
+      MDC.remove("requestUri");
+    }
     ProblemDetail problem =
         ProblemDetail.forStatusAndDetail(
             HttpStatus.INTERNAL_SERVER_ERROR,

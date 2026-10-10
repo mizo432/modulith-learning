@@ -237,6 +237,7 @@ class GlobalExceptionHandlerTest {
       // Arrange
       Exception exception = new RuntimeException("Unexpected error");
       HttpServletRequest request = mock(HttpServletRequest.class);
+      when(request.getMethod()).thenReturn("GET");
       when(request.getRequestURI()).thenReturn("/api/test");
 
       // Act
@@ -262,6 +263,7 @@ class GlobalExceptionHandlerTest {
       // Arrange
       Exception exception = new RuntimeException("Unexpected error");
       HttpServletRequest request = mock(HttpServletRequest.class);
+      when(request.getMethod()).thenReturn("POST");
       when(request.getRequestURI()).thenReturn("/api/test");
 
       // Act

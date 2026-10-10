@@ -238,7 +238,7 @@ class LogIdBasedLoggerTest {
           (ResourceBundleMessageSource) messageSourceField.get(null);
 
       // Act
-      String message = messageSource.getMessage("log.info.message", null, Locale.getDefault());
+      String message = messageSource.getMessage("log.info.message", null, Locale.JAPAN);
 
       // Assert
       assertThat(message).isNotNull();
@@ -254,7 +254,7 @@ class LogIdBasedLoggerTest {
           (ResourceBundleMessageSource) messageSourceField.get(null);
 
       // Act
-      String message = messageSource.getMessage("log.info.message", null, Locale.getDefault());
+      String message = messageSource.getMessage("log.info.message", null, Locale.JAPAN);
 
       // Assert
       assertThat(message).isEqualTo("情報メッセージ");
@@ -271,8 +271,7 @@ class LogIdBasedLoggerTest {
 
       // Act
       String message =
-          messageSource.getMessage(
-              "log.test.with.args", new Object[] {"田中", 25}, Locale.getDefault());
+          messageSource.getMessage("log.test.with.args", new Object[] {"田中", 25}, Locale.JAPAN);
 
       // Assert
       assertThat(message).isEqualTo("田中さん、こんにちは。年齢は25歳です。");
