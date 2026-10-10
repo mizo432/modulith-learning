@@ -1,6 +1,6 @@
 package undecided.generic.calendarReg.internal;
 
-import static undecided.supporting.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
 
 import java.time.LocalDate;
 import java.util.List;

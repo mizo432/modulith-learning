@@ -1,6 +1,6 @@
 package undecided.generic.bankReg.internal;
 
-import static undecided.supporting.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.List;
 import java.util.Optional;

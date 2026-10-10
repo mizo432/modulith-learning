@@ -1,6 +1,6 @@
 package undecided.generic.bankReg.internal.batch.writer;
 
-import static undecided.supporting.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

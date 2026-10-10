@@ -1,9 +1,9 @@
 package undecided.generic.greeting.internal;
 
 import org.springframework.stereotype.Service;
-import undecided.supporting.exception.BusinessException;
-import undecided.supporting.exception.SystemException;
-import undecided.supporting.message.ResultMessages;
+import undecided.shared.exception.BusinessException;
+import undecided.shared.exception.SystemException;
+import undecided.shared.message.ResultMessages;
 
 @Service
 public class ExceptionServiceImpl implements ExceptionService {

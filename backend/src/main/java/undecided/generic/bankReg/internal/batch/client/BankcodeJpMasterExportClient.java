@@ -1,6 +1,6 @@
 package undecided.generic.bankReg.internal.batch.client;
 
-import static undecided.supporting.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
-import undecided.supporting.exception.SystemException;
+import undecided.shared.exception.SystemException;
 
 /**
  * BankcodeJP Master Export API のクライアント。

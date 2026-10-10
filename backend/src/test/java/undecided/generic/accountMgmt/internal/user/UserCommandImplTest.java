@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import undecided.generic.accountMgmt.spi.ChangePasswordRequest;
 import undecided.generic.accountMgmt.spi.User;
-import undecided.supporting.exception.BusinessException;
+import undecided.shared.exception.BusinessException;
 import undecided.supporting.snowflake.spi.SnowflakeId;
 
 @Tag("small")

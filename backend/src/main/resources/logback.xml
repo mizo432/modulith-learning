@@ -13,9 +13,10 @@
       <pattern>
         <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tthread:%thread\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\tlevel:%-5level\tlogger:%-48logger{48}\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern>
     </encoder> <!-- (4) -->
-    <file>${app.log.dir:-log}/projectName-application.log</file>
+    <file>${app.log.dir:-log}/${app.name:modulith-learning}-application.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${app.log.dir:-log}/projectName-application-%d{yyyyMMdd}.log
+      <fileNamePattern>
+        ${app.log.dir:-log}/${app.name:modulith-learning}-application-%d{yyyyMMdd}.log
       </fileNamePattern> <!-- (5) -->
       <maxHistory>7</maxHistory> <!-- (6) -->
     </rollingPolicy>
@@ -27,9 +28,11 @@
       <pattern>
         <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\tlevel:%-5level\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern>
     </encoder>
-    <file>${app.log.dir:-log}/projectName-monitoring.log</file>
+    <file>${app.log.dir:-log}/${app.name:modulith-learning}-monitoring.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${app.log.dir:-log}/projectName-monitoring-%d{yyyyMMdd}.log</fileNamePattern>
+      <fileNamePattern>
+        ${app.log.dir:-log}/${app.name:modulith-learning}-monitoring-%d{yyyyMMdd}.log
+      </fileNamePattern>
       <maxHistory>7</maxHistory>
     </rollingPolicy>
   </appender>
@@ -38,10 +41,11 @@
 
   <!--  <logger name="undecided.erp.domain.repository" level="trace" />-->
   <!-- shared -->
-  <logger level="info" name="undecided.suppoting"/>
+  <logger level="info" name="undecided.shared"/>
+  <logger level="info" name="undecided.supporting"/>
   <logger level="trace"
-    name="undecided.supporting.presentation.web.logging.RestTraceLoggingInterceptor"/>
-  <logger level="info" name="undecided.supporting.exception.ExceptionLogger"/>
+    name="undecided.config.presentation.web.logging.RestTraceLoggingInterceptor"/>
+  <logger level="info" name="undecided.shared.exception.ExceptionLogger"/>
   <logger additivity="false" level="error" name="EXCEPTION_LOGGER_NAME.Monitoring"> <!-- (10) -->
     <appender-ref ref="MONITORING_LOG_FILE"/>
   </logger>

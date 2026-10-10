@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
+import undecided.config.presentation.web.idempotency.IdempotencyKeyStore;
 
 @Tag("medium")
 @SpringBootTest

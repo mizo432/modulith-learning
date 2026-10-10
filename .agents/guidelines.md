@@ -95,18 +95,17 @@ Monolith）アーキテクチャを実践・学習するためのシステムで
 - **業務ドメインモジュール (`undecided.*` 直下)**:
     - `cashSaleMgmt`: 現金販売管理（パッケージのみ）
     - `customerAccountMgmt`: 顧客口座管理（パッケージのみ）
+    - `shared`: 共通モジュール（タイプ OPEN、`annotation` パッケージ、`dateProvider` パッケージ、`io`
+      パッケージ、`precondition` パッケージ、`primitive` パッケージ、`primitiveOld` パッケージ、
+      `builder`
+      パッケージ、`ipaddress` パッケージ、`exception` パッケージ、`logger` パッケージ、`functional`
+      パッケージ、
+      `uuidV7Provider` パッケージ、`message` パッケージ、`application` パッケージ、`entity` パッケージ）
 - **ERP モジュール (`undecided.erp.*`)**:
     - 業務処理・メッセージング機能
 - **基盤・共通モジュール (`undecided.supporting.*`)**:
-    - `primitive`: プリミティブ拡張ユーティリティ (`Strings2`, `Ints`, `Objects2` 等)
-    - `precondition`: 引数・状態検証事前条件 (`StringPrecondition`, `ObjectPrecondition` 等)
-    - `exception` / `message`: 例外と結果メッセージ
-        - `logger`: ログ出力基盤 (`LogIdBasedLogger`)
     - `snowflake`: 分散ID生成（DB スキーマ `id_mgmt`）
-        - `uuidV7Provider`: UUIDv7 生成プロバイダー
-    - `dateProvider`: 現在日時の提供（テストで差し替え可能にする）
-    - その他: `annotation`, `application`, `builder`, `entity`, `functional`, `ipaddress`,
-      `presentation`
+    - その他: `presentation`
       など
 
 新しいモジュールを追加したら、本節の一覧も更新してください。

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import undecided.generic.accountMgmt.spi.ChangePasswordRequest;
 import undecided.generic.accountMgmt.spi.User;
 import undecided.generic.accountMgmt.spi.UserCommand;
-import undecided.supporting.exception.BusinessException;
+import undecided.shared.exception.BusinessException;
 
 /** ユーザー操作の実装クラスです。 パスワード変更機能を提供します。 */
 @RequiredArgsConstructor

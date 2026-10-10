@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import undecided.association.relationshipMgmt.orgRole.spi.Organization;
 import undecided.association.relationshipMgmt.orgRole.spi.OrganizationQuery;
-import undecided.supporting.primitiveOld.Lists2;
+import undecided.shared.primitiveOld.Lists2;
 
 @Service
 @RequiredArgsConstructor

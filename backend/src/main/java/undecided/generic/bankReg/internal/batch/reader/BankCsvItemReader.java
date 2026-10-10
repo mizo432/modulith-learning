@@ -1,6 +1,6 @@
 package undecided.generic.bankReg.internal.batch.reader;
 
-import static undecided.supporting.precondition.ObjectPrecondition.checkNotNull;
+import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;

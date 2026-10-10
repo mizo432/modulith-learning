@@ -5,7 +5,9 @@
       "relationshipMgmt.party",
       "relationshipMgmt.orgRole",
       "relationshipMgmt.personRole",
-      "relationshipMgmt.partyRole"
+      "relationshipMgmt.partyRole",
+      "shared",
+      "shared :: entity"
     })
 /** ,支援サブドメイン */
 package undecided.supporting;
