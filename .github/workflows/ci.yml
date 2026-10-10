@@ -182,6 +182,7 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'settings.gradle'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
@@ -220,6 +221,7 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'settings.gradle'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
