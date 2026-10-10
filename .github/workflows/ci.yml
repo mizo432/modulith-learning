@@ -129,3 +129,78 @@ jobs:
       - name: Run Service Registry Medium Tests
         if: steps.changes.outputs.service-registry == 'true'
         run: ./gradlew :service-registry:mediumTest
+
+  frontend-test:
+    name: Frontend Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for frontend changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            frontend:
+              - 'frontend/**'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.frontend == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.frontend == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Frontend Small Tests
+        if: steps.changes.outputs.frontend == 'true'
+        run: ./gradlew :frontend:npmTest
+
+  frontend-medium-test:
+    name: Frontend Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for frontend changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            frontend:
+              - 'frontend/**'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.frontend == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.frontend == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Frontend Medium Tests (Build)
+        if: steps.changes.outputs.frontend == 'true'
+        run: ./gradlew :frontend:npmBuild
