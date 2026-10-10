@@ -13,6 +13,8 @@ jobs:
   test:
     name: Small Tests (Unit Tests)
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,6 +36,8 @@ jobs:
     name: Medium Tests (Integration Tests)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
