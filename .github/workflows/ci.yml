@@ -53,6 +53,9 @@ jobs:
 
   service-registry-test:
     name: Service Registry Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -87,6 +90,9 @@ jobs:
 
   service-registry-medium-test:
     name: Service Registry Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
