@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
+import undecided.shared.exception.ExceptionLogger;
 import undecided.shared.exception.ResultMessagesNotificationException;
 import undecided.shared.primitiveOld.Lists2;
 
@@ -28,12 +29,9 @@ import undecided.shared.primitiveOld.Lists2;
  * <p>主に、予期しない例外をキャッチし、適切なエラーレスポンスをクライアントに返却します。
  */
 @RestControllerAdvice
-@Slf4j
+@AllArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-  public GlobalExceptionHandler() {
-    log.info("GlobalExceptionHandler created.");
-  }
+  private final ExceptionLogger log;
 
   /**
    * {@code ResultMessagesNotificationException} をハンドリングし、適切なエラーレスポンスを構築して返却します。
@@ -131,10 +129,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return problem;
   }
 
+  /**
+   * 予期しない例外を記録し、リクエストURIとトレースIDを含む500エラーレスポンスを返します。
+   *
+   * @param ex 記録する例外
+   * @param request 例外が発生したHTTPリクエスト
+   * @return 例外の詳細を公開しない汎用メッセージを持つProblemDetail
+   */
   @ExceptionHandler(Exception.class)
   public @NonNull ProblemDetail handleUnexpected(
       @NonNull Exception ex, @NonNull HttpServletRequest request) {
-    log.error("Unhandled exception on {} {}", request.getMethod(), request.getRequestURI(), ex);
+    String method = request.getMethod();
+    String uri = request.getRequestURI();
+    try {
+      MDC.put("httpMethod", method);
+      MDC.put("requestUri", uri);
+      log.error(ex);
+    } finally {
+      MDC.remove("httpMethod");
+      MDC.remove("requestUri");
+    }
     ProblemDetail problem =
         ProblemDetail.forStatusAndDetail(
             HttpStatus.INTERNAL_SERVER_ERROR,

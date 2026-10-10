@@ -22,7 +22,7 @@ public final class MessageFormatter {
    * <p>このフィールドは変更不可能 (final) であり、 初期化時に一度だけ設定される静的 (static) リソースです。
    */
   private static final ResourceBundle bundle =
-      ResourceBundle.getBundle("messages", Locale.getDefault(), new UTF8Control());
+      ResourceBundle.getBundle("i18n.messages", Locale.getDefault(), new UTF8Control());
 
   /**
    * MessageFormatterクラスのコンストラクタです。

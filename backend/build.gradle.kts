@@ -37,6 +37,10 @@ tasks {
         // コンパイラの警告を有効化（未チェック警告）
         options.compilerArgs.add("-Xlint:unchecked")
     }
+    // properties ファイルを UTF-8 で処理する
+    processResources {
+        filteringCharset = "UTF-8"
+    }
 }
 configurations.compileOnly {
     extendsFrom(configurations.annotationProcessor.get())
@@ -65,7 +69,7 @@ extra["jspecifyVersion"] = "1.0.0"
 extra["assertjDbVersion"] = "3.0.2"
 extra["uuidGeneratorVersion"] = "5.1.0"
 extra["superCsvVersion"] = "2.4.0"
-extra["testcontainersVersion"] = "1.20.4"
+extra["testcontainersVersion"] = "2.0.5"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -109,8 +113,8 @@ dependencies {
     testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers:${property("testcontainersVersion")}")
-    testImplementation("org.testcontainers:postgresql:${property("testcontainersVersion")}")
-    testImplementation("org.testcontainers:junit-jupiter:${property("testcontainersVersion")}")
+    testImplementation("org.testcontainers:testcontainers-postgresql:${property("testcontainersVersion")}")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter:${property("testcontainersVersion")}")
     implementation("com.tngtech.archunit:archunit:${property("archunitVersion")}")
     testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
 

@@ -46,7 +46,7 @@ extra["junitVersion"] = "6.1.3"
 extra["springCloudBomVersion"] = "2025.1.2"
 extra["spotbugsAnnotationVersion"] = "4.10.4"
 extra["libphonenumberVersion"] = "9.0.0"
-extra["testcontainersVersion"] = "1.20.4"
+extra["testcontainersVersion"] = "2.0.5"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -58,7 +58,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:postgresql:${property("testcontainersVersion")}")
+    testImplementation("org.testcontainers:testcontainers-postgresql:${property("testcontainersVersion")}")
     testImplementation("com.github.spotbugs:spotbugs-annotations:${property("spotbugsAnnotationVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
