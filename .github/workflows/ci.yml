@@ -64,3 +64,78 @@ jobs:
 
       - name: Run Medium Tests (Integration Tests)
         run: ./gradlew :backend:mediumTest
+
+  service-registry-test:
+    name: Service Registry Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for service-registry changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            service-registry:
+              - 'service-registry/**'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.service-registry == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.service-registry == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Service Registry Small Tests
+        if: steps.changes.outputs.service-registry == 'true'
+        run: ./gradlew :service-registry:test
+
+  service-registry-medium-test:
+    name: Service Registry Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for service-registry changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            service-registry:
+              - 'service-registry/**'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.service-registry == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.service-registry == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Service Registry Medium Tests
+        if: steps.changes.outputs.service-registry == 'true'
+        run: ./gradlew :service-registry:mediumTest
