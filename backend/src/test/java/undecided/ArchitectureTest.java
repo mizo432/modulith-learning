@@ -5,6 +5,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaMethod;
+import com.tngtech.archunit.core.domain.JavaType;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
@@ -15,6 +16,7 @@ import com.tngtech.archunit.lang.SimpleConditionEvent;
 import jakarta.persistence.Entity;
 import org.junit.jupiter.api.Tag;
 import org.springframework.data.repository.Repository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -130,6 +132,83 @@ class ArchitectureTest {
             .areAnnotatedWith(RestController.class)
             .should(new NoMixedQueryCommandCondition())
             .because("CQRSパターンに従い、RestControllerはQueryとCommandを混在させてはいけません");
+  }
+
+  @AnalyzeClasses(
+      packages = "undecided",
+      importOptions = {ImportOption.DoNotIncludeTests.class})
+  @Tag("small")
+  static class PostMethodStatusTest {
+    @ArchTest
+    static final ArchRule post_methods_should_return_response_entity =
+        methods()
+            .that()
+            .areAnnotatedWith(PostMapping.class)
+            .should(new ReturnResponseTypeCondition())
+            .because("POSTメソッドは正常系で201 Createdを返すためにResponseEntityを返すべきです");
+  }
+
+  @AnalyzeClasses(
+      packages = "undecided",
+      importOptions = {ImportOption.DoNotIncludeTests.class})
+  @Tag("small")
+  static class PutMethodStatusTest {
+    @ArchTest
+    static final ArchRule put_methods_should_return_response_entity =
+        methods()
+            .that()
+            .areAnnotatedWith(PutMapping.class)
+            .should(new ReturnResponseTypeCondition())
+            .because("PUTメソッドは正常系で204 No Contentを返すためにResponseEntityを返すべきです");
+  }
+
+  @AnalyzeClasses(
+      packages = "undecided",
+      importOptions = {ImportOption.DoNotIncludeTests.class})
+  @Tag("small")
+  static class DeleteMethodStatusTest {
+    @ArchTest
+    static final ArchRule delete_methods_should_return_response_entity =
+        methods()
+            .that()
+            .areAnnotatedWith(DeleteMapping.class)
+            .should(new ReturnResponseTypeCondition())
+            .because("DELETEメソッドは正常系で204 No Contentを返すためにResponseEntityを返すべきです");
+  }
+
+  @AnalyzeClasses(
+      packages = "undecided",
+      importOptions = {ImportOption.DoNotIncludeTests.class})
+  @Tag("small")
+  static class PatchMethodStatusTest {
+    @ArchTest
+    static final ArchRule patch_methods_should_return_response_entity =
+        methods()
+            .that()
+            .areAnnotatedWith(PatchMapping.class)
+            .should(new ReturnResponseTypeCondition())
+            .because("PATCHメソッドは正常系で204 No Contentを返すためにResponseEntityを返すべきです");
+  }
+
+  private static class ReturnResponseTypeCondition extends ArchCondition<JavaMethod> {
+    private static final String RESPONSE_ENTITY_NAME = ResponseEntity.class.getName();
+
+    ReturnResponseTypeCondition() {
+      super("return ResponseEntity");
+    }
+
+    @Override
+    public void check(JavaMethod javaMethod, ConditionEvents events) {
+      JavaType returnType = javaMethod.getReturnType();
+      String returnTypeName = returnType.getName();
+      if (!RESPONSE_ENTITY_NAME.equals(returnTypeName)
+          && !returnTypeName.startsWith("org.springframework.http.ResponseEntity<")) {
+        events.add(
+            SimpleConditionEvent.violated(
+                javaMethod,
+                javaMethod + " の戻り型は ResponseEntity であるべきですが、実際は " + returnTypeName + " です"));
+      }
+    }
   }
 
   private static class NoMixedQueryCommandCondition extends ArchCondition<JavaClass> {

@@ -27,7 +27,7 @@ public class UserCommandApi {
    *
    * @param username ユーザー名
    * @param request パスワード変更リクエスト
-   * @return 変更結果
+   * @return 204 No Contentレスポンス
    */
   @PutMapping("/{username}/password")
   ResponseEntity<Void> changePassword(

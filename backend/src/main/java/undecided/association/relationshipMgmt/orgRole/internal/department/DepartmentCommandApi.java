@@ -27,12 +27,14 @@ public class DepartmentCommandApi {
   private final DepartmentCommand command;
 
   /**
-   * @param department
-   * @param uriComponentsBuilder
-   * @return
+   * 新規部署を作成します。
+   *
+   * @param department 作成する部署情報
+   * @param uriComponentsBuilder URI構築用ビルダー
+   * @return 201 Createdレスポンス（Locationヘッダーに新規リソースのURIを含む）
    */
   @PostMapping
-  ResponseEntity<Department> post(
+  ResponseEntity<Void> post(
       @RequestBody Department department, UriComponentsBuilder uriComponentsBuilder) {
     command.insert(department);
     URI uri =
@@ -43,9 +45,11 @@ public class DepartmentCommandApi {
   }
 
   /**
-   * @param departmentCode
-   * @param department
-   * @return
+   * 部署情報を更新します。
+   *
+   * @param departmentCode 更新対象の部署コード
+   * @param department 更新する部署情報
+   * @return 204 No Contentレスポンス
    */
   @PutMapping("/{departmentCode}")
   ResponseEntity<Void> put(
@@ -59,7 +63,7 @@ public class DepartmentCommandApi {
    *
    * @param departmentCode 更新対象の部署コード
    * @param department 更新する部署情報
-   * @return 更新結果のレスポンス
+   * @return 204 No Contentレスポンス
    */
   @PatchMapping("/{departmentCode}")
   ResponseEntity<Void> patch(
@@ -69,8 +73,10 @@ public class DepartmentCommandApi {
   }
 
   /**
-   * @param departmentCode
-   * @return
+   * 部署を削除します。
+   *
+   * @param departmentCode 削除対象の部署コード
+   * @return 204 No Contentレスポンス
    */
   @DeleteMapping("/{departmentCode}")
   ResponseEntity<Void> delete(@PathVariable DepartmentCode departmentCode) {
