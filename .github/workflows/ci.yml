@@ -10,6 +10,51 @@ on:
       - 'develop'
 
 jobs:
+  test:
+    name: Small Tests (Unit Tests)
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Small Tests (Unit Tests)
+        run: ./gradlew test
+
+  medium-test:
+    name: Medium Tests (Integration Tests)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Medium Tests (Integration Tests)
+        run: ./gradlew mediumTest
+
   service-registry-test:
     name: Service Registry Small Tests
     permissions:
@@ -85,8 +130,8 @@ jobs:
         if: steps.changes.outputs.service-registry == 'true'
         run: ./gradlew :service-registry:mediumTest
 
-  api-gateway-test:
-    name: API Gateway Small Tests
+  frontend-test:
+    name: Frontend Small Tests
     permissions:
       contents: read
       pull-requests: read
@@ -97,18 +142,17 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Check for api-gateway changes
+      - name: Check for frontend changes
         id: changes
         uses: dorny/paths-filter@v3
         with:
           list-files: shell
           filters: |
-            api-gateway:
-              - 'api-gateway/**'
-              - 'settings.gradle'
+            frontend:
+              - 'frontend/**'
 
       - name: Set up JDK 25
-        if: steps.changes.outputs.api-gateway == 'true'
+        if: steps.changes.outputs.frontend == 'true'
         uses: actions/setup-java@v5
         with:
           java-version: '25'
@@ -116,51 +160,12 @@ jobs:
           cache: 'gradle'
 
       - name: Grant execute permission for gradlew
-        if: steps.changes.outputs.api-gateway == 'true'
+        if: steps.changes.outputs.frontend == 'true'
         run: chmod +x gradlew
 
-      - name: Run API Gateway Small Tests
-        if: steps.changes.outputs.api-gateway == 'true'
-        run: ./gradlew :api-gateway:test
-
-  api-gateway-medium-test:
-    name: API Gateway Medium Tests
-    permissions:
-      contents: read
-      pull-requests: read
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check for api-gateway changes
-        id: changes
-        uses: dorny/paths-filter@v3
-        with:
-          list-files: shell
-          filters: |
-            api-gateway:
-              - 'api-gateway/**'
-              - 'settings.gradle'
-
-      - name: Set up JDK 25
-        if: steps.changes.outputs.api-gateway == 'true'
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Grant execute permission for gradlew
-        if: steps.changes.outputs.api-gateway == 'true'
-        run: chmod +x gradlew
-
-      - name: Run API Gateway Medium Tests
-        if: steps.changes.outputs.api-gateway == 'true'
-        run: ./gradlew :api-gateway:mediumTest
+      - name: Run Frontend Small Tests
+        if: steps.changes.outputs.frontend == 'true'
+        run: ./gradlew :frontend:npmTest
 
   backend-test:
     name: Backend Small Tests
@@ -182,7 +187,6 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
-              - 'settings.gradle'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
@@ -221,7 +225,6 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
-              - 'settings.gradle'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
@@ -238,3 +241,116 @@ jobs:
       - name: Run Backend Medium Tests
         if: steps.changes.outputs.backend == 'true'
         run: ./gradlew :backend:mediumTest
+
+  api-gateway-test:
+    name: API Gateway Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for api-gateway changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            api-gateway:
+              - 'api-gateway/**'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.api-gateway == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: chmod +x gradlew
+
+      - name: Run API Gateway Small Tests
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: ./gradlew :api-gateway:test
+
+  api-gateway-medium-test:
+    name: API Gateway Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for api-gateway changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            api-gateway:
+              - 'api-gateway/**'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.api-gateway == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: chmod +x gradlew
+
+      - name: Run API Gateway Medium Tests
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: ./gradlew :api-gateway:mediumTest
+
+  frontend-medium-test:
+    name: Frontend Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for frontend changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            frontend:
+              - 'frontend/**'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.frontend == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.frontend == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Frontend Medium Tests (Build)
+        if: steps.changes.outputs.frontend == 'true'
+        run: ./gradlew :frontend:npmBuild
