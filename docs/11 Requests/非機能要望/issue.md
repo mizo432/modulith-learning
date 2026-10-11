@@ -8,7 +8,7 @@ authorizationモジュールを認可サーバー、api-gatewayをリソース�
 ## 関連ドキュメント
 
 - [認証非機能要望](./認証.md) (REQ-00001〜REQ-00030)
-- [RDRAモデル](../12%20Requirement%20definition/認証/RDRAモデル.md)
+- [RDRAモデル](../12%20RDRA%20モデル/01%20非機能要件/認証/認証/要件一覧.tsv)
 
 ---
 
