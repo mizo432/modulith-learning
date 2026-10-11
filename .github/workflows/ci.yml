@@ -31,6 +31,11 @@ jobs:
           filters: |
             service-registry:
               - 'service-registry/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.service-registry == 'true'
@@ -69,6 +74,11 @@ jobs:
           filters: |
             service-registry:
               - 'service-registry/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.service-registry == 'true'
@@ -106,6 +116,11 @@ jobs:
           filters: |
             frontend:
               - 'frontend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.frontend == 'true'
@@ -143,6 +158,11 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
@@ -181,6 +201,11 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
@@ -218,6 +243,11 @@ jobs:
           filters: |
             api-gateway:
               - 'api-gateway/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.api-gateway == 'true'
@@ -256,6 +286,11 @@ jobs:
           filters: |
             api-gateway:
               - 'api-gateway/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.api-gateway == 'true'
@@ -294,6 +329,11 @@ jobs:
           filters: |
             frontend:
               - 'frontend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.frontend == 'true'
@@ -321,6 +361,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
           fetch-depth: 2
 
       - name: Check for authorization changes
@@ -331,6 +372,11 @@ jobs:
           filters: |
             authorization:
               - 'authorization/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.authorization == 'true'
@@ -359,6 +405,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Check for authorization changes
@@ -369,6 +416,11 @@ jobs:
           filters: |
             authorization:
               - 'authorization/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.authorization == 'true'
