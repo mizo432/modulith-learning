@@ -10,50 +10,6 @@ on:
       - 'develop'
 
 jobs:
-  test:
-    name: Small Tests (Unit Tests)
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 25
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Run Small Tests (Unit Tests)
-        run: ./gradlew test
-
-  medium-test:
-    name: Medium Tests (Integration Tests)
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 25
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Run Medium Tests (Integration Tests)
-        run: ./gradlew mediumTest
 
   service-registry-test:
     name: Service Registry Small Tests
@@ -75,6 +31,11 @@ jobs:
           filters: |
             service-registry:
               - 'service-registry/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.service-registry == 'true'
@@ -113,6 +74,11 @@ jobs:
           filters: |
             service-registry:
               - 'service-registry/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.service-registry == 'true'
@@ -150,6 +116,11 @@ jobs:
           filters: |
             frontend:
               - 'frontend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.frontend == 'true'
@@ -187,6 +158,11 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
@@ -225,6 +201,11 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.backend == 'true'
@@ -262,6 +243,11 @@ jobs:
           filters: |
             api-gateway:
               - 'api-gateway/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.api-gateway == 'true'
@@ -300,6 +286,11 @@ jobs:
           filters: |
             api-gateway:
               - 'api-gateway/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.api-gateway == 'true'
@@ -338,6 +329,11 @@ jobs:
           filters: |
             frontend:
               - 'frontend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
 
       - name: Set up JDK 25
         if: steps.changes.outputs.frontend == 'true'
@@ -354,3 +350,90 @@ jobs:
       - name: Run Frontend Medium Tests (Build)
         if: steps.changes.outputs.frontend == 'true'
         run: ./gradlew :frontend:npmBuild
+
+  authorization-test:
+    name: Authorization Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Check for authorization changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            authorization:
+              - 'authorization/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.authorization == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.authorization == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Authorization Small Tests
+        if: steps.changes.outputs.authorization == 'true'
+        run: ./gradlew :authorization:test
+
+  authorization-medium-test:
+    name: Authorization Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Check for authorization changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            authorization:
+              - 'authorization/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.authorization == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.authorization == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Authorization Medium Tests
+        if: steps.changes.outputs.authorization == 'true'
+        run: ./gradlew :authorization:mediumTest
