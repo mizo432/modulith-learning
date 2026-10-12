@@ -20,13 +20,13 @@
 
 ## 機能一覧
 
-| 番号 | 機能名             | エンドポイント                                                           | 説明                                                 |
-|------|--------------------|--------------------------------------------------------------------------|------------------------------------------------------|
-| F-01 | データベース一覧   | GET /do/databases                                                        | 接続可能なデータベースの一覧を取得する               |
-| F-02 | スキーマ一覧       | GET /do/databases/{databaseName}                                         | 指定されたデータベースのスキーマ一覧を取得する       |
-| F-03 | テーブル・View一覧 | GET /do/databases/{databaseName}/schemas/{schemaName}                    | 指定されたスキーマのテーブル一覧とView一覧を取得する |
-| F-04 | テーブル定義       | GET /do/databases/{databaseName}/schemas/{schemaName}/tables/{tableName} | 指定されたテーブルの定義とインデックス定義を取得する |
-| F-05 | View定義           | GET /do/databases/{databaseName}/schemas/{schemaName}/views/{viewName}   | 指定されたViewの定義とインデックス定義を取得する     |
+| 番号 | 機能名             | エンドポイント                                                           | 説明                                                                                 |
+|------|--------------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| F-01 | データベース一覧   | GET /do/databases                                                        | 接続可能なデータベースの一覧を取得する                                               |
+| F-02 | スキーマ一覧       | GET /do/databases/{databaseName}                                         | 指定されたデータベースのスキーマ一覧を取得する                                       |
+| F-03 | テーブル・View一覧 | GET /do/databases/{databaseName}/schemas/{schemaName}                    | 指定されたスキーマのテーブル一覧とView一覧を取得する                                 |
+| F-04 | テーブル定義       | GET /do/databases/{databaseName}/schemas/{schemaName}/tables/{tableName} | 指定されたテーブルの定義とインデックス定義を取得する                                 |
+| F-05 | View定義           | GET /do/databases/{databaseName}/schemas/{schemaName}/views/{viewName}   | 指定されたViewの定義を取得し、マテリアライズドViewの場合はインデックス定義も取得する |
 
 ## 非機能要件
 

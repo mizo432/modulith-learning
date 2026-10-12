@@ -66,12 +66,8 @@ public class DatabaseMetadataService {
 
       // PostgreSQLではConnection.getCatalog()で現在のデータベース名を取得
       String currentCatalog = conn.getCatalog();
-      if (currentCatalog != null && !currentCatalog.isEmpty()) {
-        result.add(
-            new DatabaseInfo(
-                currentCatalog,
-                metaData.getDatabaseProductName() + " " + metaData.getDatabaseProductVersion()));
-      }
+      String productName =
+          metaData.getDatabaseProductName() + " " + metaData.getDatabaseProductVersion();
 
       // PostgreSQLのpg_databaseから利用可能なデータベース一覧を取得
       try (PreparedStatement ps =
@@ -81,8 +77,13 @@ public class DatabaseMetadataService {
         while (rs.next()) {
           String dbName = rs.getString("datname");
           String owner = rs.getString("owner");
-          String desc = (owner != null) ? "Owner: " + owner : "";
-          result.add(new DatabaseInfo(dbName, desc));
+          // 現在のDBは製品名を説明に使い、それ以外はOwnerを使う
+          if (currentCatalog != null && currentCatalog.equals(dbName)) {
+            result.add(new DatabaseInfo(dbName, productName));
+          } else {
+            String desc = (owner != null) ? "Owner: " + owner : "";
+            result.add(new DatabaseInfo(dbName, desc));
+          }
         }
       }
     } catch (SQLException e) {
@@ -109,10 +110,18 @@ public class DatabaseMetadataService {
 
     List<SchemaInfo> result;
     try (Connection conn = dataSource.getConnection()) {
+      // 接続の現在のカタログとdatabaseNameを照合し、異なる場合は拒否する
+      String currentCatalog = conn.getCatalog();
+      if (currentCatalog == null || !currentCatalog.equals(databaseName)) {
+        throw new IllegalArgumentException(
+            "指定されたデータベース名（" + databaseName + "）と接続先のカタログ（" + currentCatalog + "）が一致しません。");
+      }
+
       DatabaseMetaData metaData = conn.getMetaData();
       result = new ArrayList<>();
 
-      try (ResultSet rs = metaData.getSchemas()) {
+      // 対象カタログを確実に絞り込む
+      try (ResultSet rs = metaData.getSchemas(currentCatalog, null)) {
         while (rs.next()) {
           String schemaName = rs.getString("TABLE_SCHEM");
           if (schemaName != null
@@ -155,8 +164,15 @@ public class DatabaseMetadataService {
 
     TablesAndViewsResponse result;
     try (Connection conn = dataSource.getConnection()) {
+      // 接続の現在のカタログとdatabaseNameを照合し、異なる場合は拒否する
+      String currentCatalog = conn.getCatalog();
+      if (currentCatalog == null || !currentCatalog.equals(databaseName)) {
+        throw new IllegalArgumentException(
+            "指定されたデータベース名（" + databaseName + "）と接続先のカタログ（" + currentCatalog + "）が一致しません。");
+      }
+
       DatabaseMetaData metaData = conn.getMetaData();
-      String catalog = conn.getCatalog();
+      String catalog = currentCatalog;
       List<TableInfo> tables = new ArrayList<>();
       List<ViewInfo> views = new ArrayList<>();
 
@@ -194,15 +210,16 @@ public class DatabaseMetadataService {
 
       // PostgreSQLのMaterialized Viewも取得
       try (PreparedStatement ps =
-              conn.prepareStatement(
-                  "SELECT matviewname FROM pg_matviews WHERE schemaname = ? ORDER BY matviewname");
-          ResultSet rs = ps.executeQuery()) {
+          conn.prepareStatement(
+              "SELECT matviewname FROM pg_matviews WHERE schemaname = ? ORDER BY matviewname")) {
         ps.setString(1, schemaName);
-        while (rs.next()) {
-          String viewName = rs.getString("matviewname");
-          String description = getMatViewDescription(conn, schemaName, viewName);
-          String[] parsed = parseDescription(description);
-          views.add(new ViewInfo(viewName, parsed[0], parsed[1], parsed[2]));
+        try (ResultSet rs = ps.executeQuery()) {
+          while (rs.next()) {
+            String viewName = rs.getString("matviewname");
+            String description = getMatViewDescription(conn, schemaName, viewName);
+            String[] parsed = parseDescription(description);
+            views.add(new ViewInfo(viewName, parsed[0], parsed[1], parsed[2]));
+          }
         }
       }
 
@@ -234,8 +251,15 @@ public class DatabaseMetadataService {
 
     TableDefinitionResponse result;
     try (Connection conn = dataSource.getConnection()) {
+      // 接続の現在のカタログとdatabaseNameを照合し、異なる場合は拒否する
+      String currentCatalog = conn.getCatalog();
+      if (currentCatalog == null || !currentCatalog.equals(databaseName)) {
+        throw new IllegalArgumentException(
+            "指定されたデータベース名（" + databaseName + "）と接続先のカタログ（" + currentCatalog + "）が一致しません。");
+      }
+
       DatabaseMetaData metaData = conn.getMetaData();
-      String catalog = conn.getCatalog();
+      String catalog = currentCatalog;
       List<ColumnInfo> columns = getColumns(metaData, catalog, schemaName, tableName);
       List<IndexInfo> indexes = getIndexes(conn, schemaName, tableName);
       result = new TableDefinitionResponse(columns, indexes);
@@ -266,8 +290,15 @@ public class DatabaseMetadataService {
 
     ViewDefinitionResponse result;
     try (Connection conn = dataSource.getConnection()) {
+      // 接続の現在のカタログとdatabaseNameを照合し、異なる場合は拒否する
+      String currentCatalog = conn.getCatalog();
+      if (currentCatalog == null || !currentCatalog.equals(databaseName)) {
+        throw new IllegalArgumentException(
+            "指定されたデータベース名（" + databaseName + "）と接続先のカタログ（" + currentCatalog + "）が一致しません。");
+      }
+
       DatabaseMetaData metaData = conn.getMetaData();
-      String catalog = conn.getCatalog();
+      String catalog = currentCatalog;
       List<ColumnInfo> columns = getViewColumns(metaData, catalog, schemaName, viewName);
 
       // マテリアライズドViewの場合はインデックスを取得
@@ -349,32 +380,32 @@ public class DatabaseMetadataService {
 
     // PostgreSQLではgetIndexesが不完全な場合があるため、pg_indexesから直接取得
     try (PreparedStatement ps =
-            conn.prepareStatement(
-                "SELECT i.relname AS index_name, ix.indisunique, "
-                    + "       pg_get_indexdef(ix.indexrelid) AS index_def, "
-                    + "       c.attname AS column_name, "
-                    + "       array_position(ix.indkey, c.attnum) AS ordinal_position "
-                    + "FROM pg_index ix "
-                    + "JOIN pg_class t ON t.oid = ix.indrelid "
-                    + "JOIN pg_class i ON i.oid = ix.indexrelid "
-                    + "JOIN pg_namespace n ON n.oid = t.relnamespace "
-                    + "CROSS JOIN LATERAL unnest(ix.indkey) WITH ORDINALITY AS k(attnum, ordinality) "
-                    + "JOIN pg_attribute c ON c.attrelid = t.oid AND c.attnum = k.attnum "
-                    + "WHERE n.nspname = ? AND t.relname = ? "
-                    + "ORDER BY i.relname, k.ordinality");
-        ResultSet rs = ps.executeQuery()) {
+        conn.prepareStatement(
+            "SELECT i.relname AS index_name, ix.indisunique AS is_unique, "
+                + "       pg_get_indexdef(ix.indexrelid) AS index_def, "
+                + "       c.attname AS column_name, "
+                + "       k.ordinality AS ordinal_position "
+                + "FROM pg_index ix "
+                + "JOIN pg_class t ON t.oid = ix.indrelid "
+                + "JOIN pg_class i ON i.oid = ix.indexrelid "
+                + "JOIN pg_namespace n ON n.oid = t.relnamespace "
+                + "CROSS JOIN LATERAL unnest(ix.indkey) WITH ORDINALITY AS k(attnum, ordinality) "
+                + "JOIN pg_attribute c ON c.attrelid = t.oid AND c.attnum = k.attnum "
+                + "WHERE n.nspname = ? AND t.relname = ? "
+                + "ORDER BY i.relname, k.ordinality")) {
       ps.setString(1, schemaName);
       ps.setString(2, tableName);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          String indexName = rs.getString("index_name");
+          boolean isUnique = rs.getBoolean("is_unique");
+          String columnName = rs.getString("column_name");
+          int ordinalPosition = rs.getInt("ordinal_position");
 
-      while (rs.next()) {
-        String indexName = rs.getString("index_name");
-        boolean isUnique = rs.getBoolean("indis_unique");
-        String columnName = rs.getString("column_name");
-        int ordinalPosition = rs.getInt("ordinality");
-
-        indexes.add(
-            new IndexInfo(
-                indexName, isUnique ? "UNIQUE" : "NONUNIQUE", columnName, ordinalPosition));
+          indexes.add(
+              new IndexInfo(
+                  indexName, isUnique ? "UNIQUE" : "NONUNIQUE", columnName, ordinalPosition));
+        }
       }
     }
     return indexes;
@@ -384,13 +415,14 @@ public class DatabaseMetadataService {
   private boolean isMaterializedView(Connection conn, String schemaName, String viewName)
       throws SQLException {
     try (PreparedStatement ps =
-            conn.prepareStatement(
-                "SELECT COUNT(*) > 0 FROM pg_matviews WHERE schemaname = ? AND matviewname = ?");
-        ResultSet rs = ps.executeQuery()) {
+        conn.prepareStatement(
+            "SELECT COUNT(*) > 0 FROM pg_matviews WHERE schemaname = ? AND matviewname = ?")) {
       ps.setString(1, schemaName);
       ps.setString(2, viewName);
-      if (rs.next()) {
-        return rs.getBoolean(1);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getBoolean(1);
+        }
       }
     }
     return false;
@@ -399,12 +431,13 @@ public class DatabaseMetadataService {
   /** スキーマのコメントを取得します (PostgreSQL用)。 */
   private String getSchemaDescription(Connection conn, String schemaName) throws SQLException {
     try (PreparedStatement ps =
-            conn.prepareStatement(
-                "SELECT obj_description(oid) AS description FROM pg_namespace WHERE nspname = ?");
-        ResultSet rs = ps.executeQuery()) {
+        conn.prepareStatement(
+            "SELECT obj_description(oid) AS description FROM pg_namespace WHERE nspname = ?")) {
       ps.setString(1, schemaName);
-      if (rs.next()) {
-        return rs.getString("description");
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getString("description");
+        }
       }
     }
     return null;
@@ -414,14 +447,15 @@ public class DatabaseMetadataService {
   private String getTableDescription(Connection conn, String schemaName, String tableName)
       throws SQLException {
     try (PreparedStatement ps =
-            conn.prepareStatement(
-                "SELECT obj_description(oid) AS description FROM pg_class "
-                    + "WHERE relname = ? AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ?)");
-        ResultSet rs = ps.executeQuery()) {
+        conn.prepareStatement(
+            "SELECT obj_description(oid) AS description FROM pg_class "
+                + "WHERE relname = ? AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ?)")) {
       ps.setString(1, tableName);
       ps.setString(2, schemaName);
-      if (rs.next()) {
-        return rs.getString("description");
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getString("description");
+        }
       }
     }
     return null;
@@ -431,14 +465,15 @@ public class DatabaseMetadataService {
   private String getViewDescription(Connection conn, String schemaName, String viewName)
       throws SQLException {
     try (PreparedStatement ps =
-            conn.prepareStatement(
-                "SELECT obj_description(oid) AS description FROM pg_class "
-                    + "WHERE relname = ? AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ?)");
-        ResultSet rs = ps.executeQuery()) {
+        conn.prepareStatement(
+            "SELECT obj_description(oid) AS description FROM pg_class "
+                + "WHERE relname = ? AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ?)")) {
       ps.setString(1, viewName);
       ps.setString(2, schemaName);
-      if (rs.next()) {
-        return rs.getString("description");
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getString("description");
+        }
       }
     }
     return null;
@@ -448,14 +483,15 @@ public class DatabaseMetadataService {
   private String getMatViewDescription(Connection conn, String schemaName, String viewName)
       throws SQLException {
     try (PreparedStatement ps =
-            conn.prepareStatement(
-                "SELECT obj_description(oid) AS description FROM pg_class "
-                    + "WHERE relname = ? AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ?)");
-        ResultSet rs = ps.executeQuery()) {
+        conn.prepareStatement(
+            "SELECT obj_description(oid) AS description FROM pg_class "
+                + "WHERE relname = ? AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ?)")) {
       ps.setString(1, viewName);
       ps.setString(2, schemaName);
-      if (rs.next()) {
-        return rs.getString("description");
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getString("description");
+        }
       }
     }
     return null;

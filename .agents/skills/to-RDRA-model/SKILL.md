@@ -511,9 +511,9 @@ Use Case 3.0では、ユースケースをスライスに分割してインク�
       ユーザーストーリーマップのMarkdownテンプレート
     - [トレースアビリティ.tsv](templates/トレースアビリティ.tsv): トレースアビリティのTSVテンプレート
     - [トレースアビリティ.md](templates/トレースアビリティ.md): トレースアビリティのテンプレート
-        - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
-        - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
-        - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
+    - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
+    - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
+    - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
 
 - **チェックリスト**:
     - [requirement.md](checklists/requirement.md): 要件分析時の確認項目
