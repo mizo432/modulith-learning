@@ -1,6 +1,6 @@
 番号	スキーマ	テーブル名	説明
 01	address_reg	prefectures	都道府県マスタ
-02	address_reg	cities	市区町村民スタ
+02	address_reg	cities	市区町村マスタ
 03	address_reg	chou_aza	字・丁目マスタ
 04	calendar_reg	holiday	祝日マスタ
 05	bank_reg	banks	銀行マスタ

@@ -1,3 +1,4 @@
 番号	スキーマ	テーブル名	説明
-01	public	companies	法人情報
-02	public	address_use_history	住所利用履歴
+01	public	role	ロール情報
+02	public	role_assignment_for_org	組織ロール割当
+03	public	role_assignment_for_emp	従業員ロール割当
