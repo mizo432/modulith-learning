@@ -9,12 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.MDC;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
 import undecided.shared.exception.ExceptionLogger;
@@ -61,13 +66,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    *     オブジェクト。HTTPステータス、タイトル、インスタンスURI、エラーコード、フィールドエラーの詳細、トレースIDが含まれます。
    */
   // --- Validation ---
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public @NonNull ProblemDetail handleValidation(
-      @NonNull MethodArgumentNotValidException ex, @NonNull HttpServletRequest request) {
+  @Override
+  protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(
+      @NonNull MethodArgumentNotValidException ex,
+      @NonNull HttpHeaders headers,
+      @NonNull HttpStatusCode status,
+      @NonNull WebRequest request) {
     ProblemDetail problem =
         ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed");
     problem.setTitle("Validation Error");
-    problem.setInstance(URI.create(request.getRequestURI()));
+    if (request instanceof HttpServletRequest httpRequest) {
+      problem.setInstance(URI.create(httpRequest.getRequestURI()));
+    }
     problem.setProperty("errorCode", "VALIDATION_FAILED");
     problem.setProperty(
         "fieldErrors",
@@ -75,7 +85,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .map(e -> Map.of("field", e.getField(), "message", e.getDefaultMessage()))
             .toList());
     problem.setProperty("traceId", MDC.get("traceId"));
-    return problem;
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
   }
 
   /**

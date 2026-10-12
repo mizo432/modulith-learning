@@ -19,7 +19,9 @@ import undecided.supporting.snowflake.spi.SnowflakeId;
 @AllArgsConstructor
 public class User {
 
-  @Id private SnowflakeId id = SnowflakeId.EMPTY;
+  @Id
+  @Column(columnDefinition = "bigint")
+  private SnowflakeId id = SnowflakeId.EMPTY;
 
   @Column(unique = true, nullable = false, length = 50)
   private String username;
