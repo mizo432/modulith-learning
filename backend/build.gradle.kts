@@ -83,6 +83,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
+    runtimeOnly("com.julien-dubois.bootui:bootui-spring-boot-starter:1.21.0")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
