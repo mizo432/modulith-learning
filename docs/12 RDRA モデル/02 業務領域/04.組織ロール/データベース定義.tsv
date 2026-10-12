@@ -1,6 +1,3 @@
 番号	スキーマ	テーブル名	説明
 01	public	departments	部門情報
 02	public	organizations	組織情報
-03	public	role	ロール情報
-04	public	role_assignment_for_org	組織ロール割当
-05	public	role_assignment_for_emp	従業員ロール割当
