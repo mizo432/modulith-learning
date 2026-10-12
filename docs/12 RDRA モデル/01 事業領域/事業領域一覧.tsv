@@ -1,2 +1,7 @@
-番号  事業領域名 説明
-01
+番号	事業領域コード	事業領域区分	事業領域名	事業領域英名	摘要	説明
+01	EF	汎用	電子帳票	Electronic Forms	
+02	AS	支援	関連付け	Association	
+03	PC	コア	購買事業	Procurement	
+04	AR	汎用	承認申請	Approval Request	
+05	AZ	支援	認可	Authorization	
+06	NT	汎用	通知	Notification	
