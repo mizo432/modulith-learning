@@ -74,6 +74,23 @@ batch:
       base-url: https://apis.bankcode-jp.com
       api-key: ${BANKCODE_JP_API_KEY:}
 
+hikari:
+  auto-tuning:
+    enabled: false
+    interval-seconds: 60
+    max-pool-size-limit: 50
+    min-idle-limit: 1
+    max-adjustment-step: 3
+    timeout-safety-margin: 5
+    history-window-size: 10
+    ewa-alpha: 0.3
+    cpu-threshold: 80.0
+    query-latency-threshold: 1000.0
+    adjust-idle-timeout: false
+    adjust-max-lifetime: false
+    timeout-fallback-threshold: 3
+    fallback-pool-size: 30
+
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
 management:
   endpoints:
