@@ -250,10 +250,13 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
     - 要件の階層構造、トレーサビリティ、ダイアグラムを整理して記録する
     - 元の要件ドキュメントは変更せず、新しいRDRAモデルファイルを出力する
     - 出力ディレクトリ構造は以下の通り:
-        - `01 事業領域`: 事業領域一覧
-        - `03 情報`: 事業領域・業務領域毎の情報定義 (TSV)
-            - `01 非機能要件`: 事業領域・業務領域毎の非機能要件 (TSV)
-            - `01 機能要件`: 事業領域・業務領域毎のRDRA 4レイヤー詳細定義
+        - `01 事業領域`: 事業領域一覧 (MD/TSV)
+        - `02 業務領域`: 業務領域一覧 (MD/TSV)
+        - `03 非機能要件大項目`: 非機能要件大項目一覧 (MD/TSV)
+        - `04 情報`: 事業領域・業務領域毎の情報定義 (TSV)
+        - `05 非機能要件`: 非機能要件大項目毎の非機能要件定義 (TSV)
+        - `06 機能要件`: 事業領域・業務領域毎のRDRA 4レイヤー詳細定義
+        - `07 用語集`: 事業領域・業務領域毎の用語集 (MD/TSV)
 
 3. **完了報告**:
     - Wikiに出力したファイルパスまたはページURLをユーザーに報告する
@@ -462,6 +465,47 @@ Use Case 3.0では、ユースケースをスライスに分割してインク�
 ---
 
 ### 5. 付属テンプレートとチェックリスト (Resources)
+
+- **テンプレート**:
+    - [事業領域一覧.md](templates/事業領域一覧.md): 事業領域一覧のMarkdownテンプレート
+    - [事業領域一覧.tsv](templates/事業領域一覧.tsv): 事業領域一覧のTSVテンプレート
+    - [業務領域一覧.md](templates/業務領域一覧.md): 業務領域一覧のMarkdownテンプレート
+    - [業務領域一覧.tsv](templates/業務領域一覧.tsv): 業務領域一覧のTSVテンプレート
+    - [非機能要件大項目一覧.md](templates/非機能要件大項目一覧.md): 非機能要件大項目一覧のMarkdownテンプレート
+    - [非機能要件大項目一覧.tsv](templates/非機能要件大項目一覧.tsv): 非機能要件大項目一覧のTSVテンプレート
+    - [データ一覧.tsv](templates/データ一覧.tsv): データ一覧のTSVテンプレート
+    - [要件一覧.tsv](templates/要件一覧.tsv): 非機能要件一覧のTSVテンプレート
+    - [0verview.md](templates/0verview.md): 機能要件概要のMarkdownテンプレート
+    - [システム価値.md](templates/システム価値.md): システム価値のMarkdownテンプレート
+    - [システム環境.md](templates/システム環境.md): システム環境のMarkdownテンプレート
+    - [業務一覧.md](templates/業務一覧.md): 業務一覧のMarkdownテンプレート
+    - [業務.md](templates/業務.md): 業務詳細のMarkdownテンプレート
+    - [外部システム一覧.md](templates/外部システム一覧.md): 外部システム一覧のMarkdownテンプレート
+    - [外部システム定義.md](templates/外部システム定義.md): 外部システム定義のMarkdownテンプレート
+    - [アクター一覧.md](templates/アクター一覧.md): アクター一覧のMarkdownテンプレート
+    - [アクター一覧.tsv](templates/アクター一覧.tsv): アクター一覧のTSVテンプレート
+    - [ユースケース一覧.md](templates/ユースケース一覧.md): ユースケース一覧のMarkdownテンプレート
+    - [ユースケース一覧.tsv](templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
+    - [ユースケース図.md](templates/ユースケース図.md): ユースケース図のMarkdownテンプレート
+    - [ユースケース記述.md](templates/ユースケース記述.md): ユースケース記述のMarkdownテンプレート
+    - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
+    - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
+    - [ステートマシン図.md](templates/ステートマシン図.md): ステートマシン図のMarkdownテンプレート
+    - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
+    - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
+    - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
+    - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
+    - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
+    - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
+    - [帳票一覧.md](templates/帳票一覧.md): 帳票一覧のMarkdownテンプレート
+    - [帳票一覧.tsv](templates/帳票一覧.tsv): 帳票一覧のTSVテンプレート
+    - [帳票定義.md](templates/帳票定義.md): 帳票定義のMarkdownテンプレート
+    - [ユーザーストーリーマップ.md](templates/ユーザーストーリーマップ.md):
+      ユーザーストーリーマップのMarkdownテンプレート
+    - [トレースアビリティ.tsv](templates/トレースアビリティ.tsv): トレースアビリティのTSVテンプレート
+    - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
+    - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
+    - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
 
 - **チェックリスト**:
     - [requirement.md](checklists/requirement.md): 要件分析時の確認項目
