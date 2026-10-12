@@ -19,10 +19,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.context.request.WebRequest;
 import undecided.config.presentation.exception.GlobalExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
 import undecided.shared.message.ResultMessage;
@@ -83,8 +87,8 @@ class GlobalExceptionHandlerTest {
   }
 
   @Nested
-  @DisplayName("handleValidationメソッドのテスト")
-  class HandleValidationTest {
+  @DisplayName("handleMethodArgumentNotValidメソッドのテスト")
+  class HandleMethodArgumentNotValidTest {
 
     /** MethodArgumentNotValidExceptionを適切に処理し、フィールドエラーを含むProblemDetailを返すことを検証します。 */
     @Test
@@ -97,11 +101,14 @@ class GlobalExceptionHandlerTest {
 
       org.springframework.web.bind.MethodArgumentNotValidException ex =
           new org.springframework.web.bind.MethodArgumentNotValidException(null, bindingResult);
-      HttpServletRequest request = mock(HttpServletRequest.class);
-      when(request.getRequestURI()).thenReturn("/api/test");
+      HttpHeaders headers = new HttpHeaders();
+      HttpStatusCode status = HttpStatus.BAD_REQUEST;
+      WebRequest request = mock(WebRequest.class);
 
       // Act
-      ProblemDetail response = globalExceptionHandler.handleValidation(ex, request);
+      ResponseEntity<Object> responseEntity =
+          globalExceptionHandler.handleMethodArgumentNotValid(ex, headers, status, request);
+      ProblemDetail response = (ProblemDetail) responseEntity.getBody();
 
       // Assert
       assertThat(response).as("ProblemDetailがnullでないこと").isNotNull();
@@ -132,11 +139,14 @@ class GlobalExceptionHandlerTest {
 
       org.springframework.web.bind.MethodArgumentNotValidException ex =
           new org.springframework.web.bind.MethodArgumentNotValidException(null, bindingResult);
-      HttpServletRequest request = mock(HttpServletRequest.class);
-      when(request.getRequestURI()).thenReturn("/api/test");
+      HttpHeaders headers = new HttpHeaders();
+      HttpStatusCode status = HttpStatus.BAD_REQUEST;
+      WebRequest request = mock(WebRequest.class);
 
       // Act
-      ProblemDetail response = globalExceptionHandler.handleValidation(ex, request);
+      ResponseEntity<Object> responseEntity =
+          globalExceptionHandler.handleMethodArgumentNotValid(ex, headers, status, request);
+      ProblemDetail response = (ProblemDetail) responseEntity.getBody();
 
       // Assert
       @SuppressWarnings("unchecked")
