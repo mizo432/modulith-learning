@@ -353,14 +353,22 @@ class Strings2IsEmptyTest {
 ### 7.1 CI (GitHub Actions)
 
 `.github/workflows/ci.yml` で JDK 25 (Temurin) を用いて以下を実行します。
+各ジョブは `dorny/paths-filter` により、関連モジュールに変更があった場合のみ実行されます。
 
-| ジョブ        | 実行タイミング                              | 内容                   |
-|:--------------|:--------------------------------------------|:-----------------------|
-| `test`        | すべてのブランチへの push / PR              | `./gradlew test`       |
-| `medium-test` | `main` / `develop` 向けの Pull Request のみ | `./gradlew mediumTest` |
+| ジョブ                         | 実行タイミング                              | 内容                                     |
+|:-------------------------------|:--------------------------------------------|:-----------------------------------------|
+| `backend-test`                 | すべてのブランチへの push / PR              | `./gradlew :backend:test`                |
+| `backend-medium-test`          | `main` / `develop` 向けの Pull Request のみ | `./gradlew :backend:mediumTest`          |
+| `service-registry-test`        | すべてのブランチへの push / PR              | `./gradlew :service-registry:test`       |
+| `service-registry-medium-test` | `main` / `develop` 向けの Pull Request のみ | `./gradlew :service-registry:mediumTest` |
+| `frontend-test`                | すべてのブランチへの push / PR              | `./gradlew :frontend:npmTest`            |
+| `frontend-medium-test`         | `main` / `develop` 向けの Pull Request のみ | `./gradlew :frontend:npmBuild`           |
+| `api-gateway-test`             | すべてのブランチへの push / PR              | `./gradlew :api-gateway:test`            |
+| `api-gateway-medium-test`      | `main` / `develop` 向けの Pull Request のみ | `./gradlew :api-gateway:mediumTest`      |
+| `authorization-test`           | すべてのブランチへの push / PR              | `./gradlew :authorization:test`          |
+| `authorization-medium-test`    | `main` / `develop` 向けの Pull Request のみ | `./gradlew :authorization:mediumTest`    |
 
-PR を作成する前に、ローカルで `./gradlew :backend:test` と `./gradlew :backend:mediumTest`
-が成功することを確認してください。
+PR を作成する前に、ローカルで関連モジュールの `test` および `mediumTest` が成功することを確認してください。
 
 ---
 
@@ -468,3 +476,47 @@ PR を作成する前に、ローカルで `./gradlew :backend:test` と `./grad
 | `pr-review`            | ``                                             | PR のレビュー（第 8 章の反復レビュー）                      |
 | `requirement-analysis` | `.claude/skills/requirement-analysis/SKILL.md` | 要求分析・要件定義・受け入れ基準の作成                      |
 | `frontend-design`      | `.claude/skills/frontend-design/SKILL.md`      | フロントエンドの画面・コンポーネント設計と Storybook テスト |
+| `to-RDRA-model`        | `.agents/skills/to-RDRA-model/SKILL.md`        | RDRAモデルによる要件定義・4レイヤー構築・ユースケース記述   |
+
+---
+
+## 11. RDRA モデル (Requirement Analysis Model)
+
+本プロジェクトでは、 **RDRA**（Relationship Driven Requirement Analysis、ラドラ）を要件定義手法として採用しています。
+RDRAは、システムを構成する要素同士の関係（Relationship）を定義することで、システム全体の構造を明確に捉え、可視化するモデルベースの要件定義手法です。
+
+### 11.1 RDRA の4つのレイヤー
+
+| レイヤー                     | 主な要素                                        |
+|------------------------------|-------------------------------------------------|
+| **システム価値レイヤー**     | 要求（機能/非機能）、アクター、外部システム     |
+| **システム外部環境レイヤー** | 業務、ビジネスユースケース(BUC)、アクティビティ |
+| **システム境界レイヤー**     | ユースケース(UC)、画面、イベント                |
+| **システムレイヤー**         | 情報、状態、条件、バリエーション                |
+
+各レイヤーは内側から外側に向けて「Why」の依存関係を持ち、下位レイヤーから上位レイヤーに向かって「なぜ？」と問いかけることで、要件に論理的なつながりを持たせます。
+
+### 11.2 RDRA モデルドキュメントの配置
+
+構築したRDRAモデルは `docs/12 RDRA モデル` ディレクトリに格納されます。
+
+- `01 事業領域`: 事業領域一覧
+- `02 業務領域`: 業務領域一覧
+- `03 非機能要件大項目`: 非機能要件大項目一覧
+- `04 情報`: 事業領域・業務領域毎の情報定義
+- `05 非機能要件`: 非機能要件大項目毎の非機能要件定義
+- `06 機能要件`: 事業領域・業務領域毎のRDRA 4レイヤー詳細定義
+- `07 用語集`: 事業領域・業務領域毎の用語集
+
+詳細なディレクトリ構造は [`docs/12 RDRA モデル/index.md`](docs/12%20RDRA%20モデル/index.md)
+を参照してください。
+
+### 11.3 RDRA ワークフロー
+
+RDRAによる要件定義は「3つのフェーズと9つのステップ」で進めます。
+
+1. **フェーズ1: 枠組みを作る** - アクター/外部システムと業務を洗い出し、アクティビティと情報・状態を可視化する
+2. **フェーズ2: 要件を組み立てる** - 業務からユースケースを導き出し、情報や状態と関連づけて要件の精度を上げる
+3. **フェーズ3: 整合性・網羅性を確認** - 条件とバリエーションを整理し、実装レベルまで詳細化する
+
+要件定義の詳細な手順は `to-RDRA-model` スキル (`.agents/skills/to-RDRA-model/SKILL.md`) を参照してください。
