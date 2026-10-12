@@ -7,7 +7,8 @@
       "relationshipMgmt.personRole",
       "relationshipMgmt.partyRole",
       "shared",
-      "shared :: entity"
+      "shared :: entity",
+      "supporting.databaseDef"
     })
 /** ,支援サブドメイン */
 package undecided.supporting;

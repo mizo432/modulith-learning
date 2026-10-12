@@ -1,0 +1,26 @@
+# データ一覧
+情報ID	情報名	説明	データ型	必須	関連ユースケース
+INF-01	データベース名	データベースの名前	String	必須	UC-01
+INF-02	データベース説明	データベースの説明	String	任意	UC-01
+INF-03	スキーマ名	スキーマの名前	String	必須	UC-02
+INF-04	スキーマカナ名	スキーマの説明（;まで）	String	任意	UC-02
+INF-05	スキーマ説明	スキーマの説明（;以降）	String	任意	UC-02
+INF-06	テーブル名	テーブルの名前	String	必須	UC-03,UC-04
+INF-07	テーブルカナ名	テーブルの説明（最初の;まで）	String	任意	UC-03
+INF-08	テーブルタイプ	テーブルの説明（1番目の;から2番目の;まで）	String	任意	UC-03
+INF-09	テーブル説明	テーブルの説明（2番目の;から最後まで）	String	任意	UC-03
+INF-10	View名	Viewの名前	String	必須	UC-03,UC-05
+INF-11	Viewカナ名	Viewの説明（最初の;まで）	String	任意	UC-03
+INF-12	Viewタイプ	Viewの説明（1番目の;から2番目の;まで）	String	任意	UC-03
+INF-13	View説明	Viewの説明（2番目の;から最後まで）	String	任意	UC-03
+INF-14	カラム名	カラムの名前	String	必須	UC-04,UC-05
+INF-15	データ型	カラムのデータ型	String	必須	UC-04,UC-05
+INF-16	NULL許否	NULL許容フラグ	Boolean	必須	UC-04
+INF-17	主キーフラグ	主キーフラグ	Boolean	必須	UC-04
+INF-18	デフォルト値	デフォルト値	String	任意	UC-04
+INF-19	カラムコメント	カラムコメント	String	任意	UC-04,UC-05
+INF-20	インデックス名	インデックス名	String	必須	UC-04,UC-05
+INF-21	インデックス種別	インデックス種別（UNIQUE/NONUNIQUE）	String	必須	UC-04,UC-05
+INF-22	構成カラム名	構成カラム名	String	必須	UC-04,UC-05
+INF-23	構成カラムの順序	構成カラムの順序	Integer	必須	UC-04,UC-05
+INF-24	カラムの順序	カラムの順序	Integer	必須	UC-05
