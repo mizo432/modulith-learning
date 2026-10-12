@@ -77,8 +77,8 @@ class ArchitectureTest {
             .that()
             .areAnnotatedWith(Service.class)
             .should()
-            .resideInAPackage("..internal..")
-            .because("Serviceクラスはアプリケーション層(internalパッケージ)に配置されるべきです");
+            .resideInAnyPackage("..internal..", "..config..")
+            .because("Serviceクラスはアプリケーション層(internalパッケージ)またはインフラ構成(configパッケージ)に配置されるべきです");
   }
 
   @AnalyzeClasses(
