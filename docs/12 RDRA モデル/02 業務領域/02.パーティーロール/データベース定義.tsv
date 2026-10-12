@@ -1,0 +1,3 @@
+番号	スキーマ	テーブル名	説明
+01	public	companies	法人情報
+02	public	address_use_history	住所利用履歴
