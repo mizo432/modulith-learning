@@ -160,11 +160,50 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 
 ---
 
-### 6. 付属テンプレートとチェックリスト (Resources)
+### 6. 値オブジェクト（Value Object）の作成規約
+
+値オブジェクトはドメイン層の核心要素であり、不変（immutable）で属性のみで定義される型です。
+以下の規約とテンプレートに従って作成してください。
+
+#### 6.1 値オブジェクトの基本原則
+
+- **インターフェース階層**:
+    - `ValueObject` → `SingleValue<T>` → `StringValue<VO>` → `StringCode<VO>`（文字列ベース）
+    - `ValueObject` → `Value<T>` → `DateTimeValue`（日付・時刻ベース）
+- **不変性**: 値オブジェクトは一度作成されると変更できません。`final` フィールドを使用します。
+- **値の等価性**: `@EqualsAndHashCode` (Lombok) を付与して、値の内容に基づいた等価比較を有効にします。
+- **JPA プロキシ対応**: `protected` または `public` の引数なしコンストラクタを定義します。
+- **ファクトリメソッド**:
+    - `of(...)`: バリデーション付きのインスタンス作成
+    - `empty()`: 空のインスタンス作成
+    - `current()`: 現在時刻のインスタンス作成（日付・時刻ベースの場合）
+- **JPA コンバーター**: `@Converter(autoApply = true)` を付与した内部クラスでデータベースとの変換を実装します。
+- **バリデーション**: ファクトリメソッド内で `IllegalArgumentException` をスローして入力を検証します。
+- **ユーティリティ使用**:
+    - 文字列操作には `Strings2.isEmpty()`, `Strings2.toString()` を使用
+    - 日付取得には `DateProvider.currentLocalDateTime()` を使用
+
+#### 6.2 値オブジェクトテンプレート
+
+- **文字列ベースのテンプレート**:
+    - [StringValueObjectTemplate.java](templates/StringValueObjectTemplate.java): `StringCode`
+      を実装する文字列型値オブジェクトの標準テンプレート（バリデーション付き）
+- **日付・時刻ベースのテンプレート**:
+    - [DateTimeValueObjectTemplate.java](templates/DateTimeValueObjectTemplate.java):
+      `DateTimeValue` を実装する日付・時刻型値オブジェクトの標準テンプレート
+
+---
+
+### 7. 付属テンプレートとチェックリスト (Resources)
 
 - **テストテンプレート**:
     - [UnitTestTemplate.java](templates/UnitTestTemplate.java): 単体テスト（Small）の標準テンプレート
     - [IntegrationTestTemplate.java](templates/IntegrationTestTemplate.java): 統合テスト（Medium）の標準テンプレート
+- **値オブジェクトテンプレート**:
+    - [StringValueObjectTemplate.java](templates/StringValueObjectTemplate.java):
+      文字列ベースの値オブジェクトテンプレート
+    - [DateTimeValueObjectTemplate.java](templates/DateTimeValueObjectTemplate.java):
+      日付・時刻ベースの値オブジェクトテンプレート
 - **チェックリスト**:
     - [test-quality-checklist.md](checklists/test-quality-checklist.md): テスト作成時の品質確認項目
     - [architecture-checklist.md](checklists/architecture-checklist.md): モジュール分割・層構成の確認項目
