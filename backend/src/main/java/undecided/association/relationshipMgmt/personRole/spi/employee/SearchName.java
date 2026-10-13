@@ -13,7 +13,7 @@ public class SearchName {
 
   /** 検索用名称(全角文字) */
   public static final String REGEX =
-      "^[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF00-\uFF9F]+$";
+      "^[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF01-\uFF5E]+$";
 
   public static final int MAX_LENGTH = 50;
   private String value;
