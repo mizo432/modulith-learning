@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.generic.accountMgmt.User;
 import undecided.generic.accountMgmt.UserQuery;
+import undecided.generic.accountMgmt.spi.User;
 
 /**
  * ユーザー情報の取得（Query）を担当するREST APIコントローラーです。

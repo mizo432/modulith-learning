@@ -1,6 +1,7 @@
 package undecided.generic.accountMgmt;
 
 import java.util.Optional;
+import undecided.generic.accountMgmt.spi.User;
 
 /** ユーザー検索用のクエリインターフェースです。 */
 public interface UserQuery {

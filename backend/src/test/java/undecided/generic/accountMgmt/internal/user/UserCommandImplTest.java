@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
-import undecided.generic.accountMgmt.User;
+import undecided.generic.accountMgmt.spi.User;
 import undecided.shared.exception.BusinessException;
 import undecided.supporting.snowflake.SnowflakeId;
 

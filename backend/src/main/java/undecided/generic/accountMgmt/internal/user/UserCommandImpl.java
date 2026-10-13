@@ -6,8 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
-import undecided.generic.accountMgmt.User;
 import undecided.generic.accountMgmt.UserCommand;
+import undecided.generic.accountMgmt.spi.User;
 import undecided.shared.exception.BusinessException;
 
 /** ユーザー操作の実装クラスです。 パスワード変更機能を提供します。 */
