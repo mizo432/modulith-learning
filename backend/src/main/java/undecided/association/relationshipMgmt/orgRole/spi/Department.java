@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import undecided.supporting.snowflake.spi.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Data

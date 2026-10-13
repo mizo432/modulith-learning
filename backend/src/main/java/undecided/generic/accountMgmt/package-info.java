@@ -1,5 +1,5 @@
-@ApplicationModule(id = "generic.accountMgmt", displayName = "アカウント管理")
+@NamedInterface(value = "accountMgmt")
 @Deprecated
 package undecided.generic.accountMgmt;
 
-import org.springframework.modulith.ApplicationModule;
+import org.springframework.modulith.NamedInterface;

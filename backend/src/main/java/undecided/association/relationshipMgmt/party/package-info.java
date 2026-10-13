@@ -1,11 +1,4 @@
-@ApplicationModule(
-    id = "relationshipMgmt.party",
-    displayName = "パーティー",
-    allowedDependencies = {
-      "relationshipMgmt.partyRole",
-      "relationshipMgmt.personRole",
-      "relationshipMgmt.orgRole"
-    })
+@NamedInterface(propagate = false)
 package undecided.association.relationshipMgmt.party;
 
-import org.springframework.modulith.ApplicationModule;
+import org.springframework.modulith.NamedInterface;

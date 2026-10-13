@@ -3,8 +3,8 @@ package undecided.generic.accountMgmt.internal.user;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.generic.accountMgmt.spi.User;
-import undecided.generic.accountMgmt.spi.UserQuery;
+import undecided.generic.accountMgmt.User;
+import undecided.generic.accountMgmt.UserQuery;
 
 /** ユーザー検索の実装クラスです。 */
 @RequiredArgsConstructor

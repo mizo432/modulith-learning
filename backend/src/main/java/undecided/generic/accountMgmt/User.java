@@ -1,4 +1,4 @@
-package undecided.generic.accountMgmt.spi;
+package undecided.generic.accountMgmt;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import undecided.supporting.snowflake.spi.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /** ユーザーアカウントを表すエンティティです。 初回ログイン時のパスワード変更状態を管理します。 */
 @Entity

@@ -1,15 +1,8 @@
 @ApplicationModule(
     type = Type.OPEN,
-    allowedDependencies = {
-      "generic.greeting",
-      "relationshipMgmt.party",
-      "relationshipMgmt.orgRole",
-      "relationshipMgmt.personRole",
-      "relationshipMgmt.partyRole",
-      "shared",
-      "shared :: entity",
-      "supporting.databaseDef"
-    })
+    allowedDependencies = {"generic", "relationshipMgmt", "shared", "shared :: entity"},
+    id = "supporting",
+    displayName = "支援サブドメイン")
 /** ,支援サブドメイン */
 package undecided.supporting;
 

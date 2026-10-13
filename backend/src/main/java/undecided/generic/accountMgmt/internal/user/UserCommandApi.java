@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.generic.accountMgmt.spi.ChangePasswordRequest;
-import undecided.generic.accountMgmt.spi.UserCommand;
+import undecided.generic.accountMgmt.ChangePasswordRequest;
+import undecided.generic.accountMgmt.UserCommand;
 
 /**
  * ユーザー情報の変更（Command）を担当するREST APIコントローラーです。

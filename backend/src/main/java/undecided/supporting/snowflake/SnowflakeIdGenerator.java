@@ -1,4 +1,4 @@
-package undecided.supporting.snowflake.spi;
+package undecided.supporting.snowflake;
 
 public interface SnowflakeIdGenerator {
 

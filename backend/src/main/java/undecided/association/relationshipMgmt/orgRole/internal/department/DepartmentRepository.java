@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import undecided.association.relationshipMgmt.orgRole.spi.Department;
 import undecided.association.relationshipMgmt.orgRole.spi.DepartmentCode;
-import undecided.supporting.snowflake.spi.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeId;
 
 public interface DepartmentRepository extends CrudRepository<Department, SnowflakeId> {
 

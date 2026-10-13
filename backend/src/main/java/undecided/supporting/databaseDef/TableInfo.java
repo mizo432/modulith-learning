@@ -1,4 +1,4 @@
-package undecided.supporting.databaseDef.spi;
+package undecided.supporting.databaseDef;
 
 /** テーブル情報を表すDTOです。 */
 public record TableInfo(

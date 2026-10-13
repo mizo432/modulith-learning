@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.supporting.databaseDef.spi.DatabaseInfo;
-import undecided.supporting.databaseDef.spi.SchemaInfo;
-import undecided.supporting.databaseDef.spi.TableDefinitionResponse;
-import undecided.supporting.databaseDef.spi.TablesAndViewsResponse;
-import undecided.supporting.databaseDef.spi.ViewDefinitionResponse;
+import undecided.supporting.databaseDef.DatabaseInfo;
+import undecided.supporting.databaseDef.SchemaInfo;
+import undecided.supporting.databaseDef.TableDefinitionResponse;
+import undecided.supporting.databaseDef.TablesAndViewsResponse;
+import undecided.supporting.databaseDef.ViewDefinitionResponse;
 
 /**
  * データベース定義に関するREST APIエンドポイントを提供するコントローラーです。

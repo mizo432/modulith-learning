@@ -14,15 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 import org.springframework.stereotype.Service;
-import undecided.supporting.databaseDef.spi.ColumnInfo;
-import undecided.supporting.databaseDef.spi.DatabaseInfo;
-import undecided.supporting.databaseDef.spi.IndexInfo;
-import undecided.supporting.databaseDef.spi.SchemaInfo;
-import undecided.supporting.databaseDef.spi.TableDefinitionResponse;
-import undecided.supporting.databaseDef.spi.TableInfo;
-import undecided.supporting.databaseDef.spi.TablesAndViewsResponse;
-import undecided.supporting.databaseDef.spi.ViewDefinitionResponse;
-import undecided.supporting.databaseDef.spi.ViewInfo;
+import undecided.supporting.databaseDef.ColumnInfo;
+import undecided.supporting.databaseDef.DatabaseInfo;
+import undecided.supporting.databaseDef.IndexInfo;
+import undecided.supporting.databaseDef.SchemaInfo;
+import undecided.supporting.databaseDef.TableDefinitionResponse;
+import undecided.supporting.databaseDef.TableInfo;
+import undecided.supporting.databaseDef.TablesAndViewsResponse;
+import undecided.supporting.databaseDef.ViewDefinitionResponse;
+import undecided.supporting.databaseDef.ViewInfo;
 
 /**
  * データベースメタデータを取得するサービスです。 JDBCのDatabaseMetaData APIを使用して、データベース・スキーマ・テーブル・Viewの情報を取得します。

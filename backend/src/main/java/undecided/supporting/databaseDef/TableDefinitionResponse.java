@@ -1,4 +1,4 @@
-package undecided.supporting.databaseDef.spi;
+package undecided.supporting.databaseDef;
 
 import java.util.List;
 

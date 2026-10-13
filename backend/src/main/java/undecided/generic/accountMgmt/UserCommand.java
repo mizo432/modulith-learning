@@ -1,4 +1,4 @@
-package undecided.generic.accountMgmt.spi;
+package undecided.generic.accountMgmt;
 
 /** ユーザー操作用のコマンドインターフェースです。 */
 public interface UserCommand {

@@ -1,4 +1,4 @@
-package undecided.generic.accountMgmt.spi;
+package undecided.generic.accountMgmt;
 
 import java.util.Optional;
 

@@ -1,8 +1,8 @@
 package undecided.supporting.snowflake.internal;
 
 import undecided.shared.dateProvider.DateProvider;
-import undecided.supporting.snowflake.spi.SnowflakeId;
-import undecided.supporting.snowflake.spi.SnowflakeIdGenerator;
+import undecided.supporting.snowflake.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 public final class SnowflakeIdGeneratorImpl implements SnowflakeIdGenerator {
 

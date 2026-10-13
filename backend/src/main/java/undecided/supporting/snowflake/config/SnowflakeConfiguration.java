@@ -2,9 +2,9 @@ package undecided.supporting.snowflake.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import undecided.supporting.snowflake.SnowflakeIdGenerator;
 import undecided.supporting.snowflake.internal.SnowflakeIdGeneratorImpl;
 import undecided.supporting.snowflake.internal.SnowflakeNodeLeaseManager;
-import undecided.supporting.snowflake.spi.SnowflakeIdGenerator;
 
 /**
  * SnowflakeConfigurationクラスは、Snowflake IDの生成を設定するためのSpring構成クラスです。

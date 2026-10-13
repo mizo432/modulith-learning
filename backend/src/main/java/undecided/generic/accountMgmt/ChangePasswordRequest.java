@@ -1,4 +1,4 @@
-package undecided.generic.accountMgmt.spi;
+package undecided.generic.accountMgmt;
 
 /** パスワード変更リクエストを表す値オブジェクトです。 */
 public record ChangePasswordRequest(

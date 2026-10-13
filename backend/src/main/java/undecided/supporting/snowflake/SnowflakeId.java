@@ -1,4 +1,4 @@
-package undecided.supporting.snowflake.spi;
+package undecided.supporting.snowflake;
 
 import static undecided.shared.io.Base62s.DECODE_FROM_BASE62;
 import static undecided.shared.io.Base62s.ENCODE_TO_BASE62;

@@ -1,4 +1,4 @@
-@ApplicationModule(id = "generic.greeting")
+@NamedInterface(propagate = false)
 package undecided.generic.greeting;
 
-import org.springframework.modulith.ApplicationModule;
+import org.springframework.modulith.NamedInterface;
