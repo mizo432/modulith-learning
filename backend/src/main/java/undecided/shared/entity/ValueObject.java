@@ -2,7 +2,7 @@ package undecided.shared.entity;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
-import lombok.NonNull;
+import org.jspecify.annotations.NonNull;
 import undecided.shared.annotation.VisibleForTesting;
 import undecided.shared.primitiveOld.Objects2;
 

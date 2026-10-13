@@ -37,6 +37,13 @@ public class Strings2 {
     return str;
   }
 
+  public static boolean isEmpty(String value) {
+    if (value == null || value.isEmpty()) {
+      return true;
+    }
+    return false;
+  }
+
   public enum CaseFormat {
     UPPER_CAMEL,
     LOWER_CAMEL,

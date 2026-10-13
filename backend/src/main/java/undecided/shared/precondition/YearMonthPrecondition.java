@@ -3,7 +3,7 @@ package undecided.shared.precondition;
 import com.google.common.collect.Range;
 import java.time.YearMonth;
 import java.util.function.Supplier;
-import lombok.NonNull;
+import org.jspecify.annotations.NonNull;
 
 public class YearMonthPrecondition {
 

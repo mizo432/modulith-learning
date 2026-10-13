@@ -3,7 +3,7 @@ package undecided.shared.primitiveOld;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import lombok.NonNull;
+import org.jspecify.annotations.NonNull;
 
 public class Objects2 {
 

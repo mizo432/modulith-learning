@@ -3,7 +3,7 @@ package undecided.shared.entity;
 import static undecided.shared.primitiveOld.Objects2.isNull;
 
 import java.util.function.Supplier;
-import lombok.NonNull;
+import org.jspecify.annotations.NonNull;
 import undecided.shared.precondition.LongPrecondition;
 
 /**

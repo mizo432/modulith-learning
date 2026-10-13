@@ -2,8 +2,8 @@ package undecided.shared.primitiveOld;
 
 import java.util.Collection;
 import java.util.Iterator;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 import undecided.shared.annotation.CanIgnoreReturnValue;
 
 @UtilityClass

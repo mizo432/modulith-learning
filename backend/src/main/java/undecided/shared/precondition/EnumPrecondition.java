@@ -4,8 +4,8 @@ import static undecided.shared.primitiveOld.Objects2.isNull;
 
 import java.util.EnumSet;
 import java.util.function.Supplier;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 
 /**
  * 列挙型に関する事前条件を検証するためのユーティリティクラス。

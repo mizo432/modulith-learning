@@ -5,7 +5,7 @@ import static undecided.shared.primitiveOld.Objects2.isNull;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
-import lombok.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /** SetPreconditionsクラスは、セットに対する前提条件をチェックするメソッドを提供します。 */
 public class SetPrecondition {

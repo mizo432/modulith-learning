@@ -4,8 +4,8 @@ import static undecided.shared.precondition.ArrayPrecondition.checkAllElementNot
 import static undecided.shared.precondition.ArrayPrecondition.checkLengthAtLeast;
 
 import java.util.function.Supplier;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 import undecided.shared.precondition.IndexedRuntimeException;
 
 /** 列挙型およびそれに関連する機能を扱うためのユーティリティクラスです。 */

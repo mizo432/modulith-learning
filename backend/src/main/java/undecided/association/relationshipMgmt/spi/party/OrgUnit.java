@@ -1,3 +1,3 @@
 package undecided.association.relationshipMgmt.spi.party;
 
-public class Person extends Party {}
+public class OrgUnit extends Party {}
