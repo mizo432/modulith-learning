@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -17,15 +19,24 @@ public class SimpleEmployee {
   @Id private SnowflakeId employeeId;
 
   @Embedded
-  @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+  @AttributeOverrides(
+      @AttributeOverride(
+          name = "value",
+          column = @Column(name = "employee_no", nullable = false, length = 10)))
   private EmployeeNo employeeNo;
 
   /** 検索用名称 */
   @Embedded
-  @Column(nullable = false, columnDefinition = "VARCHAR(50)")
+  @AttributeOverrides(
+      @AttributeOverride(
+          name = "value",
+          column = @Column(name = "search_name", nullable = false, length = 50)))
   private SearchName searchName;
 
   @Embedded
-  @Column(nullable = false, columnDefinition = "VARCHAR(255)")
+  @AttributeOverrides(
+      @AttributeOverride(
+          name = "value",
+          column = @Column(name = "full_name", nullable = false, length = 255)))
   private FullName fullName;
 }
