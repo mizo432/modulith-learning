@@ -79,6 +79,7 @@ public class FloatPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min,
       @NonNull Float max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -105,6 +106,7 @@ public class FloatPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min,
       @NonNull Float max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -131,6 +133,7 @@ public class FloatPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min,
       @NonNull Float max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -157,6 +160,7 @@ public class FloatPrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min,
       @NonNull Float max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -182,6 +186,7 @@ public class FloatPrecondition {
       Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -205,6 +210,7 @@ public class FloatPrecondition {
       Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -228,6 +234,7 @@ public class FloatPrecondition {
       Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -251,6 +258,7 @@ public class FloatPrecondition {
       Float ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Float min) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
