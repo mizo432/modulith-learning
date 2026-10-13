@@ -248,4 +248,54 @@ public class StringPrecondition {
     }
     return value;
   }
+
+  /**
+   * 指定された文字列の長さが最大値以下であることを検証します。
+   *
+   * <p>文字列の長さが {@code maxLength} を超える場合、指定された例外をスローします。
+   *
+   * @param value 検証する文字列。{@code null} の場合は検証されません。
+   * @param maxLength 許容される最大の文字列の長さ。
+   * @param exceptionSupplier 検証に失敗した場合に例外を生成するサプライヤ。{@code null} であってはなりません。
+   * @param <E> カスタム例外の型。
+   * @throws NullPointerException {@code exceptionSupplier} が {@code null} の場合。
+   * @throws E 文字列の長さが {@code maxLength} を超える場合。
+   */
+  public static <E extends RuntimeException> void checkMaxLength(
+      @NonNull String value, int maxLength, @NonNull Supplier<E> exceptionSupplier) {
+    if (isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
+    if (value == null) {
+      return;
+    }
+    if (Strings2.length(value) > maxLength) {
+      throw exceptionSupplier.get();
+    }
+  }
+
+  /**
+   * 指定された文字列が正規表現にマッチすることを検証します。
+   *
+   * <p>文字列が {@code regex} にマッチしない場合、指定された例外をスローします。
+   *
+   * @param value 検証する文字列。{@code null} の場合は検証されません。
+   * @param regex マッチさせる正規表現。
+   * @param exceptionSupplier 検証に失敗した場合に例外を生成するサプライヤ。{@code null} であってはなりません。
+   * @param <E> カスタム例外の型。
+   * @throws NullPointerException {@code exceptionSupplier} が {@code null} の場合。
+   * @throws E 文字列が正規表現にマッチしない場合。
+   */
+  public static <E extends RuntimeException> void checkRegex(
+      String value, String regex, @NonNull Supplier<E> exceptionSupplier) {
+    if (isNull(exceptionSupplier)) {
+      throw new NullPointerException("exceptionSupplier must not be null.");
+    }
+    if (value == null) {
+      return;
+    }
+    if (!value.matches(regex)) {
+      throw exceptionSupplier.get();
+    }
+  }
 }
