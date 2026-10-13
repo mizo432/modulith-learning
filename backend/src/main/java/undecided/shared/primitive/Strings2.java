@@ -33,6 +33,10 @@ public class Strings2 {
   public static final Function<Collection<?>, String> COLLECTION_TO_COMMA_DELIMITED_STRING =
       coll -> StringUtils.collectionToDelimitedString(coll, ",");
 
+  public static String toString(String str) {
+    return str;
+  }
+
   public enum CaseFormat {
     UPPER_CAMEL,
     LOWER_CAMEL,
