@@ -1,11 +1,14 @@
 package undecided.authorization.business.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.authorization.business.service.AuthenticationService;
+import undecided.authorization.domain.model.tenant.Tenant;
+import undecided.authorization.domain.model.tenant.TenantRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
 
@@ -20,12 +23,30 @@ import undecided.authorization.domain.model.user.UserRepository;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final UserRepository userRepository;
+  private final TenantRepository tenantRepository;
   private final PasswordEncoder passwordEncoder;
 
   @Override
   public User authenticate(String username, String password) {
     return userRepository
         .findByUsername(username)
+        .filter(user -> passwordEncoder.matches(password, user.getPassword()) && user.isEnabled())
+        .map(this::updateLoginInfo)
+        .orElse(null);
+  }
+
+  @Override
+  public User authenticateWithTenant(String tenantCode, String username, String password) {
+    // テナントを検索
+    Optional<Tenant> tenantOpt = tenantRepository.findByTenantCode(tenantCode);
+    if (tenantOpt.isEmpty() || !tenantOpt.get().isEnabled()) {
+      return null;
+    }
+    Tenant tenant = tenantOpt.get();
+
+    // テナント内でユーザーを検索して認証
+    return userRepository
+        .findByTenantAndUsername(tenant, username)
         .filter(user -> passwordEncoder.matches(password, user.getPassword()) && user.isEnabled())
         .map(this::updateLoginInfo)
         .orElse(null);

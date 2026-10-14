@@ -18,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import undecided.authorization.business.service.impl.AuthenticationServiceImpl;
+import undecided.authorization.domain.model.tenant.Tenant;
+import undecided.authorization.domain.model.tenant.TenantRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
 
@@ -28,13 +30,26 @@ class AuthenticationServiceImplTest {
 
   @Mock private UserRepository userRepository;
 
+  @Mock private TenantRepository tenantRepository;
+
   @Mock private PasswordEncoder passwordEncoder;
 
   private AuthenticationServiceImpl authenticationService;
 
+  private Tenant testTenant;
+
   @BeforeEach
   void setUp() {
-    authenticationService = new AuthenticationServiceImpl(userRepository, passwordEncoder);
+    authenticationService =
+        new AuthenticationServiceImpl(userRepository, tenantRepository, passwordEncoder);
+    testTenant =
+        Tenant.builder()
+            .id(1L)
+            .tenantCode("test")
+            .name("Test Tenant")
+            .enabled(true)
+            .createdAt(LocalDateTime.now())
+            .build();
   }
 
   @Nested
@@ -53,6 +68,7 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
+              .tenant(testTenant)
               .build();
 
       String newPassword = "newPassword123";
@@ -82,6 +98,7 @@ class AuthenticationServiceImplTest {
               .firstLogin(false)
               .enabled(true)
               .createdAt(LocalDateTime.now())
+              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -119,6 +136,7 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
+              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -142,6 +160,7 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
+              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -168,6 +187,7 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
+              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -191,6 +211,7 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
+              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
