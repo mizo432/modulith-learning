@@ -10,6 +10,13 @@ spring:
   threads:
     virtual:
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082
+          jwk-set-url: http://localhost:8082/oauth2/jwks
+          jwt-set-cache-enabled: true
   cloud:
     gateway:
       server:

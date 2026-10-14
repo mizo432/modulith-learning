@@ -248,7 +248,57 @@ AI（Claude Code など）を使ってテストを生成する際は、以下の
 
 ---
 
-### 7. 付属テンプレートとチェックリスト (Resources)
+### 7. バッチ処理開発ガイド (Batch Processing Development)
+
+大量のレコードを扱うバッチ処理（Spring Batch）を開発する際は、以下の規約に従ってください。
+
+#### 7.1 バッチ構成の基本パターン
+
+バッチはモジュールの `internal/batch` 配下に配置し、役割ごとのサブパッケージで分離します。
+
+| パッケージ  | 役割                                      |
+|:------------|:------------------------------------------|
+| `config`    | Job / Step の定義 (`*ImportBatchConfig`)  |
+| `reader`    | 入力の読み込み（CSV は Super CSV を利用） |
+| `processor` | 入力 DTO からドメインモデルへの変換・検証 |
+| `writer`    | 永続化                                    |
+| `dto`       | 入力レコードの DTO                        |
+| `launcher`  | Job の起動 (`*ImportJobLauncher`)         |
+
+#### 7.2 大量レコード処理のベストプラクティス
+
+**チャンクサイズの設定**
+
+- デフォルトのチャンクサイズは `50` とし、メモリ使用量とトランザクションのバランスを取ります。
+- 大量レコードの場合は、チャンクサイズを `100` 〜 `500` の範囲で調整します。
+- チャンクサイズは `*ImportBatchConfig` で `CHUNK_SIZE` 定数として定義します。
+
+**エラー処理とフォールトトレランス**
+
+- Step は必ず `.faultTolerant()` を設定します。
+- `.skip(Exception.class)` と `.skipLimit(N)` でスキップする例外と上限を定義します。
+- `.retry(Exception.class)` と `.retryLimit(N)` でリトライを設定します。
+
+**メモリ効率の最適化**
+
+- Reader はストリーミング方式で実装し、全データをメモリに読み込まないようにします。
+- Writer は `saveAll()` などの一括保存メソッドを使用します。
+- Processor では不要な中間データを保持しません。
+
+**データ検証と整合性**
+
+- Processor で入力データの必須項目を検証し、不正なデータはログに記録してスキップします。
+- 既存データとの整合性を確認し、重複登録を防ぎます。
+
+#### 7.3 バッチ処理のテスト戦略
+
+- **単体テスト（Small）**: Processor の変換ロジック、境界値、異常系を網羅的にテストします。
+- **統合テスト（Medium）**: 実際の CSV ファイルを使用して、Reader → Processor → Writer のフルフローを検証します。
+- **負荷テスト（Large）**: 大量レコードでのチャンクサイズやメモリ使用量の影響を確認します。
+
+---
+
+### 8. 付属テンプレートとチェックリスト (Resources)
 
 - **テストテンプレート**:
     - [UnitTestTemplate.java](templates/UnitTestTemplate.java): 単体テスト（Small）の標準テンプレート
@@ -258,6 +308,17 @@ AI（Claude Code など）を使ってテストを生成する際は、以下の
       文字列ベースの値オブジェクトテンプレート
     - [DateTimeValueObjectTemplate.java](templates/DateTimeValueObjectTemplate.java):
       日付・時刻ベースの値オブジェクトテンプレート
+- **バッチ処理テンプレート**:
+    - [BatchConfigTemplate.java](templates/BatchConfigTemplate.java):
+      バッチ Job / Step の設定テンプレート
+    - [BatchItemProcessorTemplate.java](templates/BatchItemProcessorTemplate.java):
+      CSV DTO からエンティティへの変換・検証テンプレート
+    - [BatchItemWriterTemplate.java](templates/BatchItemWriterTemplate.java):
+      エンティティの一括永続化テンプレート
+    - [BatchCsvItemReaderTemplate.java](templates/BatchCsvItemReaderTemplate.java):
+      Super CSV によるストリーミング読み込みテンプレート
+    - [BatchCsvDtoTemplate.java](templates/BatchCsvDtoTemplate.java):
+      CSV 入力レコードの DTO テンプレート
 - **チェックリスト**:
     - [test-quality-checklist.md](checklists/test-quality-checklist.md): テスト作成時の品質確認項目
     - [architecture-checklist.md](checklists/architecture-checklist.md): モジュール分割・層構成の確認項目
