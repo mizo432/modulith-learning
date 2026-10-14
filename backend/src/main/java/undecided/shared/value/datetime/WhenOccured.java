@@ -1,4 +1,4 @@
-package undecided.shared.value;
+package undecided.shared.value.datetime;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import undecided.shared.dateProvider.DateProvider;
+import undecided.shared.value.DateTimeValue;
 
 /**
  * 何らかのイベントが発生した日時を表す値オブジェクトです。

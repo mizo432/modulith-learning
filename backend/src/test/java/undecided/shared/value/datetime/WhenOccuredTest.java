@@ -1,4 +1,4 @@
-package undecided.shared.value;
+package undecided.shared.value.datetime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

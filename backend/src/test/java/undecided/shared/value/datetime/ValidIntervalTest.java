@@ -1,4 +1,4 @@
-package undecided.association.relationshipMgmt.spi.party.org;
+package undecided.shared.value.datetime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,8 +22,8 @@ class ValidIntervalTest {
       ValidInterval interval = ValidInterval.of(start, end);
 
       assertThat(interval).isNotNull();
-      assertThat(interval.startDate()).isEqualTo(start);
-      assertThat(interval.endDate()).isEqualTo(end);
+      assertThat(interval.validFrom()).isEqualTo(start);
+      assertThat(interval.validTo()).isEqualTo(end);
     }
 
     @Test
@@ -33,8 +33,8 @@ class ValidIntervalTest {
       ValidInterval interval = ValidInterval.of(start);
 
       assertThat(interval).isNotNull();
-      assertThat(interval.startDate()).isEqualTo(start);
-      assertThat(interval.endDate()).isNull();
+      assertThat(interval.validFrom()).isEqualTo(start);
+      assertThat(interval.validTo()).isNull();
     }
 
     @Test
@@ -44,8 +44,8 @@ class ValidIntervalTest {
       ValidInterval interval = ValidInterval.of(date, date);
 
       assertThat(interval).isNotNull();
-      assertThat(interval.startDate()).isEqualTo(date);
-      assertThat(interval.endDate()).isEqualTo(date);
+      assertThat(interval.validFrom()).isEqualTo(date);
+      assertThat(interval.validTo()).isEqualTo(date);
     }
 
     @Test
@@ -53,7 +53,7 @@ class ValidIntervalTest {
     void shouldThrowExceptionWhenStartDateIsNull() {
       assertThatThrownBy(() -> ValidInterval.of(null, LocalDate.of(2024, 12, 31)))
           .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("startDate must not be null");
+          .hasMessage("validFrom must not be null");
     }
 
     @Test
@@ -64,7 +64,7 @@ class ValidIntervalTest {
 
       assertThatThrownBy(() -> ValidInterval.of(start, end))
           .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("endDate must not be before startDate");
+          .hasMessage("validTo must not be before validFrom");
     }
 
     @Test
@@ -72,7 +72,7 @@ class ValidIntervalTest {
     void shouldThrowExceptionWhenStartDateIsNullSingleArg() {
       assertThatThrownBy(() -> ValidInterval.of((LocalDate) null))
           .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("startDate must not be null");
+          .hasMessage("validFrom must not be null");
     }
   }
 
@@ -86,8 +86,8 @@ class ValidIntervalTest {
       ValidInterval interval = ValidInterval.empty();
 
       assertThat(interval).isNotNull();
-      assertThat(interval.startDate()).isNull();
-      assertThat(interval.endDate()).isNull();
+      assertThat(interval.validFrom()).isNull();
+      assertThat(interval.validTo()).isNull();
     }
   }
 
@@ -101,8 +101,8 @@ class ValidIntervalTest {
       ValidInterval interval = new ValidInterval();
 
       assertThat(interval).isNotNull();
-      assertThat(interval.startDate()).isNull();
-      assertThat(interval.endDate()).isNull();
+      assertThat(interval.validFrom()).isNull();
+      assertThat(interval.validTo()).isNull();
     }
   }
 
@@ -317,8 +317,8 @@ class ValidIntervalTest {
         ValidInterval result = converter.convertToEntityAttribute("2024-01-01 ~ 2024-12-31");
 
         assertThat(result).isNotNull();
-        assertThat(result.startDate()).isEqualTo(LocalDate.of(2024, 1, 1));
-        assertThat(result.endDate()).isEqualTo(LocalDate.of(2024, 12, 31));
+        assertThat(result.validFrom()).isEqualTo(LocalDate.of(2024, 1, 1));
+        assertThat(result.validTo()).isEqualTo(LocalDate.of(2024, 12, 31));
       }
 
       @Test
@@ -345,8 +345,8 @@ class ValidIntervalTest {
         ValidInterval result = converter.convertToEntityAttribute("2024-01-01 ~ ");
 
         assertThat(result).isNotNull();
-        assertThat(result.startDate()).isEqualTo(LocalDate.of(2024, 1, 1));
-        assertThat(result.endDate()).isNull();
+        assertThat(result.validFrom()).isEqualTo(LocalDate.of(2024, 1, 1));
+        assertThat(result.validTo()).isNull();
       }
     }
   }

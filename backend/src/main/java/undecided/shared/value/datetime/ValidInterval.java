@@ -1,4 +1,4 @@
-package undecided.association.relationshipMgmt.spi.party.org;
+package undecided.shared.value.datetime;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
@@ -11,7 +11,8 @@ import org.jspecify.annotations.Nullable;
  *
  * <p>このクラスは、組織の有効期間（開始日から終了日までの範囲）を管理します。
  *
- * <p>有効期間は開始日（startDate）と終了日（endDate）で構成され、終了日は開始日より後である必要があります。 終了日がnullの場合は、現在も有効であることを表します。
+ * <p>有効期間は有効開始日（validFrom）と有効終了日（validTo）で構成され、有効終了日は有効開始日より後である必要があります。
+ * 有効終了日がnullの場合は、現在も有効であることを表します。
  *
  * <p>用途:
  *
@@ -20,47 +21,47 @@ import org.jspecify.annotations.Nullable;
 @EqualsAndHashCode
 public class ValidInterval {
 
-  private final LocalDate startDate;
-  private final LocalDate endDate;
+  private final LocalDate validFrom;
+  private final LocalDate validTo;
 
   /** null の {@code LocalDate} を持つインスタンスを作成します。 */
   public ValidInterval() {
-    startDate = null;
-    endDate = null;
+    validFrom = null;
+    validTo = null;
   }
 
-  private ValidInterval(LocalDate startDate, @Nullable LocalDate endDate) {
-    this.startDate = startDate;
-    this.endDate = endDate;
+  private ValidInterval(LocalDate validFrom, @Nullable LocalDate validTo) {
+    this.validFrom = validFrom;
+    this.validTo = validTo;
   }
 
   /**
-   * 開始日と終了日から有効期間を作成します。
+   * 有効開始日と有効終了日から有効期間を作成します。
    *
-   * @param startDate 開始日。{@code null} は許容されません。
-   * @param endDate 終了日。{@code null} の場合は現在も有効であることを表します。開始日より前であってはなりません。
+   * @param validFrom 有効開始日。{@code null} は許容されません。
+   * @param validTo 有効終了日。{@code null} の場合は現在も有効であることを表します。有効開始日より前であってはなりません。
    * @return 有効期間の値オブジェクト
-   * @throws IllegalArgumentException 開始日が {@code null} の場合、または終了日が開始日より前の場合
+   * @throws IllegalArgumentException 有効開始日が {@code null} の場合、または有効終了日が有効開始日より前の場合
    */
-  public static ValidInterval of(LocalDate startDate, @Nullable LocalDate endDate) {
-    if (startDate == null) {
-      throw new IllegalArgumentException("startDate must not be null");
+  public static ValidInterval of(LocalDate validFrom, @Nullable LocalDate validTo) {
+    if (validFrom == null) {
+      throw new IllegalArgumentException("validFrom must not be null");
     }
-    if (endDate != null && endDate.isBefore(startDate)) {
-      throw new IllegalArgumentException("endDate must not be before startDate");
+    if (validTo != null && validTo.isBefore(validFrom)) {
+      throw new IllegalArgumentException("validTo must not be before validFrom");
     }
-    return new ValidInterval(startDate, endDate);
+    return new ValidInterval(validFrom, validTo);
   }
 
   /**
-   * 開始日のみから有効期間を作成します（終了日なし）。
+   * 有効開始日のみから有効期間を作成します（有効終了日なし）。
    *
-   * @param startDate 開始日。{@code null} は許容されません。
-   * @return 終了日が {@code null} の有効期間の値オブジェクト
-   * @throws IllegalArgumentException 開始日が {@code null} の場合
+   * @param validFrom 有効開始日。{@code null} は許容されません。
+   * @return 有効終了日が {@code null} の有効期間の値オブジェクト
+   * @throws IllegalArgumentException 有効開始日が {@code null} の場合
    */
-  public static ValidInterval of(LocalDate startDate) {
-    return of(startDate, null);
+  public static ValidInterval of(LocalDate validFrom) {
+    return of(validFrom, null);
   }
 
   /**
@@ -73,31 +74,31 @@ public class ValidInterval {
   }
 
   /**
-   * 開始日を返します。
+   * 有効開始日を返します。
    *
-   * @return 開始日。{@code null} の可能性があります。
+   * @return 有効開始日。{@code null} の可能性があります。
    */
-  public LocalDate startDate() {
-    return startDate;
+  public LocalDate validFrom() {
+    return validFrom;
   }
 
   /**
-   * 終了日を返します。
+   * 有効終了日を返します。
    *
-   * @return 終了日。{@code null} の場合は現在も有効であることを表します。
+   * @return 有効終了日。{@code null} の場合は現在も有効であることを表します。
    */
   @Nullable
-  public LocalDate endDate() {
-    return endDate;
+  public LocalDate validTo() {
+    return validTo;
   }
 
   /**
    * 有効期間が空かどうかを判定します。
    *
-   * @return 開始日が {@code null} の場合は {@code true} を返し、そうでない場合は {@code false} を返します。
+   * @return 有効開始日が {@code null} の場合は {@code true} を返し、そうでない場合は {@code false} を返します。
    */
   public boolean isEmpty() {
-    return startDate == null;
+    return validFrom == null;
   }
 
   /**
@@ -108,13 +109,13 @@ public class ValidInterval {
    *     false} を返します。
    */
   public boolean contains(@Nullable LocalDate date) {
-    if (date == null || startDate == null) {
+    if (date == null || validFrom == null) {
       return false;
     }
-    if (date.isBefore(startDate)) {
+    if (date.isBefore(validFrom)) {
       return false;
     }
-    if (endDate != null && date.isAfter(endDate)) {
+    if (validTo != null && date.isAfter(validTo)) {
       return false;
     }
     return true;
@@ -137,20 +138,20 @@ public class ValidInterval {
    */
   @Override
   public String toString() {
-    if (startDate == null) {
+    if (validFrom == null) {
       return null;
     }
-    if (endDate == null) {
-      return startDate.toString() + " ~ ";
+    if (validTo == null) {
+      return validFrom.toString() + " ~ ";
     }
-    return startDate.toString() + " ~ " + endDate.toString();
+    return validFrom.toString() + " ~ " + validTo.toString();
   }
 
   /** ValidIntervalとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
   @Converter(autoApply = true)
   public static class ValidIntervalConverter implements AttributeConverter<ValidInterval, String> {
 
-    /** 開始日と終了日の区切り文字。 */
+    /** 有効開始日と有効終了日の区切り文字。 */
     private static final String SEPARATOR = " ~ ";
 
     /**
@@ -164,10 +165,10 @@ public class ValidInterval {
       if (attribute == null || attribute.isEmpty()) {
         return null;
       }
-      if (attribute.endDate() == null) {
-        return attribute.startDate().toString() + SEPARATOR;
+      if (attribute.validTo() == null) {
+        return attribute.validFrom().toString() + SEPARATOR;
       }
-      return attribute.startDate().toString() + SEPARATOR + attribute.endDate().toString();
+      return attribute.validFrom().toString() + SEPARATOR + attribute.validTo().toString();
     }
 
     /**

@@ -2,6 +2,7 @@ package undecided.association.relationshipMgmt.spi.party.org;
 
 import lombok.Getter;
 import undecided.association.relationshipMgmt.spi.party.Party;
+import undecided.shared.value.datetime.ValidInterval;
 
 /**
  * 組織（法人、団体など）を表すエンティティクラス。
