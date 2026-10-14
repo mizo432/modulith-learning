@@ -84,9 +84,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
   boolean existsByTenantAndEmail(Tenant tenant, String email);
 
   /**
-   * テナントIDでユーザーを検索します。
+   * テナントIDとユーザー名の両方でユーザーを検索します。
    *
    * @param tenantId テナントID
+   * @param username ユーザー名
    * @return ユーザーのOptional
    */
   @Query("SELECT u FROM User u WHERE u.tenant.id = :tenantId AND u.username = :username")

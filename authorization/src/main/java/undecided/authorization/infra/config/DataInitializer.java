@@ -1,6 +1,7 @@
 package undecided.authorization.infra.config;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +35,14 @@ public class DataInitializer implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-    // 既存のデータがある場合は初期化をスキップ
-    if (tenantRepository.count() > 0) {
+    // 既存のユーザーがある場合は初期化をスキップ
+    if (userRepository.count() > 0) {
       return;
     }
 
     System.out.println("Initializing data...");
 
-    // テナントの作成
+    // テナントの作成（Flywayによってdefaultテナントが既に存在する場合はpartnerのみ作成）
     List<Tenant> tenants = createTenants();
 
     // 権限の作成
@@ -57,20 +58,19 @@ public class DataInitializer implements CommandLineRunner {
   }
 
   private List<Tenant> createTenants() {
-    List<Tenant> tenants =
-        Arrays.asList(
-            Tenant.builder()
-                .tenantCode("default")
-                .name("デフォルトテナント")
-                .enabled(true)
-                .createdAt(LocalDateTime.now())
-                .build(),
-            Tenant.builder()
-                .tenantCode("partner")
-                .name("パートナーテナント")
-                .enabled(true)
-                .createdAt(LocalDateTime.now())
-                .build());
+    // Flywayによってdefaultテナントが既に存在する場合は、partnerのみ作成
+    List<Tenant> tenants = new ArrayList<>();
+
+    if (tenantRepository.findByTenantCode("partner").isEmpty()) {
+      Tenant partnerTenant =
+          Tenant.builder()
+              .tenantCode("partner")
+              .name("パートナーテナント")
+              .enabled(true)
+              .createdAt(LocalDateTime.now())
+              .build();
+      tenants.add(partnerTenant);
+    }
 
     return tenantRepository.saveAll(tenants);
   }
@@ -103,11 +103,20 @@ public class DataInitializer implements CommandLineRunner {
   }
 
   private void createUsers(List<Role> roles, List<Tenant> tenants) {
-    Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
-    Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow();
+    // 引数からROLE_ADMINとROLE_USERを取得
+    Role adminRole =
+        roles.stream().filter(r -> "ROLE_ADMIN".equals(r.getName())).findFirst().orElseThrow();
+    Role userRole =
+        roles.stream().filter(r -> "ROLE_USER".equals(r.getName())).findFirst().orElseThrow();
 
+    // defaultテナントはFlywayで既に存在するため、DBから取得
     Tenant defaultTenant = tenantRepository.findByTenantCode("default").orElseThrow();
-    Tenant partnerTenant = tenantRepository.findByTenantCode("partner").orElseThrow();
+    // partnerテナントは引数から取得（存在しない場合はDBから取得）
+    Tenant partnerTenant =
+        tenants.stream()
+            .filter(t -> "partner".equals(t.getTenantCode()))
+            .findFirst()
+            .orElse(tenantRepository.findByTenantCode("partner").orElseThrow());
 
     // 管理者ユーザー（社員）を作成 - 初回ログイン時にパスワード設定を強制
     User adminUser =

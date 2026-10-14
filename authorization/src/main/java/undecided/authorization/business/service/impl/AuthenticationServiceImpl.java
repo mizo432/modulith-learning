@@ -31,6 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return userRepository
         .findByUsername(username)
         .filter(user -> passwordEncoder.matches(password, user.getPassword()) && user.isEnabled())
+        .filter(user -> user.getTenant() != null && user.getTenant().isEnabled())
         .map(this::updateLoginInfo)
         .orElse(null);
   }

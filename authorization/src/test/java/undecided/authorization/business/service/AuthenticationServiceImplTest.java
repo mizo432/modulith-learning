@@ -223,4 +223,89 @@ class AuthenticationServiceImplTest {
       assertThat(user.isFirstLogin()).isFalse();
     }
   }
+
+  @Nested
+  @DisplayName("authenticateメソッドのテスト")
+  class AuthenticateTest {
+
+    @Test
+    @DisplayName("有効なテナントのユーザーは認証に成功すること")
+    void shouldAuthenticateUserWithEnabledTenant() {
+      User user =
+          User.builder()
+              .id(1L)
+              .username("admin")
+              .password("$2a$10$hashed")
+              .email("admin@example.com")
+              .firstLogin(false)
+              .enabled(true)
+              .createdAt(LocalDateTime.now())
+              .tenant(testTenant)
+              .build();
+
+      when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+      when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
+      when(userRepository.save(any(User.class))).thenReturn(user);
+
+      User result = authenticationService.authenticate("admin", "password");
+
+      assertThat(result).isNotNull();
+      assertThat(result.getUsername()).isEqualTo("admin");
+    }
+
+    @Test
+    @DisplayName("無効なテナントのユーザーは認証に失敗すること")
+    void shouldFailAuthenticateUserWithDisabledTenant() {
+      Tenant disabledTenant =
+          Tenant.builder()
+              .id(2L)
+              .tenantCode("disabled")
+              .name("Disabled Tenant")
+              .enabled(false)
+              .createdAt(LocalDateTime.now())
+              .build();
+
+      User user =
+          User.builder()
+              .id(1L)
+              .username("admin")
+              .password("$2a$10$hashed")
+              .email("admin@example.com")
+              .firstLogin(false)
+              .enabled(true)
+              .createdAt(LocalDateTime.now())
+              .tenant(disabledTenant)
+              .build();
+
+      when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+      when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
+
+      User result = authenticationService.authenticate("admin", "password");
+
+      assertThat(result).isNull();
+    }
+
+    @Test
+    @DisplayName("テナントがnullのユーザーは認証に失敗すること")
+    void shouldFailAuthenticateUserWithNullTenant() {
+      User user =
+          User.builder()
+              .id(1L)
+              .username("admin")
+              .password("$2a$10$hashed")
+              .email("admin@example.com")
+              .firstLogin(false)
+              .enabled(true)
+              .createdAt(LocalDateTime.now())
+              .tenant(null)
+              .build();
+
+      when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+      when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
+
+      User result = authenticationService.authenticate("admin", "password");
+
+      assertThat(result).isNull();
+    }
+  }
 }
