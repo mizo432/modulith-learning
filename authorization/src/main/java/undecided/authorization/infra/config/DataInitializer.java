@@ -58,8 +58,19 @@ public class DataInitializer implements CommandLineRunner {
   }
 
   private List<Tenant> createTenants() {
-    // Flywayによってdefaultテナントが既に存在する場合は、partnerのみ作成
+    // Flywayが有効でない環境(テスト等)ではdefaultテナントも作成する
     List<Tenant> tenants = new ArrayList<>();
+
+    if (tenantRepository.findByTenantCode("default").isEmpty()) {
+      Tenant defaultTenant =
+          Tenant.builder()
+              .tenantCode("default")
+              .name("デフォルトテナント")
+              .enabled(true)
+              .createdAt(LocalDateTime.now())
+              .build();
+      tenants.add(defaultTenant);
+    }
 
     if (tenantRepository.findByTenantCode("partner").isEmpty()) {
       Tenant partnerTenant =
@@ -109,9 +120,12 @@ public class DataInitializer implements CommandLineRunner {
     Role userRole =
         roles.stream().filter(r -> "ROLE_USER".equals(r.getName())).findFirst().orElseThrow();
 
-    // defaultテナントはFlywayで既に存在するため、DBから取得
-    Tenant defaultTenant = tenantRepository.findByTenantCode("default").orElseThrow();
-    // partnerテナントは引数から取得（存在しない場合はDBから取得）
+    // テナントは引数から取得（存在しない場合はDBから取得）
+    Tenant defaultTenant =
+        tenants.stream()
+            .filter(t -> "default".equals(t.getTenantCode()))
+            .findFirst()
+            .orElse(tenantRepository.findByTenantCode("default").orElseThrow());
     Tenant partnerTenant =
         tenants.stream()
             .filter(t -> "partner".equals(t.getTenantCode()))
