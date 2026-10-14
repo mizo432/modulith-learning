@@ -13,7 +13,7 @@ import undecided.generic.accountMgmt.spi.User;
 /**
  * ユーザー情報の取得（Query）を担当するREST APIコントローラーです。
  *
- * <p>CQRSパターンに従い、読み取り操作のみを担当します。
+ * <p>CQRSパターンに従い、読み取り操作のみを担当します。 機微情報（初回ログイン状態）はauthorizationサービスから取得します。
  */
 @RestController
 @RequestMapping("/api/users")
@@ -21,6 +21,7 @@ import undecided.generic.accountMgmt.spi.User;
 public class UserQueryApi {
 
   private final UserQuery userQuery;
+  private final UserQueryImpl userQueryImpl;
 
   /**
    * 現在のユーザーの情報を取得します。
@@ -35,8 +36,10 @@ public class UserQueryApi {
             .findByUsername(username)
             .orElseThrow(() -> new EntityNotFoundException("ユーザーが見つかりません: " + username));
 
-    UserStatusResponse response =
-        new UserStatusResponse(user.getUsername(), user.needsPasswordChange());
+    // 初回ログイン状態はauthorizationサービスから取得
+    boolean needsPasswordChange = userQueryImpl.needsPasswordChange(username);
+
+    UserStatusResponse response = new UserStatusResponse(user.getUsername(), needsPasswordChange);
     return ResponseEntity.ok(response);
   }
 
