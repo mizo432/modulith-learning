@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import undecided.shared.value.IntegerValue;
 
 @DisplayName("IntegerValueのテスト")
 class IntegerValueTest {

@@ -1,4 +1,4 @@
-package undecided.shared.entity;
+package undecided.shared.value;
 
 import static undecided.shared.primitiveOld.Objects2.isNull;
 

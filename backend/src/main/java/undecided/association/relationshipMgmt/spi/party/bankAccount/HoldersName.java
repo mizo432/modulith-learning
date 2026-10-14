@@ -4,8 +4,8 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.entity.StringValue;
 import undecided.shared.primitive.Strings2;
+import undecided.shared.value.StringValue;
 
 /**
  * 銀行口座の口座名義人を表す値オブジェクトクラス。
