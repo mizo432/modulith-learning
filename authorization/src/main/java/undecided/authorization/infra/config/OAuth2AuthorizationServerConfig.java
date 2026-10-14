@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -168,6 +170,19 @@ public class OAuth2AuthorizationServerConfig {
     return org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withJwkSetUri(
             "http://localhost:8082/oauth2/jwks")
         .build();
+  }
+
+  /**
+   * JWTエンコーダーを設定します。
+   *
+   * <p>REQ-00012: アクセストークンはJWT (JSON Web Token) 形式で発行すること。 REQ-00016: トークンの署名にはRS256 (RSA with
+   * SHA-256) アルゴリズムを使用すること。
+   *
+   * @return JwtEncoder
+   */
+  @Bean
+  public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+    return new NimbusJwtEncoder(jwkSource);
   }
 
   /**
