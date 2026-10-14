@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -66,6 +67,9 @@ public class OAuth2AuthorizationServerConfig {
   /**
    * OAuth2認可サーバーのセキュリティフィルターチェーンを設定します。
    *
+   * <p>OAuth 2.0 Authorization Code with PKCEフローをサポートするために、認可サーバーエンドポイントの
+   * セキュリティを設定します。ログインページへのリダイレクトとOpenID Connect 1.0を有効にします。
+   *
    * @param http HttpSecurity
    * @return SecurityFilterChain
    * @throws Exception 例外
@@ -75,9 +79,12 @@ public class OAuth2AuthorizationServerConfig {
   public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
       throws Exception {
 
-    // OAuth2認可サーバーエンドポイント用のセキュリティマッチャー
+    // OAuth2認可サーバーエンドポイントのみを対象とする
     http.securityMatcher("/oauth2/**")
-        .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+        // OAuth2認可サーバーの設定を適用
+        .oauth2AuthorizationServer(
+            authorizationServer -> authorizationServer.oidc(Customizer.withDefaults()))
+        // 例外ハンドリングを設定：認証が必要の場合はログインページにリダイレクト
         .exceptionHandling(
             exceptionHandling ->
                 exceptionHandling.defaultAuthenticationEntryPointFor(
@@ -90,21 +97,25 @@ public class OAuth2AuthorizationServerConfig {
   /**
    * 登録済みクライアントリポジトリを設定します。
    *
+   * <p>REQ-00010: OAuth 2.0 Authorization Code with PKCEフローを使用するため、 クライアントは公開クライアント（public
+   * client）として設定し、クライアントシークレットを不要とします。 PKCE（Proof Key for Code
+   * Exchange）により、クライアントシークレットなしでも安全な認証フローを実現します。
+   *
    * @return RegisteredClientRepository
    */
   @Bean
   public RegisteredClientRepository registeredClientRepository() {
-    // フロントエンド用クライアント
+    // フロントエンド用公開クライアント（PKCE対応）
     RegisteredClient frontendClient =
         RegisteredClient.withId(UUID.randomUUID().toString())
             .clientId("frontend")
-            .clientSecret("{noop}password")
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            // PKCEフローではクライアントシークレット不要（公開クライアント）
+            .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .redirectUri("http://localhost:3000/callback")
             .redirectUri("http://localhost:3000/login/oauth2/code")
+            .postLogoutRedirectUri("http://localhost:3000/")
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .scope(OidcScopes.EMAIL)
@@ -116,7 +127,9 @@ public class OAuth2AuthorizationServerConfig {
                     .build())
             .clientSettings(
                 ClientSettings.builder()
+                    // PKCEを必須とする
                     .requireProofKey(true)
+                    // ユーザーの同意画面を表示しない（REQ-00020）
                     .requireAuthorizationConsent(false)
                     .build())
             .build();
