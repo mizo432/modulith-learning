@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -231,6 +232,19 @@ class OAuth2AuthorizationServerConfigTest {
     @DisplayName("JwtDecoder Beanが設定されていること")
     void shouldHaveJwtDecoderBean() {
       assertThat(jwtDecoder).as("JwtDecoder Beanが設定されていること").isNotNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("JWTエンコーダーの設定テスト (REQ-00012)")
+  class JwtEncoderTest {
+
+    @Autowired private JwtEncoder jwtEncoder;
+
+    @Test
+    @DisplayName("JwtEncoder Beanが設定されていること (REQ-00012)")
+    void shouldHaveJwtEncoderBean() {
+      assertThat(jwtEncoder).as("JwtEncoder Beanが設定されていること").isNotNull();
     }
   }
 
