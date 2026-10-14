@@ -23,8 +23,11 @@ docker exec -it sample vendor/bin/phpunit
 
 ## 関連issueやプルリクエスト
 
-closes: [#1](https://www.example.com)
-closes: [#2](https://www.example.com)
+closes: [#1](https://www.example.com) — このPRで解決するissue
+[#2](https://www.example.com) — 関連するがこのPRでは解決しないissue
+
+> **記載ルール**: PRで解決するissueには `closes:` キーワードを付けてください。
+> 関連するだけでこのPRでは解決しないissueは、closing keywordなしの通常の参照として記載してください。
 
 ## 懸念事項
 
