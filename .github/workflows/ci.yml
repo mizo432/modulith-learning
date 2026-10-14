@@ -27,6 +27,7 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v3
         with:
+          base: ${{ github.ref }}
           list-files: shell
           filters: |
             service-registry:
@@ -112,6 +113,7 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v3
         with:
+          base: ${{ github.ref }}
           list-files: shell
           filters: |
             frontend:
@@ -154,6 +156,7 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v3
         with:
+          base: ${{ github.ref }}
           list-files: shell
           filters: |
             backend:
@@ -239,6 +242,7 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v3
         with:
+          base: ${{ github.ref }}
           list-files: shell
           filters: |
             api-gateway:
@@ -368,6 +372,7 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v3
         with:
+          base: ${{ github.ref }}
           list-files: shell
           filters: |
             authorization:
