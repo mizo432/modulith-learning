@@ -1,0 +1,181 @@
+package undecided.authorization.infra.config;
+
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
+import java.util.UUID;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+
+/**
+ * OAuth2認可サーバー設定
+ *
+ * <p>OAuth 2.0 / OpenID Connect 認可サーバーの設定を行います。 REQ-00011: authorizationモジュールをOAuth
+ * 2.0認可サーバーとして構成すること。 REQ-00010: 認証はOAuth 2.0 Authorization Code with PKCEフローを使用すること。 REQ-00012:
+ * アクセストークンはJWT (JSON Web Token) 形式で発行すること。 REQ-00013: アクセストークンの有効期間は15分以内とする。 REQ-00014:
+ * リフレッシュトークンを使用してアクセストークンの再発行を行うこと。 REQ-00015: リフレッシュトークンの有効期間は7日以内とする。 REQ-00016: トークンの署名にはRS256
+ * (RSA with SHA-256) アルゴリズムを使用すること。 REQ-00020: OAuth 2.0認可サーバーは、ユーザーの同意画面を表示しない。
+ */
+@Configuration
+public class OAuth2AuthorizationServerConfig {
+
+  private static final Duration ACCESS_TOKEN_TIME_TO_LIVE = Duration.ofMinutes(15);
+  private static final Duration REFRESH_TOKEN_TIME_TO_LIVE = Duration.ofDays(7);
+
+  /**
+   * RSAキーペアを生成します。
+   *
+   * @return KeyPair
+   */
+  private static KeyPair generateRsaKey() {
+    try {
+      KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+      keyPairGenerator.initialize(2048);
+      return keyPairGenerator.generateKeyPair();
+    } catch (Exception ex) {
+      throw new IllegalStateException("Failed to generate RSA key pair", ex);
+    }
+  }
+
+  /**
+   * OAuth2認可サーバーのセキュリティフィルターチェーンを設定します。
+   *
+   * @param http HttpSecurity
+   * @return SecurityFilterChain
+   * @throws Exception 例外
+   */
+  @Bean
+  @Order(1)
+  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
+      throws Exception {
+
+    // OAuth2認可サーバーエンドポイント用のセキュリティマッチャー
+    http.securityMatcher("/oauth2/**")
+        .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+        .exceptionHandling(
+            exceptionHandling ->
+                exceptionHandling.defaultAuthenticationEntryPointFor(
+                    new LoginUrlAuthenticationEntryPoint("/login"),
+                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
+
+    return http.build();
+  }
+
+  /**
+   * 登録済みクライアントリポジトリを設定します。
+   *
+   * @return RegisteredClientRepository
+   */
+  @Bean
+  public RegisteredClientRepository registeredClientRepository() {
+    // フロントエンド用クライアント
+    RegisteredClient frontendClient =
+        RegisteredClient.withId(UUID.randomUUID().toString())
+            .clientId("frontend")
+            .clientSecret("{noop}password")
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .redirectUri("http://localhost:3000/callback")
+            .redirectUri("http://localhost:3000/login/oauth2/code")
+            .scope(OidcScopes.OPENID)
+            .scope(OidcScopes.PROFILE)
+            .scope(OidcScopes.EMAIL)
+            .tokenSettings(
+                TokenSettings.builder()
+                    .accessTokenTimeToLive(ACCESS_TOKEN_TIME_TO_LIVE)
+                    .refreshTokenTimeToLive(REFRESH_TOKEN_TIME_TO_LIVE)
+                    .reuseRefreshTokens(false)
+                    .build())
+            .clientSettings(
+                ClientSettings.builder()
+                    .requireProofKey(true)
+                    .requireAuthorizationConsent(false)
+                    .build())
+            .build();
+
+    return new InMemoryRegisteredClientRepository(frontendClient);
+  }
+
+  /**
+   * JWKソースを設定します。
+   *
+   * @return JWKSource<SecurityContext>
+   */
+  @Bean
+  public JWKSource<SecurityContext> jwkSource() {
+    KeyPair keyPair = generateRsaKey();
+    RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+    RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+
+    RSAKey rsaKey =
+        new RSAKey.Builder(publicKey)
+            .privateKey(privateKey)
+            .keyID(UUID.randomUUID().toString())
+            .build();
+
+    JWKSet jwkSet = new JWKSet(rsaKey);
+    return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+  }
+
+  /**
+   * JWTデコーダーを設定します。
+   *
+   * @return JwtDecoder
+   */
+  @Bean
+  public JwtDecoder jwtDecoder() {
+    return org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withJwkSetUri(
+            "http://localhost:8082/oauth2/jwks")
+        .build();
+  }
+
+  /**
+   * 認可サーバー設定を設定します。
+   *
+   * @return AuthorizationServerSettings
+   */
+  @Bean
+  public AuthorizationServerSettings authorizationServerSettings() {
+    return AuthorizationServerSettings.builder().issuer("http://localhost:8082").build();
+  }
+
+  /**
+   * OAuth2トークンカスタマイザーを設定します。 JWTにユーザー情報を追加します。
+   *
+   * @return OAuth2TokenCustomizer<JwtEncodingContext>
+   */
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
+    return context -> {
+      if (context.getTokenType().getValue().equals("access_token")) {
+        context.getClaims().claim("user_name", context.getPrincipal().getName());
+      }
+    };
+  }
+}
