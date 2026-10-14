@@ -3,6 +3,7 @@ package undecided.authorization.infra.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,7 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 /**
  * セキュリティ設定
  *
- * <p>Spring Securityの設定を行うクラスです。 OAuth2認可サーバーと連携して、フォームログインとAPI認証をサポートします。
+ * <p>Spring Securityの設定を行うクラスです。 OAuth2認可サーバーと連携して、フォームログインとAPI認証をサポートします。 REQ-00018:
+ * 認可エンドポイント、トークンエンドポイントはHTTPSのみで提供すること。
  */
 @Configuration
 @EnableWebSecurity
@@ -42,6 +44,8 @@ public class SecurityConfig {
   @Order(2)
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
+        // REQ-00018: HTTPからHTTPSへのリダイレクトを強制する
+        .redirectToHttps(Customizer.withDefaults())
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers("/api/auth/**")
