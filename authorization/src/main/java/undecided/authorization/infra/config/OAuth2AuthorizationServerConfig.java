@@ -79,16 +79,17 @@ public class OAuth2AuthorizationServerConfig {
   public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
       throws Exception {
 
-    // OAuth2認可サーバーの設定を適用
-    http.oauth2AuthorizationServer(
-        authorizationServer -> authorizationServer.oidc(Customizer.withDefaults()));
-
-    // 例外ハンドリングを設定：認証が必要の場合はログインページにリダイレクト
-    http.exceptionHandling(
-        exceptionHandling ->
-            exceptionHandling.defaultAuthenticationEntryPointFor(
-                new LoginUrlAuthenticationEntryPoint("/login"),
-                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
+    // OAuth2認可サーバーエンドポイントのみを対象とする
+    http.securityMatcher("/oauth2/**")
+        // OAuth2認可サーバーの設定を適用
+        .oauth2AuthorizationServer(
+            authorizationServer -> authorizationServer.oidc(Customizer.withDefaults()))
+        // 例外ハンドリングを設定：認証が必要の場合はログインページにリダイレクト
+        .exceptionHandling(
+            exceptionHandling ->
+                exceptionHandling.defaultAuthenticationEntryPointFor(
+                    new LoginUrlAuthenticationEntryPoint("/login"),
+                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
 
     return http.build();
   }
