@@ -14,12 +14,15 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8082
-          jwk-set-url: http://localhost:8082/oauth2/jwks
+          # REQ-00018: 認可サーバーはHTTPSで提供される
+          issuer-uri: https://localhost:8443
+          jwk-set-url: https://localhost:8443/oauth2/jwks
           jwt-set-cache-enabled: true
           # REQ-00028: JWKSエンドポイントのレスポンスをキャッシュする
           # REQ-00029: JWTのキャッシュ有効期間は5分以内とする
+          # REQ-00021: JWT署名検証にRS256アルゴリズムを使用する
           jws-algorithm: RS256
+          # REQ-00030: nbfクレーム (Not Before)が設定されている場合、その時刻以前のトークン使用を拒否する
   cloud:
     gateway:
       server:

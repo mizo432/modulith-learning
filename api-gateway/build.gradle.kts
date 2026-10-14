@@ -34,6 +34,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
 
