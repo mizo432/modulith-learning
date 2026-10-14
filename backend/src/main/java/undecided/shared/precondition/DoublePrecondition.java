@@ -2,8 +2,8 @@ package undecided.shared.precondition;
 
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 
 @UtilityClass
 public class DoublePrecondition {
@@ -79,6 +79,7 @@ public class DoublePrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min,
       @NonNull Double max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -105,6 +106,7 @@ public class DoublePrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min,
       @NonNull Double max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -131,6 +133,7 @@ public class DoublePrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min,
       @NonNull Double max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -157,6 +160,7 @@ public class DoublePrecondition {
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min,
       @NonNull Double max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -182,6 +186,7 @@ public class DoublePrecondition {
       Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -205,6 +210,7 @@ public class DoublePrecondition {
       Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -228,6 +234,7 @@ public class DoublePrecondition {
       Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double max) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }
@@ -251,6 +258,7 @@ public class DoublePrecondition {
       Double ref,
       @NonNull Supplier<? extends RuntimeException> exceptionSupplier,
       @NonNull Double min) {
+    ObjectPrecondition.checkNotNull(exceptionSupplier, "exceptionSupplier");
     if (ref == null) {
       return null;
     }

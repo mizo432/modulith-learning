@@ -58,6 +58,7 @@ spring:
       ddl-auto: update
     properties.hibernate.format_sql: true
     properties.hibernate.jdbc.lob.non_contextual_creation: true
+    properties.hibernate.hbm2ddl.create_namespaces: true
 #    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   data:
     redis:

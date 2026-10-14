@@ -1,8 +1,8 @@
 package undecided.shared.precondition;
 
 import java.util.function.Supplier;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Boolean 値を検証するためのユーティリティクラス。

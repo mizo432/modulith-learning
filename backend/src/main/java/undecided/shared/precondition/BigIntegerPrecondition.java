@@ -3,8 +3,8 @@ package undecided.shared.precondition;
 import com.google.common.collect.Range;
 import java.math.BigInteger;
 import java.util.function.Supplier;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 
 /**
  * {@link BigInteger}値のプロパティと制約を検証するユーティリティクラス。

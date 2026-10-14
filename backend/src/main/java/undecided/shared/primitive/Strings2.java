@@ -3,14 +3,23 @@ package undecided.shared.primitive;
 import static undecided.shared.primitive.Ints.CHECK_POSITIVE;
 import static undecided.shared.primitive.Objects2.CHECK_NOT_NULL;
 import static undecided.shared.primitive.Objects2.IS_NULL;
+import static undecided.shared.primitiveOld.Objects2.isNull;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.util.StringUtils;
 import undecided.shared.functional.TwoFunction;
 
+/**
+ * 文字列操作のためのユーティリティクラスです。
+ *
+ * <p>このクラスは、文字列の空チェック、フォーマット、ケース変換、繰り返し、囲み文字の追加などの 一般的な文字列操作機能を提供します。定数としてよく使用する文字列リテラルも定義しています。
+ */
 public class Strings2 {
   public static final String EMPTY = "";
   public static final String SPACE = " ";
@@ -33,22 +42,74 @@ public class Strings2 {
   public static final Function<Collection<?>, String> COLLECTION_TO_COMMA_DELIMITED_STRING =
       coll -> StringUtils.collectionToDelimitedString(coll, ",");
 
+  /**
+   * 指定された文字列をそのまま返します。
+   *
+   * @param str 返す文字列
+   * @return 入力された文字列をそのまま返します。
+   */
   public static String toString(String str) {
     return str;
   }
 
+  /**
+   * 指定された文字列が {@code null} または空文字列かどうかを判定します。
+   *
+   * @param value 判定対象の文字列
+   * @return 文字列が {@code null} または空文字列の場合は {@code true}、それ以外の場合は {@code false}
+   */
+  public static boolean isEmpty(String value) {
+    if (value == null || value.isEmpty()) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * {@link LocalDateTime} を指定されたフォーマットで文字列に変換します。
+   *
+   * @param dateTime 変換対象の日時。{@code null} の場合は {@code null} を返します。
+   * @return "yyyy-MM-dd HH:mm:ss" フォーマットの文字列。入力が {@code null} の場合は {@code null}
+   */
+  public static @Nullable String formatDateTime(@Nullable LocalDateTime dateTime) {
+    if (isNull(dateTime)) {
+      return null;
+    }
+    return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+  }
+
+  /** 文字列のケースフォーマットを表す列挙型です。 */
   public enum CaseFormat {
+    /** 大文字キャメルケース（PascalCase） */
     UPPER_CAMEL,
+    /** 小文字キャメルケース */
     LOWER_CAMEL,
+    /** 大文字アンダースコア区切り（SCREAMING_SNAKE_CASE） */
     UPPER_UNDERSCORE,
+    /** 小文字アンダースコア区切り（snake_case） */
     LOWER_UNDERSCORE
   }
 
+  /** 文字列内の部分文字列のインデックスを検索する関数インターフェースです。 */
   public interface IndexOf {
+    /**
+     * 指定された文字列内から部分文字列の最初出現位置のインデックスを返します。
+     *
+     * @param s 検索対象の文字列
+     * @param subString 検索する部分文字列
+     * @return 部分文字列のインデックス。見つからない場合は負の値を返すことが期待されます。
+     */
     int apply(String s, String subString);
   }
 
+  /** 文字列をローワーキャメルケースに変換する関数インターフェースです。 */
   public static interface LowerCamel {
+    /**
+     * 入力された文字列をローワーキャメルケースに変換します。
+     *
+     * @param s 変換対象の文字列
+     * @return ローワーキャメルケースに変換された文字列
+     */
     String convertToString(String s);
   }
 
@@ -81,6 +142,13 @@ public class Strings2 {
    * <p>このクラスは {@link TwoFunction} インタフェースを実装しており、 2つの文字列を入力として受け取り、1つの結果文字列を返します。
    */
   public static class Surround implements TwoFunction<String, String, String> {
+    /**
+     * 指定された文字列を囲み文字で囲みます。
+     *
+     * @param str 囲まれる文字列。{@code null} の場合は空文字として扱われます。
+     * @param surroundString 囲み文字。{@code null} の場合は空文字として扱われます。
+     * @return 囲み文字で囲まれた結果の文字列
+     */
     @Override
     public String apply(String str, String surroundString) {
       if (IS_NULL.test(surroundString)) {
@@ -94,6 +162,11 @@ public class Strings2 {
     }
   }
 
+  /**
+   * {@link IndexOf} インターフェースの実装クラスです。
+   *
+   * <p>指定された文字列内から部分文字列の最初出現位置のインデックスを検索します。 引数が {@code null} の場合は -1 を返します。
+   */
   public static class IndexOfImpl implements IndexOf {
 
     @Override
@@ -161,8 +234,16 @@ public class Strings2 {
    */
   @RequiredArgsConstructor
   public class Repeat implements Function<String, String> {
+    /** 文字列を繰り返す回数 */
     private final int times;
 
+    /**
+     * 入力文字列を指定された回数だけ繰り返して結合した文字列を返します。
+     *
+     * @param s 繰り返す文字列。{@code null} は許容されません。
+     * @return 指定された回数だけ繰り返された文字列
+     * @throws IllegalArgumentException 繰り返し回数が正の整数でない場合、または文字列が {@code null} の場合
+     */
     @Override
     public String apply(String s) {
       CHECK_POSITIVE.apply(times, () -> new IllegalArgumentException("times must be positive"));

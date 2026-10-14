@@ -3,8 +3,8 @@ package undecided.generic.addressReg.internal;
 import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.Optional;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import undecided.generic.addressReg.spi.Prefecture;
 import undecided.generic.addressReg.spi.PrefectureQuery;

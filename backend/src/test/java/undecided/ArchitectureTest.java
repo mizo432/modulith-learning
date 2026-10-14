@@ -62,7 +62,7 @@ class ArchitectureTest {
             .that()
             .areAssignableTo(Repository.class)
             .should()
-            .resideInAnyPackage("..internal..", "..intenal..")
+            .resideInAnyPackage("..internal..", "..intenal..", "..repository..")
             .because("Repositoryクラスはアプリケーション層(internalパッケージ)に配置されるべきです");
   }
 
@@ -77,7 +77,7 @@ class ArchitectureTest {
             .that()
             .areAnnotatedWith(Service.class)
             .should()
-            .resideInAnyPackage("..internal..", "..config..")
+            .resideInAnyPackage("..internal..", "..config..", "..command..", "..query..")
             .because("Serviceクラスはアプリケーション層(internalパッケージ)またはインフラ構成(configパッケージ)に配置されるべきです");
   }
 

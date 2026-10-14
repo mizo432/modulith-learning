@@ -2,8 +2,8 @@ package undecided.shared.precondition;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jspecify.annotations.NonNull;
 
 /** ObjectVerifiersクラスはオブジェクトの状態や引数を検証するためのユーティリティメソッドを提供します。 */
 @UtilityClass
