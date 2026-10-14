@@ -5,18 +5,28 @@ import undecided.authorization.domain.model.user.User;
 /**
  * 認証サービス
  *
- * <p>ユーザー認証に関するビジネスロジックを提供するサービスインターフェースです。
+ * <p>ユーザー認証に関するビジネスロジックを提供するサービスインターフェースです。 マルチテナント対応により、認証時にテナント情報を指定できます。
  */
 public interface AuthenticationService {
 
   /**
-   * ユーザーを認証します。
+   * ユーザーを認証します（テナント指定なし）。
    *
    * @param username ユーザー名
    * @param password パスワード
    * @return 認証されたユーザー、認証に失敗した場合はnull
    */
   User authenticate(String username, String password);
+
+  /**
+   * テナントを指定してユーザーを認証します。
+   *
+   * @param tenantCode テナントコード
+   * @param username ユーザー名
+   * @param password パスワード
+   * @return 認証されたユーザー、認証に失敗した場合はnull
+   */
+  User authenticateWithTenant(String tenantCode, String username, String password);
 
   /**
    * ユーザーのパスワードを変更します。

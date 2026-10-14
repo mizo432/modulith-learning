@@ -1,6 +1,7 @@
 package undecided.authorization.infra.config;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import undecided.authorization.domain.model.permission.Permission;
 import undecided.authorization.domain.model.permission.PermissionRepository;
 import undecided.authorization.domain.model.role.Role;
 import undecided.authorization.domain.model.role.RoleRepository;
+import undecided.authorization.domain.model.tenant.Tenant;
+import undecided.authorization.domain.model.tenant.TenantRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
 import undecided.authorization.domain.model.user.UserType;
@@ -27,16 +30,20 @@ public class DataInitializer implements CommandLineRunner {
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final PermissionRepository permissionRepository;
+  private final TenantRepository tenantRepository;
   private final PasswordEncoder passwordEncoder;
 
   @Override
   public void run(String... args) {
-    // 既存のデータがある場合は初期化をスキップ
+    // 既存のユーザーがある場合は初期化をスキップ
     if (userRepository.count() > 0) {
       return;
     }
 
     System.out.println("Initializing data...");
+
+    // テナントの作成（Flywayによってdefaultテナントが既に存在する場合はpartnerのみ作成）
+    List<Tenant> tenants = createTenants();
 
     // 権限の作成
     List<Permission> permissions = createPermissions();
@@ -45,9 +52,38 @@ public class DataInitializer implements CommandLineRunner {
     List<Role> roles = createRoles(permissions);
 
     // ユーザーの作成
-    createUsers(roles);
+    createUsers(roles, tenants);
 
     System.out.println("Data initialization completed.");
+  }
+
+  private List<Tenant> createTenants() {
+    // Flywayが有効でない環境(テスト等)ではdefaultテナントも作成する
+    List<Tenant> tenants = new ArrayList<>();
+
+    if (tenantRepository.findByTenantCode("default").isEmpty()) {
+      Tenant defaultTenant =
+          Tenant.builder()
+              .tenantCode("default")
+              .name("デフォルトテナント")
+              .enabled(true)
+              .createdAt(LocalDateTime.now())
+              .build();
+      tenants.add(defaultTenant);
+    }
+
+    if (tenantRepository.findByTenantCode("partner").isEmpty()) {
+      Tenant partnerTenant =
+          Tenant.builder()
+              .tenantCode("partner")
+              .name("パートナーテナント")
+              .enabled(true)
+              .createdAt(LocalDateTime.now())
+              .build();
+      tenants.add(partnerTenant);
+    }
+
+    return tenantRepository.saveAll(tenants);
   }
 
   private List<Permission> createPermissions() {
@@ -77,9 +113,24 @@ public class DataInitializer implements CommandLineRunner {
     return roleRepository.saveAll(Arrays.asList(adminRole, userRole));
   }
 
-  private void createUsers(List<Role> roles) {
-    Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
-    Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow();
+  private void createUsers(List<Role> roles, List<Tenant> tenants) {
+    // 引数からROLE_ADMINとROLE_USERを取得
+    Role adminRole =
+        roles.stream().filter(r -> "ROLE_ADMIN".equals(r.getName())).findFirst().orElseThrow();
+    Role userRole =
+        roles.stream().filter(r -> "ROLE_USER".equals(r.getName())).findFirst().orElseThrow();
+
+    // テナントは引数から取得（存在しない場合はDBから取得）
+    Tenant defaultTenant =
+        tenants.stream()
+            .filter(t -> "default".equals(t.getTenantCode()))
+            .findFirst()
+            .orElse(tenantRepository.findByTenantCode("default").orElseThrow());
+    Tenant partnerTenant =
+        tenants.stream()
+            .filter(t -> "partner".equals(t.getTenantCode()))
+            .findFirst()
+            .orElse(tenantRepository.findByTenantCode("partner").orElseThrow());
 
     // 管理者ユーザー（社員）を作成 - 初回ログイン時にパスワード設定を強制
     User adminUser =
@@ -94,6 +145,7 @@ public class DataInitializer implements CommandLineRunner {
             .createdAt(LocalDateTime.now())
             .userType(UserType.EMPLOYEE)
             .firstLogin(true)
+            .tenant(defaultTenant)
             .build();
     adminUser.addRole(adminRole);
     userRepository.save(adminUser);
@@ -110,6 +162,7 @@ public class DataInitializer implements CommandLineRunner {
             .enabled(true)
             .createdAt(LocalDateTime.now())
             .userType(UserType.BUSINESS_PARTNER_EMPLOYEE)
+            .tenant(partnerTenant)
             .build();
     bpEmployeeUser.addRole(userRole);
     userRepository.save(bpEmployeeUser);
@@ -126,6 +179,7 @@ public class DataInitializer implements CommandLineRunner {
             .enabled(true)
             .createdAt(LocalDateTime.now())
             .userType(UserType.INDIVIDUAL_BUSINESS_PARTNER)
+            .tenant(partnerTenant)
             .build();
     individualBpUser.addRole(userRole);
     userRepository.save(individualBpUser);

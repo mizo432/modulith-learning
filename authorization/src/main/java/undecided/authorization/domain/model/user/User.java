@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import undecided.authorization.domain.model.role.Role;
+import undecided.authorization.domain.model.tenant.Tenant;
 
 /**
  * ユーザーエンティティ
@@ -103,6 +105,11 @@ public class User {
   @Column(name = "user_type", nullable = false)
   @Builder.Default
   private UserType userType = UserType.EMPLOYEE;
+
+  /** ユーザーが属するテナント。 マルチテナント対応のために、各ユーザーは特定のテナントに属します。 */
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "tenant_id", nullable = false)
+  private Tenant tenant;
 
   /**
    * ユーザーにロールを追加します。

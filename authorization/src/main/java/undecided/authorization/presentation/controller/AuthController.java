@@ -28,14 +28,23 @@ public class AuthController {
   private final AuthorizationService authorizationService;
 
   /**
-   * ユーザーを認証します。
+   * ユーザーを認証します。 テナントコードが指定されている場合は、テナント内で認証を行います。
    *
    * @param request 認証リクエスト
    * @return 認証レスポンス
    */
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-    User user = authenticationService.authenticate(request.getUsername(), request.getPassword());
+    User user;
+    if (request.getTenantCode() != null && !request.getTenantCode().isEmpty()) {
+      // テナント指定ありの場合
+      user =
+          authenticationService.authenticateWithTenant(
+              request.getTenantCode(), request.getUsername(), request.getPassword());
+    } else {
+      // テナント指定なしの場合（後方互換性のため）
+      user = authenticationService.authenticate(request.getUsername(), request.getPassword());
+    }
 
     if (user == null) {
       return ResponseEntity.badRequest()
