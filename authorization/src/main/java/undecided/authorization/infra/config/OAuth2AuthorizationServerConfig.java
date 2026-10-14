@@ -9,12 +9,14 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -166,7 +168,10 @@ public class OAuth2AuthorizationServerConfig {
   }
 
   /**
-   * OAuth2トークンカスタマイザーを設定します。 JWTにユーザー情報を追加します。
+   * OAuth2トークンカスタマイザーを設定します。 JWTにユーザー情報、ロール、スコープを追加します。
+   *
+   * <p>REQ-00003: APIゲートウェイで認証・認可を行うために、JWTにロール情報を含めること。 REQ-00026:
+   * JWTのサブジェクト(subクレーム)は認証されたユーザーの一意の識別子を含むこと。
    *
    * @return OAuth2TokenCustomizer<JwtEncodingContext>
    */
@@ -174,7 +179,20 @@ public class OAuth2AuthorizationServerConfig {
   public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
     return context -> {
       if (context.getTokenType().getValue().equals("access_token")) {
+        // ユーザー名を追加
         context.getClaims().claim("user_name", context.getPrincipal().getName());
+
+        // ロール情報を authorities クレームに追加 (REQ-00003)
+        List<String> roles =
+            context.getPrincipal().getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        context.getClaims().claim("authorities", roles);
+
+        // スコープ情報を scopes クレームに追加
+        if (context.getAuthorizedScopes() != null && !context.getAuthorizedScopes().isEmpty()) {
+          context.getClaims().claim("scopes", context.getAuthorizedScopes().toArray(new String[0]));
+        }
       }
     };
   }

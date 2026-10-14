@@ -17,6 +17,9 @@ spring:
           issuer-uri: http://localhost:8082
           jwk-set-url: http://localhost:8082/oauth2/jwks
           jwt-set-cache-enabled: true
+          # REQ-00028: JWKSエンドポイントのレスポンスをキャッシュする
+          # REQ-00029: JWTのキャッシュ有効期間は5分以内とする
+          jws-algorithm: RS256
   cloud:
     gateway:
       server:
