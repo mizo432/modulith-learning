@@ -193,4 +193,59 @@ public class AuthController {
       return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
     }
   }
+
+  /**
+   * ユーザーの初回ログイン状態を確認します。 backendサービスから呼び出されるエンドポイントです。
+   *
+   * @param username ユーザー名
+   * @return 初回ログイン状態
+   */
+  @GetMapping("/users/{username}/first-login")
+  public ResponseEntity<UserFirstLoginStatus> getFirstLoginStatus(@PathVariable String username) {
+    boolean isFirstLogin = authenticationService.isFirstLogin(username);
+    return ResponseEntity.ok(new UserFirstLoginStatus(username, isFirstLogin));
+  }
+
+  /**
+   * ユーザー名でパスワードを変更します。 backendサービスから呼び出されるエンドポイントです。
+   *
+   * @param username ユーザー名
+   * @param request パスワード変更リクエスト
+   * @return 204 No Content
+   */
+  @PostMapping("/users/{username}/password")
+  public ResponseEntity<Void> changePasswordByUsername(
+      @PathVariable String username, @RequestBody PasswordChangeRequestDto request) {
+    try {
+      authenticationService.changePasswordByUsername(
+          username, request.currentPassword(), request.newPassword());
+      return ResponseEntity.noContent().build();
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
+   * 初回ログイン時のパスワードを変更します。 backendサービスから呼び出されるエンドポイントです。
+   *
+   * @param username ユーザー名
+   * @param request パスワード変更リクエスト
+   * @return 204 No Content
+   */
+  @PostMapping("/users/{username}/first-login-password")
+  public ResponseEntity<Void> changeFirstLoginPassword(
+      @PathVariable String username, @RequestBody PasswordChangeRequestDto request) {
+    try {
+      authenticationService.changePasswordOnFirstLogin(username, request.newPassword());
+      return ResponseEntity.noContent().build();
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /** 初回ログインステータスレスポンスです。 */
+  public record UserFirstLoginStatus(String username, boolean isFirstLogin) {}
+
+  /** パスワード変更リクエストDTOです。 */
+  public record PasswordChangeRequestDto(String currentPassword, String newPassword) {}
 }

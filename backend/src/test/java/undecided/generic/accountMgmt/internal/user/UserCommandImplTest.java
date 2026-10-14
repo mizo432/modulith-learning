@@ -1,13 +1,9 @@
 package undecided.generic.accountMgmt.internal.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,26 +12,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
-import undecided.generic.accountMgmt.spi.User;
+import undecided.generic.accountMgmt.internal.user.UserCommandImpl.PasswordChangeDto;
+import undecided.generic.accountMgmt.internal.user.UserCommandImpl.UserStatusDto;
 import undecided.shared.exception.BusinessException;
-import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
 @DisplayName("UserCommandImplのテスト")
 @ExtendWith(MockitoExtension.class)
 class UserCommandImplTest {
 
-  @Mock private UserRepository userRepository;
-
-  @Mock private PasswordEncoder passwordEncoder;
+  @Mock private RestTemplate restTemplate;
 
   private UserCommandImpl userCommandImpl;
 
   @BeforeEach
   void setUp() {
-    userCommandImpl = new UserCommandImpl(userRepository, passwordEncoder);
+    userCommandImpl = new UserCommandImpl(restTemplate);
   }
 
   @Nested
@@ -43,77 +39,43 @@ class UserCommandImplTest {
   class ChangePasswordTest {
 
     @Test
-    @DisplayName("初回ログイン時にパスワードを変更できる")
+    @DisplayName("初回ログイン時にauthorizationサービスに委譲してパスワードを変更できる")
     void shouldChangePasswordOnFirstLogin() {
-      User user =
-          new User(SnowflakeId.of(1L), "testuser", "default", true, LocalDateTime.now(), null);
       ChangePasswordRequest request =
           new ChangePasswordRequest(null, "newPassword123", "newPassword123");
-      String hashedPassword = "$2a$10$hashedPassword123";
 
-      when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
-      when(passwordEncoder.encode("newPassword123")).thenReturn(hashedPassword);
+      // 初回ログイン状態をtrueにモック
+      when(restTemplate.getForEntity(anyString(), eq(UserStatusDto.class)))
+          .thenReturn(new ResponseEntity<>(new UserStatusDto("testuser", true), HttpStatus.OK));
+
+      // 初回ログインパスワード変更のレスポンスをモック
+      when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
+          .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 
       userCommandImpl.changePassword("testuser", request);
 
-      assertThat(user.getPassword()).isEqualTo(hashedPassword);
-      assertThat(user.needsPasswordChange()).isFalse();
-      verify(passwordEncoder).encode("newPassword123");
-      verify(userRepository).save(user);
+      // 初回ログインパスワード変更APIが呼び出されることを検証
+      verify(restTemplate).postForEntity(contains("/first-login-password"), any(), eq(Void.class));
     }
 
     @Test
-    @DisplayName("初回ログイン以外で現在のパスワードが正しい場合に変更できる")
-    void shouldChangePasswordWhenCurrentPasswordIsCorrect() {
-      String hashedCurrentPassword = "$2a$10$hashedCurrentPassword";
-      String hashedNewPassword = "$2a$10$hashedNewPassword123";
-      User user =
-          new User(
-              SnowflakeId.of(1L),
-              "testuser",
-              hashedCurrentPassword,
-              false,
-              LocalDateTime.now(),
-              null);
+    @DisplayName("初回ログイン以外でパスワードを変更できる")
+    void shouldChangePasswordWhenNotFirstLogin() {
       ChangePasswordRequest request =
           new ChangePasswordRequest("currentPass", "newPassword123", "newPassword123");
 
-      when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
-      when(passwordEncoder.matches("currentPass", hashedCurrentPassword)).thenReturn(true);
-      when(passwordEncoder.encode("newPassword123")).thenReturn(hashedNewPassword);
+      // 初回ログイン状態をfalseにモック
+      when(restTemplate.getForEntity(anyString(), eq(UserStatusDto.class)))
+          .thenReturn(new ResponseEntity<>(new UserStatusDto("testuser", false), HttpStatus.OK));
+
+      // パスワード変更のレスポンスをモック
+      when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
+          .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 
       userCommandImpl.changePassword("testuser", request);
 
-      assertThat(user.getPassword()).isEqualTo(hashedNewPassword);
-      verify(passwordEncoder).matches("currentPass", hashedCurrentPassword);
-      verify(passwordEncoder).encode("newPassword123");
-      verify(userRepository).save(user);
-    }
-
-    @Test
-    @DisplayName("初回ログイン以外で現在のパスワードが正しくない場合は例外がスローされる")
-    void shouldThrowExceptionWhenCurrentPasswordIsIncorrect() {
-      String hashedCurrentPassword = "$2a$10$hashedCurrentPassword";
-      User user =
-          new User(
-              SnowflakeId.of(1L),
-              "testuser",
-              hashedCurrentPassword,
-              false,
-              LocalDateTime.now(),
-              null);
-      ChangePasswordRequest request =
-          new ChangePasswordRequest("wrongPass", "newPassword123", "newPassword123");
-
-      when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
-      when(passwordEncoder.matches("wrongPass", hashedCurrentPassword)).thenReturn(false);
-
-      assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("現在のパスワードが正しくありません");
-
-      verify(passwordEncoder, never()).encode(anyString());
-      verify(userRepository, never()).save(any());
+      // 通常パスワード変更APIが呼び出されることを検証
+      verify(restTemplate).postForEntity(contains("/password"), any(), eq(Void.class));
     }
 
     @Test
@@ -149,35 +111,22 @@ class UserCommandImplTest {
     }
 
     @Test
-    @DisplayName("ユーザーが見つからない場合は例外がスローされる")
-    void shouldThrowExceptionWhenUserNotFound() {
+    @DisplayName("authorizationサービスがエラーを返した場合は例外がスローされる")
+    void shouldThrowExceptionWhenAuthorizationServiceFails() {
       ChangePasswordRequest request =
           new ChangePasswordRequest(null, "newPassword123", "newPassword123");
 
-      when(userRepository.findByUsername("unknown")).thenReturn(Optional.empty());
+      // 初回ログイン状態をtrueにモック
+      when(restTemplate.getForEntity(anyString(), eq(UserStatusDto.class)))
+          .thenReturn(new ResponseEntity<>(new UserStatusDto("testuser", true), HttpStatus.OK));
 
-      assertThatThrownBy(() -> userCommandImpl.changePassword("unknown", request))
-          .isInstanceOf(jakarta.persistence.EntityNotFoundException.class)
-          .hasMessageContaining("ユーザーが見つかりません");
-    }
+      // パスワード変更でエラーを返す
+      when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
+          .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 
-    @Test
-    @DisplayName("パスワードはハッシュ化して保存される")
-    void shouldSaveHashedPassword() {
-      User user =
-          new User(SnowflakeId.of(1L), "testuser", "default", true, LocalDateTime.now(), null);
-      ChangePasswordRequest request =
-          new ChangePasswordRequest(null, "plainPassword", "plainPassword");
-      String hashedPassword = "$2a$10$hashedPlainPassword";
-
-      when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
-      when(passwordEncoder.encode("plainPassword")).thenReturn(hashedPassword);
-
-      userCommandImpl.changePassword("testuser", request);
-
-      assertThat(user.getPassword()).isNotEqualTo("plainPassword");
-      assertThat(user.getPassword()).isEqualTo(hashedPassword);
-      verify(passwordEncoder).encode("plainPassword");
+      assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("初回ログイン時のパスワード変更に失敗しました");
     }
   }
 }
