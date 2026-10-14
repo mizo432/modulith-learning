@@ -1,4 +1,4 @@
-# 案件名・リポジトリ名など
+# modulith-learning プロジェクトガイドライン
 
 ## 前提条件
 
@@ -13,61 +13,61 @@
 
 ### Java
 
-実装する言語がJavaでspring bootを使用している場合以下のguidelinesを参照すること。
+実装する言語がJavaでSpring Bootを使用している場合、以下のガイドラインを参照すること。
 
-- [Java 用コーディングルールguidelines](./guidelines/java/codeing-standards.guidelines.md)
-- [Java用レビューguidelines](./guidelines/java/review.guidelines.md)
+- [Java 用コーディングルールガイドライン](./java/codeing-standards.guidelines.md)
+- [Java 用レビューガイドライン](./java/review.guidelines.md)
 
 ### TypeScript
 
-実装する言語がTypeScriptの場合以下のguidelinesを参照すること。
+実装する言語がTypeScriptの場合、以下のガイドラインを参照すること。
 
-- [TypeScript用コーディングルールguidelines](./guidelines/TypeScript/codeing-standards.guidelines.md)
-- [TypeScript用レビューguidelines](./guidelines/TypeScript/review.guidelines.md)
+- [TypeScript 用コーディングルールガイドライン](./typescript/codeing-standards.guidelines.md)
+- [TypeScript 用レビューガイドライン](./typescript/review.guidelines.md)
 
 ## モノレポディレクトリごとの設定
 
-### backendディレクトリ
+### backend ディレクトリ
 
-以下のguidelinesをあらかじめ把握しておくこと。
+以下のガイドラインをあらかじめ把握しておくこと。
 
-- [プロジェクト概要](./guidelines/backend/projects.guidelines.md): プロジェクト概要を記載。
-- [開発者向け内容](./guidelines/backend/developers.guidelines.md): 技術スタックなどを記載。
-- [環境構築方法](./guidelines/backend/environments.guidelines.md): ローカル環境構築方法などを記載。
-- [使用コマンド使用方法](./guidelines/backend/commands.guidelines.md): 開発で使用するコマンドなどを記載。
+- [プロジェクト概要](./backend/projects.instructions.md): プロジェクト概要を記載。
+- [開発者向け内容](./backend/developers.instructions.md): 技術スタックなどを記載。
+- [環境構築方法](./backend/environments.instructions.md): ローカル環境構築方法などを記載。
+- [使用コマンド使用方法](./backend/commands.instructions.md): 開発で使用するコマンドなどを記載。
 
-### frontendディレクトリ
+### frontend ディレクトリ
 
-以下のguidelinesをあらかじめ把握しておくこと。
+以下のガイドラインをあらかじめ把握しておくこと。
 
-- [プロジェクト概要](./guidelines/frontend/projects.guidelines.md): プロジェクト概要を記載。
-- [開発者向け内容](./guidelines/frontend/developers.guidelines.md): 技術スタックなどを記載。
-- [環境構築方法](./guidelines/frontend/environments.guidelines.md): ローカル環境構築方法などを記載。
-- [使用コマンド使用方法](./guidelines/frontend/commands.guidelines.md): 開発で使用するコマンドなどを記載。
+- [プロジェクト概要](./frontend/projects.instructions.md): プロジェクト概要を記載。
+- [開発者向け内容](./frontend/developers.instructions.md): 技術スタックなどを記載。
+- [環境構築方法](./frontend/environments.instructions.md): ローカル環境構築方法などを記載。
+- [使用コマンド使用方法](./frontend/commands.instructions.md): 開発で使用するコマンドなどを記載。
 
-### aoi-gatewayディレクトリ
+### api-gateway ディレクトリ
 
-以下のguidelinesをあらかじめ把握しておくこと。
+以下のガイドラインをあらかじめ把握しておくこと。
 
-- [プロジェクト概要](./guidelines/api-gateway/projects.guidelines.md): プロジェクト概要を記載。
-- [開発者向け内容](./guidelines/api-gateway/developers.guidelines.md): 技術スタックなどを記載。
-- [環境構築方法](./guidelines/api-gateway/environments.guidelines.md): 主にterraformによるAWS環境構築方法などを記載。
-- [使用コマンド使用方法](./guidelines/api-gateway/commands.guidelines.md): 開発で使用するコマンドなどを記載。
+- [プロジェクト概要](./api-gateway/projects.instructions.md): プロジェクト概要を記載。
+- [開発者向け内容](./api-gateway/developers.instructions.md): 技術スタックなどを記載。
+- [環境構築方法](./api-gateway/environments.instructions.md): 環境構築方法などを記載。
+- [使用コマンド使用方法](./api-gateway/commands.instructions.md): 開発で使用するコマンドなどを記載。
 
-### authorizationディレクトリ
+### authorization ディレクトリ
 
-以下のguidelinesをあらかじめ把握しておくこと。
+以下のガイドラインをあらかじめ把握しておくこと。
 
-- [プロジェクト概要](./guidelines/authorization/projects.guidelines.md): プロジェクト概要を記載。
-- [開発者向け内容](./guidelines/authorization/developers.guidelines.md): 技術スタックなどを記載。
-- [環境構築方法](./guidelines/authorization/environments.guidelines.md): ローカル環境構築方法などを記載。
-- [使用コマンド使用方法](./guidelines/authorization/commands.guidelines.md): 開発で使用するコマンドなどを記載。
+- [プロジェクト概要](./authorization/projects.instructions.md): プロジェクト概要を記載。
+- [開発者向け内容](./authorization/developers.instructions.md): 技術スタックなどを記載。
+- [環境構築方法](./authorization/environments.instructions.md): ローカル環境構築方法などを記載。
+- [使用コマンド使用方法](./authorization/commands.instructions.md): 開発で使用するコマンドなどを記載。
 
-### servie-registryディレクトリ
+### service-registry ディレクトリ
 
-以下のguidelinesをあらかじめ把握しておくこと。
+以下のガイドラインをあらかじめ把握しておくこと。
 
-- [プロジェクト概要](./guidelines/servie-registry/projects.guidelines.md): プロジェクト概要を記載。
-- [開発者向け内容](./guidelines/servie-registry/developers.guidelines.md): 技術スタックなどを記載。
-- [環境構築方法](./guidelines/servie-registry/environments.guidelines.md): ローカル環境構築方法などを記載。
-- [使用コマンド使用方法](./servie-registry/serverless/commands.guidelines.md): 開発で使用するコマンドなどを記載。
+- [プロジェクト概要](./service-registry/projects.instructions.md): プロジェクト概要を記載。
+- [開発者向け内容](./service-registry/developers.instructions.md): 技術スタックなどを記載。
+- [環境構築方法](./service-registry/environments.instructions.md): ローカル環境構築方法などを記載。
+- [使用コマンド使用方法](./service-registry/commands.instructions.md): 開発で使用するコマンドなどを記載。
