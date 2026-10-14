@@ -1,0 +1,13 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://localhost:8443
+          jwk-set-url: https://localhost:8443/oauth2/jwks
+          jws-algorithm: RS256
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false

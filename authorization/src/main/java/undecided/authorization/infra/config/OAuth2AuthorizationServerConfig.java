@@ -43,7 +43,8 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
  * 2.0認可サーバーとして構成すること。 REQ-00010: 認証はOAuth 2.0 Authorization Code with PKCEフローを使用すること。 REQ-00012:
  * アクセストークンはJWT (JSON Web Token) 形式で発行すること。 REQ-00013: アクセストークンの有効期間は15分以内とする。 REQ-00014:
  * リフレッシュトークンを使用してアクセストークンの再発行を行うこと。 REQ-00015: リフレッシュトークンの有効期間は7日以内とする。 REQ-00016: トークンの署名にはRS256
- * (RSA with SHA-256) アルゴリズムを使用すること。 REQ-00020: OAuth 2.0認可サーバーは、ユーザーの同意画面を表示しない。
+ * (RSA with SHA-256) アルゴリズムを使用すること。 REQ-00018: 認可エンドポイント、トークンエンドポイントはHTTPSのみで提供すること。 REQ-00020:
+ * OAuth 2.0認可サーバーは、ユーザーの同意画面を表示しない。
  */
 @Configuration
 public class OAuth2AuthorizationServerConfig {
@@ -115,9 +116,9 @@ public class OAuth2AuthorizationServerConfig {
             .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://localhost:3000/callback")
-            .redirectUri("http://localhost:3000/login/oauth2/code")
-            .postLogoutRedirectUri("http://localhost:3000/")
+            .redirectUri("https://localhost:3000/callback")
+            .redirectUri("https://localhost:3000/login/oauth2/code")
+            .postLogoutRedirectUri("https://localhost:3000/")
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .scope(OidcScopes.EMAIL)
@@ -168,7 +169,7 @@ public class OAuth2AuthorizationServerConfig {
   @Bean
   public JwtDecoder jwtDecoder() {
     return org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withJwkSetUri(
-            "http://localhost:8082/oauth2/jwks")
+            "https://localhost:8443/oauth2/jwks")
         .build();
   }
 
@@ -192,7 +193,7 @@ public class OAuth2AuthorizationServerConfig {
    */
   @Bean
   public AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings.builder().issuer("http://localhost:8082").build();
+    return AuthorizationServerSettings.builder().issuer("https://localhost:8443").build();
   }
 
   /**

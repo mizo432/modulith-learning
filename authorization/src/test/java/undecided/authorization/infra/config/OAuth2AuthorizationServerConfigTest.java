@@ -33,7 +33,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
  * <p>REQ-00011: authorizationモジュールをOAuth 2.0認可サーバーとして構成すること。 REQ-00010: 認証はOAuth 2.0 Authorization
  * Code with PKCEフローを使用すること。 REQ-00012: アクセストークンはJWT形式で発行すること。 REQ-00013: アクセストークンの有効期間は15分以内とする。
  * REQ-00014: リフレッシュトークンを使用してアクセストークンの再発行を行うこと。 REQ-00015: リフレッシュトークンの有効期間は7日以内とする。 REQ-00016:
- * トークンの署名にはRS256アルゴリズムを使用すること。 REQ-00020: OAuth 2.0認可サーバーは、ユーザーの同意画面を表示しない。
+ * トークンの署名にはRS256アルゴリズムを使用すること。 REQ-00018: 認可エンドポイント、トークンエンドポイントはHTTPSのみで提供すること。 REQ-00020: OAuth
+ * 2.0認可サーバーは、ユーザーの同意画面を表示しない。
  */
 @Tag("medium")
 @DisplayName("OAuth2認可サーバー設定の統合テスト")
@@ -160,7 +161,7 @@ class OAuth2AuthorizationServerConfigTest {
     }
 
     @Test
-    @DisplayName("クライアントはredirect URIが設定されていること")
+    @DisplayName("クライアントはHTTPSのredirect URIが設定されていること (REQ-00018)")
     void shouldHaveRedirectUri() {
       RegisteredClient client = registeredClientRepository.findByClientId("frontend");
 
@@ -171,7 +172,7 @@ class OAuth2AuthorizationServerConfigTest {
               c ->
                   assertThat(c.getRedirectUris())
                       .isNotEmpty()
-                      .contains("http://localhost:3000/callback"));
+                      .contains("https://localhost:3000/callback"));
     }
   }
 
@@ -182,11 +183,13 @@ class OAuth2AuthorizationServerConfigTest {
     @Autowired private AuthorizationServerSettings authorizationServerSettings;
 
     @Test
-    @DisplayName("issuerはhttp://localhost:8082であること")
+    @DisplayName("issuerはhttps://localhost:8443であること (REQ-00018)")
     void shouldHaveCorrectIssuer() {
       String issuer = authorizationServerSettings.getIssuer();
 
-      assertThat(issuer).as("issuerはhttp://localhost:8082であること").isEqualTo("http://localhost:8082");
+      assertThat(issuer)
+          .as("issuerはhttps://localhost:8443であること")
+          .isEqualTo("https://localhost:8443");
     }
 
     @Test
