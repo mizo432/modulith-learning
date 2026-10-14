@@ -2,6 +2,8 @@ package undecided.association.relationshipMgmt.spi.party;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  */
 @Table(name = "party", schema = SchemaRelationshipMgmt.NAME)
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
