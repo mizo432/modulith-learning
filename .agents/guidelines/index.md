@@ -18,15 +18,12 @@
 - [Java 用コーディングルールguidelines](./guidelines/java/codeing-standards.guidelines.md)
 - [Java用レビューguidelines](./guidelines/java/review.guidelines.md)
 
-実装する言語がtype scriptでReactを使用している場合以下のguidelinesを参照すること。
-
-- [TypeScript用コーディングルールguidelines](./guidelines/typescript/codeing-standards.guidelines.md)
-- [TypeScript用レビューguidelines](./guidelines/typescript/review.guidelines.md)
+### TypeScript
 
 実装する言語がTypeScriptの場合以下のguidelinesを参照すること。
 
-- [TypeScript用コーディングルールguidelines](./guidelines/typescript/codeing-standards.guidelines.md)
-- [TypeScript用レビューguidelines](./guidelines/typescript/review.guidelines.md)
+- [TypeScript用コーディングルールguidelines](./guidelines/TypeScript/codeing-standards.guidelines.md)
+- [TypeScript用レビューguidelines](./guidelines/TypeScript/review.guidelines.md)
 
 ## モノレポディレクトリごとの設定
 
