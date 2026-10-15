@@ -518,4 +518,7 @@ Use Case 3.0では、ユースケースをスライスに分割してインク�
 - **チェックリスト**:
     - [requirement.md](checklists/requirement.md): 要件分析時の確認項目
     - [api.md](checklists/api.md): API 契約定義時の確認項目
-    - [issue-creation.md](checklists/issue-creation.md): Issue 作成時の確認項目
+    - [use-case-narrative.md](checklists/use-case-narrative.md): ユースケース記述品質確認項目（Use
+      Case
+      3.0）
+        - [issue-creation.md](checklists/issue-creation.md): Issue 作成時の確認項目
