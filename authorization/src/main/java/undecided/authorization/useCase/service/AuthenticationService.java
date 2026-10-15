@@ -1,4 +1,4 @@
-package undecided.authorization.business.service;
+package undecided.authorization.useCase.service;
 
 import undecided.authorization.domain.model.user.User;
 

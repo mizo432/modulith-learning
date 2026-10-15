@@ -1,9 +1,9 @@
-package undecided.authorization.business.service;
+package undecided.authorization.useCase.service;
 
 /**
  * 認可サービス
- * <p>
- * ユーザー認可に関するビジネスロジックを提供するサービスインターフェースです。
+ *
+ * <p>ユーザー認可に関するビジネスロジックを提供するサービスインターフェースです。
  */
 public interface AuthorizationService {
 

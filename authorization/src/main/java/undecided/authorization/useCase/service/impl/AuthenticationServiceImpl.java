@@ -1,4 +1,4 @@
-package undecided.authorization.business.service.impl;
+package undecided.authorization.useCase.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.authorization.business.service.AuthenticationService;
 import undecided.authorization.domain.model.tenant.Tenant;
 import undecided.authorization.domain.model.tenant.TenantRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
+import undecided.authorization.useCase.service.AuthenticationService;
 
 /**
  * 認証サービス実装

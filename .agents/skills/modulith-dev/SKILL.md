@@ -15,7 +15,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 - GitHub Issue に基づく機能追加、リファクタリング、テスト作成、バグ修正を実施するとき
 - Spring Modulithおよびバックエンド (`backend`) の機能を開発、修正、拡張するとき
 - 単体テスト（Small）、統合テスト（Medium）、大規模テスト（Large）を新規作成または更新するとき
-- モジュール境界やオニオンアーキテクチャ（Domain / Business / Infrastructure /
+- モジュール境界やオニオンアーキテクチャ（Domain / useCase / Infrastructure /
   Presentation）に沿った設計・実装を行うとき
 - 例外処理（`BusinessException`, `SystemException`, `ResultMessage` 等）や事前条件チェック（
   `*Precondition`）を組み込むとき
@@ -31,7 +31,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
     - 最新のメインブランチから作業用 feature ブランチ（例:
       `feature/issue-<number>-<short-description>`）を作成して切り替え。
 3. **設計・テスト方針の策定**:
-    - 変更モジュールおよび層（Domain / Business / Infrastructure / Presentation）を特定。
+    - 変更モジュールおよび層（Domain / useCase / Infrastructure / Presentation）を特定。
     - `should` で始まるテストケースを事前に整理。
 4. **実装とテストの作成**:
     - モジュール境界（公開 API/SPI と `internal` の厳格な分離）を遵守。
@@ -70,7 +70,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 1. **Domain 層**:
     - エンティティ、値オブジェクト（Value Object）、ドメインイベント、ドメインサービス、リポジトリインターフェース
     - 外部フレームワークに依存せず、ビジネスルール・不変条件を保護
-2. **Business / Application 層**:
+2. **useCase 層**:
     - ユースケース、Command/Query サービス、アプリケーションロジック
 3. **Infrastructure 層**:
     - JPA/Hibernate エンティティ、リポジトリ実装、外部サービス通信、Flyway マイグレーション

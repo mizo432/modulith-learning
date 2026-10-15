@@ -1,15 +1,15 @@
-package undecided.authorization.business.service.impl;
+package undecided.authorization.useCase.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.authorization.business.service.AuthorizationService;
 import undecided.authorization.domain.model.user.UserRepository;
+import undecided.authorization.useCase.service.AuthorizationService;
 
 /**
  * 認可サービス実装
- * <p>
- * ユーザー認可に関するビジネスロジックを提供するサービス実装クラスです。
+ *
+ * <p>ユーザー認可に関するビジネスロジックを提供するサービス実装クラスです。
  */
 @Service
 @RequiredArgsConstructor
@@ -20,14 +20,16 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
   @Override
   public boolean hasRole(String username, String roleName) {
-    return userRepository.findByUsername(username)
+    return userRepository
+        .findByUsername(username)
         .map(user -> user.hasRole(roleName))
         .orElse(false);
   }
 
   @Override
   public boolean hasPermission(String username, String permissionName) {
-    return userRepository.findByUsername(username)
+    return userRepository
+        .findByUsername(username)
         .map(user -> user.hasPermission(permissionName))
         .orElse(false);
   }

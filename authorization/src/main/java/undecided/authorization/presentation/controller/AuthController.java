@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.authorization.business.service.AuthenticationService;
-import undecided.authorization.business.service.AuthorizationService;
 import undecided.authorization.domain.model.user.User;
+import undecided.authorization.useCase.service.AuthenticationService;
+import undecided.authorization.useCase.service.AuthorizationService;
 
 /**
  * 認証・認可コントローラー

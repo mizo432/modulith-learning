@@ -1,4 +1,4 @@
-package undecided.authorization.business.service;
+package undecided.authorization.useCase.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,11 +17,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import undecided.authorization.business.service.impl.AuthenticationServiceImpl;
 import undecided.authorization.domain.model.tenant.Tenant;
 import undecided.authorization.domain.model.tenant.TenantRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
+import undecided.authorization.useCase.service.impl.AuthenticationServiceImpl;
 
 @Tag("small")
 @DisplayName("AuthenticationServiceImplのテスト")

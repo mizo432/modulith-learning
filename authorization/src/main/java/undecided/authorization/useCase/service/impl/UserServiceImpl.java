@@ -1,4 +1,4 @@
-package undecided.authorization.business.service.impl;
+package undecided.authorization.useCase.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,16 +7,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.authorization.business.service.UserService;
 import undecided.authorization.domain.model.role.Role;
 import undecided.authorization.domain.model.role.RoleRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
+import undecided.authorization.useCase.service.UserService;
 
 /**
  * ユーザーサービス実装
- * <p>
- * ユーザー管理に関するビジネスロジックを提供するサービス実装クラスです。
+ *
+ * <p>ユーザー管理に関するビジネスロジックを提供するサービス実装クラスです。
  */
 @Service
 @RequiredArgsConstructor
@@ -76,11 +76,16 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User addRoleToUser(Long userId, String roleName) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-    Role role = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new IllegalArgumentException("Role not found with name: " + roleName));
+    Role role =
+        roleRepository
+            .findByName(roleName)
+            .orElseThrow(
+                () -> new IllegalArgumentException("Role not found with name: " + roleName));
 
     user.addRole(role);
     return userRepository.save(user);
@@ -88,30 +93,40 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User removeRoleFromUser(Long userId, String roleName) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-    Role role = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new IllegalArgumentException("Role not found with name: " + roleName));
+    Role role =
+        roleRepository
+            .findByName(roleName)
+            .orElseThrow(
+                () -> new IllegalArgumentException("Role not found with name: " + roleName));
 
     user.removeRole(role);
     return userRepository.save(user);
   }
 
   @Override
-  public User updateUserProfile(String username, String firstName, String lastName, String initials,
-      String email) {
-    User user = userRepository.findByUsername(username)
-        .orElseThrow(
-            () -> new IllegalArgumentException("User not found with username: " + username));
+  public User updateUserProfile(
+      String username, String firstName, String lastName, String initials, String email) {
+    User user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(
+                () -> new IllegalArgumentException("User not found with username: " + username));
 
     // メールアドレスが変更される場合、重複チェック
     if (email != null && !email.equals(user.getEmail())) {
-      userRepository.findByEmail(email).ifPresent(existingUser -> {
-        if (!existingUser.getId().equals(user.getId())) {
-          throw new IllegalArgumentException("Email already in use: " + email);
-        }
-      });
+      userRepository
+          .findByEmail(email)
+          .ifPresent(
+              existingUser -> {
+                if (!existingUser.getId().equals(user.getId())) {
+                  throw new IllegalArgumentException("Email already in use: " + email);
+                }
+              });
       user.setEmail(email);
     }
 

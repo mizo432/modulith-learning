@@ -1,4 +1,4 @@
-package undecided.authorization.business.service;
+package undecided.authorization.useCase.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import undecided.authorization.domain.model.user.User;
 
 /**
  * ユーザーサービス
- * <p>
- * ユーザー管理に関するビジネスロジックを提供するサービスインターフェースです。
+ *
+ * <p>ユーザー管理に関するビジネスロジックを提供するサービスインターフェースです。
  */
 public interface UserService {
 
@@ -93,6 +93,6 @@ public interface UserService {
    * @param email メールアドレス
    * @return 更新されたユーザー
    */
-  User updateUserProfile(String username, String firstName, String lastName, String initials,
-      String email);
+  User updateUserProfile(
+      String username, String firstName, String lastName, String initials, String email);
 }
