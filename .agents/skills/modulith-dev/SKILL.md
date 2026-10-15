@@ -1,12 +1,17 @@
 ---
 name: modulith-dev
-description: Spring Modulithアーキテクチャ、オニオンアーキテクチャ、DDD、厳格なJUnit 5/AssertJテスト規約、例外処理、Lombok/JSpecifyを活用した開発・保守・テスト作成のためのプロジェクト特化型スキル。
+description: Spring Modulithアーキテクチャ、オニオンアーキテクチャ、DDD、厳格なJUnit 5/AssertJテスト規約、例外処理、Lombok/JSpecifyを活用した開発・保守・テスト作成のためのプロジェクト特化型スキル。ユースケース開発にはcommand-usecase-devまたはquery-usecase-devスキルを使用してください。
 ---
 
 ### Modulith Development & Testing Guide (`modulith-dev`)
 
 このスキルは、 **modulith-learning**
 リポジトリにおいて、機能追加、リファクタリング、テスト作成、アーキテクチャ検証、バグ修正などを行う際に適用する開発・テストガイドラインです。
+
+**ユースケース開発の場合**:
+
+- **Commandユースケース**（状態変更処理）の開発には、`command-usecase-dev`スキルを使用してください。
+- **Queryユースケース**（データ読み取り処理）の開発には、`query-usecase-dev`スキルを使用してください。
 
 ---
 
@@ -20,6 +25,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 - 例外処理（`BusinessException`, `SystemException`, `ResultMessage` 等）や事前条件チェック（
   `*Precondition`）を組み込むとき
 - プロジェクト固有のコーディング規約（Lombok, JSpecify, Google Java Style）に従って実装するとき
+- **ユースケース開発**: `command-usecase-dev`または`query-usecase-dev`スキルを参照
 
 ---
 
@@ -72,6 +78,8 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
     - 外部フレームワークに依存せず、ビジネスルール・不変条件を保護
 2. **useCase 層**:
     - ユースケース、Command/Query サービス、アプリケーションロジック
+    - **Commandユースケース**の詳細は`command-usecase-dev`スキルを参照
+    - **Queryユースケース**の詳細は`query-usecase-dev`スキルを参照
 3. **Infrastructure 層**:
     - JPA/Hibernate エンティティ、リポジトリ実装、外部サービス通信、Flyway マイグレーション
 4. **Presentation 層**:
@@ -144,6 +152,8 @@ AI（Claude Code など）を使ってテストを生成する際は、以下の
   業務の判断を外とのやり取り（データベースの読み書きなど）から分離します。判断は、受け取った値だけで答えを返す形にすれば、「入力を渡して返ってきた値だけを確かめる」出力値ベースのテストが書けます。
 - **コマンドクエリ分離（CQS）**:
   メソッドを「値を返すだけ（クエリ）」と「状態を変えるだけ（コマンド）」に分けます。取ってくるだけの処理はスタブ、外へ出ていく副作用はモックという使い分けも、この区別に基づきます。
+    - **Commandユースケース**の詳細な開発ガイドは`command-usecase-dev`スキルを参照
+    - **Queryユースケース**の詳細な開発ガイドは`query-usecase-dev`スキルを参照
 - **切り出すことと、中身を晒すことは違う**:
   テストを書きやすくするために、本来隠しておくべき中身を外から触れるようにしてはいけません。切り出した判断は「この入力ならこの結果」という約束を持つ新しい部品ですが、晒した中身は約束ではなく作りの詳細です。
 
@@ -322,3 +332,10 @@ AI（Claude Code など）を使ってテストを生成する際は、以下の
 - **チェックリスト**:
     - [test-quality-checklist.md](checklists/test-quality-checklist.md): テスト作成時の品質確認項目
     - [architecture-checklist.md](checklists/architecture-checklist.md): モジュール分割・層構成の確認項目
+
+---
+
+### 9. 関連スキル
+
+- **command-usecase-dev**: Commandユースケース（状態変更処理）の開発ガイドライン
+- **query-usecase-dev**: Queryユースケース（データ読み取り処理）の開発ガイドライン
