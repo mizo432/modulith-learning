@@ -6,3 +6,7 @@
 05	DO-BUILD	開発運用	ビルド
 06	DO-DEPLOY	開発運用	デプロイ
 07	DO-MONITOR	開発運用	モニタリング
+08	PC-ORDER	購買事業	受注・供給	組合員側の受注・配送・供給フロー
+09	PC-PURCHASE	購買事業	発注・受入	本店側の発注・荷受・受入フロー
+10	PC-INVENTORY	購買事業	在庫管理	資材の在庫管理と棚卸
+11	PC-ACCOUNTING	購買事業	会計	会計処理と請求書発行
