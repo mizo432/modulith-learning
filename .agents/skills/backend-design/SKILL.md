@@ -143,7 +143,9 @@ undecided.<domain>.<module>
 
 - **事業領域ごとにスキーマ分離**: Flywayで事業領域ごとにマイグレーションを管理。
 - **スキーマ命名**: `undecided_<事業領域コード>` の形式でスキーマ名を命名（例: `undecided_as`,
-  `undecided_do`）。
+  `undecided_do`）。事業領域コードの詳細は事業領域一覧.tsvを参照してください。
+
+  > 参照: `docs/12 RDRA モデル/01 事業領域/事業領域一覧.tsv`
 
 #### 7.2 JPAエンティティ設計
 
