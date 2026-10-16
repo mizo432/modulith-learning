@@ -1,6 +1,6 @@
-create schema if not exists address_reg;
+create schema if not exists undecided_ef;
 
-create table address_reg.chou_aza
+create table undecided_ef.chou_aza
 (
     chou_aza_id        BIGINT     not null,
     city_id            BIGINT     not null,
@@ -32,34 +32,34 @@ create table address_reg.chou_aza
     primary key (chou_aza_id)
 );
 
-create unique index uidx_chou_aza_lg_machiaza on address_reg.chou_aza (lg_code, machiaza_code);
-create index idx_chou_aza_city_id on address_reg.chou_aza (city_id);
+create unique index uidx_chou_aza_lg_machiaza on undecided_ef.chou_aza (lg_code, machiaza_code);
+create index idx_chou_aza_city_id on undecided_ef.chou_aza (city_id);
 
-comment on table address_reg.chou_aza is 'chou_aza table';
-comment on column address_reg.chou_aza.chou_aza_id is 'Unique identifier for the chou aza';
-comment on column address_reg.chou_aza.city_id is 'Unique identifier for the city';
-comment on column address_reg.chou_aza.lg_code is 'Legal code';
-comment on column address_reg.chou_aza.machiaza_code is 'Machiaza code';
-comment on column address_reg.chou_aza.machiaza_type is 'Machiaza type code';
-comment on column address_reg.chou_aza.oaza_cho_name is 'Oaza cho name';
-comment on column address_reg.chou_aza.oaza_cho_kana is 'Oaza cho kana';
-comment on column address_reg.chou_aza.oaza_cho_roma is 'Oaza cho romaji';
-comment on column address_reg.chou_aza.chome_name is 'Chome name';
-comment on column address_reg.chou_aza.chome_kana is 'Chome kana';
-comment on column address_reg.chou_aza.chome_number is 'Chome number';
-comment on column address_reg.chou_aza.koaza_name is 'Koaza name';
-comment on column address_reg.chou_aza.koaza_kana is 'Koaza kana';
-comment on column address_reg.chou_aza.koaza_roma is 'Koaza romaji';
-comment on column address_reg.chou_aza.machiaza_dist is 'Machiaza distinction code';
-comment on column address_reg.chou_aza.rsdt_addr_flg is 'Residential address flag';
-comment on column address_reg.chou_aza.rsdt_addr_mtd_code is 'Residential address method code';
-comment on column address_reg.chou_aza.oaza_cho_aka_flg is 'Oaza cho alias flag';
-comment on column address_reg.chou_aza.koaza_aka_code is 'Koaza alias code';
-comment on column address_reg.chou_aza.oaza_cho_gsi_uncmn is 'Oaza cho GSI uncommon characters';
-comment on column address_reg.chou_aza.koaza_gsi_uncmn is 'Koaza GSI uncommon characters';
-comment on column address_reg.chou_aza.status is 'Status flag';
-comment on column address_reg.chou_aza.wake_num_flg is 'Wake num flag';
-comment on column address_reg.chou_aza.src_code is 'Source code';
-comment on column address_reg.chou_aza.effective_date is 'Effective date';
-comment on column address_reg.chou_aza.abolition_data is 'Abolition date';
-comment on column address_reg.chou_aza.remarks is 'Remarks';
+comment on table undecided_ef.chou_aza is 'chou_aza table';
+comment on column undecided_ef.chou_aza.chou_aza_id is 'Unique identifier for the chou aza';
+comment on column undecided_ef.chou_aza.city_id is 'Unique identifier for the city';
+comment on column undecided_ef.chou_aza.lg_code is 'Legal code';
+comment on column undecided_ef.chou_aza.machiaza_code is 'Machiaza code';
+comment on column undecided_ef.chou_aza.machiaza_type is 'Machiaza type code';
+comment on column undecided_ef.chou_aza.oaza_cho_name is 'Oaza cho name';
+comment on column undecided_ef.chou_aza.oaza_cho_kana is 'Oaza cho kana';
+comment on column undecided_ef.chou_aza.oaza_cho_roma is 'Oaza cho romaji';
+comment on column undecided_ef.chou_aza.chome_name is 'Chome name';
+comment on column undecided_ef.chou_aza.chome_kana is 'Chome kana';
+comment on column undecided_ef.chou_aza.chome_number is 'Chome number';
+comment on column undecided_ef.chou_aza.koaza_name is 'Koaza name';
+comment on column undecided_ef.chou_aza.koaza_kana is 'Koaza kana';
+comment on column undecided_ef.chou_aza.koaza_roma is 'Koaza romaji';
+comment on column undecided_ef.chou_aza.machiaza_dist is 'Machiaza distinction code';
+comment on column undecided_ef.chou_aza.rsdt_addr_flg is 'Residential address flag';
+comment on column undecided_ef.chou_aza.rsdt_addr_mtd_code is 'Residential address method code';
+comment on column undecided_ef.chou_aza.oaza_cho_aka_flg is 'Oaza cho alias flag';
+comment on column undecided_ef.chou_aza.koaza_aka_code is 'Koaza alias code';
+comment on column undecided_ef.chou_aza.oaza_cho_gsi_uncmn is 'Oaza cho GSI uncommon characters';
+comment on column undecided_ef.chou_aza.koaza_gsi_uncmn is 'Koaza GSI uncommon characters';
+comment on column undecided_ef.chou_aza.status is 'Status flag';
+comment on column undecided_ef.chou_aza.wake_num_flg is 'Wake num flag';
+comment on column undecided_ef.chou_aza.src_code is 'Source code';
+comment on column undecided_ef.chou_aza.effective_date is 'Effective date';
+comment on column undecided_ef.chou_aza.abolition_data is 'Abolition date';
+comment on column undecided_ef.chou_aza.remarks is 'Remarks';

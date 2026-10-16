@@ -1,0 +1,4 @@
+---
+name: command-usecase-dev
+description: CQRSパターンに基づくCommandユースケース（状態変更処理）の開発・テスト作成ガイドライン。書き込み操作（Create/Update/Delete）の実装パターンとテスト規約を定義します。
+---

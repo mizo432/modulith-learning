@@ -1,0 +1,4 @@
+---
+name: query-usecase-dev
+description: CQRSパターンに基づくQueryユースケース（データ読み取り処理）の開発・テスト作成ガイドライン。読み取り操作（Read）の実装パターンとテスト規約を定義します。
+---

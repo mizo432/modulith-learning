@@ -1,0 +1,6 @@
+# ステート一覧
+ステートID	ステート名	説明	対象エンティティ
+S-01	有効	有効期間内である状態	Employee, Org, Organization
+S-02	無効	有効期間外である状態	Employee, Org, Organization
+S-03	関連付け済み	パーティ間に関係が成立している状態	PartyRelationship
+S-04	関連付け解除	パーティ間の関係が解除された状態	PartyRelationship

@@ -18,14 +18,14 @@ import undecided.generic.bankReg.spi.bank.BankCode;
 /**
  * 金融機関の支店情報を管理するエンティティクラス。
  *
- * <p>このクラスは、データベースの「bank_reg.branches」テーブルに対応し、 BankcodeJP の Master Export から取り込んだ支店の情報を保持します。
+ * <p>このクラスは、データベースの「undecided_ef.branches」テーブルに対応し、 BankcodeJP の Master Export から取り込んだ支店の情報を保持します。
  */
 @Getter
 @Setter
 @ToString
 @Entity
 @IdClass(Branch.BranchId.class)
-@Table(schema = "bank_reg", name = "branches", comment = "bank branch table")
+@Table(schema = "undecided_ef", name = "branches", comment = "bank branch table")
 public class Branch {
 
   /**

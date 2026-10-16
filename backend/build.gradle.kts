@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         // Flyway（データベース移行ツール）のクラスパス追加
-        // classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
+        classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
     }
 }
 plugins {
@@ -20,7 +20,7 @@ plugins {
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
     id("com.github.ben-manes.versions") version "0.53.0"
     // Flywayプラグイン（DBマイグレーション）
-    // id("org.flywaydb.flyway") version "11.3.4"
+    id("org.flywaydb.flyway") version "11.3.4"
     jacoco
 }
 
@@ -128,17 +128,85 @@ dependencies {
     implementation("org.springframework.batch:spring-batch-infrastructure")
     implementation("net.sf.supercsv:super-csv:${property("superCsvVersion")}")
     testImplementation("org.springframework.batch:spring-batch-test")
+
+    // Flyway PostgreSQLサポート
+    implementation("org.flywaydb:flyway-database-postgresql")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     (options as StandardJavadocDocletOptions).addStringOption("encoding", "UTF-8")
 }
 
-// flyway {
-//    url = "jdbc:postgresql://localhost:5432/postgres"
-//    user = "postgres"
-//    password = "postgres"
-//}
+// 事業領域ごとのFlyway構成
+// data-designスキルに従い、事業領域ごとにスキーマを分離する
+flyway {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+}
+
+// 事業領域: 関連付け (AS)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateAs") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_as")
+    locations = arrayOf("classpath:db/migration/as")
+}
+
+// 事業領域: 開発運用 (DO)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateDo") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_do")
+    locations = arrayOf("classpath:db/migration/do")
+}
+
+// 事業領域: 電子帳票 (EF)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateEf") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_ef")
+    locations = arrayOf("classpath:db/migration/ef")
+}
+
+// 事業領域: 購買事業 (PC)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigratePc") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_pc")
+    locations = arrayOf("classpath:db/migration/pc")
+}
+
+// 事業領域: 承認申請 (AR)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateAr") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_ar")
+    locations = arrayOf("classpath:db/migration/ar")
+}
+
+// 事業領域: 認可 (AZ)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateAz") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_az")
+    locations = arrayOf("classpath:db/migration/az")
+}
+
+// 事業領域: 通知 (NT)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateNt") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_nt")
+    locations = arrayOf("classpath:db/migration/nt")
+}
 
 dependencyManagement {
     imports {

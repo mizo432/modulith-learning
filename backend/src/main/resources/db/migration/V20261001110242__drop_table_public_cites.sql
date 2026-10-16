@@ -1,1 +1,1 @@
-drop table cities;
+drop table if exists undecided_ef.cities;
