@@ -1,4 +1,4 @@
-@ApplicationModule(type = Type.CLOSED)
+@ApplicationModule(id = "association", displayName = "関係付け", type = Type.CLOSED)
 package undecided.association;
 
 import org.springframework.modulith.ApplicationModule;
