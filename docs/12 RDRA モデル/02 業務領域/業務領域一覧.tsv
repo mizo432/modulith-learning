@@ -3,27 +3,20 @@
 02	AS-PARTY-ROLE	関連付け	パーティーロール	PartyRole	
 03	AS-PERSON-ROLE	関連付け	人ロール	PersonRole	
 04	AS-ORG-ROLE	関連付け	組織ロール	OrganizationRole	
-05	DO-BUILD	開発運用	ビルド	Build	
-06	DO-DEPLOY	開発運用	デプロイ	Deploy	
-07	DO-MONITOR	開発運用	モニタリング	Monitoring	
-08	PC-ORDER	購買事業	受注・供給	OrderSupply	組合員側の受注・配送・供給フロー
-09	PC-PURCHASE	購買事業	発注・受入	PurchaseReceive	本店側の発注・荷受・受入フロー
-10	PC-INVENTORY	購買事業	在庫管理	Inventory	資材の在庫管理と棚卸
-11	PC-ACCOUNTING	購買事業	会計	Accounting	会計処理と請求書発行
-12	AG-PRODUCT	アジルーム	プロダクト管理	Product	
-13	AG-TEAM-MEMBER	アジルーム	チームメンバー管理	TeamMember	
-14	AG-USER-STORY	アジルーム	ユーザーストーリー	UserStory	
-15	AG-SPRINT	アジルーム	スプリント	Sprint	
-16	AG-PRODUCT-BACKLOG	アジルーム	プロダクトバックログ	ProductBacklog	
-17	AG-EPIC	アジルーム	エピック	Epic	
-18	AG-SPRINT-PLANNING	アジルーム	スプリントプランニング	SprintPlanning	
-19	AG-SPRINT-REVIEW	アジルーム	スプリントレビュー	SprintReview	
-20	AG-DAILY-SCRUM	アジルーム	デイリースクラム	DailyScrum	
-21	AG-RETROSPECTIVE	アジルーム	レトロスペクティブ	Retrospective	
-22	AG-SPRINT-BACKLOG	アジルーム	スプリントバックログ	SprintBacklog	
-23	AG-TASK	アジルーム	タスク	Task	
-24	AG-RELEASE	アジルーム	リリース	Release	
-25	AG-FEATURE	アジルーム	フィーチャー	Feature	
-26	AG-PRODUCT-DASHBOARD	アジルーム	プロダクトダッシュボード	ProductDashboard	
-27	AG-SPRINT-DASHBOARD	アジルーム	スプリントダッシュボード	SprintDashboard	
-28	AG-EPIC-DASHBOARD	アジルーム	エピックダッシュボード	EpicDashboard	
+05	AG-PRODUCT	アジルーム	プロダクト管理	Product	
+06	AG-TEAM-MEMBER	アジルーム	チームメンバー管理	TeamMember	
+07	AG-USER-STORY	アジルーム	ユーザーストーリー	UserStory	
+08	AG-SPRINT	アジルーム	スプリント	Sprint	
+09	AG-PRODUCT-BACKLOG	アジルーム	プロダクトバックログ	ProductBacklog	
+10	AG-EPIC	アジルーム	エピック	Epic	
+11	AG-SPRINT-PLANNING	アジルーム	スプリントプランニング	SprintPlanning	
+12	AG-SPRINT-REVIEW	アジルーム	スプリントレビュー	SprintReview	
+13	AG-DAILY-SCRUM	アジルーム	デイリースクラム	DailyScrum	
+14	AG-RETROSPECTIVE	アジルーム	レトロスペクティブ	Retrospective	
+15	AG-SPRINT-BACKLOG	アジルーム	スプリントバックログ	SprintBacklog	
+16	AG-TASK	アジルーム	タスク	Task	
+17	AG-RELEASE	アジルーム	リリース	Release	
+18	AG-FEATURE	アジルーム	フィーチャー	Feature	
+19	AG-PRODUCT-DASHBOARD	アジルーム	プロダクトダッシュボード	ProductDashboard	
+20	AG-SPRINT-DASHBOARD	アジルーム	スプリントダッシュボード	SprintDashboard	
+21	AG-EPIC-DASHBOARD	アジルーム	エピックダッシュボード	EpicDashboard
