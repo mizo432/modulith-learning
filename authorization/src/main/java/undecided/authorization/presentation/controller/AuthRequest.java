@@ -7,14 +7,13 @@ import lombok.NoArgsConstructor;
 /**
  * 認証リクエストDTO
  *
- * <p>ユーザー認証リクエストのデータを保持するDTOクラスです。 マルチテナント対応により、テナントコードを指定できます。
+ * <p>ユーザー認証リクエストのデータを保持するDTOクラスです。
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthRequest {
 
-  private String tenantCode;
   private String username;
   private String password;
 }

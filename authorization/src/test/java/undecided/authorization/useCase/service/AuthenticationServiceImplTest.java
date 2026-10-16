@@ -17,8 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import undecided.authorization.domain.model.tenant.Tenant;
-import undecided.authorization.domain.model.tenant.TenantRepository;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserRepository;
 import undecided.authorization.useCase.service.impl.AuthenticationServiceImpl;
@@ -30,26 +28,13 @@ class AuthenticationServiceImplTest {
 
   @Mock private UserRepository userRepository;
 
-  @Mock private TenantRepository tenantRepository;
-
   @Mock private PasswordEncoder passwordEncoder;
 
   private AuthenticationServiceImpl authenticationService;
 
-  private Tenant testTenant;
-
   @BeforeEach
   void setUp() {
-    authenticationService =
-        new AuthenticationServiceImpl(userRepository, tenantRepository, passwordEncoder);
-    testTenant =
-        Tenant.builder()
-            .id(1L)
-            .tenantCode("test")
-            .name("Test Tenant")
-            .enabled(true)
-            .createdAt(LocalDateTime.now())
-            .build();
+    authenticationService = new AuthenticationServiceImpl(userRepository, passwordEncoder);
   }
 
   @Nested
@@ -68,7 +53,6 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
-              .tenant(testTenant)
               .build();
 
       String newPassword = "newPassword123";
@@ -98,7 +82,6 @@ class AuthenticationServiceImplTest {
               .firstLogin(false)
               .enabled(true)
               .createdAt(LocalDateTime.now())
-              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -136,7 +119,6 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
-              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -160,7 +142,6 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
-              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -187,7 +168,6 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
-              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -211,7 +191,6 @@ class AuthenticationServiceImplTest {
               .firstLogin(true)
               .enabled(true)
               .createdAt(LocalDateTime.now())
-              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -229,8 +208,8 @@ class AuthenticationServiceImplTest {
   class AuthenticateTest {
 
     @Test
-    @DisplayName("有効なテナントのユーザーは認証に成功すること")
-    void shouldAuthenticateUserWithEnabledTenant() {
+    @DisplayName("正しいパスワードで認証に成功すること")
+    void shouldAuthenticateWithCorrectPassword() {
       User user =
           User.builder()
               .id(1L)
@@ -240,7 +219,6 @@ class AuthenticationServiceImplTest {
               .firstLogin(false)
               .enabled(true)
               .createdAt(LocalDateTime.now())
-              .tenant(testTenant)
               .build();
 
       when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
@@ -251,61 +229,6 @@ class AuthenticationServiceImplTest {
 
       assertThat(result).isNotNull();
       assertThat(result.getUsername()).isEqualTo("admin");
-    }
-
-    @Test
-    @DisplayName("無効なテナントのユーザーは認証に失敗すること")
-    void shouldFailAuthenticateUserWithDisabledTenant() {
-      Tenant disabledTenant =
-          Tenant.builder()
-              .id(2L)
-              .tenantCode("disabled")
-              .name("Disabled Tenant")
-              .enabled(false)
-              .createdAt(LocalDateTime.now())
-              .build();
-
-      User user =
-          User.builder()
-              .id(1L)
-              .username("admin")
-              .password("$2a$10$hashed")
-              .email("admin@example.com")
-              .firstLogin(false)
-              .enabled(true)
-              .createdAt(LocalDateTime.now())
-              .tenant(disabledTenant)
-              .build();
-
-      when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
-      when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
-
-      User result = authenticationService.authenticate("admin", "password");
-
-      assertThat(result).isNull();
-    }
-
-    @Test
-    @DisplayName("テナントがnullのユーザーは認証に失敗すること")
-    void shouldFailAuthenticateUserWithNullTenant() {
-      User user =
-          User.builder()
-              .id(1L)
-              .username("admin")
-              .password("$2a$10$hashed")
-              .email("admin@example.com")
-              .firstLogin(false)
-              .enabled(true)
-              .createdAt(LocalDateTime.now())
-              .tenant(null)
-              .build();
-
-      when(userRepository.findByUsername("admin")).thenReturn(Optional.of(user));
-      when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
-
-      User result = authenticationService.authenticate("admin", "password");
-
-      assertThat(result).isNull();
     }
   }
 }
