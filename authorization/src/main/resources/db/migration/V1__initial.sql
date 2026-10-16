@@ -24,7 +24,7 @@ CREATE TABLE role_permissions
     FOREIGN KEY (permission_id) REFERENCES permissions (id)
 );
 
--- ユーザーテーブル（tenant_idは一旦NULL可能）
+-- ユーザーテーブル
 CREATE TABLE users
 (
     id            BIGSERIAL PRIMARY KEY,
@@ -39,8 +39,7 @@ CREATE TABLE users
     updated_at    TIMESTAMP,
     last_login_at TIMESTAMP,
     first_login   BOOLEAN      NOT NULL DEFAULT false,
-    user_type     VARCHAR(255) NOT NULL,
-    tenant_id     BIGINT
+    user_type     VARCHAR(255) NOT NULL
 );
 
 -- ユーザーとロールの関連テーブル
