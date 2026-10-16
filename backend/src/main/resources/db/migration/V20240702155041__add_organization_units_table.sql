@@ -1,4 +1,6 @@
-create table if not exists organization_units
+create schema if not exists undecided_as;
+
+create table if not exists undecided_as.organization_units
 (
     party_id        BIGINT       not null,
     organization_id BIGINT       not null,

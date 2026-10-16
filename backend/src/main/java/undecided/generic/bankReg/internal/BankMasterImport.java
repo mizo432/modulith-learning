@@ -12,7 +12,7 @@ import lombok.ToString;
 /**
  * 金融機関マスタの取り込み完了を記録するイベントエンティティ。
  *
- * <p>データベースの「bank_reg.bank_master_imports」テーブルに対応します。取り込みが完了するたびに 1 行を追加（INSERT のみ）し、
+ * <p>データベースの「undecided_ef.bank_master_imports」テーブルに対応します。取り込みが完了するたびに 1 行を追加（INSERT のみ）し、
  * 次回の実行時に最新データセットを取り込み済みかどうかの判定に使用します。
  */
 @Getter
@@ -20,7 +20,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(
-    schema = "bank_reg",
+    schema = "undecided_ef",
     name = "bank_master_imports",
     comment = "bank master import event table")
 public class BankMasterImport {

@@ -1,6 +1,6 @@
-create schema if not exists calendar_reg;
+create schema if not exists undecided_ef;
 
-create table calendar_reg.holiday
+create table undecided_ef.holiday
 (
     holiday_id   BIGINT      not null,
     holiday_date date        not null,
@@ -9,10 +9,10 @@ create table calendar_reg.holiday
     primary key (holiday_id)
 );
 
-create unique index holiday_date_uindex on calendar_reg.holiday (holiday_date);
+create unique index holiday_date_uindex on undecided_ef.holiday (holiday_date);
 
-comment on table calendar_reg.holiday is 'holiday table';
-comment on column calendar_reg.holiday.holiday_id is 'Unique identifier for the holiday';
-comment on column calendar_reg.holiday.holiday_date is 'Holiday date';
-comment on column calendar_reg.holiday.holiday_name is 'Holiday name';
-comment on column calendar_reg.holiday.remarks is 'Remarks';
+comment on table undecided_ef.holiday is 'holiday table';
+comment on column undecided_ef.holiday.holiday_id is 'Unique identifier for the holiday';
+comment on column undecided_ef.holiday.holiday_date is 'Holiday date';
+comment on column undecided_ef.holiday.holiday_name is 'Holiday name';
+comment on column undecided_ef.holiday.remarks is 'Remarks';

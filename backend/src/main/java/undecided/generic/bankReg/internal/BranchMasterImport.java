@@ -12,7 +12,7 @@ import lombok.ToString;
 /**
  * 支店マスタの取り込み完了を記録するイベントエンティティ。
  *
- * <p>データベースの「bank_reg.branch_master_imports」テーブルに対応し、取り込みが完了するたびに 1 行を追加（INSERT のみ）し、
+ * <p>データベースの「undecided_ef.branch_master_imports」テーブルに対応し、取り込みが完了するたびに 1 行を追加（INSERT のみ）し、
  * 次回の実行時に最新データセットを取り込み済みかどうかの判定に使用します。
  */
 @Getter
@@ -20,7 +20,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(
-    schema = "bank_reg",
+    schema = "undecided_ef",
     name = "branch_master_imports",
     comment = "branch master import event table")
 public class BranchMasterImport {

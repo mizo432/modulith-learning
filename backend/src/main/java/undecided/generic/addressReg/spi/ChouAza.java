@@ -14,7 +14,7 @@ import lombok.ToString;
 /**
  * 町字情報を管理するエンティティクラス。
  *
- * <p>このクラスは、データベースの「address_reg.chou_aza」テーブルに対応するものであり、町字に関する情報を保持します。
+ * <p>このクラスは、データベースの「undecided_ef.chou_aza」テーブルに対応するものであり、町字に関する情報を保持します。
  * 各フィールドは、町字ID、市区町村ID、法定コード、町字コード、町字区分コード、大字・町名、丁目名、小字名、住居表示フラグ、有効日や廃止日などを表します。
  *
  * <p>エンティティとして、JPAやHibernateを利用してデータベースと連携するための定義が施されています。
@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-@Table(schema = "address_reg", name = "chou_aza", comment = "chou_aza table")
+@Table(schema = "undecided_ef", name = "chou_aza", comment = "chou_aza table")
 public class ChouAza {
 
   /**

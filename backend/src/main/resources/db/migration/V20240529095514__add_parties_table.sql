@@ -1,4 +1,6 @@
-create table "parties"
+create schema if not exists undecided_as;
+
+create table undecided_as.parties
 (
     party_id    BIGINT      not null,
     party_type  varchar(10) not null,

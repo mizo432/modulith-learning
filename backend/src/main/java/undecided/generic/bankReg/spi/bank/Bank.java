@@ -13,13 +13,14 @@ import lombok.ToString;
 /**
  * 金融機関情報を管理するエンティティクラス。
  *
- * <p>このクラスは、データベースの「bank_reg.banks」テーブルに対応するものであり、 BankcodeJP の Master Export から取り込んだ金融機関の情報を保持します。
+ * <p>このクラスは、データベースの「undecided_ef.banks」テーブルに対応するものであり、 BankcodeJP の Master Export
+ * から取り込んだ金融機関の情報を保持します。
  */
 @Getter
 @Setter
 @ToString
 @Entity
-@Table(schema = "bank_reg", name = "banks", comment = "bank table")
+@Table(schema = "undecided_ef", name = "banks", comment = "bank table")
 public class Bank {
 
   /**
@@ -34,31 +35,38 @@ public class Bank {
       nullable = false,
       length = BankCode.LENGTH)
   private BankCode bankCode;
+
   /** 金融機関名（例: "みずほ銀行"）。 */
   @NotNull
   @Size(max = 128)
   @Column(name = "bank_name", comment = "Bank name", nullable = false, length = 128)
   private String bankName;
+
   /** 金融機関名の半角カナ表記。 */
   @Size(max = 256)
   @Column(name = "bank_half_kana", comment = "Bank name in half-width katakana", length = 256)
   private String bankHalfKana;
+
   /** 金融機関名の全角カナ表記。 */
   @Size(max = 256)
   @Column(name = "bank_full_kana", comment = "Bank name in full-width katakana", length = 256)
   private String bankFullKana;
+
   /** 金融機関名のひらがな表記。 */
   @Size(max = 256)
   @Column(name = "bank_full_hira", comment = "Bank name in hiragana", length = 256)
   private String bankFullHira;
+
   /** 業態コード。 */
   @Size(max = 8)
   @Column(name = "business_type_code", comment = "Business type code", length = 8)
   private String businessTypeCode;
+
   /** 業態名（例: "都市銀行"）。 */
   @Size(max = 64)
   @Column(name = "business_type", comment = "Business type", length = 64)
   private String businessType;
+
   /**
    * この行を最後に更新した Master Export のデータセットID。
    *

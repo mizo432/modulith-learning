@@ -14,7 +14,7 @@ import lombok.ToString;
 /**
  * 祝日情報を管理するエンティティクラス。
  *
- * <p>このクラスは、データベースの「calendar_reg.holiday」テーブルに対応するものであり、 祝日・休日に関する情報を保持します。
+ * <p>このクラスは、データベースの「undecided_ef.holiday」テーブルに対応するものであり、 祝日・休日に関する情報を保持します。
  * 各フィールドは、祝日ID、祝日月日、祝日名称、備考などを表します。
  *
  * <p>エンティティとして、JPAやHibernateを利用してデータベースと連携するための定義が施されています。
@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-@Table(schema = "calendar_reg", name = "holiday", comment = "holiday table")
+@Table(schema = "undecided_ef", name = "holiday", comment = "holiday table")
 public class Holiday {
 
   /**
