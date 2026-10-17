@@ -20,26 +20,27 @@ Scrumに基づくアジャイルソフトウェア開発プロジェクトの管
 
 ## 業務領域一覧
 
-| 番号 | 業務領域コード       | 業務領域名               | 業務領域英名     |
-|------|----------------------|--------------------------|------------------|
-| 12   | AG-PRODUCT           | プロダクト管理           | Product          |
-| 13   | AG-TEAM-MEMBER       | チームメンバー管理       | TeamMember       |
-| 14   | AG-USER-STORY        | ユーザーストーリー       | UserStory        |
-| 15   | AG-SPRINT            | スプリント               | Sprint           |
-| 16   | AG-PRODUCT-BACKLOG   | プロダクトバックログ     | ProductBacklog   |
-| 17   | AG-EPIC              | エピック                 | Epic             |
-| 18   | AG-SPRINT-PLANNING   | スプリントプランニング   | SprintPlanning   |
-| 19   | AG-SPRINT-REVIEW     | スプリントレビュー       | SprintReview     |
-| 20   | AG-DAILY-SCRUM       | デイリースクラム         | DailyScrum       |
-| 21   | AG-RETROSPECTIVE     | レトロスペクティブ       | Retrospective    |
-| 22   | AG-SPRINT-BACKLOG    | スプリントバックログ     | SprintBacklog    |
-| 23   | AG-TASK              | タスク                   | Task             |
-| 24   | AG-RELEASE           | リリース                 | Release          |
-| 25   | AG-FEATURE           | フィーチャー             | Feature          |
-| 26   | AG-PRODUCT-DASHBOARD | プロダクトダッシュボード | ProductDashboard |
-| 27   | AG-SPRINT-DASHBOARD  | スプリントダッシュボード | SprintDashboard  |
-| 28   | AG-EPIC-DASHBOARD    | エピックダッシュボード   | EpicDashboard    |
-| 29   | AG-SYSTEM-ADMIN      | システム管理             | SystemAdmin      |
+| 番号 | 業務領域コード        | 業務領域名               | 業務領域英名      |
+|------|-----------------------|--------------------------|-------------------|
+| 12   | AG-PRODUCT            | プロダクト管理           | Product           |
+| 13   | AG-TEAM-MEMBER        | チームメンバー管理       | TeamMember        |
+| 14   | AG-USER-STORY         | ユーザーストーリー       | UserStory         |
+| 15   | AG-SPRINT             | スプリント               | Sprint            |
+| 16   | AG-PRODUCT-BACKLOG    | プロダクトバックログ     | ProductBacklog    |
+| 17   | AG-EPIC               | エピック                 | Epic              |
+| 18   | AG-SPRINT-PLANNING    | スプリントプランニング   | SprintPlanning    |
+| 19   | AG-SPRINT-REVIEW      | スプリントレビュー       | SprintReview      |
+| 20   | AG-DAILY-SCRUM        | デイリースクラム         | DailyScrum        |
+| 21   | AG-RETROSPECTIVE      | レトロスペクティブ       | Retrospective     |
+| 22   | AG-SPRINT-BACKLOG     | スプリントバックログ     | SprintBacklog     |
+| 23   | AG-TASK               | タスク                   | Task              |
+| 24   | AG-RELEASE            | リリース                 | Release           |
+| 25   | AG-FEATURE            | フィーチャー             | Feature           |
+| 26   | AG-PRODUCT-DASHBOARD  | プロダクトダッシュボード | ProductDashboard  |
+| 27   | AG-SPRINT-DASHBOARD   | スプリントダッシュボード | SprintDashboard   |
+| 28   | AG-EPIC-DASHBOARD     | エピックダッシュボード   | EpicDashboard     |
+| 29   | AG-SYSTEM-ADMIN       | システム管理             | SystemAdmin       |
+| 30   | AG-SPRINT-PREPARATION | スプリント0準備          | SprintPreparation |
 
 ## 機能一覧
 
@@ -67,6 +68,14 @@ Scrumに基づくアジャイルソフトウェア開発プロジェクトの管
 | UC-020 | チームにチームメンバーを追加する           | チームに開発メンバーを追加する                 | 高     |
 | UC-021 | プロダクトにプロダクトオーナーを割り当てる | プロダクトにプロダクトオーナーを割り当てる     | 高     |
 | UC-022 | チームにスクラムマスターを割り当てる       | チームにスクラムマスターを割り当てる           | 高     |
+| UC-023 | プロダクト準備計画を作成する               | プロダクトの立ち上げ準備計画を作成             | 中     |
+| UC-024 | プロダクトビジョンを定義する               | ビジョン・成果指標を定義                       | 中     |
+| UC-025 | 初期バックログを作成する                   | 初期ユーザーストーリーを作成                   | 中     |
+| UC-026 | 準備項目を登録する                         | 環境構築、規約策定などの準備項目を登録         | 中     |
+| UC-027 | 準備決定を記録する                         | 技術・業務上の決定を記録                       | 中     |
+| UC-028 | 準備リスクを評価する                       | 技術的・業務的リスクを評価・更新               | 中     |
+| UC-029 | 初回スプリント準備状況を確認する           | 初回スプリントの準備状況を確認                 | 中     |
+| UC-030 | 準備作業を終了する                         | 準備作業を終了し、通常の開発へ移行             | 中     |
 
 ## 関連ドキュメント
 
