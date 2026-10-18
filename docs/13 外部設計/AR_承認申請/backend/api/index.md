@@ -7,7 +7,7 @@
 
 ## 参照
 
-- 事業領域一覧: `docs/12 RDRA モデル/01 事業領域/事業領域一覧.tsv`
+- 事業領域一覧: `docs/11.事業領域/事業領域一覧.tsv`
 - 業務領域一覧: `docs/12 RDRA モデル/02 業務領域/業務領域一覧.tsv`
 - API設計ガイドライン: `.agents/skills/api-design/SKILL.md`
 - ユースケース記述: [ユースケース記述/index.md](ユースケース記述/index.md)
