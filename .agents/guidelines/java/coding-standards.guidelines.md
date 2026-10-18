@@ -104,3 +104,93 @@
 - AssertJ を使用し、`.as("...")` でアサーションの意図を明記します。
 - テストクラス・メソッドは `package-private` とします。
 - 境界値・異常値（`null`, `""`, `" "`, 最大/最小値）を必ずテストします。
+
+## 9. アンチパターン
+
+以下のアンチパターンは避けてください。
+
+### 9.1 enumのコード値を直接比較しない
+
+データベースから返されたコード値をそのまま比較するのではなく、enum自体を比較するようにします。
+
+**❌ 悪い例**:
+
+```java
+if(!order.completeFlg.equals(CompleteFlg.KANRYO.code)){
+    // 未完了時の処理
+    }
+```
+
+**✅ 良い例**:
+
+```java
+if(order.getCompleteFlg() !=CompleteFlg.KANRYO){
+    // 未完了時の処理
+    }
+```
+
+データベースのコード値からenumへの変換は、enum側で `fromCode()` メソッド等によりカプセル化します。
+
+### 9.2 Listのget (0)や配列[0]で先頭要素を取得しない
+
+外部APIやデータベースアクセスライブラリからListや配列で返された結果を、そのまま `get(0)`
+で先頭要素を取得するのは避けてください。
+
+**リスク**:
+
+- 空のリストで `IndexOutOfBoundsException` が発生する
+- 暗黙的な最初の要素取得により意図が不明確になる
+- 防御的プログラミングの欠如
+
+**❌ 悪い例**:
+
+```java
+Order currentOrder = orders.get(0);
+```
+
+**✅ 良い例**:
+
+```java
+Optional<Order> currentOrderOptional = orders.stream().findFirst();
+currentOrderOptional.
+
+ifPresent(order ->{
+    // 安全な処理
+    });
+```
+
+またはドメインロジックでカプセル化する:
+
+```java
+public Order getCurrentOrder(List<Order> orders) {
+  return Optional.ofNullable(orders)
+      .filter(list -> !list.isEmpty())
+      .map(list -> list.get(0))
+      .orElseThrow(() -> new NoOrderFoundException("注文が見つかりません"));
+}
+```
+
+### 9.3 パース処理をドメインオブジェクトの外部で行わない
+
+ドメインオブジェクトを使う側が属性の型変換全てを行うのは避けてください。ドメインオブジェクトの内部の型やデータの持ち方に依存することになります。
+
+**❌ 悪い例**:
+
+```java
+Order order = new Order(
+    UUID.fromString(orderId),
+    OrderStatus.getByCode(Integer.parseInt(orderstatus)),
+    LocalDate.parse("yyyyMMdd", biddingStartYmd),
+    LocalDate.parse("yyyyMMdd", biddingEndYmd)
+);
+```
+
+**✅ 良い例**:
+
+ドメインオブジェクト側で型変換をカプセル化し、クライアントコードを単純化します。
+
+```java
+Order order = Order.fromDto(orderId, orderstatus, biddingStartYmd, biddingEndYmd);
+```
+
+型変換の責務をドメインオブジェクト側に移譲することで、コード重複の排除、メンテナンス性の向上、柔軟性の確保が図れます。
