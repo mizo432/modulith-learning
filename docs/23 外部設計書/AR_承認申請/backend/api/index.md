@@ -8,7 +8,7 @@
 ## 参照
 
 - 事業領域一覧: `docs/11.事業領域/事業領域一覧.tsv`
-- 業務領域一覧: `docs/02 業務領域/業務領域一覧.tsv`
+- 業務領域一覧: `docs/12 業務領域/業務領域一覧.tsv`
 - API設計ガイドライン: `.agents/skills/api-design/SKILL.md`
 - ユースケース記述: [ユースケース記述/index.md](ユースケース記述/index.md)
 - OpenAPI仕様書: [openapi.yaml](openapi.yaml)
