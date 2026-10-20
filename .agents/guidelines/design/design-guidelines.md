@@ -11,6 +11,10 @@
 
 詳細設計は、基本設計で定義された要件・アーキテクチャを、実装可能なレベルまで具体化する工程です。「何を（What）」から「どのように（How）」への変換を行い、開発者が迷わず実装できる情報を提供します。
 
+要件定義書を参照し、詳細設計書を作成します
+詳細設計書の格納ディレクトリは「ドキュメント格納先ディレクトリ命名規則 (Document Directory Naming
+Guidelines)」を確認してください。
+
 ### 1.2 詳細設計の目的
 
 1. **実装の明確化**: 開発者が設計ドキュメントのみで実装可能なレベルまで詳細を定義する
@@ -91,11 +95,13 @@ docs/
 | status | CustomerStatus | 状態 | NOT NULL, デフォルト: ACTIVE |
 
 **ビジネスルール**:
+
 - 顧客コードは一意であること
 - メールアドレスは有効な形式であること
 - 削除は論理削除（deleted_at）で行う
 
 **関連**:
+
 - Order: 1対多（customer → orders）
 
 **集約ルート**: はい
@@ -114,6 +120,7 @@ docs/
 | street | String | 町名・番地 | NOT NULL, 最大255文字 |
 
 **ビジネスルール**:
+
 - 不変（Immutable）であること
 - 全属性がnullでないこと
 
@@ -132,6 +139,7 @@ docs/
 **出力**: boolean (true: 重複あり, false: 重複なし)
 
 **処理内容**:
+
 1. 顧客コードで既存顧客を検索する
 2. 存在する場合はtrue、存在しない場合はfalseを返す
 
@@ -153,6 +161,7 @@ docs/
 | createdAt | LocalDateTime | 作成日時 |
 
 **リスナー**:
+
 - 通知サービス: 新規顧客へのウェルカムメール送信
 - 統計サービス: 顧客数のカウント更新
 ```
@@ -180,10 +189,10 @@ docs/
 | カラム名 | 型 | NULL | 制約 | 説明 |
 |:---------|:---|:-----|:-----|:-----|
 | id | BIGINT | NOT NULL | PRIMARY KEY | 顧客ID |
-| customer_code | VARCHAR(20) | NOT NULL | UNIQUE | 顧客コード |
-| name | VARCHAR(100) | NOT NULL | - | 顧客名 |
-| email | VARCHAR(255) | NOT NULL | UNIQUE | メールアドレス |
-| status | VARCHAR(20) | NOT NULL | DEFAULT 'ACTIVE', CHECK | 状態 |
+| customer_code | VARCHAR (20) | NOT NULL | UNIQUE | 顧客コード |
+| name | VARCHAR (100) | NOT NULL | - | 顧客名 |
+| email | VARCHAR (255) | NOT NULL | UNIQUE | メールアドレス |
+| status | VARCHAR (20) | NOT NULL | DEFAULT 'ACTIVE', CHECK | 状態 |
 | created_at | TIMESTAMP | NOT NULL | DEFAULT CURRENT_TIMESTAMP | 作成日時 |
 | updated_at | TIMESTAMP | NOT NULL | DEFAULT CURRENT_TIMESTAMP | 更新日時 |
 | deleted_at | TIMESTAMP | NULL | - | 論理削除日時 |
@@ -196,6 +205,7 @@ docs/
 | idx_customers_status_created_at | status, created_at | 複合 | 状態別・日付順検索 |
 
 **制約**:
+
 - 主キー: id
 - ユニーク: customer_code, email
 - チェック: status IN ('ACTIVE', 'INACTIVE', 'SUSPENDED')
@@ -245,8 +255,7 @@ CREATE INDEX idx_customers_status ON undecided_as.customers (status);
 ```markdown
 ### エンドポイント: 顧客一覧取得
 
-**メソッド**: GET
-**パス**: `/api/v1/customers`
+**メソッド**: GET **パス**: `/api/v1/customers`
 **ステータスコード**: 200 OK
 
 **クエリパラメータ**:
@@ -258,6 +267,7 @@ CREATE INDEX idx_customers_status ON undecided_as.customers (status);
 | status | String | いいえ | 状態フィルタ | - |
 
 **レスポンス**:
+
 ```json
 {
   "data": [
@@ -375,19 +385,23 @@ ctrl --> user: 201 Created
 **チャンクサイズ**: 50
 
 **Reader**:
+
 - 入力: classpath:data/customers.csv
 - 形式: CSV（ヘッダーあり）
 - 文字コード: UTF-8
 
 **Processor**:
+
 - 必須フィールド: customerCode, name, email
 - 検証ルール: メールアドレス形式チェック、重複チェック
 - スキップ条件: 必須フィールドがnullまたは空
 
 **Writer**:
-- 保存方法: repository.saveAll() 一括保存
+
+- 保存方法: repository.saveAll () 一括保存
 
 **エラーハンドリング**:
+
 - skipLimit: 10
 - retryLimit: 3
 ```
@@ -425,11 +439,13 @@ ctrl --> user: 201 Created
 | pagination | Pagination | useState | ページネーション情報 |
 
 **子コンポーネント**:
+
 - CustomerTable: 顧客一覧のテーブル表示
 - PaginationControls: ページネーションコントロール
 - CustomerFilter: フィルタ条件入力
 
 **API通信**:
+
 - GET /api/v1/customers: 顧客一覧取得
 - POST /api/v1/customers: 顧客作成
 
@@ -493,8 +509,10 @@ interface CustomerListResponse {
 **発生しうる例外**:
 | 例外 | 条件 | HTTPステータス | エラーコード | メッセージ |
 |:-----|:-----|:---------------|:-------------|:-----------|
-| BusinessException | 顧客コードが重複 | 400 | DUPLICATE_CUSTOMER_CODE | 指定された顧客コードは既に使用されています |
-| BusinessException | メールアドレスが重複 | 400 | DUPLICATE_EMAIL | 指定されたメールアドレスは既に使用されています |
+| BusinessException | 顧客コードが重複 | 400 | DUPLICATE_CUSTOMER_CODE |
+指定された顧客コードは既に使用されています |
+| BusinessException | メールアドレスが重複 | 400 | DUPLICATE_EMAIL |
+指定されたメールアドレスは既に使用されています |
 | SystemException | DB接続失敗 | 500 | DATABASE_ERROR | データベース操作に失敗しました |
 ```
 
