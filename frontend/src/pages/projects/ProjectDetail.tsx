@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Link as RouterLink, useParams} from 'react-router-dom';
 import {
   Box,
@@ -49,7 +49,7 @@ const ProjectDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);
 
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     if (!id) return;
 
     try {
@@ -63,11 +63,11 @@ const ProjectDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchProject();
-  }, [id]);
+  }, [fetchProject]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);

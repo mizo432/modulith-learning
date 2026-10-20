@@ -32,6 +32,12 @@
 | [ddd/immutable-data-model.guidelines.md](guidelines/ddd/immutable-data-model.guidelines.md) | イミュータブルデータモデル設計指針 |
 | [ddd/rdra-model.guidelines.md](guidelines/ddd/rdra-model.guidelines.md)                     | RDRAモデルによる要件定義           |
 
+### ドキュメント関連
+
+| ファイル                                                                          | 説明                                   |
+|-----------------------------------------------------------------------------------|----------------------------------------|
+| [docs/directory-name.guidelines.md](guidelines/docs/directory-name.guidelines.md) | ドキュメント格納先ディレクトリ命名規則 |
+
 ### TypeScript 関連
 
 | ファイル                                                                                          | 説明                          |

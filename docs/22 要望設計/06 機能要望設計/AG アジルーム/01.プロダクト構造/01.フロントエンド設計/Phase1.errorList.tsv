@@ -1,0 +1,97 @@
+カテゴリ	チェック項目	ステータス	備考
+1. ディレクトリ構成の再編成	pages/auth/ ディレクトリを作成	NG	pages/auth/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/dashboard/ ディレクトリを作成	NG	pages/dashboard/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/products/ ディレクトリを作成	NG	pages/products/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/projects/components/ ディレクトリを作成	NG	pages/projects/components/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/users/components/ ディレクトリを作成	NG	pages/users/components/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/auth/components/ ディレクトリを作成	NG	pages/auth/components/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/dashboard/components/ ディレクトリを作成	NG	pages/dashboard/components/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/products/components/ ディレクトリを作成	NG	pages/products/components/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	types/ ディレクトリを作成	NG	types/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	hooks/ ディレクトリを作成	NG	hooks/ ディレクトリが存在しない
+1. ディレクトリ構成の再編成	pages/Login.tsx → pages/auth/Login.tsx に移動	NG	Login.tsx は pages/ に存在
+1. ディレクトリ構成の再編成	pages/ChangePassword.tsx → pages/auth/ChangePassword.tsx に移動	NG	ChangePassword.tsx は pages/ に存在
+1. ディレクトリ構成の再編成	pages/Dashboard.tsx → pages/dashboard/Dashboard.tsx に移動	NG	Dashboard.tsx は pages/ に存在
+1. ディレクトリ構成の再編成	pages/ProductSelection.tsx → pages/products/ProductSelection.tsx に移動	NG	ProductSelection.tsx は pages/ に存在
+2. 認証関連ページの分割	pages/auth/Login.tsx をコンテナコンポーネントにリファクタリング	NG	Login.tsx はロジックとUIが混在
+2. 認証関連ページの分割	pages/auth/components/LoginForm.tsx を新規作成	NG	LoginForm.tsx が存在しない
+2. 認証関連ページの分割	pages/auth/ChangePassword.tsx をコンテナコンポーネントにリファクタリング	NG	ChangePassword.tsx はロジックとUIが混在
+2. 認証関連ページの分割	pages/auth/components/PasswordForm.tsx を新規作成	NG	PasswordForm.tsx が存在しない
+3. ダッシュボードページの分割	pages/dashboard/Dashboard.tsx をコンテナコンポーネントにリファクタリング	NG	Dashboard.tsx はロジックとUIが混在
+3. ダッシュボードページの分割	pages/dashboard/components/DashboardCard.tsx を新規作成	NG	DashboardCard.tsx が存在しない
+3. ダッシュボードページの分割	pages/dashboard/components/ProductShortcut.tsx を新規作成	NG	ProductShortcut.tsx が存在しない
+4. 製品選択ページの分割	pages/products/ProductSelection.tsx をコンテナコンポーネントにリファクタリング	NG	ProductSelection.tsx はロジックとUIが混在
+4. 製品選択ページの分割	pages/products/components/ProductSearchBar.tsx を新規作成	NG	ProductSearchBar.tsx が存在しない
+4. 製品選択ページの分割	pages/products/components/ProductCard.tsx を新規作成	NG	ProductCard.tsx が存在しない
+4. 製品選択ページの分割	pages/products/components/ProductGrid.tsx を新規作成	NG	ProductGrid.tsx が存在しない
+5. プロジェクト関連ページの分割	pages/projects/ProjectList.tsx をコンテナコンポーネントにリファクタリング	NG	ProjectList.tsx はロジックとUIが混在
+5. プロジェクト関連ページの分割	pages/projects/components/ProjectTable.tsx を新規作成	NG	ProjectTable.tsx が存在しない
+5. プロジェクト関連ページの分割	pages/projects/components/ProjectTableRow.tsx を新規作成	NG	ProjectTableRow.tsx が存在しない
+5. プロジェクト関連ページの分割	pages/projects/components/ProjectActions.tsx を新規作成	NG	ProjectActions.tsx が存在しない
+5. プロジェクト関連ページの分割	pages/projects/ProjectDetail.tsx をコンテナコンポーネントにリファクタリング	NG	ProjectDetail.tsx はロジックとUIが混在
+5. プロジェクト関連ページの分割	pages/projects/components/ProjectInfo.tsx を新規作成	NG	ProjectInfo.tsx が存在しない
+5. プロジェクト関連ページの分割	pages/projects/components/ProjectTabPanel.tsx を新規作成	NG	ProjectTabPanel.tsx が存在しない（ProjectDetail.tsx に定義）
+5. プロジェクト関連ページの分割	pages/projects/components/ProjectStatusChip.tsx を新規作成	NG	ProjectStatusChip.tsx が存在しない
+5. プロジェクト関連ページの分割	pages/projects/ProjectCreate.tsx をコンテナコンポーネントにリファクタリング	NG	ProjectCreate.tsx はロジックとUIが混在
+5. プロジェクト関連ページの分割	pages/projects/ProjectEdit.tsx をコンテナコンポーネントにリファクタリング	NG	ProjectEdit.tsx はロジックとUIが混在
+5. プロジェクト関連ページの分割	pages/projects/components/ProjectForm.tsx を新規作成	NG	ProjectForm.tsx が存在しない
+6. ユーザー関連ページの分割	pages/users/UserList.tsx をコンテナコンポーネントにリファクタリング	NG	UserList.tsx はロジックとUIが混在
+6. ユーザー関連ページの分割	pages/users/components/UserTable.tsx を新規作成	NG	UserTable.tsx が存在しない
+6. ユーザー関連ページの分割	pages/users/components/UserTableRow.tsx を新規作成	NG	UserTableRow.tsx が存在しない
+6. ユーザー関連ページの分割	pages/users/components/UserActions.tsx を新規作成	NG	UserActions.tsx が存在しない
+6. ユーザー関連ページの分割	pages/users/components/DeleteDialog.tsx を新規作成	NG	DeleteDialog.tsx が存在しない（UserList.tsx に定義）
+6. ユーザー関連ページの分割	pages/users/UserCreate.tsx をコンテナコンポーネントにリファクタリング	NG	UserCreate.tsx はロジックとUIが混在
+6. ユーザー関連ページの分割	pages/users/UserEdit.tsx をコンテナコンポーネントにリファクタリング	NG	UserEdit.tsx はロジックとUIが混在
+6. ユーザー関連ページの分割	pages/users/components/UserForm.tsx を新規作成	NG	UserForm.tsx が存在しない
+7. 共有コンポーネントの実装	components/DataTable.tsx を新規作成	NG	DataTable.tsx が存在しない
+7. 共有コンポーネントの実装	components/SearchBar.tsx を新規作成	NG	SearchBar.tsx が存在しない
+7. 共有コンポーネントの実装	components/LoadingIndicator.tsx を新規作成	NG	LoadingIndicator.tsx が存在しない
+7. 共有コンポーネントの実装	components/ErrorDisplay.tsx を新規作成	NG	ErrorDisplay.tsx が存在しない
+7. 共有コンポーネントの実装	components/EmptyState.tsx を新規作成	NG	EmptyState.tsx が存在しない
+7. 共有コンポーネントの実装	components/ConfirmDialog.tsx を新規作成	NG	ConfirmDialog.tsx が存在しない
+7. 共有コンポーネントの実装	components/StatusChip.tsx を新規作成	NG	StatusChip.tsx が存在しない
+8. 型定義の整理	types/index.ts を新規作成	NG	types/index.ts が存在しない
+8. 型定義の整理	types/common.ts を新規作成	NG	types/common.ts が存在しない
+8. 型定義の整理	types/auth.ts を新規作成	NG	types/auth.ts が存在しない
+8. 型定義の整理	types/product.ts を新規作成	NG	types/product.ts が存在しない
+8. 型定義の整理	types/project.ts を新規作成	NG	types/project.ts が存在しない
+8. 型定義の整理	types/user.ts を新規作成	NG	types/user.ts が存在しない
+8. 型定義の整理	types/team.ts を新規作成	NG	types/team.ts が存在しない
+8. 型定義の整理	各ページ・コンポーネントで types/ 配下の型をインポート	NG	types/ ディレクトリが存在しない
+8. 型定義の整理	サービス層で types/ 配下の型を使用	NG	型定義がサービス層に直接定義
+9. カスタムフックの実装	hooks/useAuth.ts を新規作成	NG	hooks/useAuth.ts が存在しない（AuthContext.tsx に定義）
+9. カスタムフックの実装	hooks/useApi.ts を新規作成	NG	hooks/useApi.ts が存在しない
+9. カスタムフックの実装	hooks/usePagination.ts を新規作成	NG	hooks/usePagination.ts が存在しない
+9. カスタムフックの実装	hooks/useSearch.ts を新規作成	NG	hooks/useSearch.ts が存在しない
+9. カスタムフックの実装	hooks/useForm.ts を新規作成	NG	hooks/useForm.ts が存在しない
+10. ルーティングの再構成	移動したページファイルのインポートパスを更新	NG	ページファイルが移動していない
+10. ルーティングの再構成	ルート定義を確認・更新	NG	ページファイルの移動が未完了
+10. ルーティングの再構成	ProtectedRoute コンポーネントが認証チェックを実装していることを確認	OK	App.tsx に実装済み
+10. ルーティングの再構成	AdminRoute コンポーネントが管理者権限チェックを実装していることを確認	OK	App.tsx に実装済み
+10. ルーティングの再構成	FirstLoginRoute コンポーネントが初回ログイン判定を実装していることを確認	OK	App.tsx に実装済み
+11. 設計ガイドライン準拠の確認	各コンポーネントの責務が明確で単一である	NG	すべてのページでロジックとUIが混在
+11. 設計ガイドライン準拠の確認	Propsの型定義が明確でデフォルト値が設定されている	NG	プレゼンテーションコンポーネントが未実装
+11. 設計ガイドライン準拠の確認	any型を使用していない	NG	Login.tsx で any型を使用
+11. 設計ガイドライン準拠の確認	コンポーネントサイズが適切で、必要に応じて分割されている	NG	すべてのページで分割が未完了
+11. 設計ガイドライン準拠の確認	ステート管理のスコープが適切	NG	カスタムフックが未実装
+11. 設計ガイドライン準拠の確認	副作用の管理が適切でクリーンアップ関数が実装されている	OK	各ページでuseEffectが適切に使用
+11. 設計ガイドライン準拠の確認	カスタムフックでロジックが抽出されている	NG	hooks/ ディレクトリが存在しない
+11. 設計ガイドライン準拠の確認	API通信がサービス層で一元管理されている	OK	サービス層でAPI通信が一元管理
+11. 設計ガイドライン準拠の確認	エラーハンドリングとローディング状態が適切に処理されている	OK	各ページでエラーハンドリングが実装
+11. 設計ガイドライン準拠の確認	型安全なAPI呼び出しが実装されている	OK	サービス層で型定義が使用
+11. 設計ガイドライン準拠の確認	ルーティング構造が一貫している	OK	App.tsx でルーティングが一貫
+11. 設計ガイドライン準拠の確認	ナビゲーションの一貫性が保たれている	OK	各ページでナビゲーションが一貫
+11. 設計ガイドライン準拠の確認	アクセシビリティ基準を満たす設計	NG	プレゼンテーションコンポーネントが未実装
+11. 設計ガイドライン準拠の確認	セキュリティ対策が講じられている	OK	トークン管理が実装
+11. 設計ガイドライン準拠の確認	テーマ設定が theme.ts で一元管理されている	OK	theme.ts で一元管理
+11. 設計ガイドライン準拠の確認	環境別設定が適切に分離されている	OK	.env.* で分離
+13. 最終確認	TypeScriptコンパイルエラーがないことを確認	OK	ビルドエラーなし
+13. 最終確認	アプリケーションが正常に起動することを確認	OK	アプリケーション起動可能
+13. 最終確認	各ページが正常にレンダリングされることを確認	OK	各ページがレンダリング可能
+13. 最終確認	ルーティングが正しく動作することを確認	OK	ルーティングが正常に動作
+13. 最終確認	コンポーネント間のProps渡しが正しく動作することを確認	NG	プレゼンテーションコンポーネントが未実装
+13. 最終確認	API通信が正常に動作することを確認	OK	API通信が正常に動作
+13. 最終確認	エラー状態が適切に表示されることを確認	OK	エラー状態が表示可能
+13. 最終確認	コードフォーマットが統一されていることを確認	OK	コードフォーマットが統一
+13. 最終確認	不要なインポートがないことを確認	OK	不要なインポートなし
+13. 最終確認	コメントが適切に記述されていることを確認	OK	コメントが適切に記述

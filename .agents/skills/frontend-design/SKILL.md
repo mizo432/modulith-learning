@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: React 18、TypeScript、MUI v5、React Router v6に基づくフロントエンド設計ガイドライン。コンポーネント設計、ステート管理、ルーティング、API通信、型安全性、Storybookテストの設計ルールを提供。
+description: React 18、TypeScript、MUI v5、React Router v6に基づくフロントエンド設計ガイドライン。コンポーネント設計、ステート管理、ルーティング、API通信、型安全性の設計ルールを提供。
 ---
 
 ### Frontend Design Guide (`frontend-design`)
@@ -18,7 +18,6 @@ description: React 18、TypeScript、MUI v5、React Router v6に基づくフロ�
 - ルーティング構造やナビゲーションフローを設計するとき
 - API通信パターンやエラーハンドリング戦略を設計するとき
 - 型定義（インターフェース、型エイリアス）の設計を行うとき
-- Storybookによるコンポーネントテストの設計を行うとき
 - アクセシビリティやパフォーマンス最適化を検討するとき
 
 ---
@@ -35,7 +34,7 @@ description: React 18、TypeScript、MUI v5、React Router v6に基づくフロ�
 | **ルーティング**       | React Router v6                                       |
 | **HTTPクライアント**   | axios                                                 |
 | **ビルドツール**       | Create React App (react-scripts 5.0.1)                |
-| **テスト**             | Storybook / Jest / React Testing Library              |
+| **テスト**             | Jest / React Testing Library                          |
 | **パフォーマンス計測** | web-vitals                                            |
 
 #### 2.2 コンポーネント指向設計
@@ -153,7 +152,7 @@ frontend/src/
 
 - **一元管理**: `src/services/api.ts` でaxiosインスタンスを一元管理。
 - **インターセプター**: リクエスト/レスポンスインターセプターで認証トークンの付与やエラーハンドリングを統一。
-- **ベースURL設定**: 環境変数 (`REACT_APP_API_BASE_URL`) でベースURLを管理。
+- **ベースURL設定**: 環境変数 (`REACT_APP_API_URL`) でベースURLを管理。
 
 #### 7.2 サービス層設計
 
@@ -176,6 +175,8 @@ frontend/src/
 - **テーマ集約**: `frontend/src/theme.ts` にテーマ設定を一元化。
 - **環境別設定**: `.env.development`, `.env.staging`, `.env.production` で環境別の色や設定を上書き。
 - **カスタムテーマ**: MUIのデフォルトテーマを拡張し、プロジェクト固有のデザインシステムを構築。
+- **環境変数**: `REACT_APP_PRIMARY_COLOR`, `REACT_APP_SECONDARY_COLOR`, `REACT_APP_BACKGROUND_COLOR`
+  でテーマカラーを環境別に設定。
 
 #### 8.2 スタイリングルール
 
@@ -187,18 +188,18 @@ frontend/src/
 
 ### 9. テスト設計 (Testing Design)
 
-#### 9.1 Storybookテスト戦略
+#### 9.1 テスト戦略
 
-- **メインテスト手法**: フロントエンドのテストは **Storybook** で記述。
-- **ストーリーファイル**: コンポーネントと同じディレクトリに `*.stories.tsx` を配置。
-- **状態のカバー**: loading / error / empty / success の各状態をストーリーとして定義。
-- **インタラクションテスト**: `play` 関数でユーザー操作の検証を行う。
+- **メインテスト手法**: フロントエンドのテストは **Jest** と **React Testing Library** で記述。
+- **テストファイル**: コンポーネントと同じディレクトリに `*.test.tsx` を配置。
+- **状態のカバー**: loading / error / empty / success の各状態をテストケースとして定義。
+- **インタラクションテスト**: `@testing-library/user-event` でユーザー操作の検証を行う。
 
 #### 9.2 テスト設計ルール
 
-- **Storybook優先**: Jest単体の `*.test.tsx` を新規に作る前に、Storybookで書けるか検討。
-- **コンポーネント隔離**: 各ストーリーはコンポーネントを隔離してテスト。
+- **コンポーネント隔離**: 各テストはコンポーネントを隔離してテスト。
 - **モックデータ**: 現実的なモックデータを使用して、様々なエッジケースをカバー。
+- **スナップショットテスト**: 必要に応じてスナップショットテストを使用して、UIの意図しない変更を検出。
 
 ---
 
@@ -268,7 +269,7 @@ frontend/src/
 - [ ] ルーティング構造が一貫している
 - [ ] API通信がサービス層で一元管理されている
 - [ ] エラーハンドリングとローディング状態が適切に処理されている
-- [ ] Storybookによるテストがloading/error/empty/successをカバーしている
+- [ ] テストがloading/error/empty/successをカバーしている
 - [ ] パフォーマンス最適化（useMemo, useCallback, React.memo）が適切に適用されている
 - [ ] アクセシビリティ基準（ARIA, キーボード操作, カラーコントラスト）を満たしている
 - [ ] セキュリティ対策（XSS, 入力サニタイズ, トークン管理）が講じられている
