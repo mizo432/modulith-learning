@@ -30,7 +30,7 @@
 |---------------------------------------------------------------------------------------------|------------------------------------|
 | [ddd/ddd.guideline.md](guidelines/ddd/ddd.guideline.md)                                     | ドメイン駆動設計の基本原則         |
 | [ddd/immutable-data-model.guidelines.md](guidelines/ddd/immutable-data-model.guidelines.md) | イミュータブルデータモデル設計指針 |
-| [ddd/rdra-model.guidelines.md](guidelines/ddd/rdra-model.guidelines.md)                     | RDRAモデルによる要件定義           |
+| [ddd/rdra-model.guidelines.md](guidelines/rdra/rdra-model.guidelines.md)                    | RDRAモデルによる要件定義           |
 
 ### ドキュメント関連
 
