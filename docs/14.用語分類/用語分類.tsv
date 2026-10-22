@@ -1,0 +1,30 @@
+# 用語集
+番号	用語	英名	英名複数形	用語分類	定義
+01	プロダクト	Product	Products	リソース	Scrumで開発対象となるソフトウェア製品またはプロジェクト
+02	チーム	Team	Teams	リソース	プロダクトの開発を行うScrumチーム
+03	メンバー	Member	Members	リソース	チームに所属する開発者
+04	ユーザー	User	Users	リソース	システムを利用する利用者
+05	プロダクトオーナー	Product Owner	Product Owners	ロール	プロダクトのビジョンとバックログを管理する役割
+06	スクラムマスター	Scrum Master	Scrum Masters	ロール	Scrumプロセスの進行をサポートする役割
+07	ステークホルダー	Stakeholder	Stakeholders	ロール	プロダクトの利害関係者
+08	システム管理者	System Administrator	System Administrators	ロール	システムの初期設定と管理を行う役割
+09	エピック	Epic	Epics	リソース	大規模な機能のまとまり。複数のフィーチャーに分解される
+10	フィーチャー	Feature	Features	リソース	エピックを構成する機能。複数のユーザーストーリーに分解される
+11	ユーザーストーリー	User Story	User Stories	リソース	具体的な機能要求。開発の最小単位
+12	タスク	Task	Tasks	リソース	ユーザーストーリーを構成する作業単位
+13	プロダクトバックログ	Product Backlog	Product Backlogs	リソース	プロダクトの要件の優先度付きリスト
+14	スプリント	Sprint	Sprints	リソース	固定期間の反復開発サイクル
+15	スプリントバックログ	Sprint Backlog	Sprint Backlogs	リソース	スプリントで実行するタスクのリスト
+16	デイリースクラム	Daily Scrum	Daily Scrums	イベント	毎日の進捗共有ミーティング
+17	スプリントレビュー	Sprint Review	Sprint Reviews	イベント	スプリント終了時の成果確認ミーティング
+18	レトロスペクティブ	Retrospective	Retrospectives	イベント	スプリント終了時の振り返りミーティング
+19	リリース	Release	Releases	リソース	スプリントの成果を累積した公開版
+20	ダッシュボード	Dashboard	Dashboards	リソース	進捗状況を可視化する画面
+21	ストーリーポイント	Story Point	Story Points	指標	ユーザーストーリーの相対的な作業量の見積もり単位
+22	バーンダウンチャート	Burndown Chart	Burndown Charts	指標	残作業量を時間軸で表示するグラフ
+23	バーンアップチャート	Burnup Chart	Burnup Charts	指標	完了作業量を時間軸で表示するグラフ
+24	ベロシティ	Velocity	Velocities	指標	チームが1スプリントで完了できるストーリーポイントの合計
+25	アーカイブ	Archive	Archives	状態	プロダクトが活動終了した状態
+26	優先度	Priority	Priorities	属性	要件の重要度・緊急度を表す値
+27	役割	Role	Roles	対照表	ユーザーがシステム内で担う役割
+28	状態	Status	Statuses	対照表	オブジェクトの現在の状態
