@@ -17,6 +17,6 @@
 
 ## 参照
 
-- 事業領域一覧: `docs/11.事業領域/事業領域一覧.tsv`
+- 事業領域一覧: `docs/11 事業領域/事業領域一覧.tsv`
 - 業務領域一覧: `docs/12 業務領域/業務領域一覧.tsv`
 - データ設計スキル: `.agents/skills/data-design/SKILL.md`

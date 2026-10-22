@@ -6,7 +6,7 @@ description: >
 # RDRA (Relationship Driven Requirement Analysis) Skill
 ---
 
-RDRAについては[RDRAガイドライン](../../guidelines/rdra/rdra-model.guidelines.md)を参照してください。
+RDRAについては[RDRAガイドライン](../../../guidelines/rdra/rdra-model.guidelines.md)を参照してください。
 
 ## Purpose
 
@@ -22,15 +22,6 @@ RDRAについては[RDRAガイドライン](../../guidelines/rdra/rdra-model.gui
 8. 画面定義書を作成
 
 をまとめる。
-
-**RDRA**（ラドラ）は、「Relationship Driven Requirement
-Analysis」の略称で、モデルベースの要件定義手法です。
-
-RDRAは、システムを構成する要素同士の関係（Relationship）を定義することで、システム全体の構造を明確に捉え、可視化します。これにより、要件の抜け漏れや矛盾を早期に発見し、「なぜ必要なのか」を説明可能な納得感のある要件定義を実現します。
-
-AIは要求を一方的に決定してはならない。
-AIは「候補の生成」「質問」「整理」「検証」を行い、
-最終的な要求の確定はユーザーが行う。
 
 ---
 
@@ -123,19 +114,9 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ##### チェックリスト
 
-詳細な確認項目は [requirement.md](../../rdra/checklists/requirement.md) を参照してください。
+詳細な確認項目は [requirement.md](../../../rdra/checklists/requirement.md) を参照してください。
 
-**チェックエラー時の処理**: チェックリストでエラーが発見された場合は、以下の手順に従ってください：
-
-1. エラー内容を `check-error.tsv`
-   に記録する（テンプレート: [templates/check-error.tsv](templates/check-error.tsv)）
-2. `check-error.tsv` を事業領域ディレクトリに配置する（例:
-   `docs/22 要件定義書/[事業領域名]/check-error.tsv`）
-3. 要件定義を中断し、次のフェーズに進まない
-4. ユーザーにエラー内容を報告する
-5. エラー修正後に再チェックを行い、合格してから次のフェーズに進む
-
-> **注意**: チェックエラー時は、出力されたファイルの削除は自動的に行いません。ユーザーの確認後に手動で削除してください。
+**チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
 
 #### 3.2 フェーズ2: 要件を組み立てる (要件の具体化)
 
@@ -156,7 +137,6 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 - 情報をハブとして他のユースケースと繋ぐ
 - ユースケースによる情報の変化を状態として表すことでユースケースの妥当性を評価
 - アクター、外部システムをユースケースに関連付ける
--
 
 **ID命名規約**: [guidelines/id-naming-conventions.guidelines.md](guidelines/id-naming-conventions.guidelines.md)
 を参照する
@@ -173,19 +153,10 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ##### チェックリスト
 
-詳細な確認項目は [requirement-assembly.md](../../rdra/checklists/requirement-assembly.md) を参照してください。
+詳細な確認項目は [requirement-assembly.md](../../../rdra/checklists/requirement-assembly.md)
+を参照してください。
 
-**チェックエラー時の処理**: チェックリストでエラーが発見された場合は、以下の手順に従ってください：
-
-1. エラー内容を `check-error.tsv`
-   に記録する（テンプレート: [templates/check-error.tsv](templates/check-error.tsv)）
-2. `check-error.tsv` を業務領域ディレクトリに配置する（例:
-   `docs/22 要件定義書/[事業領域名]/[業務領域名]/check-error.tsv`）
-3. 要件定義を中断し、次のフェーズに進まない
-4. ユーザーにエラー内容を報告する
-5. エラー修正後に再チェックを行い、合格してから次のフェーズに進む
-
-> **注意**: チェックエラー時は、出力されたファイルの削除は自動的に行いません。ユーザーの確認後に手動で削除してください。
+**チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
 
 #### 3.3 フェーズ3: 整合性・網羅性を確認し精度を高める (仕上げと仕様化の準備)
 
@@ -215,46 +186,55 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ##### チェックリスト
 
-詳細な確認項目は [issue-creation.md](../../rdra/checklists/issue-creation.md) を参照してください。
+詳細な確認項目は [issue-creation.md](../../../rdra/checklists/issue-creation.md) を参照してください。
 
-**チェックエラー時の処理**: チェックリストでエラーが発見された場合は、以下の手順に従ってください：
+**チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
+
+#### 3.4 RDRA モデルの出力と完了
+
+**ユーザー確認**:
+
+- 構築したRDRAモデル（4レイヤー、ダイアグラム）をユーザーに提示する
+- モデルの内容について質問・修正を促し、最終確認を得る
+
+**ファイルへの出力**:
+
+- 確認済みのRDRAモデルを `docs/22 要件定義書` ディレクトリにMarkdownとして出力する
+- 入力元は `docs/21 要望` ディレクトリ内のファイルを使用する
+- 要件の階層構造、トレーサビリティ、ダイアグラムを整理して記録する
+- 元の要件ドキュメントは変更せず、新しいRDRAモデルファイルを出力する
+
+**出力ディレクトリ構造**:
+
+出力ディレクトリは以下の階層構造に従います：
+
+[ドキュメント格納先ディレクトリ命名規則 (Document Directory Naming Guidelines)](../../../guidelines/docs/directory-name.guidelines.md)
+を参照してください。
+
+**完了報告**:
+
+- Wikiに出力したファイルパスまたはページURLをユーザーに報告する
+- 実装順序の推奨と次のステップ（必要に応じてIssue作成）を提案する
+- **GitHub Issuesはこのスキルでは作成しない**。Issue作成はユーザーの判断に委ねる
+
+##### チェックエラー時の処理
+
+チェックリストでエラーが発見された場合は、以下の手順に従ってください：
 
 1. エラー内容を `check-error.tsv`
    に記録する（テンプレート: [templates/check-error.tsv](templates/check-error.tsv)）
-2. `check-error.tsv` を業務領域ディレクトリに配置する（例:
-   `docs/22 要件定義書/[事業領域名]/[業務領域名]/check-error.tsv`）
+2. `check-error.tsv` を適切なディレクトリに配置する
+    - フェーズ1: `docs/22 要件定義書/[事業領域名]/check-error.tsv`
+    - フェーズ2/3: `docs/22 要件定義書/[事業領域名]/[業務領域名]/check-error.tsv`
 3. 要件定義を中断し、次のフェーズに進まない
 4. ユーザーにエラー内容を報告する
 5. エラー修正後に再チェックを行い、合格してから次のフェーズに進む
 
 > **注意**: チェックエラー時は、出力されたファイルの削除は自動的に行いません。ユーザーの確認後に手動で削除してください。
 
-1. **RDRA モデルのユーザー確認**:
-    - 構築したRDRAモデル（4レイヤー、ダイアグラム）をユーザーに提示する
-    - モデルの内容について質問・修正を促し、最終確認を得る
-    - AIは要求を一方的に決定してはならない
-
-2. **ファイルへの出力**:
-    - 確認済みのRDRAモデルを `docs/22 要件定義書` ディレクトリにMarkdownとして出力する
-    - 入力元は `docs/21 要望` ディレクトリ内のファイルを使用する
-    - 要件の階層構造、トレーサビリティ、ダイアグラムを整理して記録する
-    - 元の要件ドキュメントは変更せず、新しいRDRAモデルファイルを出力する
-
-3. **出力ディレクトリ構造**:
-
-   出力ディレクトリは以下の階層構造に従います：
-
-   [ドキュメント格納先ディレクトリ命名規則 (Document Directory Naming Guidelines)](../../guidelines/docs/directory-name.guidelines.md)
-   を参照してください。
-
-4. **完了報告**:
-    - Wikiに出力したファイルパスまたはページURLをユーザーに報告する
-    - 実装順序の推奨と次のステップ（必要に応じてIssue作成）を提案する
-    - **GitHub Issuesはこのスキルでは作成しない**。Issue作成はユーザーの判断に委ねる
-
 ---
 
-#### 3.6 情報一覧の情報種類
+#### 3.5 情報一覧の情報種類
 
 「03 機能要件」のシステム層における情報一覧では、各情報を以下の4つの情報種類に分類します：
 
@@ -274,7 +254,7 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ---
 
-#### 3.7 情報一覧の履歴管理要列
+#### 3.6 情報一覧の履歴管理要列
 
 情報一覧には「履歴管理要」列を追加し、履歴管理が必要なリソースに「Y」、不要なリソースに「N」を出力します。
 
@@ -291,7 +271,7 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ---
 
-#### 3.8 情報一覧の証跡要列
+#### 3.7 情報一覧の証跡要列
 
 情報一覧には「証跡要」列を追加し、証跡管理が必要なリソースに「Y」、不要なリソースに「N」を出力します。
 
@@ -318,8 +298,8 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 2. **4つのレイヤーを厳格に区別する**:
     - システム価値レイヤー: 要求、アクター、外部システム
     - システム外部環境レイヤー: 業務、BUC、アクティビティ
-    - システム境界レイヤー: ユースケース、アクター
-    - システムレイヤー: 情報、状態、条件、バリエーション、画面、イベント、帳票
+    - システム境界レイヤー: ユースケース、アクター、画面、イベント、タイマー
+    - システムレイヤー: 情報、状態、条件、バリエーション
     - 各レイヤーは「Why」の依存関係を持ち、下位から上位に向かって「なぜ？」と問いかける
 
 3. **ダイアグラム単位で要件定義する**:
@@ -337,7 +317,6 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 6. **ユーザーの確認が必要**:
     - RDRAモデルをファイルに出力前に、必ずユーザーの確認を得る
-    - AIは要求を一方的に決定してはならない
     - AIは「候補の生成」「質問」「整理」「検証」を行い、最終的な要求の確定はユーザーが行う
 
 7. **粒度は要件レベルで統一する**:
@@ -357,42 +336,44 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
       **参照のみ。要件分析では作成しない。**）
     - [事業領域一覧.tsv](templates/事業領域一覧.tsv): 事業領域一覧のTSVテンプレート（
       **参照のみ。要件分析では作成しない。**）
-    - [業務領域一覧.md](templates/業務領域一覧.md): 業務領域一覧のMarkdownテンプレート（
-    - [業務領域一覧.tsv](templates/業務領域一覧.tsv): 業務領域一覧のTSVテンプレート（
-    - [非機能要件大項目一覧.md](templates/非機能要件大項目一覧.md): 非機能要件大項目一覧のMarkdownテンプレート
-      **参照のみ。要件分析では作成しない。**）
-    - [非機能要件大項目一覧.tsv](templates/非機能要件大項目一覧.tsv): 非機能要件大項目一覧のTSVテンプレート
-      **参照のみ。要件分析では作成しない。**）
-    - [要件一覧.tsv](templates/要件一覧.tsv): 非機能要件一覧のTSVテンプレート
-    - [0verview.md](templates/0verview.md): 機能要件概要のMarkdownテンプレート
-    - [システム価値.md](templates/システム価値.md): システム価値のMarkdownテンプレート
-    - [業務一覧.md](templates/業務一覧.md): 業務一覧のMarkdownテンプレート
-    - [業務.md](templates/業務.md): 業務詳細のMarkdownテンプレート
-    - [外部システム一覧.md](templates/外部システム一覧.md): 外部システム一覧のMarkdownテンプレート
-    - [外部システム一覧.tsv](templates/外部システム一覧.tsv): 外部システム一覧のTSVテンプレート
-    - [外部システム定義.md](templates/外部システム定義.md): 外部システム定義のMarkdownテンプレート
-    - [アクター一覧.md](templates/アクター一覧.md): アクター一覧のMarkdownテンプレート
-    - [アクター一覧.tsv](templates/アクター一覧.tsv): アクター一覧のTSVテンプレート
-    - [ユースケース一覧.md](templates/ユースケース一覧.md): ユースケース一覧のMarkdownテンプレート
-    - [ユースケース一覧.tsv](templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
-    - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
-    - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
-    - [ステートマシン図.md](templates/ステートマシン図.md): ステートマシン図のMarkdownテンプレート
-    - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
-    - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
-    - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
-    - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
-    - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
-    - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
-    - [帳票一覧.md](templates/帳票一覧.md): 帳票一覧のMarkdownテンプレート
-    - [帳票一覧.tsv](templates/帳票一覧.tsv): 帳票一覧のTSVテンプレート
-    - [帳票定義.md](templates/帳票定義.md): 帳票定義のMarkdownテンプレート
-    - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
-    - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
-    - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
-    - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
+    - [業務領域一覧.md](templates/業務領域一覧.md): 業務領域一覧のMarkdownテンプレート
+    - [業務領域一覧.tsv](templates/業務領域一覧.tsv): 業務領域一覧のTSVテンプレート
+        - [非機能要件大項目一覧.md](templates/非機能要件大項目一覧.md): 非機能要件大項目一覧のMarkdownテンプレート
+          (**参照のみ。要件分析では作成しない。**）
+        - [非機能要件大項目一覧.tsv](templates/非機能要件大項目一覧.tsv): 非機能要件大項目一覧のTSVテンプレート
+          (**参照のみ。要件分析では作成しない。**）
+    - [非機能要件一覧.md](templates/非機能要件一覧.md): 非機能要件一覧のMarkdownテンプレート
+    - [非機能要件一覧.tsv](templates/非機能要件一覧.tsv): 非機能要件一覧のTSVテンプレート
+        - [0verview.md](templates/0verview.md): 機能要件概要のMarkdownテンプレート
+        - [システム価値.md](templates/システム価値.md): システム価値のMarkdownテンプレート
+        - [業務一覧.md](templates/業務一覧.md): 業務一覧のMarkdownテンプレート
+        - [業務.md](templates/業務.md): 業務詳細のMarkdownテンプレート
+        - [外部システム一覧.md](templates/外部システム一覧.md): 外部システム一覧のMarkdownテンプレート
+        - [外部システム一覧.tsv](templates/外部システム一覧.tsv): 外部システム一覧のTSVテンプレート
+        - [外部システム定義.md](templates/外部システム定義.md): 外部システム定義のMarkdownテンプレート
+        - [アクター一覧.md](templates/アクター一覧.md): アクター一覧のMarkdownテンプレート
+        - [アクター一覧.tsv](templates/アクター一覧.tsv): アクター一覧のTSVテンプレート
+        - [ユースケース一覧.md](templates/ユースケース一覧.md): ユースケース一覧のMarkdownテンプレート
+        - [ユースケース一覧.tsv](templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
+    - [ユースケース図.md](templates/ユースケース図.md): ユースケース図のMarkdownテンプレート
+        - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
+        - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
+        - [ステートマシン図.md](templates/ステートマシン図.md): ステートマシン図のMarkdownテンプレート
+        - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
+        - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
+        - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
+        - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
+        - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
+        - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
+        - [帳票一覧.md](templates/帳票一覧.md): 帳票一覧のMarkdownテンプレート
+        - [帳票一覧.tsv](templates/帳票一覧.tsv): 帳票一覧のTSVテンプレート
+        - [帳票定義.md](templates/帳票定義.md): 帳票定義のMarkdownテンプレート
+        - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
+        - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
+        - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
+        - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
 
 - **チェックリスト**:
-    - [requirement.md](../../rdra/checklists/requirement.md): 要件分析時の確認項目
-    - [requirement-assembly.md](../../rdra/checklists/requirement-assembly.md): 要件組み立て時の確認項目
-        - [issue-creation.md](../../rdra/checklists/issue-creation.md): Issue 作成時の確認項目
+    - [requirement.md](../../../rdra/checklists/requirement.md): 要件分析時の確認項目
+    - [requirement-assembly.md](../../../rdra/checklists/requirement-assembly.md): 要件組み立て時の確認項目
+    - [issue-creation.md](../../../rdra/checklists/issue-creation.md): Issue 作成時の確認項目
