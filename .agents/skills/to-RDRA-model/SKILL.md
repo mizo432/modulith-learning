@@ -123,15 +123,17 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ##### チェックリスト
 
-詳細な確認項目は [checklists/requirement.md](checklists/requirement.md) を参照してください。
+詳細な確認項目は [requirement.md](../../rdra/checklists/requirement.md) を参照してください。
 
 **チェックエラー時の処理**: チェックリストでエラーが発見された場合は、以下の手順に従ってください：
 
 1. エラー内容を `check-error.tsv`
    に記録する（テンプレート: [templates/check-error.tsv](templates/check-error.tsv)）
-2. `check-error.tsv` を出力ディレクトリに配置する
-3. 処理を中断し、ユーザーにエラー内容を報告する
-4. エラー修正後に再チェックを行う
+2. `check-error.tsv` を事業領域ディレクトリに配置する（例:
+   `docs/22 要件定義書/[事業領域名]/check-error.tsv`）
+3. 要件定義を中断し、次のフェーズに進まない
+4. ユーザーにエラー内容を報告する
+5. エラー修正後に再チェックを行い、合格してから次のフェーズに進む
 
 > **注意**: チェックエラー時は、出力されたファイルの削除は自動的に行いません。ユーザーの確認後に手動で削除してください。
 
@@ -171,15 +173,17 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ##### チェックリスト
 
-詳細な確認項目は [checklists/requirement-assembly.md](checklists/requirement-assembly.md) を参照してください。
+詳細な確認項目は [requirement-assembly.md](../../rdra/checklists/requirement-assembly.md) を参照してください。
 
 **チェックエラー時の処理**: チェックリストでエラーが発見された場合は、以下の手順に従ってください：
 
 1. エラー内容を `check-error.tsv`
    に記録する（テンプレート: [templates/check-error.tsv](templates/check-error.tsv)）
-2. `check-error.tsv` を出力ディレクトリに配置する
-3. 処理を中断し、ユーザーにエラー内容を報告する
-4. エラー修正後に再チェックを行う
+2. `check-error.tsv` を業務領域ディレクトリに配置する（例:
+   `docs/22 要件定義書/[事業領域名]/[業務領域名]/check-error.tsv`）
+3. 要件定義を中断し、次のフェーズに進まない
+4. ユーザーにエラー内容を報告する
+5. エラー修正後に再チェックを行い、合格してから次のフェーズに進む
 
 > **注意**: チェックエラー時は、出力されたファイルの削除は自動的に行いません。ユーザーの確認後に手動で削除してください。
 
@@ -211,15 +215,17 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ##### チェックリスト
 
-詳細な確認項目は [checklists/issue-creation.md](checklists/issue-creation.md) を参照してください。
+詳細な確認項目は [issue-creation.md](../../rdra/checklists/issue-creation.md) を参照してください。
 
 **チェックエラー時の処理**: チェックリストでエラーが発見された場合は、以下の手順に従ってください：
 
 1. エラー内容を `check-error.tsv`
    に記録する（テンプレート: [templates/check-error.tsv](templates/check-error.tsv)）
-2. `check-error.tsv` を出力ディレクトリに配置する
-3. 処理を中断し、ユーザーにエラー内容を報告する
-4. エラー修正後に再チェックを行う
+2. `check-error.tsv` を業務領域ディレクトリに配置する（例:
+   `docs/22 要件定義書/[事業領域名]/[業務領域名]/check-error.tsv`）
+3. 要件定義を中断し、次のフェーズに進まない
+4. ユーザーにエラー内容を報告する
+5. エラー修正後に再チェックを行い、合格してから次のフェーズに進む
 
 > **注意**: チェックエラー時は、出力されたファイルの削除は自動的に行いません。ユーザーの確認後に手動で削除してください。
 
@@ -387,6 +393,6 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
     - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
 
 - **チェックリスト**:
-    - [requirement.md](checklists/requirement.md): 要件分析時の確認項目
-    - [requirement-assembly.md](checklists/requirement-assembly.md): 要件組み立て時の確認項目
-        - [issue-creation.md](checklists/issue-creation.md): Issue 作成時の確認項目
+    - [requirement.md](../../rdra/checklists/requirement.md): 要件分析時の確認項目
+    - [requirement-assembly.md](../../rdra/checklists/requirement-assembly.md): 要件組み立て時の確認項目
+        - [issue-creation.md](../../rdra/checklists/issue-creation.md): Issue 作成時の確認項目
