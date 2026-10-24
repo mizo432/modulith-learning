@@ -205,7 +205,7 @@ entity "BacklogItem" as BacklogItem {
 - 主キーは SnowflakeID を使用（セクション6.1参照）
 - 外部キーの参照先エンティティが異なる場合は、`<<FK EntityName>>` のように参照先を明記
 
-属性の詳細は、各業務領域の「情報一覧.md」で確認します。
+属性の詳細は、各業務領域の「02.属性」ディレクトリ内の「情報名属性一覧.md」で確認します。
 
 ### 5.2 エンティティ命名規則
 
@@ -407,3 +407,6 @@ TaskAssignment }o--|| Employee : works on
 - 業務領域一覧: `docs/12 業務領域/業務領域一覧.md`
 - ディレクトリ命名規則: `.agents/guidelines/docs/directory-name.guidelines.md`
 - 情報ER図テンプレート: `.agents/guidelines/docs/templates/情報ER図テンプレート.md`
+- 属性一覧テンプレート: `.agents/guidelines/docs/templates/属性一覧テンプレート.md`
+- 属性一覧テンプレート（TSV）: `.agents/guidelines/docs/templates/属性一覧テンプレート.tsv`
+- 情報外部キー値対応表: 各業務領域の `04.システム/01.情報/情報外部キー値対応表.tsv`

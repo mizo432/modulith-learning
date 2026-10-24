@@ -1,0 +1,9 @@
+属性名	型	PK	必須	説明
+review_feedback_id	SnowflakeID	*	Y	レビューフィードバックの一意な識別子
+review_id	UUID		Y	関連するレビューの識別子
+employee_id	UUID		Y	対象者の識別子
+scenario	Text		N	シナリオ
+result	Text		Y	結果
+deadline	Date		N	期限
+created_at	DateTime		Y	作成日時
+updated_at	DateTime		Y	最終更新日時
