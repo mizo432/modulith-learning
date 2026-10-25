@@ -17,6 +17,7 @@
 | [backend/environments.instructions.md](guidelines/backend/environments.instructions.md)                         | 環境構築方法、トラブルシューティング             |
 | [backend/testing.guidelines.md](guidelines/backend/testing.guidelines.md)                                       | テスト戦略、テスト作成規約                       |
 | [backend/jpa.guidelines.md](guidelines/backend/jpa.guidelines.md)                                               | Spring Data JPA 実装規則                         |
+| [backend/spring-modulith.guidelines.md](guidelines/backend/spring-modulith.guidelines.md)                       | Spring Modulith 実装規則                         |
 | [backend/flyway-migration-checklist.guidelines.md](guidelines/backend/flyway-migration-checklist.guidelines.md) | Flyway マイグレーションスクリプト チェックリスト |
 
 ### Java 関連
