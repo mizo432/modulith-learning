@@ -2,6 +2,8 @@ package undecided.shared.sample.jpa.feature.dbobject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import jakarta.persistence.EntityManager;
@@ -24,8 +26,6 @@ class SampleFunctionTest {
 
   @Mock private EntityManager entityManager;
 
-  @Mock private Query query;
-
   @InjectMocks private SampleFunction sampleFunction;
 
   @Nested
@@ -36,8 +36,9 @@ class SampleFunctionTest {
     @DisplayName("PERSONタイプのパーティ数が正常に取得される")
     void shouldCountPersonParties() {
       // Arrange
+      Query query = mock(Query.class);
       when(entityManager.createNativeQuery(anyString())).thenReturn(query);
-      when(query.setParameter(anyString(), "PERSON")).thenReturn(query);
+      when(query.setParameter(eq("partyType"), eq("PERSON"))).thenReturn(query);
       when(query.getSingleResult()).thenReturn(100L);
 
       // Act
@@ -51,8 +52,9 @@ class SampleFunctionTest {
     @DisplayName("COMPANYタイプのパーティ数が正常に取得される")
     void shouldCountCompanyParties() {
       // Arrange
+      Query query = mock(Query.class);
       when(entityManager.createNativeQuery(anyString())).thenReturn(query);
-      when(query.setParameter(anyString(), "COMPANY")).thenReturn(query);
+      when(query.setParameter(eq("partyType"), eq("COMPANY"))).thenReturn(query);
       when(query.getSingleResult()).thenReturn(50L);
 
       // Act
@@ -66,8 +68,9 @@ class SampleFunctionTest {
     @DisplayName("存在しないタイプのパーティ数は0を返す")
     void shouldReturnZeroForNonExistentType() {
       // Arrange
+      Query query = mock(Query.class);
       when(entityManager.createNativeQuery(anyString())).thenReturn(query);
-      when(query.setParameter(anyString(), "UNKNOWN")).thenReturn(query);
+      when(query.setParameter(eq("partyType"), eq("UNKNOWN"))).thenReturn(query);
       when(query.getSingleResult()).thenReturn(0L);
 
       // Act
@@ -86,8 +89,9 @@ class SampleFunctionTest {
     @DisplayName("全パーティタイプごとのカウントが正常に取得される")
     void shouldCountAllPartiesByType() {
       // Arrange
-      Object[] row1 = new Object[]{"PERSON", 100L};
-      Object[] row2 = new Object[]{"COMPANY", 50L};
+      Query query = mock(Query.class);
+      Object[] row1 = new Object[]{"PERSON", Long.valueOf(100)};
+      Object[] row2 = new Object[]{"COMPANY", Long.valueOf(50)};
       when(entityManager.createNativeQuery(anyString())).thenReturn(query);
       when(query.getResultList()).thenReturn(Arrays.asList(row1, row2));
 
@@ -105,6 +109,7 @@ class SampleFunctionTest {
     @DisplayName("パーティが存在しない場合は空のマップを返す")
     void shouldReturnEmptyMapWhenNoParties() {
       // Arrange
+      Query query = mock(Query.class);
       when(entityManager.createNativeQuery(anyString())).thenReturn(query);
       when(query.getResultList()).thenReturn(Arrays.asList());
 
@@ -120,9 +125,12 @@ class SampleFunctionTest {
     @DisplayName("単一のパーティタイプのみが存在する場合")
     void shouldReturnSingleTypeWhenOnlyOneExists() {
       // Arrange
-      Object[] row1 = new Object[]{"PERSON", 200L};
+      java.util.List<Object[]> resultList = new java.util.ArrayList<>();
+      resultList.add(new Object[]{"PERSON", Long.valueOf(200)});
+      
+      Query query = mock(Query.class);
       when(entityManager.createNativeQuery(anyString())).thenReturn(query);
-      when(query.getResultList()).thenReturn(Arrays.asList(row1));
+      when(query.getResultList()).thenReturn(resultList);
 
       // Act
       Map<String, Long> result = sampleFunction.countAllPartiesByType();

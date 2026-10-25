@@ -1,6 +1,7 @@
 package undecided.shared.sample.jpa.feature.dbobject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -107,8 +108,13 @@ class SampleSequenceTest {
     @DisplayName("@GeneratedValueアノテーションがidフィールドに付与されている")
     void shouldHaveGeneratedValueAnnotation() {
       // Arrange & Act
-      GeneratedValue generatedValue =
-          SampleSequence.class.getDeclaredField("id").getAnnotation(GeneratedValue.class);
+      GeneratedValue generatedValue = null;
+      try {
+        generatedValue =
+            SampleSequence.class.getDeclaredField("id").getAnnotation(GeneratedValue.class);
+      } catch (NoSuchFieldException e) {
+        fail("idフィールドが見つかりません: " + e.getMessage());
+      }
 
       // Assert
       assertThat(generatedValue).isNotNull();
