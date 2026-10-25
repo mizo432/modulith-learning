@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
 import undecided.shared.config.BatchJobListener;
+import undecided.shared.config.BatchStepListener;
 import undecided.generic.bankReg.internal.batch.processor.BranchItemProcessor;
 import undecided.generic.bankReg.internal.batch.reader.BranchCsvItemReader;
 import undecided.generic.bankReg.internal.batch.writer.BranchItemWriter;
@@ -68,6 +69,7 @@ public class BranchImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
+        .listener(new BatchStepListener())
         .build();
   }
 

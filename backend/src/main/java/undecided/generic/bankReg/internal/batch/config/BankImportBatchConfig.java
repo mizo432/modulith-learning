@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.bankReg.internal.BankMasterImport;
 import undecided.shared.config.BatchJobListener;
+import undecided.shared.config.BatchStepListener;
 import undecided.generic.bankReg.internal.BankMasterImportRepository;
 import undecided.generic.bankReg.internal.BankRepository;
 import undecided.generic.bankReg.internal.batch.dto.BankCsvDto;
@@ -62,6 +63,7 @@ public class BankImportBatchConfig {
       JobRepository jobRepository, PlatformTransactionManager transactionManager) {
     return new StepBuilder(DOWNLOAD_STEP, jobRepository)
         .tasklet((contribution, chunkContext) -> RepeatStatus.FINISHED, transactionManager)
+        .listener(new BatchStepListener())
         .build();
   }
 
@@ -83,6 +85,7 @@ public class BankImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
+        .listener(new BatchStepListener())
         .build();
   }
 
@@ -106,6 +109,7 @@ public class BankImportBatchConfig {
       Tasklet cleanupTasklet) {
     return new StepBuilder(CLEANUP_STEP, jobRepository)
         .tasklet(cleanupTasklet, transactionManager)
+        .listener(new BatchStepListener())
         .build();
   }
 
@@ -142,6 +146,7 @@ public class BankImportBatchConfig {
       Tasklet recordImportTasklet) {
     return new StepBuilder(RECORD_IMPORT_STEP, jobRepository)
         .tasklet(recordImportTasklet, transactionManager)
+        .listener(new BatchStepListener())
         .build();
   }
 

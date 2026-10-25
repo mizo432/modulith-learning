@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.addressReg.internal.batch.dto.ChouAzaCsvDto;
 import undecided.shared.config.BatchJobListener;
+import undecided.shared.config.BatchStepListener;
 import undecided.generic.addressReg.internal.batch.processor.ChouAzaItemProcessor;
 import undecided.generic.addressReg.internal.batch.reader.ChouAzaCsvItemReader;
 import undecided.generic.addressReg.internal.batch.writer.ChouAzaItemWriter;
@@ -63,6 +64,7 @@ public class ChouAzaImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
+        .listener(new BatchStepListener())
         .build();
   }
 

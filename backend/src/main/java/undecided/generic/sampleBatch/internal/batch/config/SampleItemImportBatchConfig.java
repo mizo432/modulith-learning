@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.sampleBatch.internal.batch.dto.SampleItemCsvDto;
 import undecided.shared.config.BatchJobListener;
+import undecided.shared.config.BatchStepListener;
 import undecided.generic.sampleBatch.internal.batch.processor.SampleItemProcessor;
 import undecided.generic.sampleBatch.internal.batch.reader.SampleItemCsvItemReader;
 import undecided.generic.sampleBatch.internal.batch.writer.SampleItemWriter;
@@ -67,6 +68,7 @@ public class SampleItemImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
+        .listener(new BatchStepListener())
         .build();
   }
 

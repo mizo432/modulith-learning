@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.addressReg.internal.batch.dto.PrefectureCsvDto;
 import undecided.shared.config.BatchJobListener;
+import undecided.shared.config.BatchStepListener;
 import undecided.generic.addressReg.internal.batch.processor.PrefectureItemProcessor;
 import undecided.generic.addressReg.internal.batch.reader.PrefectureCsvItemReader;
 import undecided.generic.addressReg.internal.batch.writer.PrefectureItemWriter;
@@ -63,6 +64,7 @@ public class PrefectureImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
+        .listener(new BatchStepListener())
         .build();
   }
 
