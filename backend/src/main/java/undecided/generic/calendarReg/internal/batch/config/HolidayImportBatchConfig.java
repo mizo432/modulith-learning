@@ -17,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.calendarReg.internal.batch.dto.HolidayCsvDto;
 import undecided.shared.config.BatchJobListener;
+import undecided.shared.config.BatchStepListener;
 import undecided.generic.calendarReg.internal.batch.processor.HolidayItemProcessor;
 import undecided.generic.calendarReg.internal.batch.reader.HolidayCsvItemReader;
 import undecided.generic.calendarReg.internal.batch.writer.HolidayItemWriter;
@@ -76,6 +77,7 @@ public class HolidayImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
+        .listener(new BatchStepListener())
         .build();
   }
 

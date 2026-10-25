@@ -1,4 +1,4 @@
-package undecided.generic.calendarReg.internal.batch.launcher;
+package undecided.generic.calendarReg.internal.batch.operator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,11 @@ import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/** 祝日インポートバッチジョブの実行およびスケジューリングを制御するランチャークラス。 */
+/** 祝日インポートバッチジョブの実行およびスケジューリングを制御するオペレータークラス。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HolidayImportJobLauncher {
+public class HolidayImportJobOperator {
 
   private final JobOperator jobOperator;
   private final Job holidayImportJob;

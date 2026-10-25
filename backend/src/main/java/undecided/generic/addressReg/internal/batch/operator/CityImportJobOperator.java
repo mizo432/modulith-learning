@@ -1,4 +1,4 @@
-package undecided.generic.addressReg.internal.batch.launcher;
+package undecided.generic.addressReg.internal.batch.operator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,11 @@ import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/** 市区町村インポートバッチジョブの実行およびスケジューリングを制御するランチャークラス。 */
+/** 市区町村インポートバッチジョブの実行およびスケジューリングを制御するオペレータークラス。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CityImportJobLauncher {
+public class CityImportJobOperator {
 
   private final JobOperator jobOperator;
   private final Job cityImportJob;

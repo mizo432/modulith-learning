@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.largeRecordBatch.internal.batch.dto.LargeRecordCsvDto;
 import undecided.shared.config.BatchJobListener;
+import undecided.shared.config.BatchStepListener;
 import undecided.generic.largeRecordBatch.internal.batch.processor.LargeRecordProcessor;
 import undecided.generic.largeRecordBatch.internal.batch.reader.LargeRecordCsvItemReader;
 import undecided.generic.largeRecordBatch.internal.batch.writer.LargeRecordWriter;
@@ -84,6 +85,7 @@ public class LargeRecordImportBatchConfig {
         // フォールトトレランスパターン: 一時的なエラーに対してリトライ
         .retry(Exception.class)
         .retryLimit(RETRY_LIMIT)
+        .listener(new BatchStepListener())
         .build();
   }
 

@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
 import undecided.generic.calendarReg.internal.HolidayRepository;
-import undecided.generic.calendarReg.internal.batch.launcher.HolidayImportJobLauncher;
+import undecided.generic.calendarReg.internal.batch.operator.HolidayImportJobOperator;
 import undecided.generic.calendarReg.spi.Holiday;
 
 @Tag("medium")
@@ -34,7 +34,7 @@ class HolidayImportBatchConfigTest {
 
   @Autowired private Job holidayImportJob;
 
-  @Autowired private HolidayImportJobLauncher batchLauncher;
+  @Autowired private HolidayImportJobOperator batchOperator;
 
   @Autowired private HolidayRepository holidayRepository;
 
@@ -87,10 +87,10 @@ class HolidayImportBatchConfigTest {
     @DisplayName("ジョブを再実行した場合でも冪等に完了し件数が維持されること")
     void shouldExecuteIdempotentlyWhenRerun() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution1 = batchLauncher.run();
+      JobExecution jobExecution1 = batchOperator.run();
       long countAfterFirstRun = holidayRepository.count();
 
-      JobExecution jobExecution2 = batchLauncher.run();
+      JobExecution jobExecution2 = batchOperator.run();
       long countAfterSecondRun = holidayRepository.count();
 
       // Assert

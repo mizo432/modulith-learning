@@ -1,4 +1,4 @@
-package undecided.generic.sampleBatch.internal.batch.launcher;
+package undecided.generic.addressReg.internal.batch.operator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,23 +10,19 @@ import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/**
- * サンプルアイテムインポートバッチジョブの実行およびスケジューリングを制御するランチャークラス。
- *
- * <p>バッチ基本構成サンプルとして、JobLauncherの標準パターンを示します。
- */
+/** 都道府県インポートバッチジョブの実行およびスケジューリングを制御するオペレータークラス。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SampleItemImportJobLauncher {
+public class PrefectureImportJobOperator {
 
   private final JobOperator jobOperator;
-  private final Job sampleItemImportJob;
+  private final Job prefectureImportJob;
 
   /**
    * 指定された入力ファイルを使用してジョブを実行します。
    *
-   * @param inputFile CSVファイルパス (nullまたは空文字の場合はデフォルトファイルを使用)
+   * @param inputFile CSV ファイルパス (null または空文字の場合はデフォルトファイルを使用)
    * @return ジョブ実行結果
    * @throws Exception ジョブ起動例外
    */
@@ -37,8 +33,8 @@ public class SampleItemImportJobLauncher {
       builder.addString("inputFile", inputFile);
     }
     JobParameters parameters = builder.toJobParameters();
-    log.info("Starting sample item import job with parameters: {}", parameters);
-    return jobOperator.start(sampleItemImportJob, parameters);
+    log.info("Starting prefecture import job with parameters: {}", parameters);
+    return jobOperator.start(prefectureImportJob, parameters);
   }
 
   /**
@@ -52,14 +48,14 @@ public class SampleItemImportJobLauncher {
   }
 
   /** スケジュールに基づいて定期的にインポートジョブを起動します。 */
-  @Scheduled(cron = "${batch.sample-item-import.cron:0 0 3 * * ?}")
+  @Scheduled(cron = "${batch.prefecture-import.cron:0 0 3 * * ?}")
   public void scheduledRun() {
     try {
-      log.info("Triggering scheduled sample item import job");
+      log.info("Triggering scheduled prefecture import job");
       JobExecution execution = run();
-      log.info("Scheduled sample item import job completed with status: {}", execution.getStatus());
+      log.info("Scheduled prefecture import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
-      log.error("Failed to run scheduled sample item import job", e);
+      log.error("Failed to run scheduled prefecture import job", e);
     }
   }
 }

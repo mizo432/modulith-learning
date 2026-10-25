@@ -1,4 +1,4 @@
-package undecided.generic.largeRecordBatch.internal.batch.launcher;
+package undecided.generic.sampleBatch.internal.batch.operator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,17 +11,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * 大量レコード処理バッチジョブの実行およびスケジューリングを制御するランチャークラス。
+ * サンプルアイテムインポートバッチジョブの実行およびスケジューリングを制御するオペレータークラス。
  *
- * <p>大量データ処理パターンとして、JobLauncherの標準パターンを示します。
+ * <p>バッチ基本構成サンプルとして、JobOperatorの標準パターンを示します。
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LargeRecordImportJobLauncher {
+public class SampleItemImportJobOperator {
 
   private final JobOperator jobOperator;
-  private final Job largeRecordImportJob;
+  private final Job sampleItemImportJob;
 
   /**
    * 指定された入力ファイルを使用してジョブを実行します。
@@ -37,8 +37,8 @@ public class LargeRecordImportJobLauncher {
       builder.addString("inputFile", inputFile);
     }
     JobParameters parameters = builder.toJobParameters();
-    log.info("Starting large record import job with parameters: {}", parameters);
-    return jobOperator.start(largeRecordImportJob, parameters);
+    log.info("Starting sample item import job with parameters: {}", parameters);
+    return jobOperator.start(sampleItemImportJob, parameters);
   }
 
   /**
@@ -52,14 +52,14 @@ public class LargeRecordImportJobLauncher {
   }
 
   /** スケジュールに基づいて定期的にインポートジョブを起動します。 */
-  @Scheduled(cron = "${batch.large-record-import.cron:0 0 2 * * ?}")
+  @Scheduled(cron = "${batch.sample-item-import.cron:0 0 3 * * ?}")
   public void scheduledRun() {
     try {
-      log.info("Triggering scheduled large record import job");
+      log.info("Triggering scheduled sample item import job");
       JobExecution execution = run();
-      log.info("Scheduled large record import job completed with status: {}", execution.getStatus());
+      log.info("Scheduled sample item import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
-      log.error("Failed to run scheduled large record import job", e);
+      log.error("Failed to run scheduled sample item import job", e);
     }
   }
 }

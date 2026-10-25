@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
 import undecided.generic.largeRecordBatch.internal.LargeRecordRepository;
-import undecided.generic.largeRecordBatch.internal.batch.launcher.LargeRecordImportJobLauncher;
+import undecided.generic.largeRecordBatch.internal.batch.operator.LargeRecordImportJobOperator;
 import undecided.generic.largeRecordBatch.spi.LargeRecord;
 
 @Tag("medium")
@@ -35,7 +35,7 @@ class LargeRecordImportBatchConfigTest {
 
   @Autowired private Job largeRecordImportJob;
 
-  @Autowired private LargeRecordImportJobLauncher batchLauncher;
+  @Autowired private LargeRecordImportJobOperator batchOperator;
 
   @Autowired private LargeRecordRepository largeRecordRepository;
 
@@ -71,7 +71,7 @@ class LargeRecordImportBatchConfigTest {
     @DisplayName("チャンクサイズ200で大量データを処理できること")
     void shouldProcessLargeDataWithChunkSize200() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution = batchLauncher.run();
+      JobExecution jobExecution = batchOperator.run();
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -82,7 +82,7 @@ class LargeRecordImportBatchConfigTest {
     @DisplayName("不正なレコードはスキップまたはフォールトトレラントに処理されること")
     void shouldHandleInvalidRecordsFaultTolerantly() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution = batchLauncher.run();
+      JobExecution jobExecution = batchOperator.run();
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -123,7 +123,7 @@ class LargeRecordImportBatchConfigTest {
     @DisplayName("空のrecordCodeまたはrecordNameのレコードはスキップされること")
     void shouldSkipRecordsWithEmptyCodeOrName() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution = batchLauncher.run();
+      JobExecution jobExecution = batchOperator.run();
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -141,8 +141,8 @@ class LargeRecordImportBatchConfigTest {
     @DisplayName("ジョブを再実行した場合でも完了すること")
     void shouldExecuteSuccessfullyWhenRerun() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution1 = batchLauncher.run();
-      JobExecution jobExecution2 = batchLauncher.run();
+      JobExecution jobExecution1 = batchOperator.run();
+      JobExecution jobExecution2 = batchOperator.run();
 
       // Assert
       assertThat(jobExecution1.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -153,7 +153,7 @@ class LargeRecordImportBatchConfigTest {
     @DisplayName("指定したCSVファイルパスでジョブを実行できること")
     void shouldRunWithSpecifiedInputFile() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution = batchLauncher.run("classpath:data/large-records.csv");
+      JobExecution jobExecution = batchOperator.run("classpath:data/large-records.csv");
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -164,7 +164,7 @@ class LargeRecordImportBatchConfigTest {
     @DisplayName("カテゴリとサブカテゴリが正常に設定されること")
     void shouldSetCategoryAndSubCategoryCorrectly() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution = batchLauncher.run();
+      JobExecution jobExecution = batchOperator.run();
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -182,7 +182,7 @@ class LargeRecordImportBatchConfigTest {
     @DisplayName("ステータスの正規化が正常に機能すること")
     void shouldNormalizeStatusCorrectly() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution = batchLauncher.run();
+      JobExecution jobExecution = batchOperator.run();
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);

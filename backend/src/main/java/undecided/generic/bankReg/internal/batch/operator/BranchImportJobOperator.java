@@ -1,4 +1,4 @@
-package undecided.generic.bankReg.internal.batch.launcher;
+package undecided.generic.bankReg.internal.batch.operator;
 
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
@@ -25,14 +25,14 @@ import undecided.generic.bankReg.internal.batch.client.MasterExportDataset;
 import undecided.generic.bankReg.internal.batch.client.MasterExportDownloadUrl;
 
 /**
- * 金融機関支店インポートバッチジョブの実行およびスケジューリングを制御するランチャークラス。
+ * 金融機関支店インポートバッチジョブの実行およびスケジューリングを制御するオペレータークラス。
  *
  * <p>BankcodeJP Master Export API から ZIP をダウンロードし、branches.csv を解析して支店データを更新します。
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BranchImportJobLauncher {
+public class BranchImportJobOperator {
 
   private final JobOperator jobOperator;
   private final Job branchImportJob;

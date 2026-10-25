@@ -1,7 +1,9 @@
-package undecided.generic.addressReg.internal.batch.launcher;
+package undecided.generic.addressReg.internal.batch.operator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.parameters.JobParameters;
@@ -10,14 +12,14 @@ import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/** 都道府県インポートバッチジョブの実行およびスケジューリングを制御するランチャークラス。 */
+/** 町字インポートバッチジョブの実行およびスケジューリングを制御するオペレータークラス。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PrefectureImportJobLauncher {
+public class ChouAzaImportJobOperator {
 
   private final JobOperator jobOperator;
-  private final Job prefectureImportJob;
+  private final Job chouAzaImportJob;
 
   /**
    * 指定された入力ファイルを使用してジョブを実行します。
@@ -26,15 +28,15 @@ public class PrefectureImportJobLauncher {
    * @return ジョブ実行結果
    * @throws Exception ジョブ起動例外
    */
-  public JobExecution run(String inputFile) throws Exception {
+  public @NonNull JobExecution run(@Nullable String inputFile) throws Exception {
     JobParametersBuilder builder =
         new JobParametersBuilder().addLong("timestamp", System.currentTimeMillis());
     if (inputFile != null && !inputFile.isBlank()) {
       builder.addString("inputFile", inputFile);
     }
     JobParameters parameters = builder.toJobParameters();
-    log.info("Starting prefecture import job with parameters: {}", parameters);
-    return jobOperator.start(prefectureImportJob, parameters);
+    log.info("Starting chou aza import job with parameters: {}", parameters);
+    return jobOperator.start(chouAzaImportJob, parameters);
   }
 
   /**
@@ -43,19 +45,19 @@ public class PrefectureImportJobLauncher {
    * @return ジョブ実行結果
    * @throws Exception ジョブ起動例外
    */
-  public JobExecution run() throws Exception {
+  public @NonNull JobExecution run() throws Exception {
     return run(null);
   }
 
   /** スケジュールに基づいて定期的にインポートジョブを起動します。 */
-  @Scheduled(cron = "${batch.prefecture-import.cron:0 0 3 * * ?}")
+  @Scheduled(cron = "${batch.chou-aza-import.cron:0 30 3 * * ?}")
   public void scheduledRun() {
     try {
-      log.info("Triggering scheduled prefecture import job");
+      log.info("Triggering scheduled chou aza import job");
       JobExecution execution = run();
-      log.info("Scheduled prefecture import job completed with status: {}", execution.getStatus());
+      log.info("Scheduled chou aza import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
-      log.error("Failed to run scheduled prefecture import job", e);
+      log.error("Failed to run scheduled chou aza import job", e);
     }
   }
 }
