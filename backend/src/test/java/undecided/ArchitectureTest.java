@@ -14,6 +14,7 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import jakarta.persistence.Entity;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.springframework.data.repository.Repository;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +29,12 @@ import undecided.shared.annotation.DoNotCall;
 import undecided.shared.annotation.VisibleForTesting;
 
 @Tag("small")
+@DisplayName("アーキテクチャ制約の検証テスト")
 class ArchitectureTest {
 
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class EntityLayerTest {
     @ArchTest
     static final ArchRule entity_classes_should_reside_in_spi_package =
@@ -56,7 +57,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class RepositoryLayerTest {
     @ArchTest
     static final ArchRule repository_classes_should_reside_in_internal_package =
@@ -73,7 +73,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class ServiceLayerTest {
     @ArchTest
     static final ArchRule service_classes_should_reside_in_internal_package =
@@ -88,7 +87,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class ControllerLayerTest {
     @ArchTest
     static final ArchRule rest_controllers_should_reside_in_internal_package =
@@ -103,7 +101,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class AnnotationTest {
     @ArchTest
     static final ArchRule do_not_call_methods_should_be_deprecated =
@@ -127,7 +124,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class CQRSTest {
     @ArchTest
     static final ArchRule rest_controllers_should_not_mix_query_and_command =
@@ -141,7 +137,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class PostMethodStatusTest {
     @ArchTest
     static final ArchRule post_methods_should_return_response_entity =
@@ -155,7 +150,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class PutMethodStatusTest {
     @ArchTest
     static final ArchRule put_methods_should_return_response_entity =
@@ -169,7 +163,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class DeleteMethodStatusTest {
     @ArchTest
     static final ArchRule delete_methods_should_return_response_entity =
@@ -183,7 +176,6 @@ class ArchitectureTest {
   @AnalyzeClasses(
       packages = "undecided",
       importOptions = {ImportOption.DoNotIncludeTests.class})
-  @Tag("small")
   static class PatchMethodStatusTest {
     @ArchTest
     static final ArchRule patch_methods_should_return_response_entity =

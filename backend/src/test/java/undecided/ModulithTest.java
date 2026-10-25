@@ -6,6 +6,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
@@ -14,6 +15,7 @@ import undecided.shared.annotation.DoNotCall;
 import undecided.shared.annotation.VisibleForTesting;
 
 @Tag("small")
+@DisplayName("Spring Modulithの検証テスト")
 class ModulithTest {
 
   ApplicationModules modules = ApplicationModules.of(ModulithDemoApplication.class);
