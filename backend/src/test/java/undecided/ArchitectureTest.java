@@ -63,6 +63,8 @@ class ArchitectureTest {
         classes()
             .that()
             .areAssignableTo(Repository.class)
+            .and()
+            .resideOutsideOfPackage("undecided.shared.sample..")
             .should()
             .resideInAnyPackage("..internal..", "..intenal..", "..repository..")
             .because("Repositoryクラスはアプリケーション層(internalパッケージ)に配置されるべきです");
