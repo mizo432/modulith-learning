@@ -67,7 +67,8 @@ public class HolidayImportJobLauncher {
   public void scheduledRun() {
     try {
       log.info("Triggering scheduled holiday import job");
-      run();
+      JobExecution execution = run();
+      log.info("Scheduled holiday import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
       log.error("Failed to run scheduled holiday import job", e);
     }

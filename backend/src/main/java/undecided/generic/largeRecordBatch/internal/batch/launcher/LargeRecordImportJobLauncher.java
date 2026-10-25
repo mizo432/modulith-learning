@@ -56,7 +56,8 @@ public class LargeRecordImportJobLauncher {
   public void scheduledRun() {
     try {
       log.info("Triggering scheduled large record import job");
-      run();
+      JobExecution execution = run();
+      log.info("Scheduled large record import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
       log.error("Failed to run scheduled large record import job", e);
     }

@@ -52,7 +52,8 @@ public class PrefectureImportJobLauncher {
   public void scheduledRun() {
     try {
       log.info("Triggering scheduled prefecture import job");
-      run();
+      JobExecution execution = run();
+      log.info("Scheduled prefecture import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
       log.error("Failed to run scheduled prefecture import job", e);
     }
