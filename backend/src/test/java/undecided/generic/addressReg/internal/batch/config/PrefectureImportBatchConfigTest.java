@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
 import undecided.generic.addressReg.internal.PrefectureRepository;
-import undecided.generic.addressReg.internal.batch.launcher.PrefectureImportJobLauncher;
+import undecided.generic.addressReg.internal.batch.operator.PrefectureImportJobOperator;
 import undecided.generic.addressReg.spi.Prefecture;
 
 @Tag("medium")
@@ -33,7 +33,7 @@ class PrefectureImportBatchConfigTest {
 
   @Autowired private Job prefectureImportJob;
 
-  @Autowired private PrefectureImportJobLauncher batchLauncher;
+  @Autowired private PrefectureImportJobOperator batchOperator;
 
   @Autowired private PrefectureRepository prefectureRepository;
 
@@ -86,8 +86,8 @@ class PrefectureImportBatchConfigTest {
     @DisplayName("ジョブを再実行した場合でも冪等に完了し47件が維持されること")
     void shouldExecuteIdempotentlyWhenRerun() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution1 = batchLauncher.run();
-      JobExecution jobExecution2 = batchLauncher.run();
+      JobExecution jobExecution1 = batchOperator.run();
+      JobExecution jobExecution2 = batchOperator.run();
 
       // Assert
       assertThat(jobExecution1.getStatus()).isEqualTo(BatchStatus.COMPLETED);

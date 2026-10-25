@@ -37,7 +37,7 @@ CSVインポート、マスターデータ取り込み、定期実行バッチ�
 | `processor` | 入力 DTO からドメインモデルへの変換・検証 |
 | `writer`    | 永続化                                    |
 | `dto`       | 入力レコードの DTO                        |
-| `launcher`  | Job の起動 (`*ImportJobLauncher`)         |
+| `operator`  | Job の起動 (`*ImportJobOperator`)         |
 | `client`    | 外部API連携（必要に応じて）               |
 
 #### 2.2 バッチ処理の2つのパターン
@@ -264,7 +264,7 @@ public void write(@NonNull Chunk<? extends Entity> chunk) {
 
 ---
 
-### 8. Job Launcher 設計 (Job Launcher Design)
+### 8. Job Operator 設計 (Job Operator Design)
 
 #### 8.1 ジョブ起動の基本パターン
 
@@ -414,7 +414,7 @@ public void scheduledRun() {
 バッチ処理の設計時・実装時に以下の項目を確認してください。
 
 - [ ] バッチ処理が `internal/batch` 配下に適切に配置されている
-- [ ] パッケージ構成（config/reader/processor/writer/dto/launcher）が守られている
+- [ ] パッケージ構成（config/reader/processor/writer/dto/operator）が守られている
 - [ ] Job名・Step名が定数として定義されている
 - [ ] チャンクサイズが適切に設定されている（デフォルト50）
 - [ ] `.faultTolerant()` が設定されている
@@ -427,7 +427,7 @@ public void scheduledRun() {
 - [ ] Writerが一括保存（saveAll）を使用している
 - [ ] DTOがSerializableを実装している
 - [ ] DTOのフィールドが @Nullable として宣言されている
-- [ ] LauncherでJobParametersが適切に構築されている
+- [ ] OperatorでJobParametersが適切に構築されている
 - [ ] スケジューリングがプロパティで外部化されている
 - [ ] エラーログに機密情報が含まれていない
 - [ ] 単体テストがProcessorの境界値・異常系を網羅している

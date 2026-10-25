@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
 import undecided.generic.sampleBatch.internal.SampleItemRepository;
-import undecided.generic.sampleBatch.internal.batch.launcher.SampleItemImportJobLauncher;
+import undecided.generic.sampleBatch.internal.batch.operator.SampleItemImportJobOperator;
 import undecided.generic.sampleBatch.spi.SampleItem;
 
 @Tag("medium")
@@ -35,7 +35,7 @@ class SampleItemImportBatchConfigTest {
 
   @Autowired private Job sampleItemImportJob;
 
-  @Autowired private SampleItemImportJobLauncher batchLauncher;
+  @Autowired private SampleItemImportJobOperator batchOperator;
 
   @Autowired private SampleItemRepository sampleItemRepository;
 
@@ -92,8 +92,8 @@ class SampleItemImportBatchConfigTest {
     @DisplayName("ジョブを再実行した場合でも完了すること")
     void shouldExecuteSuccessfullyWhenRerun() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution1 = batchLauncher.run();
-      JobExecution jobExecution2 = batchLauncher.run();
+      JobExecution jobExecution1 = batchOperator.run();
+      JobExecution jobExecution2 = batchOperator.run();
 
       // Assert
       assertThat(jobExecution1.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -105,7 +105,7 @@ class SampleItemImportBatchConfigTest {
     void shouldRunWithSpecifiedInputFile() throws Exception {
       // Arrange & Act
       JobExecution jobExecution =
-          batchLauncher.run("classpath:data/sample-items.csv");
+          batchOperator.run("classpath:data/sample-items.csv");
 
       // Assert
       assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);

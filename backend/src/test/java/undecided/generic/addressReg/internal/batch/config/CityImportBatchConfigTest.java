@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
 import undecided.generic.addressReg.internal.CityRepository;
-import undecided.generic.addressReg.internal.batch.launcher.CityImportJobLauncher;
+import undecided.generic.addressReg.internal.batch.operator.CityImportJobOperator;
 import undecided.generic.addressReg.spi.City;
 
 @Tag("medium")
@@ -34,7 +34,7 @@ class CityImportBatchConfigTest {
 
   @Autowired private Job cityImportJob;
 
-  @Autowired private CityImportJobLauncher batchLauncher;
+  @Autowired private CityImportJobOperator batchOperator;
 
   @Autowired private CityRepository cityRepository;
 
@@ -96,8 +96,8 @@ class CityImportBatchConfigTest {
     @DisplayName("ジョブを再実行した場合でも冪等に完了し件数が維持されること")
     void shouldExecuteIdempotentlyWhenRerun() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution1 = batchLauncher.run();
-      JobExecution jobExecution2 = batchLauncher.run();
+      JobExecution jobExecution1 = batchOperator.run();
+      JobExecution jobExecution2 = batchOperator.run();
 
       // Assert
       assertThat(jobExecution1.getStatus()).isEqualTo(BatchStatus.COMPLETED);

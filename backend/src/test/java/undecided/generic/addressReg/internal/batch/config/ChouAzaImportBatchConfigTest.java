@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
 import undecided.generic.addressReg.internal.ChouAzaRepository;
-import undecided.generic.addressReg.internal.batch.launcher.ChouAzaImportJobLauncher;
+import undecided.generic.addressReg.internal.batch.operator.ChouAzaImportJobOperator;
 import undecided.generic.addressReg.spi.ChouAza;
 
 @Tag("medium")
@@ -34,7 +34,7 @@ class ChouAzaImportBatchConfigTest {
 
   @Autowired private Job chouAzaImportJob;
 
-  @Autowired private ChouAzaImportJobLauncher batchLauncher;
+  @Autowired private ChouAzaImportJobOperator batchOperator;
 
   @Autowired private ChouAzaRepository chouAzaRepository;
 
@@ -101,8 +101,8 @@ class ChouAzaImportBatchConfigTest {
     @DisplayName("ジョブを再実行した場合でも冪等に完了し件数が維持されること")
     void shouldExecuteIdempotentlyWhenRerun() throws Exception {
       // Arrange & Act
-      JobExecution jobExecution1 = batchLauncher.run();
-      JobExecution jobExecution2 = batchLauncher.run();
+      JobExecution jobExecution1 = batchOperator.run();
+      JobExecution jobExecution2 = batchOperator.run();
 
       // Assert
       assertThat(jobExecution1.getStatus()).isEqualTo(BatchStatus.COMPLETED);

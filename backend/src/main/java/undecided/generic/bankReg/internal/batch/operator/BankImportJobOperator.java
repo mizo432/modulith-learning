@@ -1,4 +1,4 @@
-package undecided.generic.bankReg.internal.batch.launcher;
+package undecided.generic.bankReg.internal.batch.operator;
 
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +20,7 @@ import undecided.generic.bankReg.internal.batch.client.MasterExportDataset;
 import undecided.generic.bankReg.internal.batch.client.MasterExportDownloadUrl;
 
 /**
- * 金融機関インポートバッチジョブの実行およびスケジューリングを制御するランチャークラス。
+ * 金融機関インポートバッチジョブの実行およびスケジューリングを制御するオペレータークラス。
  *
  * <p>API キーが設定されている場合、BankcodeJP Master Export API から最新のデータセットを 自動的にダウンロードしてインポートします。API
  * キーが未設定の場合は、ローカル CSV ファイルから インポートします。
@@ -28,7 +28,7 @@ import undecided.generic.bankReg.internal.batch.client.MasterExportDownloadUrl;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BankImportJobLauncher {
+public class BankImportJobOperator {
 
   private final JobOperator jobOperator;
   private final Job bankImportJob;

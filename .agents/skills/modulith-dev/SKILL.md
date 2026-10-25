@@ -273,7 +273,7 @@ AI（Claude Code など）を使ってテストを生成する際は、以下の
 | `processor` | 入力 DTO からドメインモデルへの変換・検証 |
 | `writer`    | 永続化                                    |
 | `dto`       | 入力レコードの DTO                        |
-| `launcher`  | Job の起動 (`*ImportJobLauncher`)         |
+| `operator`  | Job の起動 (`*ImportJobOperator`)         |
 
 #### 7.2 大量レコード処理のベストプラクティス
 
