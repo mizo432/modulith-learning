@@ -2,10 +2,13 @@ package undecided.authorization.infra.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jwt.SignedJWT;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.time.Instant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -19,8 +22,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -248,6 +253,32 @@ class OAuth2AuthorizationServerConfigTest {
     @DisplayName("JwtEncoder Beanが設定されていること (REQ-00012)")
     void shouldHaveJwtEncoderBean() {
       assertThat(jwtEncoder).as("JwtEncoder Beanが設定されていること").isNotNull();
+    }
+
+    @Test
+    @DisplayName("JWTトークンはRS256アルゴリズムで署名されること (REQ-00016)")
+    void shouldSignJwtWithRs256Algorithm() throws Exception {
+      // Arrange
+      JwtClaimsSet claimsSet =
+          JwtClaimsSet.builder()
+              .subject("test-user")
+              .issuer("https://localhost:8443")
+              .issuedAt(Instant.now())
+              .expiresAt(Instant.now().plus(Duration.ofMinutes(1)))
+              .build();
+
+      // Act
+      JwtEncoderParameters params = JwtEncoderParameters.from(claimsSet);
+      String encodedJwt = jwtEncoder.encode(params).getTokenValue();
+      SignedJWT signedJwt = SignedJWT.parse(encodedJwt);
+
+      // Assert
+      assertThat(signedJwt)
+          .as("JWTが署名されていること")
+          .isNotNull();
+      assertThat(signedJwt.getHeader().getAlgorithm())
+          .as("署名アルゴリズムはRS256であること")
+          .isEqualTo(JWSAlgorithm.RS256);
     }
   }
 
