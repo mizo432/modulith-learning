@@ -102,7 +102,7 @@ class SamplePrefectureTest {
 
       // Assert
       assertThat(table).isNotNull();
-      assertThat(table.comment()).isEqualTo("都道府県マスターテーブル");
+      assertThat(table.comment()).isEqualTo("都道府県;対照表");
       assertThat(table.name()).isEqualTo("sample_prefectures");
       assertThat(table.schema()).isEqualTo("undecided_ef");
     }
