@@ -153,7 +153,12 @@ public class BranchImportJobLauncher {
   public void scheduledRun() {
     try {
       log.info("Triggering scheduled branch import job");
-      runFromApi();
+      JobExecution execution = runFromApi();
+      if (execution != null) {
+        log.info("Scheduled branch import job completed with status: {}", execution.getStatus());
+      } else {
+        log.info("Scheduled branch import job was skipped");
+      }
     } catch (Exception e) {
       log.error("Failed to run scheduled branch import job", e);
     }

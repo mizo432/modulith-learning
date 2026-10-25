@@ -56,7 +56,8 @@ public class SampleItemImportJobLauncher {
   public void scheduledRun() {
     try {
       log.info("Triggering scheduled sample item import job");
-      run();
+      JobExecution execution = run();
+      log.info("Scheduled sample item import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
       log.error("Failed to run scheduled sample item import job", e);
     }

@@ -54,7 +54,8 @@ public class ChouAzaImportJobLauncher {
   public void scheduledRun() {
     try {
       log.info("Triggering scheduled chou aza import job");
-      run();
+      JobExecution execution = run();
+      log.info("Scheduled chou aza import job completed with status: {}", execution.getStatus());
     } catch (Exception e) {
       log.error("Failed to run scheduled chou aza import job", e);
     }
