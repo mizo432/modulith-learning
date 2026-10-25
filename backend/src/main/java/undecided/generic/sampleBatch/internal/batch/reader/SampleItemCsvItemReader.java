@@ -29,6 +29,12 @@ public class SampleItemCsvItemReader implements ItemStreamReader<SampleItemCsvDt
   private static final String[] DEFAULT_NAME_MAPPING =
       new String[] {"itemCode", "itemName", "category", "price"};
 
+  // Japanese header constants
+  private static final String HEADER_ITEM_CODE_JP = "アイテムコード";
+  private static final String HEADER_ITEM_NAME_JP = "アイテム名";
+  private static final String HEADER_CATEGORY_JP = "カテゴリ";
+  private static final String HEADER_PRICE_JP = "価格";
+
   @Setter private Resource resource;
 
   private ICsvBeanReader csvBeanReader;
@@ -67,13 +73,17 @@ public class SampleItemCsvItemReader implements ItemStreamReader<SampleItemCsvDt
     String[] mapping = new String[headers.length];
     for (int i = 0; i < headers.length; i++) {
       String h = headers[i] != null ? headers[i].trim() : "";
-      if ("itemCode".equalsIgnoreCase(h) || "item_code".equalsIgnoreCase(h)) {
+      if ("itemCode".equalsIgnoreCase(h)
+          || "item_code".equalsIgnoreCase(h)
+          || HEADER_ITEM_CODE_JP.equals(h)) {
         mapping[i] = "itemCode";
-      } else if ("itemName".equalsIgnoreCase(h) || "item_name".equalsIgnoreCase(h)) {
+      } else if ("itemName".equalsIgnoreCase(h)
+          || "item_name".equalsIgnoreCase(h)
+          || HEADER_ITEM_NAME_JP.equals(h)) {
         mapping[i] = "itemName";
-      } else if ("category".equalsIgnoreCase(h)) {
+      } else if ("category".equalsIgnoreCase(h) || HEADER_CATEGORY_JP.equals(h)) {
         mapping[i] = "category";
-      } else if ("price".equalsIgnoreCase(h)) {
+      } else if ("price".equalsIgnoreCase(h) || HEADER_PRICE_JP.equals(h)) {
         mapping[i] = "price";
       } else {
         mapping[i] = null;

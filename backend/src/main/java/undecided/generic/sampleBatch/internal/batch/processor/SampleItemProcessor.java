@@ -13,7 +13,7 @@ import undecided.generic.sampleBatch.internal.batch.dto.SampleItemCsvDto;
 import undecided.generic.sampleBatch.spi.SampleItem;
 
 /**
- * CSVから読み込んだ{@link SampleItemCsvDto}を検証し、{@link SampleItem}エンティティに変換する{@link ItemProcessor}実装。
+ * CSVから読み込んだ{@link SampleItemCsvDto}を検証し、既存データと照合して{@link SampleItem}エンティティを生成・更新する{@link ItemProcessor}実装。
  *
  * <p>バッチ基本構成サンプルとして、入力データのバリデーションと変換ロジックの標準パターンを示します。
  */
@@ -34,8 +34,14 @@ public class SampleItemProcessor implements ItemProcessor<SampleItemCsvDto, Samp
       return null;
     }
 
-    SampleItem sampleItem = new SampleItem();
-    sampleItem.setItemCode(itemCode.trim());
+    String trimmedItemCode = itemCode.trim();
+    SampleItem existing = sampleItemRepository.findByItemCode(trimmedItemCode);
+    SampleItem sampleItem = existing != null ? existing : new SampleItem();
+
+    if (existing == null) {
+      sampleItem.setItemCode(trimmedItemCode);
+    }
+
     sampleItem.setItemName(item.getItemName() != null ? item.getItemName().trim() : "");
 
     String category = item.getCategory();
@@ -46,9 +52,11 @@ public class SampleItemProcessor implements ItemProcessor<SampleItemCsvDto, Samp
       try {
         sampleItem.setPrice(Long.parseLong(priceStr.trim()));
       } catch (NumberFormatException e) {
-        log.error("Invalid price format: '{}'", priceStr, e);
-        throw new NumberFormatException("Invalid price format: " + priceStr);
+        log.warn("Invalid price format: '{}', skipping record", priceStr);
+        return null;
       }
+    } else {
+      sampleItem.setPrice(null);
     }
 
     return sampleItem;

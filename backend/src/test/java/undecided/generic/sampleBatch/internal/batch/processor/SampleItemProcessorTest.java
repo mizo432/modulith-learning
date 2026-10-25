@@ -3,6 +3,7 @@ package undecided.generic.sampleBatch.internal.batch.processor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -119,8 +120,8 @@ class SampleItemProcessorTest {
     }
 
     @Test
-    @DisplayName("価格が数値に変換できない場合、例外をスローすること")
-    void shouldThrowExceptionWhenPriceIsInvalid() {
+    @DisplayName("価格が数値に変換できない場合、nullを返してスキップすること")
+    void shouldReturnNullWhenPriceIsInvalid() {
       // Arrange
       SampleItemCsvDto dto = new SampleItemCsvDto();
       dto.setItemCode("ITEM004");
@@ -128,9 +129,11 @@ class SampleItemProcessorTest {
       dto.setCategory("その他");
       dto.setPrice("invalid");
 
-      // Act & Assert
-      assertThatThrownBy(() -> processor.process(dto))
-          .isInstanceOf(NumberFormatException.class);
+      // Act
+      SampleItem result = processor.process(dto);
+
+      // Assert
+      assertThat(result).isNull();
     }
 
     @Test
@@ -146,6 +149,84 @@ class SampleItemProcessorTest {
 
       // Assert
       assertThat(result).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("既存データとの整合性テスト")
+  class ExistingDataTest {
+
+    @Test
+    @DisplayName("既存データ不存在の場合、新規エンティティを生成すること")
+    void shouldCreateNewEntityWhenNotExists() {
+      // Arrange
+      SampleItemCsvDto dto = new SampleItemCsvDto();
+      dto.setItemCode("ITEM001");
+      dto.setItemName("サンプル商品A");
+      dto.setCategory("食品");
+      dto.setPrice("1000");
+      when(repository.findByItemCode("ITEM001")).thenReturn(null);
+
+      // Act
+      SampleItem result = processor.process(dto);
+
+      // Assert
+      assertThat(result).isNotNull();
+      assertThat(result.getItemCode()).isEqualTo("ITEM001");
+      assertThat(result.getItemName()).isEqualTo("サンプル商品A");
+      assertThat(result.getId()).isNull(); // 新規エンティティはIDがnull
+    }
+
+    @Test
+    @DisplayName("既存データ存在の場合、既存エンティティを更新すること")
+    void shouldUpdateExistingEntityWhenExists() {
+      // Arrange
+      SampleItem existing = new SampleItem();
+      existing.setId(1L);
+      existing.setItemCode("ITEM001");
+      existing.setItemName("旧商品名");
+      existing.setCategory("旧カテゴリ");
+      existing.setPrice(500L);
+      when(repository.findByItemCode("ITEM001")).thenReturn(existing);
+
+      SampleItemCsvDto dto = new SampleItemCsvDto();
+      dto.setItemCode("ITEM001");
+      dto.setItemName("新商品名");
+      dto.setCategory("新カテゴリ");
+      dto.setPrice("1500");
+
+      // Act
+      SampleItem result = processor.process(dto);
+
+      // Assert
+      assertThat(result).isSameAs(existing);
+      assertThat(result.getId()).isEqualTo(1L); // 既存のIDが保持される
+      assertThat(result.getItemName()).isEqualTo("新商品名");
+      assertThat(result.getCategory()).isEqualTo("新カテゴリ");
+      assertThat(result.getPrice()).isEqualTo(1500L);
+    }
+
+    @Test
+    @DisplayName("itemCodeのトリム後の値で既存データを検索すること")
+    void shouldSearchExistingDataWithTrimmedItemCode() {
+      // Arrange
+      SampleItem existing = new SampleItem();
+      existing.setId(1L);
+      existing.setItemCode("ITEM001");
+      when(repository.findByItemCode("ITEM001")).thenReturn(existing);
+
+      SampleItemCsvDto dto = new SampleItemCsvDto();
+      dto.setItemCode("  ITEM001  ");
+      dto.setItemName("更新商品");
+      dto.setCategory("食品");
+      dto.setPrice("1000");
+
+      // Act
+      SampleItem result = processor.process(dto);
+
+      // Assert
+      assertThat(result).isSameAs(existing);
+      assertThat(result.getId()).isEqualTo(1L);
     }
   }
 }
