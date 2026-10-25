@@ -17,7 +17,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  * <p>{@code JpaRepository} を使用するバッチ処理やページネーションの例として使用します。
  */
 @Entity
-@Table(name = "sample_employees")
+@Table(name = "sample_repo_employees")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
