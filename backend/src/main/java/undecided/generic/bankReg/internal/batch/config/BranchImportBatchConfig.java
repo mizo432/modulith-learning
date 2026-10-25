@@ -13,6 +13,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.bankReg.internal.batch.processor.BranchItemProcessor;
 import undecided.generic.bankReg.internal.batch.reader.BranchCsvItemReader;
 import undecided.generic.bankReg.internal.batch.writer.BranchItemWriter;
@@ -72,6 +73,9 @@ public class BranchImportBatchConfig {
 
   @Bean
   public Job branchImportJob(JobRepository jobRepository, Step branchImportStep) {
-    return new JobBuilder(JOB_NAME, jobRepository).start(branchImportStep).build();
+    return new JobBuilder(JOB_NAME, jobRepository)
+        .start(branchImportStep)
+        .listener(new BatchJobListener())
+        .build();
   }
 }

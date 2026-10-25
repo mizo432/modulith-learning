@@ -14,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.largeRecordBatch.internal.batch.dto.LargeRecordCsvDto;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.largeRecordBatch.internal.batch.processor.LargeRecordProcessor;
 import undecided.generic.largeRecordBatch.internal.batch.reader.LargeRecordCsvItemReader;
 import undecided.generic.largeRecordBatch.internal.batch.writer.LargeRecordWriter;
@@ -88,6 +89,9 @@ public class LargeRecordImportBatchConfig {
 
   @Bean
   public Job largeRecordImportJob(JobRepository jobRepository, Step largeRecordImportStep) {
-    return new JobBuilder(JOB_NAME, jobRepository).start(largeRecordImportStep).build();
+    return new JobBuilder(JOB_NAME, jobRepository)
+        .start(largeRecordImportStep)
+        .listener(new BatchJobListener())
+        .build();
   }
 }

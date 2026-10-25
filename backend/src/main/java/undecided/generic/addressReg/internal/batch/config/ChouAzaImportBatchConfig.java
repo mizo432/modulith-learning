@@ -14,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.addressReg.internal.batch.dto.ChouAzaCsvDto;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.addressReg.internal.batch.processor.ChouAzaItemProcessor;
 import undecided.generic.addressReg.internal.batch.reader.ChouAzaCsvItemReader;
 import undecided.generic.addressReg.internal.batch.writer.ChouAzaItemWriter;
@@ -67,6 +68,9 @@ public class ChouAzaImportBatchConfig {
 
   @Bean
   public Job chouAzaImportJob(JobRepository jobRepository, Step chouAzaImportStep) {
-    return new JobBuilder(JOB_NAME, jobRepository).start(chouAzaImportStep).build();
+    return new JobBuilder(JOB_NAME, jobRepository)
+        .start(chouAzaImportStep)
+        .listener(new BatchJobListener())
+        .build();
   }
 }

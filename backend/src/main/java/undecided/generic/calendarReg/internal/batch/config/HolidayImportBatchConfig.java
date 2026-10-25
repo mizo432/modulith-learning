@@ -16,6 +16,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.calendarReg.internal.batch.dto.HolidayCsvDto;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.calendarReg.internal.batch.processor.HolidayItemProcessor;
 import undecided.generic.calendarReg.internal.batch.reader.HolidayCsvItemReader;
 import undecided.generic.calendarReg.internal.batch.writer.HolidayItemWriter;
@@ -80,6 +81,9 @@ public class HolidayImportBatchConfig {
 
   @Bean
   public Job holidayImportJob(JobRepository jobRepository, Step holidayImportStep) {
-    return new JobBuilder(JOB_NAME, jobRepository).start(holidayImportStep).build();
+    return new JobBuilder(JOB_NAME, jobRepository)
+        .start(holidayImportStep)
+        .listener(new BatchJobListener())
+        .build();
   }
 }

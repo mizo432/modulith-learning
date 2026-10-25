@@ -14,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.addressReg.internal.batch.dto.PrefectureCsvDto;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.addressReg.internal.batch.processor.PrefectureItemProcessor;
 import undecided.generic.addressReg.internal.batch.reader.PrefectureCsvItemReader;
 import undecided.generic.addressReg.internal.batch.writer.PrefectureItemWriter;
@@ -67,6 +68,9 @@ public class PrefectureImportBatchConfig {
 
   @Bean
   public Job prefectureImportJob(JobRepository jobRepository, Step prefectureImportStep) {
-    return new JobBuilder(JOB_NAME, jobRepository).start(prefectureImportStep).build();
+    return new JobBuilder(JOB_NAME, jobRepository)
+        .start(prefectureImportStep)
+        .listener(new BatchJobListener())
+        .build();
   }
 }
