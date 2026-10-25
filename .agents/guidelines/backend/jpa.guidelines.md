@@ -181,11 +181,88 @@ public class SamplePrefecture {
 
 ---
 
-## 3. 関連付け (@OneToMany, @ManyToOne)
+## 3. Viewコメント (@SqlResultSetMapping, @NamedNativeQuery)
+
+プロジェクトでは、JPA の `@SqlResultSetMapping` と `@NamedNativeQuery` を使用して、データベースのViewをエンティティにマッピングします。
+Viewのコメントも、テーブルと同じ「和名;情報種類」の書式で設定します。
+
+### 3.1 コメントの書式
+
+Viewコメントは、以下の書式で設定します：
+
+```
+和名;情報種類
+```
+
+- **和名**: Viewの日本語名称
+- **情報種類**: 情報の分類（リソース / 対応表 / 対照表 / イベント）
+
+### 3.2 情報種類の分類
+
+情報種類の分類は、テーブルコメントと同じ4種類を使用します：
+
+| 情報種類 | 説明 | 例 |
+|----------|------|----|
+| **リソース** | 独立したエンティティとして存在する主要なデータ。主キーを持ち、他の情報が参照する対象。 | パーティ、個人、法人、組織、ユーザー |
+| **対応表** | 2つ以上のリソース間の関係性を表す情報。結合キーや外部キーを持つ。 | ロール割り当て、住所、銀行口座、パーティ関係 |
+| **対照表** | コードと名称の対応など、マスターデータとして参照される情報。lookupテーブル的な役割。 | 都道府県、金融機関、祝日 |
+| **イベント** | システム内で発生する出来事を表す情報。タイムスタンプを持つ。 | パーティ登録完了、組織登録完了 |
+
+### 3.3 使用例
+
+```java
+
+@Entity
+@SqlResultSetMapping(
+    name = "SamplePrefectureViewMapping",
+    entities = @EntityResult(entityClass = SamplePrefectureView.class)
+)
+@NamedNativeQuery(
+    name = "SamplePrefectureView.findAll",
+    query = "SELECT * FROM undecided_ef.sample_prefectures_view",
+    resultSetMapping = "SamplePrefectureViewMapping"
+)
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class SamplePrefectureView {
+
+  @Id
+  @Column(name = "prefecture_id", comment = "都道府県ID;リソース", nullable = false)
+  private Long id;
+
+  @Column(name = "prefecture_code", comment = "都道府県コード;対照表", nullable = false, length = 2)
+  private String prefectureCode;
+
+  @Column(name = "prefecture_name", comment = "都道府県名;対照表", nullable = false, length = 20)
+  private String prefectureName;
+
+  @Column(name = "region", comment = "地方区分;対照表", length = 10)
+  private String region;
+}
+```
+
+### 3.4 命名ガイドライン
+
+1. **Viewコメント**: Viewの和名と情報種類をセミコロンで区切って設定する。
+   - 例: `comment = "都道府県;対照表"`
+2. **カラムコメント**: カラムの和名と情報種類をセミコロンで区切って設定する。
+   - 例: `comment = "都道府県コード;対照表"`
+3. **情報種類の選択**:
+   - マスターデータ（コードと名称の対応）→ **対照表**
+   - 独立したエンティティ → **リソース**
+   - 関連付けテーブル → **対応表**
+   - イベント履歴 → **イベント**
+
+---
+
+---
+
+## 4. 関連付け (@OneToMany, @ManyToOne)
 
 エンティティ間の関連付けは、JPA の標準アノテーションを使用します。
 
-### 3.1 @OneToMany（一対多）
+### 4.1 @OneToMany（一対多）
 
 ```java
 
@@ -209,7 +286,7 @@ public class Role {
 - `mappedBy` で所有側を指定し、逆方向の関連付けを定義
 - デフォルトで `ArrayList` を初期化して、null 参照を防ぐ
 
-### 3.2 @ManyToOne（多対一）
+### 4.2 @ManyToOne（多対一）
 
 ```java
 
@@ -239,11 +316,11 @@ public class RoleAssignmentForOrg {
 
 ---
 
-## 4. 継承戦略 (@Inheritance)
+## 5. 継承戦略 (@Inheritance)
 
 プロジェクトでは、`InheritanceType.TABLE_PER_CLASS` を使用して、各サブクラスを個別のテーブルとしてマッピングします。
 
-### 4.1 抽象基底クラス
+### 5.1 抽象基底クラス
 
 ```java
 
@@ -259,7 +336,7 @@ public abstract class Party {
 }
 ```
 
-### 4.2 サブクラス
+### 5.2 サブクラス
 
 ```java
 
@@ -282,11 +359,11 @@ public class Person extends Party {
 
 ---
 
-## 5. @Embeddable / @Embedded（埋め込み可能クラス）
+## 6. @Embeddable / @Embedded（埋め込み可能クラス）
 
 値オブジェクトを JPA エンティティに埋め込んでマッピングするパターンです。
 
-### 5.1 Embeddable クラス（値オブジェクト）
+### 6.1 Embeddable クラス（値オブジェクト）
 
 ```java
 
@@ -343,11 +420,11 @@ public class SimpleEmployee {
 
 ---
 
-## 6. @Converter / AttributeConverter（カスタム変換）
+## 7. @Converter / AttributeConverter（カスタム変換）
 
 値オブジェクトとデータベースのデータ型間の双方向変換を定義するパターンです。
 
-### 6.1 Converter の定義
+### 7.1 Converter の定義
 
 ```java
 
@@ -372,7 +449,7 @@ public static class GovtAssignedIdConverter implements AttributeConverter<GovtAs
 - `autoApply = true` でグローバルに自動適用
 - 変換先は主に `String` 型
 
-### 6.2 共通基盤クラス
+### 7.2 共通基盤クラス
 
 | クラス                 | 説明                                                 |
 |------------------------|------------------------------------------------------|
@@ -380,7 +457,7 @@ public static class GovtAssignedIdConverter implements AttributeConverter<GovtAs
 | `PersistableEnum.java` | データベース値を取得するためのインターフェース       |
 | `ValueObject.java`     | 値オブジェクトの共通インターフェースとユーティリティ |
 
-### 6.3 主な Converter 一覧
+### 7.3 主な Converter 一覧
 
 | 値オブジェクト      | Converter                  |
 |---------------------|----------------------------|
@@ -404,7 +481,7 @@ public static class GovtAssignedIdConverter implements AttributeConverter<GovtAs
 
 ---
 
-## 7. ValueObject 共通インターフェース
+## 8. ValueObject 共通インターフェース
 
 値オブジェクトの共通動作を定義するインターフェースです。
 
@@ -439,12 +516,12 @@ public interface ValueObject {
 
 ---
 
-## 8. IdValue / 分散 ID 生成
+## 9. IdValue / 分散 ID 生成
 
 プロジェクトでは、`@GeneratedValue` を使用せず、アプリケーション側で ID を生成します。
 分散環境で一意な ID を生成するために、Snowflake ID や UUID v7 などの分散 ID 生成方式を採用しています。
 
-### 8.1 ID 値オブジェクトのインターフェース階層
+### 9.1 ID 値オブジェクトのインターフェース階層
 
 プロジェクトでは、ID を値オブジェクトとして定義し、型安全性を確保します。
 
@@ -1336,11 +1413,11 @@ public class OrderNumberGeneratorWithLock {
 
 ### 8.10 機能
 
-## 9. リポジトリバリエーション
+## 10. リポジトリバリエーション
 
 プロジェクトでは、`CrudRepository` と `JpaRepository` の両方を使用します。
 
-### 9.1 CrudRepository
+### 10.1 CrudRepository
 
 基本的な CRUD 操作のみが必要な場合に使用します。
 
@@ -1351,7 +1428,7 @@ public interface UserRepository extends CrudRepository<User, SnowflakeId> {
 }
 ```
 
-### 9.2 JpaRepository
+### 10.2 JpaRepository
 
 バッチ処理やページネーションが必要な場合に使用します。
 
@@ -1362,7 +1439,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 }
 ```
 
-### 9.3 カスタムクエリメソッド
+### 10.3 カスタムクエリメソッド
 
 Spring Data JPA のメソッド名派生クエリを使用して、簡単な検索を実装します。
 
@@ -1377,11 +1454,11 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
 
 ---
 
-## 10. 監査フィールドパターン
+## 11. 監査フィールドパターン
 
 エンティティの作成・更新履歴を追跡するために、監査フィールドを使用します。
 
-### 10.1 @CreatedDate パターン
+### 11.1 @CreatedDate パターン
 
 `BusinessEntity` で使用されるパターンです。Spring Data JPA の監査機能を使用して、作成日時を自動設定します。
 
@@ -1391,7 +1468,7 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
 private LocalDateTime createdAt;
 ```
 
-### 10.2 @PrePersist/@PreUpdate パターン
+### 11.2 @PrePersist/@PreUpdate パターン
 
 `AuditResource` で使用されるパターンです。ライフサイクルコールバックを使用して、手動で監査フィールドを設定します。
 
@@ -1414,11 +1491,11 @@ public void preUpdate() {
 
 ---
 
-## 11. @Query / @Modifying（カスタム JPQL クエリ）
+## 12. @Query / @Modifying（カスタム JPQL クエリ）
 
 標準のリポジトリメソッドでは表現できないクエリは、`@Query` アノテーションを使用して JPQL で定義します。
 
-### 11.1 検索クエリ
+### 12.1 検索クエリ
 
 ```java
 
@@ -1428,7 +1505,7 @@ public void preUpdate() {
 List<Holiday> findByHolidayDateBetween(@Param("from") LocalDate from, @Param("to") LocalDate to);
 ```
 
-### 11.2 削除クエリ
+### 12.2 削除クエリ
 
 ```java
 
@@ -1446,11 +1523,11 @@ int deleteByDatasetIdNot(@Param("datasetId") String datasetId);
 
 ---
 
-## 12. 先頭一致・部分一致検索パターン
+## 13. 先頭一致・部分一致検索パターン
 
 文字列フィールドに対する検索は、用途に応じて複数のアプローチを選択できます。
 
-### 12.1 検索アプローチの比較
+### 13.1 検索アプローチの比較
 
 | アプローチ         | 先頭一致 | 部分一致 | 末尾一致 | 大文字小文字無視 | 複数条件 | インデックス利用 |
 |--------------------|----------|----------|----------|------------------|----------|------------------|
@@ -1459,11 +1536,11 @@ int deleteByDatasetIdNot(@Param("datasetId") String datasetId);
 | **ExampleMatcher** | ✓       | ✓       | ✓       | ✓               | ✓       | ✓               |
 | **Specification**  | ✓       | ✓       | ✓       | ✓               | ✓       | ✓               |
 
-### 12.2 メソッド名派生クエリ
+### 13.2 メソッド名派生クエリ
 
 Spring Data JPA がメソッド名から自動的にクエリを生成する最もシンプルな方法です。
 
-#### 12.2.1 基本パターン
+#### 13.2.1 基本パターン
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1498,7 +1575,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 - コードが簡潔で可読性が高い
 - インデックスを活用できる（先頭一致の場合）
 
-#### 12.2.2 複数フィールドの組み合わせ
+#### 13.2.2 複数フィールドの組み合わせ
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1528,7 +1605,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 - `Pageable` を引数に追加してページネーション対応
 - 条件が増えるとメソッド名が長くなる
 
-#### 12.2.3 大文字小文字無視
+#### 13.2.3 大文字小文字無視
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1550,17 +1627,17 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 - `IgnoreCase` サフィックスで大文字小文字を無視した検索
 - データベースの照合順序に依存しない
 
-#### 12.2.4 制約
+#### 13.2.4 制約
 
 - 条件数が増えるとメソッド名が長くなり可読性が低下
 - 動的な条件構築には不向き
 - `LIKE` のエスケープ処理が限定的
 
-### 12.3 JPQL での LIKE 検索
+### 13.3 JPQL での LIKE 検索
 
 `@Query` アノテーションを使用して JPQL で LIKE 検索を定義します。
 
-#### 12.3.1 基本パターン
+#### 13.3.1 基本パターン
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1590,7 +1667,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 - パラメータの前後に `%` を追加してワイルドカードを指定
 - メソッド名派生よりも柔軟なクエリ構築が可能
 
-#### 12.3.2 大文字小文字無視
+#### 13.3.2 大文字小文字無視
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1616,7 +1693,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 - PostgreSQL の `ILIKE` はネイティブクエリで使用可能
 - `LOWER()` 関数を使用するとインデックスが利用されない場合がある
 
-#### 12.3.3 複数条件の組み合わせ
+#### 13.3.3 複数条件の組み合わせ
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1648,7 +1725,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 - `AND` / `OR` で複数条件を組み合わせ可能
 - `IS NULL` チェックでオプション条件を実現
 
-#### 12.3.4 ワイルドカードのエスケープ
+#### 13.3.4 ワイルドカードのエスケープ
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1673,11 +1750,11 @@ public String escapeLikeWildcard(String input) {
 - `ESCAPE` 句を使用してワイルドカード文字自体を検索
 - `%`、`_`、エスケープ文字をエスケープ処理
 
-### 12.4 ExampleMatcher を使用した検索
+### 13.4 ExampleMatcher を使用した検索
 
 Spring Data JPA の Example API を使用して、型安全な動的検索を実現します。
 
-#### 12.4.1 基本パターン
+#### 13.4.1 基本パターン
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
@@ -1738,7 +1815,7 @@ public class EmployeeSearchService {
 - `endsWith()` → 末尾一致（`LIKE '%keyword'`）
 - `withIgnoreCase()` で大文字小文字を無視
 
-#### 12.4.2 複数フィールドの組み合わせ
+#### 13.4.2 複数フィールドの組み合わせ
 
 ```java
 public List<Employee> searchByMultipleFields(String name, String department) {
@@ -1763,7 +1840,7 @@ public List<Employee> searchByMultipleFields(String name, String department) {
 - `withIgnoreNullValues()` で null のフィールドを条件から除外
 - デフォルトのマッチングルールを `withMatcher(".*", ...)` で一括設定
 
-#### 12.4.3 正規表現マッチング
+#### 13.4.3 正規表現マッチング
 
 ```java
 public List<Employee> searchByNamePattern(String regex) {
@@ -1783,17 +1860,17 @@ public List<Employee> searchByNamePattern(String regex) {
 - `regex()` で正規表現ベースのマッチング
 - 複雑なパターンマッチングが可能
 
-#### 12.4.4 制約
+#### 13.4.4 制約
 
 - プロブオブジェクトを作成する必要がある
 - 関連エンティティの検索が限定的
 - `LIKE` と同様にインデックス利用には注意（先頭一致のみ）
 
-### 12.5 Specification を使用した動的検索
+### 13.5 Specification を使用した動的検索
 
 JPA Criteria API を使用して、完全に動的な検索条件を構築します。
 
-#### 12.5.1 リポジトリの設定
+#### 13.5.1 リポジトリの設定
 
 ```java
 public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>,
@@ -1807,7 +1884,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId>
 - `JpaSpecificationExecutor` を実装して Specification を使用可能に
 - `findAll(Specification<T>)`、`count(Specification<T>)` などのメソッドが利用可能
 
-#### 12.5.2 基本パターン
+#### 13.5.2 基本パターン
 
 ```java
 public class EmployeeSpecifications {
@@ -1849,7 +1926,7 @@ public class EmployeeSpecifications {
 - `cb.lower()` で大文字小文字を無視
 - 静的メソッドとして Specification を定義して再利用
 
-#### 12.5.3 動的な条件構築
+#### 13.5.3 動的な条件構築
 
 ```java
 
@@ -1906,7 +1983,7 @@ public class EmployeeSearchCondition {
 - 条件が設定されている場合のみ `and()` で追加
 - DTO を使用して検索条件をまとめて受け取る
 
-#### 12.5.4 複数条件の OR 結合
+#### 13.5.4 複数条件の OR 結合
 
 ```java
 public static Specification<Employee> nameOrDepartmentContaining(String keyword) {
@@ -1925,13 +2002,13 @@ public static Specification<Employee> nameOrDepartmentContaining(String keyword)
 - `cb.or()` で OR 条件を構築
 - `Join` を使用して関連エンティティのフィールドも検索対象に
 
-#### 12.5.5 制約
+#### 13.5.5 制約
 
 - Criteria API の学習コストが高い
 - コード量が他のアプローチよりも多くなる
 - 複雑なクエリでは可読性が低下する可能性がある
 
-### 12.6 検索パターンの選択基準
+### 13.6 検索パターンの選択基準
 
 | シーン                   | 推奨アプローチ              | 理由                               |
 |--------------------------|-----------------------------|------------------------------------|
@@ -1942,11 +2019,11 @@ public static Specification<Employee> nameOrDepartmentContaining(String keyword)
 | 大文字小文字無視         | JPQL LOWER / ExampleMatcher | データベースに依存しない           |
 | 正規表現マッチング       | ExampleMatcher regex        | 複雑なパターンに対応               |
 
-### 12.7 インデックス設計の考慮点
+### 13.7 インデックス設計の考慮点
 
 検索パターンに応じて適切なインデックスを設計します。
 
-#### 12.7.1 先頭一致検索
+#### 13.7.1 先頭一致検索
 
 ```sql
 -- 先頭一致検索でインデックスが有効に機能
@@ -1958,7 +2035,7 @@ CREATE INDEX idx_employees_name ON undecided_as.employees (name);
 - `LIKE 'keyword%'` の形式でインデックスが利用される
 - B-tree インデックスで十分
 
-#### 12.7.2 部分一致検索
+#### 13.7.2 部分一致検索
 
 ```sql
 -- 部分一致検索ではインデックスが利用されない場合がある
@@ -1974,7 +2051,7 @@ CREATE INDEX idx_employees_name_trgm ON undecided_as.employees
 - PostgreSQL の `pg_trgm` 拡張を使用して trigram インデックスを定義
 - GIN インデックスで部分一致検索のパフォーマンスを向上
 
-#### 12.7.3 複合インデックス
+#### 13.7.3 複合インデックス
 
 ```sql
 -- 複数フィールドの検索で複合インデックス
@@ -1987,7 +2064,7 @@ CREATE INDEX idx_employees_name_dept
 - 先頭一致のフィールドをインデックスの先頭に配置
 - 部分一致のフィールドはインデックスの末尾に配置
 
-### 12.8 注意点
+### 13.8 注意点
 
 1. **SQL インジェクション**: `@Query` で文字列連結を使用して LIKE 条件を構築しない。`@Param`
    を使用してパラメータ化
@@ -2002,7 +2079,7 @@ CREATE INDEX idx_employees_name_dept
 
 ---
 
-## 13. @Lock（ペシミスティックロック）
+## 14. @Lock（ペシミスティックロック）
 
 競合が発生するシナリオでは、`@Lock` アノテーションを使用して行レベルの排他制御を実現します。
 
@@ -2030,7 +2107,7 @@ Optional<SnowflakeNode> findAvailableNode(
 
 ---
 
-## 14. @Transactional（トランザクション管理）
+## 15. @Transactional（トランザクション管理）
 
 サービス層で `@Transactional` アノテーションを使用して、トランザクション境界を明確に定義します。
 
@@ -2066,18 +2143,18 @@ public boolean renew(SnowflakeNode lease) {
 
 ---
 
-## 15. Schema 分離パターン
+## 16. Schema 分離パターン
 
 モジュールごとにスキーマを分離して、データベースの論理的な区切りを明確にします。
 
-### 15.1 スキーマ一覧
+### 16.1 スキーマ一覧
 
 | スキーマ            | 用途               | 例                                      |
 |---------------------|--------------------|-----------------------------------------|
 | `undecided_ef`      | 汎用マスターデータ | Prefecture, City, Bank, Branch, Holiday |
 | `relationship_mgmt` | 関係管理データ     | Party, Person, Organization, Role       |
 
-### 15.2 実装例
+### 16.2 実装例
 
 ```java
 
@@ -2106,14 +2183,14 @@ public abstract class Party {
 
 ---
 
-### 15.3 と DDL
+### 16.3 と DDL
 
-## 16. Flyway と JPA の連携
+## 17. Flyway と JPA の連携
 
 プロジェクトでは、Flyway を使用してデータベーススキーマをバージョン管理し、JPA は DDL
 生成を行わない方式を採用しています。
 
-### 16.1 基本設定
+### 17.1 基本設定
 
 `application.yml` で以下の設定を行います。
 
@@ -2644,13 +2721,13 @@ Flyway はアプリケーション起動時に自動的に実行されます。
 
 ---
 
-### 16.11 オブジェクト
+### 17.11 オブジェクト
 
-## 17. View を使用するパターン
+## 18. View を使用するパターン
 
 データベース View を JPA エンティティとしてマッピングするパターンです。読み取り専用の集計データや、複数のテーブルを結合したデータに有効です。
 
-### 17.1 @Subselect（EJB3 準拠の Read-Only View）
+### 18.1 @Subselect（EJB3 準拠の Read-Only View）
 
 `@Subselect` アノテーションを使用して、SQL SELECT 文の結果をエンティティとしてマッピングします。
 
@@ -2979,12 +3056,12 @@ COMMENT ON MATERIALIZED VIEW undecided_as.mv_party_summary IS NULL;
 
 ---
 
-## 18. Materialized View を使用するパターン
+## 19. Materialized View を使用するパターン
 
 Materialized View は、クエリ結果を物理的にストレージに保存する特殊な View です。通常の View
 が都度クエリを実行するのに対し、Materialized View は一度生成した結果をキャッシュのように保持し、高速な読み取りを提供します。
 
-### 18.1 Materialized View の基本
+### 19.1 Materialized View の基本
 
 通常の View と Materialized View の違いを理解することが重要です。
 
@@ -3223,14 +3300,14 @@ public class PartySummaryService {
 
 ---
 
-### 18.7 メンテナンス
+### 19.7 メンテナンス
 
-## 19. TRUNCATE を使用するパターン
+## 20. TRUNCATE を使用するパターン
 
 テーブルの全データを高速に削除する際に TRUNCATE を使用します。DELETE と違い、ROW LEVEL
 のトリガーが発火せず、ロックの取得が軽量です。
 
-### 19.1 基本構文
+### 20.1 基本構文
 
 PostgreSQL での基本的な TRUNCATE 構文です。
 
@@ -3402,12 +3479,12 @@ public class TruncateRepository {
 
 ---
 
-## 20. REINDEX（再インデックス）を使用するパターン
+## 21. REINDEX（再インデックス）を使用するパターン
 
 インデックスの再構築が必要な場合に REINDEX
 を使用します。データ的大量更新後のインデックス断片化、インデックス破損時の復旧、テーブル統計情報の更新などに有効です。
 
-### 20.1 基本構文
+### 21.1 基本構文
 
 PostgreSQL での基本的な REINDEX 構文です。
 
@@ -3645,12 +3722,12 @@ CREATE INDEX idx_parties_party_id ON undecided_as.parties (party_id);
 
 ---
 
-## 21. 履歴テーブルを使用するパターン
+## 22. 履歴テーブルを使用するパターン
 
 履歴テーブルは、データの変更履歴を追跡するために使用されます。プロジェクトでは `address_use_history`
 のように、業務ロジックで明示的に履歴を記録するパターンと、トリガーや JPA リスナーによる自動履歴管理のパターンがあります。
 
-### 21.1 履歴テーブルの命名規約
+### 22.1 履歴テーブルの命名規約
 
 **履歴テーブルのテーブル名は、必ず `_history` サフィックスを付けること。**
 
@@ -4745,13 +4822,13 @@ DROP TABLE undecided_as.parties_history_202501;
 
 ---
 
-## 22. 仕訳データの変更履歴パターン（逆仕訳とマイナス仕訳）
+## 23. 仕訳データの変更履歴パターン（逆仕訳とマイナス仕訳）
 
 経理の仕訳データは、一度記録した仕訳を直接修正するのではなく、
 変更時に「逆仕訳」または「マイナス仕訳」として新しい仕訳行を記録するパターンがあります。
 このアプローチにより、仕訳の履歴が完全に追跡可能になり、監査証跡が保証されます。
 
-### 22.1 基本概念
+### 23.1 基本概念
 
 仕訳の変更履歴管理には、主に2つのアプローチがあります。
 
@@ -5488,11 +5565,11 @@ CREATE UNIQUE INDEX idx_mv_account_balance
 
 ---
 
-## 23. アンチパターン
+## 24. アンチパターン
 
 以下のアンチパターンは避けてください。
 
-### 23.1 @GeneratedValue を使用しない
+### 24.1 @GeneratedValue を使用しない
 
 プロジェクトでは、分散 ID 生成方式を採用しているため、`@GeneratedValue` は使用しません。
 
@@ -5539,7 +5616,7 @@ private EmployeeNo employeeNo;
 
 ---
 
-## 24. 参考リンク
+## 25. 参考リンク
 
 | Issue                                                           | 説明                             |
 |-----------------------------------------------------------------|----------------------------------|
