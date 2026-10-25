@@ -145,9 +145,17 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 - ステート一覧.tsvで整理した状態に基づき、PlantUMLで状態遷移図（ステートマシン図）を作成する
 - 状態モデル図は `04.システム/02.ステート/ステートマシン図.md` に配置する
 - 各状態間の遷移と、その遷移をトリガーするユースケースを明記する
--
 
 状態モデル図の作成手順は [状態モデル図作成ガイドライン](../../../guidelines/docs/state-model.guidelines.md)
+を参照
+
+**UC複合図の作成**
+
+- 洗い出したユースケース、画面、イベント、情報、条件をPlantUMLで関連づけたUC複合図を作成する
+- UC複合図は `03.システム境界/UC複合図.md` に配置する
+- アクター、外部システム、ユースケース、画面、イベント、情報、条件の関係性を視覚的に表現する
+
+UC複合図の作成手順は [UC複合図作成ガイドライン](../../../guidelines/docs/uc-composite.guidelines.md)
 を参照
 
 **業務ルールの種類**
@@ -396,21 +404,22 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
                 - [ユースケース一覧.md](templates/ユースケース一覧.md): ユースケース一覧のMarkdownテンプレート
                 - [ユースケース一覧.tsv](templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
     - [ユースケース図.md](templates/ユースケース図.md): ユースケース図のMarkdownテンプレート
-        - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
-        - [情報一覧.tsv](templates/情報一覧.tsv): 情報一覧のTSVテンプレート
-            - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
-            - [ステートマシン図.md](templates/ステートマシン図.md):
-              ステートマシン図のMarkdownテンプレート（PlantUML状態遷移図）
-                - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
-                - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
-                - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
-                - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
-                - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
-                - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
-                - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
-                - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
-                - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
-                - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
+    - [UC複合図.md](templates/UC複合図.md): UC複合図のMarkdownテンプレート（PlantUML使用）
+      - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
+      - [情報一覧.tsv](templates/情報一覧.tsv): 情報一覧のTSVテンプレート
+      - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
+      - [ステートマシン図.md](templates/ステートマシン図.md):
+      ステートマシン図のMarkdownテンプレート（PlantUML状態遷移図）
+      - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
+      - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
+      - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
+      - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
+      - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
+      - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
+      - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
+      - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
+      - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
+      - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
 
 - **チェックリスト**:
     - [requirement.md](../../../rdra/checklists/requirement.md): 要件分析時の確認項目
