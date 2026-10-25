@@ -30,20 +30,20 @@ entity "Sprint" as Sprint {
 entity "SprintBacklogItem" as SprintBacklogItem {
   * sprint_backlog_item_id : SnowflakeID <<PK>>
   --
-  sprint_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
 }
 
 entity "Task" as Task {
   * task_id : SnowflakeID <<PK>>
   --
-  sprint_backlog_item_id : UUID <<FK>>
+  sprint_backlog_item_id : SnowflakeID <<FK>>
 }
 
 entity "TaskAssignment" as TaskAssignment {
   * task_assignment_id : SnowflakeID <<PK>>
   --
-  task_id : UUID <<FK>>
+  task_id : SnowflakeID <<FK>>
   employee_id : UUID <<FK Employee>>
 }
 
@@ -96,20 +96,20 @@ entity "スプリント" as Sprint {
 entity "スプリントバックログ項目" as SprintBacklogItem {
   * sprint_backlog_item_id : SnowflakeID <<PK>>
   --
-  sprint_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
 }
 
 entity "タスク" as Task {
   * task_id : SnowflakeID <<PK>>
   --
-  sprint_backlog_item_id : UUID <<FK>>
+  sprint_backlog_item_id : SnowflakeID <<FK>>
 }
 
 entity "タスク割り当て" as TaskAssignment {
   * task_assignment_id : SnowflakeID <<PK>>
   --
-  task_id : UUID <<FK>>
+  task_id : SnowflakeID <<FK>>
   employee_id : UUID <<FK Employee>>
 }
 

@@ -1,6 +1,6 @@
 属性名	型	PK	必須	説明
 task_id	SnowflakeID	*	Y	タスクの一意な識別子
-sprint_backlog_item_id	UUID		Y	関連するSprint Backlog項目の識別子
+sprint_backlog_item_id	SnowflakeID		Y	関連するSprint Backlog項目の識別子
 title	String		Y	タスクのタイトル
 description	Text		N	タスクの詳細説明
 estimated_hours	Decimal		N	推定作業時間

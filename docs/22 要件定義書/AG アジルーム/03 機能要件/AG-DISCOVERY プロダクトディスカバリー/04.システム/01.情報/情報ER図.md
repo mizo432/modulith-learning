@@ -30,7 +30,7 @@ entity "ProductGoal" as ProductGoal {
 entity "SuccessMetric" as SuccessMetric {
   * metric_id : SnowflakeID <<PK>>
   --
-  product_goal_id : UUID <<FK>>
+  product_goal_id : SnowflakeID <<FK>>
 }
 
 entity "UserProblem" as UserProblem {
@@ -45,7 +45,7 @@ entity "Feedback" as Feedback {
   --
   project_id : UUID <<FK>>
   submitted_by : UUID <<FK Employee>>
-  problem_id : UUID <<FK>>
+  problem_id : SnowflakeID <<FK>>
 }
 
 ' ProductGoal defines SuccessMetrics
@@ -81,7 +81,7 @@ entity "プロダクト目標" as ProductGoal {
 entity "成功指標" as SuccessMetric {
   * metric_id : SnowflakeID <<PK>>
   --
-  product_goal_id : UUID <<FK>>
+  product_goal_id : SnowflakeID <<FK>>
 }
 
 entity "課題" as UserProblem {
@@ -96,7 +96,7 @@ entity "フィードバック" as Feedback {
   --
   project_id : UUID <<FK>>
   submitted_by : UUID <<FK Employee>>
-  problem_id : UUID <<FK>>
+  problem_id : SnowflakeID <<FK>>
 }
 
 ' プロダクト目標から成功指標へ

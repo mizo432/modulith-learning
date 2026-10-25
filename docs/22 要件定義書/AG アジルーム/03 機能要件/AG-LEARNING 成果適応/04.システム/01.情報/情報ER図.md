@@ -24,26 +24,26 @@ skinparam packageStyle rectangle
 entity "Review" as Review {
   * review_id : SnowflakeID <<PK>>
   --
-  sprint_id : UUID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
 }
 
 entity "ReviewFeedback" as ReviewFeedback {
   * review_feedback_id : SnowflakeID <<PK>>
   --
-  review_id : UUID <<FK>>
+  review_id : SnowflakeID <<FK>>
   employee_id : UUID <<FK Employee>>
 }
 
 entity "Retrospective" as Retrospective {
   * retrospective_id : SnowflakeID <<PK>>
   --
-  sprint_id : UUID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
 }
 
 entity "ImprovementAction" as ImprovementAction {
   * action_id : SnowflakeID <<PK>>
   --
-  retrospective_id : UUID <<FK>>
+  retrospective_id : SnowflakeID <<FK>>
   project_id : UUID <<FK>>
   owner_id : UUID <<FK Employee>>
 }
@@ -52,7 +52,7 @@ entity "Risk" as Risk {
   * risk_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   owner_id : UUID <<FK Employee>>
 }
 
@@ -98,26 +98,26 @@ skinparam packageStyle rectangle
 entity "レビュー" as Review {
   * review_id : SnowflakeID <<PK>>
   --
-  sprint_id : UUID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
 }
 
 entity "レビューフィードバック" as ReviewFeedback {
   * review_feedback_id : SnowflakeID <<PK>>
   --
-  review_id : UUID <<FK>>
+  review_id : SnowflakeID <<FK>>
   employee_id : UUID <<FK Employee>>
 }
 
 entity "レトロスペクティブ" as Retrospective {
   * retrospective_id : SnowflakeID <<PK>>
   --
-  sprint_id : UUID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
 }
 
 entity "改善アクション" as ImprovementAction {
   * action_id : SnowflakeID <<PK>>
   --
-  retrospective_id : UUID <<FK>>
+  retrospective_id : SnowflakeID <<FK>>
   project_id : UUID <<FK>>
   owner_id : UUID <<FK Employee>>
 }
@@ -126,7 +126,7 @@ entity "リスク" as Risk {
   * risk_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   owner_id : UUID <<FK Employee>>
 }
 

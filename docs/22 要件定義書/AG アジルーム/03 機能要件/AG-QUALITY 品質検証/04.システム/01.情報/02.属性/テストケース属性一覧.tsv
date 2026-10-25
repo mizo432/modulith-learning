@@ -1,6 +1,6 @@
 属性名	型	PK	必須	説明
 test_case_id	SnowflakeID	*	Y	テストケースの一意な識別子
-backlog_item_id	UUID		Y	関連するバックログ項目の識別子
+backlog_item_id	SnowflakeID		Y	関連するバックログ項目の識別子
 title	String		Y	テストケースのタイトル
 description	Text		N	テストケースの詳細説明
 test_type	Enum		Y	テスト種別

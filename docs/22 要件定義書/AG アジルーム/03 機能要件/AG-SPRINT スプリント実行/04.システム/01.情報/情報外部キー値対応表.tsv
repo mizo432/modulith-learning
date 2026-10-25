@@ -1,10 +1,10 @@
 外部キー属性情報	事業領域	業務領域	情報名	外部キー属性	型	主キー属性情報	事業領域	業務領域	情報名	主キー属性	型
 AG アジルーム	AG-SPRINT スプリント実行	スプリント	team_id	UUID	AG アジルーム	共通	チーム	team_id	UUID
-AG アジルーム	AG-SPRINT スプリント実行	Sprint Backlog項目	sprint_id	UUID	AG アジルーム	AG-SPRINT スプリント実行	スプリント	sprint_id	SnowflakeID
-AG アジルーム	AG-SPRINT スプリント実行	Sprint Backlog項目	backlog_item_id	UUID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-SPRINT スプリント実行	Sprint Backlog項目	sprint_id	SnowflakeID	AG アジルーム	AG-SPRINT スプリント実行	スプリント	sprint_id	SnowflakeID
+AG アジルーム	AG-SPRINT スプリント実行	Sprint Backlog項目	backlog_item_id	SnowflakeID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
 AG アジルーム	AG-SPRINT スプリント実行	Sprint Backlog項目	assignee_id	UUID	AG アジルーム	共通	従業員	employee_id	UUID
-AG アジルーム	AG-SPRINT スプリント実行	タスク	sprint_backlog_item_id	UUID	AG アジルーム	AG-SPRINT スプリント実行	Sprint Backlog項目	sprint_backlog_item_id	SnowflakeID
-AG アジルーム	AG-SPRINT スプリント実行	タスク割り当て	task_id	UUID	AG アジルーム	AG-SPRINT スプリント実行	タスク	task_id	SnowflakeID
+AG アジルーム	AG-SPRINT スプリント実行	タスク	sprint_backlog_item_id	SnowflakeID	AG アジルーム	AG-SPRINT スプリント実行	Sprint Backlog項目	sprint_backlog_item_id	SnowflakeID
+AG アジルーム	AG-SPRINT スプリント実行	タスク割り当て	task_id	SnowflakeID	AG アジルーム	AG-SPRINT スプリント実行	タスク	task_id	SnowflakeID
 AG アジルーム	AG-SPRINT スプリント実行	タスク割り当て	employee_id	UUID	AG アジルーム	共通	従業員	employee_id	UUID
 AG アジルーム	AG-SPRINT スプリント実行	通知	recipient_id	UUID	AG アジルーム	共通	従業員	employee_id	UUID
 AG アジルーム	AG-SPRINT スプリント実行	通知	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID

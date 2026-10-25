@@ -1,14 +1,14 @@
 外部キー属性情報	事業領域	業務領域	情報名	外部キー属性	型	主キー属性情報	事業領域	業務領域	情報名	主キー属性	型
 AG アジルーム	AG-QUALITY 品質検証	Definition of Done	team_id	UUID	AG アジルーム	共通	チーム	team_id	UUID
-AG アジルーム	AG-QUALITY 品質検証	テストケース	backlog_item_id	UUID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
-AG アジルーム	AG-QUALITY 品質検証	テスト実行結果	test_case_id	UUID	AG アジルーム	AG-QUALITY 品質検証	テストケース	test_case_id	SnowflakeID
-AG アジルーム	AG-QUALITY 品質検証	テスト実行結果	sprint_id	UUID	AG アジルーム	AG-SPRINT スプリント実行	スプリント	sprint_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	テストケース	backlog_item_id	SnowflakeID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	テスト実行結果	test_case_id	SnowflakeID	AG アジルーム	AG-QUALITY 品質検証	テストケース	test_case_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	テスト実行結果	sprint_id	SnowflakeID	AG アジルーム	AG-SPRINT スプリント実行	スプリント	sprint_id	SnowflakeID
 AG アジルーム	AG-QUALITY 品質検証	テスト実行結果	executed_by	UUID	AG アジルーム	共通	従業員	employee_id	UUID
-AG アジルーム	AG-QUALITY 品質検証	欠陥	backlog_item_id	UUID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
-AG アジルーム	AG-QUALITY 品質検証	欠陥	test_run_id	UUID	AG アジルーム	AG-QUALITY 品質検証	テスト実行結果	test_run_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	欠陥	backlog_item_id	SnowflakeID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	欠陥	test_run_id	SnowflakeID	AG アジルーム	AG-QUALITY 品質検証	テスト実行結果	test_run_id	SnowflakeID
 AG アジルーム	AG-QUALITY 品質検証	性能テスト結果	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
-AG アジルーム	AG-QUALITY 品質検証	性能テスト結果	backlog_item_id	UUID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
-AG アジルーム	AG-QUALITY 品質検証	性能テスト結果	sprint_id	UUID	AG アジルーム	AG-SPRINT スプリント実行	スプリント	sprint_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	性能テスト結果	backlog_item_id	SnowflakeID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	性能テスト結果	sprint_id	SnowflakeID	AG アジルーム	AG-SPRINT スプリント実行	スプリント	sprint_id	SnowflakeID
 AG アジルーム	AG-QUALITY 品質検証	セキュリティ・品質リスク	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
-AG アジルーム	AG-QUALITY 品質検証	セキュリティ・品質リスク	backlog_item_id	UUID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-QUALITY 品質検証	セキュリティ・品質リスク	backlog_item_id	SnowflakeID	AG アジルーム	AG-BACKLOG 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
 AG アジルーム	AG-QUALITY 品質検証	セキュリティ・品質リスク	owner_id	UUID	AG アジルーム	共通	従業員	employee_id	UUID

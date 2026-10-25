@@ -25,21 +25,21 @@ entity "BacklogItem" as BacklogItem {
   * backlog_item_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  product_goal_id : UUID <<FK>>
-  parent_item_id : UUID <<FK>>
+  product_goal_id : SnowflakeID <<FK>>
+  parent_item_id : SnowflakeID <<FK>>
 }
 
 entity "KanoSurvey" as KanoSurvey {
   * kano_survey_id : SnowflakeID <<PK>>
   --
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   created_by : UUID <<FK Employee>>
 }
 
 entity "KanoResponse" as KanoResponse {
   * kano_response_id : SnowflakeID <<PK>>
   --
-  kano_survey_id : UUID <<FK>>
+  kano_survey_id : SnowflakeID <<FK>>
   respondent_id : UUID <<FK Employee>>
 }
 
@@ -47,7 +47,7 @@ entity "DecisionRecord" as DecisionRecord {
   * decision_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   decided_by : UUID <<FK Employee>>
 }
 
@@ -91,21 +91,21 @@ entity "バックログ項目" as BacklogItem {
   * backlog_item_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  product_goal_id : UUID <<FK>>
-  parent_item_id : UUID <<FK>>
+  product_goal_id : SnowflakeID <<FK>>
+  parent_item_id : SnowflakeID <<FK>>
 }
 
 entity "Kano調査" as KanoSurvey {
   * kano_survey_id : SnowflakeID <<PK>>
   --
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   created_by : UUID <<FK Employee>>
 }
 
 entity "Kano回答" as KanoResponse {
   * kano_response_id : SnowflakeID <<PK>>
   --
-  kano_survey_id : UUID <<FK>>
+  kano_survey_id : SnowflakeID <<FK>>
   respondent_id : UUID <<FK Employee>>
 }
 
@@ -113,7 +113,7 @@ entity "意思決定" as DecisionRecord {
   * decision_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   decided_by : UUID <<FK Employee>>
 }
 

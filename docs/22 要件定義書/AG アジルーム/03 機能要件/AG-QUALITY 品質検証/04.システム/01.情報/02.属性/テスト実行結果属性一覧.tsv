@@ -1,7 +1,7 @@
 属性名	型	PK	必須	説明
 test_run_id	SnowflakeID	*	Y	テスト実行結果の一意な識別子
-test_case_id	UUID		Y	関連するテストケースの識別子
-sprint_id	UUID		Y	関連するスプリントの識別子
+test_case_id	SnowflakeID		Y	関連するテストケースの識別子
+sprint_id	SnowflakeID		Y	関連するスプリントの識別子
 executed_by	UUID		Y	実行者の識別子
 result	Enum		Y	実行結果（成功、失敗、スキップ）
 actual_result	Text		N	実際の結果

@@ -5,7 +5,7 @@
 | 属性名            | 型          | PK | 必須 | 説明                       |
 |-------------------|-------------|----|------|----------------------------|
 | review_id         | SnowflakeID | *  | Y    | レビューの一意な識別子     |
-| sprint_id         | UUID        |    | Y    | 関連するスプリントの識別子 |
+| sprint_id         | SnowflakeID |    | Y    | 関連するスプリントの識別子 |
 | title             | String      |    | Y    | レビューのタイトル         |
 | description       | Text        |    | N    | レビューの詳細説明         |
 | outcome           | Text        |    | N    | 成果内容                   |

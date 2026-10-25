@@ -1,6 +1,6 @@
 属性名	型	PK	必須	説明
 action_id	SnowflakeID	*	Y	改善アクションの一意な識別子
-retrospective_id	UUID		Y	関連するレトロスペクティブの識別子
+retrospective_id	SnowflakeID		Y	関連するレトロスペクティブの識別子
 project_id	UUID		Y	所属プロジェクトの識別子
 owner_id	UUID		Y	担当者の識別子
 title	String		Y	改善アクションのタイトル

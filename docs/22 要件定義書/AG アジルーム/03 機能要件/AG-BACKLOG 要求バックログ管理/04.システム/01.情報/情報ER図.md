@@ -25,8 +25,8 @@ entity "BacklogItem" as BacklogItem {
   * backlog_item_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  product_goal_id : UUID <<FK>>
-  parent_item_id : UUID <<FK>>
+  product_goal_id : SnowflakeID <<FK>>
+  parent_item_id : SnowflakeID <<FK>>
 }
 
 entity "Feedback" as Feedback {
@@ -34,14 +34,14 @@ entity "Feedback" as Feedback {
   --
   project_id : UUID <<FK>>
   submitted_by : UUID <<FK Employee>>
-  problem_id : UUID <<FK>>
+  problem_id : SnowflakeID <<FK>>
 }
 
 entity "DecisionRecord" as DecisionRecord {
   * decision_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   decided_by : UUID <<FK Employee>>
 }
 
@@ -86,8 +86,8 @@ entity "バックログ項目" as BacklogItem {
   * backlog_item_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  product_goal_id : UUID <<FK>>
-  parent_item_id : UUID <<FK>>
+  product_goal_id : SnowflakeID <<FK>>
+  parent_item_id : SnowflakeID <<FK>>
 }
 
 entity "フィードバック" as Feedback {
@@ -95,14 +95,14 @@ entity "フィードバック" as Feedback {
   --
   project_id : UUID <<FK>>
   submitted_by : UUID <<FK Employee>>
-  problem_id : UUID <<FK>>
+  problem_id : SnowflakeID <<FK>>
 }
 
 entity "意思決定" as DecisionRecord {
   * decision_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   decided_by : UUID <<FK Employee>>
 }
 

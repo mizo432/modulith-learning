@@ -9,13 +9,15 @@
 
 ### バックエンド関連
 
-| ファイル                                                                                | 説明                                             |
-|-----------------------------------------------------------------------------------------|--------------------------------------------------|
-| [backend/projects.instructions.md](guidelines/backend/projects.instructions.md)         | プロジェクト概要、アーキテクチャ、モジュール構造 |
-| [backend/commands.instructions.md](guidelines/backend/commands.instructions.md)         | ビルド・起動コマンド、テストコマンド             |
-| [backend/developers.instructions.md](guidelines/backend/developers.instructions.md)     | 技術スタック、開発環境の要件                     |
-| [backend/environments.instructions.md](guidelines/backend/environments.instructions.md) | 環境構築方法、トラブルシューティング             |
-| [backend/testing.guidelines.md](guidelines/backend/testing.guidelines.md)               | テスト戦略、テスト作成規約                       |
+| ファイル                                                                                                        | 説明                                             |
+|-----------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| [backend/projects.instructions.md](guidelines/backend/projects.instructions.md)                                 | プロジェクト概要、アーキテクチャ、モジュール構造 |
+| [backend/commands.instructions.md](guidelines/backend/commands.instructions.md)                                 | ビルド・起動コマンド、テストコマンド             |
+| [backend/developers.instructions.md](guidelines/backend/developers.instructions.md)                             | 技術スタック、開発環境の要件                     |
+| [backend/environments.instructions.md](guidelines/backend/environments.instructions.md)                         | 環境構築方法、トラブルシューティング             |
+| [backend/testing.guidelines.md](guidelines/backend/testing.guidelines.md)                                       | テスト戦略、テスト作成規約                       |
+| [backend/jpa.guidelines.md](guidelines/backend/jpa.guidelines.md)                                               | Spring Data JPA 実装規則                         |
+| [backend/flyway-migration-checklist.guidelines.md](guidelines/backend/flyway-migration-checklist.guidelines.md) | Flyway マイグレーションスクリプト チェックリスト |
 
 ### Java 関連
 

@@ -30,37 +30,37 @@ entity "DefinitionOfDone" as DefinitionOfDone {
 entity "TestCase" as TestCase {
   * test_case_id : SnowflakeID <<PK>>
   --
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
 }
 
 entity "TestRun" as TestRun {
   * test_run_id : SnowflakeID <<PK>>
   --
-  test_case_id : UUID <<FK>>
-  sprint_id : UUID <<FK>>
+  test_case_id : SnowflakeID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
   executed_by : UUID <<FK Employee>>
 }
 
 entity "Defect" as Defect {
   * defect_id : SnowflakeID <<PK>>
   --
-  backlog_item_id : UUID <<FK>>
-  test_run_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
+  test_run_id : SnowflakeID <<FK>>
 }
 
 entity "PerformanceTestRun" as PerformanceTestRun {
   * performance_run_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
-  sprint_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
 }
 
 entity "Risk" as Risk {
   * risk_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   owner_id : UUID <<FK Employee>>
 }
 
@@ -118,37 +118,37 @@ entity "完成基準" as DefinitionOfDone {
 entity "テストケース" as TestCase {
   * test_case_id : SnowflakeID <<PK>>
   --
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
 }
 
 entity "テスト実行" as TestRun {
   * test_run_id : SnowflakeID <<PK>>
   --
-  test_case_id : UUID <<FK>>
-  sprint_id : UUID <<FK>>
+  test_case_id : SnowflakeID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
   executed_by : UUID <<FK Employee>>
 }
 
 entity "欠陥" as Defect {
   * defect_id : SnowflakeID <<PK>>
   --
-  backlog_item_id : UUID <<FK>>
-  test_run_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
+  test_run_id : SnowflakeID <<FK>>
 }
 
 entity "性能テスト実行" as PerformanceTestRun {
   * performance_run_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
-  sprint_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
+  sprint_id : SnowflakeID <<FK>>
 }
 
 entity "リスク" as Risk {
   * risk_id : SnowflakeID <<PK>>
   --
   project_id : UUID <<FK>>
-  backlog_item_id : UUID <<FK>>
+  backlog_item_id : SnowflakeID <<FK>>
   owner_id : UUID <<FK Employee>>
 }
 
