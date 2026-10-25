@@ -1,11 +1,11 @@
-番号	大項目	英名	説明
+項番	大項目	英名	説明
 A	可用性	Availability	システムが利用可能な状態を維持する要件
 B	性能・拡張性	Performance & Scalability	システムの応答時間、スループット、リソース使用量などの要件
 C	運用・保守性	Operability & Maintainability	システムの修正、改善、適応を容易にする要件
 D	移行性	Migratability	システムが異なる環境で動作する要件
 E	セキュリティ	Security	システムの機密性、完全性、可用性を保護する要件
 F	システム環境・エコロジー	System Environment & Ecology	システム環境および環境負荷に関する要件
-番号	中項目	英名	説明
+項番	中項目	英名	説明
 A-01	稼働時間	Uptime	システムの稼働時間を定義
 A-02	計画停止	Planned Downtime	計画的なシステム停止の要件
 A-03	障害許容度・冗長化	Fault Tolerance & Redundancy	障害に対する許容度と冗長化の要件

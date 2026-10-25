@@ -60,7 +60,7 @@ description: データベース設計、データモデリング、JPA/Hibernate
 - **事業領域・業務領域ごとにスキーマ分離**: 各事業領域・業務領域は独立したスキーマを持ち、データ独立性を確保。
 - **スキーマ命名規則**: 事業領域区分によってスキーマ名の付け方が異なります。
     - **事業領域区分が「汎用」の場合**: `undecided_<業務領域コード>` の形式で命名（例:
-      `undecided_ef-form`, `undecided_ar-approval`）。
+      `undecided_ef-01`, `undecided_ar-01`）。
     - **事業領域区分が「汎用」以外の場合**: `undecided_<事業領域コード>` の形式で命名（例:
       `undecided_as`,
       `undecided_do`）。

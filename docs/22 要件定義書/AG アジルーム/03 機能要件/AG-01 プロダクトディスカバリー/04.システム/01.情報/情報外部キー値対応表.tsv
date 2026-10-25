@@ -1,0 +1,8 @@
+外部キー属性情報	事業領域	業務領域	情報名	外部キー属性	型	主キー属性情報	事業領域	業務領域	情報名	主キー属性	型
+AG アジルーム	AG-01 プロダクトディスカバリー	Product Goal	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
+AG アジルーム	AG-01 プロダクトディスカバリー	成功指標	product_goal_id	SnowflakeID	AG アジルーム	AG-01 プロダクトディスカバリー	Product Goal	product_goal_id	SnowflakeID
+AG アジルーム	AG-01 プロダクトディスカバリー	課題	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
+AG アジルーム	AG-01 プロダクトディスカバリー	課題	reported_by	UUID	AG アジルーム	共通	従業員	employee_id	UUID
+AG アジルーム	AG-01 プロダクトディスカバリー	要望	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
+AG アジルーム	AG-01 プロダクトディスカバリー	要望	submitted_by	UUID	AG アジルーム	共通	従業員	employee_id	UUID
+AG アジルーム	AG-01 プロダクトディスカバリー	要望	problem_id	SnowflakeID	AG アジルーム	AG-01 プロダクトディスカバリー	課題	problem_id	SnowflakeID
