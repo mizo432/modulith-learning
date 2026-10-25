@@ -11,6 +11,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -51,6 +52,19 @@ public class OAuth2AuthorizationServerConfig {
 
   private static final Duration ACCESS_TOKEN_TIME_TO_LIVE = Duration.ofMinutes(15);
   private static final Duration REFRESH_TOKEN_TIME_TO_LIVE = Duration.ofDays(7);
+
+  // REQ-00019: クライアントIDとクライアントシークレットは環境変数から読み込む
+  @Value("${oauth2.client.id:frontend}")
+  private String clientId;
+
+  @Value("${oauth2.client.secret:}")
+  private String clientSecret;
+
+  @Value("${oauth2.client.redirect-uris:https://localhost:3000/callback,https://localhost:3000/login/oauth2/code}")
+  private List<String> redirectUris;
+
+  @Value("${oauth2.client.post-logout-redirect-uris:https://localhost:3000/}")
+  private List<String> postLogoutRedirectUris;
 
   /**
    * RSAキーペアを生成します。
@@ -108,17 +122,16 @@ public class OAuth2AuthorizationServerConfig {
    */
   @Bean
   public RegisteredClientRepository registeredClientRepository() {
-    // フロントエンド用公開クライアント（PKCE対応）
+    // REQ-00019: クライアントIDとクライアントシークレットは環境変数から読み込み、平文でコードに記述しない
     RegisteredClient frontendClient =
         RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("frontend")
+            .clientId(clientId)
             // PKCEフローではクライアントシークレット不要（公開クライアント）
             .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("https://localhost:3000/callback")
-            .redirectUri("https://localhost:3000/login/oauth2/code")
-            .postLogoutRedirectUri("https://localhost:3000/")
+            .redirectUris(uris -> uris.addAll(redirectUris))
+            .postLogoutRedirectUris(uris -> uris.addAll(postLogoutRedirectUris))
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .scope(OidcScopes.EMAIL)
