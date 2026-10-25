@@ -160,7 +160,6 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 - ユースケースとアクターの関連付けは必須
 - ユースケースと外部システムの関連付けは必須
 - ユースケースと画面の関連付けはオプション
-- ユースケースと帳票の関連付けはオプション
 - 外部システム定義ファイルの配置は必須（01.外部システム定義ディレクトリ）
 - 画面定義ファイルの配置は必須（03.画面定義ディレクトリ）
 - ファイル命名規則：「ID 名前.md」形式（例：ES-01 データベース.md）
@@ -302,6 +301,19 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
 
 ---
 
+#### 3.8 情報一覧の実現方法
+
+各情報をシステム上でどのように実現するかを記載します。
+
+| 実現方法        | 説明                                 |
+|-----------------|--------------------------------------|
+| **DB**          | データベーステーブルとして管理       |
+| **enum**        | Java enum として管理                 |
+| **DB and enum** | データベースと enum の両方として管理 |
+| **File**        | ファイルとして管理                   |
+
+---
+
 ### 4. 重要ルール (Important Rules)
 
 1. **RDRAはモデルベースの要件定義手法**:
@@ -373,21 +385,19 @@ RDRAによる要件定義は、「3つのフェーズと9つのステップ」�
                 - [ユースケース一覧.tsv](templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
     - [ユースケース図.md](templates/ユースケース図.md): ユースケース図のMarkdownテンプレート
         - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
-        - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
-        - [ステートマシン図.md](templates/ステートマシン図.md): ステートマシン図のMarkdownテンプレート
-        - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
-        - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
-        - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
-        - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
-        - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
-        - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
-        - [帳票一覧.md](templates/帳票一覧.md): 帳票一覧のMarkdownテンプレート
-        - [帳票一覧.tsv](templates/帳票一覧.tsv): 帳票一覧のTSVテンプレート
-        - [帳票定義.md](templates/帳票定義.md): 帳票定義のMarkdownテンプレート
-        - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
-        - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
-        - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
-        - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
+        - [情報一覧.tsv](templates/情報一覧.tsv): 情報一覧のTSVテンプレート
+            - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
+            - [ステートマシン図.md](templates/ステートマシン図.md): ステートマシン図のMarkdownテンプレート
+            - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
+            - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
+            - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
+            - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
+            - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
+            - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
+            - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
+            - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
+            - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
+            - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
 
 - **チェックリスト**:
     - [requirement.md](../../../rdra/checklists/requirement.md): 要件分析時の確認項目
