@@ -4,7 +4,8 @@ server:
   ssl:
     enabled: true
     key-store: classpath:keystore.p12
-    key-store-password: changeit
+    # REQ-00019: キーストアパスワードは環境変数から読み込む
+    key-store-password: ${OAUTH2_KEYSTORE_PASSWORD:changeit}
     key-store-type: PKCS12
     key-alias: localhost
 spring:
@@ -45,6 +46,14 @@ spring:
     oauth2:
       authorizationserver:
         issuer: https://localhost:8443
+
+# REQ-00019: クライアントIDとクライアントシークレットは環境変数から読み込む
+oauth2:
+  client:
+    id: ${OAUTH2_CLIENT_ID:frontend}
+    secret: ${OAUTH2_CLIENT_SECRET:}
+    redirect-uris: ${OAUTH2_CLIENT_REDIRECT_URIS:https://localhost:3000/callback,https://localhost:3000/login/oauth2/code}
+    post-logout-redirect-uris: ${OAUTH2_CLIENT_POST_LOGOUT_REDIRECT_URIS:https://localhost:3000/}
 
 logging:
   level:

@@ -311,3 +311,25 @@ modules.xml
 /backend/log/
 /log/projectName-application.log
 /log/projectName-monitoring.log
+
+# REQ-00019: 機密情報は.gitignoreで除外する
+# 環境変数ファイル（実際の値を含むファイル）
+*.env
+!.env.example
+!.env.template
+/authorization/.env
+/authorization/.env.local
+/api-gateway/.env
+/api-gateway/.env.local
+/backend/.env
+/backend/.env.local
+/service-registry/.env
+/service-registry/.env.local
+
+# 機密ファイル
+*.jks
+*.p12
+*.pfx
+!*.p12.example
+secrets/
+credentials/
