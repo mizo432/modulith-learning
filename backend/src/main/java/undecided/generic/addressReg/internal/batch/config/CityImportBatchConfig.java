@@ -14,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.addressReg.internal.batch.dto.CityCsvDto;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.addressReg.internal.batch.processor.CityItemProcessor;
 import undecided.generic.addressReg.internal.batch.reader.CityCsvItemReader;
 import undecided.generic.addressReg.internal.batch.writer.CityItemWriter;
@@ -67,6 +68,9 @@ public class CityImportBatchConfig {
 
   @Bean
   public Job cityImportJob(JobRepository jobRepository, Step cityImportStep) {
-    return new JobBuilder(JOB_NAME, jobRepository).start(cityImportStep).build();
+    return new JobBuilder(JOB_NAME, jobRepository)
+        .start(cityImportStep)
+        .listener(new BatchJobListener())
+        .build();
   }
 }

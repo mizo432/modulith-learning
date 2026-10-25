@@ -14,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.sampleBatch.internal.batch.dto.SampleItemCsvDto;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.sampleBatch.internal.batch.processor.SampleItemProcessor;
 import undecided.generic.sampleBatch.internal.batch.reader.SampleItemCsvItemReader;
 import undecided.generic.sampleBatch.internal.batch.writer.SampleItemWriter;
@@ -71,6 +72,9 @@ public class SampleItemImportBatchConfig {
 
   @Bean
   public Job sampleItemImportJob(JobRepository jobRepository, Step sampleItemImportStep) {
-    return new JobBuilder(JOB_NAME, jobRepository).start(sampleItemImportStep).build();
+    return new JobBuilder(JOB_NAME, jobRepository)
+        .start(sampleItemImportStep)
+        .listener(new BatchJobListener())
+        .build();
   }
 }

@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import undecided.generic.bankReg.internal.BankMasterImport;
+import undecided.shared.config.BatchJobListener;
 import undecided.generic.bankReg.internal.BankMasterImportRepository;
 import undecided.generic.bankReg.internal.BankRepository;
 import undecided.generic.bankReg.internal.batch.dto.BankCsvDto;
@@ -156,6 +157,7 @@ public class BankImportBatchConfig {
         .next(importStep)
         .next(cleanupStep)
         .next(recordImportStep)
+        .listener(new BatchJobListener())
         .build();
   }
 }
