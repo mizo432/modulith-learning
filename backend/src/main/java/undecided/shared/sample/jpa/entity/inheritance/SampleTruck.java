@@ -3,7 +3,6 @@ package undecided.shared.sample.jpa.entity.inheritance;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ import undecided.supporting.snowflake.SnowflakeId;
  * SINGLE_TABLE戦略では、このクラスの固有フィールド（maxLoadWeight）も 親テーブル（sample_vehicles）にカラムとして追加されます。
  */
 @Entity
-@Table(name = "sample_vehicles")
 @DiscriminatorValue("TRUCK")
 @Getter
 @Setter
