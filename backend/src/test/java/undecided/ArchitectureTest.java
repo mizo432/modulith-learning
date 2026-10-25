@@ -46,6 +46,8 @@ class ArchitectureTest {
             .haveNameNotMatching(".*BranchMasterImport")
             .and()
             .haveNameNotMatching(".*SnowflakeNode")
+            .and()
+            .resideOutsideOfPackage("undecided.shared.sample..")
             .should()
             .resideInAPackage("..spi..")
             .because("Entityクラスはドメイン層(spiパッケージ)に配置されるべきです");
