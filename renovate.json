@@ -14,7 +14,7 @@
   "dependencyDashboard": true,
   "packageRules": [
     {
-      "description": "Auto-merge minor and patch updates",
+      "description": "マイナーとパッチの更新を自動マージ",
       "matchUpdateTypes": [
         "minor",
         "patch"
@@ -23,15 +23,15 @@
       "automergeType": "pr"
     },
     {
-      "description": "Group all Gradle dependencies together",
+      "description": "Gradle依存関係をグループ化",
       "matchManagers": [
         "gradle"
       ],
-      "groupName": "Gradle dependencies",
+      "groupName": "Gradle依存関係",
       "groupSlug": "gradle-all"
     },
     {
-      "description": "Group GitHub Actions together",
+      "description": "GitHub Actionsをグループ化",
       "matchManagers": [
         "github-actions"
       ],
