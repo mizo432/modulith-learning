@@ -134,7 +134,7 @@ branch compared to the `develop` branch.
 
 ## Test Framework and Conventions
 
-**Framework:** JUnit 5 with AssertJ assertions
+**Framework:** JUnit 6 with AssertJ assertions
 
 **Conventions Used:**
 

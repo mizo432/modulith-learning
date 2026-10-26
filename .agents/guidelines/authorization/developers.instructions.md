@@ -25,7 +25,7 @@
 
 ### テストフレームワーク
 
-- JUnit 5 (JUnit Jupiter)
+- JUnit 6 (JUnit Jupiter)
 - AssertJ
 - Spring Security Test
 - Testcontainers (PostgreSQL)

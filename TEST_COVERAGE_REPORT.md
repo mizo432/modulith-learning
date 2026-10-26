@@ -283,7 +283,7 @@ branch compared to `develop`.
 
 ## Testing Frameworks and Libraries Used
 
-- **JUnit 5 (Jupiter)** - Test framework
+- **JUnit 6 (Jupiter)** - Test framework
 - **Spring Boot Test** - Spring context testing
 - **MockMvc** - HTTP request simulation
 - **Mockito** - Mocking framework
@@ -492,7 +492,7 @@ open build/reports/jacoco/index.html
 ## Conclusion
 
 This test suite provides **comprehensive coverage** of all changed files in the current branch. The
-tests follow Spring Boot and JUnit 5 best practices, ensuring:
+tests follow Spring Boot and JUnit 6 best practices, ensuring:
 
 - ✅ High code quality
 - ✅ Regression prevention

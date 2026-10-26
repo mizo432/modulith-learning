@@ -183,7 +183,7 @@ public class DepartmentCommandApi {
 
 #### 4.1 テストの基本原則
 
-- **フレームワーク**: JUnit 5, AssertJ, Mockito
+- **フレームワーク**: JUnit 6, AssertJ, Mockito
 - **テストサイズ**: `@Tag("small")`（単体テスト）、`@Tag("medium")`（統合テスト）
 - **可視性**: テストクラスおよびテストメソッドは**`package-private`**とします
 

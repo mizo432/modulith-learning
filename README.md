@@ -76,7 +76,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | **APIドキュメント** | SpringDoc OpenAPI |
 | **サービスディスカバリ** | Netflix Eureka (Spring Cloud) |
 | **認証・認可** | Spring Authorization Server, OAuth2 |
-| **テスト** | JUnit 5, AssertJ, Testcontainers, ArchUnit |
+| **テスト** | JUnit 6, AssertJ, Testcontainers, ArchUnit |
 | **コード品質** | JaCoCo, Lombok, JSpecify |
 | **ビルド** | Gradle (Kotlin DSL) |
 
@@ -186,7 +186,7 @@ cd frontend && npm install && npm start
 ./gradlew :backend:jacocoTestReport
 ```
 
-テストは JUnit 5 の `@Tag` アノテーションでサイズ分類されています:
+テストは JUnit 6 の `@Tag` アノテーションでサイズ分類されています:
 
 - **small** (デフォルト): ユニットテスト。`test` タスクで実行
 - **medium**: 統合テスト。`mediumTest` タスクで実行
