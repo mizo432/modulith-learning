@@ -12,6 +12,9 @@
   "prConcurrentLimit": 10,
   "prHourlyLimit": 5,
   "dependencyDashboard": true,
+  "commitMessageAction": "更新",
+  "commitMessageTopic": "{{{depName}}}",
+  "commitMessageExtra": "を {{{newVersion}}} に",
   "packageRules": [
     {
       "description": "マイナーとパッチの更新を自動マージ",
