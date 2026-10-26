@@ -1,0 +1,25 @@
+name: Renovate
+
+on:
+  schedule:
+    # 毎週日曜朝5時(JST)に実行 - UTCでは土曜20時
+    - cron: '0 20 * * 6'
+  workflow_dispatch:
+  # 手動で実行できるようにする
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v41
+        with:
+          configurationFile: renovate.json
+          token: ${{ secrets.RENOVATE_TOKEN }}
+        env:
+          LOG_LEVEL: 'info'
+          RENOVATE_REPOSITORIES: '["mizo432/modulith-learning"]'
