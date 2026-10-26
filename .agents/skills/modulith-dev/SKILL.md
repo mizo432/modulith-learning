@@ -1,6 +1,6 @@
 ---
 name: modulith-dev
-description: Spring Modulithアーキテクチャ、オニオンアーキテクチャ、DDD、厳格なJUnit 5/AssertJテスト規約、例外処理、Lombok/JSpecifyを活用した開発・保守・テスト作成のためのプロジェクト特化型スキル。ユースケース開発にはcommand-usecase-devまたはquery-usecase-devスキルを使用してください。
+description: Spring Modulithアーキテクチャ、オニオンアーキテクチャ、DDD、厳格なJUnit 6/AssertJテスト規約、例外処理、Lombok/JSpecifyを活用した開発・保守・テスト作成のためのプロジェクト特化型スキル。ユースケース開発にはcommand-usecase-devまたはquery-usecase-devスキルを使用してください。
 ---
 
 ### Modulith Development & Testing Guide (`modulith-dev`)
@@ -93,7 +93,7 @@ description: Spring Modulithアーキテクチャ、オニオンアーキテク�
 
 #### 4.1 テストの基本原則
 
-- **フレームワーク**: JUnit 5 (`org.junit.jupiter.api.*`), AssertJ
+- **フレームワーク**: JUnit 6 (`org.junit.jupiter.api.*`), AssertJ
   (`org.assertj.core.api.Assertions.assertThat`)
 - **テストサイズのアノテーション**:
     - `@Tag("small")`: 単体テスト（Spring コンテキスト不要、高速実行）

@@ -38,7 +38,7 @@
 
 ### テストフレームワーク
 
-- JUnit 5 (JUnit Jupiter)
+- JUnit 6 (JUnit Jupiter)
 - AssertJ, AssertJ-DB
 - Spring Modulith Test
 - Spring Batch Test
