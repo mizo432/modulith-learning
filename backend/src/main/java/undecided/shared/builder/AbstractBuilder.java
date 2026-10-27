@@ -1,6 +1,6 @@
 package undecided.shared.builder;
 
-import static undecided.shared.primitiveOld.Lists2.newArrayList;
+import static undecided.shared.primitive.Lists2.newArrayList;
 
 import java.util.List;
 

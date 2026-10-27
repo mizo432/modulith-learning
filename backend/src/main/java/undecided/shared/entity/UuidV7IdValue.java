@@ -1,6 +1,6 @@
 package undecided.shared.entity;
 
-import static undecided.shared.primitiveOld.Objects2.isNull;
+import static undecided.shared.primitive.Objects2.isNull;
 
 import java.io.Serializable;
 import java.util.UUID;

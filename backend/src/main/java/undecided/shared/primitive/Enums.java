@@ -1,4 +1,4 @@
-package undecided.shared.primitiveOld;
+package undecided.shared.primitive;
 
 import static undecided.shared.precondition.ArrayPrecondition.checkAllElementNotNull;
 import static undecided.shared.precondition.ArrayPrecondition.checkLengthAtLeast;

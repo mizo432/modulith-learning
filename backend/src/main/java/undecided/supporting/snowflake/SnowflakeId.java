@@ -4,7 +4,7 @@ import static undecided.shared.io.Base62s.DECODE_FROM_BASE62;
 import static undecided.shared.io.Base62s.ENCODE_TO_BASE62;
 import static undecided.shared.precondition.LongPrecondition.checkPositive;
 import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
-import static undecided.shared.primitiveOld.Objects2.isNull;
+import static undecided.shared.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.ComparisonChain;

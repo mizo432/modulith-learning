@@ -3,7 +3,7 @@ package undecided.shared.message;
 import java.util.Arrays;
 import org.jspecify.annotations.NonNull;
 import undecided.shared.primitive.Strings2;
-import undecided.shared.primitiveOld.Objects2;
+import undecided.shared.primitive.Objects2;
 
 /** メッセージを格納するためのクラス。メッセージコード、引数、デフォルトメッセージを保持します。 */
 public record ResultMessage(String code, Object[] args, String text) {

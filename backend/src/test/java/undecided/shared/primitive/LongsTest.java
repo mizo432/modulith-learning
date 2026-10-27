@@ -1,4 +1,4 @@
-package undecided.shared.primitiveOld;
+package undecided.shared.primitive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

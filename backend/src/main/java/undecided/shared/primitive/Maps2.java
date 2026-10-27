@@ -1,7 +1,7 @@
-package undecided.shared.primitiveOld;
+package undecided.shared.primitive;
 
 import static undecided.shared.precondition.IntegerPrecondition.checkNonNegative;
-import static undecided.shared.primitiveOld.Objects2.isNull;
+import static undecided.shared.primitive.Objects2.isNull;
 
 import com.google.common.primitives.Ints;
 import java.util.Collections;

@@ -1,7 +1,7 @@
 package undecided.shared.entity;
 
 import static org.assertj.core.api.Assertions.*;
-import static undecided.shared.primitiveOld.Objects2.isNull;
+import static undecided.shared.primitive.Objects2.isNull;
 
 import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;

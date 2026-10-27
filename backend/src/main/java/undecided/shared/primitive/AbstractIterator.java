@@ -1,7 +1,7 @@
-package undecided.shared.primitiveOld;
+package undecided.shared.primitive;
 
 import static undecided.shared.precondition.ObjectPrecondition.checkState;
-import static undecided.shared.primitiveOld.NullnessCasts.uncheckedCastNullableTToT;
+import static undecided.shared.primitive.NullnessCasts.uncheckedCastNullableTToT;
 
 import java.util.NoSuchElementException;
 import undecided.shared.annotation.CanIgnoreReturnValue;

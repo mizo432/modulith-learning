@@ -1,6 +1,6 @@
 package undecided.shared.value;
 
-import static undecided.shared.primitiveOld.Objects2.isNull;
+import static undecided.shared.primitive.Objects2.isNull;
 
 import java.util.function.Supplier;
 import org.jspecify.annotations.NonNull;
