@@ -5,6 +5,7 @@ import jakarta.persistence.Converter;
 import org.jasypt.encryption.StringEncryptor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,7 +34,7 @@ public class EncryptedStringConverter implements AttributeConverter<String, Stri
    * @param encryptor 使用する {@link StringEncryptor}
    */
   @Autowired
-  public EncryptedStringConverter(StringEncryptor encryptor) {
+  public EncryptedStringConverter(@Qualifier("stringEncryptor") StringEncryptor encryptor) {
     stringEncryptor = encryptor;
   }
 

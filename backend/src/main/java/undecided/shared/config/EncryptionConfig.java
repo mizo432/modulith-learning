@@ -3,6 +3,7 @@ package undecided.shared.config;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,11 +35,11 @@ public class EncryptionConfig {
    * @return 設定された {@link StringEncryptor} インスタンス
    */
   @Bean("stringEncryptor")
-  public StringEncryptor stringEncryptor() {
+  public StringEncryptor stringEncryptor(@Value("${jasypt.encryptor.password:}") String password) {
     PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
     SimpleStringPBEConfig config = new SimpleStringPBEConfig();
     config.setAlgorithm(ALGORITHM);
-    config.setPassword(System.getenv("ENCRYPTION_KEY"));
+    config.setPassword(password);
     config.setPoolSize(POOL_SIZE);
     config.setKeyObtentionIterations(ITERATIONS);
     config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
