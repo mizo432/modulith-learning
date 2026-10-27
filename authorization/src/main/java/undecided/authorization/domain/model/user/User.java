@@ -1,6 +1,7 @@
 package undecided.authorization.domain.model.user;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,6 +25,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import undecided.authorization.domain.model.role.Role;
+import undecided.authorization.infra.converter.EncryptedStringConverter;
 
 /**
  * ユーザーエンティティ
@@ -69,9 +71,11 @@ public class User {
   private String email;
 
   @Column(name = "first_name")
+  @Convert(converter = EncryptedStringConverter.class)
   private String firstName;
 
   @Column(name = "last_name")
+  @Convert(converter = EncryptedStringConverter.class)
   private String lastName;
 
   @Column(name = "initials")

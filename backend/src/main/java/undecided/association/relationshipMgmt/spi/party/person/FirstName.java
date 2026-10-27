@@ -4,6 +4,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
+import undecided.shared.converter.EncryptedStringConverter;
 import undecided.shared.primitive.Strings2;
 import undecided.shared.value.StringCode;
 
@@ -98,25 +99,34 @@ public class FirstName implements StringCode<FirstName> {
     return Strings2.toString(value);
   }
 
-  /** FirstNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
+  /** FirstNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。暗号化を適用します。 */
   @Converter(autoApply = true)
   public static class FirstNameConverter implements AttributeConverter<FirstName, String> {
 
+    private final EncryptedStringConverter encryptedConverter = new EncryptedStringConverter(null);
+
     /**
-     * エンティティ属性をデータベースカラムに変換します。
+     * エンティティ属性をデータベースカラムに変換します。暗号化して保存します。
      *
      * @param attribute 変換対象の {@code FirstName} 属性
-     * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}
+     * @return 暗号化された {@code String}。属性が {@code null} の場合は {@code null}
      */
     @Override
     public String convertToDatabaseColumn(FirstName attribute) {
-      return attribute != null ? attribute.value() : null;
+      if (attribute == null) {
+        return null;
+      }
+      String value = attribute.value();
+      if (value == null) {
+        return null;
+      }
+      return encryptedConverter.convertToDatabaseColumn(value);
     }
 
     /**
-     * データベースカラムをエンティティ属性に変換します。
+     * データベースカラムをエンティティ属性に変換します。復号化して読み込みます。
      *
-     * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
+     * @param dbData データベースから読み込んだ暗号化文字列。{@code null} の可能性があります。
      * @return 変換された {@code FirstName} インスタンス。データベースデータが {@code null} の場合は空のインスタンス
      */
     @Override
@@ -124,7 +134,11 @@ public class FirstName implements StringCode<FirstName> {
       if (dbData == null) {
         return FirstName.empty();
       }
-      return new FirstName(dbData);
+      String decrypted = encryptedConverter.convertToEntityAttribute(dbData);
+      if (decrypted == null) {
+        return FirstName.empty();
+      }
+      return new FirstName(decrypted);
     }
   }
 }

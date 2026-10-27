@@ -71,6 +71,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("org.springframework.security:spring-security-crypto")
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
     implementation("org.springframework.security:spring-security-oauth2-authorization-server:7.1.1")
 }
 
