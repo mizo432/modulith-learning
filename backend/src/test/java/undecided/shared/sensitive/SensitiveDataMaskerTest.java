@@ -37,7 +37,9 @@ class SensitiveDataMaskerTest {
     @Test
     @DisplayName("2文字の氏名をマスクする")
     void shouldMaskTwoCharName() {
-      assertThat(SensitiveDataMasker.maskName("太郎")).isEqualTo("太*");
+      assertThat(SensitiveDataMasker.maskName("太郎"))
+          .as("2文字以上の氏名は1文字目とアスタリスクにマスクすること")
+          .isEqualTo("太*");
     }
 
     @Test
@@ -73,7 +75,9 @@ class SensitiveDataMaskerTest {
     @Test
     @DisplayName("通常のメールアドレスをマスクする")
     void shouldMaskNormalEmail() {
-      assertThat(SensitiveDataMasker.maskEmail("taro@example.com")).isEqualTo("t***@example.com");
+      assertThat(SensitiveDataMasker.maskEmail("taro@example.com"))
+          .as("メールアドレスはローカルパートを1文字目とアスタリスクにマスクすること")
+          .isEqualTo("t***@example.com");
     }
 
     @Test
@@ -122,7 +126,9 @@ class SensitiveDataMaskerTest {
     @Test
     @DisplayName("11桁の電話番号をマスクする")
     void shouldMask11DigitPhone() {
-      assertThat(SensitiveDataMasker.maskPhone("09012345678")).isEqualTo("*******5678");
+      assertThat(SensitiveDataMasker.maskPhone("09012345678"))
+          .as("11桁の電話番号は下4桁以外をアスタリスクにマスクすること")
+          .isEqualTo("*******5678");
     }
 
     @Test
@@ -165,7 +171,9 @@ class SensitiveDataMaskerTest {
     @DisplayName("通常の生年月日をマスクする")
     void shouldMaskNormalDateOfBirth() {
       LocalDate dateOfBirth = LocalDate.of(1990, 5, 15);
-      assertThat(SensitiveDataMasker.maskDateOfBirth(dateOfBirth)).isEqualTo("1990-**-**");
+      assertThat(SensitiveDataMasker.maskDateOfBirth(dateOfBirth))
+          .as("生年月日は年月日のみを表示し、月日をアスタリスクにマスクすること")
+          .isEqualTo("1990-**-**");
     }
 
     @Test
@@ -210,6 +218,7 @@ class SensitiveDataMaskerTest {
     @DisplayName("メールアドレスが含まれる文字列をマスクする")
     void shouldMaskEmailInText() {
       assertThat(SensitiveDataMasker.mask("Contact taro@example.com for details"))
+          .as("文字列内のメールアドレスを自動的に検出してマスクすること")
           .isEqualTo("Contact t***@example.com for details");
     }
 

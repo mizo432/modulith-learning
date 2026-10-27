@@ -552,7 +552,9 @@ class ExceptionLoggerTest {
       String result = logger.formatLogMessage("E001", "User not found: taro@example.com");
 
       // Assert
-      assertThat(result).contains("t***@example.com");
+      assertThat(result)
+          .as("maskSensitiveData有効時はメールアドレスがマスクされること")
+          .contains("t***@example.com");
       assertThat(result).doesNotContain("taro@example.com");
     }
 
@@ -569,7 +571,9 @@ class ExceptionLoggerTest {
       String result = logger.formatLogMessage("E001", "Contact: 09012345678");
 
       // Assert
-      assertThat(result).contains("*******5678");
+      assertThat(result)
+          .as("maskSensitiveData有効時は電話番号がマスクされること")
+          .contains("*******5678");
       assertThat(result).doesNotContain("09012345678");
     }
 
@@ -606,7 +610,9 @@ class ExceptionLoggerTest {
       String result = logger.formatLogMessage("E001", "User: taro@example.com, Phone: 09012345678");
 
       // Assert
-      assertThat(result).contains("taro@example.com");
+      assertThat(result)
+          .as("maskSensitiveData無効時は機微な情報がマスクされないこと")
+          .contains("taro@example.com");
       assertThat(result).contains("09012345678");
     }
 

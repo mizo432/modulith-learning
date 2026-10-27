@@ -46,7 +46,9 @@ class SensitiveLoggerWrapperTest {
 
       SensitiveLoggerWrapper wrapper = new SensitiveLoggerWrapper(mockLogger);
 
-      assertThat(wrapper).isNotNull();
+      assertThat(wrapper)
+          .as("デフォルトでマスク有効のSensitiveLoggerWrapperが作成されること")
+          .isNotNull();
       assertThat(wrapper.isMaskingEnabled()).isTrue();
       assertThat(wrapper.getName()).isEqualTo("test.logger");
     }
@@ -91,7 +93,9 @@ class SensitiveLoggerWrapperTest {
 
       Logger wrapped = SensitiveLoggerWrapper.wrap(mockLogger);
 
-      assertThat(wrapped).isInstanceOf(SensitiveLoggerWrapper.class);
+      assertThat(wrapped)
+          .as("wrapメソッドでデフォルトマスク有効のラッパーが作成されること")
+          .isInstanceOf(SensitiveLoggerWrapper.class);
       assertThat(((SensitiveLoggerWrapper) wrapped).isMaskingEnabled()).isTrue();
     }
 
@@ -251,7 +255,9 @@ class SensitiveLoggerWrapperTest {
 
       verify(mockLogger).info(stringCaptor.capture(), objectCaptor.capture());
       assertThat(stringCaptor.getValue()).isEqualTo("User email: {}");
-      assertThat(objectCaptor.getValue()).isEqualTo("t***@example.com");
+      assertThat(objectCaptor.getValue())
+          .as("infoログの引数に含まれるメールアドレスがマスクされること")
+          .isEqualTo("t***@example.com");
     }
 
     @Test
@@ -349,6 +355,7 @@ class SensitiveLoggerWrapperTest {
       SensitiveLoggerWrapper wrapper = new SensitiveLoggerWrapper(mockLogger, false);
       wrapper.info("User email: {}", "taro@example.com");
 
+      // マスク無効時はメールアドレスがマスクされずに出力されること
       verify(mockLogger).info("User email: {}", "taro@example.com");
     }
 
