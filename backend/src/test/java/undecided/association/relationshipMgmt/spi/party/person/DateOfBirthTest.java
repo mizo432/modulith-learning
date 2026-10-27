@@ -6,8 +6,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("small")
 class DateOfBirthTest {
 
   @Nested
@@ -93,7 +95,9 @@ class DateOfBirthTest {
       LocalDate date = LocalDate.of(1990, 5, 15);
       DateOfBirth dateOfBirth = DateOfBirth.of(date);
 
-      assertThat(dateOfBirth.toString()).isEqualTo("1990-**-**");
+      assertThat(dateOfBirth.toString())
+          .as("DateOfBirthのtoString()は機微な情報をマスクして返すこと")
+          .isEqualTo("1990-**-**");
     }
 
     @Test
@@ -101,7 +105,9 @@ class DateOfBirthTest {
     void shouldReturnNullWhenValueIsNull() {
       DateOfBirth dateOfBirth = DateOfBirth.empty();
 
-      assertThat(dateOfBirth.toString()).isNull();
+      assertThat(dateOfBirth.toString())
+          .as("空のDateOfBirthのtoString()はnullを返すこと")
+          .isNull();
     }
   }
 
