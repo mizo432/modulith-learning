@@ -536,6 +536,152 @@ class ExceptionLoggerTest {
   }
 
   @Nested
+  @DisplayName("機微な情報マスクのテスト")
+  class SensitiveDataMaskingTest {
+
+    /** maskSensitiveDataがtrueの場合、メールアドレスがマスクされることを検証します。 */
+    @Test
+    @DisplayName("maskSensitiveDataがtrueの場合、メールアドレスがマスクされること")
+    void shouldMaskEmailWhenMaskingEnabled() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.setMaskSensitiveData(true);
+      logger.afterPropertiesSet();
+
+      // Act
+      String result = logger.formatLogMessage("E001", "User not found: taro@example.com");
+
+      // Assert
+      assertThat(result).contains("t***@example.com");
+      assertThat(result).doesNotContain("taro@example.com");
+    }
+
+    /** maskSensitiveDataがtrueの場合、電話番号がマスクされることを検証します。 */
+    @Test
+    @DisplayName("maskSensitiveDataがtrueの場合、電話番号がマスクされること")
+    void shouldMaskPhoneWhenMaskingEnabled() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.setMaskSensitiveData(true);
+      logger.afterPropertiesSet();
+
+      // Act
+      String result = logger.formatLogMessage("E001", "Contact: 09012345678");
+
+      // Assert
+      assertThat(result).contains("*******5678");
+      assertThat(result).doesNotContain("09012345678");
+    }
+
+    /** maskSensitiveDataがtrueの場合、メールアドレスと電話番号の両方がマスクされることを検証します。 */
+    @Test
+    @DisplayName("maskSensitiveDataがtrueの場合、メールアドレスと電話番号の両方がマスクされること")
+    void shouldMaskBothEmailAndPhoneWhenMaskingEnabled() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.setMaskSensitiveData(true);
+      logger.afterPropertiesSet();
+
+      // Act
+      String result =
+          logger.formatLogMessage("E001", "User: taro@example.com, Phone: 09012345678");
+
+      // Assert
+      assertThat(result).contains("t***@example.com");
+      assertThat(result).contains("*******5678");
+      assertThat(result).doesNotContain("taro@example.com");
+      assertThat(result).doesNotContain("09012345678");
+    }
+
+    /** maskSensitiveDataがfalseの場合、機微な情報がマスクされないことを検証します。 */
+    @Test
+    @DisplayName("maskSensitiveDataがfalseの場合、機微な情報がマスクされないこと")
+    void shouldNotMaskWhenMaskingDisabled() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.setMaskSensitiveData(false);
+      logger.afterPropertiesSet();
+
+      // Act
+      String result = logger.formatLogMessage("E001", "User: taro@example.com, Phone: 09012345678");
+
+      // Assert
+      assertThat(result).contains("taro@example.com");
+      assertThat(result).contains("09012345678");
+    }
+
+    /** maskSensitiveDataのデフォルト値がfalseであることを検証します。 */
+    @Test
+    @DisplayName("maskSensitiveDataのデフォルト値はfalseであること")
+    void shouldNotMaskByDefault() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.afterPropertiesSet();
+
+      // Act
+      String result = logger.formatLogMessage("E001", "User: taro@example.com");
+
+      // Assert
+      assertThat(result).contains("taro@example.com");
+    }
+
+    /** maskSensitiveDataがtrueの場合、makeLogMessage経由でもマスクされることを検証します。 */
+    @Test
+    @DisplayName("maskSensitiveDataがtrueの場合、makeLogMessage経由でもメールアドレスがマスクされること")
+    void shouldMaskEmailInMakeLogMessageWhenMaskingEnabled() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.setMaskSensitiveData(true);
+      logger.afterPropertiesSet();
+
+      Exception testException = new RuntimeException("User not found: taro@example.com");
+
+      // Act
+      String result = logger.makeLogMessage(testException);
+
+      // Assert
+      assertThat(result).contains("t***@example.com");
+      assertThat(result).doesNotContain("taro@example.com");
+    }
+
+    /** 機微な情報がないメッセージはマスク処理後も変更されないことを検証します。 */
+    @Test
+    @DisplayName("機微な情報がないメッセージはマスク処理後も変更されないこと")
+    void shouldNotChangeMessageWithoutSensitiveData() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.setMaskSensitiveData(true);
+      logger.afterPropertiesSet();
+
+      // Act
+      String result = logger.formatLogMessage("E001", "Something went wrong");
+
+      // Assert
+      assertThat(result).isEqualTo("[E001] Something went wrong");
+    }
+
+    /** 複数のメールアドレスが含まれる場合、すべてがマスクされることを検証します。 */
+    @Test
+    @DisplayName("複数のメールアドレスが含まれる場合、すべてがマスクされること")
+    void shouldMaskMultipleEmails() {
+      // Arrange
+      ExceptionLogger logger = new ExceptionLogger("TestLogger");
+      logger.setMaskSensitiveData(true);
+      logger.afterPropertiesSet();
+
+      // Act
+      String result =
+          logger.formatLogMessage("E001", "Users: a@foo.com and b@bar.org");
+
+      // Assert
+      assertThat(result).contains("a***@foo.com");
+      assertThat(result).contains("b***@bar.org");
+      assertThat(result).doesNotContain("a@foo.com");
+      assertThat(result).doesNotContain("b@bar.org");
+    }
+  }
+
+  @Nested
   @DisplayName("ゲッターメソッドのテスト")
   class GetterMethodsTest {
 

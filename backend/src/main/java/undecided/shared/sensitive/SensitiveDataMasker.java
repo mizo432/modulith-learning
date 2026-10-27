@@ -1,6 +1,8 @@
 package undecided.shared.sensitive;
 
 import java.time.LocalDate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -10,6 +12,19 @@ import org.jspecify.annotations.Nullable;
  * 自動的にマスクし、個人情報の漏洩を防ぎます。
  */
 public final class SensitiveDataMasker {
+
+  /**
+   * メールアドレスの正規表現パターンです。
+   * ローカルパートとドメインパートを識別してマスクします。
+   */
+  private static final Pattern EMAIL_PATTERN =
+      Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+
+  /**
+   * 電話番号の正規表現パターンです。
+   * 0から始まる10桁または11桁の数字列にマッチします。
+   */
+  private static final Pattern PHONE_PATTERN = Pattern.compile("0\\d{9,10}");
 
   private SensitiveDataMasker() {
     // ユーティリティクラスなのでインスタンス化しない
@@ -80,5 +95,68 @@ public final class SensitiveDataMasker {
       return null;
     }
     return dateOfBirth.getYear() + "-**-**";
+  }
+
+  /**
+   * 任意の文字列に含まれる機微な個人情報（メールアドレス、電話番号）を自動的に検出してマスクします。
+   *
+   * <p>このメソッドは、文字列内に含まれるメールアドレスと電話番号を正規表現で検出し、
+   * それぞれ {@link #maskEmail(String)} と {@link #maskPhone(String)} を使用してマスクします。
+   *
+   * @param text マスク対象の文字列。{@code null} または空文字列の可能性があります。
+   * @return 機微な情報がマスクされた文字列。{@code null} 入力の場合は {@code null}、
+   *         空文字列の場合は空文字列を返します。
+   * @example "Contact taro@example.com or 09012345678" → "Contact t***@example.com or *******5678"
+   */
+  public static @Nullable String mask(@Nullable String text) {
+    if (text == null || text.isEmpty()) {
+      return text;
+    }
+
+    String result = text;
+
+    // メールアドレスをマスク
+    result = maskEmails(result);
+
+    // 電話番号をマスク
+    result = maskPhones(result);
+
+    return result;
+  }
+
+  /**
+   * 文字列内のすべてのメールアドレスをマスクします。
+   *
+   * @param text 対象の文字列
+   * @return メールアドレスがマスクされた文字列
+   */
+  private static String maskEmails(String text) {
+    Matcher matcher = EMAIL_PATTERN.matcher(text);
+    StringBuffer stringBuffer = new StringBuffer();
+    while (matcher.find()) {
+      String email = matcher.group();
+      String masked = maskEmail(email);
+      matcher.appendReplacement(stringBuffer, Matcher.quoteReplacement(masked));
+    }
+    matcher.appendTail(stringBuffer);
+    return stringBuffer.toString();
+  }
+
+  /**
+   * 文字列内のすべての電話番号をマスクします。
+   *
+   * @param text 対象の文字列
+   * @return 電話番号がマスクされた文字列
+   */
+  private static String maskPhones(String text) {
+    Matcher matcher = PHONE_PATTERN.matcher(text);
+    StringBuffer stringBuffer = new StringBuffer();
+    while (matcher.find()) {
+      String phone = matcher.group();
+      String masked = maskPhone(phone);
+      matcher.appendReplacement(stringBuffer, Matcher.quoteReplacement(masked));
+    }
+    matcher.appendTail(stringBuffer);
+    return stringBuffer.toString();
   }
 }

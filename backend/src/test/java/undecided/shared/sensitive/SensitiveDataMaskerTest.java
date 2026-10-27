@@ -182,4 +182,74 @@ class SensitiveDataMaskerTest {
       assertThat(SensitiveDataMasker.maskDateOfBirth(dateOfBirth)).isEqualTo("1980-**-**");
     }
   }
+
+  /** Method under test: {@link SensitiveDataMasker#mask(String)} */
+  @Nested
+  @DisplayName("maskメソッドのテスト")
+  class MaskTest {
+
+    @Test
+    @DisplayName("null入力の場合nullを返す")
+    void shouldReturnNullForNullInput() {
+      assertThat(SensitiveDataMasker.mask(null)).isNull();
+    }
+
+    @Test
+    @DisplayName("空文字入力の場合空文字を返す")
+    void shouldReturnEmptyForEmptyInput() {
+      assertThat(SensitiveDataMasker.mask("")).isEmpty();
+    }
+
+    @Test
+    @DisplayName("機微な情報がない文字列はそのまま返す")
+    void shouldReturnAsIsWhenNoSensitiveData() {
+      assertThat(SensitiveDataMasker.mask("Hello world")).isEqualTo("Hello world");
+    }
+
+    @Test
+    @DisplayName("メールアドレスが含まれる文字列をマスクする")
+    void shouldMaskEmailInText() {
+      assertThat(SensitiveDataMasker.mask("Contact taro@example.com for details"))
+          .isEqualTo("Contact t***@example.com for details");
+    }
+
+    @Test
+    @DisplayName("電話番号が含まれる文字列をマスクする")
+    void shouldMaskPhoneInText() {
+      assertThat(SensitiveDataMasker.mask("Call 09012345678 now"))
+          .isEqualTo("Call *******5678 now");
+    }
+
+    @Test
+    @DisplayName("メールアドレスと電話番号の両方が含まれる文字列をマスクする")
+    void shouldMaskBothEmailAndPhoneInText() {
+      String input = "Contact taro@example.com or call 09012345678";
+      assertThat(SensitiveDataMasker.mask(input))
+          .isEqualTo("Contact t***@example.com or call *******5678");
+    }
+
+    @Test
+    @DisplayName("複数のメールアドレスが含まれる文字列をマスクする")
+    void shouldMaskMultipleEmailsInText() {
+      String input = "Emails: a@foo.com and b@bar.org";
+      assertThat(SensitiveDataMasker.mask(input))
+          .isEqualTo("Emails: a***@foo.com and b***@bar.org");
+    }
+
+    @Test
+    @DisplayName("複数の電話番号が含まれる文字列をマスクする")
+    void shouldMaskMultiplePhonesInText() {
+      String input = "Phones: 09012345678 and 08098765432";
+      assertThat(SensitiveDataMasker.mask(input))
+          .isEqualTo("Phones: *******5678 and *******5432");
+    }
+
+    @Test
+    @DisplayName("例外メッセージのような文字列をマスクする")
+    void shouldMaskExceptionMessage() {
+      String input = "User not found: taro@example.com, phone: 09012345678";
+      assertThat(SensitiveDataMasker.mask(input))
+          .isEqualTo("User not found: t***@example.com, phone: *******5678");
+    }
+  }
 }

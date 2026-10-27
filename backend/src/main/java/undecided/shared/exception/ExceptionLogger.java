@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import undecided.shared.sensitive.SensitiveDataMasker;
 
 /**
  * 例外情報をログとして記録するためのユーティリティクラス。
@@ -158,6 +159,17 @@ public class ExceptionLogger {
   @Setter private boolean trimLogMessage;
 
   /**
+   * 機微な情報のマスク処理を制御するフラグ。
+   *
+   * <p>このフラグが {@code true} に設定されている場合、ログメッセージの生成時に {@link
+   * undecided.shared.sensitive.SensitiveDataMasker} を使用して機微な個人情報（メールアドレス、電話番号など）を
+   * 自動的にマスクします。 {@code false} に設定されている場合、マスク処理は行われません。
+   *
+   * <p>開発環境ではデバッグの容易さのために {@code false} に設定し、本番環境では {@code true} に設定することを推奨します。
+   */
+  @Setter private boolean maskSensitiveData;
+
+  /**
    * 指定された名前を使用して ExceptionLogger を初期化します。
    *
    * <p>このクラスは指定された名前を基にアプリケーションロガーおよびモニタリングロガーを設定し、 各種ログレベル（INFO、WARN、ERROR）用のロガーを内部的に準備します。
@@ -304,6 +316,8 @@ public class ExceptionLogger {
    * 指定された例外コードと例外メッセージを基にログメッセージをフォーマットします。 例外コードまたは例外メッセージが指定されていない場合、それぞれデフォルト値が使用されます。
    * また、ログメッセージの設定によっては、生成されたメッセージをトリム処理します。
    *
+   * <p>機微な情報のマスクが有効な場合、例外メッセージに含まれる機微な個人情報をマスクします。
+   *
    * @param exceptionCode ログメッセージに使用する例外コード
    * @param exceptionMessage ログメッセージに使用する例外メッセージ
    * @return フォーマットされたログメッセージ
@@ -317,6 +331,11 @@ public class ExceptionLogger {
 
     if (!StringUtils.hasText(exceptionMessage)) {
       bindingExceptionMessage = this.defaultMessage;
+    }
+
+    // 機微な情報のマスクを適用
+    if (this.maskSensitiveData) {
+      bindingExceptionMessage = SensitiveDataMasker.mask(bindingExceptionMessage);
     }
 
     String message =
