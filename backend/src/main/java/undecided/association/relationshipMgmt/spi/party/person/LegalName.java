@@ -5,6 +5,7 @@ import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
 import undecided.shared.primitive.Strings2;
+import undecided.shared.sensitive.SensitiveDataMasker;
 import undecided.shared.value.StringCode;
 
 /**
@@ -114,7 +115,7 @@ public class LegalName implements StringCode<LegalName> {
    */
   @Override
   public String toString() {
-    return Strings2.toString(value());
+    return SensitiveDataMasker.maskName(value());
   }
 
   /** LegalNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */

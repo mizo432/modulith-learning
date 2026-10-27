@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
 import undecided.shared.converter.EncryptedStringConverter;
 import undecided.shared.primitive.Strings2;
+import undecided.shared.sensitive.SensitiveDataMasker;
 import undecided.shared.value.StringCode;
 
 /**
@@ -96,7 +97,7 @@ public class FirstName implements StringCode<FirstName> {
    */
   @Override
   public String toString() {
-    return Strings2.toString(value);
+    return SensitiveDataMasker.maskName(value);
   }
 
   /** FirstNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。暗号化を適用します。 */

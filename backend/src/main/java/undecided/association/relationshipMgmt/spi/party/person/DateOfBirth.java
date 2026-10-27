@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
+import undecided.shared.sensitive.SensitiveDataMasker;
 import undecided.shared.value.DateValue;
 
 /**
@@ -65,7 +66,7 @@ public class DateOfBirth implements DateValue {
    */
   @Override
   public String toString() {
-    return String.valueOf(value);
+    return SensitiveDataMasker.maskDateOfBirth(value);
   }
 
   /** DateOfBirthとデータベースのLocalDateを相互に変換するためのJPAコンバーターです。 */
