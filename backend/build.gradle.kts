@@ -133,6 +133,7 @@ dependencies {
 
     // Flyway PostgreSQLサポート
     implementation("org.flywaydb:flyway-database-postgresql")
+    implementation("org.flywaydb:flyway-core")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
