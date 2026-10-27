@@ -104,8 +104,6 @@ public class LastName implements StringCode<LastName> {
   @Converter(autoApply = true)
   public static class LastNameConverter implements AttributeConverter<LastName, String> {
 
-    private final EncryptedStringConverter encryptedConverter = new EncryptedStringConverter(null);
-
     /**
      * エンティティ属性をデータベースカラムに変換します。暗号化して保存します。
      *
@@ -121,7 +119,7 @@ public class LastName implements StringCode<LastName> {
       if (value == null) {
         return null;
       }
-      return encryptedConverter.convertToDatabaseColumn(value);
+      return EncryptedStringConverter.encrypt(value);
     }
 
     /**
@@ -135,7 +133,7 @@ public class LastName implements StringCode<LastName> {
       if (dbData == null) {
         return LastName.empty();
       }
-      String decrypted = encryptedConverter.convertToEntityAttribute(dbData);
+      String decrypted = EncryptedStringConverter.decrypt(dbData);
       if (decrypted == null) {
         return LastName.empty();
       }
