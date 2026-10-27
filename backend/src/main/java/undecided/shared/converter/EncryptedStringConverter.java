@@ -46,13 +46,13 @@ public class EncryptedStringConverter implements AttributeConverter<String, Stri
   }
 
   /**
-   * エンティティ属性（平文）をデータベースカラム（暗号化文字列）に変換します。
+   * エンティティ属性（平文）をデータベースカラム（暗号化文字列）に静的に変換します。
+   * 他のConverterから呼び出すために提供されます。
    *
    * @param attribute 変換対象の平文字列。{@code null} の可能性があります。
    * @return 暗号化された {@code String}。属性が {@code null} または空の場合は {@code null}
    */
-  @Override
-  public String convertToDatabaseColumn(@Nullable String attribute) {
+  public static String encrypt(@Nullable String attribute) {
     if (attribute == null || attribute.isEmpty()) {
       return attribute;
     }
@@ -63,13 +63,13 @@ public class EncryptedStringConverter implements AttributeConverter<String, Stri
   }
 
   /**
-   * データベースカラム（暗号化文字列）をエンティティ属性（平文）に変換します。
+   * データベースカラム（暗号化文字列）をエンティティ属性（平文）に静的に変換します。
+   * 他のConverterから呼び出すために提供されます。
    *
    * @param dbData データベースから読み込んだ暗号化文字列。{@code null} の可能性があります。
    * @return 復号化された {@code String}。データベースデータが {@code null} または空の場合は {@code null}
    */
-  @Override
-  public String convertToEntityAttribute(@Nullable String dbData) {
+  public static String decrypt(@Nullable String dbData) {
     if (dbData == null || dbData.isEmpty()) {
       return dbData;
     }
@@ -82,5 +82,27 @@ public class EncryptedStringConverter implements AttributeConverter<String, Stri
       // 暗号化されていないデータの場合はそのまま返す（既存データ対応）
       return dbData;
     }
+  }
+
+  /**
+   * エンティティ属性（平文）をデータベースカラム（暗号化文字列）に変換します。
+   *
+   * @param attribute 変換対象の平文字列。{@code null} の可能性があります。
+   * @return 暗号化された {@code String}。属性が {@code null} または空の場合は {@code null}
+   */
+  @Override
+  public String convertToDatabaseColumn(@Nullable String attribute) {
+    return encrypt(attribute);
+  }
+
+  /**
+   * データベースカラム（暗号化文字列）をエンティティ属性（平文）に変換します。
+   *
+   * @param dbData データベースから読み込んだ暗号化文字列。{@code null} の可能性があります。
+   * @return 復号化された {@code String}。データベースデータが {@code null} または空の場合は {@code null}
+   */
+  @Override
+  public String convertToEntityAttribute(@Nullable String dbData) {
+    return decrypt(dbData);
   }
 }
