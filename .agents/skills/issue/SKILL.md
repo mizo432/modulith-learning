@@ -15,13 +15,12 @@ description: |
 
 ## Quick Start (処理フロー)
 
-1. ユーザーからissueの`milestone`(e.g. `PHx.0`)を聞く (存在しない場合はなし)
 1. ユーザーにissueの内容を聞く
-3. issue内容を把握する
-4. issue内容を元にissueタイトルを作成
-5. issue内容を元に`Label`を推定 (GitHubで用意されているものを使用)
-6. テンプレートmarkdownに沿うようにissueの本文をまとめる
-7. ghコマンドを用いてissueをGitHubリポジトリに作成
+2. issue内容を把握する
+3. issue内容を元にissueタイトルを作成
+4. issue内容を元に`Label`を推定 (GitHubで用意されているものを使用)
+5. テンプレートmarkdownに沿うようにissueの本文をまとめる
+6. ghコマンドを用いてissueをGitHubリポジトリに作成
 
 ## Guidelines (ガイドライン)
 
