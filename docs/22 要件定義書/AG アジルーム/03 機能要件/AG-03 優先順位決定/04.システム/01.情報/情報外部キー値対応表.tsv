@@ -1,0 +1,11 @@
+外部キー属性情報	事業領域	業務領域	情報名	外部キー属性	型	主キー属性情報	事業領域	業務領域	情報名	主キー属性	型
+AG アジルーム	AG-03 優先順位決定	バックログ項目	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
+AG アジルーム	AG-03 優先順位決定	バックログ項目	product_goal_id	SnowflakeID	AG アジルーム	AG-01 プロダクトディスカバリー	Product Goal	product_goal_id	SnowflakeID
+AG アジルーム	AG-03 優先順位決定	バックログ項目	parent_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-03 優先順位決定	Kano質問票	backlog_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-03 優先順位決定	Kano質問票	created_by	UUID	AG アジルーム	共通	従業員	employee_id	UUID
+AG アジルーム	AG-03 優先順位決定	Kano回答	kano_survey_id	SnowflakeID	AG アジルーム	AG-03 優先順位決定	Kano質問票	kano_survey_id	SnowflakeID
+AG アジルーム	AG-03 優先順位決定	Kano回答	respondent_id	UUID	AG アジルーム	共通	従業員	employee_id	UUID
+AG アジルーム	AG-03 優先順位決定	優先判断理由	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
+AG アジルーム	AG-03 優先順位決定	優先判断理由	backlog_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-03 優先順位決定	優先判断理由	decided_by	UUID	AG アジルーム	共通	従業員	employee_id	UUID

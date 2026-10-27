@@ -77,6 +77,8 @@ local.properties
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/data_source_mapping.xml
+.idea/db-forest-config.xml
 
 # AWS User-specific
 .idea/**/aws.xml
@@ -101,14 +103,14 @@ local.properties
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-# .idea/artifacts
-# .idea/compiler.xml
-# .idea/jarRepositories.xml
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-# *.iml
-# *.ipr
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
+.idea/*.iml
+.idea/modules
+*.iml
+*.ipr
 
 # CMake
 cmake-build-*/
@@ -292,3 +294,42 @@ modules.xml
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,intellij,visualstudiocode,eclipse,gradle
 /.devcontainer/postgres/data/
 /.devcontainer/dragonfly/data/
+
+# Frontend specific
+/frontend/node_modules/
+/frontend/build/
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/coverage/
+/frontend/.DS_Store
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/backend/log/
+/log/projectName-application.log
+/log/projectName-monitoring.log
+
+# REQ-00019: 機密情報は.gitignoreで除外する
+# 環境変数ファイル（実際の値を含むファイル）
+*.env
+!.env.example
+!.env.template
+/authorization/.env
+/authorization/.env.local
+/api-gateway/.env
+/api-gateway/.env.local
+/backend/.env
+/backend/.env.local
+/service-registry/.env
+/service-registry/.env.local
+
+# 機密ファイル
+*.jks
+*.p12
+*.pfx
+!*.p12.example
+secrets/
+credentials/

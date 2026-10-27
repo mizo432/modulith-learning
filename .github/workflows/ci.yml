@@ -1,0 +1,444 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - 'main'
+      - 'develop'
+
+jobs:
+
+  service-registry-test:
+    name: Service Registry Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Check for service-registry changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          base: ${{ github.ref }}
+          list-files: shell
+          filters: |
+            service-registry:
+              - 'service-registry/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.service-registry == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.service-registry == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Service Registry Small Tests
+        if: steps.changes.outputs.service-registry == 'true'
+        run: ./gradlew :service-registry:test
+
+  service-registry-medium-test:
+    name: Service Registry Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check for service-registry changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          list-files: shell
+          filters: |
+            service-registry:
+              - 'service-registry/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.service-registry == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.service-registry == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Service Registry Medium Tests
+        if: steps.changes.outputs.service-registry == 'true'
+        run: ./gradlew :service-registry:mediumTest
+
+  frontend-test:
+    name: Frontend Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Check for frontend changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          base: ${{ github.ref }}
+          list-files: shell
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.frontend == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.frontend == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Frontend Small Tests
+        if: steps.changes.outputs.frontend == 'true'
+        run: ./gradlew :frontend:npmTest
+
+  backend-test:
+    name: Backend Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Check for backend changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          base: ${{ github.ref }}
+          list-files: shell
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.backend == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.backend == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Backend Small Tests
+        if: steps.changes.outputs.backend == 'true'
+        run: ./gradlew :backend:test
+
+  backend-medium-test:
+    name: Backend Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check for backend changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          list-files: shell
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.backend == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.backend == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Backend Medium Tests
+        if: steps.changes.outputs.backend == 'true'
+        run: ./gradlew :backend:mediumTest
+
+  api-gateway-test:
+    name: API Gateway Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Check for api-gateway changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          base: ${{ github.ref }}
+          list-files: shell
+          filters: |
+            api-gateway:
+              - 'api-gateway/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.api-gateway == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: chmod +x gradlew
+
+      - name: Run API Gateway Small Tests
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: ./gradlew :api-gateway:test
+
+  api-gateway-medium-test:
+    name: API Gateway Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check for api-gateway changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          list-files: shell
+          filters: |
+            api-gateway:
+              - 'api-gateway/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.api-gateway == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: chmod +x gradlew
+
+      - name: Run API Gateway Medium Tests
+        if: steps.changes.outputs.api-gateway == 'true'
+        run: ./gradlew :api-gateway:mediumTest
+
+  frontend-medium-test:
+    name: Frontend Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check for frontend changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          list-files: shell
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.frontend == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.frontend == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Frontend Medium Tests (Build)
+        if: steps.changes.outputs.frontend == 'true'
+        run: ./gradlew :frontend:npmBuild
+
+  authorization-test:
+    name: Authorization Small Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Check for authorization changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          base: ${{ github.ref }}
+          list-files: shell
+          filters: |
+            authorization:
+              - 'authorization/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.authorization == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.authorization == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Authorization Small Tests
+        if: steps.changes.outputs.authorization == 'true'
+        run: ./gradlew :authorization:test
+
+  authorization-medium-test:
+    name: Authorization Medium Tests
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Check for authorization changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          list-files: shell
+          filters: |
+            authorization:
+              - 'authorization/**'
+              - 'gradlew*'
+              - 'gradle/**'
+              - 'build.gradle*'
+              - 'settings.gradle*'
+              - 'gradle.properties'
+
+      - name: Set up JDK 25
+        if: steps.changes.outputs.authorization == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.changes.outputs.authorization == 'true'
+        run: chmod +x gradlew
+
+      - name: Run Authorization Medium Tests
+        if: steps.changes.outputs.authorization == 'true'
+        run: ./gradlew :authorization:mediumTest

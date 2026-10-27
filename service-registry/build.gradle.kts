@@ -2,14 +2,16 @@ import java.time.Duration
 
 plugins {
     java
-    id("org.springframework.boot") version "3.3.3"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot") version "4.1.1"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 version = "0.0.1-SNAPSHOT"
 
 java {
-
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 configurations.compileOnly {
@@ -20,24 +22,19 @@ repositories {
     mavenCentral()
 }
 
-extra["junitVersion"] = "5.10.2"
-extra["springDataBomVersion"] = "2024.0.1"
-extra["springCloudBomVersion"] = "2023.0.3"
+extra["junitVersion"] = "6.0.1"
+extra["springCloudBomVersion"] = "2025.1.2"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
-    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-
+    implementation("com.github.ben-manes.caffeine:caffeine")
 }
 
 dependencyManagement {
-    imports {
-        mavenBom("org.springframework.data:spring-data-bom:${property("springDataBomVersion")}")
-    }
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
     }

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "schedule": [
+    "every sunday at 5:00 am"
+  ],
+  "baseBranches": [
+    "develop"
+  ],
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 5,
+  "dependencyDashboard": true,
+  "commitMessageAction": "更新",
+  "commitMessageTopic": "{{{depName}}}",
+  "commitMessageExtra": "を {{{newVersion}}} に",
+  "packageRules": [
+    {
+      "description": "マイナーとパッチの更新を自動マージ",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": false,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Gradle依存関係をグループ化",
+      "matchManagers": [
+        "gradle"
+      ],
+      "groupName": "Gradle依存関係",
+      "groupSlug": "gradle-all"
+    },
+    {
+      "description": "GitHub Actionsをグループ化",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions"
+    }
+  ],
+  "ignoreDeps": [],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  }
+}

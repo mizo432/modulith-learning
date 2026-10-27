@@ -6,9 +6,57 @@ server:
 
 spring:
   application:
-    name: api-gateway-service # アプリケーションの名前を設定します
+    name: api-gateway # アプリケーションの名前を設定します
   threads:
     virtual:
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # REQ-00018: 認可サーバーはHTTPSで提供される
+          issuer-uri: https://localhost:8443
+          jwk-set-url: https://localhost:8443/oauth2/jwks
+          jwt-set-cache-enabled: true
+          # REQ-00028: JWKSエンドポイントのレスポンスをキャッシュする
+          # REQ-00029: JWTのキャッシュ有効期間は5分以内とする
+          # REQ-00021: JWT署名検証にRS256アルゴリズムを使用する
+          jws-algorithm: RS256
+          # REQ-00030: nbfクレーム (Not Before)が設定されている場合、その時刻以前のトークン使用を拒否する
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: api-departments
+              uri: lb://backend/api/departments
+              predicates:
+                - Path=/api/departments/**
+            - id: api-employees
+              uri: lb://backend/api/employees
+              predicates:
+                - Path=/api/employees/**
+            - id: api-docs
+              uri: lb://backend
+              predicates:
+                - Path=/v3/api-docs/**
+            - id: swagger-ui
+              uri: lb://backend
+              predicates:
+                - Path=/swagger-ui/**
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: backend
+        url: /v3/api-docs
+
+#  eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://${PROJECT_NAME:-default}-service-registry:8761/eureka
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka

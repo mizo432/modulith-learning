@@ -1,0 +1,10 @@
+属性名	型	PK	必須	説明
+sprint_id	SnowflakeID	*	Y	スプリントの一意な識別子
+team_id	UUID		Y	所属チームの識別子
+title	String		Y	スプリントのタイトル
+description	Text		N	スプリントの詳細説明
+status	Enum		Y	現在の状態
+start_date	Date		Y	開始日
+end_date	Date		Y	終了日
+created_at	DateTime		Y	作成日時
+updated_at	DateTime		Y	最終更新日時

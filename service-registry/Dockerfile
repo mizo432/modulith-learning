@@ -22,7 +22,7 @@ WORKDIR /app
 COPY . .
 
 # プロジェクトをビルド
-RUN gradle clean build --refresh-dependencies -x test > build.log 2>&1 || (cat build.log)
+RUN gradle clean bootJar --refresh-dependencies -x test > build.log 2>&1 || (cat build.log)
 
 # JARファイルの名前を環境変数として設定
 ENV JAR_FILE="service-registry-0.0.1-SNAPSHOT.jar"

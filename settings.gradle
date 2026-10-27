@@ -8,3 +8,5 @@ rootProject.name = 'modulith-learning'
 include "backend"
 include "service-registry"
 include "api-gateway"
+include "frontend"
+include "authorization"

@@ -1,0 +1,23 @@
+package undecided.generic.addressReg.internal;
+
+import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
+
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
+import org.springframework.stereotype.Service;
+import undecided.generic.addressReg.spi.Prefecture;
+import undecided.generic.addressReg.spi.PrefectureQuery;
+
+@Service
+@RequiredArgsConstructor
+public class PrefectureQueryImpl implements PrefectureQuery {
+
+  private final PrefectureRepository repository;
+
+  @Override
+  public @NonNull Optional<Prefecture> findByCode(@NonNull String code) {
+    checkNotNull(code, () -> new NullPointerException("code must not null"));
+    return Optional.ofNullable(repository.findByPrefectureCode(code));
+  }
+}

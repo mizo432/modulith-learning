@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT"> <!-- (1) -->
+    <encoder>
+      <pattern>
+        <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tthread:%thread\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\thttpMethod:%X{httpMethod}\trequestUri:%X{requestUri}\tlevel:%-5level\tlogger:%-48logger{48}\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern> <!-- (2) -->
+    </encoder>
+  </appender>
+  <appender class="ch.qos.logback.core.rolling.RollingFileAppender"
+    name="APPLICATION_LOG_FILE"> <!-- (3) -->
+    <encoder>
+      <charset>UTF-8</charset> <!-- (7) -->
+      <pattern>
+        <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tthread:%thread\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\thttpMethod:%X{httpMethod}\trequestUri:%X{requestUri}\tlevel:%-5level\tlogger:%-48logger{48}\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern>
+    </encoder> <!-- (4) -->
+    <file>${app.log.dir:-log}/${app.name:modulith-learning}-application.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>
+        ${app.log.dir:-log}/${app.name:modulith-learning}-application-%d{yyyyMMdd}.log
+      </fileNamePattern> <!-- (5) -->
+      <maxHistory>7</maxHistory> <!-- (6) -->
+    </rollingPolicy>
+  </appender>
+  <appender class="ch.qos.logback.core.rolling.RollingFileAppender"
+    name="MONITORING_LOG_FILE"> <!-- (8) -->
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>
+        <![CDATA[date:%d{yyyy-MM-dd HH:mm:ss}\tX-Track:%replace(%X{X-Track}){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}\tlevel:%-5level\tmessage:%replace(%replace(%msg){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}%n%replace(%replace(%replace(%xEx){'[\p{IsControl}&&[^\t\r\n]]','<CTRL>'}){'(\r\n|\r|\n)','$1  '}){'  $',''}%nopex]]></pattern>
+    </encoder>
+    <file>${app.log.dir:-log}/${app.name:modulith-learning}-monitoring.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>
+        ${app.log.dir:-log}/${app.name:modulith-learning}-monitoring-%d{yyyyMMdd}.log
+      </fileNamePattern>
+      <maxHistory>7</maxHistory>
+    </rollingPolicy>
+  </appender>
+  <!-- Application Loggers -->
+  <logger level="debug" name="undecided.erp"/> <!-- (9) -->
+
+  <!--  <logger name="undecided.erp.domain.repository" level="trace" />-->
+  <!-- shared -->
+  <logger level="info" name="undecided.shared"/>
+  <logger level="info" name="undecided.supporting"/>
+  <logger level="trace"
+    name="undecided.config.presentation.web.logging.RestTraceLoggingInterceptor"/>
+  <logger level="info" name="undecided.shared.exception.ExceptionLogger"/>
+  <logger additivity="false" level="error" name="EXCEPTION_LOGGER_NAME.Monitoring"> <!-- (10) -->
+    <appender-ref ref="MONITORING_LOG_FILE"/>
+  </logger>
+  <root level="warn"> <!-- (11) -->
+    <appender-ref ref="STDOUT"/> <!-- (12) -->
+    <appender-ref ref="APPLICATION_LOG_FILE"/>
+  </root>
+</configuration>

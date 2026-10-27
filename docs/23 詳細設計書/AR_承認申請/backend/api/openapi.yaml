@@ -1,0 +1,492 @@
+openapi: 3.0.3
+info:
+  title: AR_承認申請 API
+  description: 承認申請事業領域のREST API仕様
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: 開発環境
+
+paths:
+  /databases:
+    get:
+      operationId: getDatabases
+      summary: データベース一覧を取得する
+      description: 接続可能なデータベースの一覧を取得します。
+      tags:
+        - データベース管理
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Database'
+              example:
+                data:
+                  - databaseName: postgres
+                    description: PostgreSQLデータベース
+                  - databaseName: mysql
+                    description: MySQLデータベース
+        '400':
+          description: データベース接続エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  status: 400
+                  code: DATABASE_CONNECTION_ERROR
+                  message: データベースに接続できません
+                  timestamp: "2024-01-01T00:00:00Z"
+
+  /databases/{databaseName}/schemas:
+    get:
+      operationId: getSchemas
+      summary: スキーマ一覧を取得する
+      description: 指定されたデータベースのスキーマ一覧を取得します。
+      tags:
+        - データベース管理
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: databaseName
+          in: path
+          description: データベース名
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Schema'
+              example:
+                data:
+                  - schemaName: public
+                    schemaKanaName: パブリック
+                    description: デフォルトスキーマ
+                  - schemaName: app
+                    schemaKanaName: アプリケーション
+                    description: アプリケーション用スキーマ
+        '404':
+          description: データベースが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  status: 404
+                  code: DATABASE_NOT_FOUND
+                  message: 指定されたデータベースが見つかりません
+                  timestamp: "2024-01-01T00:00:00Z"
+
+  /databases/{databaseName}/schemas/{schemaName}/tables:
+    get:
+      operationId: getTables
+      summary: テーブル・View一覧を取得する
+      description: 指定されたスキーマのテーブル一覧とView一覧を取得します。
+      tags:
+        - データベース管理
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: databaseName
+          in: path
+          description: データベース名
+          required: true
+          schema:
+            type: string
+        - name: schemaName
+          in: path
+          description: スキーマ名
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tables:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Table'
+                  views:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/View'
+              example:
+                tables:
+                  - tableName: users
+                    tableKanaName: ユーザ
+                    tableType: TABLE
+                    description: ユーザ情報テーブル
+                views:
+                  - viewName: v_user_summary
+                    viewKanaName: ユーザサマリー
+                    viewType: VIEW
+                    description: ユーザサマリーView
+        '404':
+          description: データベースまたはスキーマが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /databases/{databaseName}/schemas/{schemaName}/tables/{tableName}:
+    get:
+      operationId: getTableDefinition
+      summary: テーブル定義を取得する
+      description: 指定されたテーブルの定義とインデックス定義を取得します。
+      tags:
+        - データベース管理
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: databaseName
+          in: path
+          description: データベース名
+          required: true
+          schema:
+            type: string
+        - name: schemaName
+          in: path
+          description: スキーマ名
+          required: true
+          schema:
+            type: string
+        - name: tableName
+          in: path
+          description: テーブル名
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tableDefinition:
+                    $ref: '#/components/schemas/TableDefinition'
+                  indexDefinition:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Index'
+              example:
+                tableDefinition:
+                  columns:
+                    - columnName: id
+                      dataType: BIGINT
+                      nullable: false
+                      primaryKey: true
+                      defaultValue: null
+                      comment: 主キー
+                    - columnName: name
+                      dataType: "VARCHAR(100)"
+                      nullable: false
+                      primaryKey: false
+                      defaultValue: null
+                      comment: 名前
+                indexDefinition:
+                  - indexName: idx_users_name
+                    indexType: NONUNIQUE
+                    columnName: name
+                    ordinalPosition: 1
+        '404':
+          description: テーブルが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  status: 404
+                  code: TABLE_NOT_FOUND
+                  message: 指定されたテーブルが見つかりません
+                  timestamp: "2024-01-01T00:00:00Z"
+
+  /databases/{databaseName}/schemas/{schemaName}/views/{viewName}:
+    get:
+      operationId: getViewDefinition
+      summary: View定義を取得する
+      description: 指定されたViewの定義とインデックス定義を取得します。マテリアライズドViewの場合はインデックス定義も取得します。
+      tags:
+        - データベース管理
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: databaseName
+          in: path
+          description: データベース名
+          required: true
+          schema:
+            type: string
+        - name: schemaName
+          in: path
+          description: スキーマ名
+          required: true
+          schema:
+            type: string
+        - name: viewName
+          in: path
+          description: View名
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  viewDefinition:
+                    $ref: '#/components/schemas/ViewDefinition'
+                  indexDefinition:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Index'
+              example:
+                viewDefinition:
+                  columns:
+                    - columnName: id
+                      dataType: BIGINT
+                      ordinalPosition: 1
+                      comment: 主キー
+                    - columnName: name
+                      dataType: "VARCHAR(100)"
+                      ordinalPosition: 2
+                      comment: 名前
+                indexDefinition:
+                  - indexName: idx_v_user_summary_id
+                    indexType: UNIQUE
+                    columnName: id
+                    ordinalPosition: 1
+        '404':
+          description: Viewが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  status: 404
+                  code: VIEW_NOT_FOUND
+                  message: 指定されたViewが見つかりません
+                  timestamp: "2024-01-01T00:00:00Z"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT認証トークン
+
+  schemas:
+    Database:
+      type: object
+      properties:
+        databaseName:
+          type: string
+          description: データベース名
+        description:
+          type: string
+          description: データベースの説明
+      required:
+        - databaseName
+
+    Schema:
+      type: object
+      properties:
+        schemaName:
+          type: string
+          description: スキーマ名
+        schemaKanaName:
+          type: string
+          description: スキーマの説明(最初の";"まで)
+        description:
+          type: string
+          description: スキーマの説明(二番目の";"から最後まで)
+      required:
+        - schemaName
+
+    Table:
+      type: object
+      properties:
+        tableName:
+          type: string
+          description: テーブル名
+        tableKanaName:
+          type: string
+          description: テーブルの説明(最初の";"まで)
+        tableType:
+          type: string
+          description: テーブルの説明(一番目の";"から二番目の";"まで)
+        description:
+          type: string
+          description: テーブルの説明(二番目の";"から最後まで)
+      required:
+        - tableName
+
+    View:
+      type: object
+      properties:
+        viewName:
+          type: string
+          description: View名
+        viewKanaName:
+          type: string
+          description: Viewの説明(最初の";"まで)
+        viewType:
+          type: string
+          description: Viewの説明(一番目の";"から二番目の";"まで)
+        description:
+          type: string
+          description: Viewの説明(二番目の";"から最後まで)
+      required:
+        - viewName
+
+    TableColumn:
+      type: object
+      properties:
+        columnName:
+          type: string
+          description: カラム名
+        dataType:
+          type: string
+          description: データ型
+        nullable:
+          type: boolean
+          description: NULL許否
+        primaryKey:
+          type: boolean
+          description: 主キーフラグ
+        defaultValue:
+          type: string
+          description: デフォルト値
+        comment:
+          type: string
+          description: カラムコメント
+      required:
+        - columnName
+        - dataType
+
+    TableDefinition:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableColumn'
+          description: カラム定義一覧
+
+    ViewColumn:
+      type: object
+      properties:
+        columnName:
+          type: string
+          description: カラム名
+        dataType:
+          type: string
+          description: データ型
+        ordinalPosition:
+          type: integer
+          description: カラムの順序
+        comment:
+          type: string
+          description: カラムコメント
+      required:
+        - columnName
+        - dataType
+
+    ViewDefinition:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewColumn'
+          description: カラム定義一覧
+
+    Index:
+      type: object
+      properties:
+        indexName:
+          type: string
+          description: インデックス名
+        indexType:
+          type: string
+          description: インデックス種別 (UNIQUE / NONUNIQUE)
+        columnName:
+          type: string
+          description: 構成カラム名
+        ordinalPosition:
+          type: integer
+          description: 構成カラムの順序
+      required:
+        - indexName
+        - indexType
+        - columnName
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            status:
+              type: integer
+              description: HTTPステータスコード
+            code:
+              type: string
+              description: エラーコード
+            message:
+              type: string
+              description: エラーメッセージ
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: エラーが発生したフィールド名
+                  message:
+                    type: string
+                    description: フィールドエラーメッセージ
+              description: フィールドレベルのエラー詳細
+            timestamp:
+              type: string
+              format: date-time
+              description: エラー発生時刻
+      required:
+        - error

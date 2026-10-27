@@ -1,0 +1,1845 @@
+# Spring Data JPA 実装ガイドライン
+
+本ガイドラインは、modulith-learning プロジェクトにおける Spring Data JPA の実装規則を定義します。
+
+
+---
+
+## 1. Entity 階層構造 (@MappedSuperclass)
+
+プロジェクトでは、エンティティの共通フィールドを `@MappedSuperclass` を使用して基底クラスに定義します。
+
+### 1.1 BusinessEntity（ビジネスエンティティ基底クラス）
+
+作成日時と作成者を管理する基底クラスです。`@CreatedDate` アノテーションを使用して、エンティティ作成時に自動的にタイムスタンプを設定します。
+
+```java
+@MappedSuperclass
+@Getter
+@Setter
+@Immutable
+public abstract class BusinessEntity<E extends BusinessEntity<E>> {
+  @CreatedDate private LocalDateTime createdAt;
+  @Column private Long createdBy;
+}
+```
+
+**特徴:**
+- 自己参照型ジェネリクス (`E extends BusinessEntity<E>`) を使用して、サブクラスでの型安全性を確保
+- `@Immutable` で不変性を保証
+- `@CreatedDate` で作成日時の自動設定
+
+### 1.2 AuditResource（監査リソース基底クラス）
+
+作成・更新の監査情報を管理する基底クラスです。`@PrePersist` / `@PreUpdate` ライフサイクルコールバックを使用して、手動で監査フィールドを設定します。
+
+```java
+@MappedSuperclass
+@Getter
+public abstract class AuditResource {
+  protected String createdBy;
+  protected LocalDateTime createdAt;
+  protected String updatedBy;
+  protected LocalDateTime updatedAt;
+
+  @PrePersist
+  public void prePersist() {
+    createdAt = DateProvider.currentLocalDateTime();
+    createdBy = "system";
+  }
+
+  @PreUpdate
+  public void preUpdate() {
+    updatedAt = DateProvider.currentLocalDateTime();
+    updatedBy = "system";
+  }
+}
+```
+
+**特徴:**
+- `@PrePersist` / `@PreUpdate` で作成・更新の両方を追跡
+- `DateProvider` を使用して、テスト時に日時をモック可能に
+- 作成者・更新者は固定値 "system" を使用（将来的に認証情報と連携）
+
+### 1.3 選択基準
+
+| 基準 | BusinessEntity | AuditResource |
+|------|----------------|---------------|
+| 監査フィールド | 作成日時・作成者のみ | 作成・更新の両方 |
+| 設定方法 | `@CreatedDate` (自動) | `@PrePersist/@PreUpdate` (手動) |
+| 不変性 | `@Immutable` 付与 | 更新可能 |
+| 使用シーン | 不変なマスターデータ | 更新可能なトランザクションデータ |
+
+### 1.4 分類用抽象クラスパターン
+
+型分類のみを行う空の抽象クラスを使用して、エンティティ階層を整理します。
+
+```java
+@MappedSuperclass
+public abstract class PptEntity<E extends PptEntity<E>> extends BusinessEntity<E> { }
+
+@MappedSuperclass
+public abstract class ThingEntity<E extends ThingEntity<E>> extends PptEntity<E> { }
+
+@MappedSuperclass
+public abstract class DescriptionEntity<E extends DescriptionEntity<E>> extends ThingEntity<E> { }
+```
+
+**特徴:**
+- 具体的なフィールドを持たず、型分類のみを行う
+- 継承階層を通じて、共通の基底クラスとの関係を明確化
+
+---
+
+---
+
+## 2. 関連付け (@OneToMany, @ManyToOne)
+
+エンティティ間の関連付けは、JPA の標準アノテーションを使用します。
+
+### 2.1 @OneToMany（一対多）
+
+```java
+@Entity
+@Table(name = "role")
+public class Role {
+  @Id private SnowflakeId roleId;
+
+  @OneToMany(mappedBy = "role")
+  private List<RoleAssignmentForOrg> roleAssignmentsForOrg = new ArrayList<>();
+
+  @OneToMany(mappedBy = "role")
+  private List<RoleAssignmentForEmp> roleAssignmentsForEmp = new ArrayList<>();
+}
+```
+
+**特徴:**
+- `mappedBy` で所有側を指定し、逆方向の関連付けを定義
+- デフォルトで `ArrayList` を初期化して、null 参照を防ぐ
+
+### 2.2 @ManyToOne（多対一）
+
+```java
+@Entity
+@Table(name = "role_assignment_for_org")
+public class RoleAssignmentForOrg {
+  @Id private SnowflakeId id;
+
+  @ManyToOne
+  @JoinColumn(name = "role_id", nullable = false)
+  private Role role;
+
+  @ManyToOne
+  @JoinColumn(name = "org_id", nullable = false)
+  private Organization organization;
+}
+```
+
+**特徴:**
+- `@JoinColumn` で外部キーカラムを明示的に指定
+- `nullable = false` で必須関係を制約
+
+---
+
+---
+
+## 3. 継承戦略 (@Inheritance)
+
+プロジェクトでは、`InheritanceType.TABLE_PER_CLASS` を使用して、各サブクラスを個別のテーブルとしてマッピングします。
+
+### 3.1 抽象基底クラス
+
+```java
+@Entity
+@Table(name = "party", schema = SchemaRelationshipMgmt.NAME)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Party {
+  @Id private SnowflakeId partyId;
+  private GovtAssignedId govtAssignedId;
+  private SearchName searchName;
+}
+```
+
+### 3.2 サブクラス
+
+```java
+@Entity
+@Table(name = "People", schema = SchemaRelationshipMgmt.NAME)
+public class Person extends Party {
+  private LegalName legalName;
+  private DateOfBirth dateOfBirth;
+}
+```
+
+**特徴:**
+- 各サブクラスが独立したテーブルを持ち、基底クラスのフィールドも含まれる
+- テーブル間の JOIN が不要で、読み込みパフォーマンスが向上
+- 書き込み時は重複カラムへの INSERT が必要になる点に注意
+
+---
+
+---
+
+## 4. @Embeddable / @Embedded（埋め込み可能クラス）
+
+値オブジェクトを JPA エンティティに埋め込んでマッピングするパターンです。
+
+### 4.1 Embeddable クラス（値オブジェクト）
+
+```java
+@Embeddable
+public record DepartmentCode(String value) {
+  public static final DepartmentCode EMPTY = new DepartmentCode("");
+}
+```
+
+```java
+@Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class EmployeeNo {
+  // ...
+}
+```
+
+**特徴:**
+- `record` 型と `class` 型の両方が使用可能
+- 個別のテーブルを持たず、エンティティのテーブルにカラムとして展開される
+
+### 4.2 Embedded の使用例
+
+```java
+@Entity
+@Table(name = "employees", schema = "relationship_mgmt")
+public class SimpleEmployee {
+  @Id private SnowflakeId employeeId;
+
+  @Embedded
+  @AttributeOverrides(
+      @AttributeOverride(name = "value", column = @Column(name = "employee_no")))
+  private EmployeeNo employeeNo;
+
+  @Embedded
+  @AttributeOverrides(
+      @AttributeOverride(name = "value", column = @Column(name = "search_name")))
+  private SearchName searchName;
+}
+```
+
+**特徴:**
+- `@AttributeOverrides` でカラム名をカスタマイズできる
+- 値オブジェクトの内部構造に依存せずに、カラム名を制御できる
+
+---
+
+---
+
+## 5. @Converter / AttributeConverter（カスタム変換）
+
+値オブジェクトとデータベースのデータ型間の双方向変換を定義するパターンです。
+
+### 5.1 Converter の定義
+
+```java
+@Converter(autoApply = true)
+public static class GovtAssignedIdConverter implements AttributeConverter<GovtAssignedId, String> {
+  @Override
+  public String convertToDatabaseColumn(GovtAssignedId attribute) {
+    // 値オブジェクト → String 変換
+  }
+
+  @Override
+  public GovtAssignedId convertToEntityAttribute(String dbData) {
+    // String → 値オブジェクト 変換
+  }
+}
+```
+
+**特徴:**
+- Converter は値オブジェクトクラス内に `static nested class` として定義
+- `autoApply = true` でグローバルに自動適用
+- 変換先は主に `String` 型
+
+### 5.2 共通基盤クラス
+
+| クラス | 説明 |
+|--------|------|
+| `EnumConverter.java` | `PersistableEnum` の変換基盤を提供する抽象クラス |
+| `PersistableEnum.java` | データベース値を取得するためのインターフェース |
+| `ValueObject.java` | 値オブジェクトの共通インターフェースとユーティリティ |
+
+### 5.3 主な Converter 一覧
+
+| 値オブジェクト | Converter |
+|---------------|-----------|
+| `GovtAssignedId` | GovtAssignedIdConverter |
+| `SearchName` | SearchNameConverter |
+| `AccountNumber` | AccountNumberConverter |
+| `HoldersName` | HoldersNameConverter |
+| `OrgName` | OrgNameConverter |
+| `OrgUnitName` | OrgUnitNameConverter |
+| `WhenAassociated` | WhenAassociatedConverter |
+| `WhenDisassociated` | WhenDisassociatedConverter |
+| `DateOfBirth` | DateOfBirthConverter |
+| `FirstName` | FirstNameConverter |
+| `LastName` | LastNameConverter |
+| `LegalName` | LegalNameConverter |
+| `ValidInterval` | ValidIntervalConverter |
+| `WhenOccured` | WhenOccuredConverter |
+| `SnowflakeId` | SnowflakeIdConverter |
+
+---
+
+---
+
+## 6. ValueObject 共通インターフェース
+
+値オブジェクトの共通動作を定義するインターフェースです。
+
+```java
+public interface ValueObject {
+  boolean isEmpty();
+
+  class ValueObjects {
+    public static <V extends ValueObject> boolean isAllValuesNotEmpty(V... valueObjects);
+    public static <V extends ValueObject> boolean isEmpty(V valueObject);
+    public static <E extends RuntimeException, V extends ValueObject> V checkNotEmpty(
+        @NonNull V ref, @NonNull Supplier<E> exceptionSupplier);
+    public static <V extends ValueObject> V defaultIfNull(V ref, V defaultValue);
+    public static <V extends ValueObject> V defaultIfEmpty(V ref, V defaultValue);
+  }
+}
+```
+
+**特徴:**
+- `isEmpty()` で値オブジェクトが空かどうかを判定
+- 静的ユーティリティメソッドで、null 安全性や空チェックを提供
+- `checkNotEmpty()` で空の場合に例外をスロー
+
+---
+
+---
+
+## 7. IdValue / 分散 ID 生成
+
+プロジェクトでは、`@GeneratedValue` を使用せず、アプリケーション側で ID を生成します。
+
+### 7.1 ID 値オブジェクト
+
+| クラス | 説明 |
+|--------|------|
+| `IdValue.java` | ID 値オブジェクトの基底インターフェース |
+| `UuidValue.java` | UUID ベースの値オブジェクト |
+| `UuidV7IdValue.java` | UUID v7 (タイムスタンプ順) の値オブジェクト |
+| `SnowflakeId.java` | Snowflake ID の値オブジェクト |
+
+### 7.2 特徴
+
+- `@GeneratedValue` を使用せず、アプリケーション側で ID を生成
+- Snowflake ID、UUID v7 などの分散 ID 生成方式を採用
+- ID も値オブジェクトとして定義され、`@Converter` で変換
+
+---
+
+---
+
+## 8. テーブルコメント (@Table.comment)
+
+テーブルの目的を自己文書化するために、`@Table.comment` を使用します。
+
+```java
+@Entity
+@Table(schema = "undecided_ef", name = "prefectures", comment = "prefecture table")
+public class Prefecture { }
+```
+
+**特徴:**
+- DDL 生成時にコメントが反映される（Flyway 等との併用時は注意）
+- データベースツールでテーブルの目的を確認できる
+
+---
+
+---
+
+## 9. カラムコメント (@Column.comment)
+
+各カラムの目的を自己文書化するために、`@Column.comment` を使用します。
+
+```java
+@Id
+@Column(name = "prefecture_id", comment = "Unique identifier for the prefecture", nullable = false)
+private Long id;
+
+@Column(name = "prefecture_code", comment = "Prefecture code", nullable = false, length = 2)
+private String prefectureCode;
+```
+
+**特徴:**
+- 各カラムの用途を明確に記録
+- データベースツールでカラムの目的を確認できる
+- 必須項目 (`nullable = false`) や文字数制限 (`length`) と併用
+
+---
+
+---
+
+## 10. リポジトリバリエーション
+
+プロジェクトでは、`CrudRepository` と `JpaRepository` の両方を使用します。
+
+### 10.1 CrudRepository
+
+基本的な CRUD 操作のみが必要な場合に使用します。
+
+```java
+public interface UserRepository extends CrudRepository<User, SnowflakeId> {
+  Optional<User> findByEmail(String email);
+}
+```
+
+### 10.2 JpaRepository
+
+バッチ処理やページネーションが必要な場合に使用します。
+
+```java
+public interface EmployeeRepository extends JpaRepository<Employee, SnowflakeId> {
+  List<Employee> findBySearchNameContaining(String keyword);
+}
+```
+
+### 10.3 カスタムクエリメソッド
+
+Spring Data JPA のメソッド名派生クエリを使用して、簡単な検索を実装します。
+
+```java
+public interface HolidayRepository extends JpaRepository<Holiday, Long> {
+  List<Holiday> findByHolidayDateBetween(LocalDate from, LocalDate to);
+}
+```
+
+---
+
+---
+
+## 11. 監査フィールドパターン
+
+エンティティの作成・更新履歴を追跡するために、監査フィールドを使用します。
+
+### 11.1 @CreatedDate パターン
+
+`BusinessEntity` で使用されるパターンです。Spring Data JPA の監査機能を使用して、作成日時を自動設定します。
+
+```java
+@CreatedDate private LocalDateTime createdAt;
+```
+
+### 11.2 @PrePersist/@PreUpdate パターン
+
+`AuditResource` で使用されるパターンです。ライフサイクルコールバックを使用して、手動で監査フィールドを設定します。
+
+```java
+@PrePersist
+public void prePersist() {
+  createdAt = DateProvider.currentLocalDateTime();
+  createdBy = "system";
+}
+
+@PreUpdate
+public void preUpdate() {
+  updatedAt = DateProvider.currentLocalDateTime();
+  updatedBy = "system";
+}
+```
+
+---
+
+---
+
+## 12. @Query / @Modifying（カスタム JPQL クエリ）
+
+標準のリポジトリメソッドでは表現できないクエリは、`@Query` アノテーションを使用して JPQL で定義します。
+
+### 12.1 検索クエリ
+
+```java
+@Query(
+    "SELECT h FROM Holiday h WHERE h.holidayDate >= :from AND h.holidayDate <= :to ORDER BY"
+        + " h.holidayDate ASC")
+List<Holiday> findByHolidayDateBetween(@Param("from") LocalDate from, @Param("to") LocalDate to);
+```
+
+### 12.2 削除クエリ
+
+```java
+@Modifying
+@Query("DELETE FROM Bank b WHERE b.datasetId <> :datasetId")
+int deleteByDatasetIdNot(@Param("datasetId") String datasetId);
+```
+
+**特徴:**
+- `@Modifying` を付与すると、UPDATE/DELETE クエリとして実行される
+- 戻り値は影響を受けた行数
+
+---
+
+---
+
+## 13. @Lock（ペシミスティックロック）
+
+競合が発生するシナリオでは、`@Lock` アノテーションを使用して行レベルの排他制御を実現します。
+
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query(
+    """
+    select n
+    from SnowflakeNode n
+    where n.applicationName = :applicationName
+      and n.leasedAt < :before
+    """)
+Optional<SnowflakeNode> findAvailableNode(
+    @Param("applicationName") String applicationName,
+    @Param("before") LocalDateTime before);
+```
+
+**特徴:**
+- `PESSIMISTIC_WRITE` ロックを使用して、行レベルの排他制御を実現
+- Snowflake ID のノード割り当てのような競合が発生するシナリオで使用
+
+---
+
+---
+
+## 14. @Transactional（トランザクション管理）
+
+サービス層で `@Transactional` アノテーションを使用して、トランザクション境界を明確に定義します。
+
+```java
+@Override
+@Transactional
+public void use(BankAccountUseDto bankAccountUseDto) {
+  // ...
+}
+```
+
+```java
+@Transactional
+public SnowflakeNode allocate(String applicationName) {
+  // ...
+}
+
+@Transactional
+public boolean renew(SnowflakeNode lease) {
+  // ...
+}
+```
+
+**特徴:**
+- サービス層でトランザクション境界を定義
+- デフォルトは READ-WRITE トランザクション
+- 読み取り専用の場合は `@Transactional(readOnly = true)` を明示
+
+---
+
+---
+
+## 15. Schema 分離パターン
+
+モジュールごとにスキーマを分離して、データベースの論理的な区切りを明確にします。
+
+### 15.1 スキーマ一覧
+
+| スキーマ | 用途 | 例 |
+|---------|------|-----|
+| `undecided_ef` | 汎用マスターデータ | Prefecture, City, Bank, Branch, Holiday |
+| `relationship_mgmt` | 関係管理データ | Party, Person, Organization, Role |
+
+### 15.2 実装例
+
+```java
+@Entity
+@Table(schema = "undecided_ef", name = "prefectures", comment = "prefecture table")
+public class Prefecture { }
+
+@Entity
+@Table(name = "party", schema = SchemaRelationshipMgmt.NAME)
+public abstract class Party { }
+```
+
+**特徴:**
+- スキーマ名は定数として定義し、一元的に管理（例: `SchemaRelationshipMgmt.NAME`）
+- モジュール間のデータ依存性をスキーマ分離で視覚化
+
+---
+
+---
+
+## 16. Flyway と JPA の連携
+
+プロジェクトでは、Flyway を使用してデータベーススキーマをバージョン管理し、JPA は DDL 生成を行わない方式を採用しています。
+
+### 16.1 基本設定
+
+`application.yml` で以下の設定を行います。
+
+```yaml
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none  # JPA による DDL 生成を無効化
+    properties.hibernate.hbm2ddl.create_namespaces: true  # Schema 自動作成を有効
+  flyway:
+    enabled: true
+    outOfOrder: true
+    baseline-on-migrate: true
+    locations: >
+      classpath:db/migration/as,
+      classpath:db/migration/do,
+      classpath:db/migration/ef,
+      classpath:db/migration/pc,
+      classpath:db/migration/ar,
+      classpath:db/migration/az,
+      classpath:db/migration/nt
+```
+
+**特徴:**
+- `ddl-auto: none` で JPA による DDL 生成を完全に無効化
+- Flyway が DDL の唯一のソースとなる
+- `create_namespaces: true` で Schema の自動作成を有効化
+- `locations` で事業領域ごとにマイグレーションスクリプトを分離
+
+### 16.2 マイグレーションスクリプトの命名規則
+
+Flyway の標準的な命名規則に従います。
+
+```
+V{timestamp}__description.sql
+```
+
+**例:**
+- `V20240529095514__add_parties_table.sql`
+- `V20260813124415__add_prefectures_table.sql`
+- `V20241226211235__change_column_name_simple_mame_to_simple_name.sql`
+
+**特徴:**
+- `V` プレフィックスでバージョンマイグレーションを示す
+- タイムスタンプで順序を管理（`YYYYMMDDHHmmss` 形式）
+- ダブルアンダースコア `__` でバージョンと説明を区切る
+- 説明は英小文字とアンダースコアで記述
+
+### 16.3 Schema 分離パターン
+
+事業領域ごとに Schema を分離して、論理的な区切りを明確にします。
+
+```sql
+-- V20240529095514__add_parties_table.sql
+create schema if not exists undecided_as;
+
+create table undecided_as.parties
+(
+    party_id    BIGINT      not null,
+    party_type  varchar(10) not null,
+    simple_mame varchar(50) not null,
+    primary key (party_id)
+);
+```
+
+**Schema 一覧:**
+
+| Schema | 略称 | 用途 |
+|--------|------|------|
+| `undecided_as` | as | 関連付け（Association） |
+| `undecided_do` | do | ID 管理（Distributed Object） |
+| `undecided_ef` | ef | 汎用マスターデータ（Effective） |
+| `undecided_pc` | pc | 未定義 |
+| `undecided_ar` | ar | 未定義 |
+| `undecided_az` | az | 未定義 |
+| `undecided_nt` | nt | 未定義 |
+
+**特徴:**
+- `create schema if not exists` で Schema の存在を確保
+- テーブル名は `schema.table` 形式で明示的に指定
+- JPA エンティティの `@Table(schema = "...")` と対応
+
+### 16.4 テーブル定義パターン
+
+テーブル定義にはコメント、インデックス、制約を含めます。
+
+```sql
+-- V20260813124415__add_prefectures_table.sql
+create schema if not exists undecided_ef;
+
+create table undecided_ef.prefectures
+(
+    prefecture_id   BIGINT      not null,
+    prefecture_code varchar(2)  not null,
+    lg_code         varchar(6)  not null,
+    pref_name       varchar(10) not null,
+    pref_kana       varchar(50) not null,
+    pref_roma       varchar(50) not null,
+    effective_date  date        not null,
+    abolition_data  date        not null,
+    remarks         varchar(256),
+    primary key (prefecture_id)
+);
+
+create unique index prefecture_code_uindex on undecided_ef.prefectures (prefecture_code);
+
+comment on table undecided_ef.prefectures is 'prefecture table';
+comment on column undecided_ef.prefectures.prefecture_id is 'Unique identifier for the prefecture';
+comment on column undecided_ef.prefectures.prefecture_code is 'Prefecture code';
+comment on column undecided_ef.prefectures.lg_code is 'Legal code';
+comment on column undecided_ef.prefectures.pref_name is 'Prefecture name';
+comment on column undecided_ef.prefectures.pref_kana is 'Prefecture kana';
+comment on column undecided_ef.prefectures.pref_roma is 'Prefecture romaji';
+comment on column undecided_ef.prefectures.effective_date is 'Effective date';
+comment on column undecided_ef.prefectures.abolition_data is 'Abolition date';
+comment on column undecided_ef.prefectures.remarks is 'Remarks';
+```
+
+**特徴:**
+- `create unique index` で一意制約用のインデックスを定義
+- `comment on table` / `comment on column` でテーブル・カラムのコメントを定義
+- JPA エンティティの `@Table.comment` / `@Column.comment` と対応
+
+### 16.5 インデックス定義パターン
+
+インデックスは Flyway で明示的に定義します。
+
+```sql
+-- 一意インデックス
+create unique index holiday_date_uindex on undecided_ef.holiday (holiday_date);
+
+-- 通常インデックス
+create index idx_branches_dataset_id on undecided_ef.branches (dataset_id);
+create index idx_bank_master_imports_occurred_at on undecided_ef.bank_master_imports (occurred_at);
+```
+
+**命名規則:**
+- 一意インデックス: `{column_name}_uindex`
+- 通常インデックス: `idx_{table_name}_{column_name}`
+
+**特徴:**
+- JPA の `@Index` アノテーションは使用せず、Flyway で管理
+- インデックス名は用途を明確にする命名規則に従う
+
+### 16.6 複合主キーパターン
+
+複合主キーは複数のカラムを指定して定義します。
+
+```sql
+create table undecided_ef.branches
+(
+    branch_code      varchar(3)   not null,
+    bank_code        varchar(4)   not null,
+    branch_name      varchar(128) not null,
+    branch_half_kana varchar(256),
+    branch_full_kana varchar(256),
+    branch_hiragana  varchar(256),
+    dataset_id       varchar(128) not null,
+    primary key (bank_code, branch_code)
+);
+```
+
+**特徴:**
+- 複合主キーは JPA では `@EmbeddedId` または `@IdClass` で対応
+- プロジェクトでは単一カラムの Snowflake ID を主キーとするパターンが主流
+
+### 16.7 カラム変更パターン
+
+既存テーブルのカラムを変更する場合は、安全な手順でマイグレーションします。
+
+```sql
+-- V20241226211235__change_column_name_simple_mame_to_simple_name.sql
+alter table undecided_as.parties
+    add column simple_name varchar(50);
+
+update undecided_as.parties
+set simple_name = simple_mame
+where true;
+
+ALTER TABLE undecided_as.parties
+    ALTER COLUMN simple_name SET NOT NULL;
+
+ALTER TABLE undecided_as.parties
+    drop column simple_mame;
+```
+
+**安全なカラム変更手順:**
+1. 新しいカラムを追加
+2. 既存データを新しいカラムにコピー
+3. 新しいカラムに制約を設定
+4. 古いカラムを削除
+
+**特徴:**
+- 既存データを失わないように、段階的に変更
+- `NOT NULL` 制約を設定する前にデータをコピー
+- 古いカラムの削除は最後に実行
+
+### 16.8 View 定義パターン
+
+データベース View は Flyway で定義し、JPA エンティティでマッピングします。
+
+```sql
+-- V1__create_party_with_org_view.sql
+CREATE OR REPLACE VIEW undecided_as.v_party_with_org AS
+SELECT p.party_id, p.search_name, o.org_name
+FROM undecided_as.party p
+JOIN undecided_as.organization o ON p.party_id = o.party_id;
+```
+
+**特徴:**
+- `CREATE OR REPLACE VIEW` で更新可能
+- View の名前は `v_` プレフィックスで統一
+- JPA エンティティでは `@Subselect` + `@Immutable` でマッピング（セクション16参照）
+
+### 16.9 JPA エンティティと Flyway DDL の対応ルール
+
+JPA エンティティと Flyway DDL の間で以下の対応関係を維持します。
+
+| JPA アノテーション | Flyway DDL |
+|-------------------|------------|
+| `@Table(name = "...")` | `create table ...` |
+| `@Table(schema = "...")` | `schema.table` |
+| `@Table.comment` | `comment on table ...` |
+| `@Column(name = "...")` | カラム定義 |
+| `@Column.comment` | `comment on column ...` |
+| `@Column(nullable = false)` | `not null` |
+| `@Column(length = N)` | `varchar(N)` |
+| `@Id` | `primary key` |
+| `@JoinColumn` | 外部キーカラム（制約は定義しない） |
+| `@Index` | `create index ...` |
+
+**特徴:**
+- Flyway が DDL の唯一のソースであり、JPA は読み取り専用
+- 外部キー制約は Flyway で定義せず、アプリケーション層で整合性を管理
+- JPA アノテーションはマッピング情報のみとして使用
+
+### 16.10 Flyway の実行タイミング
+
+Flyway はアプリケーション起動時に自動的に実行されます。
+
+**実行フロー:**
+1. アプリケーション起動
+2. Flyway がマイグレーションスクリプトをスキャン
+3. 未実行のマイグレーションを順次適用
+4. `schema_version` テーブルに実行履歴を記録
+5. JPA が既存のスキーマを使用してエンティティをマッピング
+
+**特徴:**
+- `baseline-on-migrate: true` で既存のスキーマをベースライン化
+- `outOfOrder: true` で順序外れのマイグレーションを許可
+- 開発環境ではマイグレーションの追加・修正が容易
+
+---
+
+---
+
+## 17. View を使用するパターン
+
+データベース View を JPA エンティティとしてマッピングするパターンです。読み取り専用の集計データや、複数のテーブルを結合したデータに有効です。
+
+### 17.1 @Subselect（EJB3 準拠の Read-Only View）
+
+`@Subselect` アノテーションを使用して、SQL SELECT 文の結果をエンティティとしてマッピングします。
+
+```java
+@Entity
+@Subselect("SELECT p.party_id, p.search_name, o.org_name " +
+           "FROM party p " +
+           "JOIN organization o ON p.party_id = o.party_id")
+@Table(name = "v_party_with_org")
+@org.hibernate.annotations.Immutable  // 読み取り専用としてマーク
+public class PartyWithOrgView {
+  @Id
+  private SnowflakeId partyId;
+  private SearchName searchName;
+  private OrgName orgName;
+}
+```
+
+**特徴:**
+- `@org.hibernate.annotations.Immutable` で読み取り専用としてマーク
+- INSERT/UPDATE/DELETE が禁止される
+- Hibernate 固有のアノテーションだが、View マッピングの標準的な手法
+- `@Table(name = "...")` で View 名を明示的に指定
+
+### 17.2 @SqlResultSetMapping（ネイティブクエリ用の結果マッピング）
+
+複雑な View やネイティブ SQL クエリの結果をエンティティにマッピングする場合に使用します。
+
+```java
+@Entity
+@SqlResultSetMapping(
+    name = "PartyWithOrgMapping",
+    entities = @EntityResult(
+        entityClass = PartyWithOrg.class,
+        fields = {
+            @FieldResult(name = "partyId", column = "party_id"),
+            @FieldResult(name = "searchName", column = "search_name"),
+            @FieldResult(name = "orgName", column = "org_name")
+        }
+    )
+)
+public class PartyWithOrg {
+  @Id private SnowflakeId partyId;
+  private SearchName searchName;
+  private OrgName orgName;
+}
+```
+
+**特徴:**
+- ネイティブクエリの結果をエンティティにマッピング
+- カラム名とフィールド名の対応を明示的に定義
+- 複雑な JOIN や集計クエリに適している
+
+### 17.3 @NamedNativeQuery（名前付きネイティブクエリ）
+
+View に対するクエリをエンティティに定義して、リポジトリから呼び出します。
+
+```java
+@Entity
+@Table(name = "v_employee_summary")
+@org.hibernate.annotations.Immutable
+@NamedNativeQuery(
+    name = "EmployeeSummary.findByDepartment",
+    query = "SELECT * FROM v_employee_summary WHERE department_code = :deptCode",
+    resultClass = EmployeeSummary.class
+)
+public class EmployeeSummary {
+  @Id
+  private SnowflakeId employeeId;
+  private String departmentCode;
+  private Integer employeeCount;
+}
+```
+
+**特徴:**
+- エンティティにクエリを定義して、名前付きで参照可能
+- リポジトリでは `@Query(nativeQuery = true, name = "EmployeeSummary.findByDepartment")` で呼び出し
+- View の構造が複雑な場合に有効
+
+### 17.4 リポジトリでの View 使用例
+
+```java
+public interface PartyWithOrgViewRepository extends JpaRepository<PartyWithOrgView, SnowflakeId> {
+  List<PartyWithOrgView> findBySearchNameContaining(String keyword);
+}
+```
+
+**特徴:**
+- 通常のエンティティと同様にリポジトリを定義
+- `CrudRepository` または `JpaRepository` を使用
+- 読み取り専用なので、save/delete メソッドは使用しない
+
+### 17.5 View の定義方法
+
+データベース側で View を定義するには、Flyway マイグレーションスクリプトを使用します（セクション15.8も参照）。
+
+```sql
+-- V1__create_party_with_org_view.sql
+CREATE OR REPLACE VIEW v_party_with_org AS
+SELECT p.party_id, p.search_name, o.org_name
+FROM party p
+JOIN organization o ON p.party_id = o.party_id;
+```
+
+**特徴:**
+- Flyway で View のバージョン管理を行う
+- `CREATE OR REPLACE VIEW` で更新可能
+- View の名前は `v_` プレフィックスで統一することを推奨
+
+### 17.7 View へのコメント付与
+
+View にも COMMENT ON 文を使用してコメントを付与できます。テーブルと同様に、View 自体へのコメントと、View のカラムへのコメントの 2 種類があります。
+
+#### 17.7.1 基本構文
+
+```sql
+-- View 自体へのコメント
+COMMENT ON VIEW v_party_with_org IS 'Party と Organization を結合した検索用 View';
+
+-- View のカラムへのコメント
+COMMENT ON COLUMN v_party_with_org.party_id IS 'Party の一意な識別子';
+COMMENT ON COLUMN v_party_with_org.search_name IS '検索用の名称';
+COMMENT ON COLUMN v_party_with_org.org_name IS '所属組織名';
+```
+
+**特徴:**
+- `COMMENT ON VIEW` で View 自体に説明文を付与
+- `COMMENT ON COLUMN` で View の各カラムに説明文を付与
+- View は仮想テーブルなので、テーブルと同じ構文で使用可能
+- コメントは `pg_description` システムカタログに保存される
+
+#### 17.7.2 Schema 分離パターン
+
+プロジェクトでは Schema を分離しているため、コメント付与時もスキーマ名を明示します。
+
+```sql
+-- Schema を明示した View コメント
+COMMENT ON VIEW undecided_as.v_party_with_org IS 'Party と Organization を結合した検索用 View';
+
+-- Schema を明示したカラムコメント
+COMMENT ON COLUMN undecided_as.v_party_with_org.party_id IS 'Party の一意な識別子';
+COMMENT ON COLUMN undecided_as.v_party_with_org.search_name IS '検索用の名称';
+```
+
+**特徴:**
+- スキーマ名を省略すると、`search_path` に依存するため明示することを推奨
+- 事業領域ごとに Schema を分離しているため、対象 Schema を指定
+
+#### 17.7.3 Flyway マイグレーションとの連携
+
+View の定義とコメント付与を Flyway マイグレーションスクリプトで一元管理します。
+
+```sql
+-- V20261025090000__create_party_with_org_view.sql
+
+-- View の作成
+CREATE OR REPLACE VIEW undecided_as.v_party_with_org AS
+SELECT p.party_id, p.search_name, o.org_name
+FROM undecided_as.parties p
+JOIN undecided_as.organizations o ON p.party_id = o.party_id;
+
+-- View へのコメント付与
+COMMENT ON VIEW undecided_as.v_party_with_org IS 'Party と Organization を結合した検索用 View';
+
+-- カラムへのコメント付与
+COMMENT ON COLUMN undecided_as.v_party_with_org.party_id IS 'Party の一意な識別子';
+COMMENT ON COLUMN undecided_as.v_party_with_org.search_name IS '検索用の名称';
+COMMENT ON COLUMN undecided_as.v_party_with_org.org_name IS '所属組織名';
+```
+
+**View の更新時のコメント管理:**
+
+```sql
+-- V20261026090000__update_party_with_org_view.sql
+
+-- View の更新
+CREATE OR REPLACE VIEW undecided_as.v_party_with_org AS
+SELECT p.party_id, p.search_name, o.org_name, p.registered_at
+FROM undecided_as.parties p
+JOIN undecided_as.organizations o ON p.party_id = o.party_id;
+
+-- View コメントの更新（COMMENT ON VIEW は上書きされる）
+COMMENT ON VIEW undecided_as.v_party_with_org IS 'Party と Organization を結合した検索用 View（登録日追加）';
+
+-- 新規カラムへのコメント付与
+COMMENT ON COLUMN undecided_as.v_party_with_org.registered_at IS '登録日時';
+```
+
+**特徴:**
+- `CREATE OR REPLACE VIEW` で View を更新しても、既存のコメントは保持される
+- View の定義が変更された場合は、コメントも合わせて更新することを推奨
+- 新規カラムが追加された場合は、そのカラムへのコメントも付与
+
+#### 17.7.4 Materialized View へのコメント付与
+
+Materialized View にも同様にコメントを付与できます。
+
+```sql
+-- V20261025090001__create_party_summary_mv.sql
+
+-- Materialized View の作成
+CREATE MATERIALIZED VIEW undecided_as.mv_party_summary AS
+SELECT 
+    p.party_type,
+    COUNT(*) AS party_count,
+    MAX(p.updated_at) AS last_updated
+FROM undecided_as.parties p
+GROUP BY p.party_type;
+
+-- Materialized View へのコメント付与
+COMMENT ON MATERIALIZED VIEW undecided_as.mv_party_summary IS 'Party 種別ごとの集計結果（1時間ごとにリフレッシュ）';
+
+-- カラムへのコメント付与
+COMMENT ON COLUMN undecided_as.mv_party_summary.party_type IS 'Party の種別';
+COMMENT ON COLUMN undecided_as.mv_party_summary.party_count IS 'Party の件数';
+COMMENT ON COLUMN undecided_as.mv_party_summary.last_updated IS '最終更新日時';
+```
+
+**特徴:**
+- Materialized View の場合は `COMMENT ON MATERIALIZED VIEW` を使用
+- 通常の View とは構文が異なるため注意
+- リフレッシュ頻度やデータ鮮度などの情報をコメントに記載することを推奨
+
+#### 17.7.5 コメントの確認方法
+
+付与したコメントは以下の方法で確認できます。
+
+```sql
+-- View のコメント確認
+SELECT 
+    c.relname AS view_name,
+    obj_description(c.oid) AS view_comment
+FROM pg_class c
+JOIN pg_namespace n ON c.relnamespace = n.oid
+WHERE n.nspname = 'undecided_as'
+  AND c.relkind = 'v';  -- 'v' は View, 'm' は Materialized View
+
+-- Materialized View のコメント確認
+SELECT 
+    c.relname AS mv_name,
+    obj_description(c.oid) AS mv_comment
+FROM pg_class c
+JOIN pg_namespace n ON c.relnamespace = n.oid
+WHERE n.nspname = 'undecided_as'
+  AND c.relkind = 'm';  -- 'm' は Materialized View
+
+-- カラムのコメント確認
+SELECT 
+    c.relname AS view_name,
+    a.attname AS column_name,
+    col_description(c.oid, a.attnum) AS column_comment
+FROM pg_class c
+JOIN pg_namespace n ON c.relnamespace = n.oid
+JOIN pg_attribute a ON c.oid = a.attrelid
+WHERE n.nspname = 'undecided_as'
+  AND c.relname = 'v_party_with_org'
+  AND a.attnum > 0
+  AND NOT a.attisdropped
+ORDER BY a.attnum;
+```
+
+**特徴:**
+- `obj_description()` で View 自体のコメントを取得
+- `col_description()` でカラムのコメントを取得
+- `pg_class.relkind` でオブジェクト種別を区別（'v' = View, 'm' = Materialized View）
+
+#### 17.7.6 コメントの削除
+
+```sql
+-- View コメントの削除
+COMMENT ON VIEW undecided_as.v_party_with_org IS NULL;
+
+-- カラムコメントの削除
+COMMENT ON COLUMN undecided_as.v_party_with_org.party_id IS NULL;
+
+-- Materialized View コメントの削除
+COMMENT ON MATERIALIZED VIEW undecided_as.mv_party_summary IS NULL;
+```
+
+**特徴:**
+- `IS NULL` を指定するとコメントが削除される
+- View を削除すると、関連するコメントも自動的に削除される
+
+#### 17.7.7 使用シーン
+
+| シーン | 推奨 |
+|--------|------|
+| View の目的の説明 | `COMMENT ON VIEW` |
+| カラムの意味の説明 | `COMMENT ON COLUMN` |
+| Materialized View のリフレッシュ頻度 | `COMMENT ON MATERIALIZED VIEW` |
+| 複雑な View のロジック説明 | `COMMENT ON VIEW` |
+| 外部システム連携用の View | `COMMENT ON VIEW` + `COMMENT ON COLUMN` |
+| レポート用の View | `COMMENT ON VIEW` + `COMMENT ON COLUMN` |
+
+---
+
+### 17.8 使用シーン
+
+| シーン | パターン |
+|--------|----------|
+| 単純な View | `@Subselect` + `@Immutable` |
+| 複雑な JOIN | `@SqlResultSetMapping` + ネイティブクエリ |
+| 名前付きクエリ | `@NamedNativeQuery` |
+| 集計データ | `@Subselect` + `@Immutable` |
+| View のドキュメント化 | `COMMENT ON VIEW` + `COMMENT ON COLUMN` |
+
+---
+
+---
+
+## 18. Materialized View を使用するパターン
+
+Materialized View は、クエリ結果を物理的にストレージに保存する特殊な View です。通常の View が都度クエリを実行するのに対し、Materialized View は一度生成した結果をキャッシュのように保持し、高速な読み取りを提供します。
+
+### 18.1 Materialized View の基本
+
+通常の View と Materialized View の違いを理解することが重要です。
+
+| 項目 | View | Materialized View |
+|------|------|-------------------|
+| データ保存 | 保存しない（仮想） | 物理的に保存 |
+| クエリ速度 | 都度実行するため遅い | 保存済みデータを読むため高速 |
+| データ鮮度 | 常に最新 | リフレッシュ時まで古いデータ |
+| ストレージ | 不要 | 必要 |
+| インデックス | 定義できない | 定義可能 |
+| 更新方法 | 基テーブルの変更で自動反映 | `REFRESH MATERIALIZED VIEW` で手動/自動 |
+
+**使用シーン:**
+- 集計結果を頻繁に参照するが、リアルタイム性は不要
+- 複雑な JOIN や集計クエリを高速化したい
+- レポート画面やダッシュボードのデータソース
+
+### 18.2 Flyway での Materialized View 定義
+
+Materialized View は Flyway マイグレーションスクリプトで定義します。
+
+```sql
+-- V20261025070000__create_party_summary_materialized_view.sql
+
+-- Materialized View の作成
+CREATE MATERIALIZED VIEW undecided_as.mv_party_summary AS
+SELECT 
+    p.party_type,
+    COUNT(*) AS party_count,
+    MAX(p.updated_at) AS last_updated
+FROM undecided_as.parties p
+GROUP BY p.party_type;
+
+-- インデックスの定義（パフォーマンス向上）
+CREATE INDEX idx_mv_party_summary_type ON undecided_as.mv_party_summary (party_type);
+
+-- UNIQUE INDEX（CONCURRENTLY リフレッシュ用）
+CREATE UNIQUE INDEX idx_mv_party_summary_type_unique ON undecided_as.mv_party_summary (party_type);
+```
+
+**特徴:**
+- `CREATE MATERIALIZED VIEW` で定義
+- 通常の View と違い、インデックスを定義可能
+- `UNIQUE INDEX` を定義すると、`REFRESH ... CONCURRENTLY` が使用可能に
+- Materialized View の名前は `mv_` プレフィックスで統一することを推奨
+
+### 18.3 JPA エンティティでのマッピング
+
+Materialized View を JPA エンティティとしてマッピングします。
+
+```java
+@Entity
+@Table(schema = "undecided_as", name = "mv_party_summary")
+@org.hibernate.annotations.Immutable  // 読み取り専用としてマーク
+public class PartySummaryMV {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;  // Materialized View には主キーが必要
+
+    @Column(name = "party_type", nullable = false, length = 10)
+    private String partyType;
+
+    @Column(name = "party_count", nullable = false)
+    private Long partyCount;
+
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
+}
+```
+
+**特徴:**
+- `@org.hibernate.annotations.Immutable` で読み取り専用としてマーク
+- Materialized View には主キーが必要ない場合でも、JPA では `@Id` が必須
+- PostgreSQL の `oid` カラムや、シーケンスで生成した surrogate key を `@Id` として使用可能
+
+**主キーがない場合のワークアラウンド:**
+
+```java
+@Entity
+@Table(schema = "undecided_as", name = "mv_party_summary")
+@org.hibernate.annotations.Immutable
+@SqlResultSetMapping(
+    name = "PartySummaryMVMapping",
+    entities = @EntityResult(
+        entityClass = PartySummaryMV.class,
+        fields = {
+            @FieldResult(name = "partyType", column = "party_type"),
+            @FieldResult(name = "partyCount", column = "party_count"),
+            @FieldResult(name = "lastUpdated", column = "last_updated")
+        }
+    )
+)
+public class PartySummaryMV {
+
+    // surrogate key として row_number() を使用
+    @Id
+    @Column(name = "row_num")
+    private Long rowNum;
+
+    @Column(name = "party_type", nullable = false, length = 10)
+    private String partyType;
+
+    @Column(name = "party_count", nullable = false)
+    private Long partyCount;
+
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
+}
+```
+
+### 18.4 リフレッシュ戦略
+
+Materialized View のデータを最新にするには、リフレッシュが必要です。
+
+**手動リフレッシュ:**
+
+```sql
+-- 通常のリフレッシュ（排他ロックを取得）
+REFRESH MATERIALIZED VIEW undecided_as.mv_party_summary;
+
+-- CONCURRENTLY オプション（排他ロックを取得しない、UNIQUE INDEX が必要）
+REFRESH MATERIALIZED VIEW CONCURRENTLY undecided_as.mv_party_summary;
+```
+
+**リフレッシュ比較:**
+
+| オプション | ロック | UNIQUE INDEX | 読み取り同時実行 |
+|-----------|--------|-------------|----------------|
+| 通常 | 排他ロック | 不要 | 不可 |
+| `CONCURRENTLY` | 共有ロック | 必須 | 可能 |
+
+**Flyway での自動リフレッシュ設定（pg_cron 使用）:**
+
+```sql
+-- V20261025070001__setup_materialized_view_refresh.sql
+
+-- pg_cron 拡張の有効化（スーパーユーザー権限が必要）
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+-- 毎時 0 分に Materialized View をリフレッシュ
+SELECT cron.schedule(
+    'refresh_party_summary_mv',
+    '0 * * * *',
+    $$REFRESH MATERIALIZED VIEW CONCURRENTLY undecided_as.mv_party_summary$$
+);
+```
+
+**トリガーによる自動リフレッシュ:**
+
+```sql
+-- V20261025070002__create_refresh_trigger.sql
+
+-- リフレッシュ関数の定義
+CREATE OR REPLACE FUNCTION undecided_as.refresh_party_summary_mv()
+RETURNS TRIGGER AS $$
+BEGIN
+    REFRESH MATERIALIZED VIEW CONCURRENTLY undecided_as.mv_party_summary;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 基テーブルに変更があった際にトリガー発火
+CREATE TRIGGER trigger_refresh_party_summary_mv
+AFTER INSERT OR UPDATE OR DELETE ON undecided_as.parties
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH STATEMENT
+EXECUTE FUNCTION undecided_as.refresh_party_summary_mv();
+```
+
+**特徴:**
+- `CONCURRENTLY` を使用すると、リフレッシュ中に読み取りが可能
+- `UNIQUE INDEX` が必須（CONCURRENTLY リフレッシュ用）
+- pg_cron による定期リフレッシュが推奨（PostgreSQL 14 以降は組み込み）
+- トリガーによる即時リフレッシュは、頻繁な更新がある場合はパフォーマンスに影響
+
+### 18.5 リポジトリでの使用例
+
+```java
+public interface PartySummaryMVRepository extends JpaRepository<PartySummaryMV, Long> {
+    List<PartySummaryMV> findByPartyType(String partyType);
+}
+
+@Service
+@Transactional(readOnly = true)
+public class PartySummaryService {
+
+    @Autowired
+    private PartySummaryMVRepository partySummaryMVRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    public List<PartySummaryMV> getAllSummaries() {
+        return partySummaryMVRepository.findAll();
+    }
+
+    @Transactional  // リフレッシュは書き込み操作なのでトランザクションが必要
+    public void refreshSummary() {
+        entityManager.createNativeQuery(
+            "REFRESH MATERIALIZED VIEW CONCURRENTLY undecided_as.mv_party_summary"
+        ).executeUpdate();
+    }
+}
+```
+
+**特徴:**
+- 読み取り操作は `@Transactional(readOnly = true)` で最適化
+- リフレッシュ操作は `@Transactional` でトランザクション管理
+- ネイティブクエリで `REFRESH MATERIALIZED VIEW` を実行
+
+### 18.6 View vs Materialized View の選択基準
+
+| 要件 | 推奨 |
+|------|------|
+| リアルタイム性が必須 | View |
+| 集計結果の高速参照 | Materialized View |
+| ストレージ制約がある | View |
+| 複雑な JOIN の高速化 | Materialized View |
+| 頻繁な更新がある | View またはトリガー付き Materialized View |
+| レポート・ダッシュボード | Materialized View |
+
+---
+
+---
+
+## 19. TRUNCATE を使用するパターン
+
+テーブルの全データを高速に削除する際に TRUNCATE を使用します。DELETE と違い、ROW LEVEL のトリガーが発火せず、ロックの取得が軽量です。
+
+### 19.1 基本構文
+
+PostgreSQL での基本的な TRUNCATE 構文です。
+
+```sql
+-- 単一テーブルの TRUNCATE
+TRUNCATE TABLE undecided_as.parties;
+
+-- RESTART IDENTITY を付与してシーケンスをリセット
+TRUNCATE TABLE undecided_as.parties RESTART IDENTITY;
+
+-- CASCADE を付与して関連テーブルも連動削除
+TRUNCATE TABLE undecided_as.parties CASCADE;
+
+-- 複数テーブルを一度に TRUNCATE
+TRUNCATE TABLE undecided_as.parties, undecided_as.organizations RESTART IDENTITY CASCADE;
+```
+
+**特徴:**
+- `RESTART IDENTITY` を付与すると、関連するシーケンスを初期値にリセット
+- `CASCADE` を付与すると、外部キーで参照しているテーブルも連動して TRUNCATE
+- 複数テーブルをカンマ区切りで指定し、一度のトランザクションで実行可能
+- DELETE と違い、WHERE 句は使用できない（全行削除のみ）
+
+### 19.2 CASCADE vs RESTRICT
+
+外部キー制約がある場合の動作を制御します。
+
+```sql
+-- RESTRICT（デフォルト）：参照元テーブルにデータがある場合はエラー
+TRUNCATE TABLE undecided_as.parties RESTRICT;
+
+-- CASCADE：参照元テーブルも連動して TRUNCATE
+TRUNCATE TABLE undecided_as.parties CASCADE;
+```
+
+**動作比較:**
+
+| オプション | 参照元テーブルにデータがある場合 | 参照元テーブルが空の場合 |
+|-----------|-----------------------------|---------------------|
+| `RESTRICT`（デフォルト） | エラーで中止 | 正常終了 |
+| `CASCADE` | 参照元も TRUNCATE して正常終了 | 正常終了 |
+
+**特徴:**
+- デフォルトは `RESTRICT` 動作
+- `CASCADE` を使用する場合は、どのテーブルが連動削除されるかを事前に確認
+- 意図しないテーブルのデータ削除を防ぐため、本番環境では `RESTRICT` を推奨
+
+### 19.3 Schema 分離パターン
+
+プロジェクトでは Schema を分離しているため、TRUNCATE 時もスキーマ名を明示します。
+
+```sql
+-- Schema を明示した TRUNCATE
+TRUNCATE TABLE undecided_as.parties RESTART IDENTITY;
+TRUNCATE TABLE undecided_ef.prefectures RESTART IDENTITY;
+
+-- 複数 Schema にまたがる TRUNCATE
+TRUNCATE TABLE undecided_as.parties, undecided_as.organizations RESTART IDENTITY CASCADE;
+```
+
+**特徴:**
+- スキーマ名を省略すると、`search_path` に依存するため明示することを推奨
+- 複数 Schema にまたがる TRUNCATE も可能
+
+### 19.4 Flyway マイグレーションでの TRUNCATE
+
+データ初期化やテスト環境の準備などで、Flyway マイグレーションスクリプト内で TRUNCATE を使用します。
+
+```sql
+-- V20261025060000__truncate_and_seed_test_data.sql
+
+-- 既存データを安全に削除
+TRUNCATE TABLE undecided_as.parties RESTART IDENTITY CASCADE;
+
+-- 初期データを投入
+INSERT INTO undecided_as.parties (party_id, party_type, simple_name)
+VALUES (1, 'ORG', 'テスト組織');
+```
+
+**DO ブロックを使用した安全な TRUNCATE:**
+
+```sql
+-- V20261025060001__safe_truncate_with_do.sql
+
+DO $$
+BEGIN
+    -- テーブルが存在するか確認してから TRUNCATE
+    IF EXISTS (
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = 'undecided_as'
+        AND table_name = 'parties'
+    ) THEN
+        TRUNCATE TABLE undecided_as.parties RESTART IDENTITY CASCADE;
+    END IF;
+END $$;
+```
+
+**特徴:**
+- `DO $$ ... $$` ブロックで条件分岐が可能
+- テーブル存在確認后进行することで、マイグレーションの堅牢性を向上
+- 開発環境・テスト環境でのデータ初期化に有効
+
+### 19.5 JPA からの TRUNCATE 呼び出し
+
+JPA/JPQL からは TRUNCATE を直接使用できないため、ネイティブクエリを使用します。
+
+```java
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+@Repository
+public class TruncateRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
+    public void truncateParties() {
+        entityManager.createNativeQuery(
+            "TRUNCATE TABLE undecided_as.parties RESTART IDENTITY CASCADE"
+        ).executeUpdate();
+    }
+
+    @Transactional
+    public void truncateMultipleTables() {
+        entityManager.createNativeQuery(
+            "TRUNCATE TABLE undecided_as.parties, undecided_as.organizations RESTART IDENTITY CASCADE"
+        ).executeUpdate();
+    }
+}
+```
+
+**特徴:**
+- JPQL では TRUNCATE をサポートしないため、ネイティブクエリを使用
+- `@Transactional` でトランザクション管理
+- `executeUpdate()` で DML を実行
+
+### 19.6 DELETE と TRUNCATE の比較
+
+| 項目 | DELETE | TRUNCATE |
+|------|--------|----------|
+| 速度 | 行単位で削除するため遅い | テーブル全体を一度に削除するため高速 |
+| WHERE 句 | 使用可能 | 使用不可（全行削除のみ） |
+| トリガー | ROW LEVEL トリガーが発火 | 発火しない |
+| シーケンス | リセットされない | `RESTART IDENTITY` でリセット可能 |
+| ロック | 行ロック | テーブルロック（排他ロック） |
+| トランザクション | ロールバック可能 | ロールバック可能（PostgreSQL） |
+| 外部キー | 参照整合性をチェック | `CASCADE` / `RESTRICT` で制御 |
+
+**使用シーン:**
+
+| シーン | 推奨 |
+|--------|------|
+| テスト環境のデータ初期化 | `TRUNCATE` |
+| 開発環境のクリーンアップ | `TRUNCATE` |
+| 条件付き削除 | `DELETE` |
+| 監査ログが必要な削除 | `DELETE` |
+| 大量データの高速削除 | `TRUNCATE` |
+
+---
+
+---
+
+## 20. REINDEX（再インデックス）を使用するパターン
+
+インデックスの再構築が必要な場合に REINDEX を使用します。データ的大量更新後のインデックス断片化、インデックス破損時の復旧、テーブル統計情報の更新などに有効です。
+
+### 20.1 基本構文
+
+PostgreSQL での基本的な REINDEX 構文です。
+
+```sql
+-- インデックスの再構築
+REINDEX INDEX idx_parties_party_id;
+
+-- テーブルの全インデックスを再構築
+REINDEX TABLE undecided_as.parties;
+
+-- Schema の全インデックスを再構築
+REINDEX SCHEMA undecided_as;
+
+-- データベースの全インデックスを再構築
+REINDEX DATABASE undecided;
+
+-- インデックス付きシーケンスの再構築
+REINDEX SEQUENCE id_management.id_sequence;
+```
+
+**特徴:**
+- インデックスの再構築により、断片化されたインデックスを最適化
+- テーブルレベルで実行すると、そのテーブルの全インデックスを対象に再構築
+- Schema レベルで実行すると、その Schema の全テーブルのインデックスを対象に再構築
+- データベースレベルで実行すると、データベース内の全インデックスを対象に再構築
+
+### 20.2 CONCURRENTLY オプション
+
+`CONCURRENTLY` オプションを使用すると、インデックス再構築中に他の操作をブロックしません。
+
+```sql
+-- 通常のリインデックス（排他ロックを取得）
+REINDEX TABLE undecided_as.parties;
+
+-- CONCURRENTLY オプション（排他ロックを取得しない）
+REINDEX CONCURRENTLY TABLE undecided_as.parties;
+
+-- 特定インデックスの CONCURRENTLY リインデックス
+REINDEX CONCURRENTLY INDEX idx_parties_party_id;
+```
+
+**リインデックス比較:**
+
+| オプション | ロック | 読み取り同時実行 | 書き込み同時実行 | 速度 |
+|-----------|--------|----------------|----------------|------|
+| 通常 | 排他ロック | 不可 | 不可 | 高速 |
+| `CONCURRENTLY` | 共有ロック | 可能 | 可能 | 低速 |
+
+**特徴:**
+- `CONCURRENTLY` を使用すると、インデックス再構築中に他の読み書きが可能
+- 本番環境では `CONCURRENTLY` を推奨
+- 通常のリインデックスの方が高速だが、サービス停止が必要
+- `CONCURRENTLY` はトランザクションブロック内で実行できない
+
+### 20.3 Schema 分離パターン
+
+プロジェクトでは Schema を分離しているため、REINDEX 時もスキーマ名を明示します。
+
+```sql
+-- Schema を明示した REINDEX
+REINDEX TABLE undecided_as.parties;
+REINDEX TABLE undecided_ef.prefectures;
+
+-- 特定インデックスの再構築
+REINDEX INDEX undecided_as.idx_parties_party_id;
+REINDEX INDEX undecided_ef.idx_prefectures_code;
+
+-- Schema 全体の再構築
+REINDEX SCHEMA undecided_as;
+REINDEX SCHEMA undecided_ef;
+```
+
+**特徴:**
+- スキーマ名を省略すると、`search_path` に依存するため明示することを推奨
+- 事業領域ごとに Schema を分離しているため、対象 Schema を指定して実行
+
+### 20.4 Flyway マイグレーションでの REINDEX
+
+インデックスの再構築が必要な場合、Flyway マイグレーションスクリプト内で REINDEX を使用します。
+
+```sql
+-- V20261025080000__reindex_parties_table.sql
+
+-- データ的大量更新後のインデックス再構築
+REINDEX CONCURRENTLY TABLE undecided_as.parties;
+```
+
+**DO ブロックを使用した安全な REINDEX:**
+
+```sql
+-- V20261025080001__safe_reindex_with_do.sql
+
+DO $$
+DECLARE
+    idx_record RECORD;
+BEGIN
+    -- 指定されたテーブルのインデックスを順に再構築
+    FOR idx_record IN 
+        SELECT indexname 
+        FROM pg_indexes 
+        WHERE schemaname = 'undecided_as' 
+        AND tablename = 'parties'
+    LOOP
+        EXECUTE format('REINDEX CONCURRENTLY INDEX undecided_as.%I', idx_record.indexname);
+    END LOOP;
+END $$;
+```
+
+**特徴:**
+- `DO $$ ... $$` ブロックで動的な SQL 実行が可能
+- `pg_indexes` システムカタログからインデックス一覧を取得
+- `format()` 関数で SQL を動的に生成
+- 本番環境では `CONCURRENTLY` を使用してサービス停止を回避
+
+### 20.5 VACUUM との組み合わせ
+
+REINDEX と VACUUM を組み合わせて使用すると、より効果的なメンテナンスが可能です。
+
+```sql
+-- VACUUM ANALYZE の後で REINDEX を実行
+VACUUM ANALYZE undecided_as.parties;
+REINDEX CONCURRENTLY TABLE undecided_as.parties;
+
+-- VACUUM FULL（テーブルの再構築）と REINDEX を組み合わせ
+VACUUM FULL undecided_as.parties;
+REINDEX TABLE undecided_as.parties;
+```
+
+**VACUUM との比較:**
+
+| コマンド | 効果 | ロック | 使用シーン |
+|----------|------|--------|----------|
+| `VACUUM` | 削除済み行の回収 | 共有ロック | 日常的なメンテナンス |
+| `VACUUM ANALYZE` | 削除済み行の回収 + 統計情報更新 | 共有ロック | クエリプランナーの最適化 |
+| `VACUUM FULL` | テーブルの再構築 | 排他ロック | 大幅な断片化の解消 |
+| `REINDEX` | インデックスの再構築 | 排他ロック | インデックス断片化の解消 |
+| `REINDEX CONCURRENTLY` | インデックスの再構築（非排他） | 共有ロック | 本番環境でのメンテナンス |
+
+**特徴:**
+- `VACUUM ANALYZE` は統計情報を更新し、クエリプランナーの最適化に寄与
+- `VACUUM FULL` はテーブルを再構築し、ディスク領域を回収
+- `REINDEX` はインデックスのみを再構築
+- 本番環境では `VACUUM ANALYZE` + `REINDEX CONCURRENTLY` の組み合わせを推奨
+
+### 20.6 JPA からの REINDEX 呼び出し
+
+JPA/JPQL からは REINDEX を直接使用できないため、ネイティブクエリを使用します。
+
+```java
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+@Repository
+public class ReindexRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
+    public void reindexTable(String schema, String table) {
+        entityManager.createNativeQuery(
+            String.format("REINDEX CONCURRENTLY TABLE %s.%s", schema, table)
+        ).executeUpdate();
+    }
+
+    @Transactional
+    public void reindexIndex(String schema, String indexName) {
+        entityManager.createNativeQuery(
+            String.format("REINDEX CONCURRENTLY INDEX %s.%s", schema, indexName)
+        ).executeUpdate();
+    }
+
+    @Transactional
+    public void vacuumAnalyzeAndReindex(String schema, String table) {
+        entityManager.createNativeQuery(
+            String.format("VACUUM ANALYZE %s.%s", schema, table)
+        ).executeUpdate();
+        entityManager.createNativeQuery(
+            String.format("REINDEX CONCURRENTLY TABLE %s.%s", schema, table)
+        ).executeUpdate();
+    }
+}
+```
+
+**特徴:**
+- JPQL では REINDEX をサポートしないため、ネイティブクエリを使用
+- `@Transactional` でトランザクション管理
+- `executeUpdate()` で DDL を実行
+- SQL インジェクションを防ぐため、スキーマ名とテーブル名はバリデーション后进行
+
+### 20.7 インデックス破損時の復旧
+
+インデックスが破損した場合の復旧手順です。
+
+```sql
+-- インデックスの破損確認
+SELECT indexrelid, indrelid, indisvalid
+FROM pg_index
+WHERE NOT indisvalid;
+
+-- 破損したインデックスの再構築
+REINDEX INDEX idx_parties_party_id;
+
+-- 破損が解消されない場合、インデックスの再作成
+DROP INDEX idx_parties_party_id;
+CREATE INDEX idx_parties_party_id ON undecided_as.parties (party_id);
+```
+
+**特徴:**
+- `pg_index` システムカタログの `indisvalid` カラムでインデックスの有効性を確認
+- `REINDEX` で破損したインデックスを再構築
+- 破損が解消されない場合は、インデックスを再作成
+
+### 20.8 使用シーン
+
+| シーン | 推奨 |
+|--------|------|
+| データ的大量更新後 | `REINDEX CONCURRENTLY` |
+| インデックス破損時 | `REINDEX`（通常） |
+| 本番環境のメンテナンス | `REINDEX CONCURRENTLY` + `VACUUM ANALYZE` |
+| 開発環境のメンテナンス | `REINDEX`（通常） |
+| テーブルの大幅な断片化 | `VACUUM FULL` + `REINDEX` |
+| 定期的なメンテナンス | `VACUUM ANALYZE` + `REINDEX CONCURRENTLY` |
+
+---
+
+---
+
+## 21. アンチパターン
+
+以下のアンチパターンは避けてください。
+
+### 21.1 @GeneratedValue を使用しない
+
+プロジェクトでは、分散 ID 生成方式を採用しているため、`@GeneratedValue` は使用しません。
+
+**❌ 悪い例:**
+
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+```
+
+**✅ 良い例:**
+
+```java
+@Id
+private SnowflakeId id;
+```
+
+### 21.2 値オブジェクトを直接データベースにマッピングしない
+
+値オブジェクトは `@Embeddable` または `@Converter` を使用してマッピングします。
+
+**❌ 悪い例:**
+
+```java
+@Column(name = "employee_no")
+private String employeeNo;
+```
+
+**✅ 良い例:**
+
+```java
+@Embedded
+@AttributeOverrides(
+    @AttributeOverride(name = "value", column = @Column(name = "employee_no")))
+private EmployeeNo employeeNo;
+```
+
+---
+
+---
+
+## 22. 参考リンク
+
+| Issue | 説明 |
+|-------|------|
+| [#266](https://github.com/mizo432/modulith-learning/issues/266) | Jpa 実装サンプル (親イシュー) |
+| [#267](https://github.com/mizo432/modulith-learning/issues/267) | Entity 階層構造 |
+| [#268](https://github.com/mizo432/modulith-learning/issues/268) | 関連付けと継承戦略 |
+| [#269](https://github.com/mizo432/modulith-learning/issues/269) | テーブルコメント |
+| [#270](https://github.com/mizo432/modulith-learning/issues/270) | カラムコメント |
+| [#271](https://github.com/mizo432/modulith-learning/issues/271) | リポジトリメソッドバリエーション |
+| [#272](https://github.com/mizo432/modulith-learning/issues/272) | 監査フィールドパターン |

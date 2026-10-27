@@ -1,0 +1,4 @@
+属性名	型	PK	必須	説明
+[entity]_id	SnowflakeID	*	Y	[情報名]の一意な識別子
+[related]_id	UUID		Y	関連する[関連情報名]の識別子
+[attribute_name]	[型]	[*/]	[Y/N]	[属性の説明]
