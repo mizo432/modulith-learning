@@ -242,11 +242,11 @@ class LegalNameTest {
   class ToStringTest {
 
     @Test
-    @DisplayName("値を文字列として返す")
-    void shouldReturnValueAsString() {
+    @DisplayName("値をマスクして返す")
+    void shouldReturnMaskedValue() {
       LegalName legalName = LegalName.of("田中", "太郎");
 
-      assertThat(legalName.toString()).isEqualTo("田中 太郎");
+      assertThat(legalName.toString()).isEqualTo("田*");
     }
 
     @Test

@@ -157,11 +157,11 @@ class LastNameTest {
   class ToStringTest {
 
     @Test
-    @DisplayName("値を文字列として返す")
-    void shouldReturnValueAsString() {
+    @DisplayName("値をマスクして返す")
+    void shouldReturnMaskedValue() {
       LastName lastName = LastName.of("田中");
 
-      assertThat(lastName.toString()).isEqualTo("田中");
+      assertThat(lastName.toString()).isEqualTo("田*");
     }
 
     @Test

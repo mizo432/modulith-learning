@@ -88,20 +88,20 @@ class DateOfBirthTest {
   class ToStringTest {
 
     @Test
-    @DisplayName("値を文字列として返す")
-    void shouldReturnValueAsString() {
+    @DisplayName("値をマスクして返す")
+    void shouldReturnMaskedValue() {
       LocalDate date = LocalDate.of(1990, 5, 15);
       DateOfBirth dateOfBirth = DateOfBirth.of(date);
 
-      assertThat(dateOfBirth.toString()).isEqualTo("1990-05-15");
+      assertThat(dateOfBirth.toString()).isEqualTo("1990-**-**");
     }
 
     @Test
-    @DisplayName("nullの場合はnull文字列を返す")
-    void shouldReturnNullStringWhenValueIsNull() {
+    @DisplayName("nullの場合はnullを返す")
+    void shouldReturnNullWhenValueIsNull() {
       DateOfBirth dateOfBirth = DateOfBirth.empty();
 
-      assertThat(dateOfBirth.toString()).isEqualTo("null");
+      assertThat(dateOfBirth.toString()).isNull();
     }
   }
 
