@@ -31,12 +31,12 @@ public final class SensitiveDataMasker {
   }
 
   /**
-   * メールアドレスをマスクします。ドメイン前のローカルパートを "***" に置き換えます。
+   * メールアドレスをマスクします。ドメイン前のローカルパートの最初の文字のみ表示し、残りを "***" に置き換えます。
    *
    * @param email マスク対象のメールアドレス。{@code null} または空文字列の可能性があります。
    * @return マスクされたメールアドレス。{@code null} 入力の場合は {@code null}、
    *         空文字列の場合は空文字列、@" が含まれない場合はそのまま返します。
-   * @example "taro@example.com" → "***@example.com"
+   * @example "taro@example.com" → "t***@example.com"
    */
   public static @Nullable String maskEmail(@Nullable String email) {
     if (email == null || email.isEmpty()) {
@@ -46,7 +46,7 @@ public final class SensitiveDataMasker {
     if (atIndex <= 0) {
       return email;
     }
-    return "***" + email.substring(atIndex);
+    return email.charAt(0) + "***" + email.substring(atIndex);
   }
 
   /**

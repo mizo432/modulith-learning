@@ -73,20 +73,20 @@ class SensitiveDataMaskerTest {
     @Test
     @DisplayName("通常のメールアドレスをマスクする")
     void shouldMaskNormalEmail() {
-      assertThat(SensitiveDataMasker.maskEmail("taro@example.com")).isEqualTo("***@example.com");
+      assertThat(SensitiveDataMasker.maskEmail("taro@example.com")).isEqualTo("t***@example.com");
     }
 
     @Test
     @DisplayName("長いローカルパートのメールアドレスをマスクする")
     void shouldMaskLongLocalPartEmail() {
       assertThat(SensitiveDataMasker.maskEmail("very.long.local.part@domain.org"))
-          .isEqualTo("***@domain.org");
+          .isEqualTo("v***@domain.org");
     }
 
     @Test
     @DisplayName("1文字のローカルパートのメールアドレスをマスクする")
     void shouldMaskSingleCharLocalPartEmail() {
-      assertThat(SensitiveDataMasker.maskEmail("a@example.com")).isEqualTo("***@example.com");
+      assertThat(SensitiveDataMasker.maskEmail("a@example.com")).isEqualTo("a***@example.com");
     }
 
     @Test
