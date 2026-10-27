@@ -20,7 +20,7 @@ public class Employee {
 
   @Column(nullable = false)
   @Convert(converter = EncryptedStringConverter.class)
-  private String lastNane;
+  private String lastName;
 
   @Column(nullable = false)
   @Convert(converter = EncryptedStringConverter.class)
