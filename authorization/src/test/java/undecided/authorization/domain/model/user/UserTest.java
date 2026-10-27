@@ -113,4 +113,80 @@ class UserTest {
       assertThat(user.isFirstLogin()).as("セッターでfirstLoginをtrueに設定できること").isTrue();
     }
   }
+
+  @Nested
+  @DisplayName("toStringメソッドのテスト")
+  class ToStringTest {
+
+    @Test
+    @DisplayName("toStringは機微な情報をマスクして出力すること")
+    void shouldMaskSensitiveDataInToString() {
+      // Arrange
+      User user =
+          User.builder()
+              .username("testuser")
+              .password("secret123")
+              .email("taro@example.com")
+              .firstName("太郎")
+              .lastName("山田")
+              .enabled(true)
+              .build();
+
+      // Act
+      String result = user.toString();
+
+      // Assert
+      assertThat(result).as("toStringがnullでないこと").isNotNull();
+      assertThat(result).as("パスワードがマスクされること").doesNotContain("secret123");
+      assertThat(result).as("firstNameがマスクされること").doesNotContain("太郎");
+      assertThat(result).as("lastNameがマスクされること").doesNotContain("山田");
+      assertThat(result).as("firstNameの最初の文字のみ表示されること").contains("太*");
+      assertThat(result).as("lastNameの最初の文字のみ表示されること").contains("山*");
+      assertThat(result).as("emailがマスクされること").doesNotContain("taro@");
+      assertThat(result).as("emailの最初の文字とドメインが表示されること").contains("t***@example.com");
+    }
+
+    @Test
+    @DisplayName("toStringでnullフィールドが正しく処理されること")
+    void shouldHandleNullFieldsInToString() {
+      // Arrange
+      User user =
+          User.builder()
+              .username("testuser")
+              .password("password")
+              .email("test@example.com")
+              .enabled(true)
+              .build();
+
+      // Act
+      String result = user.toString();
+
+      // Assert
+      assertThat(result).as("toStringがnullでないこと").isNotNull();
+      assertThat(result).as("firstNameがnullでもエラーにならないこと").contains("firstName='null'");
+      assertThat(result).as("lastNameがnullでもエラーにならないこと").contains("lastName='null'");
+    }
+
+    @Test
+    @DisplayName("toStringで空文字のemailが正しく処理されること")
+    void shouldHandleEmptyEmailInToString() {
+      // Arrange
+      User user =
+          User.builder()
+              .username("testuser")
+              .password("password")
+              .email("")
+              .firstName("Taro")
+              .lastName("Yamada")
+              .enabled(true)
+              .build();
+
+      // Act
+      String result = user.toString();
+
+      // Assert
+      assertThat(result).as("toStringがnullでないこと").isNotNull();
+      assertThat(result).as("空文字のemailがそのまま出力されること").contains("email=''");
+    }
+  }
 }
