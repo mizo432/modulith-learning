@@ -119,4 +119,91 @@ class EncryptedStringConverterTest {
       assertThat(converter.convertToEntityAttribute(dbData)).isEqualTo(dbData);
     }
   }
+
+  /** 静的メソッドencrypt()のテスト */
+  @Nested
+  @DisplayName("静的メソッドencrypt()のテスト")
+  class StaticEncryptTest {
+
+    @Test
+    @DisplayName("null入力はnullを返す")
+    void shouldReturnNullForNullInput() {
+      assertThat(EncryptedStringConverter.encrypt(null)).isNull();
+    }
+
+    @Test
+    @DisplayName("空文字入力は空文字を返す")
+    void shouldReturnEmptyForEmptyInput() {
+      assertThat(EncryptedStringConverter.encrypt("")).isEmpty();
+    }
+
+    @Test
+    @DisplayName("平文を暗号化して返す")
+    void shouldEncryptPlainText() {
+      String plainText = "Taro";
+      String encrypted = "encrypted_Taro_base64";
+      when(mockEncryptor.encrypt(plainText)).thenReturn(encrypted);
+
+      assertThat(EncryptedStringConverter.encrypt(plainText)).isEqualTo(encrypted);
+    }
+
+    @Test
+    @DisplayName("暗号化器がnullの場合、平文をそのまま返す")
+    void shouldReturnPlainTextWhenEncryptorIsNull() {
+      // Arrange
+      EncryptedStringConverter.resetEncryptor();
+      String plainText = "Taro";
+
+      // Act & Assert
+      assertThat(EncryptedStringConverter.encrypt(plainText)).isEqualTo(plainText);
+    }
+  }
+
+  /** 静的メソッドdecrypt()のテスト */
+  @Nested
+  @DisplayName("静的メソッドdecrypt()のテスト")
+  class StaticDecryptTest {
+
+    @Test
+    @DisplayName("null入力はnullを返す")
+    void shouldReturnNullForNullInput() {
+      assertThat(EncryptedStringConverter.decrypt(null)).isNull();
+    }
+
+    @Test
+    @DisplayName("空文字入力は空文字を返す")
+    void shouldReturnEmptyForEmptyInput() {
+      assertThat(EncryptedStringConverter.decrypt("")).isEmpty();
+    }
+
+    @Test
+    @DisplayName("暗号化文字列を復号化して返す")
+    void shouldDecryptEncryptedText() {
+      String encrypted = "encrypted_Taro_base64";
+      String plainText = "Taro";
+      when(mockEncryptor.decrypt(encrypted)).thenReturn(plainText);
+
+      assertThat(EncryptedStringConverter.decrypt(encrypted)).isEqualTo(plainText);
+    }
+
+    @Test
+    @DisplayName("復号化失敗の場合元の文字列を返す")
+    void shouldReturnOriginalOnDecryptFailure() {
+      String plainText = "plainText";
+      when(mockEncryptor.decrypt(plainText)).thenThrow(new RuntimeException("Decrypt failed"));
+
+      assertThat(EncryptedStringConverter.decrypt(plainText)).isEqualTo(plainText);
+    }
+
+    @Test
+    @DisplayName("暗号化器がnullの場合、データベースデータをそのまま返す")
+    void shouldReturnDbDataWhenEncryptorIsNull() {
+      // Arrange
+      EncryptedStringConverter.resetEncryptor();
+      String dbData = "someDbData";
+
+      // Act & Assert
+      assertThat(EncryptedStringConverter.decrypt(dbData)).isEqualTo(dbData);
+    }
+  }
 }

@@ -87,4 +87,40 @@ class EncryptedStringConverterTest {
       assertThat(converter.convertToEntityAttribute(plainText)).isEqualTo(plainText);
     }
   }
+
+  /** 暗号化器がnullの場合のフォールバック動作テスト */
+  @Nested
+  @DisplayName("暗号化器がnullの場合のフォールバック動作テスト")
+  class FallbackWhenEncryptorIsNullTest {
+
+    private void resetEncryptorViaReflection() {
+      try {
+        java.lang.reflect.Field field = EncryptedStringConverter.class.getDeclaredField("stringEncryptor");
+        field.setAccessible(true);
+        field.set(null, null);
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        throw new RuntimeException("Failed to reset encryptor", e);
+      }
+    }
+
+    @Test
+    @DisplayName("暗号化器がnullの場合、convertToDatabaseColumnは平文をそのまま返す")
+    void shouldReturnPlainTextWhenEncryptorIsNull() {
+      // Arrange: 静的フィールドをnullに設定
+      resetEncryptorViaReflection();
+
+      // Act & Assert
+      assertThat(converter.convertToDatabaseColumn("Taro")).isEqualTo("Taro");
+    }
+
+    @Test
+    @DisplayName("暗号化器がnullの場合、convertToEntityAttributeはデータベースデータをそのまま返す")
+    void shouldReturnDbDataWhenEncryptorIsNull() {
+      // Arrange: 静的フィールドをnullに設定
+      resetEncryptorViaReflection();
+
+      // Act & Assert
+      assertThat(converter.convertToEntityAttribute("someDbData")).isEqualTo("someDbData");
+    }
+  }
 }
