@@ -1,4 +1,4 @@
-package undecided.shared.primitiveOld;
+package undecided.shared.primitive;
 
 import java.util.Collection;
 import java.util.Iterator;

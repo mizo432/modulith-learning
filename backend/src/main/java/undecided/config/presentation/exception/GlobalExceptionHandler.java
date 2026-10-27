@@ -24,7 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
 import undecided.shared.exception.ExceptionLogger;
 import undecided.shared.exception.ResultMessagesNotificationException;
-import undecided.shared.primitiveOld.Lists2;
+import undecided.shared.primitive.Lists2;
 
 /**
  * アプリケーション全体で発生する例外をハンドリングするクラス。

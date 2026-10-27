@@ -1,6 +1,9 @@
 # Issueへの対応ルール
 
-本ガイドラインは、コード修正を含むIssue対応における標準ワークフローを定義します。
+> **重要**: このルールは、コード修正を含むIssue対応时必须に遵循する強制ルールです。
+> AgentはIssue対応を開始する前に、このルールの全ステップを確認し、順守すること。
+
+本ルールは、コード修正を含むIssue対応における標準ワークフローを定義します。
 Tidy First?に基づく整理を3回実施した後、TDDで実装し、PRを作成してレビューするプロセスを定めます。
 このルールにより、コード品質を段階的に高め、チーム開発の効率と保守性を最適化します。
 既存コードの質が低い場合でも、整理を先に適用することで安全に新機能を実装できる環境を整備します。
@@ -17,6 +20,28 @@ Tidy First?に基づく整理を3回実施した後、TDDで実装し、PRを作
 - Tidyingの結果を確実に記録し、チームで共有する
 - 整理と実装を明確に分離し、変更の意図を明確にする
 - PRレビューを通じてコード品質を確保する
+
+## 「整理」の定義
+
+本ルールにおける「整理」とは、Kent Beck著「Tidy First?」書籍で定義された**Tidying技術**を指します。プロジェクトでは `.agents/guidelines/java/tidy-first.guidelines.md` に15のTidying技術が定義されています。
+
+### 適用可能なTidying技術（15種）
+
+1. Guard Clauses（ガード節）
+2. Dead Code（デッドコード）
+3. Normalize Symmetries（対称性の正規化）
+4. New Interface, Old Implementation（新インターフェース、旧実装）
+5. Reading Order（読み順）
+6. Cohesion Order（凝集順）
+7. Move Declaration And Initialization Together（宣言と初期化を一緒に移動）
+8. Explaining Variables（説明変数）
+9. Explaining Constants（説明定数）
+10. Explicit Parameters（明示的なパラメータ）
+11. Chunk Statements（チャンク文）
+12. Extract Helper（ヘルパー抽出）
+13. One Pile（一つの山）
+14. Explaining Comments（説明コメント）
+15. Delete Redundant Comments（冗長なコメントの削除）
 
 ## ワークフロー全体
 
@@ -53,8 +78,6 @@ Tidy First?に基づく整理を3回実施した後、TDDで実装し、PRを作
 - コミットメッセージにはIssue番号を明記する（`refs #XX`, `closes #XX`）
 
 ### ステップ4: PR作成
-
-Issue-Driven Developmentガイドライン（`.agents/guidelines/workflow/issue-driven-development.guidelines.md`）に従う。
 
 - featureブランチからdevelopブランチに向けてPRを作成する
 - PR本文には変更概要、関連Issue番号、実施したテスト・検証結果を明記する
@@ -106,7 +129,6 @@ PRレビュースキル（`pr-review`）を使用して変更内容を多角的�
 - ガイドライン参照:
   - `.agents/guidelines/tdd/tdd-guidelines.md`（TDDガイドライン）
   - `.agents/guidelines/java/tidy-first.guidelines.md`（Tidy First?ガイドライン）
-  - `.agents/guidelines/workflow/issue-driven-development.guidelines.md`（Issue-Driven Developmentガイドライン）
 
 ## 懸念事項
 
@@ -118,4 +140,3 @@ PRレビュースキル（`pr-review`）を使用して変更内容を多角的�
 - 書籍: Kent Beck, 「Tidy First?」
 - ガイドライン: `.agents/guidelines/java/tidy-first.guidelines.md`
 - ガイドライン: `.agents/guidelines/tdd/tdd-guidelines.md`
-- ガイドライン: `.agents/guidelines/workflow/issue-driven-development.guidelines.md`

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 import org.jspecify.annotations.NonNull;
 import undecided.shared.annotation.VisibleForTesting;
-import undecided.shared.primitiveOld.Objects2;
+import undecided.shared.primitive.Objects2;
 
 /**
  * ドメイン駆動設計 (Domain-Driven Design) の文脈における値オブジェクトを表します。 値オブジェクトは不変（immutable）な型であり、属性のみで定義され、

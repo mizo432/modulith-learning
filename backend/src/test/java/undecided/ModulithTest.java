@@ -37,8 +37,8 @@ class ModulithTest {
   void verifyDoNotCallAnnotationHasDeprecated() throws ClassNotFoundException {
     // DoNotCall アノテーションが付与されたメソッドは必ず @Deprecated も付与されていることを確認
     Class<?>[] classesWithDoNotCall = {
-      undecided.shared.primitiveOld.Sets2.class,
-      undecided.shared.primitiveOld.UnmodifiableIterator.class
+      undecided.shared.primitive.Sets2.class,
+      undecided.shared.primitive.UnmodifiableIterator.class
     };
 
     for (Class<?> clazz : classesWithDoNotCall) {

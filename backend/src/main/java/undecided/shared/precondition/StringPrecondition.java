@@ -1,14 +1,14 @@
 package undecided.shared.precondition;
 
-import static undecided.shared.primitiveOld.Objects2.isNull;
-import static undecided.shared.primitiveOld.Strings2.getHalfWidthCharCount;
-import static undecided.shared.primitiveOld.Strings2.isAllCharacterHalfWidth;
+import static undecided.shared.primitive.Objects2.isNull;
+import static undecided.shared.primitive.Strings2.getHalfWidthCharCount;
+import static undecided.shared.primitive.Strings2.isAllCharacterHalfWidth;
 
 import com.google.common.collect.Range;
 import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
 import org.jspecify.annotations.NonNull;
-import undecided.shared.primitiveOld.Strings2;
+import undecided.shared.primitive.Strings2;
 
 @UtilityClass
 public class StringPrecondition {

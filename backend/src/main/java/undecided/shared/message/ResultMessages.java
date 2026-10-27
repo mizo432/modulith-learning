@@ -5,8 +5,8 @@ import static undecided.shared.message.StandardResultMessageType.INFO;
 import static undecided.shared.message.StandardResultMessageType.SUCCESS;
 import static undecided.shared.message.StandardResultMessageType.WARNING;
 import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
-import static undecided.shared.primitiveOld.Lists2.newArrayList;
-import static undecided.shared.primitiveOld.Objects2.nonNull;
+import static undecided.shared.primitive.Lists2.newArrayList;
+import static undecided.shared.primitive.Objects2.nonNull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
-import undecided.shared.primitiveOld.Strings2;
+import undecided.shared.primitive.Strings2;
 
 /**
  * 複数の結果メッセージを管理するためのクラスです。

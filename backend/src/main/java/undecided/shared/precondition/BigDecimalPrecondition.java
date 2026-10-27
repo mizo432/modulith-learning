@@ -1,7 +1,7 @@
 package undecided.shared.precondition;
 
 import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
-import static undecided.shared.primitiveOld.Objects2.isNull;
+import static undecided.shared.primitive.Objects2.isNull;
 
 import com.google.common.collect.Range;
 import java.math.BigDecimal;
