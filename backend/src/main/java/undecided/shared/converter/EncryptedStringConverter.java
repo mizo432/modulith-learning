@@ -39,6 +39,13 @@ public class EncryptedStringConverter implements AttributeConverter<String, Stri
   }
 
   /**
+   * テスト用メソッドです。静的な暗号化器を{@code null}にリセットします。
+   */
+  static void resetEncryptor() {
+    stringEncryptor = null;
+  }
+
+  /**
    * エンティティ属性（平文）をデータベースカラム（暗号化文字列）に変換します。
    *
    * @param attribute 変換対象の平文字列。{@code null} の可能性があります。

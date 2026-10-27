@@ -5,13 +5,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.jasypt.encryption.StringEncryptor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @Tag("small")
+@DisplayName("EncryptedStringConverterの単体テスト")
+@ExtendWith(MockitoExtension.class)
 class EncryptedStringConverterTest {
 
   private StringEncryptor mockEncryptor;
@@ -21,6 +26,11 @@ class EncryptedStringConverterTest {
   void setUp() {
     mockEncryptor = mock(StringEncryptor.class);
     converter = new EncryptedStringConverter(mockEncryptor);
+  }
+
+  @AfterEach
+  void tearDown() {
+    EncryptedStringConverter.resetEncryptor();
   }
 
   /** Method under test: {@link EncryptedStringConverter#convertToDatabaseColumn(String)} */
@@ -48,6 +58,17 @@ class EncryptedStringConverterTest {
       when(mockEncryptor.encrypt(plainText)).thenReturn(encrypted);
 
       assertThat(converter.convertToDatabaseColumn(plainText)).isEqualTo(encrypted);
+    }
+
+    @Test
+    @DisplayName("暗号化器がnullの場合、平文をそのまま返す")
+    void shouldReturnPlainTextWhenEncryptorIsNull() {
+      // Arrange
+      EncryptedStringConverter.resetEncryptor();
+      String plainText = "Taro";
+
+      // Act & Assert
+      assertThat(converter.convertToDatabaseColumn(plainText)).isEqualTo(plainText);
     }
   }
 
@@ -85,6 +106,17 @@ class EncryptedStringConverterTest {
       when(mockEncryptor.decrypt(plainText)).thenThrow(new RuntimeException("Decrypt failed"));
 
       assertThat(converter.convertToEntityAttribute(plainText)).isEqualTo(plainText);
+    }
+
+    @Test
+    @DisplayName("暗号化器がnullの場合、データベースデータをそのまま返す")
+    void shouldReturnDbDataWhenEncryptorIsNull() {
+      // Arrange
+      EncryptedStringConverter.resetEncryptor();
+      String dbData = "someDbData";
+
+      // Act & Assert
+      assertThat(converter.convertToEntityAttribute(dbData)).isEqualTo(dbData);
     }
   }
 }
