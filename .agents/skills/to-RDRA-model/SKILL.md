@@ -405,21 +405,32 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
                 - [ユースケース一覧.tsv](templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
     - [ユースケース図.md](templates/ユースケース図.md): ユースケース図のMarkdownテンプレート
     - [UC複合図.md](templates/UC複合図.md): UC複合図のMarkdownテンプレート（PlantUML使用）
-      - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
-      - [情報一覧.tsv](templates/情報一覧.tsv): 情報一覧のTSVテンプレート
-      - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
-      - [ステートマシン図.md](templates/ステートマシン図.md):
-      ステートマシン図のMarkdownテンプレート（PlantUML状態遷移図）
-      - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
-      - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
-      - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
-      - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
-      - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
-      - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
-      - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
-      - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
-      - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
-      - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
+        - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
+        - [情報一覧.tsv](templates/情報一覧.tsv): 情報一覧のTSVテンプレート
+        - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
+        - [ステートマシン図.md](templates/ステートマシン図.md):
+          ステートマシン図のMarkdownテンプレート（PlantUML状態遷移図）
+        - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
+        - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
+        - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
+        - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
+        - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
+        - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
+        - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
+        - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
+        - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
+        - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
+
+- **RDRAダイアグラム例** (テンプレートとして使用):
+    - [RDRAダイアグラム例 README](templates/RDRAダイアグラム例/README.md):
+      図書館システムを題材にしたRDRAダイアグラム例の概要
+    - [01.利用シーン図](templates/RDRAダイアグラム例/01.利用シーン図.md): ユースケース図の例（システム外部環境レイヤー）
+    - [02.バリエーション条件図](templates/RDRAダイアグラム例/02.バリエーション条件図.md):
+      バリエーションと条件の表形式定義例（システムレイヤー）
+    - [03.ユースケース複合図](templates/RDRAダイアグラム例/03.ユースケース複合図.md):
+      UC複合図の例（システム境界レイヤー・システムレイヤー）
+    - [04.ステートマシン図](templates/RDRAダイアグラム例/04.ステートマシン図.md): 状態遷移図の例（システムレイヤー）
+    - [05.用語集](templates/RDRAダイアグラム例/05.用語集.md): 用語集の例（4レイヤー全体）
 
 - **チェックリスト**:
     - [requirement.md](../../../rdra/checklists/requirement.md): 要件分析時の確認項目
