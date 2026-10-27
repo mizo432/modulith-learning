@@ -22,7 +22,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import undecided.authorization.domain.model.role.Role;
 import undecided.authorization.infra.converter.EncryptedStringConverter;
@@ -44,7 +43,6 @@ import undecided.authorization.infra.converter.EncryptedStringConverter;
 @Table(name = "users")
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Builder
 @AllArgsConstructor
@@ -65,6 +63,7 @@ public class User {
   private String username;
 
   @Column(nullable = false)
+  @lombok.ToString.Exclude
   private String password;
 
   @Column(nullable = false, unique = true)
@@ -72,10 +71,12 @@ public class User {
 
   @Column(name = "first_name")
   @Convert(converter = EncryptedStringConverter.class)
+  @lombok.ToString.Exclude
   private String firstName;
 
   @Column(name = "last_name")
   @Convert(converter = EncryptedStringConverter.class)
+  @lombok.ToString.Exclude
   private String lastName;
 
   @Column(name = "initials")
@@ -160,6 +161,48 @@ public class User {
   /** 初回ログインを完了としてマークします。 */
   public void setFirstLoginComplete() {
     this.firstLogin = false;
+  }
+
+  /**
+   * ユーザーの文字列表現を返します。
+   * 機微な情報（氏名）はマスクされます。
+   *
+   * @return マスクされたユーザー情報
+   */
+  @Override
+  public String toString() {
+    return "User{" +
+        "id=" + id +
+        ", username='" + username + '\'' +
+        ", email='" + maskEmail(email) + '\'' +
+        ", firstName='" + maskName(firstName) + '\'' +
+        ", lastName='" + maskName(lastName) + '\'' +
+        ", initials='" + initials + '\'' +
+        ", enabled=" + enabled +
+        ", userType=" + userType +
+        ", firstLogin=" + firstLogin +
+        ", createdAt=" + createdAt +
+        ", updatedAt=" + updatedAt +
+        ", lastLoginAt=" + lastLoginAt +
+        '}';
+  }
+
+  private static String maskName(String name) {
+    if (name == null || name.length() <= 1) {
+      return name;
+    }
+    return name.charAt(0) + "*";
+  }
+
+  private static String maskEmail(String email) {
+    if (email == null || email.isEmpty()) {
+      return email;
+    }
+    int atIndex = email.indexOf('@');
+    if (atIndex <= 0) {
+      return email;
+    }
+    return email.charAt(0) + "***" + email.substring(atIndex);
   }
 
   @Override
