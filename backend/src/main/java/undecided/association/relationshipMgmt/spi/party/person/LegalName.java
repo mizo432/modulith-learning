@@ -5,8 +5,8 @@ import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import undecided.shared.sensitive.SensitiveDataMasker;
-import undecided.shared.value.StringCode;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 法的名前を表す値オブジェクトです。

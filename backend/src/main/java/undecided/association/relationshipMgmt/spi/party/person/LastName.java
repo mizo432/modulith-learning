@@ -4,10 +4,10 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.converter.EncryptedStringConverter;
+import com.github.mizo432.shared.converter.EncryptedStringConverter;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import undecided.shared.sensitive.SensitiveDataMasker;
-import undecided.shared.value.StringCode;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 姓（ラストネーム）を表す値オブジェクトです。

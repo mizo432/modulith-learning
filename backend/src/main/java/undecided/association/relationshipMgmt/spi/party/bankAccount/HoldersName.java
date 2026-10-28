@@ -5,7 +5,7 @@ import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import undecided.shared.value.StringValue;
+import com.github.mizo432.shared.value.StringValue;
 
 /**
  * 銀行口座の口座名義人を表す値オブジェクトクラス。

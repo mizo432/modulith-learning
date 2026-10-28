@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
-import undecided.shared.converter.EncryptedStringConverter;
+import com.github.mizo432.shared.converter.EncryptedStringConverter;
 
 @Tag("medium")
 @SpringBootTest

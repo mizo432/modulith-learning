@@ -317,10 +317,10 @@ class Order {
 #### 共通イベントインターフェース
 
 `DomainEvent` インターフェースおよびイベントソーシング集約の基底クラスは、 **
-`undecided.shared.event`** パッケージに配置します。これにより、全モジュールから共通のイベント契約を参照できます。
+`com.github.mizo432.shared.event`** パッケージに配置します。これにより、全モジュールから共通のイベント契約を参照できます。
 
 ```
-undecided.shared
+com.github.mizo432.shared
 ├── event/                 # イベントソーシング共通インターフェース
 │   ├── DomainEvent.java   # 全ドメインイベントの基底インターフェース
 │   └── EventSourcedAggregate.java  # イベントソーシング集約の基底クラス
@@ -363,11 +363,11 @@ undecided.<domain>.<module>   # 例: undecided.association.relationshipMgmt
 
 | クラス種別                         | パッケージ配置                                           | 可視性                                       |
 |------------------------------------|----------------------------------------------------------|----------------------------------------------|
-| `DomainEvent` インターフェース     | `undecided.shared.event`                                 | public（全モジュール公開）                   |
-| `EventSourcedAggregate` 基底クラス | `undecided.shared.event`                                 | public（全モジュール公開）                   |
+| `DomainEvent` インターフェース     | `com.github.mizo432.shared.event`                                 | public（全モジュール公開）                   |
+| `EventSourcedAggregate` 基底クラス | `com.github.mizo432.shared.event`                                 | public（全モジュール公開）                   |
 | モジュール間公開イベント           | `undecided.<domain>.<module>.spi.<aggregate>.event`      | public（`@NamedInterface` で外部公開）       |
 | モジュール内部イベント             | `undecided.<domain>.<module>.internal.<aggregate>.event` | package-private（モジュール内部限定）        |
-| イベントストア実装                 | `undecided.shared.infrastructure.eventstore`             | public（共通実装）                           |
+| イベントストア実装                 | `com.github.mizo432.shared.infrastructure.eventstore`             | public（共通実装）                           |
 | プロジェクター                     | `undecided.<domain>.<module>.internal.projector`         | package-private                              |
 | 読み取りモデル                     | `undecided.<domain>.<module>.internal.readmodel`         | package-private                              |
 | イベントリスナー                   | `undecided.<domain>.<module>.presentation.event`         | package-private（commandサービスを呼び出す） |

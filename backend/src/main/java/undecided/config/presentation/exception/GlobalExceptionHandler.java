@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
-import undecided.shared.exception.ExceptionLogger;
-import undecided.shared.exception.ResultMessagesNotificationException;
+import com.github.mizo432.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.exception.ResultMessagesNotificationException;
 import com.github.mizo432.shared.common.primitive.Lists2;
 
 /**

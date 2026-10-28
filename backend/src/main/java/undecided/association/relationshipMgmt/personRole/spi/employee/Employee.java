@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
-import undecided.shared.converter.EncryptedStringConverter;
+import com.github.mizo432.shared.converter.EncryptedStringConverter;
 
 @Entity
 @Table(name = "employees")

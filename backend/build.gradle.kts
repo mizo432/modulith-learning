@@ -63,6 +63,8 @@ extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.5.1"
 extra["junitVersion"] = "6.1.0"
+// Override Spring Boot BOM to align all JUnit artifacts (Jupiter, Platform, Vintage)
+extra["junit-jupiter.version"] = "6.1.0"
 extra["springCloudBomVersion"] = "2025.1.2"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
@@ -72,6 +74,16 @@ extra["assertjDbVersion"] = "3.0.2"
 extra["uuidGeneratorVersion"] = "5.1.0"
 extra["superCsvVersion"] = "2.4.0"
 extra["testcontainersVersion"] = "2.0.5"
+
+// Force JUnit Platform artifacts to align with JUnit 6 version
+// Spring Boot 4.1.1 manages junit-platform-launcher at 1.14.4, but JUnit 6 requires 6.x
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.junit.platform") {
+            useVersion("6.1.0")
+        }
+    }
+}
 
 dependencies {
     implementation(project(":mizo432-shared-common"))
@@ -96,6 +108,7 @@ dependencies {
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${property("junitVersion")}")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
     implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
@@ -289,9 +302,9 @@ fun isNonStable(version: String): Boolean {
 }
 
 // Pitest ミューテーションテスト構成
-// 初回導入時はundecided.sharedパッケージに限定し、実行時間を抑える
+// 初回導入時はcom.github.mizo432.sharedパッケージに限定し、実行時間を抑える
 pitest {
-    targetClasses = setOf("undecided.shared.*")
+    targetClasses = setOf("com.github.mizo432.shared.*")
     // JUnit 5 プラグインの自動追加
     junit5PluginVersion = "1.2.1"
     threads = Runtime.getRuntime().availableProcessors()
@@ -301,9 +314,9 @@ pitest {
     skipFailingTests = true
     excludedClasses = setOf(
         // 生成コード・インフラストラクチャコードは除外
-        "undecided.shared.*.package-info",
-        "undecided.shared.*.dto.*",
-        "undecided.shared.*.config.*"
+        "com.github.mizo432.shared.*.package-info",
+        "com.github.mizo432.shared.*.dto.*",
+        "com.github.mizo432.shared.*.config.*"
     )
     jvmArgs = listOf("-Xmx1024m")
 }

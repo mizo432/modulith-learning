@@ -5,7 +5,7 @@ import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import undecided.shared.value.StringCode;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 検索用名称を表す値オブジェクトクラス。

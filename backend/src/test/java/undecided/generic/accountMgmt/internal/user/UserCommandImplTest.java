@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
 import undecided.generic.accountMgmt.internal.user.UserCommandImpl.PasswordChangeDto;
 import undecided.generic.accountMgmt.internal.user.UserCommandImpl.UserStatusDto;
-import undecided.shared.exception.BusinessException;
+import com.github.mizo432.shared.exception.BusinessException;
 
 @Tag("small")
 @DisplayName("UserCommandImplのテスト")

@@ -30,6 +30,7 @@ extra["mockitoVersion"] = "5.15.2"
 dependencies {
     compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
     annotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
+    compileOnly("org.springframework.modulith:spring-modulith-api:2.1.0")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
     implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("jakarta.validation:jakarta.validation-api:${property("jakartaValidationApiVersion")}")
@@ -41,7 +42,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:${property("assertjVersion")}")
     testImplementation("org.mockito:mockito-core:${property("mockitoVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${property("junitVersion")}")
 }
 
 tasks.withType<Test> {

@@ -48,7 +48,7 @@ class ArchitectureTest {
             .and()
             .haveNameNotMatching(".*SnowflakeNode")
             .and()
-            .resideOutsideOfPackage("undecided.shared.sample..")
+            .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
             .resideInAPackage("..spi..")
             .because("Entityクラスはドメイン層(spiパッケージ)に配置されるべきです");
@@ -64,7 +64,7 @@ class ArchitectureTest {
             .that()
             .areAssignableTo(Repository.class)
             .and()
-            .resideOutsideOfPackage("undecided.shared.sample..")
+            .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
             .resideInAnyPackage("..internal..", "..intenal..", "..repository..")
             .because("Repositoryクラスはアプリケーション層(internalパッケージ)に配置されるべきです");
