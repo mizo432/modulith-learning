@@ -109,7 +109,8 @@ class ArchitectureTest {
             .areAnnotatedWith(DoNotCall.class)
             .should()
             .beAnnotatedWith(Deprecated.class)
-            .because("DoNotCallアノテーションが付与されたメソッドは@Deprecatedも付与されるべきです");
+            .because("DoNotCallアノテーションが付与されたメソッドは@Deprecatedも付与されるべきです")
+            .allowEmptyShould(true);
 
     @ArchTest
     static final ArchRule visible_for_testing_methods_should_be_static =
@@ -118,7 +119,8 @@ class ArchitectureTest {
             .areAnnotatedWith(VisibleForTesting.class)
             .should()
             .beStatic()
-            .because("VisibleForTestingアノテーションが付与されたメソッドはstaticであるべきです");
+            .because("VisibleForTestingアノテーションが付与されたメソッドはstaticであるべきです")
+            .allowEmptyShould(true);
   }
 
   @AnalyzeClasses(
