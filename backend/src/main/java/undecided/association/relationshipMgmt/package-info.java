@@ -1,7 +1,7 @@
 @ApplicationModule(
     id = "relationshipMgmt",
     displayName = "関係管理サブドメイン",
-    allowedDependencies = {"agiloom", "common", "value", "converter", "entity", "supporting :: snowflake"})
+    allowedDependencies = {"agiloom", "common", "value", "converter", "entity", "sensitive", "supporting :: snowflake"})
 @NamedInterface(propagate = true)
 package undecided.association.relationshipMgmt;
 
