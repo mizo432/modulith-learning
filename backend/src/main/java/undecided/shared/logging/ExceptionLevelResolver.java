@@ -1,4 +1,6 @@
-package undecided.shared.exception;
+package undecided.shared.logging;
+
+import undecided.shared.exception.ExceptionLevel;
 
 /**
  * 例外のレベルを解決するためのインタフェース。

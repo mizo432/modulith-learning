@@ -1,4 +1,4 @@
-package undecided.shared.exception;
+package undecided.shared.logging;
 
 import jakarta.annotation.PostConstruct;
 import java.text.MessageFormat;
@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import undecided.shared.exception.ExceptionLevel;
 import undecided.shared.sensitive.SensitiveDataMasker;
 
 /**

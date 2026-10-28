@@ -11,9 +11,9 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
-import undecided.shared.exception.ExceptionCodeResolver;
 import undecided.shared.exception.ResultMessagesNotificationException;
-import undecided.shared.exception.SimpleMappingExceptionCodeResolver;
+import undecided.shared.logging.ExceptionCodeResolver;
+import undecided.shared.logging.SimpleMappingExceptionCodeResolver;
 import undecided.shared.message.ResultMessages;
 
 /**

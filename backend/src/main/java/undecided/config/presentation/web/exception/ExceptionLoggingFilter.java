@@ -8,7 +8,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import java.io.IOException;
 import lombok.Setter;
-import undecided.shared.exception.ExceptionLogger;
+import undecided.shared.logging.ExceptionLogger;
 
 /**
  * ExceptionLoggingFilterは、フィルタチェーン内で発生する例外をキャッチし、ログへ記録するためのフィルタクラスです。

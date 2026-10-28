@@ -8,10 +8,10 @@ import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
-import undecided.shared.exception.ExceptionCodeResolver;
-import undecided.shared.exception.ExceptionLogger;
-import undecided.shared.exception.ResultMessagesLoggingInterceptor;
-import undecided.shared.exception.SimpleMappingExceptionCodeResolver;
+import undecided.shared.logging.ExceptionCodeResolver;
+import undecided.shared.logging.ExceptionLogger;
+import undecided.shared.logging.ResultMessagesLoggingInterceptor;
+import undecided.shared.logging.SimpleMappingExceptionCodeResolver;
 
 /**
  * アプリケーションの構成を定義するための設定クラス。

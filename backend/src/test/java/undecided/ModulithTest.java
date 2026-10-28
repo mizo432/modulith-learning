@@ -58,7 +58,7 @@ class ModulithTest {
   @Test
   void verifyVisibleForTestingAnnotationIsStatic() throws ClassNotFoundException {
     // VisibleForTesting アノテーションが付与されたメソッドは static であることを確認
-    Class<?>[] classesWithVisibleForTesting = {undecided.shared.entity.ValueObject.class};
+    Class<?>[] classesWithVisibleForTesting = {undecided.shared.value.ValueObject.class};
 
     for (Class<?> clazz : classesWithVisibleForTesting) {
       Arrays.stream(clazz.getDeclaredMethods())

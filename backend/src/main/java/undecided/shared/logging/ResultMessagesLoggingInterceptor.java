@@ -1,4 +1,4 @@
-package undecided.shared.exception;
+package undecided.shared.logging;
 
 import jakarta.annotation.Nonnull;
 import lombok.Setter;
@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.InitializingBean;
+import undecided.shared.exception.ResultMessagesNotificationException;
 import undecided.shared.message.StandardResultMessageType;
 
 /**

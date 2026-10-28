@@ -1,4 +1,4 @@
-package undecided.shared.entity;
+package undecided.shared.value;
 
 import java.util.Arrays;
 import java.util.function.Supplier;

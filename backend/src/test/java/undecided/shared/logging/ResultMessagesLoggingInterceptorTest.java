@@ -1,9 +1,11 @@
-package undecided.shared.exception;
+package undecided.shared.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
+import undecided.shared.exception.BusinessException;
+import undecided.shared.exception.ResultMessagesNotificationException;
 import undecided.shared.message.ResultMessage;
 import undecided.shared.message.ResultMessages;
 import undecided.shared.message.StandardResultMessageType;

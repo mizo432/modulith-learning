@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import undecided.shared.entity.ValueObject;
+import undecided.shared.value.ValueObject;
 import undecided.shared.sample.jpa.entity.converter.SampleCurrencyCode;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;

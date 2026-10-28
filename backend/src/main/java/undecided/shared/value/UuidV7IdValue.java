@@ -1,4 +1,4 @@
-package undecided.shared.entity;
+package undecided.shared.value;
 
 import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 

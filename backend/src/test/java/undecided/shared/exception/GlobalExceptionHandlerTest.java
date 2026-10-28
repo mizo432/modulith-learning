@@ -29,6 +29,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.context.request.WebRequest;
 import undecided.config.presentation.exception.GlobalExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
+import undecided.shared.logging.ExceptionLogger;
 import undecided.shared.message.ResultMessage;
 import undecided.shared.message.ResultMessages;
 

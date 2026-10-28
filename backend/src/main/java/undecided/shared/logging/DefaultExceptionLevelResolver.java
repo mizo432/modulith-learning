@@ -1,6 +1,9 @@
-package undecided.shared.exception;
+package undecided.shared.logging;
 
 import static org.springframework.util.StringUtils.hasText;
+
+import undecided.shared.exception.ExceptionLevel;
+import undecided.shared.exception.ExceptionCodeProvider;
 
 /**
  * 例外のレベルを解決するデフォルトの実装クラス。

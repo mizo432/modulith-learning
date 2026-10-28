@@ -1,4 +1,4 @@
-package undecided.shared.exception;
+package undecided.shared.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
