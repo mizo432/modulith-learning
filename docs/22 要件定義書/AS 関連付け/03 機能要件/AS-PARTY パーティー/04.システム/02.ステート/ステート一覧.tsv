@@ -1,0 +1,5 @@
+# ステート一覧
+
+ステートID	ステート名	ステート英名	対象情報	説明	関連ユースケース
+ST-AS-PARTY-001	有効	Active	パーティー	パーティーが有効な状態	UC-AS-PARTY-001
+ST-AS-PARTY-002	無効	Inactive	パーティー	パーティーが無効化された状態	UC-AS-PARTY-003

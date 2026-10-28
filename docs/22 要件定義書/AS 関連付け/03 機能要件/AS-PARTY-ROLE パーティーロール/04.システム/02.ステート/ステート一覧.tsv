@@ -1,0 +1,5 @@
+# ステート一覧
+
+ステートID	ステート名	ステート英名	対象情報	説明	関連ユースケース
+ST-AS-PARTY-ROLE-001	有効	Active	パーティーロール	ロールが有効な状態	UC-AS-PARTY-ROLE-001
+ST-AS-PARTY-ROLE-002	無効	Inactive	パーティーロール	ロールが無効化された状態	UC-AS-PARTY-ROLE-007

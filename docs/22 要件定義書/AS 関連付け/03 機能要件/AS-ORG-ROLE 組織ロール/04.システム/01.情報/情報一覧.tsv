@@ -1,0 +1,10 @@
+# 情報一覧
+
+情報ID	情報名	情報種類	説明	関連ユースケース	履歴管理要	証跡要	実現方法
+INF-AS-ORG-01	組織	リソース	組織・部署の基本情報	UC-AS-ORG-001, UC-AS-ORG-002, UC-AS-ORG-003, UC-AS-ORG-006, UC-AS-ORG-007, UC-AS-ORG-008	Y	Y	DB
+INF-AS-ORG-02	組織ロール	リソース	組織に付与される組織ロール	UC-AS-ORG-001, UC-AS-ORG-011	Y	Y	DB
+INF-AS-ORG-03	組織階層	対応表	組織の階層構造（親・子関係）	UC-AS-ORG-011	Y	N	DB
+INF-AS-ORG-04	会社	リソース	会社の基本情報	UC-AS-ORG-004, UC-AS-ORG-009	Y	Y	DB
+INF-AS-ORG-05	店舗	リソース	店舗の基本情報	UC-AS-ORG-005, UC-AS-ORG-010	Y	Y	DB
+INF-AS-ORG-06	組織種類	対照表	組織の種類（会社、部署、店舗など）	UC-AS-ORG-001, UC-AS-ORG-004, UC-AS-ORG-005	N	N	DB and enum
+INF-AS-ORG-07	組織登録完了	イベント	組織が登録されたことを示すイベント	UC-AS-ORG-001, UC-AS-ORG-004, UC-AS-ORG-005	N	N	

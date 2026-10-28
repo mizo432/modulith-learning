@@ -1,0 +1,5 @@
+# ステート一覧
+
+ステートID	ステート名	ステート英名	対象情報	説明	関連ユースケース
+ST-AS-PERSON-001	有効	Active	従業員	従業員が有効な状態（在籍中）	UC-AS-PERSON-001
+ST-AS-PERSON-002	無効	Inactive	従業員	従業員が無効化された状態（退社）	UC-AS-PERSON-003
