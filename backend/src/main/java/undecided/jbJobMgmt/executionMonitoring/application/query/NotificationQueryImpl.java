@@ -7,8 +7,8 @@ import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.NotificationSetting;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.repository.NotificationSettingRepository;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.NotificationSetting;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.repository.NotificationSettingRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service

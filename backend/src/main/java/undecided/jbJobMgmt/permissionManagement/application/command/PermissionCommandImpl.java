@@ -2,17 +2,17 @@ package undecided.jbJobMgmt.permissionManagement.application.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.ActionResult;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.ActionType;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.AuditLog;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.TargetInfo;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.repository.AuditLogRepository;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.PermissionLevel;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.SystemPermission;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserPermission;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserId;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserName;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.repository.UserPermissionRepository;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.ActionResult;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.ActionType;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.AuditLog;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.TargetInfo;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.repository.AuditLogRepository;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.PermissionLevel;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.SystemPermission;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserPermission;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserId;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserName;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.repository.UserPermissionRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service

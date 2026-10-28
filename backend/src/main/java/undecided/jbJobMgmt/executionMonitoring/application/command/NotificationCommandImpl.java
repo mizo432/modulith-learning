@@ -2,12 +2,12 @@ package undecided.jbJobMgmt.executionMonitoring.application.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.NotificationChannel;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.NotificationCondition;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.NotificationSetting;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.NotificationTarget;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.NotificationTemplate;
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.repository.NotificationSettingRepository;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.NotificationChannel;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.NotificationCondition;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.NotificationSetting;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.NotificationTarget;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.NotificationTemplate;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.repository.NotificationSettingRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service

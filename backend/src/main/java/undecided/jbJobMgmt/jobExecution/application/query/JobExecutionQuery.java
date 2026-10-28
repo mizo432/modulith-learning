@@ -2,7 +2,7 @@ package undecided.jbJobMgmt.jobExecution.application.query;
 
 import java.util.List;
 import java.util.Optional;
-import undecided.jbJobMgmt.jobExecution.domain.jobexecution.JobExecution;
+import undecided.jbJobMgmt.jobExecution.spi.jobexecution.JobExecution;
 
 public interface JobExecutionQuery {
 

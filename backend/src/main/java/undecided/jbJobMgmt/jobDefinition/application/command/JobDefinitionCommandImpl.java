@@ -3,9 +3,9 @@ package undecided.jbJobMgmt.jobDefinition.application.command;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.jbJobMgmt.jobDefinition.domain.jobdefinition.JobCode;
-import undecided.jbJobMgmt.jobDefinition.domain.jobdefinition.JobDefinition;
-import undecided.jbJobMgmt.jobDefinition.domain.jobdefinition.repository.JobDefinitionRepository;
+import undecided.jbJobMgmt.jobDefinition.spi.jobdefinition.JobCode;
+import undecided.jbJobMgmt.jobDefinition.spi.jobdefinition.JobDefinition;
+import undecided.jbJobMgmt.jobDefinition.spi.jobdefinition.repository.JobDefinitionRepository;
 
 @RequiredArgsConstructor
 @Service

@@ -1,6 +1,6 @@
 package undecided.jbJobMgmt.permissionManagement.presentation.dto;
 
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserPermission;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserPermission;
 
 public class UserPermissionResponse {
 

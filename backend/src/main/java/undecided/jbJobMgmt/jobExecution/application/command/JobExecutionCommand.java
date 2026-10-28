@@ -1,6 +1,6 @@
 package undecided.jbJobMgmt.jobExecution.application.command;
 
-import undecided.jbJobMgmt.jobExecution.domain.jobexecution.JobExecution;
+import undecided.jbJobMgmt.jobExecution.spi.jobexecution.JobExecution;
 
 public interface JobExecutionCommand {
 

@@ -1,6 +1,6 @@
 package undecided.jbJobMgmt.jobDefinition.application.command;
 
-import undecided.jbJobMgmt.jobDefinition.domain.jobdefinition.JobDefinition;
+import undecided.jbJobMgmt.jobDefinition.spi.jobdefinition.JobDefinition;
 
 public interface JobDefinitionCommand {
 

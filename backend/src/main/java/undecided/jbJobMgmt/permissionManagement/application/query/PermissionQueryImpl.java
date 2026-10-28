@@ -8,10 +8,10 @@ import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.AuditLog;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.repository.AuditLogRepository;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserPermission;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.repository.UserPermissionRepository;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.AuditLog;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.repository.AuditLogRepository;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserPermission;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.repository.UserPermissionRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service

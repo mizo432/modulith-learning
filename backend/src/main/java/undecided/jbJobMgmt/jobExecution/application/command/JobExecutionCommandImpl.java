@@ -3,8 +3,8 @@ package undecided.jbJobMgmt.jobExecution.application.command;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.jbJobMgmt.jobExecution.domain.jobexecution.JobExecution;
-import undecided.jbJobMgmt.jobExecution.domain.jobexecution.repository.JobExecutionRepository;
+import undecided.jbJobMgmt.jobExecution.spi.jobexecution.JobExecution;
+import undecided.jbJobMgmt.jobExecution.spi.jobexecution.repository.JobExecutionRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RequiredArgsConstructor

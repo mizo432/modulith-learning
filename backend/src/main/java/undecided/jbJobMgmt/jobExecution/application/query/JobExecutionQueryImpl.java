@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.jbJobMgmt.jobDefinition.domain.jobdefinition.JobCode;
-import undecided.jbJobMgmt.jobExecution.domain.jobexecution.JobExecution;
-import undecided.jbJobMgmt.jobExecution.domain.jobexecution.repository.JobExecutionRepository;
+import undecided.jbJobMgmt.jobDefinition.spi.jobdefinition.JobCode;
+import undecided.jbJobMgmt.jobExecution.spi.jobexecution.JobExecution;
+import undecided.jbJobMgmt.jobExecution.spi.jobexecution.repository.JobExecutionRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RequiredArgsConstructor

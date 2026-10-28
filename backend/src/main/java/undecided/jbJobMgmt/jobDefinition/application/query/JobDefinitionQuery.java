@@ -2,7 +2,7 @@ package undecided.jbJobMgmt.jobDefinition.application.query;
 
 import java.util.List;
 import java.util.Optional;
-import undecided.jbJobMgmt.jobDefinition.domain.jobdefinition.JobDefinition;
+import undecided.jbJobMgmt.jobDefinition.spi.jobdefinition.JobDefinition;
 
 public interface JobDefinitionQuery {
 

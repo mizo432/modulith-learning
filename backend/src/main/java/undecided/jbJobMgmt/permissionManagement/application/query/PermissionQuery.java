@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.AuditLog;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserPermission;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.AuditLog;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserPermission;
 import undecided.supporting.snowflake.SnowflakeId;
 
 public interface PermissionQuery {

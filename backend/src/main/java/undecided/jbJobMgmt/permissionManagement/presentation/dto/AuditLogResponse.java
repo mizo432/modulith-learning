@@ -19,7 +19,7 @@ public class AuditLogResponse {
   private String performedAt;
   private String ipAddress;
 
-  public static AuditLogResponse from(undecided.jbJobMgmt.permissionManagement.domain.auditlog.AuditLog auditLog) {
+  public static AuditLogResponse from(undecided.jbJobMgmt.permissionManagement.spi.auditlog.AuditLog auditLog) {
     AuditLogResponse response = new AuditLogResponse();
     response.id = auditLog.getId().value();
     response.actionType = auditLog.getActionType().getType();

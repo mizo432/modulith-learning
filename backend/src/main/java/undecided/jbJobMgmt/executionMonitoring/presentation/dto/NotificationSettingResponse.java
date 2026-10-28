@@ -1,6 +1,6 @@
 package undecided.jbJobMgmt.executionMonitoring.presentation.dto;
 
-import undecided.jbJobMgmt.executionMonitoring.domain.notificationsetting.NotificationSetting;
+import undecided.jbJobMgmt.executionMonitoring.spi.notificationsetting.NotificationSetting;
 
 public class NotificationSettingResponse {
 

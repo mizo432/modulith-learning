@@ -1,15 +1,15 @@
 package undecided.jbJobMgmt.permissionManagement.application.command;
 
 import org.springframework.transaction.annotation.Transactional;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.ActionResult;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.ActionType;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.AuditLog;
-import undecided.jbJobMgmt.permissionManagement.domain.auditlog.TargetInfo;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.PermissionLevel;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.SystemPermission;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserPermission;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserId;
-import undecided.jbJobMgmt.permissionManagement.domain.userpermission.UserName;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.ActionResult;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.ActionType;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.AuditLog;
+import undecided.jbJobMgmt.permissionManagement.spi.auditlog.TargetInfo;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.PermissionLevel;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.SystemPermission;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserPermission;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserId;
+import undecided.jbJobMgmt.permissionManagement.spi.userpermission.UserName;
 import undecided.supporting.snowflake.SnowflakeId;
 
 public interface PermissionCommand {
