@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import undecided.ModulithDemoApplication;
 import undecided.TestcontainersConfiguration;
 
 /**
@@ -23,7 +24,7 @@ import undecided.TestcontainersConfiguration;
  * 正しくマッピングされることを検証します。
  */
 @Tag("medium")
-@SpringBootTest
+@SpringBootTest(classes = ModulithDemoApplication.class)
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
 @DisplayName("Flyway・DDL連携パターンの統合テスト")

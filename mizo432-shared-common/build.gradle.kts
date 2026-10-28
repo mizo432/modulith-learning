@@ -30,6 +30,7 @@ extra["mockitoVersion"] = "5.15.2"
 dependencies {
     compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
     annotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
+    compileOnly("org.springframework.modulith:spring-modulith-api:2.1.0")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
     implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("jakarta.validation:jakarta.validation-api:${property("jakartaValidationApiVersion")}")

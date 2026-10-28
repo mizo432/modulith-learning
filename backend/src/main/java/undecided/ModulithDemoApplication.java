@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.modulith.Modulithic;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import com.github.mizo432.shared.application.ApplicationInfoInitializer;
@@ -17,6 +18,7 @@ import com.github.mizo432.shared.application.ApplicationInfoInitializer;
  * アプリケーション名やサーバーポートなど、アプリケーション固有の情報を初期化します。
  */
 @SpringBootApplication(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
+@Modulithic(additionalPackages = "com.github.mizo432.shared")
 @EnableAsync
 @EnableScheduling
 public class ModulithDemoApplication {

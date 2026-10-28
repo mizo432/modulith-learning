@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import undecided.ModulithDemoApplication;
 import undecided.TestcontainersConfiguration;
 
 @Tag("medium")
-@SpringBootTest
+@SpringBootTest(classes = ModulithDemoApplication.class)
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
 @DisplayName("EncryptedStringConverterの統合テスト")
