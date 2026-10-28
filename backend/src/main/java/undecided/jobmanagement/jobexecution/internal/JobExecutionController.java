@@ -1,4 +1,4 @@
-package undecided.jobmanagement.jobexecution.presentation.controller;
+package undecided.jobmanagement.jobexecution.internal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
