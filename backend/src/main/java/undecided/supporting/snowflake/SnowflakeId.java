@@ -1,10 +1,10 @@
 package undecided.supporting.snowflake;
 
-import static undecided.shared.io.Base62s.DECODE_FROM_BASE62;
-import static undecided.shared.io.Base62s.ENCODE_TO_BASE62;
-import static undecided.shared.precondition.LongPrecondition.checkPositive;
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
-import static undecided.shared.primitive.Objects2.isNull;
+import static com.github.mizo432.shared.common.io.Base62s.DECODE_FROM_BASE62;
+import static com.github.mizo432.shared.common.io.Base62s.ENCODE_TO_BASE62;
+import static com.github.mizo432.shared.common.precondition.LongPrecondition.checkPositive;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.ComparisonChain;

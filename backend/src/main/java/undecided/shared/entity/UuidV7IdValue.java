@@ -1,10 +1,10 @@
 package undecided.shared.entity;
 
-import static undecided.shared.primitive.Objects2.isNull;
+import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import java.io.Serializable;
 import java.util.UUID;
-import undecided.shared.uuidV7Provider.UuidV7Provider;
+import com.github.mizo432.shared.common.uuidV7Provider.UuidV7Provider;
 
 /**
  * UuidV7IdValueクラスは、UUIDバージョン7を取り扱うための値オブジェクトクラスです。

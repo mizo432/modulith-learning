@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.shared.annotation.DoNotCall;
-import undecided.shared.annotation.VisibleForTesting;
+import com.github.mizo432.shared.common.annotation.DoNotCall;
+import com.github.mizo432.shared.common.annotation.VisibleForTesting;
 
 @Tag("small")
 @DisplayName("アーキテクチャ制約の検証テスト")

@@ -3,9 +3,9 @@ package undecided.association.relationshipMgmt.personRole.spi.employee;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import undecided.shared.precondition.ObjectPrecondition;
-import undecided.shared.precondition.StringPrecondition;
-import undecided.shared.primitive.Strings2;
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
+import com.github.mizo432.shared.common.precondition.StringPrecondition;
+import com.github.mizo432.shared.common.primitive.Strings2;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

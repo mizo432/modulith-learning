@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.dateProvider.DateProvider;
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import undecided.shared.value.DateTimeValue;
 
 /**

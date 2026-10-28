@@ -1,10 +1,10 @@
 package undecided.shared.value;
 
-import static undecided.shared.primitive.Objects2.isNull;
+import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import java.util.function.Supplier;
 import org.jspecify.annotations.NonNull;
-import undecided.shared.precondition.IntegerPrecondition;
+import com.github.mizo432.shared.common.precondition.IntegerPrecondition;
 
 /**
  * IntegerValueクラスは、型Integerの単一の値をカプセル化する値オブジェクトを表します。

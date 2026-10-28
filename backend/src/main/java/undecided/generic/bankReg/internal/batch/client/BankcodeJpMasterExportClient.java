@@ -1,6 +1,6 @@
 package undecided.generic.bankReg.internal.batch.client;
 
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;

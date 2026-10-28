@@ -1,12 +1,12 @@
 package undecided.association.relationshipMgmt.partyRole.spi.role;
 
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
-import undecided.shared.primitive.Strings2;
+import com.github.mizo432.shared.common.primitive.Strings2;
 
 /**
  * RoleChangeRequestTypeは、ロール変更要求の種類を表す列挙型です。 この列挙型は、コードおよびソート順に基づいて異なるタイプのロール変更を識別します。

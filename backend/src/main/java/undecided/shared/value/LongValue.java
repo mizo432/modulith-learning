@@ -1,10 +1,10 @@
 package undecided.shared.value;
 
-import static undecided.shared.primitive.Objects2.isNull;
+import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import java.util.function.Supplier;
 import org.jspecify.annotations.NonNull;
-import undecided.shared.precondition.LongPrecondition;
+import com.github.mizo432.shared.common.precondition.LongPrecondition;
 
 /**
  * インターフェース LongValue は、Long 型の単一の値を表します。

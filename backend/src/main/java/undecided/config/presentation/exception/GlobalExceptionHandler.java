@@ -1,6 +1,6 @@
 package undecided.config.presentation.exception;
 
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -24,7 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
 import undecided.shared.exception.ExceptionLogger;
 import undecided.shared.exception.ResultMessagesNotificationException;
-import undecided.shared.primitive.Lists2;
+import com.github.mizo432.shared.common.primitive.Lists2;
 
 /**
  * アプリケーション全体で発生する例外をハンドリングするクラス。

@@ -11,7 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import undecided.shared.dateProvider.DateProvider;
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**

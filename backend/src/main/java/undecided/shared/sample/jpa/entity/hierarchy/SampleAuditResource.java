@@ -5,7 +5,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import undecided.shared.dateProvider.DateProvider;
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 
 /**
  * サンプル用の監査リソース基底クラスです。
