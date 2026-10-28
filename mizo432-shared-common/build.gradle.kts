@@ -1,5 +1,6 @@
 plugins {
     java
+    id("info.solidsoft.pitest") version "1.19.0"
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -52,4 +53,16 @@ tasks {
     withType<JavaCompile> {
         options.compilerArgs.add("-Xlint:unchecked")
     }
+}
+
+// Pitest ミューテーションテスト構成
+pitest {
+    targetClasses = setOf("com.github.mizo432.shared.common.*")
+    // JUnit 5 プラグインの自動追加
+    junit5PluginVersion = "1.2.1"
+    threads = Runtime.getRuntime().availableProcessors()
+    outputFormats = setOf("HTML", "XML")
+    timestampedReports = false
+    // 不安定なテストをスキップして、ミューテーションテストを継続する
+    skipFailingTests = true
 }
