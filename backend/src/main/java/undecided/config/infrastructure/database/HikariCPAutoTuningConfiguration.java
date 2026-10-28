@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.config;
+package undecided.config.infrastructure.database;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
