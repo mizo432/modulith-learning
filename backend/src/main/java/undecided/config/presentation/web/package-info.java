@@ -1,6 +1,6 @@
 /**
- * This package contains exception handling components for web requests. It includes exception
- * resolvers, logging interceptors, and filters for handling and logging exceptions that occur
- * during web request processing.
+ * このパッケージは、Webリクエストの例外処理コンポーネントを含みます。
+ * 例外リゾルバー、ロギングインターセプター、およびWebリクエスト処理中に発生する例外の
+ * 処理とロギングを行うフィルターが含まれています。
  */
 package undecided.config.presentation.web;

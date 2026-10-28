@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.config;
+package undecided.config.batch;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

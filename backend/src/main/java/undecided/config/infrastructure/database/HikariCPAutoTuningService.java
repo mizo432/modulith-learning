@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.config;
+package undecided.config.infrastructure.database;
 
 import com.zaxxer.hikari.HikariDataSource;
 import io.micrometer.core.instrument.MeterRegistry;
