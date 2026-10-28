@@ -41,7 +41,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:${property("assertjVersion")}")
     testImplementation("org.mockito:mockito-core:${property("mockitoVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${property("junitVersion")}")
 }
 
 tasks.withType<Test> {
