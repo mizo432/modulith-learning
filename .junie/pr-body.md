@@ -1,61 +1,70 @@
 ## 概要
 
-バッチステップの開始・終了時にログを出力する共通リスナーを追加しました。
-また、JobLauncherからJobOperatorへのリネームを行い、Spring Batchの標準的な命名に合わせました。
+JBジョブ管理（Jobloom）の要件定義書をRDRAモデル3フェーズを経て作成しました。
 
-すべてのバッチステップにBatchStepListenerを適用することで、一貫したログ出力を実現します。
+## 変更内容
 
-| ファイルパス                                                                                                           | 状態      | 修正概要                                   | 備考                            |
-|------------------------------------------------------------------------------------------------------------------------|-----------|--------------------------------------------|---------------------------------|
-| `backend/src/main/java/undecided/shared/config/BatchStepListener.java`                                                 | `created` | ステップ開始・終了ログ出力リスナー新規追加 | StepExecutionListener実装       |
-| `backend/src/main/java/undecided/generic/addressReg/internal/batch/config/ChouAzaImportBatchConfig.java`               | `updated` | BatchStepListenerをステップに追加          | 特になし                        |
-| `backend/src/main/java/undecided/generic/addressReg/internal/batch/config/CityImportBatchConfig.java`                  | `updated` | BatchStepListenerをステップに追加          | 特になし                        |
-| `backend/src/main/java/undecided/generic/addressReg/internal/batch/config/PrefectureImportBatchConfig.java`            | `updated` | BatchStepListenerをステップに追加          | 特になし                        |
-| `backend/src/main/java/undecided/generic/bankReg/internal/batch/config/BankImportBatchConfig.java`                     | `updated` | BatchStepListenerを4つのステップに追加     | 特になし                        |
-| `backend/src/main/java/undecided/generic/bankReg/internal/batch/config/BranchImportBatchConfig.java`                   | `updated` | BatchStepListenerをステップに追加          | 特になし                        |
-| `backend/src/main/java/undecided/generic/calendarReg/internal/batch/config/HolidayImportBatchConfig.java`              | `updated` | BatchStepListenerをステップに追加          | 特になし                        |
-| `backend/src/main/java/undecided/generic/largeRecordBatch/internal/batch/config/LargeRecordImportBatchConfig.java`     | `updated` | BatchStepListenerをステップに追加          | 特になし                        |
-| `backend/src/main/java/undecided/generic/sampleBatch/internal/batch/config/SampleItemImportBatchConfig.java`           | `updated` | BatchStepListenerをステップに追加          | 特になし                        |
-| `backend/src/main/java/undecided/generic/addressReg/internal/batch/operator/ChouAzaImportJobOperator.java`             | `renamed` | ChouAzaImportJobLauncherからリネーム       | launcher→operatorパッケージ変更 |
-| `backend/src/main/java/undecided/generic/addressReg/internal/batch/operator/CityImportJobOperator.java`                | `renamed` | CityImportJobLauncherからリネーム          | launcher→operatorパッケージ変更 |
-| `backend/src/main/java/undecided/generic/addressReg/internal/batch/operator/PrefectureImportJobOperator.java`          | `renamed` | PrefectureImportJobLauncherからリネーム    | launcher→operatorパッケージ変更 |
-| `backend/src/main/java/undecided/generic/bankReg/internal/batch/operator/BankImportJobOperator.java`                   | `renamed` | BankImportJobLauncherからリネーム          | launcher→operatorパッケージ変更 |
-| `backend/src/main/java/undecided/generic/bankReg/internal/batch/operator/BranchImportJobOperator.java`                 | `renamed` | BranchImportJobLauncherからリネーム        | launcher→operatorパッケージ変更 |
-| `backend/src/main/java/undecided/generic/calendarReg/internal/batch/operator/HolidayImportJobOperator.java`            | `renamed` | HolidayImportJobLauncherからリネーム       | launcher→operatorパッケージ変更 |
-| `backend/src/main/java/undecided/generic/largeRecordBatch/internal/batch/operator/LargeRecordImportJobOperator.java`   | `renamed` | LargeRecordImportJobLauncherからリネーム   | launcher→operatorパッケージ変更 |
-| `backend/src/main/java/undecided/generic/sampleBatch/internal/batch/operator/SampleItemImportJobOperator.java`         | `renamed` | SampleItemImportJobLauncherからリネーム    | launcher→operatorパッケージ変更 |
-| `backend/src/test/java/undecided/generic/addressReg/internal/batch/config/ChouAzaImportBatchConfigTest.java`           | `updated` | JobLauncherからJobOperatorへの参照更新     | 特になし                        |
-| `backend/src/test/java/undecided/generic/addressReg/internal/batch/config/CityImportBatchConfigTest.java`              | `updated` | JobLauncherからJobOperatorへの参照更新     | 特になし                        |
-| `backend/src/test/java/undecided/generic/addressReg/internal/batch/config/PrefectureImportBatchConfigTest.java`        | `updated` | JobLauncherからJobOperatorへの参照更新     | 特になし                        |
-| `backend/src/test/java/undecided/generic/calendarReg/internal/batch/config/HolidayImportBatchConfigTest.java`          | `updated` | JobLauncherからJobOperatorへの参照更新     | 特になし                        |
-| `backend/src/test/java/undecided/generic/largeRecordBatch/internal/batch/config/LargeRecordImportBatchConfigTest.java` | `updated` | JobLauncherからJobOperatorへの参照更新     | 特になし                        |
-| `backend/src/test/java/undecided/generic/sampleBatch/internal/batch/config/SampleItemImportBatchConfigTest.java`       | `updated` | JobLauncherからJobOperatorへの参照更新     | 特になし                        |
-| `.agents/guidelines/java/coding-standards.guidelines.md`                                                               | `updated` | launcher→operatorへの記載更新              | 特になし                        |
-| `.agents/skills/batch-design/SKILL.md`                                                                                 | `updated` | launcher→operatorへの記載更新              | 特になし                        |
-| `.agents/skills/modulith-dev/SKILL.md`                                                                                 | `updated` | launcher→operatorへの記載更新              | 特になし                        |
-| `docs/05 バッチガイド/バッチ設計ガイド.md`                                                                             | `updated` | launcher→operatorへの記載更新              | 特になし                        |
+### フェーズ1: 枠組みを作る
+- **システム価値レイヤー**: 機能要求・非機能要求、アクター(2件)、外部システム(3件)を定義
+- **外部環境レイヤー**: 業務(1件)、BUC(8件)を定義
+- **システム境界レイヤー**: アクター(2件)を定義
+- **システムレイヤー**: 情報(12件)、状態(8件)を定義
 
-## 動作確認方法
+### フェーズ2: 要件を組み立てる
+- **ユースケース**: 27件を定義（定義管理、起動制御、監視、障害復旧、権限管理、通知、監査、会社・店舗参照）
+- **画面**: 26件を定義（ダッシュボード・実行監視、ジョブ定義・スケジュール、手動起動・障害復旧、サーバー・配備、通知・権限・監査）
+- **イベント**: 20件を定義（ジョブ定義関連、配備関連、権限関連、ジョブ実行関連、通知・会社・店舗）
+- **ステートマシン図**: PlantUMLによる状態遷移図（英語版・日本語版）を作成
+- **UC複合図**: PlantUMLによるUC複合図（英語版・日本語版）を作成
 
-- ブランチをチェックアウト
-- 以下のコマンドでビルドとテストを実行
+### フェーズ3: 整合性・網羅性を確認し精度を高める
+- **条件（ビジネスルール）**: 8件を種類（ポリシー、意思決定支援）付きで定義
+- **バリエーション**: 7件を定義
+- **用語集**: 20件の用語を定義
+- **整合性チェック**: 全5項目で整合性OK
+- **網羅性チェック**: 全3項目で網羅OK
 
-```bash
-./gradlew :backend:compileJava
-./gradlew :backend:compileTestJava
-```
+## 統計情報
 
-## 関連issueやプルリクエスト
+| カテゴリ | 件数 |
+|---------|------|
+| アクター | 2 |
+| 外部システム | 3 |
+| 業務 | 1 |
+| BUC | 8 |
+| ユースケース | 27 |
+| 画面 | 26 |
+| イベント | 20 |
+| 情報 | 12 |
+| 状態 | 8 |
+| 状態遷移 | 9 |
+| 条件（ビジネスルール） | 8 |
+| バリエーション | 7 |
+| 非機能要件 | 9 |
+| 用語 | 20 |
 
-closes: [#291](https://github.com/mizo432/modulith-learning/issues/291) — バッチステップ開始時にログを出力する
-closes: [#292](https://github.com/mizo432/modulith-learning/issues/292) — バッチステップ終了時にログを出力する
-closes: [#294](https://github.com/mizo432/modulith-learning/issues/294) —
-JobLauncherからJobOperatorへのリネーム
+## 変更差分詳細
 
-## 懸念事項
+### 新規作成ファイル（46件）
+- `docs/21 要望/JB ジョブ管理/` - 概要設計書関連4件
+- `docs/22 要件定義書/JB ジョブ管理/` - RDRAモデル要件定義書38件
+  - 非機能要件一覧（9件）
+  - システム価値（アクター2件、外部システム3件）
+  - 外部環境（外部システム定義3件、業務1件、BUC一覧8件）
+  - システム境界（ユースケース27件、UC複合図）
+  - システム（情報12件、ステート8件、イベント20件、画面26件、条件8件、バリエーション7件、整合性チェック結果）
+  - 用語集（20件）
+  - 要件定義完了報告
 
-- 特になし
+### 修正ファイル
+- `docs/11 事業領域/事業領域一覧.md/tsv` - JBジョブ管理を追加
 
-## 参考ドキュメント
+## 確認方法
 
-- [Spring Batch StepExecutionListener](https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/listener/StepExecutionListener.html)
+1. 要件定義書ディレクトリを確認: `docs/22 要件定義書/JB ジョブ管理/`
+2. 整合性チェック結果を確認: `03 機能要件/JB-01 ジョブ実行管理/04.システム/07.整合性チェック/整合性チェック結果.md`
+3. 要件定義完了報告を確認: `要件定義完了報告.md`
+
+## 関連Issue
+
+Closes #367
