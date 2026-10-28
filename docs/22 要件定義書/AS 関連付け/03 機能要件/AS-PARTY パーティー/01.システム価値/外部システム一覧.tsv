@@ -1,0 +1,6 @@
+# 外部システム一覧
+
+ID	外部システム名	連携内容
+ES-AS-01	PostgreSQL	Party情報の永続化
+ES-AS-02	JBジョブ管理	Party情報の参照API提供
+ES-AS-03	AGアジルーム	Party情報の参照API提供
