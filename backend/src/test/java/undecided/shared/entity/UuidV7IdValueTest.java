@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import undecided.shared.uuidV7Provider.UuidV7Provider;
+import com.github.mizo432.shared.common.uuidV7Provider.UuidV7Provider;
 
 @DisplayName("UuidV7IdValueのテスト")
 class UuidV7IdValueTest {

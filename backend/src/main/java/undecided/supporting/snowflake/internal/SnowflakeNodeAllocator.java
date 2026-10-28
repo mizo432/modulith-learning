@@ -5,7 +5,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import undecided.shared.dateProvider.DateProvider;
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 
 /**
  * スノーフレークアルゴリズムで使用するノードIDを管理および割り当てるためのクラスです。

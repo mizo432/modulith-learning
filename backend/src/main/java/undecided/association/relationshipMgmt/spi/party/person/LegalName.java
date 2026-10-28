@@ -4,7 +4,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.primitive.Strings2;
+import com.github.mizo432.shared.common.primitive.Strings2;
 import undecided.shared.sensitive.SensitiveDataMasker;
 import undecided.shared.value.StringCode;
 

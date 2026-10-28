@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import undecided.shared.dateProvider.StaticDateTimeProvider;
+import com.github.mizo432.shared.common.dateProvider.StaticDateTimeProvider;
 
 @Tag("small")
 @DisplayName("SnowflakeNodeAllocatorのテスト")

@@ -1,6 +1,6 @@
 package undecided.generic.calendarReg.internal.batch.processor;
 
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;

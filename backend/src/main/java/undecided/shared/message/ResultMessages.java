@@ -4,9 +4,9 @@ import static undecided.shared.message.StandardResultMessageType.DANGER;
 import static undecided.shared.message.StandardResultMessageType.INFO;
 import static undecided.shared.message.StandardResultMessageType.SUCCESS;
 import static undecided.shared.message.StandardResultMessageType.WARNING;
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
-import static undecided.shared.primitive.Lists2.newArrayList;
-import static undecided.shared.primitive.Objects2.nonNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.primitive.Lists2.newArrayList;
+import static com.github.mizo432.shared.common.primitive.Objects2.nonNull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
-import undecided.shared.primitive.Strings2;
+import com.github.mizo432.shared.common.primitive.Strings2;
 
 /**
  * 複数の結果メッセージを管理するためのクラスです。

@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
-import undecided.shared.annotation.DoNotCall;
-import undecided.shared.annotation.VisibleForTesting;
+import com.github.mizo432.shared.common.annotation.DoNotCall;
+import com.github.mizo432.shared.common.annotation.VisibleForTesting;
 
 @Tag("small")
 @DisplayName("Spring Modulithの検証テスト")
@@ -37,8 +37,8 @@ class ModulithTest {
   void verifyDoNotCallAnnotationHasDeprecated() throws ClassNotFoundException {
     // DoNotCall アノテーションが付与されたメソッドは必ず @Deprecated も付与されていることを確認
     Class<?>[] classesWithDoNotCall = {
-      undecided.shared.primitive.Sets2.class,
-      undecided.shared.primitive.UnmodifiableIterator.class
+      com.github.mizo432.shared.common.primitive.Sets2.class,
+      com.github.mizo432.shared.common.primitive.UnmodifiableIterator.class
     };
 
     for (Class<?> clazz : classesWithDoNotCall) {

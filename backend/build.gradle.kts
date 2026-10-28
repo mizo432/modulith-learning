@@ -72,6 +72,7 @@ extra["superCsvVersion"] = "2.4.0"
 extra["testcontainersVersion"] = "2.0.5"
 
 dependencies {
+    implementation(project(":mizo432-shared-common"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
