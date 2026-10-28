@@ -1,5 +1,3 @@
-# 情報一覧
-
 情報ID	情報名	情報種類	説明	関連ユースケース	履歴管理要	証跡要	実現方法
 INF-AS-PARTY-01	パーティー	リソース	組織・人・会社・店舗などの実体を抽象化した基本情報	UC-AS-PARTY-001, UC-AS-PARTY-002, UC-AS-PARTY-003, UC-AS-PARTY-004, UC-AS-PARTY-005, UC-AS-PARTY-006	Y	Y	DB
 INF-AS-PARTY-02	パーティー種類	対照表	パーティーの種類（個人、法人、組織など）	UC-AS-PARTY-001	N	N	DB and enum

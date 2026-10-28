@@ -1,5 +1,3 @@
-# BUC一覧
-
 ID	BUC名	概要	主なアクター	関連業務	関連ユースケース
 BUC-AS-PERSON-01	従業員の管理	従業員の登録・更新・削除を管理する	AC-AS-01	AS-PERSON-ROLE	
 BUC-AS-PERSON-02	従業員の参照	従業員情報の検索・一覧取得を管理する	AC-AS-01, AC-AS-03, AC-AS-04	AS-PERSON-ROLE	

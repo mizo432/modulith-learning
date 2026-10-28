@@ -1,5 +1,3 @@
-# ユースケース一覧
-
 ユースケースID	ユースケース名	説明	アクター	優先度	ビジネスユースケース	外部システム	画面
 UC-AS-PARTY-ROLE-001	ロール定義を登録する	新しいロール定義を登録する	AC-AS-01	中	BUC-AS-PARTY-ROLE-01	ES-AS-01	
 UC-AS-PARTY-ROLE-002	ロール定義を更新する	ロール定義を更新する	AC-AS-01	中	BUC-AS-PARTY-ROLE-01	ES-AS-01	

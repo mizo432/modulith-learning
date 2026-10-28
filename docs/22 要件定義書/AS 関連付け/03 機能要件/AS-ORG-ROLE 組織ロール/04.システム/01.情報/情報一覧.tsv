@@ -1,5 +1,3 @@
-# 情報一覧
-
 情報ID	情報名	情報種類	説明	関連ユースケース	履歴管理要	証跡要	実現方法
 INF-AS-ORG-01	組織	リソース	組織・部署の基本情報	UC-AS-ORG-001, UC-AS-ORG-002, UC-AS-ORG-003, UC-AS-ORG-006, UC-AS-ORG-007, UC-AS-ORG-008	Y	Y	DB
 INF-AS-ORG-02	組織ロール	リソース	組織に付与される組織ロール	UC-AS-ORG-001, UC-AS-ORG-011	Y	Y	DB

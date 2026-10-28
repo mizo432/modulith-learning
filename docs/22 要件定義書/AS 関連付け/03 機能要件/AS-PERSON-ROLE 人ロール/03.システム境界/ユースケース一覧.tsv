@@ -1,5 +1,3 @@
-# ユースケース一覧
-
 ユースケースID	ユースケース名	説明	アクター	優先度	ビジネスユースケース	外部システム	画面
 UC-AS-PERSON-001	従業員を登録する	新しい従業員を登録する（PartyとPersonRoleを自動作成）	AC-AS-01	高	BUC-AS-PERSON-01	ES-AS-01	
 UC-AS-PERSON-002	従業員を更新する	従業員の基本情報を更新する	AC-AS-01	中	BUC-AS-PERSON-01	ES-AS-01	

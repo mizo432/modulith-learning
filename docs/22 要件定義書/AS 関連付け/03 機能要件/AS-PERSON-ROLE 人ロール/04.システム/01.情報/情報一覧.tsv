@@ -1,5 +1,3 @@
-# 情報一覧
-
 情報ID	情報名	情報種類	説明	関連ユースケース	履歴管理要	証跡要	実現方法
 INF-AS-PERSON-01	従業員	リソース	個人（従業員）の基本情報	UC-AS-PERSON-001, UC-AS-PERSON-002, UC-AS-PERSON-003, UC-AS-PERSON-004, UC-AS-PERSON-005, UC-AS-PERSON-006	Y	Y	DB
 INF-AS-PERSON-02	人ロール	リソース	従業員に付与される人ロール	UC-AS-PERSON-001, UC-AS-PERSON-007	Y	Y	DB
