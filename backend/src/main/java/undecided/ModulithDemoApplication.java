@@ -9,6 +9,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.modulith.Modulithic;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import com.github.mizo432.shared.application.ApplicationInfoInitializer;
@@ -22,6 +23,7 @@ import com.github.mizo432.shared.application.ApplicationInfoInitializer;
 @SpringBootApplication(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
 @ComponentScan(basePackages = {"undecided", "com.github.mizo432.shared"})
 @EntityScan(basePackages = {"undecided", "com.github.mizo432.shared"})
+@EnableJpaRepositories(basePackages = {"undecided", "com.github.mizo432.shared"})
 @Modulithic(additionalPackages = "com.github.mizo432.shared")
 @EnableAsync
 @EnableScheduling
