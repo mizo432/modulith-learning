@@ -1,0 +1,9 @@
+ID	アグリゲート名	英語名	サブドメイン	ルートエンティティ	概要	関連情報
+AG-JB-01	ジョブ定義	JobDefinition	SD-JB-01	ジョブ定義	ジョブコード、パラメータ、実行条件、バージョンを管理	INF-JB-01
+AG-JB-02	ジョブ配備	JobDeployment	SD-JB-01	ジョブ配備	サーバーごとの配備状況・バージョンを管理	INF-JB-02, INF-JB-03
+AG-JB-03	スケジュール	Schedule	SD-JB-01	スケジュール	実行日時、繰り返し条件、有効期間を管理	INF-JB-01
+AG-JB-04	ジョブ実行	JobExecution	SD-JB-02	ジョブ実行	実行状態・結果・履歴を管理	INF-JB-04, INF-JB-05, INF-JB-06
+AG-JB-05	通知設定	NotificationSetting	SD-JB-03	通知設定	通知条件、通知先、通知対象ジョブを管理	INF-JB-09
+AG-JB-06	権限	Permission	SD-JB-04	ユーザー権限	ユーザーのロール、会社・店舗の参照権限を管理	INF-JB-07, INF-JB-08
+AG-JB-07	会社	Company	SD-JB-04	会社	会社情報と所属店舗を管理	INF-JB-07
+AG-JB-08	監査ログ	AuditLog	SD-JB-04	監査ログ	操作履歴を記録	INF-JB-11
