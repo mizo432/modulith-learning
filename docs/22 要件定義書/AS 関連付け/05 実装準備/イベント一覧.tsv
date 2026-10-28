@@ -1,0 +1,57 @@
+# イベント一覧
+
+AS関連付け（Association）事業領域で発生するイベントを整理します。
+
+## ドメインイベント
+
+| 番号 | イベントID | イベント名 | 発生元ユースケース | 発生条件 | 関連情報 | 優先度 |
+|------|-----------|-----------|-------------------|---------|---------|--------|
+| 01 | EVT-AS-PARTY-001 | パーティー登録完了 | UC-AS-PARTY-001 | 新しいPartyが登録されたとき | Party, PartyType | 高 |
+| 02 | EVT-AS-PARTY-002 | パーティー更新完了 | UC-AS-PARTY-002 | Partyの基本情報が更新されたとき | Party | 中 |
+| 03 | EVT-AS-PARTY-003 | パーティー無効化完了 | UC-AS-PARTY-003 | Partyが無効化されたとき | Party | 中 |
+| 04 | EVT-AS-PARTY-004 | ロール付与完了 | UC-AS-PARTY-007 | Partyにロールが付与されたとき | Party, PartyRole | 中 |
+| 05 | EVT-AS-PARTY-005 | ロール解除完了 | UC-AS-PARTY-008 | Partyからロールが解除されたとき | Party, PartyRole | 中 |
+| 06 | EVT-AS-PERSON-001 | 従業員登録完了 | UC-AS-PERSON-001 | 新しい従業員が登録されたとき | Employee, PersonRole, Party | 高 |
+| 07 | EVT-AS-PERSON-002 | 従業員更新完了 | UC-AS-PERSON-002 | 従業員の基本情報が更新されたとき | Employee | 中 |
+| 08 | EVT-AS-PERSON-003 | 従業員退社完了 | UC-AS-PERSON-003 | 従業員が退社処理されたとき | Employee | 高 |
+| 09 | EVT-AS-PERSON-004 | 所属組織変更完了 | UC-AS-PERSON-007 | 従業員の所属組織が変更されたとき | Employee, Organization | 高 |
+| 10 | EVT-AS-ORG-001 | 組織登録完了 | UC-AS-ORG-001 | 新しい組織が登録されたとき | Organization | 高 |
+| 11 | EVT-AS-ORG-002 | 組織更新完了 | UC-AS-ORG-002 | 組織の基本情報が更新されたとき | Organization | 中 |
+| 12 | EVT-AS-ORG-003 | 組織廃止完了 | UC-AS-ORG-003 | 組織が廃止されたとき | Organization | 高 |
+| 13 | EVT-AS-ORG-004 | 会社登録完了 | UC-AS-ORG-004 | 新しい会社が登録されたとき | Company | 高 |
+| 14 | EVT-AS-ORG-005 | 店舗登録完了 | UC-AS-ORG-005 | 新しい店舗が登録されたとき | Store | 高 |
+| 15 | EVT-AS-ORG-006 | 組織階層変更完了 | UC-AS-ORG-011 | 組織の階層構造が変更されたとき | Organization, OrganizationHierarchy | 高 |
+| 16 | EVT-AS-ORG-007 | 権限範囲定義完了 | UC-AS-ORG-012 | 組織の権限範囲が定義されたとき | Organization | 中 |
+| 17 | EVT-AS-PARTY-ROLE-001 | ロール定義登録完了 | UC-AS-PARTY-ROLE-001 | 新しいロール定義が登録されたとき | PartyRole | 中 |
+| 18 | EVT-AS-PARTY-ROLE-002 | ロール定義更新完了 | UC-AS-PARTY-ROLE-002 | ロール定義が更新されたとき | PartyRole | 中 |
+| 19 | EVT-AS-PARTY-ROLE-003 | パーティーロール付与完了 | UC-AS-PARTY-ROLE-006 | パーティーにロールが付与されたとき | Party, PartyRole | 中 |
+| 20 | EVT-AS-PARTY-ROLE-004 | パーティーロール解除完了 | UC-AS-PARTY-ROLE-007 | パーティーからロールが解除されたとき | Party, PartyRole | 中 |
+
+## 外部システム連携イベント
+
+| 番号 | イベントID | イベント名 | 送信先 | 発生条件 | 連携方法 | 優先度 |
+|------|-----------|-----------|--------|---------|---------|--------|
+| 01 | EVT-AS-EXT-001 | 会社情報変更通知 | JBジョブ管理 | 会社が登録・更新・廃止されたとき | API/Webhook | 高 |
+| 02 | EVT-AS-EXT-002 | 店舗情報変更通知 | JBジョブ管理 | 店舗が登録・更新・廃止されたとき | API/Webhook | 高 |
+| 03 | EVT-AS-EXT-003 | 従業員情報変更通知 | JBジョブ管理 | 従業員が登録・更新・退社されたとき | API/Webhook | 高 |
+| 04 | EVT-AS-EXT-004 | 組織情報変更通知 | JBジョブ管理 | 組織が登録・更新・廃止されたとき | API/Webhook | 高 |
+| 05 | EVT-AS-EXT-005 | 所属変更通知 | JBジョブ管理 | 従業員の所属組織が変更されたとき | API/Webhook | 高 |
+| 06 | EVT-AS-EXT-006 | 会社情報変更通知 | AGアジルーム | 会社が登録・更新・廃止されたとき | API/Webhook | 中 |
+| 07 | EVT-AS-EXT-007 | 店舗情報変更通知 | AGアジルーム | 店舗が登録・更新・廃止されたとき | API/Webhook | 中 |
+| 08 | EVT-AS-EXT-008 | 従業員情報変更通知 | AGアジルーム | 従業員が登録・更新・退社されたとき | API/Webhook | 高 |
+| 09 | EVT-AS-EXT-009 | 組織情報変更通知 | AGアジルーム | 組織が登録・更新・廃止されたとき | API/Webhook | 中 |
+| 10 | EVT-AS-EXT-010 | 所属変更通知 | AGアジルーム | 従業員の所属組織が変更されたとき | API/Webhook | 中 |
+
+## イベント配信方針
+
+1. **同期配信**: 重要な状態変更は同期で配信し、失敗時はトランザクションをロールバック
+2. **非同期配信**: 通知系のイベントは非同期で配信し、失敗時はリトライ
+3. **リトライポリシー**: 最大3回リトライ、指数バックオフ
+4. **デッドレターキュー**: リトライ失敗時はDLQに格納し、手動対応
+
+## 参照
+
+- [AS-PARTY ユースケース一覧](../03%20機能要件/AS-PARTY%20パーティー/03.システム境界/ユースケース一覧.tsv)
+- [AS-PERSON-ROLE ユースケース一覧](../03%20機能要件/AS-PERSON-ROLE%20人ロール/03.システム境界/ユースケース一覧.tsv)
+- [AS-ORG-ROLE ユースケース一覧](../03%20機能要件/AS-ORG-ROLE%20組織ロール/03.システム境界/ユースケース一覧.tsv)
+- [AS-PARTY-ROLE ユースケース一覧](../03%20機能要件/AS-PARTY-ROLE%20パーティーロール/03.システム境界/ユースケース一覧.tsv)
