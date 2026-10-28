@@ -11,6 +11,7 @@ import undecided.jobmanagement.jobdefinition.spi.jobdefinition.ParameterSpec;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.command.RegisterJobDefinitionCommand;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.dto.JobDefinitionDTO;
 import undecided.supporting.snowflake.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 import java.time.LocalDateTime;
 
@@ -19,11 +20,12 @@ import java.time.LocalDateTime;
 public class RegisterJobDefinitionCommandService implements RegisterJobDefinitionCommand {
 
   private final JobDefinitionRepository jobDefinitionRepository;
+  private final SnowflakeIdGenerator snowflakeIdGenerator;
 
   @Override
   public void register(JobDefinitionDTO jobDefinitionDTO) {
     JobDefinition jobDefinition = new JobDefinition();
-    jobDefinition.setId(SnowflakeId.nextId());
+    jobDefinition.setId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
     jobDefinition.setJobCode(JobCode.of(jobDefinitionDTO.getJobCode()));
     jobDefinition.setVersion(JobVersion.of(jobDefinitionDTO.getVersion()));
     jobDefinition.setParameterSpec(ParameterSpec.of(jobDefinitionDTO.getParameterSpec()));

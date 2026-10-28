@@ -9,6 +9,7 @@ import undecided.jobmanagement.jobexecution.spi.jobexecution.JobExecution;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.command.StartJobCommand;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.dto.JobExecutionDTO;
 import undecided.supporting.snowflake.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 import java.time.LocalDateTime;
 
@@ -17,11 +18,12 @@ import java.time.LocalDateTime;
 public class StartJobCommandService implements StartJobCommand {
 
   private final JobExecutionRepository jobExecutionRepository;
+  private final SnowflakeIdGenerator snowflakeIdGenerator;
 
   @Override
   public void startJob(JobExecutionDTO jobExecutionDTO) {
     JobExecution jobExecution = new JobExecution();
-    jobExecution.setId(SnowflakeId.nextId());
+    jobExecution.setId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
     jobExecution.setExecutionId(ExecutionId.of(jobExecutionDTO.getExecutionId()));
     jobExecution.setJobCode(jobExecutionDTO.getJobCode());
     jobExecution.setState(ExecutionState.PENDING);
