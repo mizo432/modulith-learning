@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import com.github.mizo432.shared.converter.EncryptedStringConverter;
 
-@Entity
+@Entity(name = "TestEmployee")
 @Table(name = "employees")
 @Getter
 @Setter
