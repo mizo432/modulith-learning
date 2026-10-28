@@ -1,0 +1,1619 @@
+openapi: 3.0.3
+info:
+  title: AS関連付け API
+  description: AS関連付け（Association）事業領域のREST API仕様書
+  version: 1.0.0
+  contact:
+    name: AS関連付けチーム
+servers:
+  - url: /api/as/v1
+    description: 本番サーバー
+
+paths:
+  /parties:
+    get:
+      summary: パーティー一覧を取得する
+      operationId: getParties
+      tags:
+        - Party
+      parameters:
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartyPagedResponse'
+    post:
+      summary: パーティーを登録する
+      operationId: createParty
+      tags:
+        - Party
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartyResponse'
+        '409':
+          description: 競合エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /parties/search:
+    get:
+      summary: パーティーを検索する
+      operationId: searchParties
+      tags:
+        - Party
+      parameters:
+        - name: partyTypeCode
+          in: query
+          schema:
+            type: string
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: code
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartySearchResponse'
+
+  /parties/{partyId}:
+    get:
+      summary: パーティーの詳細を取得する
+      operationId: getPartyById
+      tags:
+        - Party
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartyDetailResponse'
+        '404':
+          description: 見つからない
+    put:
+      summary: パーティーを更新する
+      operationId: updateParty
+      tags:
+        - Party
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartyResponse'
+        '404':
+          description: 見つからない
+    delete:
+      summary: パーティーを無効化する
+      operationId: deleteParty
+      tags:
+        - Party
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 削除成功
+        '404':
+          description: 見つからない
+
+  /parties/{partyId}/roles:
+    post:
+      summary: ロールを付与する
+      operationId: assignRoleToParty
+      tags:
+        - Party
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleAssignRequest'
+      responses:
+        '201':
+          description: 付与成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleAssignmentResponse'
+
+  /parties/{partyId}/roles/{roleId}:
+    delete:
+      summary: ロールを解除する
+      operationId: removeRoleFromParty
+      tags:
+        - Party
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 解除成功
+
+  /roles:
+    get:
+      summary: ロール一覧を取得する
+      operationId: getRoles
+      tags:
+        - Role
+      parameters:
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePagedResponse'
+    post:
+      summary: ロール定義を登録する
+      operationId: createRole
+      tags:
+        - Role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+
+  /roles/search:
+    get:
+      summary: ロールを検索する
+      operationId: searchRoles
+      tags:
+        - Role
+      parameters:
+        - name: roleTypeCode
+          in: query
+          schema:
+            type: string
+        - name: roleName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleSearchResponse'
+
+  /roles/{roleId}:
+    get:
+      summary: ロールの詳細を取得する
+      operationId: getRoleById
+      tags:
+        - Role
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDetailResponse'
+        '404':
+          description: 見つからない
+    put:
+      summary: ロール定義を更新する
+      operationId: updateRole
+      tags:
+        - Role
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+
+  /roles/{roleId}/parties:
+    post:
+      summary: パーティーにロールを付与する
+      operationId: assignPartyToRole
+      tags:
+        - Role
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyAssignRequest'
+      responses:
+        '201':
+          description: 付与成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleAssignmentResponse'
+
+  /roles/{roleId}/parties/{partyId}:
+    delete:
+      summary: パーティーからロールを解除する
+      operationId: removePartyFromRole
+      tags:
+        - Role
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: partyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 解除成功
+
+  /roles/{roleId}/history:
+    get:
+      summary: ロール変更履歴を取得する
+      operationId: getRoleHistory
+      tags:
+        - Role
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleHistoryPagedResponse'
+
+  /employees:
+    get:
+      summary: 従業員一覧を取得する
+      operationId: getEmployees
+      tags:
+        - Employee
+      parameters:
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeePagedResponse'
+    post:
+      summary: 従業員を登録する
+      operationId: createEmployee
+      tags:
+        - Employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+
+  /employees/search:
+    get:
+      summary: 従業員を検索する
+      operationId: searchEmployees
+      tags:
+        - Employee
+      parameters:
+        - name: lastName
+          in: query
+          schema:
+            type: string
+        - name: firstName
+          in: query
+          schema:
+            type: string
+        - name: employeeCode
+          in: query
+          schema:
+            type: string
+        - name: organizationId
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeSearchResponse'
+
+  /employees/{employeeId}:
+    get:
+      summary: 従業員の詳細を取得する
+      operationId: getEmployeeById
+      tags:
+        - Employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeDetailResponse'
+        '404':
+          description: 見つからない
+    put:
+      summary: 従業員を更新する
+      operationId: updateEmployee
+      tags:
+        - Employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+    delete:
+      summary: 従業員を無効化する
+      operationId: deleteEmployee
+      tags:
+        - Employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 削除成功
+
+  /employees/{employeeId}/affiliation:
+    put:
+      summary: 所属組織を変更する
+      operationId: updateEmployeeAffiliation
+      tags:
+        - Employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AffiliationUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AffiliationResponse'
+
+  /employees/{employeeId}/affiliation/history:
+    get:
+      summary: 部署変更履歴を取得する
+      operationId: getEmployeeAffiliationHistory
+      tags:
+        - Employee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AffiliationHistoryPagedResponse'
+
+  /organizations:
+    get:
+      summary: 組織一覧を取得する
+      operationId: getOrganizations
+      tags:
+        - Organization
+      parameters:
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationPagedResponse'
+    post:
+      summary: 組織を登録する
+      operationId: createOrganization
+      tags:
+        - Organization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+
+  /organizations/search:
+    get:
+      summary: 組織を検索する
+      operationId: searchOrganizations
+      tags:
+        - Organization
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: organizationTypeCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationSearchResponse'
+
+  /organizations/{organizationId}:
+    get:
+      summary: 組織の詳細を取得する
+      operationId: getOrganizationById
+      tags:
+        - Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDetailResponse'
+        '404':
+          description: 見つからない
+    put:
+      summary: 組織を更新する
+      operationId: updateOrganization
+      tags:
+        - Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+    delete:
+      summary: 組織を無効化する
+      operationId: deleteOrganization
+      tags:
+        - Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 削除成功
+
+  /organizations/{organizationId}/hierarchy:
+    put:
+      summary: 組織階層を変更する
+      operationId: updateOrganizationHierarchy
+      tags:
+        - Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HierarchyUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HierarchyResponse'
+
+  /organizations/{organizationId}/permissions:
+    post:
+      summary: 権限範囲を定義する
+      operationId: definePermissionScope
+      tags:
+        - Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionScopeRequest'
+      responses:
+        '201':
+          description: 定義成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionScopeResponse'
+
+  /organizations/{organizationId}/history:
+    get:
+      summary: 組織変更履歴を取得する
+      operationId: getOrganizationHistory
+      tags:
+        - Organization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationHistoryPagedResponse'
+
+  /companies:
+    get:
+      summary: 会社一覧を取得する
+      operationId: getCompanies
+      tags:
+        - Company
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyListResponse'
+    post:
+      summary: 会社を登録する
+      operationId: createCompany
+      tags:
+        - Company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+
+  /stores:
+    get:
+      summary: 店舗一覧を取得する
+      operationId: getStores
+      tags:
+        - Store
+      parameters:
+        - name: companyId
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreListResponse'
+    post:
+      summary: 店舗を登録する
+      operationId: createStore
+      tags:
+        - Store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoreCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreResponse'
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            status:
+              type: integer
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+            timestamp:
+              type: string
+              format: date-time
+
+    PartyCreateRequest:
+      type: object
+      required:
+        - partyTypeCode
+        - name
+      properties:
+        partyTypeCode:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+
+    PartyUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+
+    PartyResponse:
+      type: object
+      properties:
+        partyId:
+          type: integer
+        partyTypeCode:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    PartyDetailResponse:
+      type: object
+      properties:
+        partyId:
+          type: integer
+        partyTypeCode:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleAssignment'
+
+    PartyPagedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartyResponse'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+
+    PartySearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartyResponse'
+        metadata:
+          type: object
+          properties:
+            totalElements:
+              type: integer
+
+    RoleCreateRequest:
+      type: object
+      required:
+        - roleCode
+        - roleName
+        - roleTypeCode
+      properties:
+        roleCode:
+          type: string
+        roleName:
+          type: string
+        roleTypeCode:
+          type: string
+        description:
+          type: string
+
+    RoleUpdateRequest:
+      type: object
+      properties:
+        roleName:
+          type: string
+        description:
+          type: string
+
+    RoleResponse:
+      type: object
+      properties:
+        roleId:
+          type: integer
+        roleCode:
+          type: string
+        roleName:
+          type: string
+        roleTypeCode:
+          type: string
+        description:
+          type: string
+        validFrom:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    RoleDetailResponse:
+      type: object
+      properties:
+        roleId:
+          type: integer
+        roleCode:
+          type: string
+        roleName:
+          type: string
+        roleTypeCode:
+          type: string
+        description:
+          type: string
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    RolePagedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleResponse'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+
+    RoleSearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleResponse'
+        metadata:
+          type: object
+          properties:
+            totalElements:
+              type: integer
+
+    RoleAssignment:
+      type: object
+      properties:
+        roleId:
+          type: integer
+        roleCode:
+          type: string
+        roleName:
+          type: string
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+
+    RoleAssignmentResponse:
+      type: object
+      properties:
+        partyId:
+          type: integer
+        roleId:
+          type: integer
+        roleCode:
+          type: string
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+
+    RoleAssignRequest:
+      type: object
+      required:
+        - roleId
+      properties:
+        roleId:
+          type: integer
+        validFrom:
+          type: string
+          format: date-time
+
+    PartyAssignRequest:
+      type: object
+      required:
+        - partyId
+      properties:
+        partyId:
+          type: integer
+        validFrom:
+          type: string
+          format: date-time
+
+    RoleHistoryItem:
+      type: object
+      properties:
+        historyId:
+          type: integer
+        roleId:
+          type: integer
+        partyId:
+          type: integer
+        changeType:
+          type: string
+        changedAt:
+          type: string
+          format: date-time
+        changedBy:
+          type: string
+
+    RoleHistoryPagedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleHistoryItem'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+
+    EmployeeCreateRequest:
+      type: object
+      required:
+        - employeeCode
+        - lastName
+        - firstName
+        - hireDate
+      properties:
+        employeeCode:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        lastNameKana:
+          type: string
+        firstNameKana:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        hireDate:
+          type: string
+          format: date
+        affiliations:
+          type: array
+          items:
+            $ref: '#/components/schemas/AffiliationRequest'
+
+    EmployeeUpdateRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        phone:
+          type: string
+
+    EmployeeResponse:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+        partyId:
+          type: integer
+        employeeCode:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        email:
+          type: string
+        hireDate:
+          type: string
+          format: date
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    EmployeeDetailResponse:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+        partyId:
+          type: integer
+        employeeCode:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        lastNameKana:
+          type: string
+        firstNameKana:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        hireDate:
+          type: string
+          format: date
+        status:
+          type: string
+        affiliations:
+          type: array
+          items:
+            $ref: '#/components/schemas/AffiliationResponse'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    EmployeePagedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeResponse'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+
+    EmployeeSearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeResponse'
+        metadata:
+          type: object
+          properties:
+            totalElements:
+              type: integer
+
+    AffiliationRequest:
+      type: object
+      required:
+        - organizationId
+      properties:
+        organizationId:
+          type: integer
+        position:
+          type: string
+        isPrimary:
+          type: boolean
+
+    AffiliationResponse:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+        organizationName:
+          type: string
+        position:
+          type: string
+        isPrimary:
+          type: boolean
+        validFrom:
+          type: string
+          format: date-time
+
+    AffiliationUpdateRequest:
+      type: object
+      required:
+        - organizationId
+      properties:
+        organizationId:
+          type: integer
+        position:
+          type: string
+        isPrimary:
+          type: boolean
+
+    AffiliationHistoryItem:
+      type: object
+      properties:
+        historyId:
+          type: integer
+        employeeId:
+          type: integer
+        organizationId:
+          type: integer
+        organizationName:
+          type: string
+        position:
+          type: string
+        changedAt:
+          type: string
+          format: date-time
+        changedBy:
+          type: string
+
+    AffiliationHistoryPagedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AffiliationHistoryItem'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+
+    OrganizationCreateRequest:
+      type: object
+      required:
+        - organizationCode
+        - name
+        - organizationTypeCode
+      properties:
+        organizationCode:
+          type: string
+        name:
+          type: string
+        organizationTypeCode:
+          type: string
+        parentOrganizationId:
+          type: integer
+
+    OrganizationUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+
+    OrganizationResponse:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+        partyId:
+          type: integer
+        organizationCode:
+          type: string
+        name:
+          type: string
+        organizationTypeCode:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    OrganizationDetailResponse:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+        partyId:
+          type: integer
+        organizationCode:
+          type: string
+        name:
+          type: string
+        organizationTypeCode:
+          type: string
+        parentOrganizationId:
+          type: integer
+        status:
+          type: string
+        children:
+          type: array
+          items:
+            type: object
+            properties:
+              organizationId:
+                type: integer
+              name:
+                type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    OrganizationPagedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationResponse'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+
+    OrganizationSearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationResponse'
+        metadata:
+          type: object
+          properties:
+            totalElements:
+              type: integer
+
+    HierarchyUpdateRequest:
+      type: object
+      properties:
+        parentOrganizationId:
+          type: integer
+
+    HierarchyResponse:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+        parentOrganizationId:
+          type: integer
+        level:
+          type: integer
+
+    PermissionScopeRequest:
+      type: object
+      required:
+        - permissionCode
+        - scope
+      properties:
+        permissionCode:
+          type: string
+        scope:
+          type: string
+
+    PermissionScopeResponse:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+        permissionCode:
+          type: string
+        scope:
+          type: string
+
+    OrganizationHistoryItem:
+      type: object
+      properties:
+        historyId:
+          type: integer
+        organizationId:
+          type: integer
+        changeType:
+          type: string
+        changedAt:
+          type: string
+          format: date-time
+        changedBy:
+          type: string
+
+    OrganizationHistoryPagedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationHistoryItem'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+
+    CompanyCreateRequest:
+      type: object
+      required:
+        - companyCode
+        - name
+      properties:
+        companyCode:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        representative:
+          type: string
+
+    CompanyResponse:
+      type: object
+      properties:
+        companyId:
+          type: integer
+        companyCode:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CompanyListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyResponse'
+
+    StoreCreateRequest:
+      type: object
+      required:
+        - storeCode
+        - companyId
+        - name
+      properties:
+        storeCode:
+          type: string
+        companyId:
+          type: integer
+        name:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        managerName:
+          type: string
+
+    StoreResponse:
+      type: object
+      properties:
+        storeId:
+          type: integer
+        storeCode:
+          type: string
+        companyId:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    StoreListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StoreResponse'
+
+    PaginationMetadata:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        pageNumber:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
