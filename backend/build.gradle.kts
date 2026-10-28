@@ -302,9 +302,9 @@ fun isNonStable(version: String): Boolean {
 }
 
 // Pitest ミューテーションテスト構成
-// 初回導入時はundecided.sharedパッケージに限定し、実行時間を抑える
+// 初回導入時はcom.github.mizo432.sharedパッケージに限定し、実行時間を抑える
 pitest {
-    targetClasses = setOf("undecided.shared.*")
+    targetClasses = setOf("com.github.mizo432.shared.*")
     // JUnit 5 プラグインの自動追加
     junit5PluginVersion = "1.2.1"
     threads = Runtime.getRuntime().availableProcessors()
@@ -314,9 +314,9 @@ pitest {
     skipFailingTests = true
     excludedClasses = setOf(
         // 生成コード・インフラストラクチャコードは除外
-        "undecided.shared.*.package-info",
-        "undecided.shared.*.dto.*",
-        "undecided.shared.*.config.*"
+        "com.github.mizo432.shared.*.package-info",
+        "com.github.mizo432.shared.*.dto.*",
+        "com.github.mizo432.shared.*.config.*"
     )
     jvmArgs = listOf("-Xmx1024m")
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.generic.addressReg.spi.Prefecture;
 import undecided.generic.addressReg.spi.PrefectureQuery;
-import undecided.shared.exception.NotFoundBusinessException;
+import com.github.mizo432.shared.exception.NotFoundBusinessException;
 
 @RestController
 @RequiredArgsConstructor

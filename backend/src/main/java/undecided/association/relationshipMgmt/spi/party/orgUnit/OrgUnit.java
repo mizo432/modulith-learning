@@ -2,7 +2,7 @@ package undecided.association.relationshipMgmt.spi.party.orgUnit;
 
 import lombok.Getter;
 import undecided.association.relationshipMgmt.spi.party.Party;
-import undecided.shared.value.datetime.ValidInterval;
+import com.github.mizo432.shared.value.datetime.ValidInterval;
 
 /**
  * 組織単位（部署、チームなど）を表すエンティティクラス。

@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
-import undecided.shared.value.datetime.WhenOccured;
+import com.github.mizo432.shared.value.datetime.WhenOccured;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**

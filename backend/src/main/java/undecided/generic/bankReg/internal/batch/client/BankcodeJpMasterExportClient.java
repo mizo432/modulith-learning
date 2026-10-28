@@ -13,7 +13,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
-import undecided.shared.exception.SystemException;
+import com.github.mizo432.shared.exception.SystemException;
 
 /**
  * BankcodeJP Master Export API のクライアント。

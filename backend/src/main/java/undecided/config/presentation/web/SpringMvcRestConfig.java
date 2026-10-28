@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import undecided.config.presentation.web.exception.HandlerExceptionResolverLoggingInterceptor;
 import undecided.config.presentation.web.logging.RestTraceLoggingInterceptor;
-import undecided.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.logging.ExceptionLogger;
 
 /**
  * Spring MVCの設定を行うための構成クラス。

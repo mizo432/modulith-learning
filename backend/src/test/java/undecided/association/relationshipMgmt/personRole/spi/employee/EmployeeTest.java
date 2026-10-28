@@ -147,7 +147,7 @@ class EmployeeTest {
       // Assert
       assertThat(convertAnnotation).isNotNull();
       assertThat(convertAnnotation.converter())
-          .isEqualTo(undecided.shared.converter.EncryptedStringConverter.class);
+          .isEqualTo(com.github.mizo432.shared.converter.EncryptedStringConverter.class);
     }
 
     @Test
@@ -160,7 +160,7 @@ class EmployeeTest {
       // Assert
       assertThat(convertAnnotation).isNotNull();
       assertThat(convertAnnotation.converter())
-          .isEqualTo(undecided.shared.converter.EncryptedStringConverter.class);
+          .isEqualTo(com.github.mizo432.shared.converter.EncryptedStringConverter.class);
     }
 
     @Test

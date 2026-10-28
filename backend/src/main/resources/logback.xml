@@ -41,11 +41,11 @@
 
   <!--  <logger name="undecided.erp.domain.repository" level="trace" />-->
   <!-- shared -->
-  <logger level="info" name="undecided.shared"/>
+  <logger level="info" name="com.github.mizo432.shared"/>
   <logger level="info" name="undecided.supporting"/>
   <logger level="trace"
     name="undecided.config.presentation.web.logging.RestTraceLoggingInterceptor"/>
-  <logger level="info" name="undecided.shared.logging.ExceptionLogger"/>
+  <logger level="info" name="com.github.mizo432.shared.logging.ExceptionLogger"/>
   <logger additivity="false" level="error" name="EXCEPTION_LOGGER_NAME.Monitoring"> <!-- (10) -->
     <appender-ref ref="MONITORING_LOG_FILE"/>
   </logger>

@@ -7,8 +7,8 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.sensitive.SensitiveDataMasker;
-import undecided.shared.value.DateValue;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.DateValue;
 
 /**
  * 生年月日を表す値オブジェクトです。

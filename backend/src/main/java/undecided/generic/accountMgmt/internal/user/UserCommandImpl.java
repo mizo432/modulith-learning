@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
 import undecided.generic.accountMgmt.UserCommand;
-import undecided.shared.exception.BusinessException;
+import com.github.mizo432.shared.exception.BusinessException;
 
 /**
  * ユーザー操作の実装クラスです。

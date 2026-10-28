@@ -1,6 +1,6 @@
 package undecided.generic.{module}.internal.batch.writer;
 
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.precondition.ObjectPrecondition.checkNotNull;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
