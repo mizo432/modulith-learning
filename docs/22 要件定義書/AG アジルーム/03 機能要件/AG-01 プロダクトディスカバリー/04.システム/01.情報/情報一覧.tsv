@@ -1,0 +1,16 @@
+情報一覧
+情報ID	情報名	情報種類	説明	履歴管理要	証跡要	実現方法
+INF-DIS-01	Product Vision	リソース	プロダクトの対象者、課題、目指す将来像	Y	Y	DB
+INF-DIS-02	Product Goal	リソース	プロダクト目標、期間、状態	Y	Y	DB
+INF-DIS-03	課題	リソース	業務上の困りごとや繰り返し発生する問題	Y	N	DB
+INF-DIS-04	要望	リソース	顧客や利用者から受けた意見	Y	N	DB
+INF-DIS-05	仮説	リソース	課題に対する検証可能な仮説	Y	N	DB
+INF-DIS-06	ステークホルダー	リソース	関係者、関心事、影響範囲	Y	N	DB
+INF-DIS-07	ペルソナ	リソース	ユーザー像、ニーズ、利用状況	Y	N	DB
+INF-DIS-08	ユーザージャーニー	リソース	利用者の行動、課題、感情、機会	Y	N	DB
+INF-DIS-09	成功指標	リソース	指標の定義、基準値、目標値	Y	N	DB
+INF-DIS-10	Kano評価結果	リソース	要望のKano分類結果	Y	N	DB
+INF-DIS-11	実験計画	リソース	実験計画、結果、学び	Y	N	DB
+INF-DIS-12	Product Goalと成功指標	対応表	目標と指標の関連	N	N	DB
+INF-DIS-13	仮説と課題	対応表	仮説と関連する課題の関連	N	N	DB
+INF-DIS-14	Kanoカテゴリ	対照表	当たり前品質、一元品質、魅力的品質、無関心品質、逆品質	N	N	DB and enum
