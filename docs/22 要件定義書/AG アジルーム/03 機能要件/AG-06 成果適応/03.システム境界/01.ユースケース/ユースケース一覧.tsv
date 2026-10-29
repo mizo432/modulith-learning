@@ -21,3 +21,17 @@ UC-LR-018	レポートを出力する	権限と監査を考慮してレポート
 UC-LR-019	Epic／Releaseを振り返る	複数スプリントにまたがる成果と学びを振り返る	ACT-02, ACT-03, ACT-04	中	BUC-LR-02	-	SCR-023
 UC-LR-020	品質・性能Insightsを確認する	テスト、欠陥、性能の傾向をリリースや目標と関連づける	ACT-02, ACT-04, ACT-05	低	BUC-LR-06	ES-07	SCR-025
 UC-LR-021	稼働状況を確認する	監視・ログ基盤から稼働状況・エラー・ログを取得する	ACT-02, ACT-04, ACT-05	低	BUC-LR-06	ES-07	SCR-025
+UC-SR-001	Sprint Reviewを開始する	対象Sprintを選択し、Sprint Reviewの準備状態を確認して開始する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-01
+UC-SR-002	Sprint Reviewを準備する	Sprint Goal、Sprint Backlog、完了・未完了Story、デモ対象、参加者、議題を準備する	ACT-02, ACT-03, ACT-04	高	BUC-LR-01	-	SR-02
+UC-SR-003	Review参加者を登録する	Sprint Reviewの参加者（Scrum Team、ステークホルダー）を登録する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-02
+UC-SR-004	Review議題を設定する	Sprint Reviewの議題を設定し、順序を整理する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-02
+UC-SR-005	Sprint成果を確認する	Sprint Goalと達成状況、完了・未完了Story、完成したインクリメントを確認する	ACT-01, ACT-02, ACT-03, ACT-04, ACT-05	高	BUC-LR-01	-	SR-03
+UC-SR-006	インクリメントをデモする	完成したインクリメントやデモ対象をデモし、説明や実施結果を記録する	ACT-04	高	BUC-LR-01	-	SR-03
+UC-SR-007	ステークホルダーフィードバックを記録する	ステークホルダーからのフィードバックを記録し、発言者・日時・関連Storyを紐付ける	ACT-02, ACT-03, ACT-05	高	BUC-LR-01	-	SR-03
+UC-SR-008	フィードバックを分類する	収集したフィードバックを分類（新機能要望、既存機能改善、不具合等）する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-009	フィードバックの対応方針を決定する	フィードバックの対応方針（バックログに追加、既存Storyを変更、調査する等）を決定し、判断理由を記録する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-010	フィードバックからバックログ候補を作成する	フィードバックから新規Story、Feature、Epicのバックログ候補を作成し、元のフィードバックとの関連を保持する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-011	既存Storyを更新する	フィードバックに基づいて既存のEpic・Feature・Storyの要件を変更する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-012	Reviewの決定事項を記録する	Review中の議論・決定事項を記録し、継続確認事項を整理する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-03
+UC-SR-013	Sprint Reviewを終了する	フィードバックの記録状況と決定事項を確認し、Sprint Reviewを完了状態に変更する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-05
+UC-SR-014	Sprint Review結果を確認する	完了したSprint Reviewの結果（Sprint Goal、完了・未完了Story、フィードバック、決定事項等）を参照する	ACT-01, ACT-02, ACT-03, ACT-04, ACT-05	高	BUC-LR-01	-	SR-05
