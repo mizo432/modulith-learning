@@ -40,10 +40,15 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-025 SourceControl" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-01\nBacklog Item" as INF01
+}
+
 note "ES-03 Source Control System" as ES1
 
 ACT1 -- SCR
 SCR ..> UC : Call
+UC -- INF01 : Use
 UC ..> ES1 : Data Exchange
 @enduml
 ```
@@ -82,10 +87,15 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-025 ソース管理情報を関連付ける" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-01\nバックログ項目" as INF01
+}
+
 note "ES-03 ソース管理システム" as ES1
 
 ACT1 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF01 : 使用
 UC ..> ES1 : データ交換
 @enduml
 ```
@@ -104,11 +114,15 @@ UC ..> ES1 : データ交換
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名                   | 英語名                     | 説明                                     | 関連ユースケース |
+|------------|------------------------------|----------------------------|------------------------------------------|------------------|
+| EVT-BL-019 | ソース管理情報が関連付けられた | Source Control Info Linked | コミット・ブランチ・PRがバックログ項目と関連付けられた | UC-BL-025      |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                             | 関連ユースケース |
+|---------|--------------|---------------|----------|----------------------------------|------------------|
+| INF-BL-01 | バックログ項目 | Backlog Item | リソース | Epic、Feature、Story、欠陥などの項目 | UC-BL-025      |
 
 ## 8. 条件一覧
 

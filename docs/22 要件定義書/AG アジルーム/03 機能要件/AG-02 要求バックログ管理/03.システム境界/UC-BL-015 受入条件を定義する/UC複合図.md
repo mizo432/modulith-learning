@@ -41,9 +41,14 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-015 DefineAcceptance" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-02\nAcceptance Criteria" as INF02
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : Call
+UC -- INF02 : Use
 @enduml
 ```
 
@@ -82,9 +87,14 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-015 受入条件を定義する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-02\n受入条件" as INF02
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF02 : 使用
 @enduml
 ```
 
@@ -102,11 +112,15 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名               | 英語名                      | 説明                                     | 関連ユースケース |
+|------------|--------------------------|-----------------------------|------------------------------------------|------------------|
+| EVT-BL-011 | 受入条件が定義された     | Acceptance Criteria Defined | 期待される振る舞いや境界条件が定義された | UC-BL-015        |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名     | 英語名              | 情報種類 | 説明                         | 関連ユースケース |
+|---------|------------|---------------------|----------|------------------------------|------------------|
+| INF-BL-02 | 受入条件   | Acceptance Criteria | リソース | 期待される振る舞いや境界条件 | UC-BL-015        |
 
 ## 8. 条件一覧
 

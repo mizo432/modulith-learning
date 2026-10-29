@@ -43,11 +43,16 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-009 ViewBacklog" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-01\nBacklog Item" as INF01
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 ACT3 -- SCR
 ACT4 -- SCR
 SCR ..> UC : Call
+UC -- INF01 : Use
 @enduml
 ```
 
@@ -88,11 +93,16 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-009 バックログ項目を参照する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-01\nバックログ項目" as INF01
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 ACT3 -- SCR
 ACT4 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF01 : 使用
 @enduml
 ```
 
@@ -114,7 +124,9 @@ SCR ..> UC : 呼び出し
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                             | 関連ユースケース |
+|---------|--------------|---------------|----------|----------------------------------|------------------|
+| INF-BL-01 | バックログ項目 | Backlog Item | リソース | Epic、Feature、Story、欠陥などの項目 | UC-BL-009      |
 
 ## 8. 条件一覧
 

@@ -42,12 +42,19 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-020 ViewChangeHistory" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-01\nBacklog Item" as INF01
+  card "INF-BL-08\nItem & Test" as INF08
+}
+
 note "ES-03 Source Control System" as ES1
 
 ACT1 -- SCR
 ACT2 -- SCR
 ACT3 -- SCR
 SCR ..> UC : Call
+UC -- INF01 : Use
+UC -- INF08 : Use
 UC ..> ES1 : Data Exchange
 @enduml
 ```
@@ -88,12 +95,19 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-020 変更履歴を参照する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-01\nバックログ項目" as INF01
+  card "INF-BL-08\n項目とテスト" as INF08
+}
+
 note "ES-03 ソース管理システム" as ES1
 
 ACT1 -- SCR
 ACT2 -- SCR
 ACT3 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF01 : 使用
+UC -- INF08 : 使用
 UC ..> ES1 : データ交換
 @enduml
 ```
@@ -116,7 +130,10 @@ UC ..> ES1 : データ交換
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                             | 関連ユースケース |
+|---------|--------------|---------------|----------|----------------------------------|------------------|
+| INF-BL-01 | バックログ項目 | Backlog Item | リソース | Epic、Feature、Story、欠陥などの項目 | UC-BL-020      |
+| INF-BL-08 | 項目とテスト | Item & Test   | 対応表   | バックログ項目とテストケースの関連 | UC-BL-020        |
 
 ## 8. 条件一覧
 

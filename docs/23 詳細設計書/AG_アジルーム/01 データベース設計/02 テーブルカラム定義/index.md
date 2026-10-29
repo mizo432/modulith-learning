@@ -680,6 +680,94 @@ Scrumプロジェクトの基本情報を管理します。
 
 ---
 
+## 32. impediments（障害）
+
+スプリント実行中に発生する障害（インピーディメント）を管理します。
+
+| カラム名      | 型             | 制約                                  | 説明                       |
+|:--------------|:---------------|:--------------------------------------|:---------------------------|
+| `id`          | `BIGINT`       | `PRIMARY KEY`                         | 主キー                     |
+| `sprint_id`   | `BIGINT`       | `NOT NULL`                            | 関連スプリント（外部キー） |
+| `title`       | `VARCHAR(200)` | `NOT NULL`                            | 障害タイトル               |
+| `description` | `TEXT`         | `NOT NULL`                            | 障害の詳細説明             |
+| `impact`      | `TEXT`         | `NULL`                                | 影響範囲                   |
+| `assignee_id` | `BIGINT`       | `NULL`                                | 担当者（外部キー）         |
+| `status`      | `VARCHAR(20)`  | `NOT NULL DEFAULT 'NEW' CHECK`        | 状態                       |
+| `resolved_at` | `TIMESTAMP`    | `NULL`                                | 解消日時                   |
+| `created_at`  | `TIMESTAMP`    | `NOT NULL DEFAULT CURRENT_TIMESTAMP`  | 作成日時                   |
+| `updated_at`  | `TIMESTAMP`    | `NOT NULL DEFAULT CURRENT_TIMESTAMP`  | 更新日時                   |
+| `deleted_at`  | `TIMESTAMP`    | `NULL`                                | 論理削除日時               |
+
+**制約**: `FK: sprint_id -> sprints.id`, `FK: assignee_id -> team_members.id`
+**CHECK**: `status IN ('NEW', 'IN_PROGRESS', 'RESOLVED')`
+**インデックス**: `idx_impediments_sprint_id`, `idx_impediments_status`
+
+---
+
+## 33. sprint_dependencies（スプリント依存関係）
+
+スプリント内のバックログ項目間の依存関係を管理します。
+
+| カラム名          | 型             | 制約                                 | 説明                         |
+|:------------------|:---------------|:-------------------------------------|:-----------------------------|
+| `id`              | `BIGINT`       | `PRIMARY KEY`                        | 主キー                       |
+| `source_item_id`  | `BIGINT`       | `NOT NULL`                           | 依存元項目（外部キー）       |
+| `target_item_id`  | `BIGINT`       | `NOT NULL`                           | 依存先項目（外部キー）       |
+| `dependency_type` | `VARCHAR(20)`  | `NOT NULL CHECK`                     | 依存関係の種類               |
+| `description`     | `TEXT`         | `NULL`                               | 依存関係の説明               |
+| `created_at`      | `TIMESTAMP`    | `NOT NULL DEFAULT CURRENT_TIMESTAMP` | 作成日時                     |
+| `updated_at`      | `TIMESTAMP`    | `NOT NULL DEFAULT CURRENT_TIMESTAMP` | 更新日時                     |
+| `deleted_at`      | `TIMESTAMP`    | `NULL`                               | 論理削除日時                 |
+
+**制約**: `UNIQUE(source_item_id, target_item_id)`, `FK: source_item_id -> tasks.id`,
+`FK: target_item_id -> tasks.id`
+**CHECK**: `dependency_type IN ('BLOCKS', 'REQUIRES', 'RELATES_TO')`
+**インデックス**: `idx_sprint_dependencies_source_id`, `idx_sprint_dependencies_target_id`
+
+---
+
+## 34. notifications（通知）
+
+スプリント実行中に発生する通知を管理します。
+
+| カラム名       | 型             | 制約                                 | 説明                         |
+|:---------------|:---------------|:-------------------------------------|:-----------------------------|
+| `id`           | `BIGINT`       | `PRIMARY KEY`                        | 主キー                       |
+| `recipient_id` | `BIGINT`       | `NOT NULL`                           | 受信者（外部キー）           |
+| `product_id`   | `BIGINT`       | `NOT NULL`                           | 所属プロダクト（外部キー）   |
+| `title`        | `VARCHAR(200)` | `NOT NULL`                           | 通知タイトル                 |
+| `content`      | `TEXT`         | `NOT NULL`                           | 通知内容                     |
+| `type`         | `VARCHAR(20)`  | `NOT NULL CHECK`                     | 通知種別                     |
+| `is_read`      | `BOOLEAN`      | `NOT NULL DEFAULT FALSE`             | 既読フラグ                   |
+| `created_at`   | `TIMESTAMP`    | `NOT NULL DEFAULT CURRENT_TIMESTAMP` | 作成日時                     |
+| `updated_at`   | `TIMESTAMP`    | `NOT NULL DEFAULT CURRENT_TIMESTAMP` | 更新日時                     |
+| `deleted_at`   | `TIMESTAMP`    | `NULL`                               | 論理削除日時                 |
+
+**制約**: `FK: recipient_id -> team_members.id`, `FK: product_id -> products.id`
+**CHECK**: `type IN ('MENTION', 'ASSIGNEE_CHANGE', 'DUE_DATE', 'AWAITING_DECISION')`
+**インデックス**: `idx_notifications_recipient_id`, `idx_notifications_is_read`
+
+---
+
+## 35. activities（アクティビティ）
+
+スプリント実行中のアクティビティ履歴を管理します。
+
+| カラム名        | 型             | 制約                                 | 説明                         |
+|:----------------|:---------------|:-------------------------------------|:-----------------------------|
+| `id`            | `BIGINT`       | `PRIMARY KEY`                        | 主キー                       |
+| `sprint_id`     | `BIGINT`       | `NOT NULL`                           | 関連スプリント（外部キー）   |
+| `actor_id`      | `BIGINT`       | `NOT NULL`                           | 実行者（外部キー）           |
+| `activity_type` | `VARCHAR(30)`  | `NOT NULL CHECK`                     | アクティビティの種類         |
+| `description`   | `TEXT`         | `NULL`                               | アクティビティの説明         |
+| `created_at`    | `TIMESTAMP`    | `NOT NULL DEFAULT CURRENT_TIMESTAMP` | 作成日時（発生日時）         |
+
+**制約**: `FK: sprint_id -> sprints.id`, `FK: actor_id -> team_members.id`
+**CHECK**: `activity_type IN ('STATUS_CHANGE', 'COMMENT_ADDED', 'TASK_ASSIGNED', 'TASK_COMPLETED', 'IMPEDIMENT_ADDED', 'IMPEDIMENT_RESOLVED', 'DEPENDENCY_ADDED', 'DEPENDENCY_RESOLVED', 'SPRINT_GOAL_UPDATED', 'BOARD_UPDATED')`
+**インデックス**: `idx_activities_sprint_id`, `idx_activities_actor_id`, `idx_activities_created_at`
+
+---
+
 ## 参照
 
 - 情報一覧: `docs/22 要件定義書/06 機能要件/AG アジルーム/04.システム/01.情報一覧.md`

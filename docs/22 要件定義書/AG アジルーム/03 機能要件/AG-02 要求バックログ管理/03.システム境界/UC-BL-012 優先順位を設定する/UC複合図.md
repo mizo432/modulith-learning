@@ -40,8 +40,15 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-012 SetPriority" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-01\nBacklog Item" as INF01
+  card "INF-BL-10\nPriority" as INF10
+}
+
 ACT1 -- SCR
 SCR ..> UC : Call
+UC -- INF01 : Use
+UC -- INF10 : Use
 @enduml
 ```
 
@@ -79,8 +86,15 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-012 優先順位を設定する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-01\nバックログ項目" as INF01
+  card "INF-BL-10\n優先度" as INF10
+}
+
 ACT1 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF01 : 使用
+UC -- INF10 : 使用
 @enduml
 ```
 
@@ -98,15 +112,22 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名             | 英語名               | 説明                                     | 関連ユースケース |
+|------------|------------------------|----------------------|------------------------------------------|------------------|
+| EVT-BL-009 | 優先順位が設定された   | Priority Set         | 項目の順序・優先理由が設定された         | UC-BL-012        |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                             | 関連ユースケース |
+|---------|--------------|---------------|----------|----------------------------------|------------------|
+| INF-BL-01 | バックログ項目 | Backlog Item | リソース | Epic、Feature、Story、欠陥などの項目 | UC-BL-012      |
+| INF-BL-10 | 優先度       | Priority      | 対照表   | 項目の優先度区分                 | UC-BL-012        |
 
 ## 8. 条件一覧
 
-条件なし
+| 条件ID    | 条件名     | 英語名     | 説明                         | 関連ユースケース |
+|-----------|------------|------------|------------------------------|------------------|
+| INF-BL-10 | 優先度     | Priority   | 項目の優先度区分             | UC-BL-012        |
 
 ## 9. 参照情報
 

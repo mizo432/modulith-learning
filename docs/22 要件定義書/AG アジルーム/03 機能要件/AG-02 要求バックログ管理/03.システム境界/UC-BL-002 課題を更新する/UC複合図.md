@@ -41,9 +41,14 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-002 UpdateIssue" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-03\nFeedback" as INF03
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : Call
+UC -- INF03 : Use
 @enduml
 ```
 
@@ -82,9 +87,14 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-002 課題を更新する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-03\nフィードバック" as INF03
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF03 : 使用
 @enduml
 ```
 
@@ -102,11 +112,15 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名         | 英語名             | 説明                                     | 関連ユースケース |
+|------------|--------------------|--------------------|------------------------------------------|------------------|
+| EVT-BL-002 | 課題が更新された   | Issue Updated      | 既存課題の詳細・影響・状態が修正された   | UC-BL-002        |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名     | 英語名     | 情報種類 | 説明                         | 関連ユースケース |
+|---------|------------|------------|----------|------------------------------|------------------|
+| INF-BL-03 | フィードバック | Feedback | リソース | 利用者からの意見・評価       | UC-BL-002        |
 
 ## 8. 条件一覧
 

@@ -12,3 +12,13 @@ AG アジルーム	AG-02 要求バックログ管理	課題	reported_by	UUID	AG 
 AG アジルーム	AG-02 要求バックログ管理	意思決定	project_id	UUID	AG アジルーム	共通	プロジェクト	project_id	UUID
 AG アジルーム	AG-02 要求バックログ管理	意思決定	backlog_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
 AG アジルーム	AG-02 要求バックログ管理	意思決定	decided_by	UUID	AG アジルーム	共通	従業員	employee_id	UUID
+AG アジルーム	AG-02 要求バックログ管理	受入条件	backlog_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	コメント	backlog_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	コメント	parent_comment_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	コメント	comment_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	コメント	posted_by	UUID	AG アジルーム	共通	従業員	employee_id	UUID
+AG アジルーム	AG-02 要求バックログ管理	バックログ階層	parent_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	バックログ階層	child_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	項目関連付け	source_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	項目関連付け	target_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	項目とテスト	backlog_item_id	SnowflakeID	AG アジルーム	AG-02 要求バックログ管理	バックログ項目	backlog_item_id	SnowflakeID
+AG アジルーム	AG-02 要求バックログ管理	項目とテスト	test_case_id	SnowflakeID	AG アジルーム	AG-05 品質検証	テストケース	test_case_id	SnowflakeID

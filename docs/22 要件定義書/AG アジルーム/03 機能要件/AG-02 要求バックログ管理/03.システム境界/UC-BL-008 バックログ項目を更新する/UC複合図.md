@@ -41,9 +41,16 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-008 UpdateBacklog" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-01\nBacklog Item" as INF01
+  card "INF-BL-11\nStatus" as INF11
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : Call
+UC -- INF01 : Use
+UC -- INF11 : Use
 @enduml
 ```
 
@@ -82,9 +89,16 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-008 バックログ項目を更新する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-01\nバックログ項目" as INF01
+  card "INF-BL-11\n状態" as INF11
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF01 : 使用
+UC -- INF11 : 使用
 @enduml
 ```
 
@@ -102,15 +116,22 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名               | 英語名                 | 説明                                     | 関連ユースケース |
+|------------|--------------------------|------------------------|------------------------------------------|------------------|
+| EVT-BL-006 | バックログ項目が更新された | Backlog Item Updated | 項目の説明・受入条件・詳細が修正された   | UC-BL-008        |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                             | 関連ユースケース |
+|---------|--------------|---------------|----------|----------------------------------|------------------|
+| INF-BL-01 | バックログ項目 | Backlog Item | リソース | Epic、Feature、Story、欠陥などの項目 | UC-BL-008      |
+| INF-BL-11 | 状態         | Status        | 対照表   | 項目のワークフロー状態           | UC-BL-008        |
 
 ## 8. 条件一覧
 
-条件なし
+| 条件ID    | 条件名     | 英語名     | 説明                         | 関連ユースケース |
+|-----------|------------|------------|------------------------------|------------------|
+| INF-BL-11 | 状態       | Status     | 項目のワークフロー状態       | UC-BL-008        |
 
 ## 9. 参照情報
 

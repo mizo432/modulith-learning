@@ -41,9 +41,14 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-011 SetBacklog" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-06\nBacklog Hierarchy" as INF06
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : Call
+UC -- INF06 : Use
 @enduml
 ```
 
@@ -82,9 +87,14 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-011 バックログ階層を設定する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-06\nバックログ階層" as INF06
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF06 : 使用
 @enduml
 ```
 
@@ -102,11 +112,15 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名               | 英語名                  | 説明                                     | 関連ユースケース |
+|------------|--------------------------|-------------------------|------------------------------------------|------------------|
+| EVT-BL-008 | バックログ階層が設定された | Backlog Hierarchy Set | Product Goal、Epic、Feature、Story間の関係が設定された | UC-BL-011 |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名         | 英語名            | 情報種類 | 説明                                     | 関連ユースケース |
+|---------|----------------|-------------------|----------|------------------------------------------|------------------|
+| INF-BL-06 | バックログ階層 | Backlog Hierarchy | 対応表   | Product Goal、Epic、Feature、Story間の階層関係 | UC-BL-011      |
 
 ## 8. 条件一覧
 

@@ -41,9 +41,14 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-019 DefineDependency" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-07\nItem Relation" as INF07
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : Call
+UC -- INF07 : Use
 @enduml
 ```
 
@@ -82,9 +87,14 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-019 依存関係を定義する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-07\n項目関連付け" as INF07
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF07 : 使用
 @enduml
 ```
 
@@ -102,11 +112,15 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名               | 英語名                 | 説明                                     | 関連ユースケース |
+|------------|--------------------------|------------------------|------------------------------------------|------------------|
+| EVT-BL-014 | 依存関係が定義された     | Dependency Defined     | 項目間の依存関係が定義された             | UC-BL-019        |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                         | 関連ユースケース |
+|---------|--------------|---------------|----------|------------------------------|------------------|
+| INF-BL-07 | 項目関連付け | Item Relation | 対応表   | 要求間の重複・関連関係       | UC-BL-019        |
 
 ## 8. 条件一覧
 
