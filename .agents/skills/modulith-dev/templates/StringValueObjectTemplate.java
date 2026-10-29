@@ -4,8 +4,8 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.primitive.Strings2;
-import undecided.shared.value.StringCode;
+import com.github.mizo432.shared.primitive.Strings2;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 文字列ベースの値オブジェクト（Value Object）テンプレートです。

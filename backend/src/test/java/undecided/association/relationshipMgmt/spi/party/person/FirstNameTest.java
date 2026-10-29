@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("small")
 class FirstNameTest {
 
   @Nested
@@ -157,11 +159,13 @@ class FirstNameTest {
   class ToStringTest {
 
     @Test
-    @DisplayName("値を文字列として返す")
-    void shouldReturnValueAsString() {
+    @DisplayName("値をマスクして返す")
+    void shouldReturnMaskedValue() {
       FirstName firstName = FirstName.of("太郎");
 
-      assertThat(firstName.toString()).isEqualTo("太郎");
+      assertThat(firstName.toString())
+          .as("FirstNameのtoString()は機微な情報をマスクして返すこと")
+          .isEqualTo("太*");
     }
 
     @Test
@@ -169,7 +173,9 @@ class FirstNameTest {
     void shouldReturnNullWhenValueIsNull() {
       FirstName firstName = FirstName.empty();
 
-      assertThat(firstName.toString()).isNull();
+      assertThat(firstName.toString())
+          .as("空のFirstNameのtoString()はnullを返すこと")
+          .isNull();
     }
   }
 

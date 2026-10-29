@@ -4,9 +4,10 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.converter.EncryptedStringConverter;
-import undecided.shared.primitive.Strings2;
-import undecided.shared.value.StringCode;
+import com.github.mizo432.shared.converter.EncryptedStringConverter;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 名（ファーストネーム）を表す値オブジェクトです。
@@ -96,14 +97,12 @@ public class FirstName implements StringCode<FirstName> {
    */
   @Override
   public String toString() {
-    return Strings2.toString(value);
+    return SensitiveDataMasker.maskName(value);
   }
 
   /** FirstNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。暗号化を適用します。 */
   @Converter(autoApply = true)
   public static class FirstNameConverter implements AttributeConverter<FirstName, String> {
-
-    private final EncryptedStringConverter encryptedConverter = new EncryptedStringConverter(null);
 
     /**
      * エンティティ属性をデータベースカラムに変換します。暗号化して保存します。
@@ -120,7 +119,7 @@ public class FirstName implements StringCode<FirstName> {
       if (value == null) {
         return null;
       }
-      return encryptedConverter.convertToDatabaseColumn(value);
+      return EncryptedStringConverter.encrypt(value);
     }
 
     /**
@@ -134,7 +133,7 @@ public class FirstName implements StringCode<FirstName> {
       if (dbData == null) {
         return FirstName.empty();
       }
-      String decrypted = encryptedConverter.convertToEntityAttribute(dbData);
+      String decrypted = EncryptedStringConverter.decrypt(dbData);
       if (decrypted == null) {
         return FirstName.empty();
       }

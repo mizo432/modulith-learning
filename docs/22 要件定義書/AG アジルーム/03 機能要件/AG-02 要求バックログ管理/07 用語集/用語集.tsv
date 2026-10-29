@@ -1,0 +1,16 @@
+項番	用語	英名	英名複数形	用語分類	定義
+1	バックログ	Backlog	Backlogs	ビジネス用語	実装予定の項目のリスト。優先順位付けされる
+2	Epic	Epic	Epics	ビジネス用語	大規模なバックログ項目。複数のFeatureに分割される
+3	Feature	Feature	Features	ビジネス用語	Epicより小さくStoryより大きなバックログ項目
+4	Story	User Story	User Stories	ビジネス用語	利用者価値を提供する最小単位のバックログ項目
+5	受入条件	Acceptance Criteria	Acceptance Criteria	ビジネス用語	バックログ項目が完了したと判断するための条件
+6	バックログリファインメント	Backlog Refinement	Backlog Refinements	ビジネス用語	バックログ項目の内容を明確化・分割・見積もりする活動
+7	Story Mapping	Story Mapping	Story Maps	ビジネス用語	ユーザー活動とストーリーを並べ、リリース範囲を検討する手法
+8	フィードバック	Feedback	Feedbacks	ビジネス用語	利用者からの意見・評価
+9	コメント	Comment	Comments	ビジネス用語	項目上の質問・回答・議論
+10	意思決定	Decision	Decisions	ビジネス用語	決定内容、根拠、決定者、影響範囲を記録した文書
+11	依存関係	Dependency	Dependencies	ビジネス用語	作業や項目間の前後関係
+12	見積もり	Estimate	Estimates	ビジネス用語	作業の規模や期間の推定値
+13	優先度	Priority	Priorities	対照表	項目の優先度区分
+14	項目種別	Item Type	Item Types	対照表	Epic、Feature、Story、Task、欠陥
+15	状態	Status	Statuses	対照表	項目のワークフロー状態

@@ -1,6 +1,6 @@
 @ApplicationModule(
     type = Type.OPEN,
-    allowedDependencies = {"generic", "relationshipMgmt", "shared", "shared :: entity"},
+    allowedDependencies = {"generic", "relationshipMgmt", "common", "value", "agiloom"},
     id = "supporting",
     displayName = "支援サブドメイン")
 /** ,支援サブドメイン */

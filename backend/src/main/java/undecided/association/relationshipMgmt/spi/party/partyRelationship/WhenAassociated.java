@@ -7,8 +7,8 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.dateProvider.DateProvider;
-import undecided.shared.value.DateTimeValue;
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
+import com.github.mizo432.shared.value.DateTimeValue;
 
 /**
  * A（関連付け）が行われた日時を表す値オブジェクトです。

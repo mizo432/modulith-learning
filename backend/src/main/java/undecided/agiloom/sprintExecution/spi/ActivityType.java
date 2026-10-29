@@ -1,0 +1,14 @@
+package undecided.agiloom.sprintExecution.spi;
+
+public enum ActivityType {
+    STATUS_CHANGE,
+    COMMENT_ADDED,
+    TASK_ASSIGNED,
+    TASK_COMPLETED,
+    IMPEDIMENT_ADDED,
+    IMPEDIMENT_RESOLVED,
+    DEPENDENCY_ADDED,
+    DEPENDENCY_RESOLVED,
+    SPRINT_GOAL_UPDATED,
+    BOARD_UPDATED
+}

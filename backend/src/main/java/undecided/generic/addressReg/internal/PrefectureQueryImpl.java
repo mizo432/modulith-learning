@@ -1,6 +1,6 @@
 package undecided.generic.addressReg.internal;
 
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

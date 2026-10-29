@@ -2,7 +2,7 @@ package undecided.association.relationshipMgmt.spi.party.org;
 
 import lombok.Getter;
 import undecided.association.relationshipMgmt.spi.party.Party;
-import undecided.shared.value.datetime.ValidInterval;
+import com.github.mizo432.shared.value.datetime.ValidInterval;
 
 /**
  * 組織（法人、団体など）を表すエンティティクラス。
@@ -13,7 +13,7 @@ import undecided.shared.value.datetime.ValidInterval;
 public class Org extends Party {
 
   /** 組織の正式名称。 */
-  private OrgName name;
+  private OrgName orgName;
 
   /** 組織の有効期間（開始日から終了日までの範囲）。 */
   private ValidInterval validInterval;

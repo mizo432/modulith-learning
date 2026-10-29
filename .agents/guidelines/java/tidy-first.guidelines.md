@@ -65,6 +65,31 @@ public void processOrder(Order order) {
 }
 ```
 
+#### プロジェクト内の実例
+
+`UseBankAccountCommandService.java` では、ガード節が正しく適用されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/party/command/UseBankAccountCommandService.java
+@Override
+@Transactional
+public void use(BankAccountUseDto bankAccountUseDto) {
+  // Guard clauses: 事前条件をチェックし、早期リターン
+  if (bankAccountUseDto == null) {
+    throw new IllegalArgumentException("BankAccountUseDtoはnullであってはいけません");
+  }
+  if (bankAccountUseDto.getBankAccountId().isEmpty()) {
+    throw new IllegalArgumentException("bankAccountIdは必須です");
+  }
+  if (bankAccountUseDto.getPartyId().isEmpty()) {
+    throw new IllegalArgumentException("partyIdは必須です");
+  }
+  // メインロジック: ネストが浅く、意図が明確
+  BankAccountUse bankAccountUse = useBankAccountFactory.createUseBankAccount(bankAccountUseDto);
+  bankAccountUseRepository.save(bankAccountUse);
+}
+```
+
 #### 注意点
 
 - 7〜8 個以上のガード節は避ける。多すぎる場合はメソッドの分割を検討する
@@ -115,6 +140,21 @@ public class OrderService {
         saveOrder(order);
     }
 }
+```
+
+#### プロジェクト内の実例
+
+プロジェクトでは、未使用のインポートや変数が残らないよう、IDE の自動整理機能を活用しています。
+
+```java
+// ❌ 悪い例: 未使用のインポート
+import java.util.List;
+import java.util.Map;  // 未使用
+import java.util.Optional;
+
+// ✅ 良い例: 未使用のインポートを削除
+import java.util.List;
+import java.util.Optional;
 ```
 
 #### 注意点
@@ -189,6 +229,37 @@ public class PriceCalculator {
 }
 ```
 
+#### プロジェクト内の実例
+
+`FirstName.java`、`LastName.java`、`AccountNumber.java` は、同様のバリデーションロジックを対称的に実装しています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/person/FirstName.java
+public static FirstName of(String firstName) {
+  if (firstName == null) {
+    throw new IllegalArgumentException("firstName must not be null");
+  }
+  String trimmed = firstName.trim();
+  if (trimmed.isEmpty()) {
+    throw new IllegalArgumentException("firstName must not be empty");
+  }
+  if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
+    throw new IllegalArgumentException(
+        "firstName must be between " + MIN_LENGTH + " and " + MAX_LENGTH
+            + " characters, but was: " + trimmed.length());
+  }
+  return new FirstName(trimmed);
+}
+
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/person/LastName.java
+// → FirstName と全く同じ構造のバリデーションロジック
+
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/bankAccount/AccountNumber.java
+// → 半角数字チェックが追加されている以外は同じ構造
+```
+
+これらは `StringCode<T>` インターフェースを実装することで、対称性が保たれています。バリデーションロジックの共通部分は、将来的に共通のバリデーションヘルパーに抽出できる可能性があります。
+
 #### 注意点
 
 - 違いがある場合は、意図的な違いであることを明確にする
@@ -244,6 +315,25 @@ public class OrderService {
 }
 ```
 
+#### プロジェクト内の実例
+
+`UseBankAccountCommand.java` インターフェースと `UseBankAccountCommandService.java` 実装の関係が該当します。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/bankAccount/UseBankAccountCommand.java
+public interface UseBankAccountCommand {
+  void use(BankAccountUseDto bankAccountUseDto);
+}
+
+// backend/src/main/java/undecided/association/relationshipMgmt/party/command/UseBankAccountCommandService.java
+@Service
+public class UseBankAccountCommandService implements UseBankAccountCommand {
+  // インターフェースで定義された明確な契約に従って実装
+}
+```
+
+`StringCode<T>` インターフェースも、値オブジェクトが実装する新しいインターフェースの例です。
+
 #### 注意点
 
 - パススルーインターフェースの作成は、ソフトウェア設計の微視的な本質
@@ -298,6 +388,38 @@ public class OrderService {
     private void processPayment(Order order) { /* ... */ }
     private void sendNotification(Order order) { /* ... */ }
 }
+```
+
+#### プロジェクト内の実例
+
+`LogIdBasedLogger.java` では、メソッドが論理的な順序で配置されています。
+
+```java
+// backend/src/main/java/undecided/shared/logger/LogIdBasedLogger.java
+// フィールド定義
+private static final String UNDEFINED_MESSAGE_FORMAT = "...";
+private static ResourceBundleMessageSource messageSource;
+private final Logger logger;
+
+// コンストラクタとファクトリメソッド
+private LogIdBasedLogger(Class<?> clazz) { ... }
+public static LogIdBasedLogger getLogger(Class<?> clazz) { ... }
+
+// 公開メソッド: ログレベル順に配置
+public boolean isDebugEnabled() { ... }
+public void debug(String format, Object... args) { ... }
+public void info(String id, Object... args) { ... }
+public void warn(String id, Object... args) { ... }
+public void error(String id, Object... args) { ... }
+public void trace(String id, Object... args) { ... }
+
+// 例外付きオーバーロード
+public void warn(String id, Throwable t, Object... args) { ... }
+public void error(String id, Throwable t, Object... args) { ... }
+
+// プライベートヘルパーメソッド
+private String createLogMessage(String id, Object... args) { ... }
+private String getMessage(String id, Object... args) { ... }
 ```
 
 #### 注意点
@@ -387,6 +509,26 @@ public class Order {
 }
 ```
 
+#### プロジェクト内の実例
+
+`BankAccountUse.java` では、関連するフィールドが一緒に配置されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/bankAccount/BankAccountUse.java
+// 基本情報
+@Id private final SnowflakeId bankAccountUseId;
+private final SnowflakeId bankAccountId;
+private final SnowflakeId partyId;
+
+// 用途情報
+private final BankAccountUseType type;
+
+// 日時情報
+private final WhenOccured whenOccured;
+```
+
+`LogIdBasedLogger.java` でも、関連するメソッドがグループ化されています（info/warn/error/trace のログ出力メソッドが隣接）。
+
 #### 注意点
 
 - 凝集度を高めることで、結合度を許容しやすくなる
@@ -454,6 +596,38 @@ public class OrderService {
 }
 ```
 
+#### プロジェクト内の実例
+
+`UseBankAccountFactoryImpl.java` では、宣言と初期化が一緒に配置されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/party/command/UseBankAccountFactoryImpl.java
+@Override
+public @NonNull BankAccountUse createUseBankAccount(
+    @NonNull BankAccountUseDto bankAccountUseDto) {
+  return BankAccountUse.create(
+      snowflakeIdGenerator.nextIdValue(),
+      bankAccountUseDto.getBankAccountId(),
+      bankAccountUseDto.getPartyId(),
+      bankAccountUseDto.getType(),
+      WhenOccured.current());
+}
+```
+
+`DepartmentCommandImpl.java` では、変数の宣言と初期化が使用箇所の近くで行われています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/orgRole/internal/department/DepartmentCommandImpl.java
+@Override
+public void update(DepartmentCode departmentCode, Department department) {
+  Optional<Department> oldOption = repository.findByCode(departmentCode);
+  Department oldDepartment =
+      oldOption.orElseThrow(
+          () -> new EntityNotFoundException("Department not found: " + departmentCode));
+  repository.save(oldDepartment.update(department));
+}
+```
+
 #### 注意点
 
 - 変数の宣言と初期化を近くに配置する
@@ -499,6 +673,35 @@ public class OrderService {
     }
 }
 ```
+
+#### プロジェクト内の実例
+
+`AccountNumber.java` では、複雑な正規表現チェックが説明変数として明確化されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/bankAccount/AccountNumber.java
+public static AccountNumber of(String accountNumber) {
+  if (accountNumber == null) {
+    throw new IllegalArgumentException("accountNumber must not be null");
+  }
+  String trimmed = accountNumber.trim();
+  if (trimmed.isEmpty()) {
+    throw new IllegalArgumentException("accountNumber must not be empty");
+  }
+  if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
+    throw new IllegalArgumentException(
+        "accountNumber must be between " + MIN_LENGTH + " and " + MAX_LENGTH
+            + " digits, but was: " + trimmed);
+  }
+  if (!trimmed.matches("\\d+")) {
+    throw new IllegalArgumentException(
+        "accountNumber must contain only digits, but was: " + trimmed);
+  }
+  return new AccountNumber(trimmed);
+}
+```
+
+`trimmed` という変数名により、トリム後の値が何であるかが明確になっています。
 
 #### 注意点
 
@@ -562,6 +765,40 @@ public class OrderService {
 }
 ```
 
+#### プロジェクト内の実例
+
+`Strings2.java` では、マジック文字列が定数として定義されています。
+
+```java
+// backend/src/main/java/undecided/shared/primitive/Strings2.java
+public static final String EMPTY = "";
+public static final String SPACE = " ";
+public static final String COMMA = ",";
+public static final String DOT = ".";
+public static final String SLASH = "/";
+public static final String UNDERSCORE = "_";
+public static final String DASH = "-";
+```
+
+`FirstName.java`、`LastName.java`、`AccountNumber.java` では、マジックナンバーが定数として定義されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/person/FirstName.java
+public static final int MIN_LENGTH = 1;
+public static final int MAX_LENGTH = 50;
+
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/bankAccount/AccountNumber.java
+public static final int MIN_LENGTH = 1;
+public static final int MAX_LENGTH = 7;
+```
+
+`LogIdBasedLogger.java` でも同様に定数が使用されています。
+
+```java
+// backend/src/main/java/undecided/shared/logger/LogIdBasedLogger.java
+private static final String UNDEFINED_MESSAGE_FORMAT = "UNDEFINED-MESSAGE id:{0} arg:{1}";
+```
+
 #### 注意点
 
 - マジックナンバーやマジック文字列を、意味のある定数で置き換える
@@ -607,6 +844,43 @@ public class OrderService {
         // 明示的なパラメータで依存関係が明確
         order.calculateTotal(currency, locale, taxRate);
     }
+}
+```
+
+#### プロジェクト内の実例
+
+`UseBankAccountFactoryImpl.java` では、依存関係がコンストラクタインジェクションにより明示されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/party/command/UseBankAccountFactoryImpl.java
+@Component
+@RequiredArgsConstructor
+public class UseBankAccountFactoryImpl implements UseBankAccountFactory {
+
+  private final SnowflakeIdGenerator snowflakeIdGenerator;  // 明示的な依存関係
+
+  @Override
+  public @NonNull BankAccountUse createUseBankAccount(
+      @NonNull BankAccountUseDto bankAccountUseDto) {
+    return BankAccountUse.create(
+        snowflakeIdGenerator.nextIdValue(),
+        bankAccountUseDto.getBankAccountId(),
+        bankAccountUseDto.getPartyId(),
+        bankAccountUseDto.getType(),
+        WhenOccured.current());
+  }
+}
+```
+
+`UseBankAccountCommandService.java` でも同様に、依存関係が明示されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/party/command/UseBankAccountCommandService.java
+@RequiredArgsConstructor
+@Service
+public class UseBankAccountCommandService implements UseBankAccountCommand {
+  private final UseBankAccountFactory useBankAccountFactory;
+  private final BankAccountUseRepository bankAccountUseRepository;
 }
 ```
 
@@ -670,6 +944,46 @@ public class OrderService {
         updateInventory(order);
         logOrderProcessing(order);
     }
+}
+```
+
+#### プロジェクト内の実例
+
+`LogIdBasedLogger.java` では、関連する処理が空白行でグループ化されています。
+
+```java
+// backend/src/main/java/undecided/shared/logger/LogIdBasedLogger.java
+private String getMessage(String id, Object... args) {
+  String message;
+  try {
+    message = messageSource.getMessage(id, args, Locale.getDefault());
+  } catch (NoSuchMessageException e) {
+    message = MessageFormat.format(UNDEFINED_MESSAGE_FORMAT, id, Arrays.toString(args));
+  }
+  return message;
+}
+```
+
+`UseBankAccountCommandService.java` では、ガード節とメインロジックが空白行で区切られています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/party/command/UseBankAccountCommandService.java
+@Override
+@Transactional
+public void use(BankAccountUseDto bankAccountUseDto) {
+  // ガード節
+  if (bankAccountUseDto == null) {
+    throw new IllegalArgumentException("BankAccountUseDtoはnullであってはいけません");
+  }
+  if (bankAccountUseDto.getBankAccountId().isEmpty()) {
+    throw new IllegalArgumentException("bankAccountIdは必須です");
+  }
+  if (bankAccountUseDto.getPartyId().isEmpty()) {
+    throw new IllegalArgumentException("partyIdは必須です");
+  }
+  // 空白行で区切り、メインロジック
+  BankAccountUse bankAccountUse = useBankAccountFactory.createUseBankAccount(bankAccountUseDto);
+  bankAccountUseRepository.save(bankAccountUse);
 }
 ```
 
@@ -757,6 +1071,56 @@ public class OrderService {
 }
 ```
 
+#### プロジェクト内の実例
+
+`LogIdBasedLogger.java` では、ログメッセージ作成の処理がヘルパーメソッドに抽出されています。
+
+```java
+// backend/src/main/java/undecided/shared/logger/LogIdBasedLogger.java
+public void info(String id, Object... args) {
+  if (logger.isInfoEnabled()) {
+    logger.info(createLogMessage(id, args));
+  }
+}
+
+public void warn(String id, Object... args) {
+  if (logger.isWarnEnabled()) {
+    logger.warn(createLogMessage(id, args));
+  }
+}
+
+// ヘルパーメソッドに抽出
+private String createLogMessage(String id, Object... args) {
+  return getMessage(id, args);
+}
+
+private String getMessage(String id, Object... args) {
+  String message;
+  try {
+    message = messageSource.getMessage(id, args, Locale.getDefault());
+  } catch (NoSuchMessageException e) {
+    message = MessageFormat.format(UNDEFINED_MESSAGE_FORMAT, id, Arrays.toString(args));
+  }
+  return message;
+}
+```
+
+`UseBankAccountFactoryImpl.java` では、ファクトリパターンにより、エンティティ作成ロジックが独立したクラスに抽出されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/party/command/UseBankAccountFactoryImpl.java
+@Override
+public @NonNull BankAccountUse createUseBankAccount(
+    @NonNull BankAccountUseDto bankAccountUseDto) {
+  return BankAccountUse.create(
+      snowflakeIdGenerator.nextIdValue(),
+      bankAccountUseDto.getBankAccountId(),
+      bankAccountUseDto.getPartyId(),
+      bankAccountUseDto.getType(),
+      WhenOccured.current());
+}
+```
+
 #### 注意点
 
 - 複雑な処理を独立したメソッドに抽出する
@@ -833,6 +1197,25 @@ public class OrderService {
 }
 ```
 
+#### プロジェクト内の実例
+
+`Strings2.java` では、同種の定数が一つのクラスにまとめられています。
+
+```java
+// backend/src/main/java/undecided/shared/primitive/Strings2.java
+public static final String EMPTY = "";
+public static final String SPACE = " ";
+public static final String COMMA = ",";
+public static final String DOT = ".";
+public static final String SLASH = "/";
+public static final String UNDERSCORE = "_";
+public static final String DASH = "-";
+public static final String COLON = ":";
+public static final String SEMICOLON = ";";
+```
+
+これにより、文字列リテラルが分散するのを防ぎ、一元的に管理しています。
+
 #### 注意点
 
 - 同種の要素を一つのコレクションにまとめる
@@ -884,6 +1267,49 @@ public class OrderService {
         notificationService.sendOrderConfirmation(order);
     }
 }
+```
+
+#### プロジェクト内の実例
+
+`BankAccountUse.java` では、「なぜ」そのフィールドが存在するかが KDoc で説明されています。
+
+```java
+// backend/src/main/java/undecided/association/relationshipMgmt/spi/party/bankAccount/BankAccountUse.java
+/**
+ * 銀行口座の用途情報を表すエンティティクラス。
+ *
+ * <p>このクラスはパーティ（PersonやOrganizationなど）が銀行口座をどのように使用しているかを管理します。
+ *
+ * <p>口座とパーティの関連付け、用途種別、および有効期間の情報を格納します。
+ *
+ * <p>用途:
+ *
+ * <p>給与振込先、請求書払い込み元など、銀行口座の使用目的を識別するために使用されます。
+ */
+@Entity
+public class BankAccountUse {
+  /**
+   * 口座の用途種別（給与振込、請求書払い込みなど）。
+   *
+   * <p>このフィールドは銀行口座がどのような目的で使用されているかを示します。
+   *
+   * <p>用途: 取引処理において用途に応じた処理を行うために使用されます。
+   */
+  private final BankAccountUseType type;
+}
+```
+
+`LogIdBasedLogger.java` でも、実装の選択理由が説明されています。
+
+```java
+// backend/src/main/java/undecided/shared/logger/LogIdBasedLogger.java
+/**
+ * ログメッセージIDに基づいて、プロパティファイルからローカライズされたログメッセージを取得して出力するロガーラッパークラス。
+ *
+ * <p>従来のSLF4Jロガーの代わりにこのクラスを使用することで、ログメッセージを外部のプロパティファイルで管理し、
+ * メッセージIDをログ出力に含めることができます。これにより、ログの国際化やメッセージの一括管理が可能になります。
+ */
+public class LogIdBasedLogger {
 ```
 
 #### 注意点
@@ -943,6 +1369,30 @@ public class OrderService {
     }
 }
 ```
+
+#### プロジェクト内の実例
+
+`BusinessException.java` では、冗長なコメントが削除され、コード自体が自明な部分はコメントされていません。
+
+```java
+// backend/src/main/java/undecided/shared/exception/BusinessException.java
+public class BusinessException extends ResultMessagesNotificationException {
+
+  public BusinessException(String message) {
+    super(ResultMessages.error().add(ResultMessage.fromText(message)));
+  }
+
+  public BusinessException(ResultMessages messages) {
+    super(messages);
+  }
+
+  public BusinessException(ResultMessages messages, Throwable cause) {
+    super(messages, cause);
+  }
+}
+```
+
+コンストラクタの処理はコード自体で明確なため、詳細なコメントは不要と判断されています。クラスレベルの KDoc には「なぜ」このクラスが存在するかが説明されています。
 
 #### 注意点
 

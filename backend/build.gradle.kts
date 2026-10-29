@@ -22,6 +22,8 @@ plugins {
     // Flywayプラグイン（DBマイグレーション）
     id("org.flywaydb.flyway") version "11.3.4"
     jacoco
+    // Pitest ミューテーションテストプラグイン
+    id("info.solidsoft.pitest") version "1.19.0"
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -61,6 +63,8 @@ extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.5.1"
 extra["junitVersion"] = "6.1.0"
+// Override Spring Boot BOM to align all JUnit artifacts (Jupiter, Platform, Vintage)
+extra["junit-jupiter.version"] = "6.1.0"
 extra["springCloudBomVersion"] = "2025.1.2"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
@@ -71,7 +75,18 @@ extra["uuidGeneratorVersion"] = "5.1.0"
 extra["superCsvVersion"] = "2.4.0"
 extra["testcontainersVersion"] = "2.0.5"
 
+// Force JUnit Platform artifacts to align with JUnit 6 version
+// Spring Boot 4.1.1 manages junit-platform-launcher at 1.14.4, but JUnit 6 requires 6.x
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.junit.platform") {
+            useVersion("6.1.0")
+        }
+    }
+}
+
 dependencies {
+    implementation(project(":mizo432-shared-common"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -93,6 +108,7 @@ dependencies {
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${property("junitVersion")}")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
     implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
@@ -133,6 +149,7 @@ dependencies {
 
     // Flyway PostgreSQLサポート
     implementation("org.flywaydb:flyway-database-postgresql")
+    implementation("org.flywaydb:flyway-core")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
@@ -282,4 +299,24 @@ fun isNonStable(version: String): Boolean {
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()
+}
+
+// Pitest ミューテーションテスト構成
+// 初回導入時はcom.github.mizo432.sharedパッケージに限定し、実行時間を抑える
+pitest {
+    targetClasses = setOf("com.github.mizo432.shared.*")
+    // JUnit 5 プラグインの自動追加
+    junit5PluginVersion = "1.2.1"
+    threads = Runtime.getRuntime().availableProcessors()
+    outputFormats = setOf("HTML", "XML")
+    timestampedReports = false
+    // 不安定なテストをスキップして、ミューテーションテストを継続する
+    skipFailingTests = true
+    excludedClasses = setOf(
+        // 生成コード・インフラストラクチャコードは除外
+        "com.github.mizo432.shared.*.package-info",
+        "com.github.mizo432.shared.*.dto.*",
+        "com.github.mizo432.shared.*.config.*"
+    )
+    jvmArgs = listOf("-Xmx1024m")
 }

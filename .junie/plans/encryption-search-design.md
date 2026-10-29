@@ -212,12 +212,12 @@ Add `spring-security-crypto` dependency to both `backend/build.gradle.kts` and
 
 ### ✓ Step 3: Create encryption configuration class in backend shared package
 
-Create `EncryptionConfig` in `undecided.shared.config` package with AES-256-GCM encryptor bean,
+Create `EncryptionConfig` in `com.github.mizo432.shared.config` package with AES-256-GCM encryptor bean,
 reading the encryption key from environment variable `ENCRYPTION_KEY`.
 
 ### ✓ Step 4: Create EncryptedStringConverter in backend shared package
 
-Create `EncryptedStringConverter` in `undecided.shared.converter` package as a JPA
+Create `EncryptedStringConverter` in `com.github.mizo432.shared.converter` package as a JPA
 `AttributeConverter<String, String>` that encrypts/decrypts String values using the AES-256-GCM
 encryptor. Mark with `@Converter(autoApply = false)` so it is applied explicitly via `@Convert`.
 

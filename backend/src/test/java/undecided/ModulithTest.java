@@ -11,8 +11,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
-import undecided.shared.annotation.DoNotCall;
-import undecided.shared.annotation.VisibleForTesting;
+import com.github.mizo432.shared.common.annotation.DoNotCall;
+import com.github.mizo432.shared.common.annotation.VisibleForTesting;
+import com.github.mizo432.shared.value.ValueObject;
 
 @Tag("small")
 @DisplayName("Spring Modulithの検証テスト")
@@ -37,8 +38,8 @@ class ModulithTest {
   void verifyDoNotCallAnnotationHasDeprecated() throws ClassNotFoundException {
     // DoNotCall アノテーションが付与されたメソッドは必ず @Deprecated も付与されていることを確認
     Class<?>[] classesWithDoNotCall = {
-      undecided.shared.primitiveOld.Sets2.class,
-      undecided.shared.primitiveOld.UnmodifiableIterator.class
+      com.github.mizo432.shared.common.primitive.Sets2.class,
+      com.github.mizo432.shared.common.primitive.UnmodifiableIterator.class
     };
 
     for (Class<?> clazz : classesWithDoNotCall) {
@@ -58,7 +59,7 @@ class ModulithTest {
   @Test
   void verifyVisibleForTestingAnnotationIsStatic() throws ClassNotFoundException {
     // VisibleForTesting アノテーションが付与されたメソッドは static であることを確認
-    Class<?>[] classesWithVisibleForTesting = {undecided.shared.entity.ValueObject.class};
+    Class<?>[] classesWithVisibleForTesting = {com.github.mizo432.shared.value.ValueObject.class};
 
     for (Class<?> clazz : classesWithVisibleForTesting) {
       Arrays.stream(clazz.getDeclaredMethods())

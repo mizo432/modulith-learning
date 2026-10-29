@@ -1,0 +1,14 @@
+情報一覧
+情報ID	情報名	情報種類	説明	履歴管理要	証跡要	実現方法
+INF-BL-01	バックログ項目	リソース	Epic、Feature、Story、欠陥などの項目	Y	Y	DB
+INF-BL-02	受入条件	リソース	期待される振る舞いや境界条件	Y	N	DB
+INF-BL-03	フィードバック	リソース	利用者からの意見・評価	Y	N	DB
+INF-BL-04	コメント	リソース	項目上の質問・回答・議論	Y	N	DB
+INF-BL-05	意思決定	リソース	決定内容、根拠、決定者	Y	Y	DB
+INF-BL-06	バックログ階層	対応表	Product Goal、Epic、Feature、Story間の階層関係	N	N	DB
+INF-BL-07	項目関連付け	対応表	要求間の重複・関連関係	N	N	DB
+INF-BL-08	項目とテスト	対応表	バックログ項目とテストケースの関連	N	N	DB
+INF-BL-09	項目種別	対照表	Epic、Feature、Story、Task、欠陥	N	N	DB and enum
+INF-BL-10	優先度	対照表	項目の優先度区分	N	N	DB and enum
+INF-BL-11	状態	対照表	項目のワークフロー状態	N	N	DB and enum
+INF-BL-12	課題	リソース	業務上の困りごとや繰り返し発生する問題	Y	N	DB

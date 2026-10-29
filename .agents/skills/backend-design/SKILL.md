@@ -65,13 +65,66 @@ undecided.<domain>.<module>
 └── internal        # モジュール内部実装（他モジュールから参照禁止）
 ```
 
-#### 3.2 公開APIと内部実装の分離
+#### 3.2 パッケージ命名ルール (Package Naming Convention)
+
+プロジェクトでは、パッケージ命名に以下のルールを適用します。
+
+**ルートの命名規則**
+
+- 新規モジュール・パッケージは必ず `undecided.*` 配下に配置します。
+- `com.github.mizo432.shared.*` 配下は既存の共通モジュールとして残しますが、新規追加は行いません。
+- 既存の `com.github.mizo432.shared.*` 配下のパッケージを整理する場合は、`undecided.*` 配下に移動します。
+
+**パッケージ階層の命名規則**
+
+| レベル | 命名規則 | 例 |
+|:---|:---|:---|
+| ルート | `undecided` | `undecided` |
+| 事業領域 | 事業領域コード (汎用場合は `generic`) | `undecided.generic` |
+| 業務領域 | 業務領域コード | `undecided.generic.accountMgmt` |
+| モジュール | モジュール名 | `undecided.generic.accountMgmt.internal` |
+| 層 | domain / useCase / infrastructure / presentation / internal | `undecided.generic.accountMgmt.internal.user` |
+| SPI | `spi` (公開API) | `undecided.generic.accountMgmt.spi` |
+
+**`com.github.mizo432.shared.*` から `undecided.*` への移行ルール**
+
+既存の `com.github.mizo432.shared.*` 配下のパッケージを `undecided.*` へ移行する場合は、以下のマッピングに従います。
+
+| 既存パッケージ | 移行先パッケージ | モジュールタイプ |
+|:---|:---|:---|
+| `com.github.mizo432.shared.config` | `undecided.config` | OPEN |
+| `com.github.mizo432.shared.exception` | `undecided.supporting.exception` (検討中) | OPEN |
+| `com.github.mizo432.shared.message` | `undecided.supporting.message` (検討中) | OPEN |
+| `com.github.mizo432.shared.entity` | `undecided.supporting.entity` (検討中) | OPEN |
+| `com.github.mizo432.shared.logging` | `undecided.supporting.logging` (検討中) | OPEN |
+| `com.github.mizo432.shared.converter` | `undecided.supporting.converter` (検討中) | OPEN |
+| `com.github.mizo432.shared.logger` | `undecided.supporting.logger` (検討中) | OPEN |
+| `com.github.mizo432.shared.application` | `undecided.supporting.application` (検討中) | OPEN |
+| `com.github.mizo432.shared.sensitive` | `undecided.supporting.sensitive` (検討中) | OPEN |
+| `com.github.mizo432.shared.value` | `undecided.supporting.value` (検討中) | OPEN |
+
+**移行時の手順**
+
+1. 新パッケージに `@ApplicationModule(Type.OPEN)` アノテーション付き `package-info.java` を作成
+2. クラスを新パッケージに移動
+3. 全import文を更新
+4. `./gradlew :backend:compileJava` でビルド検証
+5. `./gradlew :backend:test` で全テスト検証
+6. 旧パッケージを削除
+
+**`mizo432-shared-common` モジュール**
+
+- `com.github.mizo432.shared.common` 配下は独立したGradleモジュール (`mizo432-shared-common`) として存在
+- precondition、primitive、annotation、functional などの共通ユーティリティを提供
+- このモジュールは `undecided.*` への移行対象外とし、既存の構成を維持
+
+#### 3.3 公開APIと内部実装の分離
 
 - **公開API/SPI**: 他モジュールから利用されるインターフェースは公開パッケージに配置。
 - **internalパッケージ**: モジュール内部のロジックは `internal` パッケージに配置し、他モジュールから直接参照禁止。
 - **モジュール境界テスト**: モジュール間の不正な依存関係をテストで検出。
 
-#### 3.3 モジュール間通信
+#### 3.4 モジュール間通信
 
 - **同期通信**: 公開API/SPIを介した直接呼び出し。
 - **非同期通信**: Spring Modulithのドメインイベントを介した疎結合通信。

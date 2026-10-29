@@ -1,1 +1,5 @@
-# 画面一覧
+画面ID	画面名	主な利用者	画面の目的
+SCR-013	Sprint一覧・詳細	全チーム	Sprint期間、目標、選択Story、状態を確認する
+SCR-014	Sprint Planning	PO、SM、開発者	Sprint Goal、バックログ選択、容量・ベロシティ、タスク分解を協働で決める
+SCR-015	Sprint Board / タスクボード	開発者、SM、PO	Story・Taskの状態、作業中項目、ブロッカーを更新・確認する
+SCR-016	Daily Scrum記録	開発者、SM	Sprint Goalに向けた状況、障害、計画調整を記録する

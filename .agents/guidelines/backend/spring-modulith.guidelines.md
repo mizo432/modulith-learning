@@ -71,7 +71,7 @@ Spring Modulith では、モジュールの公開範囲を `ApplicationModule.Ty
 
 ```java
 @ApplicationModule(id = "shared", displayName = "共通モジュール", type = ApplicationModule.Type.OPEN)
-package undecided.shared;
+package com.github.mizo432.shared;
 
 import org.springframework.modulith.ApplicationModule;
 ```

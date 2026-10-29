@@ -31,65 +31,66 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 
 ### モジュール構成
 
-| モジュール | 説明 | ポート |
-|---|---|---|
-| **backend** | Spring Modulith を採用したコア業務アプリケーション。オニオンアーキテクチャとDDDに基づき、事業領域ごとにサブドメインを分離 | 8080 |
-| **service-registry** | Netflix Eureka Server を用いたサービスレジストリ | 8761 |
-| **api-gateway** | Spring Cloud Gateway によるAPIゲートウェイ。OAuth2 リソースサーバーとして認証・認可を担う | 8085 |
-| **authorization** | Spring Authorization Server によるOAuth2 認可サーバー | 8443 |
-| **frontend** | React + TypeScript + Material-UI によるフロントエンドアプリケーション | 3000 |
+| モジュール           | 説明                                                                                                                      | ポート |
+|----------------------|---------------------------------------------------------------------------------------------------------------------------|--------|
+| **backend**          | Spring Modulith を採用したコア業務アプリケーション。オニオンアーキテクチャとDDDに基づき、事業領域ごとにサブドメインを分離 | 8080   |
+| **service-registry** | Netflix Eureka Server を用いたサービスレジストリ                                                                          | 8761   |
+| **api-gateway**      | Spring Cloud Gateway によるAPIゲートウェイ。OAuth2 リソースサーバーとして認証・認可を担う                                 | 8085   |
+| **authorization**    | Spring Authorization Server によるOAuth2 認可サーバー                                                                     | 8443   |
+| **frontend**         | React + TypeScript + Material-UI によるフロントエンドアプリケーション                                                     | 3000   |
 
 ### 事業領域（サブドメイン）
 
-| コード | 事業領域名 | 区分 | 説明 |
-|---|---|---|---|
-| AG | アジルーム (Agiloom) | コア | Scrum プロジェクト管理 |
-| EF | 電子帳票 (Electronic Forms) | 汎用 | 帳票処理 |
-| AS | 関連付け (Association) | 支援 | 関連付け管理 |
-| AR | 承認申請 (Approval Request) | 汎用 | 承認ワークフロー |
-| AZ | 認可 (Authorization) | 支援 | 認可管理 |
-| NT | 通知 (Notification) | 汎用 | 通知処理 |
-| DO | 開発運用 (DevOps) | 支援 | 開発・運用支援 |
-| CA | カレンダーレジストリ | 汎用 | カレンダー管理 |
-| TA | 税率レジストリ | 汎用 | 税率管理 |
-| AD | 住所レジストリ | 汎用 | 住所管理 |
-| ER | 元号レジストリ | 汎用 | 元号管理 |
-| FI | 金融機関レジストリ | 汎用 | 金融機関情報管理 |
-| EX | サンプル (Example) | 支援 | 実装サンプル |
+| コード | 事業領域名                  | 区分 | 説明                   |
+|--------|-----------------------------|------|------------------------|
+| AG     | アジルーム (Agiloom)        | コア | Scrum プロジェクト管理 |
+| EF     | 電子帳票 (Electronic Forms) | 汎用 | 帳票処理               |
+| AS     | 関連付け (Association)      | 支援 | 関連付け管理           |
+| AR     | 承認申請 (Approval Request) | 汎用 | 承認ワークフロー       |
+| AZ     | 認可 (Authorization)        | 支援 | 認可管理               |
+| NT     | 通知 (Notification)         | 汎用 | 通知処理               |
+| DO     | 開発運用 (DevOps)           | 支援 | 開発・運用支援         |
+| CA     | カレンダーレジストリ        | 汎用 | カレンダー管理         |
+| TA     | 税率レジストリ              | 汎用 | 税率管理               |
+| AD     | 住所レジストリ              | 汎用 | 住所管理               |
+| ER     | 元号レジストリ              | 汎用 | 元号管理               |
+| FI     | 金融機関レジストリ          | 汎用 | 金融機関情報管理       |
+| EX     | サンプル (Example)          | 支援 | 実装サンプル           |
 
-各事業領域は独立したデータベーススキーマ（例: `undecided_ag`, `undecided_ef`）で分離され、Flyway によるマイグレーションが個別に管理されています。
+各事業領域は独立したデータベーススキーマ（例: `undecided_ag`, `undecided_ef`）で分離され、Flyway
+によるマイグレーションが個別に管理されています。
 
 ## 🛠️ 技術スタック
 
 ### バックエンド
 
-| カテゴリ | 技術 |
-|---|---|
-| **ランタイム** | Java 25 |
-| **フレームワーク** | Spring Boot 4.1.1, Spring Modulith 2.1.0 |
-| **アーキテクチャ** | jMolecules オンイオンアーキテクチャ, DDD |
-| **データベース** | PostgreSQL |
-| **ORM** | Spring Data JPA (Hibernate) |
-| **DBマイグレーション** | Flyway |
-| **キャッシュ** | Redis + Caffeine |
-| **バッチ処理** | Spring Batch + Super CSV |
-| **APIドキュメント** | SpringDoc OpenAPI |
-| **サービスディスカバリ** | Netflix Eureka (Spring Cloud) |
-| **認証・認可** | Spring Authorization Server, OAuth2 |
-| **テスト** | JUnit 6, AssertJ, Testcontainers, ArchUnit |
-| **コード品質** | JaCoCo, Lombok, JSpecify |
-| **ビルド** | Gradle (Kotlin DSL) |
+| カテゴリ                 | 技術                                       |
+|--------------------------|--------------------------------------------|
+| **ランタイム**           | Java 25                                    |
+| **フレームワーク**       | Spring Boot 4.1.1, Spring Modulith 2.1.0   |
+| **アーキテクチャ**       | jMolecules オンイオンアーキテクチャ, DDD   |
+| **データベース**         | PostgreSQL                                 |
+| **ORM**                  | Spring Data JPA (Hibernate)                |
+| **DBマイグレーション**   | Flyway                                     |
+| **キャッシュ**           | Redis + Caffeine                           |
+| **バッチ処理**           | Spring Batch + Super CSV                   |
+| **APIドキュメント**      | SpringDoc OpenAPI                          |
+| **サービスディスカバリ** | Netflix Eureka (Spring Cloud)              |
+| **認証・認可**           | Spring Authorization Server, OAuth2        |
+| **テスト**               | JUnit 6, AssertJ, Testcontainers, ArchUnit |
+| **コード品質**           | JaCoCo, Lombok, JSpecify                   |
+| **ビルド**               | Gradle (Kotlin DSL)                        |
 
 ### フロントエンド
 
-| カテゴリ | 技術 |
-|---|---|
-| **フレームワーク** | React 18 |
-| **言語** | TypeScript |
-| **UI コンポーネント** | Material-UI (MUI) |
-| **ルーティング** | React Router |
-| **HTTP クライアント** | Axios |
-| **テスト** | Jest, React Testing Library |
+| カテゴリ              | 技術                        |
+|-----------------------|-----------------------------|
+| **フレームワーク**    | React 18                    |
+| **言語**              | TypeScript                  |
+| **UI コンポーネント** | Material-UI (MUI)           |
+| **ルーティング**      | React Router                |
+| **HTTP クライアント** | Axios                       |
+| **テスト**            | Jest, React Testing Library |
 
 ## 📁 プロジェクト構造
 
@@ -162,13 +163,13 @@ cd frontend && npm install && npm start
 
 ### 環境変数
 
-| 変数 | 説明 | デフォルト値 |
-|---|---|---|
-| `SYSTEM_JDBC_URL` | データベース接続URL | `jdbc:postgresql://localhost:5432/postgres` |
-| `POSTGRES_USER` | データベースユーザー | `postgres` |
-| `POSTGRES_PASSWORD` | データベースパスワード | `postgres` |
-| `REDIS_HOST` | Redis ホスト | `localhost` |
-| `REDIS_PORT` | Redis ポート | `6379` |
+| 変数                | 説明                   | デフォルト値                                |
+|---------------------|------------------------|---------------------------------------------|
+| `SYSTEM_JDBC_URL`   | データベース接続URL    | `jdbc:postgresql://localhost:5432/postgres` |
+| `POSTGRES_USER`     | データベースユーザー   | `postgres`                                  |
+| `POSTGRES_PASSWORD` | データベースパスワード | `postgres`                                  |
+| `REDIS_HOST`        | Redis ホスト           | `localhost`                                 |
+| `REDIS_PORT`        | Redis ポート           | `6379`                                      |
 
 ## 🧪 テストの実行
 
@@ -201,7 +202,62 @@ cd frontend && npm install && npm start
 - **[機能要望](docs/21%20要望/)** — 機能要件と要望
 - **[要件定義書](docs/22%20要件定義書/)** — 詳細な要件定義
 - **[詳細設計書](docs/23%20詳細設計書/)** — 技術設計ドキュメント
-- **[ADR](docs/95%20Architecture%20decision%20record%20(ADR)/)** — アーキテクチャ判断記録
+- **[ADR](docs/95%20Architecture%20decision%20record%20 (ADR)/)** — アーキテクチャ判断記録
+
+### 📐 RDRA (リレーションシップ駆動要件分析)
+
+要件分析にはRDRA（Relationship-Driven Requirements
+Analysis）を採用しています。RDRAはPlantUMLを使用してシステム価値、システム外部環境、システム境界、システムレイヤーの4つのレイヤーで要件を定義します。
+
+- **[RDRAダイアグラム例](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/README.md)** —
+  図書館システムを題材にしたダイアグラム例
+    -
+  **[利用シーン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
+  ユースケース図の例
+    -
+  **[バリエーション条件図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/02.バリエーション条件図.md)** —
+  バリエーションと条件の定義例
+    -
+  **[ユースケース複合図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/03.ユースケース複合図.md)** —
+  UC複合図の例
+    -
+  **[ステートマシン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
+  状態遷移図の例
+    - **[用語集](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
+
+#### Agiloom (AG) のRDRAダイアグラム
+
+AgiloomはScrumプロジェクト管理を支援するシステムです。6つの業務領域、31のBUC、120のユースケースから構成されています。
+
+- **[ユースケース図](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/)** — 6業務領域分のPlantUMLユースケース図
+  -
+  **[AG-01 プロダクトディスカバリー](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/AG-01%20プロダクトディスカバリー/03.システム境界/01.ユースケース/ユースケース図.md)** —
+  26ユースケース
+    -
+  **[AG-02 要求バックログ管理](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/AG-02%20要求バックログ管理/03.システム境界/01.ユースケース/ユースケース図.md)** —
+  25ユースケース
+    -
+  **[AG-03 優先順位決定](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/AG-03%20優先順位決定/03.システム境界/01.ユースケース/ユースケース図.md)** —
+  10ユースケース
+    -
+  **[AG-04 スプリント実行](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/AG-04%20スプリント実行/03.システム境界/01.ユースケース/ユースケース図.md)** —
+  19ユースケース
+    -
+  **[AG-05 品質検証](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/AG-05%20品質検証/03.システム境界/01.ユースケース/ユースケース図.md)** —
+  19ユースケース
+    -
+  **[AG-06 成果適応](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/AG-06%20成果適応/03.システム境界/01.ユースケース/ユースケース図.md)** —
+  21ユースケース
+- **[UC複合図](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/UC複合図.md)** —
+  5業務領域の代表的なユースケースの複合図
+- **[ステートマシン図](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/ステートマシン図.md)** —
+  14の状態遷移図
+-
+
+**[バリエーション条件図](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/バリエーション条件図.md)** —
+12バリエーション、15条件
+
+- **[用語集](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/用語集.md)** — ビジネス用語40、システム用語30
 
 ## 📋 設計方針
 

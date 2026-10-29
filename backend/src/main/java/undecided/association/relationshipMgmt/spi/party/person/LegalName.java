@@ -4,8 +4,9 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.primitive.Strings2;
-import undecided.shared.value.StringCode;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 法的名前を表す値オブジェクトです。
@@ -114,7 +115,7 @@ public class LegalName implements StringCode<LegalName> {
    */
   @Override
   public String toString() {
-    return Strings2.toString(value());
+    return SensitiveDataMasker.maskName(value());
   }
 
   /** LegalNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */

@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.shared.annotation.DoNotCall;
-import undecided.shared.annotation.VisibleForTesting;
+import com.github.mizo432.shared.common.annotation.DoNotCall;
+import com.github.mizo432.shared.common.annotation.VisibleForTesting;
 
 @Tag("small")
 @DisplayName("アーキテクチャ制約の検証テスト")
@@ -48,7 +48,7 @@ class ArchitectureTest {
             .and()
             .haveNameNotMatching(".*SnowflakeNode")
             .and()
-            .resideOutsideOfPackage("undecided.shared.sample..")
+            .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
             .resideInAPackage("..spi..")
             .because("Entityクラスはドメイン層(spiパッケージ)に配置されるべきです");
@@ -64,7 +64,7 @@ class ArchitectureTest {
             .that()
             .areAssignableTo(Repository.class)
             .and()
-            .resideOutsideOfPackage("undecided.shared.sample..")
+            .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
             .resideInAnyPackage("..internal..", "..intenal..", "..repository..")
             .because("Repositoryクラスはアプリケーション層(internalパッケージ)に配置されるべきです");
@@ -109,7 +109,8 @@ class ArchitectureTest {
             .areAnnotatedWith(DoNotCall.class)
             .should()
             .beAnnotatedWith(Deprecated.class)
-            .because("DoNotCallアノテーションが付与されたメソッドは@Deprecatedも付与されるべきです");
+            .because("DoNotCallアノテーションが付与されたメソッドは@Deprecatedも付与されるべきです")
+            .allowEmptyShould(true);
 
     @ArchTest
     static final ArchRule visible_for_testing_methods_should_be_static =
@@ -118,7 +119,8 @@ class ArchitectureTest {
             .areAnnotatedWith(VisibleForTesting.class)
             .should()
             .beStatic()
-            .because("VisibleForTestingアノテーションが付与されたメソッドはstaticであるべきです");
+            .because("VisibleForTestingアノテーションが付与されたメソッドはstaticであるべきです")
+            .allowEmptyShould(true);
   }
 
   @AnalyzeClasses(

@@ -1,10 +1,10 @@
 package undecided.supporting.snowflake;
 
-import static undecided.shared.io.Base62s.DECODE_FROM_BASE62;
-import static undecided.shared.io.Base62s.ENCODE_TO_BASE62;
-import static undecided.shared.precondition.LongPrecondition.checkPositive;
-import static undecided.shared.precondition.ObjectPrecondition.checkNotNull;
-import static undecided.shared.primitiveOld.Objects2.isNull;
+import static com.github.mizo432.shared.common.io.Base62s.DECODE_FROM_BASE62;
+import static com.github.mizo432.shared.common.io.Base62s.ENCODE_TO_BASE62;
+import static com.github.mizo432.shared.common.precondition.LongPrecondition.checkPositive;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.ComparisonChain;
@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import undecided.shared.value.LongValue;
+import com.github.mizo432.shared.value.LongValue;
 
 /**
  * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。

@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
-import undecided.shared.converter.EncryptedStringConverter;
+import com.github.mizo432.shared.converter.EncryptedStringConverter;
 
-@Entity
+@Entity(name = "TestEmployee")
 @Table(name = "employees")
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class Employee {
 
   @Column(nullable = false)
   @Convert(converter = EncryptedStringConverter.class)
-  private String lastNane;
+  private String lastName;
 
   @Column(nullable = false)
   @Convert(converter = EncryptedStringConverter.class)
