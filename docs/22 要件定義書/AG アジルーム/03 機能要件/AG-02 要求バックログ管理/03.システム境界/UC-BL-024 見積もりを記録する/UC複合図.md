@@ -41,9 +41,14 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-024 RecordEstimate" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-01\nBacklog Item" as INF01
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : Call
+UC -- INF01 : Use
 @enduml
 ```
 
@@ -82,9 +87,14 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-024 見積もりを記録する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-01\nバックログ項目" as INF01
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF01 : 使用
 @enduml
 ```
 
@@ -102,11 +112,15 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名             | 英語名                | 説明                                     | 関連ユースケース |
+|------------|------------------------|-----------------------|------------------------------------------|------------------|
+| EVT-BL-018 | 見積もりが記録された   | Estimate Recorded     | チームの見積もり、リスク、未知事項が記録された | UC-BL-024       |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                             | 関連ユースケース |
+|---------|--------------|---------------|----------|----------------------------------|------------------|
+| INF-BL-01 | バックログ項目 | Backlog Item | リソース | Epic、Feature、Story、欠陥などの項目 | UC-BL-024      |
 
 ## 8. 条件一覧
 

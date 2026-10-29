@@ -41,9 +41,16 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-007 CreateBacklog" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-01\nBacklog Item" as INF01
+  card "INF-BL-09\nItem Type" as INF09
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : Call
+UC -- INF01 : Use
+UC -- INF09 : Use
 @enduml
 ```
 
@@ -82,9 +89,16 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-007 バックログ項目を作成する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-01\nバックログ項目" as INF01
+  card "INF-BL-09\n項目種別" as INF09
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF01 : 使用
+UC -- INF09 : 使用
 @enduml
 ```
 
@@ -102,15 +116,22 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名               | 英語名                 | 説明                                     | 関連ユースケース |
+|------------|--------------------------|------------------------|------------------------------------------|------------------|
+| EVT-BL-005 | バックログ項目が作成された | Backlog Item Created | Epic・Feature・Storyなどのバックログ項目が登録された | UC-BL-007  |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名       | 英語名        | 情報種類 | 説明                             | 関連ユースケース |
+|---------|--------------|---------------|----------|----------------------------------|------------------|
+| INF-BL-01 | バックログ項目 | Backlog Item | リソース | Epic、Feature、Story、欠陥などの項目 | UC-BL-007      |
+| INF-BL-09 | 項目種別     | Item Type     | 対照表   | Epic、Feature、Story、Task、欠陥   | UC-BL-007        |
 
 ## 8. 条件一覧
 
-条件なし
+| 条件ID    | 条件名     | 英語名     | 説明                         | 関連ユースケース |
+|-----------|------------|------------|------------------------------|------------------|
+| INF-BL-09 | 項目種別   | Item Type  | Epic、Feature、Story、Task、欠陥 | UC-BL-007       |
 
 ## 9. 参照情報
 

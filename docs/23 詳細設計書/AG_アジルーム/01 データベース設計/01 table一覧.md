@@ -40,6 +40,10 @@
 | 29  | `preparation_risks_map`      | 準備-準備リスク対応                 | 30       | 対応表   | Y        | N    |
 | 30  | `teams`                      | チーム                              | -        | リソース | Y        | Y    |
 | 31  | `product_visions`            | プロダクトビジョン                  | -        | リソース | Y        | Y    |
+| 32  | `impediments`                | 障害                                | INF-SP-04| リソース | Y        | N    |
+| 33  | `sprint_dependencies`        | スプリント依存関係                  | INF-SP-05| 対応表   | N        | N    |
+| 34  | `notifications`              | 通知                                | INF-SP-06| イベント | N        | N    |
+| 35  | `activities`                 | アクティビティ                      | INF-SP-07| イベント | N        | N    |
 
 ## 命名規則
 

@@ -42,10 +42,15 @@ rectangle "Backlog Management Module" {
   usecase "UC-BL-016 Comment" as UC
 }
 
+rectangle "System Layer" {
+  card "INF-BL-04\nComment" as INF04
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 ACT3 -- SCR
 SCR ..> UC : Call
+UC -- INF04 : Use
 @enduml
 ```
 
@@ -85,10 +90,15 @@ rectangle "要求バックログ管理モジュール" {
   usecase "UC-BL-016 コメントを投稿する" as UC
 }
 
+rectangle "システムレイヤー" {
+  card "INF-BL-04\nコメント" as INF04
+}
+
 ACT1 -- SCR
 ACT2 -- SCR
 ACT3 -- SCR
 SCR ..> UC : 呼び出し
+UC -- INF04 : 使用
 @enduml
 ```
 
@@ -106,11 +116,15 @@ SCR ..> UC : 呼び出し
 
 ## 6. イベント一覧
 
-イベントなし
+| イベントID | イベント名             | 英語名               | 説明                                     | 関連ユースケース |
+|------------|------------------------|----------------------|------------------------------------------|------------------|
+| EVT-BL-012 | コメントが投稿された   | Comment Posted       | 項目上で質問、回答、議論が行われた       | UC-BL-016        |
 
 ## 7. 情報一覧
 
-情報なし
+| 情報ID  | 情報名     | 英語名     | 情報種類 | 説明                         | 関連ユースケース |
+|---------|------------|------------|----------|------------------------------|------------------|
+| INF-BL-04 | コメント   | Comment    | リソース | 項目上の質問・回答・議論     | UC-BL-016        |
 
 ## 8. 条件一覧
 
