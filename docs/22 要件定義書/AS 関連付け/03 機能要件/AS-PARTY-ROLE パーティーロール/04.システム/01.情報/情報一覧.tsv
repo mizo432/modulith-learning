@@ -1,0 +1,5 @@
+情報ID	情報名	情報種類	説明	関連ユースケース	履歴管理要	証跡要	実現方法
+INF-AS-PARTY-ROLE-01	パーティーロール	リソース	パーティーに付与されるロールの定義	UC-AS-PARTY-ROLE-001, UC-AS-PARTY-ROLE-002, UC-AS-PARTY-ROLE-003, UC-AS-PARTY-ROLE-004, UC-AS-PARTY-ROLE-005	Y	Y	DB
+INF-AS-PARTY-ROLE-02	ロール種類	対照表	ロールの種類（人ロール、組織ロールなど）	UC-AS-PARTY-ROLE-001	N	N	DB and enum
+INF-AS-PARTY-ROLE-03	ロール有効期間	対応表	ロールの有効期間管理	UC-AS-PARTY-ROLE-006, UC-AS-PARTY-ROLE-007, UC-AS-PARTY-ROLE-008	Y	N	DB
+INF-AS-PARTY-ROLE-04	ロール付与完了	イベント	ロールが付与されたことを示すイベント	UC-AS-PARTY-ROLE-006	N	N	

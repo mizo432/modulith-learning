@@ -5,6 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationQueryImpl;
 import undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationRepository;
 import undecided.association.relationshipMgmt.orgRole.spi.Organization;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * Unit tests for {@link OrganizationQueryImpl}.
@@ -41,27 +43,35 @@ class OrganizationQueryImplTest {
   @BeforeEach
   void setUp() {
     testUuid = UUID.randomUUID();
-    testOrganization = createTestOrganization(testUuid);
+    testOrganization = createTestOrganization();
   }
 
-  private Organization createTestOrganization(UUID id) {
-    Organization org = new Organization();
-    org.setOrganizationId(id);
-    org.setOrganizationCode("0001010203004");
-    org.setFullName("Test Organization");
-    org.setLevel0Code("0001");
-    org.setLevel1Code("01");
-    org.setLevel2Code("02");
-    org.setLevel3Code("03");
-    org.setLevel4Code("004");
-    org.setLevel0Name("Level 0");
-    org.setLevel1Name("Level 1");
-    org.setLevel2Name("Level 2");
-    org.setLevel3Name("Level 3");
-    org.setLevel4Name("Level 4");
-    org.setValidFrom(LocalDateTime.now().minusDays(10));
-    org.setValidTo(null);
+  private Organization createTestOrganization() {
+    return new Organization(
+        SnowflakeId.of(1L),
+        SnowflakeId.of(2L),
+        "0001010203004",
+        "Test Organization",
+        "DEPARTMENT",
+        null,
+        "ACTIVE",
+        LocalDateTime.now().minusDays(10));
+  }
+
+  private Organization createTestOrganizationWithValidTo(LocalDateTime validTo) {
+    Organization org = createTestOrganization();
+    setField(org, "validTo", validTo);
     return org;
+  }
+
+  private void setField(Object target, String fieldName, Object value) {
+    try {
+      Field field = target.getClass().getDeclaredField(fieldName);
+      field.setAccessible(true);
+      field.set(target, value);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new RuntimeException("Failed to set field " + fieldName, e);
+    }
   }
 
   // ========== findAll() Tests ==========
@@ -72,7 +82,7 @@ class OrganizationQueryImplTest {
     // Given
     List<Organization> organizations = new ArrayList<>();
     organizations.add(testOrganization);
-    organizations.add(createTestOrganization(UUID.randomUUID()));
+    organizations.add(createTestOrganization());
     when(organizationRepository.findAll()).thenReturn(organizations);
 
     // When
@@ -106,7 +116,7 @@ class OrganizationQueryImplTest {
     // Given
     List<Organization> organizations = new ArrayList<>();
     for (int i = 0; i < 1000; i++) {
-      organizations.add(createTestOrganization(UUID.randomUUID()));
+      organizations.add(createTestOrganization());
     }
     when(organizationRepository.findAll()).thenReturn(organizations);
 
@@ -133,7 +143,7 @@ class OrganizationQueryImplTest {
     // Then
     assertThat(result).isNotNull();
     // Verify list is modifiable by adding an element
-    result.add(createTestOrganization(UUID.randomUUID()));
+    result.add(createTestOrganization());
     assertThat(result).hasSize(2);
   }
 
@@ -163,9 +173,8 @@ class OrganizationQueryImplTest {
 
     // Then
     assertThat(result.get(0).getOrganizationCode()).isEqualTo("0001010203004");
-    assertThat(result.get(0).getFullName()).isEqualTo("Test Organization");
-    assertThat(result.get(0).getLevel0Code()).isEqualTo("0001");
-    assertThat(result.get(0).getLevel4Code()).isEqualTo("004");
+    assertThat(result.get(0).getName()).isEqualTo("Test Organization");
+    assertThat(result.get(0).getOrganizationTypeCode()).isEqualTo("DEPARTMENT");
   }
 
   // ========== findById() Tests ==========
@@ -181,7 +190,7 @@ class OrganizationQueryImplTest {
 
     // Then
     assertThat(result).isPresent();
-    assertThat(result.get().getOrganizationId()).isEqualTo(testUuid);
+    assertThat(result.get().getOrganizationId()).isEqualTo(testOrganization.getOrganizationId());
     assertThat(result.get().getOrganizationCode()).isEqualTo("0001010203004");
     verify(organizationRepository, times(1)).findById(testUuid);
   }
@@ -240,12 +249,9 @@ class OrganizationQueryImplTest {
     // Then
     assertThat(result).isPresent();
     Organization org = result.get();
-    assertThat(org.getFullName()).isEqualTo("Test Organization");
-    assertThat(org.getLevel0Name()).isEqualTo("Level 0");
-    assertThat(org.getLevel1Name()).isEqualTo("Level 1");
-    assertThat(org.getLevel2Name()).isEqualTo("Level 2");
-    assertThat(org.getLevel3Name()).isEqualTo("Level 3");
-    assertThat(org.getLevel4Name()).isEqualTo("Level 4");
+    assertThat(org.getName()).isEqualTo("Test Organization");
+    assertThat(org.getOrganizationTypeCode()).isEqualTo("DEPARTMENT");
+    assertThat(org.getStatus()).isEqualTo("ACTIVE");
     assertThat(org.getValidFrom()).isNotNull();
   }
 
@@ -253,7 +259,7 @@ class OrganizationQueryImplTest {
   @DisplayName("findById should return organization with null validTo")
   void testFindById_OrganizationWithNullValidTo_ShouldSucceed() {
     // Given
-    testOrganization.setValidTo(null);
+    // validTo is null by default when using the constructor
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
     // When
@@ -269,8 +275,8 @@ class OrganizationQueryImplTest {
   void testFindById_OrganizationWithValidTo_ShouldSucceed() {
     // Given
     LocalDateTime validTo = LocalDateTime.now().plusDays(30);
-    testOrganization.setValidTo(validTo);
-    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
+    Organization orgWithValidTo = createTestOrganizationWithValidTo(validTo);
+    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(orgWithValidTo));
 
     // When
     Optional<Organization> result = organizationQueryImpl.findById(testUuid);
@@ -304,7 +310,7 @@ class OrganizationQueryImplTest {
     UUID id3 = UUID.randomUUID();
     when(organizationRepository.findById(id1)).thenReturn(Optional.of(testOrganization));
     when(organizationRepository.findById(id2)).thenReturn(Optional.empty());
-    when(organizationRepository.findById(id3)).thenReturn(Optional.of(createTestOrganization(id3)));
+    when(organizationRepository.findById(id3)).thenReturn(Optional.of(createTestOrganization()));
 
     // When
     organizationQueryImpl.findById(id1);

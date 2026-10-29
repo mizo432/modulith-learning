@@ -13,7 +13,7 @@ import com.github.mizo432.shared.value.datetime.ValidInterval;
 public class OrgUnit extends Party {
 
   /** 組織単位の名称。 */
-  private OrgUnitName name;
+  private OrgUnitName orgUnitName;
 
   /** 組織単位の有効期間（開始日から終了日までの範囲）。 */
   private ValidInterval validInterval;
