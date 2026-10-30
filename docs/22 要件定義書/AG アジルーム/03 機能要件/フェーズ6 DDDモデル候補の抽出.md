@@ -357,7 +357,165 @@ Aggregate Rootに属するエンティティ：
 └─────────────────────────────────────────────────────────┘
 ```
 
-## 10. 総合評価
+## 8. ビジネスルール（ドメインサービス候補）
+
+バリエーション条件図で定義されたビジネスルールを、ドメインサービス候補としてマッピングします。
+
+### 8.1 AG-01 プロダクトディスカバリー
+
+| 条件ID | 条件名 | 英語名 | 種類 | 関連アグリゲート | 説明 |
+|--------|--------|--------|------|------------------|------|
+| COND-001 | 仮説検証ルール | Hypothesis Validation | ポリシー | Hypothesis | 仮説は検証可能で測定可能であること |
+| COND-002 | 仮説更新ルール | Hypothesis Update | オペレーション | Hypothesis | 検証結果に基づいて仮説を更新する |
+| COND-003 | 課題登録ルール | Problem Registration | ポリシー | UserProblem | 課題は影響範囲を特定して登録する |
+| COND-004 | 要望分類ルール | Requirement Classification | 意思決定支援 | KanoEvaluation | 要望はKano評価に基づいて分類する |
+| COND-005 | ステークホルダー管理ルール | Stakeholder Management | ポリシー | Stakeholder | ステークホルダーは関心事を整理して管理する |
+| COND-006 | 成功指標定義ルール | Success Metric Definition | ポリシー | SuccessMetric | 成功指標は測定可能で目標値を設定する |
+| COND-007 | 実験計画ルール | Experiment Planning | ポリシー | ExperimentPlan | 実験計画は仮説と関連付けて作成する |
+| COND-008 | 実験結果記録ルール | Experiment Result Recording | オペレーション | ExperimentPlan | 実験結果は仮説の検証結果として記録する |
+
+### 8.2 AG-02 要求バックログ管理
+
+| 条件ID | 条件名 | 英語名 | 種類 | 関連アグリゲート | 説明 |
+|--------|--------|--------|------|------------------|------|
+| COND-BL-01 | 必須情報チェック | Required Info Check | ポリシー | BacklogItem | 課題登録時に必須情報が揃っているか確認 |
+| COND-BL-02 | 優先順位一意性 | Priority Uniqueness | 制約 | BacklogItem | 重複する優先順位は不可 |
+| COND-BL-03 | 編集権限チェック | Edit Permission Check | ポリシー | BacklogItem | 編集権限があるか確認 |
+| COND-BL-04 | 受入条件必須 | Acceptance Criterion Required | ポリシー | AcceptanceCriterion | Storyには受入条件の定義が必須 |
+| COND-BL-05 | 準備完了条件 | Ready Condition | 意思決定支援 | BacklogItem | 受入条件・見積もり・依存関係が整った項目のみReadyにできる |
+
+### 8.3 AG-03 優先順位決定
+
+| 条件ID | 条件名 | 英語名 | 種類 | 関連アグリゲート | 説明 |
+|--------|--------|--------|------|------------------|------|
+| COND-PR-001 | 評価基準定義ルール | Evaluation Criteria Definition | ポリシー | EvaluationCriteria | 評価基準は価値、Kano、リスク、コストを含むこと |
+| COND-PR-002 | Kano分類ルール | Kano Classification | ポリシー | KanoClassification | 要求項目はKanoカテゴリに分類すること |
+| COND-PR-003 | リスク評価ルール | Risk Assessment | ポリシー | RiskAssessment | リスクは発生確率と影響度を評価すること |
+| COND-PR-004 | 優先順位計算ルール | Priority Calculation | オペレーション | PriorityScore | 評価基準の重み付けに基づいて優先順位を計算する |
+| COND-PR-005 | 優先順位決定ルール | Priority Decision | ポリシー | PriorityScore | 優先順位の決定はプロダクトオーナーのみが行う |
+| COND-PR-006 | 依存関係定義ルール | Dependency Definition | 制約 | Dependency | 循環依存は定義できない |
+| COND-PR-007 | 投資判断記録ルール | Investment Decision Recording | ポリシー | InvestmentDecision | 投資判断の理由を必ず記録する |
+| COND-PR-008 | 変更履歴追跡ルール | Change History Tracking | オペレーション | PriorityScore | 優先順位変更の履歴・理由を追跡する |
+
+### 8.4 AG-04 スプリント実行
+
+| 条件ID | 条件名 | 英語名 | 種類 | 関連アグリゲート | 説明 |
+|--------|--------|--------|------|------------------|------|
+| COND-SP-001 | スプリント開始条件 | Sprint Start Condition | ポリシー | Sprint | Sprint Backlogが準備完了のスプリントのみ開始可能 |
+| COND-SP-002 | 作業着手条件 | Work Start Condition | ポリシー | SprintBacklogItem | 依存関係が解消された項目のみ着手可能 |
+| COND-SP-003 | 障害エスカレーションルール | Impediment Escalation | オペレーション | Impediment | 期限を過ぎた障害はエスカレーションする |
+| COND-SP-004 | インクリメント確認ルール | Increment Verification | ポリシー | Sprint | Definition of Doneを満たすことを確認する |
+
+### 8.5 AG-05 品質検証
+
+| 条件ID | 条件名 | 英語名 | 種類 | 関連アグリゲート | 説明 |
+|--------|--------|--------|------|------------------|------|
+| COND-QL-001 | テストケース必須ルール | Test Case Required | ポリシー | TestCase | 欠陥はテストケースと関連付けて登録する |
+| COND-QL-002 | 欠陥严重度ルール | Defect Severity | ポリシー | Defect | 欠陥は严重度に基づいて優先度を設定する |
+| COND-QL-003 | 性能テスト実行条件 | Performance Test Condition | 意思決定支援 | PerformanceRequirement | 性能要件を満たさない場合は再テストする |
+| COND-QL-004 | セキュリティリスク対応ルール | Security Risk Response | ポリシー | SecurityQualityRisk | 許容範囲を超えるリスクは対応策を実行する |
+
+### 8.6 AG-06 成果適応
+
+| 条件ID | 条件名 | 英語名 | 種類 | 関連アグリゲート | 説明 |
+|--------|--------|--------|------|------------------|------|
+| COND-009 | 改善アクション追跡ルール | Improvement Action Tracking | オペレーション | ImprovementAction | 期限までに改善効果を確かめる |
+| COND-010 | リスク対応ルール | Risk Response | ポリシー | Risk | 許容範囲を超えるリスクは対応策を実行する |
+| COND-015 | 権限ベースの画面表示ルール | Role-based View | ポリシー | Dashboard | ロールに応じた情報だけを表示する |
+| COND-016 | フィードバック分類ルール | Feedback Classification | 意思決定支援 | ReviewFeedback | フィードバックを種別ごとに分類する |
+| COND-017 | 対応方針決定ルール | Response Decision | 意思決定支援 | ReviewFeedback | フィードバックの優先度に基づいて対応方針を決定する |
+| COND-018 | Sprint Review開始条件 | Sprint Review Start Condition | ポリシー | SprintReview | 準備情報が揃っていること |
+| COND-019 | Sprint Review終了条件 | Sprint Review End Condition | ポリシー | SprintReview | 決定事項が記録されていること |
+| COND-020 | 改善アクション期限ルール | Improvement Action Deadline | オペレーション | ImprovementAction | 期限を過ぎた改善アクションはエスカレーションする |
+
+## 9. モジュール構成候補
+
+Spring Modulith のモジュール構成候補を、サブドメインごとに提案します。
+
+### 9.1 AG-01 プロダクトディスカバリー
+
+| モジュール名 | バウンデッドコンテキスト | 種類 | 概要 |
+|-------------|------------------------|------|------|
+| product-vision | Product Vision Context | コアドメイン | Product Vision, Product Goal, Success Metric の管理 |
+| problem-discovery | Problem Discovery Context | コアドメイン | 課題・要望の発見・整理 |
+| hypothesis-testing | Hypothesis Testing Context | コアドメイン | 仮説検証の管理 |
+| user-understanding | User Understanding Context | サポートリングドメイン | ステークホルダー・ペルソナ・ユーザージャーニー管理 |
+| kano-evaluation | Kano Evaluation Context | サポートリングドメイン | Kano評価の管理 |
+
+### 9.2 AG-02 要求バックログ管理
+
+| モジュール名 | バウンデッドコンテキスト | 種類 | 概要 |
+|-------------|------------------------|------|------|
+| backlog-management | Backlog Management Context | コアドメイン | バックログ項目の管理 |
+| feedback-management | Feedback Management Context | サポートリングドメイン | フィードバック管理 |
+| discussion | Discussion Context | サポートリングドメイン | 議論・意思決定 |
+| traceability | Traceability Context | サポートリングドメイン | 関連付け・トレーサビリティ |
+
+### 9.3 AG-03 優先順位決定
+
+| モジュール名 | バウンデッドコンテキスト | 種類 | 概要 |
+|-------------|------------------------|------|------|
+| evaluation-criteria | Evaluation Criteria Context | コアドメイン | 評価基準の定義・管理 |
+| kano-classification | Kano Classification Context | サポートリングドメイン | Kano分類の評価 |
+| risk-assessment | Risk Assessment Context | サポートリングドメイン | リスク評価・対応策 |
+| investment-decision | Investment Decision Context | サポートリングドメイン | 投資判断・依存関係 |
+
+### 9.4 AG-04 スプリント実行
+
+| モジュール名 | バウンデッドコンテキスト | 種類 | 概要 |
+|-------------|------------------------|------|------|
+| sprint-management | Sprint Management Context | コアドメイン | スプリントの計画・実行 |
+| sprint-backlog | Sprint Backlog Context | サポートリングドメイン | Sprint Backlogの管理 |
+| impediment | Impediment Context | サポートリングドメイン | 障害の管理 |
+
+### 9.5 AG-05 品質検証
+
+| モジュール名 | バウンデッドコンテキスト | 種類 | 概要 |
+|-------------|------------------------|------|------|
+| definition-of-done | Definition of Done Context | サポートリングドメイン | 完成基準の定義 |
+| test-management | Test Management Context | コアドメイン | テストケース・実行結果 |
+| defect-management | Defect Management Context | コアドメイン | 欠陥の管理 |
+| performance-testing | Performance Testing Context | サポートリングドメイン | 性能テストの管理 |
+| security-risk | Security Risk Context | サポートリングドメイン | セキュリティリスク管理 |
+
+### 9.6 AG-06 成果適応
+
+| モジュール名 | バウンデッドコンテキスト | 種類 | 概要 |
+|-------------|------------------------|------|------|
+| sprint-review | Sprint Review Context | コアドメイン | Sprint Review管理 |
+| retrospective | Retrospective Context | コアドメイン | 振り返り管理 |
+| monitoring | Monitoring Context | サポートリングドメイン | 状況監視 |
+| user-review | User Review Context | サポートリングドメイン | 利用者レビュー |
+| outcome-measurement | Outcome Measurement Context | サポートリングドメイン | 成果測定 |
+
+## 10. 補足事項
+
+### 状態遷移のenum化
+
+各業務領域で定義された状態遷移は、DDDモデルでは値オブジェクトとしてenum化することを提案します：
+
+| 状態一覧 | 値オブジェクト名 | 業務領域 |
+|---------|----------------|---------|
+| ST-DIS-* | HypothesisStatus, ProblemStatus | AG-01 |
+| ST-BL-* | BacklogItemStatus, FeedbackStatus | AG-02 |
+| ST-PR-* | PriorityStatus, RiskAssessmentStatus | AG-03 |
+| ST-SP-* | SprintStatus, WorkStatus, ImpedimentStatus | AG-04 |
+| ST-QL-* | TestCaseStatus, DefectStatus | AG-05 |
+| ST-LR-* | ImprovementActionStatus, RiskStatus | AG-06 |
+
+### ドメインイベントの扱い
+
+各業務領域で定義されたイベント一覧は、ドメインイベントとして扱います。イベントソーシングを採用する場合、各アグリゲートの状態遷移をイベントとして記録します。
+
+### 監査ログの扱い
+
+監査ログは、ドメインイベントを基に生成する副産物（Side Effect）として扱います。監査ログアグリゲートは、ドメインイベントを購読してログを記録する役割を担います。
+
+### 共通マスターの扱い
+
+KanoCategory、BacklogItemType、Priorityなどの共通マスターは、各バウンデッドコンテキストで独立して管理するか、共通モジュールとして統合するかを検討します。
+
+## 11. 総合評価
 
 | 評価項目 | 結果 |
 |----------|------|
@@ -368,6 +526,8 @@ Aggregate Rootに属するエンティティ：
 | リポジトリ候補抽出 | **合格** |
 | ドメインイベント候補抽出 | **合格** |
 | コンテキストマップ作成 | **合格** |
+| ビジネスルール抽出 | **合格** |
+| モジュール構成提案 | **合格** |
 
 ### 改善提案
 
@@ -391,7 +551,13 @@ Aggregate Rootに属するエンティティ：
    - AG-04のCI/CDパイプライン連携とAG-05のGatling連携の統合アーキテクチャを検討
    - ソース管理システムとの連携をAG-04/AG-05で共通化
 
+5. **AG-04, AG-05のバリエーション条件図追加**
+   - AG-04, AG-05にはバリエーション条件図が存在しないため、ビジネスルールを明確化するために追加を推奨
+   - スプリント実行の開始条件、作業着手条件、障害エスカレーションルールなどを定義
+   - 品質検証のテストケース必須ルール、欠陥严重度ルールなどを定義
+
 ## 次のステップ
 
 - DDDモデル候補に基づいて、アーキテクチャ設計を進める
 - モジュール境界を定義し、実装に移行する
+- AG-04, AG-05のバリエーション条件図を追加して、ビジネスルールを明確化
