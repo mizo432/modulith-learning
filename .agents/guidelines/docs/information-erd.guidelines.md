@@ -410,3 +410,4 @@ TaskAssignment }o--|| Employee : works on
 - 属性一覧テンプレート: `.agents/guidelines/docs/templates/属性一覧テンプレート.md`
 - 属性一覧テンプレート（TSV）: `.agents/guidelines/docs/templates/属性一覧テンプレート.tsv`
 - 情報外部キー値対応表: 各業務領域の `04.システム/01.情報/情報外部キー値対応表.tsv`
+- 日本語として読めるかチェックするルール: `.agents/guidelines/docs/japanese-reading.guidelines.md`

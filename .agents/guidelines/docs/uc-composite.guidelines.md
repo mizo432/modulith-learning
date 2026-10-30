@@ -366,3 +366,4 @@ UC複合図作成後、以下の項目を確認します：
 - 状態モデル図ガイドライン: `.agents/guidelines/docs/state-model.guidelines.md`
 - 情報ER図ガイドライン: `.agents/guidelines/docs/information-erd.guidelines.md`
 - RDRA ID命名規約: `.agents/skills/to-RDRA-model/guidelines/id-naming-conventions.guidelines.md`
+- 日本語として読めるかチェックするルール: `.agents/guidelines/docs/japanese-reading.guidelines.md`
