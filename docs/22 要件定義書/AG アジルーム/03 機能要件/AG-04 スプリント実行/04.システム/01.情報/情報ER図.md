@@ -58,9 +58,11 @@ entity "SprintBacklogItem" as SprintBacklogItem {
 entity "Task" as Task {
   * task_id : BIGINT <<not null>>
   --
-  sprint_backlog_item_id : BIGINT <<not null>>
+  sprint_id : BIGINT <<not null>>
+  backlog_item_id : BIGINT
   title : VARCHAR
   description : TEXT
+  task_type : VARCHAR
   estimated_hours : DECIMAL
   status : VARCHAR
   created_at : TIMESTAMP
@@ -129,7 +131,8 @@ Sprint ||--o| SprintGoal : has
 Sprint ||--o{ SprintBacklogItem : contains
 Sprint ||--o{ Impediment : has
 Sprint ||--o{ Activity : records
-SprintBacklogItem ||--o{ Task : decomposes
+Sprint ||--o{ Task : contains
+SprintBacklogItem }o--o{ Task : optionally relates to
 Task ||--o{ TaskAssignment : assigns
 SprintBacklogItem }o--o{ SprintBacklogItem : depends on
 @enduml
@@ -187,9 +190,11 @@ entity "SprintBacklog項目" as SprintBacklogItem {
 entity "タスク" as Task {
   * task_id : BIGINT <<not null>>
   --
-  sprint_backlog_item_id : BIGINT <<not null>>
+  sprint_id : BIGINT <<not null>>
+  backlog_item_id : BIGINT
   title : VARCHAR
   description : TEXT
+  task_type : VARCHAR
   estimated_hours : DECIMAL
   status : VARCHAR
   created_at : TIMESTAMP
@@ -258,7 +263,8 @@ Sprint ||--o| SprintGoal : 保有
 Sprint ||--o{ SprintBacklogItem : 包含
 Sprint ||--o{ Impediment : 保有
 Sprint ||--o{ Activity : 記録
-SprintBacklogItem ||--o{ Task : 分解
+Sprint ||--o{ Task : 包含
+SprintBacklogItem }o--o{ Task : 任意の関連
 Task ||--o{ TaskAssignment : 割り当て
 SprintBacklogItem }o--o{ SprintBacklogItem : 依存
 @enduml
@@ -277,8 +283,10 @@ SprintBacklogItem }o--o{ SprintBacklogItem : 依存
 | INF-SP-07 | アクティビティ     | Activity            | 作業状態変更、コメント追加など       | イベント |
 | INF-SP-08 | スプリント状態     | SprintStatus        | 計画済み、実行中、完了、キャンセル   | 対照表   |
 | INF-SP-09 | 作業状態           | TaskStatus          | 未着手、作業中、レビュー中、完了     | 対照表   |
-| INF-SP-10 | タスク             | Task                | Sprint Backlog項目を分解した作業単位 | リソース |
+| INF-SP-10 | タスク             | Task                | Sprintに直接所属する作業単位。User Storyとの関連は任意 | リソース |
 | INF-SP-11 | タスク割り当て     | TaskAssignment      | タスクと担当者の割り当て関係         | 対応表   |
+| INF-SP-12 | タスク種類         | TaskType            | タスクの種類（Story実現、Urgent、技術的負債、保守、調査） | 対照表   |
+| INF-SP-13 | Sprint Scope Change | SprintScopeChange | Sprint範囲の変更履歴（Task単位） | イベント   |
 
 ## 5. 関係一覧
 
@@ -288,9 +296,12 @@ SprintBacklogItem }o--o{ SprintBacklogItem : 依存
 | REL-02 | INF-SP-01 | スプリント           | INF-SP-03 | Sprint Backlog項目   | 1対多      | スプリントは複数のBacklog項目を包含    |
 | REL-03 | INF-SP-01 | スプリント           | INF-SP-04 | 障害                 | 1対多      | スプリントは複数の障害を保有           |
 | REL-04 | INF-SP-01 | スプリント           | INF-SP-07 | アクティビティ       | 1対多      | スプリントは複数のアクティビティを記録 |
-| REL-05 | INF-SP-03 | Sprint Backlog項目   | INF-SP-10 | タスク               | 1対多      | Backlog項目は複数のタスクに分解        |
+| REL-05 | INF-SP-01 | スプリント           | INF-SP-10 | タスク               | 1対多      | スプリントは複数のタスクを包含        |
+| REL-05b| INF-SP-03 | Sprint Backlog項目   | INF-SP-10 | タスク               | 多対多（任意） | Backlog項目とタスクの関連は任意      |
 | REL-06 | INF-SP-10 | タスク               | INF-SP-11 | タスク割り当て       | 1対多      | タスクは複数の割り当てを持つ           |
 | REL-07 | INF-SP-03 | Sprint Backlog項目   | INF-SP-03 | Sprint Backlog項目   | 多対多     | Backlog項目間は依存関係を持つ          |
+| REL-08 | INF-SP-01 | スプリント           | INF-SP-13 | Sprint Scope Change  | 1対多      | スプリントは複数のScope Changeを記録  |
+| REL-09 | INF-SP-10 | タスク               | INF-SP-12 | タスク種類           | 多対1      | タスクは1つの種類に分類される         |
 
 ## 6. 関係の種類
 
