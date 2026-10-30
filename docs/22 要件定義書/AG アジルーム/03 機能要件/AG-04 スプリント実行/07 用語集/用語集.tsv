@@ -14,3 +14,6 @@
 13	未着手	To Do	To Do	対照表	作業状態。まだ着手していない状態
 14	作業中	In Progress	In Progress	対照表	作業状態。現在作業中の状態
 15	レビュー中	In Review	In Review	対照表	作業状態。レビュー中の状態
+16	タスク	Task	Tasks	システム用語	Sprint Backlog項目を分解した作業単位
+17	タスク割り当て	Task Assignment	Task Assignments	システム用語	タスクと担当者の割り当て関係
+18	完了 (作業)	Done	Done	対照表	作業状態。作業が完了し、Doneの基準を満たした状態

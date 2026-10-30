@@ -9,3 +9,9 @@ INF-SP-06	通知	イベント	メンション、担当変更、期限、判断�
 INF-SP-07	アクティビティ	イベント	作業状態変更、コメント追加など	N	N	DB
 INF-SP-08	スプリント状態	対照表	計画済み、実行中、完了、キャンセル	N	N	DB and enum
 INF-SP-09	作業状態	対照表	未着手、作業中、レビュー中、完了	N	N	DB and enum
+INF-SP-10	タスク	リソース	Sprint Backlog項目を分解した作業単位	N	N	DB
+INF-SP-11	タスク割り当て	対応表	タスクと担当者の割り当て関係	N	N	DB
+INF-IDB-01	Sprint Planning Snapshot	リソース	Sprint Planning完了時の計画Snapshot	Y	N	DB
+INF-IDB-02	Sprint Scope Change	イベント	Sprint Backlogのスコープ変更履歴	N	N	DB
+INF-IDB-03	Task Work Log	イベント	Taskの作業実績（時間記録）	N	N	DB
+INF-IDB-04	Sprint Metrix	リソース	ダッシュボード用集計メトリクス	N	N	DB
