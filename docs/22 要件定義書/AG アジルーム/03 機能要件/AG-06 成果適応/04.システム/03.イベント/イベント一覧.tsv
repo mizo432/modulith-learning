@@ -14,3 +14,29 @@ EVT-LR-012	レポートが出力された	権限と監査を考慮してレポ�
 EVT-LR-013	Epic／Releaseが振り返られた	複数スプリントにまたがる成果と学びが振り返られた	UC-LR-019	INF-LR-02	Retrospective記録
 EVT-LR-014	品質・性能Insightsが更新された	テスト、欠陥、性能の傾向がリリースや目標と関連づけられた	UC-LR-020	INF-LR-05	プロジェクト状況
 EVT-LR-015	稼働状況が更新された	監視・ログ基盤から稼働状況・エラー・ログが取得された	UC-LR-021	INF-LR-05	プロジェクト状況
+EVT-SR-001	Sprint Reviewが開始された	対象SprintのSprint Reviewが開始された	UC-SR-001	INF-SR-01	Sprint Review
+EVT-SR-002	Sprint Reviewが準備された	Sprint Reviewの準備情報が保存された	UC-SR-002	INF-SR-01	Sprint Review
+EVT-SR-003	Review参加者が登録された	Sprint Reviewの参加者が登録された	UC-SR-003	INF-SR-02	Review参加者
+EVT-SR-004	Review議題が設定された	Sprint Reviewの議題が設定された	UC-SR-004	INF-SR-03	Review議題
+EVT-SR-005	Sprint成果が確認された	Sprint Goalと達成状況、完了・未完了Storyが確認された	UC-SR-005	INF-SR-01	Sprint Review
+EVT-SR-006	インクリメントがデモされた	完成したインクリメントがデモされ、実施結果が記録された	UC-SR-006	INF-SR-04	デモ対象インクリメント
+EVT-SR-007	フィードバックが記録された	ステークホルダーからのフィードバックが記録された	UC-SR-007	INF-SR-05	Reviewフィードバック
+EVT-SR-008	フィードバックが分類された	収集したフィードバックが分類された	UC-SR-008	INF-SR-05	Reviewフィードバック
+EVT-SR-009	フィードバックの対応方針が決定された	フィードバックの対応方針と判断理由が決定された	UC-SR-009	INF-SR-06	フィードバック対応方針
+EVT-SR-010	バックログ候補が作成された	フィードバックからバックログ候補が作成された	UC-SR-010	INF-SR-07	バックログ候補
+EVT-SR-011	既存Storyが更新された	フィードバックに基づいて既存Storyが更新された	UC-SR-011	-	-
+EVT-SR-012	Reviewの決定事項が記録された	Review中の議論・決定事項が記録された	UC-SR-012	INF-SR-08	Review決定事項
+EVT-SR-013	Sprint Reviewが終了された	Sprint Reviewが完了状態に変更された	UC-SR-013	INF-SR-01	Sprint Review
+EVT-AD-001	リリースが計画された	リリース対象、日付、依存関係が定義された	UC-AD-001	INF-AD-01	リリース計画
+EVT-AD-002	リリースが更新された	リリース計画が修正・更新された	UC-AD-002	INF-AD-01	リリース計画
+EVT-AD-003	リリースノートが作成された	変更内容、既知の問題、アップグレード手順が記録された	UC-AD-004	INF-AD-02	リリースノート
+EVT-AD-004	リリースノートが更新された	リリースノートが修正・更新された	UC-AD-005	INF-AD-02	リリースノート
+EVT-AD-005	デプロイが実行された	環境、バージョン、ロールバック手順を定義してデプロイされた	UC-AD-007	INF-AD-03	デプロイ結果
+EVT-AD-006	利用状況が確認された	機能利用頻度、アクティブユーザー、アクセス傾向が把握された	UC-AD-009	INF-AD-04	利用状況
+EVT-AD-007	成功指標が定義された	目標値、測定方法、頻度が設定された	UC-AD-010	INF-AD-05	成功指標
+EVT-AD-008	成功指標が更新された	成功指標の目標値・測定方法が修正された	UC-AD-011	INF-AD-05	成功指標
+EVT-AD-009	仮説が検証された	仮説、期待結果、検証結果が記録された	UC-AD-013	INF-AD-06	仮説検証
+EVT-AD-010	フィードバックが収集された	リリース後の利用者からのフィードバックが収集された	UC-AD-015	INF-AD-07	フィードバック
+EVT-AD-011	レトロスペクティブが記録された	スプリントの振り返り、改善アクションが記録された	UC-AD-017	INF-AD-08	レトロスペクティブ
+EVT-AD-012	改善アクションが記録された	改善アクション、担当者、期限が記録された	UC-AD-019	INF-AD-09	改善アクション
+EVT-AD-013	改善アクションが更新された	改善アクションの進捗・状態が修正された	UC-AD-020	INF-AD-09	改善アクション
