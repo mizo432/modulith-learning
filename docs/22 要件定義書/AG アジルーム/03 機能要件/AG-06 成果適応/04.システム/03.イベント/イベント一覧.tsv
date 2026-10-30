@@ -14,3 +14,16 @@ EVT-LR-012	レポートが出力された	権限と監査を考慮してレポ�
 EVT-LR-013	Epic／Releaseが振り返られた	複数スプリントにまたがる成果と学びが振り返られた	UC-LR-019	INF-LR-02	Retrospective記録
 EVT-LR-014	品質・性能Insightsが更新された	テスト、欠陥、性能の傾向がリリースや目標と関連づけられた	UC-LR-020	INF-LR-05	プロジェクト状況
 EVT-LR-015	稼働状況が更新された	監視・ログ基盤から稼働状況・エラー・ログが取得された	UC-LR-021	INF-LR-05	プロジェクト状況
+EVT-SR-001	Sprint Reviewが開始された	対象SprintのSprint Reviewが開始された	UC-SR-001	INF-SR-01	Sprint Review
+EVT-SR-002	Sprint Reviewが準備された	Sprint Reviewの準備情報が保存された	UC-SR-002	INF-SR-01	Sprint Review
+EVT-SR-003	Review参加者が登録された	Sprint Reviewの参加者が登録された	UC-SR-003	INF-SR-02	Review参加者
+EVT-SR-004	Review議題が設定された	Sprint Reviewの議題が設定された	UC-SR-004	INF-SR-03	Review議題
+EVT-SR-005	Sprint成果が確認された	Sprint Goalと達成状況、完了・未完了Storyが確認された	UC-SR-005	INF-SR-01	Sprint Review
+EVT-SR-006	インクリメントがデモされた	完成したインクリメントがデモされ、実施結果が記録された	UC-SR-006	INF-SR-04	デモ対象インクリメント
+EVT-SR-007	フィードバックが記録された	ステークホルダーからのフィードバックが記録された	UC-SR-007	INF-SR-05	Reviewフィードバック
+EVT-SR-008	フィードバックが分類された	収集したフィードバックが分類された	UC-SR-008	INF-SR-05	Reviewフィードバック
+EVT-SR-009	フィードバックの対応方針が決定された	フィードバックの対応方針と判断理由が決定された	UC-SR-009	INF-SR-06	フィードバック対応方針
+EVT-SR-010	バックログ候補が作成された	フィードバックからバックログ候補が作成された	UC-SR-010	INF-SR-07	バックログ候補
+EVT-SR-011	既存Storyが更新された	フィードバックに基づいて既存Storyが更新された	UC-SR-011	-	-
+EVT-SR-012	Reviewの決定事項が記録された	Review中の議論・決定事項が記録された	UC-SR-012	INF-SR-08	Review決定事項
+EVT-SR-013	Sprint Reviewが終了された	Sprint Reviewが完了状態に変更された	UC-SR-013	INF-SR-01	Sprint Review
