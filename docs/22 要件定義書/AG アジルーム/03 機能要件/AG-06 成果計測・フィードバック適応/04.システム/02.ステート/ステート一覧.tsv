@@ -1,0 +1,19 @@
+ステート一覧
+ステートID	ステート名	ステート英名	対象情報	説明	関連ユースケース
+ST-MF-001	未着手	Pending	改善アクション	改善が開始されていない状態	UC-MF-010
+ST-MF-002	進行中	InProgress	改善アクション	改善が進行中の状態	UC-MF-011
+ST-MF-003	完了	Completed	改善アクション	改善が完了した状態	UC-MF-012
+ST-MF-004	中止	Cancelled	改善アクション	改善が中止された状態	UC-MF-011
+ST-MF-005	準備中	Preparing	Sprint Review	Reviewの準備中の状態	UC-MF-001
+ST-MF-006	開催中	InProgress	Sprint Review	Reviewが開催中の状態	UC-MF-002
+ST-MF-007	完了	Completed	Sprint Review	Reviewが完了した状態	UC-MF-004
+ST-MF-008	未対応	Pending	フィードバック	フィードバックが未対応の状態	UC-MF-005
+ST-MF-009	評価中	Evaluating	フィードバック	フィードバックが評価中の状態	UC-MF-006
+ST-MF-010	対応済み	Resolved	フィードバック	フィードバックに対応済みの状態	UC-MF-007
+ST-MF-011	保留	Hold	フィードバック	フィードバックが保留中の状態	UC-MF-006
+ST-MF-012	未着手	Pending	リスク	リスクが特定された状態	UC-MF-014
+ST-MF-013	監視中	Monitoring	リスク	リスクが監視中の状態	UC-MF-014
+ST-MF-014	解消済	Resolved	リスク	リスクが解消された状態	UC-MF-014
+ST-MF-015	未対応	Pending	判断待ち	判断待ちが発生した状態	UC-MF-015
+ST-MF-016	対応中	InProgress	判断待ち	対応が進行中の状態	UC-MF-015
+ST-MF-017	完了	Completed	判断待ち	判断が完了した状態	UC-MF-015

@@ -1,0 +1,16 @@
+情報一覧
+情報ID	情報名	情報種類	説明	関連ユースケース	履歴管理要	証跡要	実現方法
+INF-MF-01	Sprint Review	リソース	Sprint Reviewの記録（成果、フィードバック、決定事項）	UC-MF-001〜UC-MF-004	Y	Y	DB
+INF-MF-02	フィードバック	リソース	利用者からのフィードバック内容・評価・対応状況	UC-MF-001, UC-MF-005〜UC-MF-007	Y	N	DB
+INF-MF-03	フィードバック対応	対応表	フィードバックとバックログ項目の対応関係	UC-MF-006, UC-MF-007	N	N	DB
+INF-MF-04	Retrospective	リソース	振り返りの記録（学び、改善候補、決定事項）	UC-MF-008, UC-MF-009	Y	Y	DB
+INF-MF-05	改善アクション	リソース	改善の担当、期限、状態、効果	UC-MF-010〜UC-MF-012	Y	Y	DB
+INF-MF-06	リリース履歴	リソース	バージョン、機能、既知の問題、変更内容	UC-MF-003	Y	N	DB
+INF-MF-07	成果指標	リソース	指標の定義、基準値、目標値、測定値	UC-MF-016〜UC-MF-018	N	N	DB
+INF-MF-08	指標測定値	イベント	各時点での指標の測定結果	UC-MF-016	N	N	DB
+INF-MF-09	リスク	リソース	期限、影響、担当、状態	UC-MF-013, UC-MF-014	Y	N	DB
+INF-MF-10	判断待ち	リソース	対応が必要な事項、期限、影響	UC-MF-013, UC-MF-015	Y	N	DB
+INF-MF-11	ダッシュボード設定	リソース	ロール別の表示項目・フィルタ設定	UC-MF-013	N	N	DB
+INF-MF-12	レポート出力履歴	イベント	出力したレポートの記録	UC-MF-018	N	Y	DB
+INF-MF-13	フィードバック種別	対照表	フィードバックの分類コードと名称	UC-MF-005	N	N	DB and enum
+INF-MF-14	改善カテゴリ	対照表	改善アクションの分類コードと名称	UC-MF-010	N	N	DB and enum
