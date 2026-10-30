@@ -12,3 +12,12 @@ INF-BL-09	項目種別	対照表	Epic、Feature、Story、Task、欠陥	N	N	DB a
 INF-BL-10	優先度	対照表	項目の優先度区分	N	N	DB and enum
 INF-BL-11	状態	対照表	項目のワークフロー状態	N	N	DB and enum
 INF-BL-12	課題	リソース	業務上の困りごとや繰り返し発生する問題	Y	N	DB
+INF-BL-13	Story Map	リソース	ユーザーストーリーマップの基本情報・状態・バージョン	Y	Y	DB
+INF-BL-14	Story Map Activity	リソース	Story Map上のユーザーの大きな活動	Y	N	DB
+INF-BL-15	Story Map Task	リソース	Activityを構成する具体的なユーザー行動	Y	N	DB
+INF-BL-16	Story Map Story	対応表	Story MapとUser Storyの関連・配置・順序	N	N	DB
+INF-BL-17	Story Map Release Slice	リソース	Story Map上のリリース単位のスライス	Y	N	DB
+INF-BL-18	Release Slice Story	対応表	Release SliceとUser Storyの関連	N	N	DB
+INF-BL-19	Story Map Persona	対応表	Story MapとPersonaの関連	N	N	DB
+INF-BL-20	Story Map Comment	リソース	Story Map上のコメント・議論	Y	N	DB
+INF-BL-21	Story Map 変更履歴	イベント	Story Mapの変更内容・変更者・変更日時	N	N	DB
