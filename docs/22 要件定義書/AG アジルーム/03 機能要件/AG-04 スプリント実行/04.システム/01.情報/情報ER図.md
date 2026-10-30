@@ -277,6 +277,8 @@ SprintBacklogItem }o--o{ SprintBacklogItem : 依存
 | INF-SP-07 | アクティビティ     | Activity            | 作業状態変更、コメント追加など       | イベント |
 | INF-SP-08 | スプリント状態     | SprintStatus        | 計画済み、実行中、完了、キャンセル   | 対照表   |
 | INF-SP-09 | 作業状態           | TaskStatus          | 未着手、作業中、レビュー中、完了     | 対照表   |
+| INF-SP-10 | タスク             | Task                | Sprint Backlog項目を分解した作業単位 | リソース |
+| INF-SP-11 | タスク割り当て     | TaskAssignment      | タスクと担当者の割り当て関係         | 対応表   |
 
 ## 5. 関係一覧
 
@@ -286,8 +288,8 @@ SprintBacklogItem }o--o{ SprintBacklogItem : 依存
 | REL-02 | INF-SP-01 | スプリント           | INF-SP-03 | Sprint Backlog項目   | 1対多      | スプリントは複数のBacklog項目を包含    |
 | REL-03 | INF-SP-01 | スプリント           | INF-SP-04 | 障害                 | 1対多      | スプリントは複数の障害を保有           |
 | REL-04 | INF-SP-01 | スプリント           | INF-SP-07 | アクティビティ       | 1対多      | スプリントは複数のアクティビティを記録 |
-| REL-05 | INF-SP-03 | Sprint Backlog項目   | INF-SP-09 | タスク               | 1対多      | Backlog項目は複数のタスクに分解        |
-| REL-06 | INF-SP-09 | タスク               | INF-SP-10 | タスク割り当て       | 1対多      | タスクは複数の割り当てを持つ           |
+| REL-05 | INF-SP-03 | Sprint Backlog項目   | INF-SP-10 | タスク               | 1対多      | Backlog項目は複数のタスクに分解        |
+| REL-06 | INF-SP-10 | タスク               | INF-SP-11 | タスク割り当て       | 1対多      | タスクは複数の割り当てを持つ           |
 | REL-07 | INF-SP-03 | Sprint Backlog項目   | INF-SP-03 | Sprint Backlog項目   | 多対多     | Backlog項目間は依存関係を持つ          |
 
 ## 6. 関係の種類

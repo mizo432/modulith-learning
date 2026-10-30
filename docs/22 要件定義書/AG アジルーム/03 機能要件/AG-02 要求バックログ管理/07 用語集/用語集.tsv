@@ -14,3 +14,11 @@
 13	優先度	Priority	Priorities	対照表	項目の優先度区分
 14	項目種別	Item Type	Item Types	対照表	Epic、Feature、Story、Task、欠陥
 15	状態	Status	Statuses	対照表	項目のワークフロー状態
+16	ユーザーストーリーマップ	User Story Map	User Story Maps	ビジネス用語	ユーザーの活動や業務の流れを起点として、ストーリーを整理し、プロダクトの価値と開発範囲を可視化する手法
+17	Activity	Activity	Activities	ビジネス用語	ユーザーが達成したい大きな活動。Story Mapの横軸を構成する
+18	User Task	User Task	User Tasks	ビジネス用語	Activityを構成する具体的なユーザー行動。Sprint Planningの開発Taskとは別概念
+19	Release Slice	Release Slice	Release Slices	ビジネス用語	Story Map上でStoryをリリース単位に分類するスライス。正式なRelease Scopeとは区別する
+20	Persona	Persona	Personas	ビジネス用語	対象ユーザーの類型。Story Mapで対象とするユーザーを設定する
+21	Pain Point	Pain Point	Pain Points	ビジネス用語	ユーザーが抱える課題や不満。Taskに関連付けて記録する
+22	Opportunity	Opportunity	Opportunities	ビジネス用語	改善の機会。Taskに関連付けて記録する
+23	バックボーン	Backbone	Backbones	ビジネス用語	Story Mapの横軸を構成するActivityの並び

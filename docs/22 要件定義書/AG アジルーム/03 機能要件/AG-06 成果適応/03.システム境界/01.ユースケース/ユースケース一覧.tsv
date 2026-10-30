@@ -21,3 +21,38 @@ UC-LR-018	レポートを出力する	権限と監査を考慮してレポート
 UC-LR-019	Epic／Releaseを振り返る	複数スプリントにまたがる成果と学びを振り返る	ACT-02, ACT-03, ACT-04	中	BUC-LR-02	-	SCR-023
 UC-LR-020	品質・性能Insightsを確認する	テスト、欠陥、性能の傾向をリリースや目標と関連づける	ACT-02, ACT-04, ACT-05	低	BUC-LR-06	ES-07	SCR-025
 UC-LR-021	稼働状況を確認する	監視・ログ基盤から稼働状況・エラー・ログを取得する	ACT-02, ACT-04, ACT-05	低	BUC-LR-06	ES-07	SCR-025
+UC-SR-001	Sprint Reviewを開始する	対象Sprintを選択し、Sprint Reviewの準備状態を確認して開始する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-01
+UC-SR-002	Sprint Reviewを準備する	Sprint Goal、Sprint Backlog、完了・未完了Story、デモ対象、参加者、議題を準備する	ACT-02, ACT-03, ACT-04	高	BUC-LR-01	-	SR-02
+UC-SR-003	Review参加者を登録する	Sprint Reviewの参加者（Scrum Team、ステークホルダー）を登録する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-02
+UC-SR-004	Review議題を設定する	Sprint Reviewの議題を設定し、順序を整理する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-02
+UC-SR-005	Sprint成果を確認する	Sprint Goalと達成状況、完了・未完了Story、完成したインクリメントを確認する	ACT-01, ACT-02, ACT-03, ACT-04, ACT-05	高	BUC-LR-01	-	SR-03
+UC-SR-006	インクリメントをデモする	完成したインクリメントやデモ対象をデモし、説明や実施結果を記録する	ACT-04	高	BUC-LR-01	-	SR-03
+UC-SR-007	ステークホルダーフィードバックを記録する	ステークホルダーからのフィードバックを記録し、発言者・日時・関連Storyを紐付ける	ACT-02, ACT-03, ACT-05	高	BUC-LR-01	-	SR-03
+UC-SR-008	フィードバックを分類する	収集したフィードバックを分類（新機能要望、既存機能改善、不具合等）する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-009	フィードバックの対応方針を決定する	フィードバックの対応方針（バックログに追加、既存Storyを変更、調査する等）を決定し、判断理由を記録する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-010	フィードバックからバックログ候補を作成する	フィードバックから新規Story、Feature、Epicのバックログ候補を作成し、元のフィードバックとの関連を保持する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-011	既存Storyを更新する	フィードバックに基づいて既存のEpic・Feature・Storyの要件を変更する	ACT-02	高	BUC-LR-01	-	SR-04
+UC-SR-012	Reviewの決定事項を記録する	Review中の議論・決定事項を記録し、継続確認事項を整理する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-03
+UC-SR-013	Sprint Reviewを終了する	フィードバックの記録状況と決定事項を確認し、Sprint Reviewを完了状態に変更する	ACT-02, ACT-03	高	BUC-LR-01	-	SR-05
+UC-SR-014	Sprint Review結果を確認する	完了したSprint Reviewの結果（Sprint Goal、完了・未完了Story、フィードバック、決定事項等）を参照する	ACT-01, ACT-02, ACT-03, ACT-04, ACT-05	高	BUC-LR-01	-	SR-05
+UC-AD-001	リリースを計画する	リリース対象、日付、依存関係を定義する	ACT-02, ACT-04	高	BUC-AD-01	-	SCR-022
+UC-AD-002	リリースを更新する	リリース計画を修正・更新する	ACT-02, ACT-04	高	BUC-AD-01	-	SCR-022
+UC-AD-003	リリースを参照する	リリース計画・進捗・結果を確認する	ACT-01, ACT-02, ACT-04, ACT-05	高	BUC-AD-01	-	SCR-022
+UC-AD-004	リリースノートを作成する	変更内容、既知の問題、アップグレード手順を記録する	ACT-02, ACT-04	高	BUC-AD-02	-	SCR-022
+UC-AD-005	リリースノートを更新する	リリースノートを修正・更新する	ACT-02, ACT-04	高	BUC-AD-02	-	SCR-022
+UC-AD-006	リリースノートを参照する	過去のリリースノートを確認する	ACT-01, ACT-02, ACT-04, ACT-05	高	BUC-AD-02	-	SCR-022
+UC-AD-007	デプロイを実行する	環境、バージョン、ロールバック手順を定義してデプロイする	ACT-04	高	BUC-AD-03	ES-04	SCR-023
+UC-AD-008	デプロイ結果を参照する	デプロイの成功・失敗・ロールバック状況を確認する	ACT-02, ACT-04, ACT-05	高	BUC-AD-03	ES-04	SCR-023
+UC-AD-009	利用状況を確認する	機能利用頻度、アクティブユーザー、アクセス傾向を把握する	ACT-02, ACT-05	中	BUC-AD-04	ES-07	SCR-024
+UC-AD-010	成功指標を定義する	目標値、測定方法、頻度を設定する	ACT-02	中	BUC-AD-05	-	SCR-025
+UC-AD-011	成功指標を更新する	成功指標の目標値・測定方法を修正する	ACT-02	中	BUC-AD-05	-	SCR-025
+UC-AD-012	成功指標を参照する	成功指標の現状値・目標値・推移を確認する	ACT-01, ACT-02, ACT-05	中	BUC-AD-05	-	SCR-025
+UC-AD-013	仮説を検証する	仮説、期待結果、検証結果を記録する	ACT-02, ACT-04	中	BUC-AD-06	-	SCR-025
+UC-AD-014	仮説検証結果を参照する	仮説検証の結果を確認する	ACT-01, ACT-02, ACT-05	中	BUC-AD-06	-	SCR-025
+UC-AD-015	フィードバックを収集する	リリース後の利用者からのフィードバックを収集する	ACT-01, ACT-02	中	BUC-AD-07	-	SCR-024
+UC-AD-016	フィードバックを参照する	収集されたフィードバックの一覧・詳細を確認する	ACT-01, ACT-02, ACT-05	中	BUC-AD-07	-	SCR-024
+UC-AD-017	レトロスペクティブを記録する	スプリントの振り返り、改善アクションを記録する	ACT-03, ACT-04	中	BUC-AD-08	-	SCR-026
+UC-AD-018	レトロスペクティブを参照する	過去の振り返り・改善アクションを確認する	ACT-01, ACT-02, ACT-03, ACT-04, ACT-05	中	BUC-AD-08	-	SCR-026
+UC-AD-019	改善アクションを記録する	改善アクション、担当者、期限を記録する	ACT-03, ACT-04	中	BUC-AD-08	-	SCR-026
+UC-AD-020	改善アクションを更新する	改善アクションの進捗・状態を修正する	ACT-03, ACT-04	中	BUC-AD-08	-	SCR-026
+UC-AD-021	改善アクションを参照する	登録された改善アクションの一覧・詳細を確認する	ACT-01, ACT-02, ACT-03, ACT-04, ACT-05	中	BUC-AD-08	-	SCR-026

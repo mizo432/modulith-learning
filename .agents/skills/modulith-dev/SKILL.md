@@ -219,6 +219,8 @@ AI（Claude Code など）を使ってテストを生成する際は、以下の
 - **`@DisplayName`**:
     - **テストクラスおよびテストメソッドの両方に必ず付与する**。
     - 日本語で簡潔かつ具体的に振る舞いを記述する。
+    - テストコードのコメント（@DisplayName、@Nestedクラス、テスト内の行コメントなど）の日本語化の詳細は、以下のガイドラインを参照してください。
+    - テストコードコメント日本語チェックルール: `.agents/guidelines/docs/test-code-comments-japanese.guidelines.md`
 
 #### 4.3 クラス構造とネスト
 
@@ -274,6 +276,12 @@ AI（Claude Code など）を使ってテストを生成する際は、以下の
 - **事前���件チェック**:
     - 引数や状態の検証には `undecided.supporting.precondition.*`（例: `StringPrecondition`,
       `ObjectPrecondition`）や `undecided.supporting.primitive.*` を活用。
+
+#### 5.4 コードコメントの日本語化
+
+プログラムコード上のすべてのコメントは日本語で記載します。詳細は以下のガイドラインを参照してください。
+
+- コードコメント日本語チェックルール: `.agents/guidelines/docs/code-comments-japanese.guidelines.md`
 
 ---
 
