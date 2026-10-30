@@ -1,0 +1,17 @@
+画面一覧
+ID	画面名	概要	関連ユースケース
+SCR-MF-01	Sprint Review準備画面	Sprint Reviewの準備情報を設定する画面	UC-MF-001
+SCR-MF-02	Sprint Review実施画面	Sprint Reviewを開催し、フィードバックを収集する画面	UC-MF-002, UC-MF-003
+SCR-MF-03	Sprint Review一覧画面	過去のSprint Reviewの記録を確認する画面	UC-MF-004
+SCR-MF-04	フィードバック登録画面	利用者からのフィードバックを登録する画面	UC-MF-005
+SCR-MF-05	フィードバック評価画面	フィードバックを評価し、バックログへ反映する画面	UC-MF-006, UC-MF-007
+SCR-MF-06	Retrospective記録画面	振り返りで得られた学び、改善候補、決定事項を記録する画面	UC-MF-008
+SCR-MF-07	Retrospective一覧画面	過去のRetrospectiveの記録を確認する画面	UC-MF-009
+SCR-MF-08	改善アクション登録画面	改善アクションを登録する画面	UC-MF-010
+SCR-MF-09	改善アクション管理画面	改善アクションの進捗や状態を管理する画面	UC-MF-011, UC-MF-012
+SCR-MF-10	ダッシュボード画面	ロールに応じた情報を表示する画面	UC-MF-013
+SCR-MF-11	プロジェクトトラッキング画面	プロジェクトの進捗、マイルストーン、成果、リスクを確認する画面	UC-MF-014
+SCR-MF-12	リスク・判断待ち一覧画面	リスクと判断待ち事項を管理する画面	UC-MF-015
+SCR-MF-13	成果指標管理画面	成果指標の定義、基準値、目標値を設定する画面	UC-MF-016
+SCR-MF-14	指標測定画面	成果指標の測定値を記録する画面	UC-MF-017
+SCR-MF-15	Product Goal進捗画面	Product Goalの進捗を可視化する画面	UC-MF-018
