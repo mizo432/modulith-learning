@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  * <p>POSTおよびPATCHメソッドのリクエストで`Idempotency-Key`ヘッダーを検出し、 重複リクエストの場合はキャッシュされたレスポンスを返却します。
  */
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class IdempotencyKeyFilter implements Filter {
 
   private static final String IDEMPOTENCY_KEY_HEADER = "Idempotency-Key";
