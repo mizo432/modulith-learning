@@ -1,4 +1,4 @@
-package undecided.generic.rerlationshipMgmt.internal;
+package undecided.generic.relationshipMgmt.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
