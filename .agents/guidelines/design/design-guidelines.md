@@ -632,14 +632,6 @@ interface CustomerListResponse {
 - **Javaコーディングルール**: `.agents/guidelines/java/coding-standards.guidelines.md`
 - **バッチ設計ガイド**: `docs/05 バッチガイド/バッチ設計ガイド.md`
 
-### 関連スキル
-
-- **backend-design**: バックエンドのアーキテクチャ設計
-- **data-design**: データベース設計
-- **api-design**: REST API設計
-- **batch-design**: バッチ処理設計
-- **frontend-design**: フロントエンド設計
-
 ### 書籍
 
 - **エリック・エヴァンスのドメイン駆動設計**: DDDの原点
