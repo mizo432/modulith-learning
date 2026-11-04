@@ -165,7 +165,7 @@ modulith-learning/
 - **PostgreSQL** (ローカルまたは Docker)
 - **Redis** (ローカルまたは Docker)
 - **Node.js 22** (フロントエンド用)
-- **Gradle 8.x** (ラッパー同梱)
+- **Gradle 9.8.1** (ラッパー同梱)
 
 ### Docker Compose での依存サービス起動
 
