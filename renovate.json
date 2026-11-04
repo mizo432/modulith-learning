@@ -4,7 +4,7 @@
     "config:recommended"
   ],
   "schedule": [
-    "every sunday at 5:00 am"
+    "on sunday before 5am"
   ],
   "baseBranches": [
     "develop"
