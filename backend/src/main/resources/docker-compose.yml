@@ -1,0 +1,33 @@
+# Spring Boot Docker Compose Support 用設定ファイル
+# アプリケーション起動時に自動的にサービスが起動されます
+
+services:
+  # PostgreSQLデータベースサービス
+  postgres:
+    image: postgres:17.0
+    container_name: modulith-learning-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      TZ: "Asia/Tokyo"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Redisサーバー
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: modulith-learning-redis
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      REDIS_DISABLE_COMMANDS: "FLUSHDB,FLUSHALL"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/bitnami/redis/data
+
+volumes:
+  postgres_data:
+  redis_data:
