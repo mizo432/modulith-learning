@@ -295,6 +295,10 @@ modules.xml
 /.devcontainer/postgres/data/
 /.devcontainer/dragonfly/data/
 
+# Docker Compose data directories
+/data/postgresql/
+/data/redis/
+
 # Frontend specific
 /frontend/node_modules/
 /frontend/build/
