@@ -69,7 +69,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | カテゴリ                 | 技術                                       |
 |--------------------------|--------------------------------------------|
 | **ランタイム**           | Java 25                                    |
-| **フレームワーク**       | Spring Boot 4.1.1, Spring Modulith 2.1.0   |
+| **フレームワーク**       | Spring Boot 4.1.2, Spring Modulith 2.1.0   |
 | **アーキテクチャ**       | jMolecules オンイオンアーキテクチャ, DDD   |
 | **データベース**         | PostgreSQL                                 |
 | **ORM**                  | Spring Data JPA (Hibernate)                |
@@ -170,6 +170,13 @@ modulith-learning/
 ### Docker Compose での依存サービス起動
 
 ```bash
+# PostgreSQL と Redis を起動（backend/compose.ymlを使用）
+cd backend && docker compose up -d
+```
+
+または、手動で起動する場合:
+
+```bash
 # PostgreSQL と Redis を起動
 docker run -d --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres
 docker run -d --name redis -p 6379:6379 redis
@@ -178,16 +185,19 @@ docker run -d --name redis -p 6379:6379 redis
 ### アプリケーションの起動
 
 ```bash
-# 1. サービスレジストリを起動
+# 1. 依存サービスを起動（PostgreSQL, Redis）
+cd backend && docker compose up -d
+
+# 2. サービスレジストリを起動
 ./gradlew :service-registry:bootRun
 
-# 2. バックエンドを起動
+# 3. バックエンドを起動
 ./gradlew :backend:bootRun
 
-# 3. API ゲートウェイを起動
+# 4. API ゲートウェイを起動
 ./gradlew :api-gateway:bootRun
 
-# 4. フロントエンドを起動
+# 5. フロントエンドを起動
 cd frontend && npm install && npm start
 ```
 
@@ -295,6 +305,25 @@ AgiloomはScrumプロジェクト管理を支援するシステムです。6つ�
 12バリエーション、15条件
 
 - **[用語集](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/用語集.md)** — ビジネス用語40、システム用語30
+
+#### Electronic Forms (EF) のRDRAダイアグラム
+
+Electronic Forms（EF）は電子帳票基盤を構成するシステムです。5つの業務領域、80のユースケースから構成されています。
+
+- **[EF-01 帳票基盤管理](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-01%20帳票基盤管理/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+  23ユースケース
+  -
+  **[EF-02 帳票管理](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-02%20帳票管理/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+  11ユースケース
+  -
+  **[EF-03 帳票利用](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-03%20帳票利用/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+  15ユースケース
+  -
+  **[EF-04 保管・アーカイブ](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-04%20保管・アーカイブ/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+  16ユースケース
+  -
+  **[EF-05 運用・監査](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-05%20運用・監査/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+  15ユースケース
 
 ## 📋 設計方針
 
