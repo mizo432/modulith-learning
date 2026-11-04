@@ -451,11 +451,9 @@ import org.springframework.modulith.NamedInterface;
 
 | リソース                                              | 説明                                     |
 |:------------------------------------------------------|:-----------------------------------------|
-| [modulith-dev スキル](../../skills/modulith-dev/SKILL.md) | Spring Modulith 開発の詳細ガイド         |
 | [JPA ガイドライン](jpa.guidelines.md)                  | Spring Data JPA 実装規則                 |
 | [DDD ガイドライン](../ddd/ddd.guideline.md)            | ドメイン駆動設計の基本原則               |
 | [テストガイドライン](testing.guidelines.md)            | テスト戦略とテスト作成規約               |
-| [アーキテクチャチェックリスト](../../skills/modulith-dev/checklists/architecture-checklist.md) | モジュール分割・層構成の確認項目     |
 
 ---
 

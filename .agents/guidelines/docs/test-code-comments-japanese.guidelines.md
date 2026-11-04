@@ -337,5 +337,3 @@ void setUp() {
 
 - ドキュメント作成共通の日本語チェックルール: `.agents/guidelines/docs/japanese-reading.guidelines.md`
 - プログラムコードコメント共通ルール: `.agents/guidelines/docs/code-comments-japanese.guidelines.md`
-- issue作成時の日本語チェックルール: `.agents/skills/issue/SKILL.md`
-- テスト規約（modulith-devスキル）: `.agents/skills/modulith-dev/SKILL.md`

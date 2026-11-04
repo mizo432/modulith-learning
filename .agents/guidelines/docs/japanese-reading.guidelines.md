@@ -112,6 +112,5 @@
 
 ## 6. 参考
 
-- [issue作成時の日本語チェックルール](../../skills/issue/SKILL.md)
 - [プログラムコードコメント共通ルール](./code-comments-japanese.guidelines.md)
 - [テストコードコメント共通ルール](./test-code-comments-japanese.guidelines.md)
