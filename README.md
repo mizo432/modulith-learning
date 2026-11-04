@@ -69,7 +69,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | カテゴリ                 | 技術                                       |
 |--------------------------|--------------------------------------------|
 | **ランタイム**           | Java 25                                    |
-| **フレームワーク**       | Spring Boot 4.1.1, Spring Modulith 2.1.0   |
+| **フレームワーク**       | Spring Boot 4.1.2, Spring Modulith 2.1.0   |
 | **アーキテクチャ**       | jMolecules オンイオンアーキテクチャ, DDD   |
 | **データベース**         | PostgreSQL                                 |
 | **ORM**                  | Spring Data JPA (Hibernate)                |
@@ -80,7 +80,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | **サービスディスカバリ** | Netflix Eureka (Spring Cloud)              |
 | **認証・認可**           | Spring Authorization Server, OAuth2        |
 | **テスト**               | JUnit 6, AssertJ, Testcontainers, ArchUnit, Pitest |
-| **コード品質**           | JaCoCo, Lombok, JSpecify                   |
+| **コード品質**           | JaCoCo, Lombok, JSpecify, SonarQube        |
 | **ビルド**               | Gradle (Kotlin DSL)                        |
 
 ### フロントエンド
@@ -170,6 +170,13 @@ modulith-learning/
 ### Docker Compose での依存サービス起動
 
 ```bash
+# PostgreSQL と Redis を起動（backend/compose.ymlを使用）
+cd backend && docker compose up -d
+```
+
+または、手動で起動する場合:
+
+```bash
 # PostgreSQL と Redis を起動
 docker run -d --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres
 docker run -d --name redis -p 6379:6379 redis
@@ -178,16 +185,19 @@ docker run -d --name redis -p 6379:6379 redis
 ### アプリケーションの起動
 
 ```bash
-# 1. サービスレジストリを起動
+# 1. 依存サービスを起動（PostgreSQL, Redis）
+cd backend && docker compose up -d
+
+# 2. サービスレジストリを起動
 ./gradlew :service-registry:bootRun
 
-# 2. バックエンドを起動
+# 3. バックエンドを起動
 ./gradlew :backend:bootRun
 
-# 3. API ゲートウェイを起動
+# 4. API ゲートウェイを起動
 ./gradlew :api-gateway:bootRun
 
-# 4. フロントエンドを起動
+# 5. フロントエンドを起動
 cd frontend && npm install && npm start
 ```
 
@@ -295,6 +305,65 @@ AgiloomはScrumプロジェクト管理を支援するシステムです。6つ�
 12バリエーション、15条件
 
 - **[用語集](docs/22%20要件定義書/AG%20アジルーム/03%20機能要件/用語集.md)** — ビジネス用語40、システム用語30
+
+## 🔍 コード品質管理 (SonarQube)
+
+このプロジェクトでは **SonarQube** (または **SonarCloud**) を使用して、コード品質を継続的に監視しています。
+Pull Request が作成されると、自動的にコード分析が実行され、以下のような品質指標が PR コメントとしてフィードバックされます。
+
+### 分析対象
+
+- **ブグ (Bugs)**: 潜在的なバグの検出
+- **バグの匂い (Code Smells)**: コードの可読性・保守性を損なうパターン
+- **セキュリティ脆弱性**: 既知のセキュリティリスク
+- **テストカバレッジ**: JaCoCo によるカバレッジレポートの統合
+- **重複コード**: 重複したコードブロックの検出
+
+### セットアップ手順
+
+#### 1. SonarCloud の場合
+
+1. [SonarCloud](https://sonarcloud.io) にサインアップし、GitHub リポジトリを連携します。
+2. GitHub リポジトリの **Settings > Secrets and variables > Actions** に以下のシークレットを追加します:
+
+| シークレット名       | 説明                                    |
+|----------------------|-----------------------------------------|
+| `SONAR_TOKEN`        | SonarCloud の認証トークン               |
+
+3. `sonar-project.properties` の `sonar.projectKey` と `sonar.organization` を実際の値に更新します。
+
+#### 2. 自前 SonarQube の場合
+
+1. `sonar-project.properties` の `sonar.host.url` を自前の SonarQube サーバーの URL に変更します。
+2. GitHub リポジトリの Secrets に `SONAR_TOKEN` を追加します。
+
+### ローカルでの分析実行
+
+```bash
+# SonarQube 分析を実行（SONAR_TOKEN 環境変数を事前に設定）
+export SONAR_TOKEN=your_token_here
+./gradlew sonar
+```
+
+### PR デコレーション
+
+Pull Request が作成されると、GitHub Actions によって自動的に SonarQube 分析が実行されます。
+分析結果は以下のようにフィードバックされます:
+
+- **PR コメント**: 新規に導入された問題のリスト
+- **ファイルレベルのコメント**: 問題がある行への直接リンク
+- **品質ゲート**: 品質基準を満たさない場合、PR のチェックが失敗します
+
+### 品質ゲート
+
+デフォルトの品質ゲート条件:
+
+- **カバレッジ**: 新規コードのテストカバレッジが 80% 以上
+- **重複**: 新規コードの重複率が 3% 以下
+- **ブグ**: 新規のブグが 0
+- **クリティカルなセキュリティ脆弱性**: 0
+
+品質ゲートの条件は SonarQube / SonarCloud の管理画面でカスタマイズできます。
 
 ## 📋 設計方針
 
