@@ -66,7 +66,7 @@ class ArchitectureTest {
             .and()
             .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
-            .resideInAnyPackage("..internal..", "..intenal..", "..repository..")
+            .resideInAnyPackage("..internal..", "..repository..")
             .because("Repositoryクラスはアプリケーション層(internalパッケージ)に配置されるべきです");
   }
 
@@ -94,7 +94,7 @@ class ArchitectureTest {
             .that()
             .areAnnotatedWith(RestController.class)
             .should()
-            .resideInAnyPackage("..internal..", "..intenal..")
+            .resideInAnyPackage("..internal..")
             .because("RESTコントローラーはプレゼンテーション層(internalパッケージ)に配置されるべきです");
   }
 

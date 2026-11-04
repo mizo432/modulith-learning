@@ -1,5 +1,6 @@
 package undecided.config.presentation.web.exception;
 
+import com.github.mizo432.shared.logging.ExceptionLogger;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -7,8 +8,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import java.io.IOException;
-import lombok.Setter;
-import com.github.mizo432.shared.logging.ExceptionLogger;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * ExceptionLoggingFilterは、フィルタチェーン内で発生する例外をキャッチし、ログへ記録するためのフィルタクラスです。
@@ -17,9 +19,15 @@ import com.github.mizo432.shared.logging.ExceptionLogger;
  *
  * <p>フィルタチェーン内の次のエレメントを実行中にスローされた例外は、適切なログメソッドによって記録されます。 捕捉した例外は再スローされるため、例外の伝播に影響を与えません。
  */
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class ExceptionLoggingFilter implements Filter {
 
-  @Setter private ExceptionLogger exceptionLogger;
+  private final ExceptionLogger exceptionLogger;
+
+  public ExceptionLoggingFilter(ExceptionLogger exceptionLogger) {
+    this.exceptionLogger = exceptionLogger;
+  }
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {

@@ -1,6 +1,7 @@
 package undecided.config.presentation.web;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
+import com.github.mizo432.shared.logging.ExceptionLogger;
 import java.util.concurrent.Executors;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
@@ -17,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import undecided.config.presentation.web.exception.HandlerExceptionResolverLoggingInterceptor;
 import undecided.config.presentation.web.logging.RestTraceLoggingInterceptor;
-import com.github.mizo432.shared.logging.ExceptionLogger;
 
 /**
  * Spring MVCの設定を行うための構成クラス。
@@ -55,7 +55,11 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   public static Advisor exceptionResolverLoggingInterceptorAdvisor(
       HandlerExceptionResolverLoggingInterceptor interceptor) {
     JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
-    pointcut.setPattern("undecided.erp..internal.*Api.*");
+    pointcut.setPattern(
+        "org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver,"
+            + "org.springframework.web.servlet.mvc.support.ResponseStatusExceptionResolver,"
+            + "org.springframework.web.servlet.handler.SimpleMappingExceptionResolver,"
+            + "org.springframework.web.servlet.handler.DefaultHandlerExceptionResolver");
     return new DefaultPointcutAdvisor(pointcut, interceptor);
   }
 
@@ -121,10 +125,9 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
   @Bean
   public WebServerFactoryCustomizer<TomcatReactiveWebServerFactory> tomCatCustomizeer() {
     return factory ->
-        factory.addConnectorCustomizers(
-            connector ->
-                connector
-                    .getProtocolHandler()
-                    .setExecutor(Executors.newVirtualThreadPerTaskExecutor()));
+        factory.addConnectorCustomizers(connector ->
+            connector
+                .getProtocolHandler()
+                .setExecutor(Executors.newVirtualThreadPerTaskExecutor()));
   }
 }

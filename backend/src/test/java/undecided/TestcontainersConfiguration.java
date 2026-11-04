@@ -11,19 +11,33 @@ import org.testcontainers.containers.PostgreSQLContainer;
  *
  * <p>Mediumテスト（統合テスト）でPostgreSQLコンテナおよびRedisコンテナを起動し、 {@link ServiceConnection}
  * を通じてDataSourceおよびRedisの接続設定を自動構成します。
+ *
+ * <p><b>パフォーマンス最適化</b>: コンテナは静的フィールドで共有され、テストクラス間で1回だけ起動されます。
+ * これにより、テスト実行時のコンテナ起動オーバーヘッドが大幅に削減されます。
  */
 @TestConfiguration(proxyBeanMethods = false)
 public class TestcontainersConfiguration {
 
+  private static PostgreSQLContainer<?> postgresContainer;
+  private static GenericContainer<?> redisContainer;
+
   @Bean
   @ServiceConnection(name = "postgresql")
   public PostgreSQLContainer<?> postgresContainer() {
-    return new PostgreSQLContainer<>("postgres:17.0");
+    if (postgresContainer == null) {
+      postgresContainer = new PostgreSQLContainer<>("postgres:17.0");
+      postgresContainer.start();
+    }
+    return postgresContainer;
   }
 
   @Bean
   @ServiceConnection(name = "redis")
   public GenericContainer<?> redisContainer() {
-    return new GenericContainer<>("redis:7.2").withExposedPorts(6379);
+    if (redisContainer == null) {
+      redisContainer = new GenericContainer<>("redis:7.2").withExposedPorts(6379);
+      redisContainer.start();
+    }
+    return redisContainer;
   }
 }

@@ -82,7 +82,6 @@ return new StepBuilder(STEP_NAME, jobRepository)
     .faultTolerant()
     // スキップ対象を限定（検証エラーなどリカバリ不可能な例外のみ）
     .skip(BatchSkipException.class)
-    .skip(TransientDataAccessResourceException.class)
     .skipLimit(10)
     // リトライ対象を限定（一時的なネットワークエラー、デッドロックなど）
     .retry(OptimisticLockingFailureException.class)
@@ -94,8 +93,8 @@ return new StepBuilder(STEP_NAME, jobRepository)
 **スキップ対象例外の選択基準**:
 
 - `BatchSkipException`（独自例外）: 検証エラー、必須項目欠落など、リカバリ不可能なデータエラー
-- `TransientDataAccessResourceException`: 一時的なデータベース接続エラー
 - **除外**: `OutOfMemoryError`、`StackOverflowError`、`NullPointerException` などの致命的な例外
+- **注意**: `TransientDataAccessResourceException` は一時的なエラーなので、**リトライ対象**とし、スキップ対象には含めない
 
 **リトライ対象例外の選択基準**:
 
@@ -267,6 +266,105 @@ private LocalDate parseDate(@Nullable String dateStr, @NonNull LocalDate default
 - **CSV生成ツール**: テスト用の大量CSVを生成するスクリプトを用意
 - **メモリ使用量の計測**: JVMヒープ使用量を監視し、メモリリークがないことを確認
 - **評価基準**: 処理時間、メモリ使用量、CPU使用量を計測し、閾値を設定
+
+### 8.4 テストパフォーマンス最適化
+
+統合テストの実行速度を向上させるために、以下の最適化を適用します。
+
+#### 8.4.1 Testcontainersの共有
+
+各テストクラスが独立してコンテナを起動すると、テスト実行時間が大幅に増加します。
+コンテナを静的フィールドで共有し、テストクラス間で1回だけ起動するようにします。
+
+```java
+@TestConfiguration(proxyBeanMethods = false)
+public class TestcontainersConfiguration {
+
+  private static PostgreSQLContainer<?> postgresContainer;
+  private static GenericContainer<?> redisContainer;
+
+  @Bean
+  @ServiceConnection(name = "postgresql")
+  public PostgreSQLContainer<?> postgresContainer() {
+    if (postgresContainer == null) {
+      postgresContainer = new PostgreSQLContainer<>("postgres:17.0");
+      postgresContainer.start();
+    }
+    return postgresContainer;
+  }
+
+  @Bean
+  @ServiceConnection(name = "redis")
+  public GenericContainer<?> redisContainer() {
+    if (redisContainer == null) {
+      redisContainer = new GenericContainer<>("redis:7.2").withExposedPorts(6379);
+      redisContainer.start();
+    }
+    return redisContainer;
+  }
+}
+```
+
+**効果**: テストクラス間のコンテナ起動オーバーヘッドが削減され、全テストの実行時間が短縮されます。
+
+#### 8.4.2 不要な@BeforeEachの削除
+
+各テストが独立してJobを実行する場合、`@BeforeEach` でデータをクリアする必要はありません。
+`deleteAll()` はデータベースへの不要なアクセスを生み、テスト速度を低下させます。
+
+**❌ 避けるパターン**:
+
+```java
+@BeforeEach
+void setUp() {
+  repository.deleteAll();  // 不要なデータベースアクセス
+}
+```
+
+**✅ 推奨パターン**:
+
+```java
+// @BeforeEach を削除し、各テストが独立してJobを実行
+@Test
+void shouldImportRecords() throws Exception {
+  JobExecution jobExecution = batchOperator.run();
+  assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
+}
+```
+
+**効果**: 各テスト前の不要なデータベースアクセスが削減され、テスト速度が向上します。
+
+#### 8.4.3 テストの並列実行
+
+JUnit 5 の並列実行機能を有効にすることで、テストクラスを並列に実行できます。
+
+```properties
+# gradle.properties
+org.gradle.jvmargs=-Xmx2g
+org.gradle.parallel=true
+org.gradle.workers.max=2
+```
+
+**注意点**:
+- テストがデータベースにアクセスする場合、テスト間のデータ競合を防ぐために、各テストが独立したスキーマまたはデータベースを使用する必要があります。
+- Testcontainersを共有している場合、並列実行はテストクラスのレベルで有効にし、テストメソッドのレベルでは無効にします。
+
+#### 8.4.4 パフォーマンス計測
+
+テストの実行時間を計測し、ボトルネックを特定できるようにします。
+
+```java
+@RepeatedTest(5)
+@DisplayName("処理時間の計測")
+void shouldMeasureExecutionTime() throws Exception {
+  long startTime = System.currentTimeMillis();
+  JobExecution jobExecution = batchOperator.run();
+  long elapsed = System.currentTimeMillis() - startTime;
+  
+  assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
+  log.info("Execution time: {} ms", elapsed);
+}
+```
 
 ## 9. 冪等性（Idempotency）の設計
 
@@ -463,7 +561,7 @@ public Tasklet truncateTasklet(BankRepository bankRepository) {
   return (contribution, chunkContext) -> {
     long count = bankRepository.count();
     bankRepository.deleteAll();
-    contribution.incrementWriteCount((int) count);
+    contribution.incrementDeleteCount((int) count);
     log.info("Truncated table: {} records deleted", count);
     return RepeatStatus.FINISHED;
   };
@@ -486,10 +584,7 @@ public Tasklet truncateTasklet(DataSource dataSource) {
   return (contribution, chunkContext) -> {
     try (Connection conn = dataSource.getConnection();
          Statement stmt = conn.createStatement()) {
-      // 外部キー制約を一時的に無効化（PostgreSQL 例）
-      stmt.execute("SET CONSTRAINTS ALL DEFERRED");
-      
-      // テーブルのトランケート
+      // テーブルのトランケート（CASCADEで関連テーブルも削除）
       stmt.execute("TRUNCATE TABLE bank CASCADE");
       
       log.info("Truncated table: bank");

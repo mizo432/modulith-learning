@@ -1,3 +1,0 @@
-# Requirements for docker-compose.yml testing
-PyYAML>=6.0
-pytest>=7.0.0

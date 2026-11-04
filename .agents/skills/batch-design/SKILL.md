@@ -99,7 +99,6 @@ return new StepBuilder(STEP_NAME, jobRepository)
     .faultTolerant()
     // スキップ対象を限定（検証エラーなどリカバリ不可能な例外のみ）
     .skip(BatchSkipException.class)
-    .skip(TransientDataAccessResourceException.class)
     .skipLimit(10)
     // リトライ対象を限定（一時的なネットワークエラー、デッドロックなど）
     .retry(OptimisticLockingFailureException.class)
@@ -111,8 +110,8 @@ return new StepBuilder(STEP_NAME, jobRepository)
 **スキップ対象例外の選択基準**:
 
 - `BatchSkipException`（独自例外）: 検証エラー、必須項目欠落など、リカバリ不可能なデータエラー
-- `TransientDataAccessResourceException`: 一時的なデータベース接続エラー
 - **除外**: `OutOfMemoryError`、`StackOverflowError`、`NullPointerException` などの致命的な例外
+- **注意**: `TransientDataAccessResourceException` は一時的なエラーなので、**リトライ対象**とし、スキップ対象には含めない
 
 **リトライ対象例外の選択基準**:
 
@@ -423,7 +422,7 @@ public void scheduledRun() {
 
 - **⚠️ 重要**: `.skip(Exception.class)` は使用禁止。スキップ対象を**明示的に限定**してください。
 - `BatchSkipException`（独自例外）: 検証エラー、必須項目欠落など、リカバリ不可能なデータエラー
-- `TransientDataAccessResourceException`: 一時的なデータベース接続エラー
+- **注意**: `TransientDataAccessResourceException` は一時的なエラーなので、**リトライ対象**とし、スキップ対象には含めない
 - `.skipLimit(N)` でスキップの上限を設定（デフォルト: 10）。
 - **skipLimit の調整ガイドライン**: ハードコードせず、ジョブパラメータ化することを推奨。CSV行数に対するパーセンテージベースで設定を検討。
 - 不正なデータはログに記録してスキップし、処理を継続。
@@ -483,6 +482,42 @@ public void scheduledRun() {
 
 - テスト用のCSVファイルを `src/test/resources/data/` に配置。
 - 境界値を含むテストデータを用意（空フィールド、特殊文字、長い文字列など）。
+
+#### 11.6 テストパフォーマンス最適化
+
+統合テストの実行速度を向上させるために、以下の最適化を適用します。
+
+**Testcontainersの共有**:
+
+各テストクラスが独立してコンテナを起動すると、テスト実行時間が大幅に増加します。
+コンテナを静的フィールドで共有し、テストクラス間で1回だけ起動するようにします。
+
+```java
+@TestConfiguration(proxyBeanMethods = false)
+public class TestcontainersConfiguration {
+  private static PostgreSQLContainer<?> postgresContainer;
+
+  @Bean
+  @ServiceConnection(name = "postgresql")
+  public PostgreSQLContainer<?> postgresContainer() {
+    if (postgresContainer == null) {
+      postgresContainer = new PostgreSQLContainer<>("postgres:17.0");
+      postgresContainer.start();
+    }
+    return postgresContainer;
+  }
+}
+```
+
+**不要な@BeforeEachの削除**:
+
+各テストが独立してJobを実行する場合、`@BeforeEach` でデータをクリアする必要はありません。
+`deleteAll()` はデータベースへの不要なアクセスを生み、テスト速度を低下させます。
+
+**テストの並列実行**:
+
+JUnit 5 の並列実行機能を有効にすることで、テストクラスを並列に実行できます。
+Testcontainersを共有している場合、並列実行はテストクラスのレベルで有効にし、テストメソッドのレベルでは無効にします。
 
 ---
 

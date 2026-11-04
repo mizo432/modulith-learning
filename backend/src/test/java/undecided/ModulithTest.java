@@ -89,9 +89,9 @@ class ModulithTest {
       // Organization module (Query only)
       undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationApi.class,
       // Role module (Query only)
-      undecided.association.relationshipMgmt.partyRole.intenal.role.RoleApi.class,
-      undecided.association.relationshipMgmt.partyRole.intenal.role.RoleAssignmentsForEmpApi.class,
-      undecided.association.relationshipMgmt.partyRole.intenal.role.RoleAssignmentsForOrgApi.class,
+      undecided.association.relationshipMgmt.partyRole.internal.role.RoleApi.class,
+      undecided.association.relationshipMgmt.partyRole.internal.role.RoleAssignmentsForEmpApi.class,
+      undecided.association.relationshipMgmt.partyRole.internal.role.RoleAssignmentsForOrgApi.class,
       // Employee module (Query only)
       undecided.association.relationshipMgmt.personRole.internal.employee.EmployeeApi.class,
       // Prefecture module (Query only)
