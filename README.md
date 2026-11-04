@@ -31,13 +31,14 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 
 ### モジュール構成
 
-| モジュール           | 説明                                                                                                                      | ポート |
-|----------------------|---------------------------------------------------------------------------------------------------------------------------|--------|
-| **backend**          | Spring Modulith を採用したコア業務アプリケーション。オニオンアーキテクチャとDDDに基づき、事業領域ごとにサブドメインを分離 | 8080   |
-| **service-registry** | Netflix Eureka Server を用いたサービスレジストリ                                                                          | 8761   |
-| **api-gateway**      | Spring Cloud Gateway によるAPIゲートウェイ。OAuth2 リソースサーバーとして認証・認可を担う                                 | 8085   |
-| **authorization**    | Spring Authorization Server によるOAuth2 認可サーバー                                                                     | 8443   |
-| **frontend**         | React + TypeScript + Material-UI によるフロントエンドアプリケーション                                                     | 3000   |
+| モジュール               | 説明                                                                                                                      | ポート |
+|--------------------------|---------------------------------------------------------------------------------------------------------------------------|--------|
+| **backend**              | Spring Modulith を採用したコア業務アプリケーション。オニオンアーキテクチャとDDDに基づき、事業領域ごとにサブドメインを分離 | 8080   |
+| **service-registry**     | Netflix Eureka Server を用いたサービスレジストリ                                                                          | 8761   |
+| **api-gateway**          | Spring Cloud Gateway によるAPIゲートウェイ。OAuth2 リソースサーバーとして認証・認可を担う                                 | 8085   |
+| **authorization**        | Spring Authorization Server によるOAuth2 認可サーバー                                                                     | 8443   |
+| **frontend**             | React + TypeScript + Material-UI によるフロントエンドアプリケーション                                                     | 3000   |
+| **mizo432-shared-common**| 共通ユーティリティ・共有コンポーネント                                                                                     | -      |
 
 ### 事業領域（サブドメイン）
 
@@ -46,6 +47,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | AG     | アジルーム (Agiloom)        | コア | Scrum プロジェクト管理 |
 | EF     | 電子帳票 (Electronic Forms) | 汎用 | 帳票処理               |
 | AS     | 関連付け (Association)      | 支援 | 関連付け管理           |
+| JM     | ジョブ管理 (Job Management) | 汎用 | ジョブ・権限管理       |
 | AR     | 承認申請 (Approval Request) | 汎用 | 承認ワークフロー       |
 | AZ     | 認可 (Authorization)        | 支援 | 認可管理               |
 | NT     | 通知 (Notification)         | 汎用 | 通知処理               |
@@ -77,7 +79,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | **APIドキュメント**      | SpringDoc OpenAPI                          |
 | **サービスディスカバリ** | Netflix Eureka (Spring Cloud)              |
 | **認証・認可**           | Spring Authorization Server, OAuth2        |
-| **テスト**               | JUnit 6, AssertJ, Testcontainers, ArchUnit |
+| **テスト**               | JUnit 6, AssertJ, Testcontainers, ArchUnit, Pitest |
 | **コード品質**           | JaCoCo, Lombok, JSpecify                   |
 | **ビルド**               | Gradle (Kotlin DSL)                        |
 
@@ -99,7 +101,19 @@ modulith-learning/
 ├── backend/                  # コア業務アプリケーション (Spring Modulith)
 │   ├── src/main/java/undecided/
 │   │   ├── agiloom/          # アジルーム (AG) - Scrum プロジェクト管理
+│   │   │   ├── productDiscovery/   # プロダクトディスカバリー
+│   │   │   ├── requirementBacklog/ # 要求バックログ管理
+│   │   │   ├── priorityDecision/   # 優先順位決定
+│   │   │   ├── sprintExecution/    # スプリント実行
+│   │   │   ├── qualityVerification/# 品質検証
+│   │   │   └── outcomeAdaptation/  # 成果適応
 │   │   ├── association/      # 関連付け (AS)
+│   │   │   ├── humanResourceMgmt/  # 人材管理
+│   │   │   └── relationshipMgmt/   # 関連付け管理
+│   │   ├── jobmanagement/    # ジョブ管理 (JM)
+│   │   │   ├── jobdefinition/      # ジョブ定義
+│   │   │   ├── jobexecution/       # ジョブ実行
+│   │   │   └── permissionmanagement/# 権限管理
 │   │   ├── generic/          # 汎用サブドメイン
 │   │   │   ├── accountMgmt/  # アカウント管理
 │   │   │   ├── greeting/     # サンプル機能
@@ -108,22 +122,38 @@ modulith-learning/
 │   │   │   ├── calendarReg/  # カレンダーレジストリ
 │   │   │   ├── japaneseEraReg/ # 元号レジストリ
 │   │   │   ├── taxPercentageReg/ # 税率レジストリ
-│   │   │   └── sampleBatch/  # バッチ処理サンプル
-│   │   ├── shared/           # 共有コンポーネント
-│   │   └── supporting/       # 支援サブドメイン
+│   │   │   ├── sampleBatch/  # バッチ処理サンプル
+│   │   │   └── largeRecordBatch/ # 大規模レコードバッチ
+│   │   ├── supporting/       # 支援サブドメイン
+│   │   │   ├── databaseDef/  # データベース定義
+│   │   │   └── snowflake/    # Snowflake ID
+│   │   └── config/           # 設定
 │   └── src/main/resources/
 │       └── db/migration/     # Flyway マイグレーションスクリプト
 ├── service-registry/         # Eureka サービスレジストリ
 ├── api-gateway/              # API ゲートウェイ
 ├── authorization/            # OAuth2 認可サーバー
 ├── frontend/                 # React フロントエンド
+├── mizo432-shared-common/    # 共通ユーティリティ・共有コンポーネント
 ├── docs/                     # ドキュメント
+│   ├── 05 バッチガイド/      # バッチ処理ガイド
 │   ├── 11 事業領域/          # 事業領域定義
 │   ├── 12 業務領域/          # 業務領域定義
+│   ├── 13 非機能要件項目/    # 非機能要件
+│   ├── 14 ADR/               # アーキテクチャ判断記録
+│   ├── 14 用語分類/          # 用語分類
 │   ├── 21 要望/              # 機能要望
 │   ├── 22 要件定義書/        # 要件定義
 │   ├── 23 詳細設計書/        # 詳細設計
-│   └── 95 Architecture decision record (ADR)/  # 技術判断記録
+│   ├── 24 coding/            # コーディング関連
+│   ├── 25 data/              # データ関連
+│   ├── 90 RESTful api/       # REST API 設計
+│   ├── 91 resource/          # リソース
+│   ├── 95 Architecture decision record (ADR)/  # ADR (英語)
+│   ├── 96 addressInfo/       # 住所情報
+│   ├── 97 spring cloud/      # Spring Cloud 関連
+│   ├── 98 Jpa/               # JPA 関連
+│   └── 99 Dictionary/        # 用語辞書
 └── gradle/                   # Gradle ラッパー
 ```
 
@@ -185,6 +215,9 @@ cd frontend && npm install && npm start
 
 # カバレッジレポート生成
 ./gradlew :backend:jacocoTestReport
+
+# ミューテーションテスト (Pitest)
+./gradlew :backend:pitest
 ```
 
 テストは JUnit 6 の `@Tag` アノテーションでサイズ分類されています:
@@ -193,16 +226,20 @@ cd frontend && npm install && npm start
 - **medium**: 統合テスト。`mediumTest` タスクで実行
 - **large**: システムテスト。`largeTest` タスクで実行
 
+ミューテーションテストには **Pitest** を採用しており、テストの品質を遺伝的アルゴリズムで評価します。
+
 ## 📖 ドキュメント
 
 プロジェクトのドキュメントは [`docs/`](docs/) ディレクトリに格納されています:
 
-- **[事業領域一覧](docs/11%20事業領域/事業領域一覧.tsv)** — サブドメイン定義と分類
-- **[業務領域一覧](docs/12%20業務領域/業務領域一覧.tsv)** — 業務機能の分類
+- **[事業領域一覧](docs/11%20事業領域/事業領域一覧.md)** — サブドメイン定義と分類
+- **[業務領域一覧](docs/12%20業務領域/業務領域一覧.md)** — 業務機能の分類
+- **[非機能要件項目](docs/13%20非機能要件項目/)** — 非機能要件の定義
+- **[ADR](docs/14%20ADR/)** — アーキテクチャ判断記録
 - **[機能要望](docs/21%20要望/)** — 機能要件と要望
 - **[要件定義書](docs/22%20要件定義書/)** — 詳細な要件定義
 - **[詳細設計書](docs/23%20詳細設計書/)** — 技術設計ドキュメント
-- **[ADR](docs/95%20Architecture%20decision%20record%20 (ADR)/)** — アーキテクチャ判断記録
+- **[用語辞書](docs/99%20Dictionary/)** — 用語定義
 
 ### 📐 RDRA (リレーションシップ駆動要件分析)
 
@@ -211,19 +248,19 @@ Analysis）を採用しています。RDRAはPlantUMLを使用してシステム
 
 - **[RDRAダイアグラム例](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/README.md)** —
   図書館システムを題材にしたダイアグラム例
-    -
+  -
   **[利用シーン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
   ユースケース図の例
-    -
+  -
   **[バリエーション条件図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/02.バリエーション条件図.md)** —
   バリエーションと条件の定義例
-    -
+  -
   **[ユースケース複合図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/03.ユースケース複合図.md)** —
   UC複合図の例
-    -
+  -
   **[ステートマシン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
   状態遷移図の例
-    - **[用語集](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
+  - **[用語集](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
 
 #### Agiloom (AG) のRDRAダイアグラム
 
