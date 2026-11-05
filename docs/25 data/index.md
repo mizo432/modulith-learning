@@ -89,5 +89,5 @@
 ## 📚 関連ドキュメント
 
 - [イミュータブルデータモデル設計指針](immutable-model.md)
-- [TM（T字形ER）モデル詳細解説](tm.md)
+- [ER（エンティティ関係）モデル詳細解説](../../.agents/guidelines/rdra/tm.md)
 - [データベースルール](database.rule.md)
