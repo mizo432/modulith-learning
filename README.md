@@ -31,14 +31,14 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 
 ### モジュール構成
 
-| モジュール               | 説明                                                                                                                      | ポート |
-|--------------------------|---------------------------------------------------------------------------------------------------------------------------|--------|
-| **backend**              | Spring Modulith を採用したコア業務アプリケーション。オニオンアーキテクチャとDDDに基づき、事業領域ごとにサブドメインを分離 | 8080   |
-| **service-registry**     | Netflix Eureka Server を用いたサービスレジストリ                                                                          | 8761   |
-| **api-gateway**          | Spring Cloud Gateway によるAPIゲートウェイ。OAuth2 リソースサーバーとして認証・認可を担う                                 | 8085   |
-| **authorization**        | Spring Authorization Server によるOAuth2 認可サーバー                                                                     | 8443   |
-| **frontend**             | React + TypeScript + Material-UI によるフロントエンドアプリケーション                                                     | 3000   |
-| **mizo432-shared-common**| 共通ユーティリティ・共有コンポーネント                                                                                     | -      |
+| モジュール                | 説明                                                                                                                      | ポート |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------|--------|
+| **backend**               | Spring Modulith を採用したコア業務アプリケーション。オニオンアーキテクチャとDDDに基づき、事業領域ごとにサブドメインを分離 | 8080   |
+| **service-registry**      | Netflix Eureka Server を用いたサービスレジストリ                                                                          | 8761   |
+| **api-gateway**           | Spring Cloud Gateway によるAPIゲートウェイ。OAuth2 リソースサーバーとして認証・認可を担う                                 | 8085   |
+| **authorization**         | Spring Authorization Server によるOAuth2 認可サーバー                                                                     | 8443   |
+| **frontend**              | React + TypeScript + Material-UI によるフロントエンドアプリケーション                                                     | 3000   |
+| **mizo432-shared-common** | 共通ユーティリティ・共有コンポーネント                                                                                    | -      |
 
 ### 事業領域（サブドメイン）
 
@@ -66,22 +66,22 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 
 ### バックエンド
 
-| カテゴリ                 | 技術                                       |
-|--------------------------|--------------------------------------------|
-| **ランタイム**           | Java 25                                    |
-| **フレームワーク**       | Spring Boot 4.1.2, Spring Modulith 2.1.0   |
-| **アーキテクチャ**       | jMolecules オンイオンアーキテクチャ, DDD   |
-| **データベース**         | PostgreSQL                                 |
-| **ORM**                  | Spring Data JPA (Hibernate)                |
-| **DBマイグレーション**   | Flyway                                     |
-| **キャッシュ**           | Redis + Caffeine                           |
-| **バッチ処理**           | Spring Batch + Super CSV                   |
-| **APIドキュメント**      | SpringDoc OpenAPI                          |
-| **サービスディスカバリ** | Netflix Eureka (Spring Cloud)              |
-| **認証・認可**           | Spring Authorization Server, OAuth2        |
+| カテゴリ                 | 技術                                               |
+|--------------------------|----------------------------------------------------|
+| **ランタイム**           | Java 25                                            |
+| **フレームワーク**       | Spring Boot 4.1.2, Spring Modulith 2.1.0           |
+| **アーキテクチャ**       | jMolecules オンイオンアーキテクチャ, DDD           |
+| **データベース**         | PostgreSQL                                         |
+| **ORM**                  | Spring Data JPA (Hibernate)                        |
+| **DBマイグレーション**   | Flyway                                             |
+| **キャッシュ**           | Redis + Caffeine                                   |
+| **バッチ処理**           | Spring Batch + Super CSV                           |
+| **APIドキュメント**      | SpringDoc OpenAPI                                  |
+| **サービスディスカバリ** | Netflix Eureka (Spring Cloud)                      |
+| **認証・認可**           | Spring Authorization Server, OAuth2                |
 | **テスト**               | JUnit 6, AssertJ, Testcontainers, ArchUnit, Pitest |
-| **コード品質**           | JaCoCo, Lombok, JSpecify, SonarQube        |
-| **ビルド**               | Gradle (Kotlin DSL)                        |
+| **コード品質**           | JaCoCo, Lombok, JSpecify, SonarQube                |
+| **ビルド**               | Gradle (Kotlin DSL)                                |
 
 ### フロントエンド
 
@@ -256,21 +256,21 @@ cd frontend && npm install && npm start
 要件分析にはRDRA（Relationship-Driven Requirements
 Analysis）を採用しています。RDRAはPlantUMLを使用してシステム価値、システム外部環境、システム境界、システムレイヤーの4つのレイヤーで要件を定義します。
 
-- **[RDRAダイアグラム例](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/README.md)** —
+- **[RDRAダイアグラム例](.agents/skills/rdra/templates/RDRAダイアグラム例/README.md)** —
   図書館システムを題材にしたダイアグラム例
-  -
-  **[利用シーン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
+    -
+  **[利用シーン図](.agents/skills/rdra/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
   ユースケース図の例
-  -
-  **[バリエーション条件図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/02.バリエーション条件図.md)** —
+    -
+  **[バリエーション条件図](.agents/skills/rdra/templates/RDRAダイアグラム例/02.バリエーション条件図.md)** —
   バリエーションと条件の定義例
-  -
-  **[ユースケース複合図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/03.ユースケース複合図.md)** —
+    -
+  **[ユースケース複合図](.agents/skills/rdra/templates/RDRAダイアグラム例/03.ユースケース複合図.md)** —
   UC複合図の例
-  -
-  **[ステートマシン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
+    -
+  **[ステートマシン図](.agents/skills/rdra/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
   状態遷移図の例
-  - **[用語集](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
+    - **[用語集](.agents/skills/rdra/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
 
 #### Agiloom (AG) のRDRAダイアグラム
 
@@ -310,20 +310,21 @@ AgiloomはScrumプロジェクト管理を支援するシステムです。6つ�
 
 Electronic Forms（EF）は電子帳票基盤を構成するシステムです。5つの業務領域、80のユースケースから構成されています。
 
-- **[EF-01 帳票基盤管理](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-01%20帳票基盤管理/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
-  23ユースケース
-  -
-  **[EF-02 帳票管理](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-02%20帳票管理/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
-  11ユースケース
-  -
-  **[EF-03 帳票利用](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-03%20帳票利用/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
-  15ユースケース
-  -
-  **[EF-04 保管・アーカイブ](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-04%20保管・アーカイブ/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
-  16ユースケース
-  -
-  **[EF-05 運用・監査](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-05%20運用・監査/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
-  15ユースケース
+-
+**[EF-01 帳票基盤管理](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-01%20帳票基盤管理/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+23ユースケース
+    -
+**[EF-02 帳票管理](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-02%20帳票管理/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+11ユースケース
+    -
+**[EF-03 帳票利用](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-03%20帳票利用/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+15ユースケース
+    -
+**[EF-04 保管・アーカイブ](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-04%20保管・アーカイブ/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+16ユースケース
+    -
+**[EF-05 運用・監査](docs/22%20要件定義書/EF%20電子帳票/03%20機能要件/EF-05%20運用・監査/03.システム境界/01.ユースケース/ユースケース一覧.md)** —
+15ユースケース
 
 ## 📋 設計方針
 

@@ -569,7 +569,7 @@ RDRAによる要件定義は、「7つのフェーズ」で計画的に進めま
 - 業務からユースケース (UC)を導き出し、システム化する部分を整理する
 - 画面（人と関わる入出力）とイベント（外部システムとの連携）を特定する
 - **BUC分析**: 各BUCに対してBUC記述を作成し、BUCを構成するアクティビティや関連情報を明確にする
-- **BUC記述作成**: 各BUCに対してBUC記述ファイルを作成し、UC導出の基盤とする（[BUC記述.md](templates/BUC記述.md) テンプレートを使用）
+- **BUC記述作成**: 各BUCに対してBUC記述ファイルを作成し、UC導出の基盤とする（[BUC記述.md](../../rdra/templates/BUC記述.md) テンプレートを使用）
 
 **要素の関連付け**
 
@@ -644,7 +644,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 
 - Markdownファイル: `04.システム/01.情報/02.属性/[情報ID] 情報名_情報属性一覧.md`
 - TSVファイル: `04.システム/01.情報/02.属性/[情報ID] 情報名_情報属性一覧.tsv`
-- テンプレート: [情報属性一覧.md](templates/情報属性一覧.md), [情報属性一覧.tsv](templates/情報属性一覧.tsv)
+- テンプレート: [情報属性一覧.md](../../rdra/templates/情報属性一覧.md), [情報属性一覧.tsv](../../rdra/templates/情報属性一覧.tsv)
 
 **エンティティ命名規則**:
 
@@ -677,7 +677,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 **ファイル配置規則**:
 
 - Markdownファイル: `04.システム/01.情報/ER図.md`
-- テンプレート: [ER図.md](templates/ER図.md)
+- テンプレート: [ER図.md](../../rdra/templates/ER図.md)
 
 **PlantUML ER図記法**:
 
@@ -706,7 +706,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 
 - Markdownファイル: `04.システム/04.画面/[画面ID] 画面名_画面属性一覧.md`
 - TSVファイル: `04.システム/04.画面/[画面ID] 画面名_画面属性一覧.tsv`
-- テンプレート: [画面属性一覧.md](templates/画面属性一覧.md), [画面属性一覧.tsv](templates/画面属性一覧.tsv)
+- テンプレート: [画面属性一覧.md](../../rdra/templates/画面属性一覧.md), [画面属性一覧.tsv](../../rdra/templates/画面属性一覧.tsv)
 
 **要件組み立てフェーズ実行時の準備作業：画面ER図の作成**
 
@@ -724,7 +724,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 **ファイル配置規則**:
 
 - Markdownファイル: `04.システム/04.画面/[画面ID] 画面名_画面ER図.md`
-- テンプレート: [画面ER図.md](templates/画面ER図.md)
+- テンプレート: [画面ER図.md](../../rdra/templates/画面ER図.md)
 
 **画面項目の定義**:
 
@@ -758,7 +758,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 
 - Markdownファイル: `04.システム/03.イベント/[イベントID] イベント名_イベント属性一覧.md`
 - TSVファイル: `04.システム/03.イベント/[イベントID] イベント名_イベント属性一覧.tsv`
-- テンプレート: [イベント属性一覧.md](templates/イベント属性一覧.md), [イベント属性一覧.tsv](templates/イベント属性一覧.tsv)
+- テンプレート: [イベント属性一覧.md](../../rdra/templates/イベント属性一覧.md), [イベント属性一覧.tsv](../../rdra/templates/イベント属性一覧.tsv)
 
 **要件組み立てフェーズ実行時の準備作業：イベントER図の作成**
 
@@ -776,7 +776,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 **ファイル配置規則**:
 
 - Markdownファイル: `04.システム/03.イベント/[イベントID] イベント名_イベントER図.md`
-- テンプレート: [イベントER図.md](templates/イベントER図.md)
+- テンプレート: [イベントER図.md](../../rdra/templates/イベントER図.md)
 
 **イベント属性の定義**:
 
@@ -831,7 +831,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 チェックリストでエラーが発見された場合は、以下の手順に従ってください：
 
 1. エラー内容を `check-error.tsv`
-   に記録する（テンプレート: [templates/check-error.tsv](templates/check-error.tsv)）
+   に記録する（テンプレート: [templates/check-error.tsv](../../rdra/templates/check-error.tsv)）
 2. `check-error.tsv` を適切なディレクトリに配置する
     - フェーズ1: `docs/22 要件定義書/[事業領域名]/check-error.tsv`
     - フェーズ2/3: `docs/22 要件定義書/[事業領域名]/[業務領域名]/check-error.tsv`
@@ -954,69 +954,69 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
     - [id-naming-conventions.guidelines.md](guidelines/id-naming-conventions.guidelines.md): RDRA
       ID命名規約
 - **テンプレート**:
-    - [事業領域一覧.md](templates/事業領域一覧.md): 事業領域一覧のMarkdownテンプレート（
+    - [事業領域一覧.md](../../rdra/templates/事業領域一覧.md): 事業領域一覧のMarkdownテンプレート（
       **参照のみ。要件分析では作成しない。**）
-    - [事業領域一覧.tsv](templates/事業領域一覧.tsv): 事業領域一覧のTSVテンプレート（
+    - [事業領域一覧.tsv](../../rdra/templates/事業領域一覧.tsv): 事業領域一覧のTSVテンプレート（
       **参照のみ。要件分析では作成しない。**）
-    - [業務領域一覧.md](templates/業務領域一覧.md): 業務領域一覧のMarkdownテンプレート
-    - [業務領域一覧.tsv](templates/業務領域一覧.tsv): 業務領域一覧のTSVテンプレート
-        - [非機能要件項目一覧.md](templates/非機能要件項目一覧.md): 非機能要件項目一覧のMarkdownテンプレート
+    - [業務領域一覧.md](../../rdra/templates/業務領域一覧.md): 業務領域一覧のMarkdownテンプレート
+    - [業務領域一覧.tsv](../../rdra/templates/業務領域一覧.tsv): 業務領域一覧のTSVテンプレート
+        - [非機能要件項目一覧.md](../../rdra/templates/非機能要件項目一覧.md): 非機能要件項目一覧のMarkdownテンプレート
           (**参照のみ。要件分析では作成しない。**）
-        - [非機能要件項目一覧.tsv](templates/非機能要件項目一覧.tsv): 非機能要件項目一覧のTSVテンプレート
+        - [非機能要件項目一覧.tsv](../../rdra/templates/非機能要件項目一覧.tsv): 非機能要件項目一覧のTSVテンプレート
           (**参照のみ。要件分析では作成しない。**）
-    - [非機能要件一覧.md](templates/非機能要件一覧.md): 非機能要件一覧のMarkdownテンプレート
-    - [非機能要件一覧.tsv](templates/非機能要件一覧.tsv): 非機能要件一覧のTSVテンプレート
-        - [0verview.md](templates/0verview.md): 機能要件概要のMarkdownテンプレート
-        - [システム価値.md](templates/システム価値.md): システム価値のMarkdownテンプレート
-        - [業務領域一覧.md](templates/業務領域一覧.md): 業務領域一覧のMarkdownテンプレート
-            - [業務.md](templates/業務.md): 業務詳細のMarkdownテンプレート
-            - [BUC一覧.md](templates/BUC一覧.md): BUC一覧のMarkdownテンプレート
-            - [BUC一覧.tsv](templates/BUC一覧.tsv): BUC一覧のTSVテンプレート
-            - [BUC記述.md](templates/BUC記述.md): BUC記述のMarkdownテンプレート
-                - [外部システム一覧.md](templates/外部システム一覧.md): 外部システム一覧のMarkdownテンプレート
-                - [外部システム一覧.tsv](templates/外部システム一覧.tsv): 外部システム一覧のTSVテンプレート
-                - [外部システム定義.md](templates/外部システム定義.md): 外部システム定義のMarkdownテンプレート
-                - [アクター一覧.md](templates/アクター一覧.md): アクター一覧のMarkdownテンプレート
-                - [アクター一覧.tsv](templates/アクター一覧.tsv): アクター一覧のTSVテンプレート
-                - [ユースケース一覧.md](templates/ユースケース一覧.md): ユースケース一覧のMarkdownテンプレート
-                - [ユースケース一覧.tsv](templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
-    - [ユースケース図.md](templates/ユースケース図.md): ユースケース図のMarkdownテンプレート
-    - [UC複合図.md](templates/UC複合図.md): UC複合図のMarkdownテンプレート（PlantUML使用）
-        - [情報一覧.md](templates/情報一覧.md): 情報一覧のMarkdownテンプレート
-        - [情報一覧.tsv](templates/情報一覧.tsv): 情報一覧のTSVテンプレート
-        - [情報属性一覧.md](templates/情報属性一覧.md): 情報属性一覧のMarkdownテンプレート（TMモデルベース）
-        - [情報属性一覧.tsv](templates/情報属性一覧.tsv): 情報属性一覧のTSVテンプレート（TMモデルベース）
-        - [ER図.md](templates/ER図.md): ER図のMarkdownテンプレート（PlantUML Information Engineering記法）
-        - [画面ER図.md](templates/画面ER図.md): 画面ER図のMarkdownテンプレート（PlantUML Information Engineering記法）
-        - [イベントER図.md](templates/イベントER図.md): イベントER図のMarkdownテンプレート（PlantUML Information Engineering記法）
-        - [ステート一覧.tsv](templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
-        - [ステートマシン図.md](templates/ステートマシン図.md):
+    - [非機能要件一覧.md](../../rdra/templates/非機能要件一覧.md): 非機能要件一覧のMarkdownテンプレート
+    - [非機能要件一覧.tsv](../../rdra/templates/非機能要件一覧.tsv): 非機能要件一覧のTSVテンプレート
+        - [0verview.md](../../rdra/templates/0verview.md): 機能要件概要のMarkdownテンプレート
+        - [システム価値.md](../../rdra/templates/システム価値.md): システム価値のMarkdownテンプレート
+        - [業務領域一覧.md](../../rdra/templates/業務領域一覧.md): 業務領域一覧のMarkdownテンプレート
+            - [業務.md](../../rdra/templates/業務.md): 業務詳細のMarkdownテンプレート
+            - [BUC一覧.md](../../rdra/templates/BUC一覧.md): BUC一覧のMarkdownテンプレート
+            - [BUC一覧.tsv](../../rdra/templates/BUC一覧.tsv): BUC一覧のTSVテンプレート
+            - [BUC記述.md](../../rdra/templates/BUC記述.md): BUC記述のMarkdownテンプレート
+                - [外部システム一覧.md](../../rdra/templates/外部システム一覧.md): 外部システム一覧のMarkdownテンプレート
+                - [外部システム一覧.tsv](../../rdra/templates/外部システム一覧.tsv): 外部システム一覧のTSVテンプレート
+                - [外部システム定義.md](../../rdra/templates/外部システム定義.md): 外部システム定義のMarkdownテンプレート
+                - [アクター一覧.md](../../rdra/templates/アクター一覧.md): アクター一覧のMarkdownテンプレート
+                - [アクター一覧.tsv](../../rdra/templates/アクター一覧.tsv): アクター一覧のTSVテンプレート
+                - [ユースケース一覧.md](../../rdra/templates/ユースケース一覧.md): ユースケース一覧のMarkdownテンプレート
+                - [ユースケース一覧.tsv](../../rdra/templates/ユースケース一覧.tsv): ユースケース一覧のTSVテンプレート
+    - [ユースケース図.md](../../rdra/templates/ユースケース図.md): ユースケース図のMarkdownテンプレート
+    - [UC複合図.md](../../rdra/templates/UC複合図.md): UC複合図のMarkdownテンプレート（PlantUML使用）
+        - [情報一覧.md](../../rdra/templates/情報一覧.md): 情報一覧のMarkdownテンプレート
+        - [情報一覧.tsv](../../rdra/templates/情報一覧.tsv): 情報一覧のTSVテンプレート
+        - [情報属性一覧.md](../../rdra/templates/情報属性一覧.md): 情報属性一覧のMarkdownテンプレート（TMモデルベース）
+        - [情報属性一覧.tsv](../../rdra/templates/情報属性一覧.tsv): 情報属性一覧のTSVテンプレート（TMモデルベース）
+        - [ER図.md](../../rdra/templates/ER図.md): ER図のMarkdownテンプレート（PlantUML Information Engineering記法）
+        - [画面ER図.md](../../rdra/templates/画面ER図.md): 画面ER図のMarkdownテンプレート（PlantUML Information Engineering記法）
+        - [イベントER図.md](../../rdra/templates/イベントER図.md): イベントER図のMarkdownテンプレート（PlantUML Information Engineering記法）
+        - [ステート一覧.tsv](../../rdra/templates/ステート一覧.tsv): ステート一覧のTSVテンプレート
+        - [ステートマシン図.md](../../rdra/templates/ステートマシン図.md):
           ステートマシン図のMarkdownテンプレート（PlantUML状態遷移図）
-        - [イベント一覧.md](templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
-        - [イベント一覧.tsv](templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
-        - [イベント定義.md](templates/イベント定義.md): イベント定義のMarkdownテンプレート
-        - [イベント属性一覧.md](templates/イベント属性一覧.md): イベント属性一覧のMarkdownテンプレート
-        - [イベント属性一覧.tsv](templates/イベント属性一覧.tsv): イベント属性一覧のTSVテンプレート
-        - [画面一覧.md](templates/画面一覧.md): 画面一覧のMarkdownテンプレート
-        - [画面一覧.tsv](templates/画面一覧.tsv): 画面一覧のTSVテンプレート
-        - [画面定義.md](templates/画面定義.md): 画面定義のMarkdownテンプレート
-        - [画面属性一覧.md](templates/画面属性一覧.md): 画面属性一覧のMarkdownテンプレート
-        - [画面属性一覧.tsv](templates/画面属性一覧.tsv): 画面属性一覧のTSVテンプレート
-        - [用語集.md](templates/用語集.md): 用語集のMarkdownテンプレート
-        - [用語集.tsv](templates/用語集.tsv): 用語集のTSVテンプレート
-        - [用語分類一覧.tsv](templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
-        - [check-error.tsv](templates/check-error.tsv): チェックエラー記録用TSVテンプレート
+        - [イベント一覧.md](../../rdra/templates/イベント一覧.md): イベント一覧のMarkdownテンプレート
+        - [イベント一覧.tsv](../../rdra/templates/イベント一覧.tsv): イベント一覧のTSVテンプレート
+        - [イベント定義.md](../../rdra/templates/イベント定義.md): イベント定義のMarkdownテンプレート
+        - [イベント属性一覧.md](../../rdra/templates/イベント属性一覧.md): イベント属性一覧のMarkdownテンプレート
+        - [イベント属性一覧.tsv](../../rdra/templates/イベント属性一覧.tsv): イベント属性一覧のTSVテンプレート
+        - [画面一覧.md](../../rdra/templates/画面一覧.md): 画面一覧のMarkdownテンプレート
+        - [画面一覧.tsv](../../rdra/templates/画面一覧.tsv): 画面一覧のTSVテンプレート
+        - [画面定義.md](../../rdra/templates/画面定義.md): 画面定義のMarkdownテンプレート
+        - [画面属性一覧.md](../../rdra/templates/画面属性一覧.md): 画面属性一覧のMarkdownテンプレート
+        - [画面属性一覧.tsv](../../rdra/templates/画面属性一覧.tsv): 画面属性一覧のTSVテンプレート
+        - [用語集.md](../../rdra/templates/用語集.md): 用語集のMarkdownテンプレート
+        - [用語集.tsv](../../rdra/templates/用語集.tsv): 用語集のTSVテンプレート
+        - [用語分類一覧.tsv](../../rdra/templates/用語分類一覧.tsv): 用語分類一覧のTSVテンプレート
+        - [check-error.tsv](../../rdra/templates/check-error.tsv): チェックエラー記録用TSVテンプレート
 
 - **RDRAダイアグラム例** (テンプレートとして使用):
-    - [RDRAダイアグラム例 README](templates/RDRAダイアグラム例/README.md):
+    - [RDRAダイアグラム例 README](../../rdra/templates/RDRAダイアグラム例/README.md):
       図書館システムを題材にしたRDRAダイアグラム例の概要
-    - [01.利用シーン図](templates/RDRAダイアグラム例/01.利用シーン図.md): ユースケース図の例（システム外部環境レイヤー）
-    - [02.バリエーション条件図](templates/RDRAダイアグラム例/02.バリエーション条件図.md):
+    - [01.利用シーン図](../../rdra/templates/RDRAダイアグラム例/01.利用シーン図.md): ユースケース図の例（システム外部環境レイヤー）
+    - [02.バリエーション条件図](../../rdra/templates/RDRAダイアグラム例/02.バリエーション条件図.md):
       バリエーションと条件の表形式定義例（システムレイヤー）
-    - [03.ユースケース複合図](templates/RDRAダイアグラム例/03.ユースケース複合図.md):
+    - [03.ユースケース複合図](../../rdra/templates/RDRAダイアグラム例/03.ユースケース複合図.md):
       UC複合図の例（システム境界レイヤー・システムレイヤー）
-    - [04.ステートマシン図](templates/RDRAダイアグラム例/04.ステートマシン図.md): 状態遷移図の例（システムレイヤー）
-    - [05.用語集](templates/RDRAダイアグラム例/05.用語集.md): 用語集の例（4レイヤー全体）
+    - [04.ステートマシン図](../../rdra/templates/RDRAダイアグラム例/04.ステートマシン図.md): 状態遷移図の例（システムレイヤー）
+    - [05.用語集](../../rdra/templates/RDRAダイアグラム例/05.用語集.md): 用語集の例（4レイヤー全体）
 
 - **チェックリスト**:
     - [requirement.md](../../../rdra/checklists/requirement.md): 要件分析時の確認項目
