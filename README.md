@@ -274,18 +274,18 @@ Analysis）を採用しています。RDRAはPlantUMLを使用してシステム
     - **[用語集](.agents/skills/rdra/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
 =======
   -
-  **[利用シーン図](.agents/skills/rdra/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
+  **[利用シーン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
   ユースケース図の例
   -
-  **[バリエーション条件図](.agents/skills/rdra/templates/RDRAダイアグラム例/02.バリエーション条件図.md)** —
+  **[バリエーション条件図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/02.バリエーション条件図.md)** —
   バリエーションと条件の定義例
   -
-  **[ユースケース複合図](.agents/skills/rdra/templates/RDRAダイアグラム例/03.ユースケース複合図.md)** —
+  **[ユースケース複合図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/03.ユースケース複合図.md)** —
   UC複合図の例
   -
-  **[ステートマシン図](.agents/skills/rdra/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
+  **[ステートマシン図](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
   状態遷移図の例
-  - **[用語集](.agents/skills/rdra/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
+  - **[用語集](.agents/skills/to-RDRA-model/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
 >>>>>>> origin/main
 
 #### Agiloom (AG) のRDRAダイアグラム
