@@ -10,3 +10,11 @@ ST-BL-08	対応済み	フィードバック	バックログ項目に変換また
 ST-BL-09	下書き	Story Map	作成されたが、まだ編集されていない
 ST-BL-10	編集中	Story Map	現在編集中
 ST-BL-11	公開済み	Story Map	公開されて共有中
+ST-BL-12	Frozen	ストーリー	ストーリーが凍結され、変更できない状態
+ST-BL-13	Suggested	ストーリー	POがストーリーを提案した状態
+ST-BL-14	Accepted	ストーリー	POがストーリーを承認した状態
+ST-BL-15	Estimated	ストーリー	開発者が見積もりを完了した状態
+ST-BL-16	Planned	ストーリー	スプリントに計画された状態
+ST-BL-17	In Progress	ストーリー	開発が進行中の状態
+ST-BL-18	In Review	ストーリー	開発が完了し、レビュー中の状態
+ST-BL-19	Done	ストーリー	全ての条件を満たし、完了した状態
