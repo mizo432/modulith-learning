@@ -1,4 +1,6 @@
 ID	外部システム名	連携内容
 ES-AS-01	PostgreSQL	PartyRole情報の永続化
-ES-AS-02	JBジョブ管理	PartyRole情報の参照API提供
-ES-AS-03	AGアジルーム	PartyRole情報の参照API提供
+ES-AS-02	JBジョブ管理	PartyRole情報の参照・付与・解除API提供
+ES-AS-03	AGアジルーム	PartyRole情報の参照・付与・解除API提供
+ES-AS-04	AZ認可	PartyRole情報の参照API提供
+ES-AS-05	EF電子帳票	PartyRole情報の参照・付与・解除API提供

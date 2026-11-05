@@ -1,0 +1,25 @@
+情報属性一覧
+INF-JB-04	ジョブ実行	リソース	実行状態・結果・履歴
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	executionId	Y	String	Y	実行ID（一意識別子）
+2	jobCode	N	String	Y	ジョブコード（外部キー）
+3	jobVersion	N	String	Y	ジョブバージョン
+4	host	N	String	Y	実行先サーバーホスト
+5	port	N	Integer	Y	実行先サーバーポート
+6	protocol	N	String	Y	プロトコル
+7	executionState	N	Enum	Y	実行状態（待機中/実行中/成功/失敗/結果不明）
+8	executionParameter	N	String	N	実行パラメータ（JSON形式）
+9	checkpointPosition	N	String	N	チェックポイント位置
+10	checkpointTimestamp	N	DateTime	N	チェックポイントタイムスタンプ
+11	processedCount	N	Long	N	処理件数
+12	errorCode	N	String	N	エラーコード
+13	errorMessage	N	String	N	エラーメッセージ
+14	errorLocation	N	String	N	エラー発生箇所
+15	errorOccurredAt	N	DateTime	N	エラー発生日時
+16	startedAt	N	DateTime	N	開始日時
+17	finishedAt	N	DateTime	N	終了日時
+18	companyCode	N	String	N	対象会社コード
+19	storeCode	N	String	N	対象店舗コード
+20	createdAt	N	DateTime	Y	作成日時
+21	updatedAt	N	DateTime	Y	更新日時

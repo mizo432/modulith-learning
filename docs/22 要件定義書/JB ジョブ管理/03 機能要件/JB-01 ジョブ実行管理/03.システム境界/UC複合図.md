@@ -31,8 +31,12 @@ skinparam rectangle {
 skinparam arrowColor #475569
 skinparam shadowing false
 
-actor "Operations Admin" as Admin
+actor "System Admin" as SysAdmin
+actor "Operations Admin" as OpsAdmin
+actor "Company Operator" as CompanyOps
+actor "Store Operator" as StoreOps
 actor "Business System" as BizSystem
+actor "Notification Recipient" as NotifRecipient
 
 note "Business App Server (ES-01)" as ES01
 note "PostgreSQL (ES-02)" as ES02
@@ -75,14 +79,14 @@ rectangle "System Layer" {
   card "Audit Log (INF-JB-11)" as INF11
 }
 
-Admin -- SCR001
-Admin -- SCR002
-Admin -- SCR003
-Admin -- SCR007
-Admin -- SCR009
-Admin -- SCR012
-Admin -- SCR013
-Admin -- SCR014
+SysAdmin -- SCR007
+SysAdmin -- SCR009
+OpsAdmin -- SCR001
+OpsAdmin -- SCR002
+OpsAdmin -- SCR003
+OpsAdmin -- SCR012
+OpsAdmin -- SCR013
+OpsAdmin -- SCR014
 
 SCR001 ..> UC013 : Call
 SCR002 ..> UC013 : Call
@@ -154,8 +158,12 @@ skinparam rectangle {
 skinparam arrowColor #475569
 skinparam shadowing false
 
-actor "運用管理者" as Admin
-actor "業務システム" as BizSystem
+actor "システム管理者" as SysAdmin
+actor "運用管理者" as OpsAdmin
+actor "会社運用担当者" as CompanyOps
+actor "店舗担当者" as StoreOps
+actor "個別業務システム" as BizSystem
+actor "通知受信者" as NotifRecipient
 
 note "業務アプリケーションサーバー (ES-01)" as ES01
 note "PostgreSQL (ES-02)" as ES02
@@ -198,14 +206,14 @@ rectangle "システムレイヤー" {
   card "監査ログ (INF-JB-11)" as INF11
 }
 
-Admin -- SCR001
-Admin -- SCR002
-Admin -- SCR003
-Admin -- SCR007
-Admin -- SCR009
-Admin -- SCR012
-Admin -- SCR013
-Admin -- SCR014
+SysAdmin -- SCR007
+SysAdmin -- SCR009
+OpsAdmin -- SCR001
+OpsAdmin -- SCR002
+OpsAdmin -- SCR003
+OpsAdmin -- SCR012
+OpsAdmin -- SCR013
+OpsAdmin -- SCR014
 
 SCR001 ..> UC013 : 呼び出し
 SCR002 ..> UC013 : 呼び出し
@@ -262,25 +270,25 @@ UC016 ..> ES02 : 照会
 | UC-JB-005      | サーバー配備情報を登録する         | Register Server Deployment      | 業務アプリケーションサーバーとジョブの配備情報を登録する     | AC-01        |
 | UC-JB-006      | サーバー配備情報を更新する         | Update Server Deployment        | サーバー情報やジョブ配備状況・バージョンを修正する           | AC-01        |
 | UC-JB-007      | ユーザー・権限を管理する           | Manage User Permissions         | ユーザーのロール、会社・店舗の参照権限を設定する             | AC-01        |
-| UC-JB-008      | ジョブを手動起動する               | Manually Launch Job             | 対象ジョブ、パラメータ、会社・店舗を指定して起動する         | AC-01        |
-| UC-JB-009      | APIからジョブ起動を要求する        | Launch Job via API              | 個別業務システムからAPI経由でジョブ起動を要求する            | AC-02        |
+| UC-JB-008      | ジョブを手動起動する               | Manually Launch Job             | 対象ジョブ、パラメータ、会社・店舗を指定して起動する         | AC-02        |
+| UC-JB-009      | APIからジョブ起動を要求する        | Launch Job via API              | 個別業務システムからAPI経由でジョブ起動を要求する            | AC-05        |
 | UC-JB-010      | スケジュールに従ってジョブを起動する | Launch Job by Schedule          | 設定された実行日時・条件に従ってジョブを起動する             | AC-01        |
 | UC-JB-011      | スケジュールを登録する             | Register Schedule               | 実行日時、繰り返し条件、対象ジョブ、有効期間を設定する       | AC-01        |
 | UC-JB-012      | スケジュールを変更する             | Modify Schedule                 | 既存のスケジュール設定を修正する                             | AC-01        |
-| UC-JB-013      | 実行状況を確認する                 | Check Execution Status          | 実行中・待機中・異常終了などの状態をリアルタイムで確認する   | AC-01        |
-| UC-JB-014      | 実行詳細を確認する                 | View Execution Detail           | 実行状態、実行先、パラメータ、処理件数、エラー情報を確認する | AC-01        |
-| UC-JB-015      | 実行ログ・エラー情報を確認する     | View Execution Log              | ログ、エラー内容、発生箇所、関連イベントを確認する           | AC-01        |
-| UC-JB-016      | 実行履歴を検索・参照する           | Search Execution History        | 期間・ジョブ・会社・店舗・状態などで履歴を検索・参照する     | AC-01        |
-| UC-JB-017      | APIから実行状態を照会する          | Query Execution Status via API  | 個別業務システムからAPI経由で実行状態・結果を照会する        | AC-02        |
-| UC-JB-018      | 実行中のジョブをキャンセルする     | Cancel Running Job              | 実行中のジョブにキャンセルを要求する                         | AC-01        |
-| UC-JB-019      | ジョブを再実行する                 | Re-execute Job                  | 異常終了したジョブを最初から再実行する                       | AC-01        |
-| UC-JB-020      | ジョブを途中再開する               | Resume Job from Checkpoint      | チェックポイントからジョブを再開する                         | AC-01        |
-| UC-JB-021      | 復旧操作履歴を確認する             | View Recovery History           | 再実行・再開・キャンセルの操作者・理由・日時を確認する       | AC-01        |
+| UC-JB-013      | 実行状況を確認する                 | Check Execution Status          | 実行中・待機中・異常終了などの状態をリアルタイムで確認する   | AC-02        |
+| UC-JB-014      | 実行詳細を確認する                 | View Execution Detail           | 実行状態、実行先、パラメータ、処理件数、エラー情報を確認する | AC-02        |
+| UC-JB-015      | 実行ログ・エラー情報を確認する     | View Execution Log              | ログ、エラー内容、発生箇所、関連イベントを確認する           | AC-02        |
+| UC-JB-016      | 実行履歴を検索・参照する           | Search Execution History        | 期間・ジョブ・会社・店舗・状態などで履歴を検索・参照する     | AC-02        |
+| UC-JB-017      | APIから実行状態を照会する          | Query Execution Status via API  | 個別業務システムからAPI経由で実行状態・結果を照会する        | AC-05        |
+| UC-JB-018      | 実行中のジョブをキャンセルする     | Cancel Running Job              | 実行中のジョブにキャンセルを要求する                         | AC-02        |
+| UC-JB-019      | ジョブを再実行する                 | Re-execute Job                  | 異常終了したジョブを最初から再実行する                       | AC-02        |
+| UC-JB-020      | ジョブを途中再開する               | Resume Job from Checkpoint      | チェックポイントからジョブを再開する                         | AC-02        |
+| UC-JB-021      | 復旧操作履歴を確認する             | View Recovery History           | 再実行・再開・キャンセルの操作者・理由・日時を確認する       | AC-01, AC-02        |
 | UC-JB-022      | 通知設定を管理する                 | Manage Notification Settings    | 通知条件、通知先、通知対象ジョブを設定する                   | AC-01        |
-| UC-JB-023      | 通知を確認する                     | View Notifications              | 成功・異常終了などの通知を確認する                           | AC-01        |
+| UC-JB-023      | 通知を確認する                     | View Notifications              | 成功・異常終了などの通知を確認する                           | AC-06        |
 | UC-JB-024      | 監査ログを確認する                 | View Audit Log                  | 起動、設定変更、権限変更、復旧操作などの操作履歴を確認する   | AC-01        |
-| UC-JB-025      | 会社別実行状況・履歴を参照する     | View Company Execution Status   | 自社に属するジョブの実行状況・履歴を参照する                 | AC-01        |
-| UC-JB-026      | 店舗別実行状況・履歴を参照する     | View Store Execution Status     | 権限を付与された店舗の実行状況・履歴を参照する               | AC-01        |
+| UC-JB-025      | 会社別実行状況・履歴を参照する     | View Company Execution Status   | 自社に属するジョブの実行状況・履歴を参照する                 | AC-03        |
+| UC-JB-026      | 店舗別実行状況・履歴を参照する     | View Store Execution Status     | 権限を付与された店舗の実行状況・履歴を参照する               | AC-04        |
 | UC-JB-027      | 会社・店舗を管理する               | Manage Company and Store        | 会社と店舗の登録、所属関係の管理を行う                       | AC-01        |
 
 ## 5. 画面一覧
@@ -355,6 +363,11 @@ UC016 ..> ES02 : 照会
 | INF-JB-10 | アップロードファイル         | Uploaded File               | S3/MinIO上のファイル参照情報                           | -                |
 | INF-JB-11 | 監査ログ                     | Audit Log                   | 手動起動・再実行・再開などの操作記録                   | UC-JB-024        |
 | INF-JB-12 | ジョブ実行状態               | Job Execution Status        | 待機中、実行中、成功、失敗、結果不明                   | UC-JB-013        |
+| INF-JB-13 | スケジュール定義             | Schedule Definition         | 実行日時、繰り返し条件、タイムゾーン、有効期間         | UC-JB-010, UC-JB-011, UC-JB-012        |
+| INF-JB-14 | スケジュール発火記録         | Schedule Fire Record        | スケジュールに基づく発火日時・対象ジョブの記録         | UC-JB-010        |
+| INF-JB-15 | ユーザー情報                 | User Info                   | ユーザー名、ロール、所属会社・店舗                     | UC-JB-007        |
+| INF-JB-16 | 通知履歴                     | Notification History        | 通知配信日時、宛先、配信結果                           | UC-JB-022, UC-JB-023        |
+| INF-JB-17 | 実行とファイルの関連         | Execution File Relation     | ジョブ実行と入力・出力ファイルの対応関係               | -        |
 
 ## 8. 条件一覧
 

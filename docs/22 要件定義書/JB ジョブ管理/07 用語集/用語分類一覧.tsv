@@ -1,0 +1,21 @@
+用語ID	用語名	英語名	分類	説明
+TERM-01	ジョブ	Job	基本概念	業務システムに組み込まれたバッチ処理や定期処理
+TERM-02	ジョブ定義	Job Definition	基本概念	ジョブのコード、パラメータ、実行条件、バージョンの情報
+TERM-03	ジョブ実行	Job Execution	基本概念	ジョブの実行状態・結果・履歴
+TERM-04	実行先サーバー	Execution Server	基本概念	ジョブを実行する業務アプリケーションサーバー
+TERM-05	同時実行枠	Concurrent Execution Slot	基本概念	同時に実行できるジョブの上限数
+TERM-06	再実行	Rerun	復旧操作	失敗したジョブを最初から再度実行する操作
+TERM-07	途中再開	Resume from Checkpoint	復旧操作	チェックポイントからジョブを再開する操作
+TERM-08	チェックポイント	Checkpoint	復旧操作	ジョブ実行の進捗を保存し、再開時に利用する情報
+TERM-09	冪等性	Idempotency	技術概念	同じ操作を何度実行しても結果が同じである性質
+TERM-10	監査ログ	Audit Log	監査・セキュリティ	操作履歴を記録し、追跡可能性を確保するログ
+TERM-11	実行イベント	Execution Event	基本概念	ジョブ実行中の状態遷移を記録するイベント
+TERM-12	通知設定	Notification Setting	通知機能	ジョブ実行結果に基づく通知の条件と宛先
+TERM-13	権限管理	Permission Management	監査・セキュリティ	システム・会社・店舗単位での参照・操作権限の制御
+TERM-14	配備	Deployment	基本概念	ジョブ定義をサーバーに配置する状態
+TERM-15	結果不明	Result Unknown	基本概念	起動APIタイムアウトなどで実行結果が判らない状態
+TERM-16	ビジネスルール	Business Rule	基本概念	システムの動作を制約する条件やポリシー
+TERM-17	バリエーション	Variation	基本概念	ビジネスルールを成り立たせるための変数や分類
+TERM-18	重複起動防止	Duplicate Launch Prevention	技術概念	実行IDを冪等性キーとして同じ要求による二重起動を抑止するルール
+TERM-19	実行権限チェック	Execution Permission Check	監査・セキュリティ	ジョブ実行時にユーザーの権限を確認するルール
+TERM-20	バージョン互換性	Version Compatibility	技術概念	実行時のジョブバージョンとサーバーの互換性を確認するルール
