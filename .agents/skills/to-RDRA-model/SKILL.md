@@ -1,7 +1,7 @@
 ---
 name: to-RDRA-model
 description: >
-  このSkillは、ユーザーとの対話から要求を整理し、RDRA（Relationship Driven Requirement Analysis）モデルを構築してWikiにまとめる。
+  このSkillは、ユーザーとの対話から要求を整理し、RDRA（Relationship Driven Requirement Analysis）モデルを構築してファイルにまとめる。
 
 # RDRA (Relationship Driven Requirement Analysis) Skill
 ---
@@ -413,7 +413,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 
 **完了報告**:
 
-- Wikiに出力したファイルパスまたはページURLをユーザーに報告する
+- 出力したファイルパスをユーザーに報告する
 - 実装順序の推奨と次のステップ（必要に応じてIssue作成）を提案する
 - **GitHub Issuesはこのスキルでは作成しない**。Issue作成はユーザーの判断に委ねる
 
@@ -520,8 +520,8 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
     - プロジェクトの状況に応じてダイアグラムを使い分ける
     - ダイアグラムはドキュメントとして保持するものではなく、コミュニケーションツール
 
-4. **Wiki は読み取りと出力先**:
-    - Wiki ドキュメントは要件の読み取り元であり、構築したRDRAモデルの出力先でもある
+4. **ドキュメントは読み取りと出力先**:
+    - ドキュメントは要件の読み取り元であり、構築したRDRAモデルの出力先でもある
     - 元の要件ドキュメントは変更せず、新しいRDRAモデルファイルを出力する
 
 5. **Issue は作成しない**:
