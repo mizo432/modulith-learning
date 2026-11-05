@@ -485,3 +485,4 @@ jobs:
       - name: Run Mizo432 Shared Common Small Tests
         if: steps.changes.outputs.mizo432-shared-common == 'true'
         run: ./gradlew :mizo432-shared-common:test
+

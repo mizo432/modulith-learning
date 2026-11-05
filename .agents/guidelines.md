@@ -133,18 +133,6 @@
 
 ---
 
-## エージェント向けスキル一覧
-
-| スキル          | 配置                                    | 用途                                               |
-|-----------------|-----------------------------------------|----------------------------------------------------|
-| `issue`         | `.agents/skills/issue/SKILL.md`         | Issueの作成と管理                                  |
-| `modulith-dev`  | `.agents/skills/modulith-dev/SKILL.md`  | バックエンドの実装・テスト作成・アーキテクチャ検証 |
-| `pr-review`     | `.agents/skills/pr-review/SKILL.md`     | PR のレビュー                                      |
-| `pull-request`  | `.agents/skills/pull-request/SKILL.md`  | プルリクエストの作成と管理                         |
-| `to-RDRA-model` | `.agents/skills/to-RDRA-model/SKILL.md` | RDRAモデルによる要件定義                           |
-
----
-
 ## 主な設計思想
 
 - **オニオンアーキテクチャ**: ドメイン層を中心に、インフラストラクチャ層、アプリケーション層、プレゼンテーション層を同心円状に配置

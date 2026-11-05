@@ -505,7 +505,7 @@ public void truncateTable(String tableName) {
 
 ## 13. テンプレート
 
-バッチ処理のテンプレートは、`.agents/skills/modulith-dev/templates/` に配置されています。
+バッチ処理のテンプレートは、`.agents/skills/modulith-dev/templates/` に配置されています。詳細は `modulith-dev` スキルを参照してください。
 
 | テンプレート                      | 用途                               |
 |:----------------------------------|:-----------------------------------|

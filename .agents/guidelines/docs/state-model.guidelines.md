@@ -359,8 +359,6 @@ ST-XX-004	キャンセル	Cancelled	[情報名]	処理がキャンセルされ�
 
 ## 12. 参考
 
-- ステート一覧テンプレート: `.agents/skills/to-RDRA-model/templates/ステート一覧.tsv`
-- ステートマシン図テンプレート: `.agents/skills/to-RDRA-model/templates/ステートマシン図.md`
 - ディレクトリ命名規則: `.agents/guidelines/docs/directory-name.guidelines.md`
 - RDRAモデルガイドライン: `.agents/guidelines/rdra/rdra-model.guidelines.md`
 - 日本語として読めるかチェックするルール: `.agents/guidelines/docs/japanese-reading.guidelines.md`

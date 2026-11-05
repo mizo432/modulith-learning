@@ -1,0 +1,16 @@
+情報属性一覧
+INF-JB-03	アプリケーションサーバー	リソース	業務アプリケーションサーバー情報
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	serverId	Y	String	Y	サーバーID（一意識別子）
+2	host	N	String	Y	ホスト名
+3	port	N	Integer	Y	ポート番号
+4	protocol	N	String	Y	プロトコル（HTTP/HTTPS等）
+5	serverName	N	String	Y	サーバー名
+6	environment	N	Enum	Y	環境（本番/ステージング/開発）
+7	status	N	Enum	Y	稼働状況（稼働中/停止中/メンテナンス中）
+8	healthCheckUrl	N	String	N	ヘルスチェックURL
+9	lastHealthCheckAt	N	DateTime	N	最終ヘルスチェック日時
+10	maxConcurrentJobs	N	Integer	Y	最大同時実行ジョブ数
+11	createdAt	N	DateTime	Y	作成日時
+12	updatedAt	N	DateTime	Y	更新日時

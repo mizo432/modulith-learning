@@ -1,0 +1,15 @@
+情報属性一覧
+INF-JB-01	ジョブ定義	リソース	ジョブコード、パラメータ、実行条件、バージョン
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	jobCode	Y	String	Y	ジョブコード（一意識別子）
+2	jobName	N	String	Y	ジョブ名
+3	description	N	String	N	説明
+4	parameterSpec	N	String	Y	パラメータ仕様（JSON形式）
+5	maxConcurrentExecutions	N	Integer	Y	最大同時実行数
+6	timeoutSeconds	N	Integer	Y	タイムアウト秒数
+7	retryCount	N	Integer	N	リトライ回数
+8	version	N	String	Y	バージョン番号
+9	enabled	N	Boolean	Y	有効フラグ
+10	createdAt	N	DateTime	Y	作成日時
+11	updatedAt	N	DateTime	Y	更新日時
