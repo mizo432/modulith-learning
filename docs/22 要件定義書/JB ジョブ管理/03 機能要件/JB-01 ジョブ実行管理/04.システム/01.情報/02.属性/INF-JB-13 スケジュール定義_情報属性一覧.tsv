@@ -1,0 +1,14 @@
+情報属性一覧
+INF-JB-13	スケジュール定義	リソース	実行日時、繰り返し条件、タイムゾーン、有効期間
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	scheduleId	Y	String	Y	スケジュールID（一意識別子）
+2	jobCode	N	String	Y	ジョブコード（外部キー）
+3	executionDateTime	N	DateTime	N	単発実行日時
+4	cronExpression	N	String	N	Cron式（繰り返し実行の場合）
+5	timezone	N	String	N	タイムゾーン
+6	startDate	N	Date	Y	開始日
+7	endDate	N	Date	N	終了日
+8	enabled	N	Boolean	Y	有効フラグ
+9	createdAt	N	DateTime	Y	作成日時
+10	updatedAt	N	DateTime	Y	更新日時

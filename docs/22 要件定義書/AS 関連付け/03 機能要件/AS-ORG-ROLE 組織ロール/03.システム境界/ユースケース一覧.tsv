@@ -12,3 +12,4 @@ UC-AS-ORG-010	店舗一覧を取得する	店舗の一覧を取得する（会�
 UC-AS-ORG-011	組織階層を変更する	組織の階層構造を変更する	AC-AS-01	中	BUC-AS-ORG-03	ES-AS-01	
 UC-AS-ORG-012	権限範囲を定義する	組織単位での権限範囲を定義する	AC-AS-01	中	BUC-AS-ORG-04	ES-AS-01	
 UC-AS-ORG-013	組織変更履歴を取得する	組織の変更履歴を取得する	AC-AS-01, AC-AS-02	低	BUC-AS-ORG-05	ES-AS-01	
+UC-AS-ORG-014	組織の所属従業員一覧を取得する	指定した組織・部署の所属従業員の一覧を取得する	AC-AS-01, AC-AS-03, AC-AS-04	中	BUC-AS-ORG-02	ES-AS-01	

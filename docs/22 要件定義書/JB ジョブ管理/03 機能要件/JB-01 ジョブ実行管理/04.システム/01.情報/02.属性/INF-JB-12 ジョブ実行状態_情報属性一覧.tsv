@@ -1,0 +1,7 @@
+情報属性一覧
+INF-JB-12	ジョブ実行状態	対照表	待機中、実行中、成功、失敗、結果不明
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	statusCode	Y	String	Y	状態コード（一意識別子）
+2	statusName	N	String	Y	状態名
+3	description	N	String	N	説明

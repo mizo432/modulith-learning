@@ -1,0 +1,11 @@
+情報属性一覧
+INF-JB-06	実行イベント	イベント	状態遷移・実行イベント
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	eventId	Y	String	Y	イベントID（一意識別子）
+2	executionId	N	String	Y	実行ID（外部キー）
+3	eventType	N	Enum	Y	イベントタイプ（開始/終了/状態変更/エラー/チェックポイント）
+4	previousState	N	Enum	N	遷移前の状態
+5	newState	N	Enum	Y	遷移後の状態
+6	message	N	String	N	イベントメッセージ
+7	occurredAt	N	DateTime	Y	発生日時
