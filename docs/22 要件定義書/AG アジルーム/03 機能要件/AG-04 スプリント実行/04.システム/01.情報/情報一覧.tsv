@@ -1,4 +1,5 @@
 情報一覧
+<<<<<<< HEAD
 情報ID	情報名	情報種類	説明	履歴管理要	証跡要	実現方法
 INF-SP-01	スプリント	リソース	スプリント期間、状態、チーム	Y	Y	DB
 INF-SP-02	Sprint Goal	リソース	スプリントの目的と関連項目	Y	N	DB
@@ -15,3 +16,11 @@ INF-IDB-01	Sprint Planning Snapshot	リソース	Sprint Planning完了時の計�
 INF-IDB-02	Sprint Scope Change	イベント	Sprint Backlogのスコープ変更履歴	N	N	DB
 INF-IDB-03	Task Work Log	イベント	Taskの作業実績（時間記録）	N	N	DB
 INF-IDB-04	Sprint Metrix	リソース	ダッシュボード用集計メトリクス	N	N	DB
+=======
+
+情報ID	情報名	情報種類	説明	属性	関連情報	状態モデル	バリエーション	コンテキスト
+INF-SP-01	スプリント	リソース	スプリントの計画情報	id, name, startDate, endDate, goal, status	スプリントバックログ(1対多), 進捗(1対多)	スプリント	スプリント状態	スプリント管理
+INF-SP-02	スプリントバックログ	リソース	スプリントで実行するタスク	id, sprintId, title, assignee, status, dependency	スプリント(多対1)	タスク	-	スプリント管理
+INF-SP-03	進捗	リソース	スプリントの進捗情報	id, sprintId, date, completedPoints, totalPoints	スプリント(多対1)	-	-	スプリント管理
+INF-SP-04	バーンダウンチャート	リソース	進捗の可視化データ	id, sprintId, date, remainingPoints	スプリント(多対1)	-	-	スプリント管理
+>>>>>>> f2db1b234 (docs(rdra): 全12事業領域19業務領域のRDRAフェーズ1〜7および要件組み立てフェーズを完了 (#428))

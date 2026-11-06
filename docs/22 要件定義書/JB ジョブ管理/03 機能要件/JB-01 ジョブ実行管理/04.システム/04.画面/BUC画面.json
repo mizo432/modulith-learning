@@ -1,0 +1,165 @@
+{
+  "businesses": [
+    {
+      "business_name": "ジョブ実行管理",
+      "BUCs": [
+        {
+          "buc_name": "ジョブ定義",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "ジョブ定義",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "ジョブ実行監視",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "ジョブ実行監視",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "障害復旧",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "障害復旧",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
