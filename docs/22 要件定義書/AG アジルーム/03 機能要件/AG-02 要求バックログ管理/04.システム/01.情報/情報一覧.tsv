@@ -1,23 +1,6 @@
 情報一覧
-情報ID	情報名	情報種類	説明	履歴管理要	実現方法
-INF-BL-01	バックログ項目	リソース	Epic、Feature、Story、欠陥などの項目	Y	DB
-INF-BL-02	受入条件	リソース	期待される振る舞いや境界条件	Y	DB
-INF-BL-03	フィードバック	リソース	利用者からの意見・評価	Y	DB
-INF-BL-04	コメント	リソース	項目上の質問・回答・議論	Y	DB
-INF-BL-05	意思決定	リソース	決定内容、根拠、決定者	Y	DB
-INF-BL-06	バックログ階層	対応表	Product Goal、Epic、Feature、Story間の階層関係	N	DB
-INF-BL-07	項目関連付け	対応表	要求間の重複・関連関係	N	DB
-INF-BL-08	項目とテスト	対応表	バックログ項目とテストケースの関連	N	DB
-INF-BL-09	項目種別	対照表	Epic、Feature、Story、Task、欠陥	N	DB and enum
-INF-BL-10	優先度	対照表	項目の優先度区分	N	DB and enum
-INF-BL-11	状態	対照表	項目のワークフロー状態	N	DB and enum
-INF-BL-12	課題	リソース	業務上の困りごとや繰り返し発生する問題	Y	DB
-INF-BL-13	Story Map	リソース	ユーザーストーリーマップの基本情報・状態・バージョン	Y	DB
-INF-BL-14	Story Map Activity	リソース	Story Map上のユーザーの大きな活動	Y	DB
-INF-BL-15	Story Map Task	リソース	Activityを構成する具体的なユーザー行動	Y	DB
-INF-BL-16	Story Map Story	対応表	Story MapとUser Storyの関連・配置・順序	N	DB
-INF-BL-17	Story Map Release Slice	リソース	Story Map上のリリース単位のスライス	Y	DB
-INF-BL-18	Release Slice Story	対応表	Release SliceとUser Storyの関連	N	DB
-INF-BL-19	Story Map Persona	対応表	Story MapとPersonaの関連	N	DB
-INF-BL-20	Story Map Comment	リソース	Story Map上のコメント・議論	Y	DB
-INF-BL-21	Story Map 変更履歴	イベント	Story Mapの変更内容・変更者・変更日時	N	DB
+
+情報ID	情報名	情報種類	説明	属性	関連情報	状態モデル	バリエーション	コンテキスト
+INF-BL-01	バックログ項目	リソース	バックログの詳細情報	id, title, description, type, priority, status, assignee, createdDate, updatedDate	ストーリーポイント(1対多), ラベル(1対多)	バックログ項目	バックログ項目タイプ	バックログ管理
+INF-BL-02	ストーリーポイント	リソース	見積もりポイント	id, backlogItemId, points, estimator, estimatedDate	バックログ項目(多対1)	-	-	バックログ管理
+INF-BL-03	ラベル	リソース	バックログの分類ラベル	id, name, color, description	バックログ項目(多対多)	-	-	バックログ管理

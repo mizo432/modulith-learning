@@ -1,0 +1,5 @@
+バリエーション一覧
+
+バリエーション	値	説明	コンテキスト
+PersonRoleタイプ	従業員	従業員Role	Person管理
+PersonRoleタイプ	メンバー	メンバーRole	Person管理

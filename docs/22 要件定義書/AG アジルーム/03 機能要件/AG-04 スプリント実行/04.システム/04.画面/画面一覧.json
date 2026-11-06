@@ -1,0 +1,58 @@
+{
+  "screens": [
+    {
+      "screenId": "SCR-SP-001",
+      "screenName": "スプリント一覧画面",
+      "description": "スプリントの一覧を表示・検索・フィルタリングする画面",
+      "fields": [
+        {"name": "id", "type": "Long", "label": "ID", "required": true},
+        {"name": "name", "type": "String", "label": "名前", "required": true},
+        {"name": "startDate", "type": "Date", "label": "開始日", "required": true},
+        {"name": "endDate", "type": "Date", "label": "終了日", "required": true},
+        {"name": "status", "type": "Enum", "label": "状態", "required": true}
+      ],
+      "dummyData": [
+        {"id": 1, "name": "Sprint 1", "startDate": "2024-01-01", "endDate": "2024-01-14", "status": "完了"},
+        {"id": 2, "name": "Sprint 2", "startDate": "2024-01-15", "endDate": "2024-01-28", "status": "実行中"},
+        {"id": 3, "name": "Sprint 3", "startDate": "2024-01-29", "endDate": "2024-02-11", "status": "計画"}
+      ],
+      "operations": ["表示", "検索", "フィルタ", "ソート"]
+    },
+    {
+      "screenId": "SCR-SP-002",
+      "screenName": "スプリント詳細画面",
+      "description": "スプリントの詳細情報を表示・編集する画面",
+      "fields": [
+        {"name": "id", "type": "Long", "label": "ID", "required": true},
+        {"name": "name", "type": "String", "label": "名前", "required": true},
+        {"name": "goal", "type": "String", "label": "目標", "required": false},
+        {"name": "startDate", "type": "Date", "label": "開始日", "required": true},
+        {"name": "endDate", "type": "Date", "label": "終了日", "required": true},
+        {"name": "status", "type": "Enum", "label": "状態", "required": true}
+      ],
+      "dummyData": [
+        {"id": 1, "name": "Sprint 1", "goal": "認証機能の実装", "startDate": "2024-01-01", "endDate": "2024-01-14", "status": "完了"},
+        {"id": 2, "name": "Sprint 2", "goal": "バックログ管理機能", "startDate": "2024-01-15", "endDate": "2024-01-28", "status": "実行中"},
+        {"id": 3, "name": "Sprint 3", "goal": "", "startDate": "2024-01-29", "endDate": "2024-02-11", "status": "計画"}
+      ],
+      "operations": ["表示", "編集", "更新"]
+    },
+    {
+      "screenId": "SCR-SP-003",
+      "screenName": "カンバンボード画面",
+      "description": "タスクの状態をカンバンボードで可視化する画面",
+      "fields": [
+        {"name": "id", "type": "Long", "label": "ID", "required": true},
+        {"name": "title", "type": "String", "label": "タイトル", "required": true},
+        {"name": "assignee", "type": "String", "label": "担当者", "required": false},
+        {"name": "status", "type": "Enum", "label": "状態", "required": true}
+      ],
+      "dummyData": [
+        {"id": 1, "title": "ログイン機能", "assignee": "田中", "status": "完了"},
+        {"id": 2, "title": "パスワードリセット", "assignee": "佐藤", "status": "作業中"},
+        {"id": 3, "title": "2FA実装", "assignee": "", "status": "未着手"}
+      ],
+      "operations": ["表示", "ドラッグ&ドロップ", "更新"]
+    }
+  ]
+}

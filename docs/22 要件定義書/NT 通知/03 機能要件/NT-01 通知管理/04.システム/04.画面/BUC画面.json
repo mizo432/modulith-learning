@@ -1,0 +1,113 @@
+{
+  "businesses": [
+    {
+      "business_name": "通知管理",
+      "BUCs": [
+        {
+          "buc_name": "通知送信",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "通知送信",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "通知管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "通知管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
