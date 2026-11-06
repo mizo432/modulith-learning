@@ -1,0 +1,241 @@
+{
+  "screens": [
+    {
+      "screen_name": "SCR-01001",
+      "fields": [
+        {
+          "field_name": "名前",
+          "type": "string",
+          "tooltip": "名前"
+        },
+        {
+          "field_name": "説明",
+          "type": "string",
+          "tooltip": "説明"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "データベース一覧",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "データベースデータ1"
+            },
+            {
+              "field_name": "説明",
+              "value": "データベースデータ1"
+            },
+            {
+              "field_name": "作成日",
+              "value": "データベースデータ1"
+            }
+          ]
+        },
+        {
+          "display_name": "データベース詳細",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "データベースデータ2"
+            },
+            {
+              "field_name": "説明",
+              "value": "データベースデータ2"
+            },
+            {
+              "field_name": "作成日",
+              "value": "データベースデータ2"
+            }
+          ]
+        },
+        {
+          "display_name": "データベース照会",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "データベースデータ3"
+            },
+            {
+              "field_name": "説明",
+              "value": "データベースデータ3"
+            },
+            {
+              "field_name": "作成日",
+              "value": "データベースデータ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録"
+    },
+    {
+      "screen_name": "SCR-01002",
+      "fields": [
+        {
+          "field_name": "名前",
+          "type": "string",
+          "tooltip": "名前"
+        },
+        {
+          "field_name": "データベース",
+          "type": "string",
+          "tooltip": "データベース"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "スキーマ一覧",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "スキーマデータ1"
+            },
+            {
+              "field_name": "データベース",
+              "value": "スキーマデータ1"
+            },
+            {
+              "field_name": "作成日",
+              "value": "スキーマデータ1"
+            }
+          ]
+        },
+        {
+          "display_name": "スキーマ詳細",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "スキーマデータ2"
+            },
+            {
+              "field_name": "データベース",
+              "value": "スキーマデータ2"
+            },
+            {
+              "field_name": "作成日",
+              "value": "スキーマデータ2"
+            }
+          ]
+        },
+        {
+          "display_name": "スキーマ照会",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "スキーマデータ3"
+            },
+            {
+              "field_name": "データベース",
+              "value": "スキーマデータ3"
+            },
+            {
+              "field_name": "作成日",
+              "value": "スキーマデータ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録"
+    },
+    {
+      "screen_name": "SCR-01003",
+      "fields": [
+        {
+          "field_name": "名前",
+          "type": "string",
+          "tooltip": "名前"
+        },
+        {
+          "field_name": "スキーマ",
+          "type": "string",
+          "tooltip": "スキーマ"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "テーブル一覧",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "テーブルデータ1"
+            },
+            {
+              "field_name": "スキーマ",
+              "value": "テーブルデータ1"
+            },
+            {
+              "field_name": "作成日",
+              "value": "テーブルデータ1"
+            }
+          ]
+        },
+        {
+          "display_name": "テーブル詳細",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "テーブルデータ2"
+            },
+            {
+              "field_name": "スキーマ",
+              "value": "テーブルデータ2"
+            },
+            {
+              "field_name": "作成日",
+              "value": "テーブルデータ2"
+            }
+          ]
+        },
+        {
+          "display_name": "テーブル照会",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "テーブルデータ3"
+            },
+            {
+              "field_name": "スキーマ",
+              "value": "テーブルデータ3"
+            },
+            {
+              "field_name": "作成日",
+              "value": "テーブルデータ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録"
+    }
+  ]
+}
