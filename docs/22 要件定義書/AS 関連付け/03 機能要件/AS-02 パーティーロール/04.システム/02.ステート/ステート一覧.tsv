@@ -1,0 +1,6 @@
+ステート一覧
+
+状態モデル	状態	遷移先状態	遷移UC	説明	コンテキスト
+PartyRole	start	有効	-	PartyRoleの初期状態	Role管理
+PartyRole	有効	無効	UC-AS-008	PartyRoleを無効にする	Role管理
+PartyRole	無効	end	-	-	Role管理

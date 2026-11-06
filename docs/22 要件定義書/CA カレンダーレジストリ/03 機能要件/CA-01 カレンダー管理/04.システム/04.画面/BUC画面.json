@@ -1,0 +1,47 @@
+{
+  "businesses": [
+    {
+      "business_name": "カレンダー管理",
+      "BUCs": [
+        {
+          "buc_name": "カレンダー管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "カレンダー管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

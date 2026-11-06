@@ -1,0 +1,43 @@
+{
+  "businesses": [
+    {
+      "business_name": "金融機関管理",
+      "BUCs": [
+        {
+          "buc_name": "金融機関管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "金融機関管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

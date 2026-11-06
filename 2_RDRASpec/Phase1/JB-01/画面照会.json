@@ -1,0 +1,446 @@
+{
+  "businesses": [
+    {
+      "business_name": "ジョブ実行管理",
+      "BUCs": [
+        {
+          "buc_name": "ジョブ定義",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "ジョブ定義",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "ジョブ実行監視",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "ジョブ実行監視",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "障害復旧",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "障害復旧",
+          "actors": [
+            {
+              "actor_name": "運用管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "開発者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "業務システム",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actorGroups": [
+    {
+      "group_name": "運用者",
+      "actors": [
+        {
+          "actor_name": "運用管理者",
+          "screen_names": [
+            "SCR-01001",
+            "SCR-01002"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "開発者",
+      "actors": [
+        {
+          "actor_name": "開発者",
+          "screen_names": [
+            "SCR-01001",
+            "SCR-01002"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "システム",
+      "actors": [
+        {
+          "actor_name": "業務システム",
+          "screen_names": [
+            "SCR-01001",
+            "SCR-01002"
+          ]
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "screen_name": "SCR-01001",
+      "fields": [
+        {
+          "field_name": "コード",
+          "type": "string",
+          "tooltip": "コード"
+        },
+        {
+          "field_name": "パラメータ",
+          "type": "string",
+          "tooltip": "パラメータ"
+        },
+        {
+          "field_name": "実行条件",
+          "type": "string",
+          "tooltip": "実行条件"
+        },
+        {
+          "field_name": "バージョン",
+          "type": "string",
+          "tooltip": "バージョン"
+        },
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "更新日",
+          "type": "string",
+          "tooltip": "更新日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(ジョブ定義)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "ジョブ定義一覧",
+          "dummy_data": [
+            {
+              "field_name": "コード",
+              "value": "ジョブ定義データ1"
+            },
+            {
+              "field_name": "パラメータ",
+              "value": "ジョブ定義データ1"
+            },
+            {
+              "field_name": "実行条件",
+              "value": "ジョブ定義データ1"
+            }
+          ]
+        },
+        {
+          "display_name": "ジョブ定義詳細",
+          "dummy_data": [
+            {
+              "field_name": "コード",
+              "value": "ジョブ定義データ2"
+            },
+            {
+              "field_name": "パラメータ",
+              "value": "ジョブ定義データ2"
+            },
+            {
+              "field_name": "実行条件",
+              "value": "ジョブ定義データ2"
+            }
+          ]
+        },
+        {
+          "display_name": "ジョブ定義照会",
+          "dummy_data": [
+            {
+              "field_name": "コード",
+              "value": "ジョブ定義データ3"
+            },
+            {
+              "field_name": "パラメータ",
+              "value": "ジョブ定義データ3"
+            },
+            {
+              "field_name": "実行条件",
+              "value": "ジョブ定義データ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録",
+      "data_access": [
+        {
+          "entity": "JOB_DEFINITION",
+          "CRUD": [
+            "C",
+            "R",
+            "U",
+            "D"
+          ],
+          "isMain": true
+        },
+        {
+          "entity": "JOB_EXECUTION",
+          "CRUD": [
+            "R"
+          ],
+          "isMain": false
+        }
+      ]
+    },
+    {
+      "screen_name": "SCR-01002",
+      "fields": [
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "開始時刻",
+          "type": "string",
+          "tooltip": "開始時刻"
+        },
+        {
+          "field_name": "終了時刻",
+          "type": "string",
+          "tooltip": "終了時刻"
+        },
+        {
+          "field_name": "結果",
+          "type": "string",
+          "tooltip": "結果"
+        },
+        {
+          "field_name": "エラー",
+          "type": "string",
+          "tooltip": "エラー"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(ジョブ実行)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "ジョブ実行一覧",
+          "dummy_data": [
+            {
+              "field_name": "状態",
+              "value": "ジョブ実行データ1"
+            },
+            {
+              "field_name": "開始時刻",
+              "value": "ジョブ実行データ1"
+            },
+            {
+              "field_name": "終了時刻",
+              "value": "ジョブ実行データ1"
+            }
+          ]
+        },
+        {
+          "display_name": "ジョブ実行詳細",
+          "dummy_data": [
+            {
+              "field_name": "状態",
+              "value": "ジョブ実行データ2"
+            },
+            {
+              "field_name": "開始時刻",
+              "value": "ジョブ実行データ2"
+            },
+            {
+              "field_name": "終了時刻",
+              "value": "ジョブ実行データ2"
+            }
+          ]
+        },
+        {
+          "display_name": "ジョブ実行照会",
+          "dummy_data": [
+            {
+              "field_name": "状態",
+              "value": "ジョブ実行データ3"
+            },
+            {
+              "field_name": "開始時刻",
+              "value": "ジョブ実行データ3"
+            },
+            {
+              "field_name": "終了時刻",
+              "value": "ジョブ実行データ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録",
+      "data_access": [
+        {
+          "entity": "JOB_DEFINITION",
+          "CRUD": [
+            "C",
+            "R",
+            "U",
+            "D"
+          ],
+          "isMain": true
+        },
+        {
+          "entity": "JOB_EXECUTION",
+          "CRUD": [
+            "R"
+          ],
+          "isMain": false
+        }
+      ]
+    }
+  ]
+}
