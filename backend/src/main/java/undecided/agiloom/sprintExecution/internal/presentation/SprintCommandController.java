@@ -52,9 +52,19 @@ public class SprintCommandController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<SprintResponse> changeStatus(@PathVariable @NotNull String id,
                                        @RequestBody @NotNull SprintStatus status) {
-        SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
+        SnowflakeId snowflakeId = parseSnowflakeId(id);
         updateSprintCommandService.changeStatus(snowflakeId, status);
         Sprint sprint = sprintQueryService.findById(snowflakeId).orElseThrow();
         return ResponseEntity.ok(sprintQueryController.toResponse(sprint));
+    }
+
+    // IDをSnowflakeIdに変換し、不正な形式の場合はIllegalArgumentExceptionをスローする
+    private SnowflakeId parseSnowflakeId(String id) {
+        try {
+            long value = Long.parseLong(id);
+            return SnowflakeId.of(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Sprint IDは数値である必要があります: " + id, e);
+        }
     }
 }

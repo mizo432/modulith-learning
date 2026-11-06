@@ -165,6 +165,26 @@ class SprintTest {
 
       assertThat(sprint.getEndDate()).isEqualTo(originalEndDate);
     }
+
+    @Test
+    @DisplayName("タイトルがnullの場合、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsNull() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update(null, "Goal", null, "Notes"))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("title must not be null");
+    }
+
+    @Test
+    @DisplayName("ゴールがnullの場合、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenGoalIsNull() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update("Title", null, null, "Notes"))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("goal must not be null");
+    }
   }
 
   @Nested

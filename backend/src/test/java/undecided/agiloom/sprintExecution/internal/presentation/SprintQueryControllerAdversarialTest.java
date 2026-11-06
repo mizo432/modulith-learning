@@ -63,38 +63,40 @@ class SprintQueryControllerAdversarialTest {
   class GetSprintsAdversarialTest {
 
     @Test
-    @DisplayName("sizeに負の値を指定した場合")
-    void shouldHandleNegativeSize() {
-      // Arrange & Act & Assert
-      // 負のsizeが渡された場合の動作を確認
+    @DisplayName("sizeに負の値を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectNegativeSize() {
+      // Act & Assert - @Validated + @Min(1)により、Spring MVC層ではConstraintViolationExceptionで拒否される
+      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローする
       assertThatThrownBy(() -> controller.getSprints(0, -1))
           .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("sizeに0を指定した場合、IllegalArgumentExceptionをスローすること")
-    void shouldHandleZeroSize() {
-      // Act & Assert - Spring DataのPageRequestはsize=0を許容しない
+    void shouldRejectZeroSize() {
+      // Act & Assert - @Validated + @Min(1)により、Spring MVC層ではConstraintViolationExceptionで拒否される
+      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローする
       assertThatThrownBy(() -> controller.getSprints(0, 0))
           .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("sizeにInteger.MAX_VALUEを指定した場合")
+    @DisplayName("sizeにInteger.MAX_VALUEを指定した場合、受理されること")
     void shouldHandleMaxSize() {
       // Arrange
       when(sprintQueryService.findAll(any(Pageable.class))).thenReturn(List.of());
 
-      // Act & Assert - 巨大なsizeが受理される可能性がある（DoSリスク）
-      // 上限チェックが欠如している
+      // Act & Assert - @Max(100)制約により、Spring MVC層ではConstraintViolationExceptionで拒否される
+      // ユニットテストではSpring MVC層を通らないため、受理される
       assertThatCode(() -> controller.getSprints(0, Integer.MAX_VALUE))
           .doesNotThrowAnyException();
     }
 
     @Test
     @DisplayName("pageに負の値を指定した場合、IllegalArgumentExceptionをスローすること")
-    void shouldHandleNegativePage() {
-      // Act & Assert - Spring DataのPageRequestは負のpage番号を許容しない
+    void shouldRejectNegativePage() {
+      // Act & Assert - @Validated + @Min(0)により、Spring MVC層ではConstraintViolationExceptionで拒否される
+      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローする
       assertThatThrownBy(() -> controller.getSprints(-1, 20))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("Page index must not be less than zero");
@@ -112,12 +114,13 @@ class SprintQueryControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("pageとsizeの両方に极大値を指定した場合")
+    @DisplayName("pageとsizeの両方に极大値を指定した場合、受理されること")
     void shouldHandleMaxPageAndSize() {
       // Arrange
       when(sprintQueryService.findAll(any(Pageable.class))).thenReturn(List.of());
 
-      // Act & Assert - DoS攻撃の可能性
+      // Act & Assert - @Max(100)制約により、Spring MVC層ではConstraintViolationExceptionで拒否される
+      // ユニットテストではSpring MVC層を通らないため、受理される
       assertThatCode(() -> controller.getSprints(Integer.MAX_VALUE, Integer.MAX_VALUE))
           .doesNotThrowAnyException();
     }
@@ -128,19 +131,21 @@ class SprintQueryControllerAdversarialTest {
   class GetSprintAdversarialTest {
 
     @Test
-    @DisplayName("IDに数値以外の文字列を指定した場合、NumberFormatExceptionをスローすること")
-    void shouldThrowNumberFormatExceptionForNonNumericId() {
-      // Act & Assert
+    @DisplayName("IDに数値以外の文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowIllegalArgumentExceptionForNonNumericId() {
+      // Act & Assert - IDパース時にNumberFormatExceptionをIllegalArgumentExceptionに変換する
       assertThatThrownBy(() -> controller.getSprint("abc"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDに空文字列を指定した場合、NumberFormatExceptionをスローすること")
-    void shouldThrowNumberFormatExceptionForEmptyId() {
+    @DisplayName("IDに空文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowIllegalArgumentExceptionForEmptyId() {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint(""))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
@@ -153,67 +158,75 @@ class SprintQueryControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("IDにLong.MAX_VALUEより大きな値を指定した場合")
-    void shouldThrowNumberFormatExceptionForOverflowId() {
+    @DisplayName("IDにLong.MAX_VALUEより大きな値を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowIllegalArgumentExceptionForOverflowId() {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint("99999999999999999999"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにSQLインジェクション文字列を指定した場合")
-    void shouldHandleSqlInjectionInId() {
-      // Act & Assert
+    @DisplayName("IDにSQLインジェクション文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectSqlInjectionInId() {
+      // Act & Assert - SQLインジェクション文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("1; DROP TABLE sprint;"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにXSS文字列を指定した場合")
-    void shouldHandleXssInId() {
-      // Act & Assert
+    @DisplayName("IDにXSS文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectXssInId() {
+      // Act & Assert - XSS文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("<script>alert(1)</script>"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにパストラバーサル文字列を指定した場合")
-    void shouldHandlePathTraversalInId() {
-      // Act & Assert
+    @DisplayName("IDにパストラバーサル文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectPathTraversalInId() {
+      // Act & Assert - パストラバーサル文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("../../etc/passwd"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにコマンドインジェクション文字列を指定した場合")
-    void shouldHandleCommandInjectionInId() {
-      // Act & Assert
+    @DisplayName("IDにコマンドインジェクション文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectCommandInjectionInId() {
+      // Act & Assert - コマンドインジェクション文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("1 | rm -rf /"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにスペースを含む文字列を指定した場合")
-    void shouldThrowNumberFormatExceptionForIdWithSpaces() {
-      // Act & Assert
+    @DisplayName("IDにスペースを含む文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectIdWithSpaces() {
+      // Act & Assert - スペースを含むIDは数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint(" 123 "))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDに浮動小数点数を指定した場合")
-    void shouldThrowNumberFormatExceptionForFloatingPointId() {
-      // Act & Assert
+    @DisplayName("IDに浮動小数点数を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectFloatingPointId() {
+      // Act & Assert - 浮動小数点数は整数としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("123.456"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにNullバイトを含む文字列を指定した場合")
-    void shouldHandleNullByteInId() {
-      // Act & Assert
+    @DisplayName("IDにNullバイトを含む文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    void shouldRejectNullByteInId() {
+      // Act & Assert - Nullバイトを含む文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("123\0456"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("数値である必要があります");
     }
 
     @Test

@@ -1,5 +1,6 @@
 package undecided.jobmanagement.jobdefinition.internal;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class JobDefinitionController {
   private final RegisterJobDefinitionCommand registerJobDefinitionCommand;
 
   @PostMapping
-  public ResponseEntity<Void> registerJobDefinition(@RequestBody JobDefinitionDTO jobDefinitionDTO) {
+  public ResponseEntity<Void> registerJobDefinition(@Valid @RequestBody JobDefinitionDTO jobDefinitionDTO) {
     registerJobDefinitionCommand.register(jobDefinitionDTO);
     return ResponseEntity.created(URI.create("/api/job-definitions/" + jobDefinitionDTO.getJobCode())).build();
   }
