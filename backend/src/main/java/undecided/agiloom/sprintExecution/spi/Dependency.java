@@ -11,20 +11,21 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Table(name = "sprint_dependencies")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Dependency {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private SnowflakeId id;
 
     @Column(name = "source_item_id", nullable = false)

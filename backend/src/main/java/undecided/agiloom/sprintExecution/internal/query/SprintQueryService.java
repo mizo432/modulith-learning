@@ -13,7 +13,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
 @Transactional(readOnly = true)
-public class SprintQueryService {
+public class SprintQueryService implements SprintQueryServiceInterface {
 
     private final SprintRepository sprintRepository;
 

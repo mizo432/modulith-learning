@@ -10,7 +10,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
 @Transactional
-public class CreateSprintCommandService {
+public class CreateSprintCommandService implements CreateSprintCommandServiceInterface {
 
     private final SprintRepository sprintRepository;
 

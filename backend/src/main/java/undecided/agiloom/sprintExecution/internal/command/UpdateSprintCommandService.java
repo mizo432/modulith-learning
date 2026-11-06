@@ -11,7 +11,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
 @Transactional
-public class UpdateSprintCommandService {
+public class UpdateSprintCommandService implements UpdateSprintCommandServiceInterface {
 
     private final SprintRepository sprintRepository;
 

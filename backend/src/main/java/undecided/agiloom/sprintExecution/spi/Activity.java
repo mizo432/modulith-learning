@@ -12,19 +12,20 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Table(name = "activities")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Activity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private SnowflakeId id;
 
     @Column(name = "sprint_id", nullable = false)

@@ -13,8 +13,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -22,13 +23,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Table(name = "sprint_goals", uniqueConstraints = {
     @UniqueConstraint(name = "uk_sprint_goal_sprint", columnNames = {"sprintId"})
 })
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SprintGoal {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private SnowflakeId id;
 
     @Column(name = "sprint_id", nullable = false)

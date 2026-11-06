@@ -57,50 +57,41 @@ public class ExceptionLoggingFilter implements Filter {
     try {
       filterChain.doFilter(servletRequest, servletResponse);
     } catch (IOException e) {
-      this.logIOException(e, servletRequest, servletResponse);
+      this.logIOException(e);
       throw e;
     } catch (ServletException e) {
-      this.logServletException(e, servletRequest, servletResponse);
+      this.logServletException(e);
       throw e;
     } catch (RuntimeException e) {
-      this.logRuntimeException(e, servletRequest, servletResponse);
+      this.logRuntimeException(e);
       throw e;
     }
   }
 
   /**
-   * IOExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
+   * IOExceptionをログとして記録します。
    *
    * @param ioException 記録するIOExceptionオブジェクト
-   * @param request エラーログのコンテキストとなる ServletRequest
-   * @param response エラーログのコンテキストとなる ServletResponse
    */
-  protected void logIOException(
-      IOException ioException, ServletRequest request, ServletResponse response) {
+  protected void logIOException(IOException ioException) {
     this.exceptionLogger.error(ioException);
   }
 
   /**
-   * ServletExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
+   * ServletExceptionをログとして記録します。
    *
    * @param servletException 記録するServletExceptionオブジェクト
-   * @param request エラーログのコンテキストとなるServletRequest
-   * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logServletException(
-      ServletException servletException, ServletRequest request, ServletResponse response) {
+  protected void logServletException(ServletException servletException) {
     this.exceptionLogger.error(servletException);
   }
 
   /**
-   * RuntimeExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
+   * RuntimeExceptionをログとして記録します。
    *
    * @param runtimeException 記録するRuntimeExceptionオブジェクト
-   * @param request エラーログのコンテキストとなるServletRequest
-   * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logRuntimeException(
-      RuntimeException runtimeException, ServletRequest request, ServletResponse response) {
+  protected void logRuntimeException(RuntimeException runtimeException) {
     this.exceptionLogger.error(runtimeException);
   }
 
