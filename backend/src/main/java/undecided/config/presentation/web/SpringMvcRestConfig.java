@@ -71,6 +71,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    *
    * @param registry インターセプターを登録するためのInterceptorRegistryオブジェクト
    */
+  @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor());
   }
@@ -123,7 +124,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @return TomcatReactiveWebServerFactoryのカスタマイズを行うためのWebServerFactoryCustomizerオブジェクト
    */
   @Bean
-  public WebServerFactoryCustomizer<TomcatReactiveWebServerFactory> tomCatCustomizeer() {
+  public WebServerFactoryCustomizer<TomcatReactiveWebServerFactory> tomcatCustomizer() {
     return factory ->
         factory.addConnectorCustomizers(connector ->
             connector

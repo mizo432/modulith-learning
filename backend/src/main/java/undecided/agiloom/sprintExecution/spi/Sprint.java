@@ -16,8 +16,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -25,13 +26,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Table(name = "sprints", uniqueConstraints = {
     @UniqueConstraint(name = "uk_sprint_product_number", columnNames = {"productId", "sprintNumber"})
 })
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Sprint {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private SnowflakeId id;
 
     @Column(name = "product_id", nullable = false)
@@ -81,16 +82,25 @@ public class Sprint {
     private LocalDateTime deletedAt;
 
     public void start() {
+        if (this.status != SprintStatus.PLANNED) {
+            throw new IllegalStateException("Sprint can only be started from PLANNED status, current status: " + this.status);
+        }
         this.status = SprintStatus.ACTIVE;
         this.updatedAt = LocalDateTime.now();
     }
 
     public void complete() {
+        if (this.status != SprintStatus.ACTIVE) {
+            throw new IllegalStateException("Sprint can only be completed from ACTIVE status, current status: " + this.status);
+        }
         this.status = SprintStatus.COMPLETED;
         this.updatedAt = LocalDateTime.now();
     }
 
     public void cancel() {
+        if (this.status != SprintStatus.ACTIVE && this.status != SprintStatus.PLANNED) {
+            throw new IllegalStateException("Sprint can only be cancelled from ACTIVE or PLANNED status, current status: " + this.status);
+        }
         this.status = SprintStatus.CANCELLED;
         this.updatedAt = LocalDateTime.now();
     }

@@ -7,16 +7,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import undecided.agiloom.sprintExecution.spi.Sprint;
-import undecided.agiloom.sprintExecution.internal.query.SprintQueryService;
+import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
 @RequestMapping("/api/v1/sprints")
 public class SprintQueryController {
 
-    private final SprintQueryService sprintQueryService;
+    private final SprintQueryServiceInterface sprintQueryService;
 
-    public SprintQueryController(SprintQueryService sprintQueryService) {
+    public SprintQueryController(SprintQueryServiceInterface sprintQueryService) {
         this.sprintQueryService = sprintQueryService;
     }
 

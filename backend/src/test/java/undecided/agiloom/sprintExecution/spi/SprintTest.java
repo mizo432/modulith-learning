@@ -1,6 +1,7 @@
 package undecided.agiloom.sprintExecution.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -76,14 +77,25 @@ class SprintTest {
   class CompleteMethodTest {
 
     @Test
-    @DisplayName("ステータスがCOMPLETEDに更新される")
+    @DisplayName("ACTIVE状態からCOMPLETEDに更新される")
     void shouldUpdateStatusToCompleted() {
       Sprint sprint = createSprint();
+      sprint.start();
 
       sprint.complete();
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.COMPLETED);
       assertThat(sprint.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("PLANNED状態からcompleteするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenCompleteFromPlanned() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.complete())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("PLANNED");
     }
   }
 
@@ -92,7 +104,7 @@ class SprintTest {
   class CancelMethodTest {
 
     @Test
-    @DisplayName("ステータスがCANCELLEDに更新される")
+    @DisplayName("PLANNED状態からCANCELLEDに更新される")
     void shouldUpdateStatusToCancelled() {
       Sprint sprint = createSprint();
 
@@ -100,6 +112,18 @@ class SprintTest {
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
       assertThat(sprint.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("COMPLETED状態からcancelするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenCancelFromCompleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.complete();
+
+      assertThatThrownBy(() -> sprint.cancel())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("COMPLETED");
     }
   }
 
@@ -175,6 +199,39 @@ class SprintTest {
 
       sprint.cancel();
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
+    }
+
+    @Test
+    @DisplayName("PLANNEDからCANCELLEDへ遷移できる")
+    void shouldTransitionFromPlannedToCancelled() {
+      Sprint sprint = createSprint();
+
+      sprint.cancel();
+      assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
+    }
+
+    @Test
+    @DisplayName("COMPLETED状態からstartするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenStartFromCompleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.complete();
+
+      assertThatThrownBy(() -> sprint.start())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("COMPLETED");
+    }
+
+    @Test
+    @DisplayName("COMPLETED状態からcompleteするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenCompleteFromCompleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.complete();
+
+      assertThatThrownBy(() -> sprint.complete())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("COMPLETED");
     }
   }
 }
