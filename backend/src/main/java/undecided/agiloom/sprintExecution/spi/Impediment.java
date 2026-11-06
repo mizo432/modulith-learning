@@ -81,6 +81,12 @@ public class Impediment {
     }
 
     public void update(@NonNull String title, @NonNull String description, String impact, UUID assigneeId) {
+        if (title == null) {
+            throw new IllegalArgumentException("title must not be null");
+        }
+        if (description == null) {
+            throw new IllegalArgumentException("description must not be null");
+        }
         this.title = title;
         this.description = description;
         this.impact = impact;

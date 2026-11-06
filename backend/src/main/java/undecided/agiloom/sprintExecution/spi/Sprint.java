@@ -106,6 +106,12 @@ public class Sprint {
     }
 
     public void update(@NonNull String title, @NonNull String goal, LocalDate endDate, String notes) {
+        if (title == null) {
+            throw new IllegalArgumentException("title must not be null");
+        }
+        if (goal == null) {
+            throw new IllegalArgumentException("goal must not be null");
+        }
         this.title = title;
         this.goal = goal;
         if (endDate != null) {

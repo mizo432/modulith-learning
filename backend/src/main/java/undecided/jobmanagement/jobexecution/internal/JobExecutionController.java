@@ -1,5 +1,6 @@
 package undecided.jobmanagement.jobexecution.internal;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class JobExecutionController {
   private final StartJobCommand startJobCommand;
 
   @PostMapping
-  public ResponseEntity<Void> startJob(@RequestBody JobExecutionDTO jobExecutionDTO) {
+  public ResponseEntity<Void> startJob(@Valid @RequestBody JobExecutionDTO jobExecutionDTO) {
     startJobCommand.startJob(jobExecutionDTO);
     return ResponseEntity.created(URI.create("/api/job-executions/" + jobExecutionDTO.getExecutionId())).build();
   }
