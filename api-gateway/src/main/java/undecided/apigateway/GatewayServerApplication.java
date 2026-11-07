@@ -9,6 +9,7 @@ import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFuncti
 import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.host;
 import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.path;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 import undecided.apigateway.config.ratelimit.KeyResolverConfig;
 import undecided.apigateway.config.ratelimit.RateLimitProperties;
+import undecided.apigateway.config.ratelimit.RateLimitResponseFilter;
 
 /**
  * GatewayServerApplicationクラスは、Spring Bootベースのゲートウェイサーバーアプリケーションを表します。
@@ -33,11 +35,15 @@ public class GatewayServerApplication {
 
   private final RateLimitProperties rateLimitProperties;
   private final java.util.function.Function<ServerRequest, String> ipKeyResolver;
+  private final RateLimitResponseFilter rateLimitResponseFilter;
 
   public GatewayServerApplication(
-      RateLimitProperties rateLimitProperties, KeyResolverConfig keyResolverConfig) {
+      RateLimitProperties rateLimitProperties,
+      KeyResolverConfig keyResolverConfig,
+      ObjectMapper objectMapper) {
     this.rateLimitProperties = rateLimitProperties;
     this.ipKeyResolver = keyResolverConfig.ipKeyResolver();
+    this.rateLimitResponseFilter = new RateLimitResponseFilter(objectMapper);
   }
 
   /**
@@ -116,6 +122,9 @@ public class GatewayServerApplication {
    * 補充トークン数の両方を兼ねており、独立したバースト容量の設定はサポートされていません。
    * そのため、{@link RateLimitProperties#burstCapacity}などのバースト容量プロパティは使用されません。
    *
+   * <p>レートリミット超過時は、{@link RateLimitResponseFilter}によって詳細設計書 7.2節で定義された
+   * JSON形式の429レスポンスが返されます。
+   *
    * <p>以下のルートはレートリミットの対象外です:
    * <ul>
    *   <li>/do/databases/** - データベース操作エンドポイント</li>
@@ -136,6 +145,7 @@ public class GatewayServerApplication {
             .setCapacity(rateLimitProperties.getCapacity())
             .setPeriod(period)
             .setKeyResolver(ipKeyResolver)))
+        .filter(rateLimitResponseFilter)
         .build()
         .and(
             route("api-write-rate-limited")
@@ -145,6 +155,7 @@ public class GatewayServerApplication {
                     .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
+                .filter(rateLimitResponseFilter)
                 .build())
         .and(
             route("api-put-rate-limited")
@@ -154,6 +165,7 @@ public class GatewayServerApplication {
                     .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
+                .filter(rateLimitResponseFilter)
                 .build())
         .and(
             route("api-patch-rate-limited")
@@ -163,6 +175,7 @@ public class GatewayServerApplication {
                     .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
+                .filter(rateLimitResponseFilter)
                 .build())
         .and(
             route("api-delete-rate-limited")
@@ -172,6 +185,7 @@ public class GatewayServerApplication {
                     .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
+                .filter(rateLimitResponseFilter)
                 .build())
         .and(
             route("do-databases")
