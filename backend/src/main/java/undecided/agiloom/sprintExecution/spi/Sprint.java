@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -106,12 +108,8 @@ public class Sprint {
     }
 
     public void update(@NonNull String title, @NonNull String goal, LocalDate endDate, String notes) {
-        if (title == null) {
-            throw new IllegalArgumentException("title must not be null");
-        }
-        if (goal == null) {
-            throw new IllegalArgumentException("goal must not be null");
-        }
+        checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
+        checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
         this.title = title;
         this.goal = goal;
         if (endDate != null) {

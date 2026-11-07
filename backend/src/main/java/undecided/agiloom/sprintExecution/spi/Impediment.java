@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -81,12 +83,8 @@ public class Impediment {
     }
 
     public void update(@NonNull String title, @NonNull String description, String impact, UUID assigneeId) {
-        if (title == null) {
-            throw new IllegalArgumentException("title must not be null");
-        }
-        if (description == null) {
-            throw new IllegalArgumentException("description must not be null");
-        }
+        checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
+        checkNotNull(description, () -> new IllegalArgumentException("description must not be null"));
         this.title = title;
         this.description = description;
         this.impact = impact;

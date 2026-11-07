@@ -56,29 +56,6 @@ class JobDefinitionControllerAdversarialTest {
   class RegisterJobDefinitionAdversarialTest {
 
     @Test
-    @DisplayName("jobCodeがNullの場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectNullJobCode() {
-      // Arrange
-      JobDefinitionDTO dto = createValidDto();
-      dto.setJobCode(null);
-
-      // Act & Assert - @NotBlank制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの状態を確認する
-      assertThat(dto.getJobCode()).isNull();
-    }
-
-    @Test
-    @DisplayName("jobCodeが空文字列の場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectEmptyJobCode() {
-      // Arrange
-      JobDefinitionDTO dto = createValidDto();
-      dto.setJobCode("");
-
-      // Act & Assert - @NotBlank制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getJobCode()).isEmpty();
-    }
-
-    @Test
     @DisplayName("jobCodeにSQLインジェクション文字列を含む場合、URI.createでIllegalArgumentExceptionをスローすること")
     void shouldRejectSqlInjectionInJobCode() {
       // Arrange
@@ -109,17 +86,6 @@ class JobDefinitionControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("jobCodeに非常に長い文字列を指定した場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectVeryLongJobCode() {
-      // Arrange
-      JobDefinitionDTO dto = createValidDto();
-      dto.setJobCode("A".repeat(10000));
-
-      // Act & Assert - @Size(max=100)制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getJobCode().length()).isGreaterThan(100);
-    }
-
-    @Test
     @DisplayName("versionがNullの場合、受理されること（オプションフィールド）")
     void shouldAcceptNullVersion() {
       // Arrange
@@ -130,30 +96,6 @@ class JobDefinitionControllerAdversarialTest {
       // Act & Assert - versionはオプションフィールドであるためNullが許容される
       assertThatCode(() -> controller.registerJobDefinition(dto))
           .doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("maxConcurrentExecutionsに負の値を指定した場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectNegativeMaxConcurrentExecutions() {
-      // Arrange
-      JobDefinitionDTO dto = createValidDto();
-      dto.setMaxConcurrentExecutions(-1);
-
-      // Act & Assert - @Min(1)制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの制約状態を確認する
-      assertThat(dto.getMaxConcurrentExecutions()).isLessThan(1);
-    }
-
-    @Test
-    @DisplayName("timeoutSecondsに負の値を指定した場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectNegativeTimeoutSeconds() {
-      // Arrange
-      JobDefinitionDTO dto = createValidDto();
-      dto.setTimeoutSeconds(-1);
-
-      // Act & Assert - @Min(1)制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの制約状態を確認する
-      assertThat(dto.getTimeoutSeconds()).isLessThan(1);
     }
 
     @Test
@@ -180,20 +122,6 @@ class JobDefinitionControllerAdversarialTest {
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
           .doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("全フィールドがNullの場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectAllNullFields() {
-      // Arrange
-      JobDefinitionDTO dto = new JobDefinitionDTO();
-      // 全フィールドNullのまま
-
-      // Act & Assert - @NotBlank/@NotNull制約により、Spring MVC層でバリデーションエラーとなる
-      // jobCodeは@NotBlank、maxConcurrentExecutionsとtimeoutSecondsは@NotNull
-      assertThat(dto.getJobCode()).isNull();
-      assertThat(dto.getMaxConcurrentExecutions()).isNull();
-      assertThat(dto.getTimeoutSeconds()).isNull();
     }
 
     @Test

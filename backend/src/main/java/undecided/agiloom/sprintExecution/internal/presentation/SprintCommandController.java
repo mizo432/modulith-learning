@@ -51,7 +51,7 @@ public class SprintCommandController {
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<SprintResponse> changeStatus(@PathVariable @NotNull String id,
-                                       @RequestBody @NotNull SprintStatus status) {
+                                       @Valid @RequestBody @NotNull SprintStatus status) {
         SnowflakeId snowflakeId = parseSnowflakeId(id);
         updateSprintCommandService.changeStatus(snowflakeId, status);
         Sprint sprint = sprintQueryService.findById(snowflakeId).orElseThrow();

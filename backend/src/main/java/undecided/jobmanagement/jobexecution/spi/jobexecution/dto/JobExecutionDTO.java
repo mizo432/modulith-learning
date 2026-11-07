@@ -14,6 +14,7 @@ public class JobExecutionDTO {
 
   @NotBlank(message = "executionIdは必須です")
   @Size(max = 100, message = "executionIdは100文字以内で指定してください")
+  @Pattern(regexp = "^[a-zA-Z0-9_\\-\\.]+$", message = "executionIdは英数字、アンダースコア、ハイフン、ドットのみ使用できます")
   private String executionId;
 
   @NotBlank(message = "jobCodeは必須です")
