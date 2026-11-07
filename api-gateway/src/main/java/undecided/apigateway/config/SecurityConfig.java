@@ -65,6 +65,9 @@ public class SecurityConfig {
                     // Swagger UI は公開
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                     .permitAll()
+                    // 認証関連エンドポイントは公開（ログイン/トークン更新など）
+                    .requestMatchers("/api/auth/**")
+                    .permitAll()
                     // 管理者用APIはROLE_ADMINのみアクセス可能
                     .requestMatchers("/api/admin/**")
                     .hasRole("ADMIN")

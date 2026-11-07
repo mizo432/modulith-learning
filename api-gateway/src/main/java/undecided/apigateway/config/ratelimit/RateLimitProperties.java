@@ -37,6 +37,11 @@ public class RateLimitProperties {
    * <p>バケットが保持できるトークンの最大数を表します。capacityより大きく設定することで、
    * 短時間のバーストリクエストを許容できます。
    *
+   * <p>NOTE: Spring Cloud Gateway WebMVCのBucket4jフィルタでは、{@code setCapacity}が
+   * バースト容量と補充トークン数の両方を兼ねており、独立したバースト容量の設定はサポートされていません。
+   * このプロパティは、将来的にWebFlux版のフィルタに移行した場合や、カスタム実装で使用する目的で
+   * 残しています。
+   *
    * <p>デフォルト: 200
    */
   private int burstCapacity = 200;
@@ -55,7 +60,10 @@ public class RateLimitProperties {
 
   /**
    * 認証関連エンドポイントのバースト容量
-   * デフォルト: 10
+   *
+   * <p>NOTE: WebMVCのBucket4jフィルタでは独立したバースト容量の設定がサポートされていません。
+   *
+   * <p>デフォルト: 10
    */
   private int authBurstCapacity = 10;
 
@@ -67,7 +75,10 @@ public class RateLimitProperties {
 
   /**
    * 書き込み操作のバースト容量
-   * デフォルト: 60
+   *
+   * <p>NOTE: WebMVCのBucket4jフィルタでは独立したバースト容量の設定がサポートされていません。
+   *
+   * <p>デフォルト: 60
    */
   private int writeBurstCapacity = 60;
 

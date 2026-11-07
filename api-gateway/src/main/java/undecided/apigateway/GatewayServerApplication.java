@@ -112,6 +112,10 @@ public class GatewayServerApplication {
    *   <li>POST/PUT/PATCH/DELETEリクエスト: 1分あたり30回</li>
    * </ul>
    *
+   * <p>Spring Cloud Gateway WebMVCのBucket4jフィルタでは、{@code setCapacity}がバケットの最大容量と
+   * 補充トークン数の両方を兼ねており、独立したバースト容量の設定はサポートされていません。
+   * そのため、{@link RateLimitProperties#burstCapacity}などのバースト容量プロパティは使用されません。
+   *
    * <p>以下のルートはレートリミットの対象外です:
    * <ul>
    *   <li>/do/databases/** - データベース操作エンドポイント</li>
