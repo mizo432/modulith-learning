@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.access.AccessDeniedException;
 
 @Tag("small")
 @DisplayName("JwtAccessDeniedHandlerのテスト")
@@ -38,9 +39,10 @@ class JwtAccessDeniedHandlerTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/admin/test");
       when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+      var accessDeniedException = mock(AccessDeniedException.class);
 
       // Act
-      handler.handle(request, response, null);
+      handler.handle(request, response, accessDeniedException);
 
       // Assert
       verify(response).setStatus(403);
@@ -54,9 +56,10 @@ class JwtAccessDeniedHandlerTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/admin/test");
       when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+      var accessDeniedException = mock(AccessDeniedException.class);
 
       // Act
-      handler.handle(request, response, null);
+      handler.handle(request, response, accessDeniedException);
 
       // Assert
       verify(response).setContentType("application/json");
@@ -70,9 +73,10 @@ class JwtAccessDeniedHandlerTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/admin/test");
       when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+      var accessDeniedException = mock(AccessDeniedException.class);
 
       // Act
-      handler.handle(request, response, null);
+      handler.handle(request, response, accessDeniedException);
 
       // Assert
       verify(response).setCharacterEncoding("UTF-8");
@@ -87,9 +91,10 @@ class JwtAccessDeniedHandlerTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/admin/test");
       when(response.getWriter()).thenReturn(new PrintWriter(writer));
+      var accessDeniedException = mock(AccessDeniedException.class);
 
       // Act
-      handler.handle(request, response, null);
+      handler.handle(request, response, accessDeniedException);
 
       // Assert
       String body = writer.toString();

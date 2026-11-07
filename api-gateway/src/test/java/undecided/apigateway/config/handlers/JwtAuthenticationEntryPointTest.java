@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.AuthenticationException;
 
 @Tag("small")
 @DisplayName("JwtAuthenticationEntryPointのテスト")
@@ -38,9 +39,10 @@ class JwtAuthenticationEntryPointTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/test");
       when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+      var authException = mock(AuthenticationException.class);
 
       // Act
-      entryPoint.commence(request, response, null);
+      entryPoint.commence(request, response, authException);
 
       // Assert
       verify(response).setStatus(401);
@@ -54,9 +56,10 @@ class JwtAuthenticationEntryPointTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/test");
       when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+      var authException = mock(AuthenticationException.class);
 
       // Act
-      entryPoint.commence(request, response, null);
+      entryPoint.commence(request, response, authException);
 
       // Assert
       verify(response).setContentType("application/json");
@@ -70,9 +73,10 @@ class JwtAuthenticationEntryPointTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/test");
       when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+      var authException = mock(AuthenticationException.class);
 
       // Act
-      entryPoint.commence(request, response, null);
+      entryPoint.commence(request, response, authException);
 
       // Assert
       verify(response).setCharacterEncoding("UTF-8");
@@ -87,9 +91,10 @@ class JwtAuthenticationEntryPointTest {
       var response = mock(HttpServletResponse.class);
       when(request.getRequestURI()).thenReturn("/api/test");
       when(response.getWriter()).thenReturn(new PrintWriter(writer));
+      var authException = mock(AuthenticationException.class);
 
       // Act
-      entryPoint.commence(request, response, null);
+      entryPoint.commence(request, response, authException);
 
       // Assert
       String body = writer.toString();
