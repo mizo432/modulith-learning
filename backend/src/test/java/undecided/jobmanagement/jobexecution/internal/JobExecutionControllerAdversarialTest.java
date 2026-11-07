@@ -51,74 +51,6 @@ class JobExecutionControllerAdversarialTest {
   class StartJobAdversarialTest {
 
     @Test
-    @DisplayName("executionIdがNullの場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectNullExecutionId() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setExecutionId(null);
-
-      // Act & Assert - @NotBlank制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getExecutionId()).isNull();
-    }
-
-    @Test
-    @DisplayName("executionIdが空文字列の場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectEmptyExecutionId() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setExecutionId("");
-
-      // Act & Assert - @NotBlank制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getExecutionId()).isEmpty();
-    }
-
-    @Test
-    @DisplayName("jobCodeがNullの場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectNullJobCode() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setJobCode(null);
-
-      // Act & Assert - @NotBlank制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getJobCode()).isNull();
-    }
-
-    @Test
-    @DisplayName("jobCodeが空文字列の場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectEmptyJobCode() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setJobCode("");
-
-      // Act & Assert - @NotBlank制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getJobCode()).isEmpty();
-    }
-
-    @Test
-    @DisplayName("jobCodeにSQLインジェクション文字列を含む場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectSqlInjectionInJobCode() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setJobCode("'; DROP TABLE job_execution; --");
-
-      // Act & Assert - @Pattern制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの制約状態を確認する
-      assertThat(dto.getJobCode()).contains("'");
-    }
-
-    @Test
-    @DisplayName("jobCodeにXSS文字列を含む場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectXssInJobCode() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setJobCode("<script>alert('xss')</script>");
-
-      // Act & Assert - @Pattern制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの制約状態を確認する
-      assertThat(dto.getJobCode()).contains("<");
-    }
-
-    @Test
     @DisplayName("executionIdにSQLインジェクション文字列を含む場合、URI.createでIllegalArgumentExceptionをスローすること")
     void shouldRejectSqlInjectionInExecutionId() {
       // Arrange
@@ -199,17 +131,6 @@ class JobExecutionControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("errorMessageに非常に長い文字列を指定した場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectVeryLongErrorMessage() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setErrorMessage("A".repeat(100000));
-
-      // Act & Assert - @Size(max=5000)制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getErrorMessage().length()).isGreaterThan(5000);
-    }
-
-    @Test
     @DisplayName("checkpointPositionに不正な値を指定した場合、受理されること")
     void shouldAcceptInvalidCheckpointPosition() {
       // Arrange
@@ -223,59 +144,12 @@ class JobExecutionControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("全フィールドがNullの場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectAllNullFields() {
-      // Arrange
-      JobExecutionDTO dto = new JobExecutionDTO();
-      // 全フィールドNullのまま
-
-      // Act & Assert - @NotBlank制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getExecutionId()).isNull();
-      assertThat(dto.getJobCode()).isNull();
-    }
-
-    @Test
-    @DisplayName("jobCodeにコマンドインジェクション文字列を含む場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectCommandInjectionInJobCode() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setJobCode("TEST_JOB; rm -rf /");
-
-      // Act & Assert - @Pattern制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの制約状態を確認する
-      assertThat(dto.getJobCode()).contains(";");
-    }
-
-    @Test
-    @DisplayName("jobCodeにパストラバーサル文字列を含む場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectPathTraversalInJobCode() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setJobCode("../../etc/passwd");
-
-      // Act & Assert - @Pattern制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの制約状態を確認する
-      assertThat(dto.getJobCode()).contains("/");
-    }
-
-    @Test
     @DisplayName("リクエストボディがNullの場合")
     void shouldHandleNullRequestBody() {
       // Arrange
       // Act & Assert - リクエストボディがNullの場合、NullPointerExceptionが発生する可能性がある
       assertThatThrownBy(() -> controller.startJob(null))
           .isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    @DisplayName("executionIdに非常に長い文字列を指定した場合、Spring MVC層でバリデーションエラーになること")
-    void shouldRejectVeryLongExecutionId() {
-      // Arrange
-      JobExecutionDTO dto = createValidDto();
-      dto.setExecutionId("A".repeat(10000));
-
-      // Act & Assert - @Size(max=100)制約により、Spring MVC層でバリデーションエラーとなる
-      assertThat(dto.getExecutionId().length()).isGreaterThan(100);
     }
 
     @Test

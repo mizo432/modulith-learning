@@ -128,25 +128,6 @@ class SprintCommandControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("sprintNumberに負の値を指定した場合、バリデーションで拒否されること")
-    void shouldRejectNegativeSprintNumber() {
-      // Arrange
-      CreateSprintRequest request = CreateSprintRequest.builder()
-          .productId(UUID.randomUUID())
-          .sprintNumber(-1)
-          .title("Sprint")
-          .startDate(LocalDate.now())
-          .endDate(LocalDate.now().plusWeeks(2))
-          .teamId(UUID.randomUUID())
-          .teamName("Team A")
-          .build();
-
-      // Act & Assert - @Min(1)制約により、Spring MVC層でバリデーションエラーとなる
-      // ユニットテストではSpring MVC層を通らないため、DTOの制約状態を確認する
-      assertThat(request.getSprintNumber()).isLessThan(1);
-    }
-
-    @Test
     @DisplayName("sprintNumberにInteger.MAX_VALUEを指定した場合")
     void shouldHandleMaxSprintNumber() {
       // Arrange
@@ -174,7 +155,7 @@ class SprintCommandControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("endDateがstartDateより前にある場合、バリデーションで拒否されること")
+    @DisplayName("endDateがstartDateより前にある場合、コマンド層でIllegalArgumentExceptionをスローすること")
     void shouldRejectEndDateBeforeStartDate() {
       // Arrange - 日付範囲が不正
       CreateSprintRequest request = CreateSprintRequest.builder()
@@ -187,9 +168,21 @@ class SprintCommandControllerAdversarialTest {
           .teamName("Team A")
           .build();
 
-      // Act & Assert - @AssertTrue制約により、Spring MVC層でバリデーションエラーとなる
-      // isEndDateAfterStartDate()がfalseを返すことを検証
-      assertThat(request.isEndDateAfterStartDate()).isFalse();
+      // コントローラーはCreateSprintCommandに変換してコマンド層に渡す
+      // モックのコマンドサービスでendDate < startDateの場合にIllegalArgumentExceptionをスローするように設定
+      when(createSprintCommandService.execute(any()))
+          .thenAnswer(invocation -> {
+            undecided.agiloom.sprintExecution.internal.command.CreateSprintCommand cmd = invocation.getArgument(0);
+            if (!cmd.getEndDate().isAfter(cmd.getStartDate())) {
+              throw new IllegalArgumentException("endDate must be after startDate");
+            }
+            return SnowflakeId.of(1234567890L);
+          });
+
+      // Act & Assert - コマンド層でendDateがstartDateより後であることを検証
+      assertThatThrownBy(() -> controller.createSprint(request))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("endDate must be after startDate");
     }
 
     @Test

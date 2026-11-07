@@ -19,6 +19,9 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
     }
 
     public SnowflakeId execute(@NonNull CreateSprintCommand command) {
+        if (!command.getEndDate().isAfter(command.getStartDate())) {
+            throw new IllegalArgumentException("endDate must be after startDate");
+        }
         Sprint sprint = Sprint.builder()
                 .productId(command.getProductId())
                 .sprintNumber(command.getSprintNumber())
