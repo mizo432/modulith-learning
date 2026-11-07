@@ -235,6 +235,53 @@
         }
       ],
       "operation": "照会"
+    },
+    {
+      "screen_name": "SCR-NT-001",
+      "fields": [
+        {"field_name": "title", "type": "string", "tooltip": "通知のタイトル"},
+        {"field_name": "content", "type": "string", "tooltip": "通知の本文"},
+        {"field_name": "notification_type", "type": "enum", "tooltip": "通知タイプ(MENTION, ASSIGNEE_CHANGE, DUE_DATE, AWAITING_DECISION, APPROVAL_RESULT, JOB_EXECUTION_RESULT, SYSTEM, CUSTOM)"},
+        {"field_name": "source_domain", "type": "string", "tooltip": "送信元事業領域"},
+        {"field_name": "is_read", "type": "boolean", "tooltip": "既読フラグ"},
+        {"field_name": "created_at", "type": "string", "tooltip": "作成日時"}
+      ],
+      "screen_datas": [
+        {
+          "display_name": "通知一覧",
+          "dummy_data": [
+            {"field_name": "title", "value": "メンション通知"},
+            {"field_name": "content", "value": "あなたはメンションされました"},
+            {"field_name": "notification_type", "value": "MENTION"},
+            {"field_name": "source_domain", "value": "agiloom"},
+            {"field_name": "is_read", "value": false},
+            {"field_name": "created_at", "value": "2026-11-08T05:00:00"}
+          ]
+        },
+        {
+          "display_name": "通知詳細",
+          "dummy_data": [
+            {"field_name": "title", "value": "担当者変更通知"},
+            {"field_name": "content", "value": "担当者が変更されました"},
+            {"field_name": "notification_type", "value": "ASSIGNEE_CHANGE"},
+            {"field_name": "source_domain", "value": "agiloom"},
+            {"field_name": "is_read", "value": false},
+            {"field_name": "created_at", "value": "2026-11-08T05:30:00"}
+          ]
+        },
+        {
+          "display_name": "未読通知一覧",
+          "dummy_data": [
+            {"field_name": "title", "value": "期限通知"},
+            {"field_name": "content", "value": "期限が近づいています"},
+            {"field_name": "notification_type", "value": "DUE_DATE"},
+            {"field_name": "source_domain", "value": "agiloom"},
+            {"field_name": "is_read", "value": false},
+            {"field_name": "created_at", "value": "2026-11-08T06:00:00"}
+          ]
+        }
+      ],
+      "operation": "照会"
     }
   ]
 }

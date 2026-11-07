@@ -34,6 +34,15 @@
           "screen_names": ["SCR-002", "SCR-003", "SCR-004", "SCR-005", "SCR-006"]
         }
       ]
+    },
+    {
+      "group_name": "連携システム",
+      "actors": [
+        {
+          "actor_name": "業務システム",
+          "screen_names": []
+        }
+      ]
     }
   ]
 }

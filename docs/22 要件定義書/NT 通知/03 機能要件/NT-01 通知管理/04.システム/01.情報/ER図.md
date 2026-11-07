@@ -6,30 +6,22 @@
 left to right direction
 skinparam linetype ortho
 
-entity "NOTIFICATION" as NOTIFICATION {
-  * notification_id : INTEGER <<not null>>
+entity "Notification" as NOTIFICATION {
+  * id : LONG <<not null>>
   --
-  チャネル : VARCHAR
-  宛先 : VARCHAR
-  件名 : VARCHAR
-  本文 : VARCHAR
-  状態 : VARCHAR
-  作成日 : VARCHAR
+  recipient_id : UUID
+  source_id : UUID
+  source_domain : STRING
+  title : STRING
+  content : STRING
+  type : ENUM
+  is_read : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+  deleted_at : TIMESTAMP
 }
 
-entity "NOTIFICATION_CHANNEL" as NOTIFICATION_CHANNEL {
-  * channel_id : INTEGER <<not null>>
-  --
-  タイプ : VARCHAR
-  設定 : VARCHAR
-  状態 : VARCHAR
-  作成日 : VARCHAR
-  更新日 : VARCHAR
-}
-
-NOTIFICATION ||--o{ NOTIFICATION_CHANNEL
 @enduml
-
 
 ## 日本語版
 
@@ -38,33 +30,30 @@ left to right direction
 skinparam linetype ortho
 
 entity "通知" as NOTIFICATION {
-  * notification_id : INTEGER <<not null>>
+  * 通知ID : LONG <<not null>>
   --
-  チャネル : VARCHAR
-  宛先 : VARCHAR
-  件名 : VARCHAR
+  受信者ID : UUID
+  送信元ID : UUID
+  送信元事業領域 : STRING
+  タイトル : STRING
+  本文 : STRING
+  通知タイプ : ENUM
+  既読フラグ : BOOLEAN
+  作成日時 : TIMESTAMP
+  更新日時 : TIMESTAMP
+  削除日時 : TIMESTAMP
 }
 
-entity "通知チャネル" as NOTIFICATION_CHANNEL {
-  * channel_id : INTEGER <<not null>>
-  --
-  タイプ : VARCHAR
-  設定 : VARCHAR
-  状態 : VARCHAR
-}
-
-NOTIFICATION ||--o{ NOTIFICATION_CHANNEL
 @enduml
 
 ## エンティティ一覧
 
 | エンティティ名 | 日本語名 | 分類 |
 |---------------|---------|------|
-| NOTIFICATION | 通知 | E |
-| NOTIFICATION_CHANNEL | 通知チャネル | R |
+| Notification | 通知 | E |
 
 ## 関係一覧
 
 | 親エンティティ | 子エンティティ | 関係 |
 |---------------|---------------|------|
-| NOTIFICATION | NOTIFICATION_CHANNEL | 1対多 |
+| 従業員 | 通知 | 1対多 |
