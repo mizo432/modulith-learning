@@ -271,4 +271,5 @@ public class ChouAza {
   @Size(max = 256)
   @Column(name = "remarks", comment = "Remarks", length = 256)
   private String remarks;
+
 }
