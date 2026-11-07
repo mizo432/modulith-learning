@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
+import org.springframework.web.cors.CorsConfiguration;
 import undecided.apigateway.config.handlers.JwtAccessDeniedHandler;
 import undecided.apigateway.config.handlers.JwtAuthenticationEntryPoint;
 
@@ -91,7 +92,7 @@ public class SecurityConfig {
             cors ->
                 cors.configurationSource(
                     request -> {
-                      var config = new org.springframework.web.cors.CorsConfiguration();
+                      var config = new CorsConfiguration();
                       config.setAllowedOrigins(corsProperties.getAllowedOrigins());
                       config.setAllowedMethods(corsProperties.getAllowedMethods());
                       config.setAllowedHeaders(corsProperties.getAllowedHeaders());
