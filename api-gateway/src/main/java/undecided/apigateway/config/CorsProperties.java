@@ -1,6 +1,8 @@
 package undecided.apigateway.config;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Component;
  * 異なるオリジンを設定してください。
  */
 @Component
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "cors")
 public class CorsProperties {
 
@@ -35,56 +39,4 @@ public class CorsProperties {
 
   /** プリフライトリクエストのキャッシュ時間（秒） */
   private long maxAge = 3600L;
-
-  @NonNull
-  public List<String> getAllowedOrigins() {
-    return allowedOrigins;
-  }
-
-  public void setAllowedOrigins(@NonNull List<String> allowedOrigins) {
-    this.allowedOrigins = allowedOrigins;
-  }
-
-  @NonNull
-  public List<String> getAllowedMethods() {
-    return allowedMethods;
-  }
-
-  public void setAllowedMethods(@NonNull List<String> allowedMethods) {
-    this.allowedMethods = allowedMethods;
-  }
-
-  @NonNull
-  public List<String> getAllowedHeaders() {
-    return allowedHeaders;
-  }
-
-  public void setAllowedHeaders(@NonNull List<String> allowedHeaders) {
-    this.allowedHeaders = allowedHeaders;
-  }
-
-  @NonNull
-  public List<String> getExposedHeaders() {
-    return exposedHeaders;
-  }
-
-  public void setExposedHeaders(@NonNull List<String> exposedHeaders) {
-    this.exposedHeaders = exposedHeaders;
-  }
-
-  public boolean isAllowCredentials() {
-    return allowCredentials;
-  }
-
-  public void setAllowCredentials(boolean allowCredentials) {
-    this.allowCredentials = allowCredentials;
-  }
-
-  public long getMaxAge() {
-    return maxAge;
-  }
-
-  public void setMaxAge(long maxAge) {
-    this.maxAge = maxAge;
-  }
 }
