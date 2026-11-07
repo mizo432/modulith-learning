@@ -16,14 +16,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Table(name = "impediments")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -82,7 +81,7 @@ public class Impediment {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(@NonNull String title, @NonNull String description, String impact, UUID assigneeId) {
+    public void update(@NonNull String title, @NonNull String description, @Nullable String impact, @Nullable UUID assigneeId) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(description, () -> new IllegalArgumentException("description must not be null"));
         this.title = title;
