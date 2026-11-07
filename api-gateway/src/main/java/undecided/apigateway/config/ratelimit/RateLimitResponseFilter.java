@@ -42,9 +42,12 @@ public class RateLimitResponseFilter implements HandlerFilterFunction<ServerResp
    * retryAfter、timestamp、pathは実行時に動的に設定されるため、
    * この定数には含めません。実際にはObjectMapperによるシリアライズが成功するため、
    * このフォールバックに到達することは極めて稀です。
+   *
+   * <p>このフォールバックは {@link #objectMapper} のシリアライズが失敗した場合にのみ使用されます。
+   * {@link RateLimitExceededError} の構造が変更された場合、この定数も更新してください。
    */
   private static final String FALLBACK_JSON =
-      "{\"error\":{\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"リクエストの送信頻度が高すぎます\"}}";
+      "{\"error\":{\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"リクエストの送信頻度が高すぎます\",\"retryAfter\":60,\"timestamp\":\"1970-01-01T00:00:00Z\",\"path\":\"\"}}";
 
   private final @NonNull ObjectMapper objectMapper;
   private final int defaultRetryAfterSeconds;

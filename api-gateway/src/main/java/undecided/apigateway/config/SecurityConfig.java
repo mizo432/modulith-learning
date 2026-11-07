@@ -7,8 +7,6 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +17,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
+import undecided.apigateway.config.handlers.JwtAccessDeniedHandler;
+import undecided.apigateway.config.handlers.JwtAuthenticationEntryPoint;
 
 /**
  * APIゲートウェイのセキュリティ設定
@@ -34,6 +34,12 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+  private final @NonNull CorsProperties corsProperties;
+
+  public SecurityConfig(@NonNull CorsProperties corsProperties) {
+    this.corsProperties = corsProperties;
+  }
 
   /**
    * JWTのrolesクレームからGrantedAuthorityリストを抽出します。
@@ -86,15 +92,12 @@ public class SecurityConfig {
                 cors.configurationSource(
                     request -> {
                       var config = new org.springframework.web.cors.CorsConfiguration();
-                      config.setAllowedOrigins(
-                          List.of(
-                              "http://localhost:3000", "https://agiloom.example.com"));
-                      config.setAllowedMethods(
-                          List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-                      config.setAllowedHeaders(List.of("*"));
-                      config.setExposedHeaders(List.of("Authorization"));
-                      config.setAllowCredentials(true);
-                      config.setMaxAge(3600L);
+                      config.setAllowedOrigins(corsProperties.getAllowedOrigins());
+                      config.setAllowedMethods(corsProperties.getAllowedMethods());
+                      config.setAllowedHeaders(corsProperties.getAllowedHeaders());
+                      config.setExposedHeaders(corsProperties.getExposedHeaders());
+                      config.setAllowCredentials(corsProperties.isAllowCredentials());
+                      config.setMaxAge(corsProperties.getMaxAge());
                       return config;
                     }))
         .headers(
@@ -135,24 +138,8 @@ public class SecurityConfig {
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
         .exceptionHandling(
             ex -> ex
-                .authenticationEntryPoint(
-                    (request, response, authException) -> {
-                      response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                      response.setContentType(
-                          MediaType.APPLICATION_JSON_VALUE);
-                      response.setCharacterEncoding("UTF-8");
-                      response.getWriter().write(
-                          "{\"error\":{\"status\":401,\"code\":\"UNAUTHORIZED\",\"message\":\"認証が必要です\"}}");
-                    })
-                .accessDeniedHandler(
-                    (request, response, accessDeniedException) -> {
-                      response.setStatus(HttpStatus.FORBIDDEN.value());
-                      response.setContentType(
-                          MediaType.APPLICATION_JSON_VALUE);
-                      response.setCharacterEncoding("UTF-8");
-                      response.getWriter().write(
-                          "{\"error\":{\"status\":403,\"code\":\"FORBIDDEN\",\"message\":\"アクセスが拒否されました\"}}");
-                    }));
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                .accessDeniedHandler(new JwtAccessDeniedHandler()));
 
     return http.build();
   }

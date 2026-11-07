@@ -184,5 +184,44 @@ class RateLimitPropertiesTest {
           .as("0のauthRefreshCapacityはIllegalArgumentExceptionをスローすること")
           .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("負の値をburstCapacityに設定した場合、IllegalArgumentExceptionがスローされること")
+    @SuppressWarnings("deprecation")
+    void shouldRejectNegativeBurstCapacity() {
+      // Arrange
+      var properties = new RateLimitProperties();
+
+      // Act & Assert
+      assertThatThrownBy(() -> properties.setBurstCapacity(-1))
+          .as("負のburstCapacityはIllegalArgumentExceptionをスローすること")
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("負の値をauthBurstCapacityに設定した場合、IllegalArgumentExceptionがスローされること")
+    @SuppressWarnings("deprecation")
+    void shouldRejectNegativeAuthBurstCapacity() {
+      // Arrange
+      var properties = new RateLimitProperties();
+
+      // Act & Assert
+      assertThatThrownBy(() -> properties.setAuthBurstCapacity(-1))
+          .as("負のauthBurstCapacityはIllegalArgumentExceptionをスローすること")
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("負の値をwriteBurstCapacityに設定した場合、IllegalArgumentExceptionがスローされること")
+    @SuppressWarnings("deprecation")
+    void shouldRejectNegativeWriteBurstCapacity() {
+      // Arrange
+      var properties = new RateLimitProperties();
+
+      // Act & Assert
+      assertThatThrownBy(() -> properties.setWriteBurstCapacity(-1))
+          .as("負のwriteBurstCapacityはIllegalArgumentExceptionをスローすること")
+          .isInstanceOf(IllegalArgumentException.class);
+    }
   }
 }
