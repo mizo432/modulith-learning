@@ -22,8 +22,11 @@ import org.springframework.http.ResponseEntity;
 import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
+import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
+import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -33,6 +36,7 @@ class SprintCommandControllerTest {
 
   @Mock private CreateSprintCommandServiceInterface createSprintCommandService;
   @Mock private UpdateSprintCommandServiceInterface updateSprintCommandService;
+  @Mock private SendNotificationCommandServiceInterface sendNotificationCommandService;
   @Mock private SprintQueryServiceInterface sprintQueryService;
   @Mock private SprintQueryController sprintQueryController;
 
@@ -43,6 +47,7 @@ class SprintCommandControllerTest {
     controller = new SprintCommandController(
         createSprintCommandService,
         updateSprintCommandService,
+        sendNotificationCommandService,
         sprintQueryService,
         sprintQueryController
     );
@@ -143,6 +148,46 @@ class SprintCommandControllerTest {
       assertThatThrownBy(() -> controller.changeStatus(
           String.valueOf(snowflakeId.value()), SprintStatus.ACTIVE))
           .isInstanceOf(NoSuchElementException.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("sendNotification メソッドのテスト")
+  class SendNotificationTest {
+
+    @Test
+    @DisplayName("通知を送信してResponseEntityを返すこと")
+    void shouldSendNotificationAndReturnResponseEntity() {
+      // Arrange
+      UUID recipientId = UUID.randomUUID();
+      UUID sourceId = UUID.randomUUID();
+      SendNotificationRequest request = SendNotificationRequest.builder()
+          .recipientId(recipientId)
+          .sourceId(sourceId)
+          .title("テスト通知")
+          .content("テスト本文")
+          .type(NotificationType.MENTION)
+          .build();
+
+      Notification expectedNotification = Notification.builder()
+          .id(SnowflakeId.of(1234567890L))
+          .recipientId(recipientId)
+          .sourceId(sourceId)
+          .sourceDomain("agiloom")
+          .title("テスト通知")
+          .content("テスト本文")
+          .type(NotificationType.MENTION)
+          .build();
+
+      when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
+
+      // Act
+      ResponseEntity<Notification> result = controller.sendNotification(request);
+
+      // Assert
+      assertThat(result.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);
+      assertThat(result.getBody()).isEqualTo(expectedNotification);
+      verify(sendNotificationCommandService).execute(any());
     }
   }
 }

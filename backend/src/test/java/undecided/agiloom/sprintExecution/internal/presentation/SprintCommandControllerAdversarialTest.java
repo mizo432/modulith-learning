@@ -22,8 +22,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
+import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
+import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -37,6 +40,7 @@ class SprintCommandControllerAdversarialTest {
 
   @Mock private CreateSprintCommandServiceInterface createSprintCommandService;
   @Mock private UpdateSprintCommandServiceInterface updateSprintCommandService;
+  @Mock private SendNotificationCommandServiceInterface sendNotificationCommandService;
   @Mock private SprintQueryServiceInterface sprintQueryService;
   @Mock private SprintQueryController sprintQueryController;
 
@@ -47,6 +51,7 @@ class SprintCommandControllerAdversarialTest {
     controller = new SprintCommandController(
         createSprintCommandService,
         updateSprintCommandService,
+        sendNotificationCommandService,
         sprintQueryService,
         sprintQueryController
     );
@@ -363,6 +368,128 @@ class SprintCommandControllerAdversarialTest {
       assertThatThrownBy(() -> controller.changeStatus("123.456", SprintStatus.ACTIVE))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("数値である必要があります");
+    }
+  }
+
+  @Nested
+  @DisplayName("sendNotification - 不正入力検証")
+  class SendNotificationAdversarialTest {
+
+    @Test
+    @DisplayName("タイトルにSQLインジェクション文字列を含むリクエストを処理すること")
+    void shouldHandleSqlInjectionInTitle() {
+      // Arrange - SQLインジェクション試行
+      UUID recipientId = UUID.randomUUID();
+      SendNotificationRequest request = SendNotificationRequest.builder()
+          .recipientId(recipientId)
+          .title("'; DROP TABLE notifications; --")
+          .content("テスト本文")
+          .type(NotificationType.MENTION)
+          .build();
+
+      Notification expectedNotification = Notification.builder()
+          .id(SnowflakeId.of(1234567890L))
+          .recipientId(recipientId)
+          .sourceDomain("agiloom")
+          .title("'; DROP TABLE notifications; --")
+          .content("テスト本文")
+          .type(NotificationType.MENTION)
+          .build();
+
+      when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
+
+      // Act & Assert - 例外をスローせずに処理できること
+      assertThatCode(() -> controller.sendNotification(request))
+          .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("タイトルにXSS文字列を含むリクエストを処理すること")
+    void shouldHandleXssInTitle() {
+      // Arrange - XSS試行
+      UUID recipientId = UUID.randomUUID();
+      SendNotificationRequest request = SendNotificationRequest.builder()
+          .recipientId(recipientId)
+          .title("<script>alert('xss')</script>")
+          .content("<img src=x onerror=alert(1)>")
+          .type(NotificationType.MENTION)
+          .build();
+
+      Notification expectedNotification = Notification.builder()
+          .id(SnowflakeId.of(1234567890L))
+          .recipientId(recipientId)
+          .sourceDomain("agiloom")
+          .title("<script>alert('xss')</script>")
+          .content("<img src=x onerror=alert(1)>")
+          .type(NotificationType.MENTION)
+          .build();
+
+      when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
+
+      // Act & Assert
+      assertThatCode(() -> controller.sendNotification(request))
+          .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("contentに非常に長い文字列を指定した場合")
+    void shouldHandleVeryLongContent() {
+      // Arrange - 非常に長い文字列
+      UUID recipientId = UUID.randomUUID();
+      String longContent = "A".repeat(2000);
+      SendNotificationRequest request = SendNotificationRequest.builder()
+          .recipientId(recipientId)
+          .title("テスト通知")
+          .content(longContent)
+          .type(NotificationType.SYSTEM)
+          .build();
+
+      Notification expectedNotification = Notification.builder()
+          .id(SnowflakeId.of(1234567890L))
+          .recipientId(recipientId)
+          .sourceDomain("agiloom")
+          .title("テスト通知")
+          .content(longContent)
+          .type(NotificationType.SYSTEM)
+          .build();
+
+      when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
+
+      // Act & Assert
+      assertThatCode(() -> controller.sendNotification(request))
+          .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("すべての通知タイプで通知が送信されること")
+    void shouldSendNotificationWithAllTypes() {
+      // Arrange
+      UUID recipientId = UUID.randomUUID();
+
+      // Act & Assert
+      for (NotificationType type : NotificationType.values()) {
+        SendNotificationRequest request = SendNotificationRequest.builder()
+            .recipientId(recipientId)
+            .title(type + "通知")
+            .content(type + "の本文")
+            .type(type)
+            .build();
+
+        Notification expectedNotification = Notification.builder()
+            .id(SnowflakeId.of(1234567890L))
+            .recipientId(recipientId)
+            .sourceDomain("agiloom")
+            .title(type + "通知")
+            .content(type + "の本文")
+            .type(type)
+            .build();
+
+        when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
+
+        assertThatCode(() -> controller.sendNotification(request))
+            .as("通知タイプ %s で通知が送信されること", type)
+            .doesNotThrowAnyException();
+      }
     }
   }
 }
