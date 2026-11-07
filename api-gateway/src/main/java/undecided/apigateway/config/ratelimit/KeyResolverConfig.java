@@ -1,5 +1,6 @@
 package undecided.apigateway.config.ratelimit;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +30,7 @@ public class KeyResolverConfig {
    * @return ServerRequestからキー文字列を解決するFunction
    */
   @Bean
-  public java.util.function.Function<ServerRequest, String> ipKeyResolver() {
+  public java.util.function.Function<ServerRequest, @NonNull String> ipKeyResolver() {
     return request -> {
       // Spring SecurityのSecurityContextHolderから直接Authenticationを取得
       // HttpServletRequest.getUserPrincipal()は環境依存のため、信頼できない
@@ -57,7 +58,7 @@ public class KeyResolverConfig {
    * @param request Servletリクエスト
    * @return クライアントIPアドレス
    */
-  private static String getClientIp(jakarta.servlet.http.HttpServletRequest request) {
+  private static @NonNull String getClientIp(jakarta.servlet.http.@NonNull HttpServletRequest request) {
     // セキュリティ上の理由から、クライアントが制御可能なヘッダーは信頼しない
     // プロキシ環境では、プロキシのIPアドレスが返されるが、これは信頼できる値
     return request.getRemoteAddr();

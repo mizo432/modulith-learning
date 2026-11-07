@@ -1,8 +1,11 @@
 package undecided.apigateway.config.ratelimit;
 
+import com.github.mizo432.shared.common.precondition.IntegerPrecondition;
+import com.github.mizo432.shared.common.precondition.LongPrecondition;
 import java.time.Duration;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * レートリミッティングの設定プロパティ
@@ -17,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
  *   <li>POST/PUT/PATCH/DELETEリクエスト: 1分あたり30回</li>
  * </ul>
  */
-@Configuration
+@Component
 @ConfigurationProperties(prefix = "ratelimit")
 public class RateLimitProperties {
 
@@ -43,7 +46,10 @@ public class RateLimitProperties {
    * 残しています。
    *
    * <p>デフォルト: 200
+   *
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。将来的に削除される可能性があります。
    */
+  @Deprecated
   private int burstCapacity = 200;
 
   /**
@@ -64,7 +70,10 @@ public class RateLimitProperties {
    * <p>NOTE: WebMVCのBucket4jフィルタでは独立したバースト容量の設定がサポートされていません。
    *
    * <p>デフォルト: 10
+   *
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。将来的に削除される可能性があります。
    */
+  @Deprecated
   private int authBurstCapacity = 10;
 
   /**
@@ -85,7 +94,10 @@ public class RateLimitProperties {
    * <p>NOTE: WebMVCのBucket4jフィルタでは独立したバースト容量の設定がサポートされていません。
    *
    * <p>デフォルト: 60
+   *
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。将来的に削除される可能性があります。
    */
+  @Deprecated
   private int writeBurstCapacity = 60;
 
   public int getCapacity() {
@@ -93,14 +105,28 @@ public class RateLimitProperties {
   }
 
   public void setCapacity(int capacity) {
+    IntegerPrecondition.checkPositive(
+        capacity,
+        () -> new IllegalArgumentException("capacity must be positive, but was: " + capacity));
     this.capacity = capacity;
   }
 
+  /**
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。
+   */
+  @Deprecated
   public int getBurstCapacity() {
     return burstCapacity;
   }
 
+  /**
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。
+   */
+  @Deprecated
   public void setBurstCapacity(int burstCapacity) {
+    IntegerPrecondition.checkPositive(
+        burstCapacity,
+        () -> new IllegalArgumentException("burstCapacity must be positive, but was: " + burstCapacity));
     this.burstCapacity = burstCapacity;
   }
 
@@ -109,6 +135,9 @@ public class RateLimitProperties {
   }
 
   public void setPeriodSeconds(long periodSeconds) {
+    LongPrecondition.checkPositive(
+        periodSeconds,
+        () -> new IllegalArgumentException("periodSeconds must be positive, but was: " + periodSeconds));
     this.periodSeconds = periodSeconds;
   }
 
@@ -117,14 +146,28 @@ public class RateLimitProperties {
   }
 
   public void setAuthCapacity(int authCapacity) {
+    IntegerPrecondition.checkPositive(
+        authCapacity,
+        () -> new IllegalArgumentException("authCapacity must be positive, but was: " + authCapacity));
     this.authCapacity = authCapacity;
   }
 
+  /**
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。
+   */
+  @Deprecated
   public int getAuthBurstCapacity() {
     return authBurstCapacity;
   }
 
+  /**
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。
+   */
+  @Deprecated
   public void setAuthBurstCapacity(int authBurstCapacity) {
+    IntegerPrecondition.checkPositive(
+        authBurstCapacity,
+        () -> new IllegalArgumentException("authBurstCapacity must be positive, but was: " + authBurstCapacity));
     this.authBurstCapacity = authBurstCapacity;
   }
 
@@ -133,6 +176,9 @@ public class RateLimitProperties {
   }
 
   public void setAuthRefreshCapacity(int authRefreshCapacity) {
+    IntegerPrecondition.checkPositive(
+        authRefreshCapacity,
+        () -> new IllegalArgumentException("authRefreshCapacity must be positive, but was: " + authRefreshCapacity));
     this.authRefreshCapacity = authRefreshCapacity;
   }
 
@@ -141,17 +187,32 @@ public class RateLimitProperties {
   }
 
   public void setWriteCapacity(int writeCapacity) {
+    IntegerPrecondition.checkPositive(
+        writeCapacity,
+        () -> new IllegalArgumentException("writeCapacity must be positive, but was: " + writeCapacity));
     this.writeCapacity = writeCapacity;
   }
 
+  /**
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。
+   */
+  @Deprecated
   public void setWriteBurstCapacity(int writeBurstCapacity) {
+    IntegerPrecondition.checkPositive(
+        writeBurstCapacity,
+        () -> new IllegalArgumentException("writeBurstCapacity must be positive, but was: " + writeBurstCapacity));
     this.writeBurstCapacity = writeBurstCapacity;
   }
 
+  /**
+   * @deprecated WebMVCのBucket4jフィルタでは使用されません。
+   */
+  @Deprecated
   public int getWriteBurstCapacity() {
     return writeBurstCapacity;
   }
 
+  @NonNull
   public Duration getPeriod() {
     return Duration.ofSeconds(periodSeconds);
   }

@@ -3,51 +3,73 @@ package undecided.apigateway.config.ratelimit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("small")
+@DisplayName("RateLimitExceededErrorのテスト")
 class RateLimitExceededErrorTest {
 
-  @Test
-  @DisplayName("RateLimitExceededErrorのコンストラクタが正しく動作する")
-  void constructor() {
-    RateLimitExceededError error =
-        new RateLimitExceededError(429, "RATE_LIMIT_EXCEEDED", "テストメッセージ", 30, "/api/test");
+  @Nested
+  @DisplayName("コンストラクタのテスト")
+  class ConstructorTest {
 
-    assertThat(error.getError()).isNotNull();
-    assertThat(error.getError().getStatus()).isEqualTo(429);
-    assertThat(error.getError().getCode()).isEqualTo("RATE_LIMIT_EXCEEDED");
-    assertThat(error.getError().getMessage()).isEqualTo("テストメッセージ");
-    assertThat(error.getError().getRetryAfter()).isEqualTo(30);
-    assertThat(error.getError().getPath()).isEqualTo("/api/test");
-    assertThat(error.getError().getTimestamp()).isNotNull();
+    @Test
+    @DisplayName("指定した値でエラーオブジェクトが作成されること")
+    void shouldCreateErrorWithCorrectValues() {
+      // Act
+      RateLimitExceededError error =
+          new RateLimitExceededError(429, "RATE_LIMIT_EXCEEDED", "テストメッセージ", 30, "/api/test");
+
+      // Assert
+      assertThat(error.error())
+          .as("ErrorDetailはnullでないこと")
+          .isNotNull();
+      assertThat(error.error().status())
+          .as("statusは429であること")
+          .isEqualTo(429);
+      assertThat(error.error().code())
+          .as("codeはRATE_LIMIT_EXCEEDEDであること")
+          .isEqualTo("RATE_LIMIT_EXCEEDED");
+      assertThat(error.error().message())
+          .as("messageはテストメッセージであること")
+          .isEqualTo("テストメッセージ");
+      assertThat(error.error().retryAfter())
+          .as("retryAfterは30であること")
+          .isEqualTo(30);
+      assertThat(error.error().path())
+          .as("pathは/api/testであること")
+          .isEqualTo("/api/test");
+      assertThat(error.error().timestamp())
+          .as("timestampはnullでないこと")
+          .isNotNull();
+    }
   }
 
-  @Test
-  @DisplayName("ErrorDetailのゲッターが正しく動作する")
-  void errorDetailGetters() {
-    RateLimitExceededError error =
-        new RateLimitExceededError(429, "RATE_LIMIT_EXCEEDED", "メッセージ", 60, "/api/v1/sprints");
+  @Nested
+  @DisplayName("timestampのテスト")
+  class TimestampTest {
 
-    RateLimitExceededError.ErrorDetail detail = error.getError();
+    @Test
+    @DisplayName("timestampは現在時刻が設定されること")
+    void shouldSetTimestampToCurrentTime() {
+      // Arrange
+      long before = System.currentTimeMillis();
 
-    assertThat(detail.getStatus()).isEqualTo(429);
-    assertThat(detail.getCode()).isEqualTo("RATE_LIMIT_EXCEEDED");
-    assertThat(detail.getMessage()).isEqualTo("メッセージ");
-    assertThat(detail.getRetryAfter()).isEqualTo(60);
-    assertThat(detail.getPath()).isEqualTo("/api/v1/sprints");
-    assertThat(detail.getTimestamp()).isNotNull();
-  }
+      // Act
+      RateLimitExceededError error =
+          new RateLimitExceededError(429, "RATE_LIMIT_EXCEEDED", "テスト", 30, "/api/test");
 
-  @Test
-  @DisplayName("timestampは現在時刻が設定される")
-  void timestampIsSetToCurrentTime() {
-    long before = System.currentTimeMillis();
-    RateLimitExceededError error =
-        new RateLimitExceededError(429, "RATE_LIMIT_EXCEEDED", "テスト", 30, "/api/test");
-    long after = System.currentTimeMillis();
-
-    long timestampMillis = error.getError().getTimestamp().toEpochMilli();
-    assertThat(timestampMillis).isGreaterThanOrEqualTo(before);
-    assertThat(timestampMillis).isLessThanOrEqualTo(after);
+      // Assert
+      long after = System.currentTimeMillis();
+      long timestampMillis = error.error().timestamp().toEpochMilli();
+      assertThat(timestampMillis)
+          .as("timestampは作成時の現在時刻の範囲内であること")
+          .isGreaterThanOrEqualTo(before);
+      assertThat(timestampMillis)
+          .as("timestampは作成時の現在時刻の範囲内であること")
+          .isLessThanOrEqualTo(after);
+    }
   }
 }

@@ -1,7 +1,8 @@
 package undecided.apigateway.config.ratelimit;
 
+import io.github.bucket4j.distributed.ExpirationAfterWriteStrategy;
 import io.github.bucket4j.distributed.proxy.AsyncProxyManager;
-import io.github.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager;
+import io.github.bucket4j.redis.lettuce.Bucket4jLettuce;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -9,6 +10,7 @@ import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.codec.StringCodec;
 import java.time.Duration;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -50,8 +52,8 @@ public class RedisConfig {
    * @return RedisClient
    */
   @Bean(destroyMethod = "shutdown")
-  public RedisClient redisClient(
-      @Value("${spring.data.redis.host:localhost}") String host,
+  public @NonNull RedisClient redisClient(
+      @Value("${spring.data.redis.host:localhost}") @NonNull String host,
       @Value("${spring.data.redis.port:6379}") int port,
       @Value("${spring.data.redis.password:}") String password,
       @Value("${spring.data.redis.ssl.enabled:false}") boolean sslEnabled,
@@ -79,7 +81,7 @@ public class RedisConfig {
    * @return StatefulRedisConnection
    */
   @Bean
-  public StatefulRedisConnection<String, byte[]> redisConnection(RedisClient redisClient) {
+  public @NonNull StatefulRedisConnection<String, byte[]> redisConnection(RedisClient redisClient) {
     return redisClient.connect(RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE));
   }
 
@@ -97,12 +99,11 @@ public class RedisConfig {
    * @return AsyncProxyManager
    */
   @Bean
-  public AsyncProxyManager<String> asyncProxyManager(
+  public @NonNull AsyncProxyManager<String> asyncProxyManager(
       StatefulRedisConnection<String, byte[]> connection) {
-    return LettuceBasedProxyManager.builderFor(connection)
-        .withExpirationStrategy(
-            io.github.bucket4j.distributed.ExpirationAfterWriteStrategy
-                .basedOnTimeForRefillingBucketUpToMax(Duration.ofMinutes(2)))
+    return Bucket4jLettuce.casBasedBuilder(connection)
+        .expirationAfterWrite(
+            ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(Duration.ofMinutes(2)))
         .build()
         .asAsync();
   }
