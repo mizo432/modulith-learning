@@ -114,8 +114,8 @@ public class GatewayServerApplication {
    *
    * <p>詳細設計書に基づく制限設定を適用します:
    * <ul>
-   *   <li>ログインエンドポイント: 1分あたり5回</li>
-   *   <li>トークン更新エンドポイント: 1分あたり10回</li>
+   *   <li>認証関連エンドポイント（/api/auth/**）: 1分あたり5回</li>
+   *   <li>トークン更新エンドポイント（/api/auth/refresh）: 1分あたり10回</li>
    *   <li>GETリクエスト: 1分あたり100回</li>
    *   <li>POST/PUT/PATCH/DELETEリクエスト: 1分あたり30回</li>
    * </ul>
@@ -127,8 +127,11 @@ public class GatewayServerApplication {
    * <p>レートリミット超過時は、{@link RateLimitResponseFilter}によって詳細設計書 7.2節で定義された
    * JSON形式の429レスポンスが返されます。
    *
-   * <p>認証関連エンドポイントは、一般的な/api/**ルートよりも優先的にマッチするように、
-   * ルートチェーンの先頭に定義しています。
+   * <p>ルートの優先順位: Spring Cloud Gateway WebMVCのRouterFunctionでは、{@code .and()} で結合された
+   * ルートのマッチング順序は登録順序に従います。そのため、認証関連エンドポイントは一般的な/api/**ルート
+   * よりも先頭に定義し、優先的にマッチするようにしています。これにより、{@code /api/auth/login} への
+   * POSTリクエストが {@code api-auth-rate-limited} ルートにマッチし、一般的な {@code api-write-rate-limited}
+   * ルートにマッチしないことが保証されます。
    *
    * <p>以下のルートはレートリミットの対象外です:
    * <ul>
@@ -143,9 +146,11 @@ public class GatewayServerApplication {
   public RouterFunction<ServerResponse> rateLimitedApiRoutes() {
     Duration period = rateLimitProperties.getPeriod();
     // @formatter:off
-    return route("api-auth-login-rate-limited")
+    return route("api-auth-rate-limited")
         // 認証関連エンドポイントを先頭に配置し、一般的な/api/**ルートよりも優先的にマッチさせる
-        .POST(path("/api/auth/login"), http())
+        // Spring Cloud Gateway WebMVCでは、登録順序に従ってマッチングされるため、
+        // /api/auth/** へのリクエストがここでマッチし、後続の /api/** ルートには到達しない
+        .POST(path("/api/auth/**"), http())
         .before(uri("lb://backend"))
         .filter(rateLimit(config -> config
             .setCapacity(rateLimitProperties.getAuthCapacity())
