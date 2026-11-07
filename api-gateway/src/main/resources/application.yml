@@ -53,6 +53,10 @@ eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
 # レートリミッティング設定
 # 詳細設計書に基づく制限設定
 ratelimit:
+  # Redisベースの分散レートリミッティングを有効化
+  # falseの場合、インメモリのローカルバケットにフォールバックします
+  redis:
+    enabled: true
   # デフォルト（GETリクエスト）: 1分あたり100回
   capacity: 100
   burst-capacity: 200
@@ -60,6 +64,8 @@ ratelimit:
   # 認証関連エンドポイント: 1分あたり5回
   auth-capacity: 5
   auth-burst-capacity: 10
+  # トークン更新エンドポイント: 1分あたり10回
+  auth-refresh-capacity: 10
   # 書き込み操作（POST/PUT/PATCH/DELETE）: 1分あたり30回
   write-capacity: 30
   write-burst-capacity: 60

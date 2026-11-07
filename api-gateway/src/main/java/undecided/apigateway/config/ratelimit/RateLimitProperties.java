@@ -68,6 +68,12 @@ public class RateLimitProperties {
   private int authBurstCapacity = 10;
 
   /**
+   * トークン更新エンドポイントのバケット容量
+   * デフォルト: 10（1分あたり10リクエスト）
+   */
+  private int authRefreshCapacity = 10;
+
+  /**
    * 書き込み操作のバケット容量
    * デフォルト: 30（1分あたり30リクエスト）
    */
@@ -120,6 +126,14 @@ public class RateLimitProperties {
 
   public void setAuthBurstCapacity(int authBurstCapacity) {
     this.authBurstCapacity = authBurstCapacity;
+  }
+
+  public int getAuthRefreshCapacity() {
+    return authRefreshCapacity;
+  }
+
+  public void setAuthRefreshCapacity(int authRefreshCapacity) {
+    this.authRefreshCapacity = authRefreshCapacity;
   }
 
   public int getWriteCapacity() {

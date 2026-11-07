@@ -16,3 +16,9 @@ eureka:
     enabled: false
     register-with-eureka: false
     fetch-registry: false
+
+# テスト環境ではRedisベースの分散レートリミッティングを無効化
+# インメモリのローカルバケットにフォールバックします
+ratelimit:
+  redis:
+    enabled: false

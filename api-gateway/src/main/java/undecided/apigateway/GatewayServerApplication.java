@@ -114,6 +114,8 @@ public class GatewayServerApplication {
    *
    * <p>詳細設計書に基づく制限設定を適用します:
    * <ul>
+   *   <li>ログインエンドポイント: 1分あたり5回</li>
+   *   <li>トークン更新エンドポイント: 1分あたり10回</li>
    *   <li>GETリクエスト: 1分あたり100回</li>
    *   <li>POST/PUT/PATCH/DELETEリクエスト: 1分あたり30回</li>
    * </ul>
@@ -124,6 +126,9 @@ public class GatewayServerApplication {
    *
    * <p>レートリミット超過時は、{@link RateLimitResponseFilter}によって詳細設計書 7.2節で定義された
    * JSON形式の429レスポンスが返されます。
+   *
+   * <p>認証関連エンドポイントは、一般的な/api/**ルートよりも優先的にマッチするように、
+   * ルートチェーンの先頭に定義しています。
    *
    * <p>以下のルートはレートリミットの対象外です:
    * <ul>
@@ -138,15 +143,36 @@ public class GatewayServerApplication {
   public RouterFunction<ServerResponse> rateLimitedApiRoutes() {
     Duration period = rateLimitProperties.getPeriod();
     // @formatter:off
-    return route("api-get-rate-limited")
-        .GET(path("/api/**"), http())
+    return route("api-auth-login-rate-limited")
+        // 認証関連エンドポイントを先頭に配置し、一般的な/api/**ルートよりも優先的にマッチさせる
+        .POST(path("/api/auth/login"), http())
         .before(uri("lb://backend"))
         .filter(rateLimit(config -> config
-            .setCapacity(rateLimitProperties.getCapacity())
+            .setCapacity(rateLimitProperties.getAuthCapacity())
             .setPeriod(period)
             .setKeyResolver(ipKeyResolver)))
         .filter(rateLimitResponseFilter)
         .build()
+        .and(
+            route("api-auth-refresh-rate-limited")
+                .POST(path("/api/auth/refresh"), http())
+                .before(uri("lb://backend"))
+                .filter(rateLimit(config -> config
+                    .setCapacity(rateLimitProperties.getAuthRefreshCapacity())
+                    .setPeriod(period)
+                    .setKeyResolver(ipKeyResolver)))
+                .filter(rateLimitResponseFilter)
+                .build())
+        .and(
+            route("api-get-rate-limited")
+                .GET(path("/api/**"), http())
+                .before(uri("lb://backend"))
+                .filter(rateLimit(config -> config
+                    .setCapacity(rateLimitProperties.getCapacity())
+                    .setPeriod(period)
+                    .setKeyResolver(ipKeyResolver)))
+                .filter(rateLimitResponseFilter)
+                .build())
         .and(
             route("api-write-rate-limited")
                 .POST(path("/api/**"), http())

@@ -10,6 +10,7 @@ import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.codec.StringCodec;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,9 +25,14 @@ import org.springframework.context.annotation.Configuration;
  * {@link AsyncProxyManager} Beanを検出すると、自動的にRedisベースの
  * 分散バケットを使用します。Beanが存在しない場合は、インメモリのローカルバケット
  * にフォールバックします。
+ *
+ * <p>この設定は、{@code ratelimit.redis.enabled=true}の場合にのみ有効になります。
+ * 無効化されている場合、またはRedis接続に失敗した場合、インメモリのローカルバケット
+ * にフォールバックします。これにより、Redisが利用できない環境でもアプリケーションが
+ * 正常に起動します。
  */
 @Configuration
-@org.springframework.context.annotation.Profile("!test")
+@ConditionalOnProperty(name = "ratelimit.redis.enabled", havingValue = "true")
 public class RedisConfig {
 
   /**

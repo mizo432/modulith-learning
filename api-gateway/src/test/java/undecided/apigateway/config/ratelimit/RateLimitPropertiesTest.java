@@ -17,6 +17,7 @@ class RateLimitPropertiesTest {
     assertThat(properties.getPeriodSeconds()).isEqualTo(60);
     assertThat(properties.getAuthCapacity()).isEqualTo(5);
     assertThat(properties.getAuthBurstCapacity()).isEqualTo(10);
+    assertThat(properties.getAuthRefreshCapacity()).isEqualTo(10);
     assertThat(properties.getWriteCapacity()).isEqualTo(30);
     assertThat(properties.getWriteBurstCapacity()).isEqualTo(60);
   }
@@ -30,6 +31,7 @@ class RateLimitPropertiesTest {
     properties.setPeriodSeconds(30);
     properties.setAuthCapacity(3);
     properties.setAuthBurstCapacity(5);
+    properties.setAuthRefreshCapacity(8);
     properties.setWriteCapacity(15);
     properties.setWriteBurstCapacity(30);
 
@@ -38,6 +40,7 @@ class RateLimitPropertiesTest {
     assertThat(properties.getPeriodSeconds()).isEqualTo(30);
     assertThat(properties.getAuthCapacity()).isEqualTo(3);
     assertThat(properties.getAuthBurstCapacity()).isEqualTo(5);
+    assertThat(properties.getAuthRefreshCapacity()).isEqualTo(8);
     assertThat(properties.getWriteCapacity()).isEqualTo(15);
     assertThat(properties.getWriteBurstCapacity()).isEqualTo(30);
   }
