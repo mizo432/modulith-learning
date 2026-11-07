@@ -15,6 +15,41 @@
 | ビジネスユースケース | BUC-SP-04 |
 | 外部システム | - |
 | 関連画面 | SCR-015（Sprint Board / タスクボード） |
+| 実装ステータス | 実装済み |
+
+## 実装概要
+
+本ユースケースは `NT 通知`（Notification Service）を使用して実装されています。
+sprint executionモジュールから `undecided.supporting.notification.spi.NotificationService` を通じて通知を送信します。
+
+### APIエンドポイント
+
+| メソッド | パス | 説明 |
+|----------|------|------|
+| POST | /api/v1/sprints/notifications | 通知を送信する |
+
+### リクエストボディ
+
+| 項目名 | 型 | 必須 | 説明 |
+|--------|----|------|------|
+| recipientId | UUID | はい | 通知の受信者ID（従業員ID） |
+| sourceId | UUID | いいえ | 通知の送信元となるリソースのID（例: タスクID、スプリントIDなど） |
+| title | String | はい | 通知のタイトル（200文字以内） |
+| content | String | はい | 通知の本文（2000文字以内） |
+| type | Enum | はい | 通知の種類 |
+
+### 通知種類
+
+| 種類 | 説明 |
+|------|------|
+| MENTION | メンション通知 |
+| ASSIGNEE_CHANGE | 担当者変更通知 |
+| DUE_DATE | 期限通知 |
+| AWAITING_DECISION | 承認待ち通知 |
+| APPROVAL_RESULT | 承認結果通知 |
+| JOB_EXECUTION_RESULT | ジョブ実行結果通知 |
+| SYSTEM | システム通知 |
+| CUSTOM | カスタム通知（事業領域固有の通知） |
 
 ## 前置条件
 
@@ -58,5 +93,8 @@
 
 | 番号 | 制約事項 | 説明 |
 |------|----------|------|
-| 1 | 必須項目 | 通知先、通知内容は必須入力 |
-| 2 | 通知種類 | メンション、担当変更、期限、判断待ちの4種類から選択 |
+| 1 | 必須項目 | 通知先、通知タイトル、通知内容、通知種類は必須入力 |
+| 2 | 通知種類 | MENTION、ASSIGNEE_CHANGE、DUE_DATE、AWAITING_DECISION、APPROVAL_RESULT、JOB_EXECUTION_RESULT、SYSTEM、CUSTOMの8種類から選択 |
+| 3 | タイトル文字数 | 200文字以内 |
+| 4 | 本文文字数 | 2000文字以内 |
+| 5 | 送信元ドメイン | agiloom |

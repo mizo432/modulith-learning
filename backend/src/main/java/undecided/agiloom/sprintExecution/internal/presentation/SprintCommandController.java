@@ -8,8 +8,11 @@ import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommand;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
+import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommand;
+import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
+import undecided.supporting.notification.spi.Notification;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
@@ -18,15 +21,18 @@ public class SprintCommandController {
 
     private final CreateSprintCommandServiceInterface createSprintCommandService;
     private final UpdateSprintCommandServiceInterface updateSprintCommandService;
+    private final SendNotificationCommandServiceInterface sendNotificationCommandService;
     private final SprintQueryServiceInterface sprintQueryService;
     private final SprintQueryController sprintQueryController;
 
     public SprintCommandController(CreateSprintCommandServiceInterface createSprintCommandService,
                             UpdateSprintCommandServiceInterface updateSprintCommandService,
+                            SendNotificationCommandServiceInterface sendNotificationCommandService,
                             SprintQueryServiceInterface sprintQueryService,
                             SprintQueryController sprintQueryController) {
         this.createSprintCommandService = createSprintCommandService;
         this.updateSprintCommandService = updateSprintCommandService;
+        this.sendNotificationCommandService = sendNotificationCommandService;
         this.sprintQueryService = sprintQueryService;
         this.sprintQueryController = sprintQueryController;
     }
@@ -56,6 +62,29 @@ public class SprintCommandController {
         updateSprintCommandService.changeStatus(snowflakeId, status);
         Sprint sprint = sprintQueryService.findById(snowflakeId).orElseThrow();
         return ResponseEntity.ok(sprintQueryController.toResponse(sprint));
+    }
+
+    /**
+     * 通知を送信します。
+     * <p>
+     * UC-SP-013 通知を送信する
+     * </p>
+     *
+     * @param request 通知送信リクエスト
+     * @return 送信された通知
+     */
+    @PostMapping("/notifications")
+    public ResponseEntity<Notification> sendNotification(@Valid @RequestBody SendNotificationRequest request) {
+        SendNotificationCommand command = SendNotificationCommand.builder()
+                .recipientId(request.getRecipientId())
+                .sourceId(request.getSourceId())
+                .title(request.getTitle())
+                .content(request.getContent())
+                .type(request.getType())
+                .build();
+
+        Notification notification = sendNotificationCommandService.execute(command);
+        return ResponseEntity.ok(notification);
     }
 
     // IDをSnowflakeIdに変換し、不正な形式の場合はIllegalArgumentExceptionをスローする
