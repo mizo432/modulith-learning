@@ -61,7 +61,7 @@ class RateLimitResponseFilterTest {
   @DisplayName("RateLimitResponseFilterインスタンスが作成できる")
   void filterCanBeCreated() {
     // When
-    RateLimitResponseFilter filter = new RateLimitResponseFilter(objectMapper);
+    RateLimitResponseFilter filter = new RateLimitResponseFilter(objectMapper, 60);
 
     // Then
     assertThat(filter).isNotNull();

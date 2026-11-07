@@ -35,9 +35,17 @@ public class RateLimitResponseFilter implements HandlerFilterFunction<ServerResp
   private static final String RATE_LIMIT_MESSAGE = "リクエストの送信頻度が高すぎます";
 
   private final ObjectMapper objectMapper;
+  private final int defaultRetryAfterSeconds;
 
-  public RateLimitResponseFilter(ObjectMapper objectMapper) {
+  /**
+   * @param objectMapper JSONシリアライズ用のObjectMapper
+   * @param defaultRetryAfterSeconds デフォルトのリトライ可能時間（秒）。
+   *     Bucket4jフィルタがRetry-Afterヘッダーを設定しないため、
+   *     レートリミットの期間（例: 60秒）を指定してください。
+   */
+  public RateLimitResponseFilter(ObjectMapper objectMapper, int defaultRetryAfterSeconds) {
     this.objectMapper = objectMapper;
+    this.defaultRetryAfterSeconds = defaultRetryAfterSeconds;
   }
 
   @Override
@@ -77,20 +85,16 @@ public class RateLimitResponseFilter implements HandlerFilterFunction<ServerResp
   /**
    * リトライ可能時間を計算します。
    *
-   * <p>レスポンスからRetry-Afterヘッダーを取得できなければ、デフォルトで30秒を返します。
+   * <p>Spring Cloud Gateway WebMVCのBucket4jフィルタはデフォルトでRetry-Afterヘッダーを
+   * 設定しないため、コンストラクタで指定されたデフォルト値を返します。
+   * デフォルト値はレートリミットの期間（例: 60秒）を指定してください。
    *
-   * @param response サーバーレスポンス
+   * @param response サーバーレスポンス（未使用だが、APIの互換性のために保持）
    * @return リトライ可能時間（秒）
    */
   private int calculateRetryAfter(ServerResponse response) {
-    try {
-      String retryAfterHeader = response.headers().getFirst("Retry-After");
-      if (retryAfterHeader != null && !retryAfterHeader.isEmpty()) {
-        return Integer.parseInt(retryAfterHeader);
-      }
-    } catch (NumberFormatException e) {
-      // デフォルト値を使用
-    }
-    return 30;
+    // Bucket4j WebMVCフィルタはRetry-Afterヘッダーを設定しないため、
+    // レートリミットの期間に基づいたデフォルト値を返す
+    return defaultRetryAfterSeconds;
   }
 }

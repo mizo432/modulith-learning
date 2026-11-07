@@ -38,17 +38,30 @@ public class RedisConfig {
   /**
    * Redisクライアントを作成します。
    *
+   * <p>本番環境では {@code spring.data.redis.ssl.enabled=true} を設定し、
+   * SSL/TLS接続を有効化してください。接続タイムアウトは {@code spring.data.redis.timeout}
+   * で設定できます（デフォルト: 5000ミリ秒）。
+   *
    * @param host Redisホスト（デフォルト: localhost）
    * @param port Redisポート（デフォルト: 6379）
    * @param password Redisパスワード（デフォルト: 空文字列）
+   * @param sslEnabled SSL/TLS接続を有効化するかどうか（デフォルト: false）
+   * @param timeoutMs 接続タイムアウト（ミリ秒、デフォルト: 5000）
    * @return RedisClient
    */
   @Bean(destroyMethod = "shutdown")
   public RedisClient redisClient(
       @Value("${spring.data.redis.host:localhost}") String host,
       @Value("${spring.data.redis.port:6379}") int port,
-      @Value("${spring.data.redis.password:}") String password) {
-    RedisURI.Builder builder = RedisURI.builder().withHost(host).withPort(port);
+      @Value("${spring.data.redis.password:}") String password,
+      @Value("${spring.data.redis.ssl.enabled:false}") boolean sslEnabled,
+      @Value("${spring.data.redis.timeout:5000}") int timeoutMs) {
+    RedisURI.Builder builder =
+        RedisURI.builder()
+            .withHost(host)
+            .withPort(port)
+            .withSsl(sslEnabled)
+            .withTimeout(Duration.ofMillis(timeoutMs));
     if (password != null && !password.isEmpty()) {
       builder.withPassword(password.toCharArray());
     }

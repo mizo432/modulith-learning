@@ -33,6 +33,11 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:}
+      # SSL/TLS接続を有効化（本番環境ではtrueに設定してください）
+      ssl:
+        enabled: ${REDIS_SSL_ENABLED:false}
+      # 接続タイムアウト（ミリ秒）
+      timeout: ${REDIS_TIMEOUT:5000}
 
 springdoc:
   api-docs:

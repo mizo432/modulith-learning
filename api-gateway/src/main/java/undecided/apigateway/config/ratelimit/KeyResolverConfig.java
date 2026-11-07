@@ -1,5 +1,8 @@
 package undecided.apigateway.config.ratelimit;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,10 +31,13 @@ public class KeyResolverConfig {
   @Bean
   public java.util.function.Function<ServerRequest, String> ipKeyResolver() {
     return request -> {
-      // 認証済みユーザーの場合はPrincipal名を使用
-      var principal = request.servletRequest().getUserPrincipal();
-      if (principal != null) {
-        return principal.getName();
+      // Spring SecurityのSecurityContextHolderから直接Authenticationを取得
+      // HttpServletRequest.getUserPrincipal()は環境依存のため、信頼できない
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      if (authentication != null
+          && authentication.isAuthenticated()
+          && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
+        return authentication.getName();
       }
       // 未認証の場合はIPアドレスを使用
       return getClientIp(request.servletRequest());

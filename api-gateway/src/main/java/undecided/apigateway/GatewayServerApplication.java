@@ -43,7 +43,8 @@ public class GatewayServerApplication {
       ObjectMapper objectMapper) {
     this.rateLimitProperties = rateLimitProperties;
     this.ipKeyResolver = keyResolverConfig.ipKeyResolver();
-    this.rateLimitResponseFilter = new RateLimitResponseFilter(objectMapper);
+    this.rateLimitResponseFilter =
+        new RateLimitResponseFilter(objectMapper, (int) rateLimitProperties.getPeriodSeconds());
   }
 
   /**
