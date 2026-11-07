@@ -272,19 +272,4 @@ public class ChouAza {
   @Column(name = "remarks", comment = "Remarks", length = 256)
   private String remarks;
 
-  /**
-   * カスタマバーコード値を格納するフィールド。
-   *
-   * <p>郵送する郵便物に宛先毎に付与するカスタマバーコードの値を保持します。
-   * 住所を設定する段階でカスタマバーコード値を生成・保持しておくことで、
-   * 郵政バーコードの印刷や読み取りを効率化します。
-   *
-   * <p>フォーマット: スタートコード(1桁) + 郵便番号(7桁) + 住所表示番号(13桁)
-   * + チェックデジット(1桁) + ストップコード(1桁) = 合計23桁
-   *
-   * <p>データベース上では "customer_barcode" カラムに対応しています。
-   */
-  @Size(max = 23)
-  @Column(name = "customer_barcode", comment = "Customer barcode value", length = 23)
-  private String customerBarcode;
 }
