@@ -108,8 +108,15 @@ public class GatewayServerApplication {
    *
    * <p>詳細設計書に基づく制限設定を適用します:
    * <ul>
-   *   <li>GETリクエスト: 1分あたり100回（バースト容量200）</li>
-   *   <li>POST/PUT/PATCH/DELETEリクエスト: 1分あたり30回（バースト容量60）</li>
+   *   <li>GETリクエスト: 1分あたり100回</li>
+   *   <li>POST/PUT/PATCH/DELETEリクエスト: 1分あたり30回</li>
+   * </ul>
+   *
+   * <p>以下のルートはレートリミットの対象外です:
+   * <ul>
+   *   <li>/do/databases/** - データベース操作エンドポイント</li>
+   *   <li>/v3/api-docs/** - OpenAPIドキュメント</li>
+   *   <li>/swagger-ui/** - Swagger UI</li>
    * </ul>
    *
    * @return レートリミットが適用されたRouterFunction
@@ -122,7 +129,7 @@ public class GatewayServerApplication {
         .GET(path("/api/**"), http())
         .before(uri("lb://backend"))
         .filter(rateLimit(config -> config
-            .setCapacity(rateLimitProperties.getBurstCapacity())
+            .setCapacity(rateLimitProperties.getCapacity())
             .setPeriod(period)
             .setKeyResolver(ipKeyResolver)))
         .build()
@@ -131,7 +138,7 @@ public class GatewayServerApplication {
                 .POST(path("/api/**"), http())
                 .before(uri("lb://backend"))
                 .filter(rateLimit(config -> config
-                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
                 .build())
@@ -140,7 +147,7 @@ public class GatewayServerApplication {
                 .PUT(path("/api/**"), http())
                 .before(uri("lb://backend"))
                 .filter(rateLimit(config -> config
-                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
                 .build())
@@ -149,7 +156,7 @@ public class GatewayServerApplication {
                 .PATCH(path("/api/**"), http())
                 .before(uri("lb://backend"))
                 .filter(rateLimit(config -> config
-                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
                 .build())
@@ -158,9 +165,24 @@ public class GatewayServerApplication {
                 .DELETE(path("/api/**"), http())
                 .before(uri("lb://backend"))
                 .filter(rateLimit(config -> config
-                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setCapacity(rateLimitProperties.getWriteCapacity())
                     .setPeriod(period)
                     .setKeyResolver(ipKeyResolver)))
+                .build())
+        .and(
+            route("do-databases")
+                .route(path("/do/databases/**"), http())
+                .before(uri("lb://backend"))
+                .build())
+        .and(
+            route("api-docs")
+                .route(path("/v3/api-docs/**"), http())
+                .before(uri("lb://backend"))
+                .build())
+        .and(
+            route("swagger-ui")
+                .route(path("/swagger-ui/**"), http())
+                .before(uri("lb://backend"))
                 .build());
     // @formatter:on
   }

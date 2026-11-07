@@ -12,12 +12,12 @@ class RateLimitPropertiesTest {
   void defaultValues() {
     var properties = new RateLimitProperties();
 
-    assertThat(properties.getReplenishRate()).isEqualTo(100);
+    assertThat(properties.getCapacity()).isEqualTo(100);
     assertThat(properties.getBurstCapacity()).isEqualTo(200);
     assertThat(properties.getPeriodSeconds()).isEqualTo(60);
-    assertThat(properties.getAuthReplenishRate()).isEqualTo(5);
+    assertThat(properties.getAuthCapacity()).isEqualTo(5);
     assertThat(properties.getAuthBurstCapacity()).isEqualTo(10);
-    assertThat(properties.getWriteReplenishRate()).isEqualTo(30);
+    assertThat(properties.getWriteCapacity()).isEqualTo(30);
     assertThat(properties.getWriteBurstCapacity()).isEqualTo(60);
   }
 
@@ -25,20 +25,20 @@ class RateLimitPropertiesTest {
   @DisplayName("カスタム値が設定できる")
   void customValues() {
     var properties = new RateLimitProperties();
-    properties.setReplenishRate(50);
+    properties.setCapacity(50);
     properties.setBurstCapacity(100);
     properties.setPeriodSeconds(30);
-    properties.setAuthReplenishRate(3);
+    properties.setAuthCapacity(3);
     properties.setAuthBurstCapacity(5);
-    properties.setWriteReplenishRate(15);
+    properties.setWriteCapacity(15);
     properties.setWriteBurstCapacity(30);
 
-    assertThat(properties.getReplenishRate()).isEqualTo(50);
+    assertThat(properties.getCapacity()).isEqualTo(50);
     assertThat(properties.getBurstCapacity()).isEqualTo(100);
     assertThat(properties.getPeriodSeconds()).isEqualTo(30);
-    assertThat(properties.getAuthReplenishRate()).isEqualTo(3);
+    assertThat(properties.getAuthCapacity()).isEqualTo(3);
     assertThat(properties.getAuthBurstCapacity()).isEqualTo(5);
-    assertThat(properties.getWriteReplenishRate()).isEqualTo(15);
+    assertThat(properties.getWriteCapacity()).isEqualTo(15);
     assertThat(properties.getWriteBurstCapacity()).isEqualTo(30);
   }
 

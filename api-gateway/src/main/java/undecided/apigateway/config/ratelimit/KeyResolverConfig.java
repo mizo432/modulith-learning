@@ -41,21 +41,19 @@ public class KeyResolverConfig {
   /**
    * リクエストからクライアントのIPアドレスを取得します。
    *
-   * <p>プロキシ経由の場合、X-Forwarded-Forヘッダーから元のクライアントIPを取得します。
+   * <p>セキュリティ上の理由から、X-Forwarded-ForやX-Real-IPなどのプロキシヘッダーは信頼せず、
+   * 直接接続元のIPアドレス（getRemoteAddr）のみを使用します。
+   *
+   * <p>クライアントはこれらのヘッダーを任意の値に設定できるため、信頼するとレートリミットを
+   * 回避する攻撃が可能になります。プロキシ環境では、プロキシサーバーでIPアドレスを適切に
+   * 転送することを前提とし、ゲートウェイが直接接続する相手のIPアドレスを使用します。
    *
    * @param request Servletリクエスト
    * @return クライアントIPアドレス
    */
   private static String getClientIp(jakarta.servlet.http.HttpServletRequest request) {
-    String forwardedFor = request.getHeader("X-Forwarded-For");
-    if (forwardedFor != null && !forwardedFor.isEmpty()) {
-      // X-Forwarded-Forは "client, proxy1, proxy2" の形式なので、最初のIPがクライアント
-      return forwardedFor.split(",")[0].trim();
-    }
-    String realIp = request.getHeader("X-Real-IP");
-    if (realIp != null && !realIp.isEmpty()) {
-      return realIp;
-    }
+    // セキュリティ上の理由から、クライアントが制御可能なヘッダーは信頼しない
+    // プロキシ環境では、プロキシのIPアドレスが返されるが、これは信頼できる値
     return request.getRemoteAddr();
   }
 }

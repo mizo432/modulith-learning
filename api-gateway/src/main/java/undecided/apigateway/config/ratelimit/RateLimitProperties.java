@@ -22,14 +22,22 @@ import org.springframework.context.annotation.Configuration;
 public class RateLimitProperties {
 
   /**
-   * デフォルトの replenish レート（1秒あたりのトークン補充数）
-   * デフォルト: 100（1分あたり100リクエスト）
+   * デフォルトのバケット容量（期間内に補充されるトークン数）
+   *
+   * <p>Bucket4j WebMVCの {@code setCapacity} に渡され、指定された期間内に補充されるトークン数を
+   * 表します。例えば、capacity=100, period=60秒の場合、1分あたり100リクエストが許容されます。
+   *
+   * <p>デフォルト: 100（1分あたり100リクエスト）
    */
-  private int replenishRate = 100;
+  private int capacity = 100;
 
   /**
-   * デフォルトのバースト容量（一度に許容される最大リクエスト数）
-   * デフォルト: 200
+   * デフォルトのバースト容量（バケットの最大容量）
+   *
+   * <p>バケットが保持できるトークンの最大数を表します。capacityより大きく設定することで、
+   * 短時間のバーストリクエストを許容できます。
+   *
+   * <p>デフォルト: 200
    */
   private int burstCapacity = 200;
 
@@ -40,10 +48,10 @@ public class RateLimitProperties {
   private long periodSeconds = 60;
 
   /**
-   * 認証関連エンドポイントの replenish レート
+   * 認証関連エンドポイントのバケット容量
    * デフォルト: 5（1分あたり5リクエスト）
    */
-  private int authReplenishRate = 5;
+  private int authCapacity = 5;
 
   /**
    * 認証関連エンドポイントのバースト容量
@@ -52,10 +60,10 @@ public class RateLimitProperties {
   private int authBurstCapacity = 10;
 
   /**
-   * 書き込み操作の replenish レート
+   * 書き込み操作のバケット容量
    * デフォルト: 30（1分あたり30リクエスト）
    */
-  private int writeReplenishRate = 30;
+  private int writeCapacity = 30;
 
   /**
    * 書き込み操作のバースト容量
@@ -63,12 +71,12 @@ public class RateLimitProperties {
    */
   private int writeBurstCapacity = 60;
 
-  public int getReplenishRate() {
-    return replenishRate;
+  public int getCapacity() {
+    return capacity;
   }
 
-  public void setReplenishRate(int replenishRate) {
-    this.replenishRate = replenishRate;
+  public void setCapacity(int capacity) {
+    this.capacity = capacity;
   }
 
   public int getBurstCapacity() {
@@ -87,12 +95,12 @@ public class RateLimitProperties {
     this.periodSeconds = periodSeconds;
   }
 
-  public int getAuthReplenishRate() {
-    return authReplenishRate;
+  public int getAuthCapacity() {
+    return authCapacity;
   }
 
-  public void setAuthReplenishRate(int authReplenishRate) {
-    this.authReplenishRate = authReplenishRate;
+  public void setAuthCapacity(int authCapacity) {
+    this.authCapacity = authCapacity;
   }
 
   public int getAuthBurstCapacity() {
@@ -103,12 +111,12 @@ public class RateLimitProperties {
     this.authBurstCapacity = authBurstCapacity;
   }
 
-  public int getWriteReplenishRate() {
-    return writeReplenishRate;
+  public int getWriteCapacity() {
+    return writeCapacity;
   }
 
-  public void setWriteReplenishRate(int writeReplenishRate) {
-    this.writeReplenishRate = writeReplenishRate;
+  public void setWriteCapacity(int writeCapacity) {
+    this.writeCapacity = writeCapacity;
   }
 
   public void setWriteBurstCapacity(int writeBurstCapacity) {
