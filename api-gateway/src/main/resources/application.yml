@@ -132,3 +132,17 @@ springdoc:
 #    serviceUrl:
 #      defaultZone: http://${PROJECT_NAME:-default}-service-registry:8761/eureka
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
+
+# レートリミッティング設定
+# 詳細設計書に基づく制限設定
+ratelimit:
+  # デフォルト（GETリクエスト）: 1分あたり100回
+  replenish-rate: 100
+  burst-capacity: 200
+  period-seconds: 60
+  # 認証関連エンドポイント: 1分あたり5回
+  auth-replenish-rate: 5
+  auth-burst-capacity: 10
+  # 書き込み操作（POST/PUT/PATCH/DELETE）: 1分あたり30回
+  write-replenish-rate: 30
+  write-burst-capacity: 60

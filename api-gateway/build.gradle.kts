@@ -25,6 +25,7 @@ repositories {
 extra["junitVersion"] = "6.0.1"
 extra["springCloudBomVersion"] = "2025.1.2"
 extra["openapiUiVersion"] = "3.1.1"
+extra["bucket4jVersion"] = "8.15.0"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
@@ -34,6 +35,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("openapiUiVersion")}")
+    implementation("com.bucket4j:bucket4j_jdk17-core:${property("bucket4jVersion")}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")

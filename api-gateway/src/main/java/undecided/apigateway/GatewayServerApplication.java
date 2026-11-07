@@ -2,17 +2,23 @@ package undecided.apigateway;
 
 import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.rewritePath;
 import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.uri;
+import static org.springframework.cloud.gateway.server.mvc.filter.Bucket4jFilterFunctions.rateLimit;
 import static org.springframework.cloud.gateway.server.mvc.filter.CircuitBreakerFilterFunctions.circuitBreaker;
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
 import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.host;
+import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.path;
 
+import java.time.Duration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
+import undecided.apigateway.config.ratelimit.KeyResolverConfig;
+import undecided.apigateway.config.ratelimit.RateLimitProperties;
 
 /**
  * GatewayServerApplicationクラスは、Spring Bootベースのゲートウェイサーバーアプリケーションを表します。
@@ -24,6 +30,15 @@ import org.springframework.web.servlet.function.ServerResponse;
 @SpringBootApplication
 @EnableDiscoveryClient
 public class GatewayServerApplication {
+
+  private final RateLimitProperties rateLimitProperties;
+  private final java.util.function.Function<ServerRequest, String> ipKeyResolver;
+
+  public GatewayServerApplication(
+      RateLimitProperties rateLimitProperties, KeyResolverConfig keyResolverConfig) {
+    this.rateLimitProperties = rateLimitProperties;
+    this.ipKeyResolver = keyResolverConfig.ipKeyResolver();
+  }
 
   /**
    * Application entry point for the Spring Boot gateway server.
@@ -85,6 +100,68 @@ public class GatewayServerApplication {
                                                     c.setId("slowcmd")
                                                         .setFallbackUri("forward:/fallback")))
                                         .build()))));
+    // @formatter:on
+  }
+
+  /**
+   * APIルートにレートリミッティングを適用したルーティングを設定します。
+   *
+   * <p>詳細設計書に基づく制限設定を適用します:
+   * <ul>
+   *   <li>GETリクエスト: 1分あたり100回（バースト容量200）</li>
+   *   <li>POST/PUT/PATCH/DELETEリクエスト: 1分あたり30回（バースト容量60）</li>
+   * </ul>
+   *
+   * @return レートリミットが適用されたRouterFunction
+   */
+  @Bean
+  public RouterFunction<ServerResponse> rateLimitedApiRoutes() {
+    Duration period = rateLimitProperties.getPeriod();
+    // @formatter:off
+    return route("api-get-rate-limited")
+        .GET(path("/api/**"), http())
+        .before(uri("lb://backend"))
+        .filter(rateLimit(config -> config
+            .setCapacity(rateLimitProperties.getBurstCapacity())
+            .setPeriod(period)
+            .setKeyResolver(ipKeyResolver)))
+        .build()
+        .and(
+            route("api-write-rate-limited")
+                .POST(path("/api/**"), http())
+                .before(uri("lb://backend"))
+                .filter(rateLimit(config -> config
+                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setPeriod(period)
+                    .setKeyResolver(ipKeyResolver)))
+                .build())
+        .and(
+            route("api-put-rate-limited")
+                .PUT(path("/api/**"), http())
+                .before(uri("lb://backend"))
+                .filter(rateLimit(config -> config
+                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setPeriod(period)
+                    .setKeyResolver(ipKeyResolver)))
+                .build())
+        .and(
+            route("api-patch-rate-limited")
+                .PATCH(path("/api/**"), http())
+                .before(uri("lb://backend"))
+                .filter(rateLimit(config -> config
+                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setPeriod(period)
+                    .setKeyResolver(ipKeyResolver)))
+                .build())
+        .and(
+            route("api-delete-rate-limited")
+                .DELETE(path("/api/**"), http())
+                .before(uri("lb://backend"))
+                .filter(rateLimit(config -> config
+                    .setCapacity(rateLimitProperties.getWriteBurstCapacity())
+                    .setPeriod(period)
+                    .setKeyResolver(ipKeyResolver)))
+                .build());
     // @formatter:on
   }
 }
