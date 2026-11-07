@@ -4,12 +4,17 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import undecided.agiloom.sprintExecution.spi.Notification;
+import undecided.supporting.notification.spi.Notification;
 import undecided.supporting.snowflake.SnowflakeId;
 
+/**
+ * @deprecated {@link undecided.supporting.notification.internal.NotificationRepository} を使用してください。
+ * このクラスは後方互換性のために残されています。
+ */
+@Deprecated
 public interface NotificationRepository extends CrudRepository<Notification, SnowflakeId>, PagingAndSortingRepository<Notification, SnowflakeId> {
 
     List<Notification> findByRecipientIdAndIsRead(UUID recipientId, Boolean isRead);
 
-    List<Notification> findByProductId(UUID productId);
+    List<Notification> findBySourceId(UUID sourceId);
 }

@@ -1,47 +1,37 @@
 {
   "screens": [
     {
-      "screen_name": "SCR-01001",
+      "screen_name": "SCR-NT-001",
       "fields": [
         {
-          "field_name": "チャネル",
+          "field_name": "タイトル",
           "type": "string",
-          "tooltip": "チャネル"
-        },
-        {
-          "field_name": "宛先",
-          "type": "string",
-          "tooltip": "宛先"
-        },
-        {
-          "field_name": "件名",
-          "type": "string",
-          "tooltip": "件名"
+          "tooltip": "通知のタイトル"
         },
         {
           "field_name": "本文",
           "type": "string",
-          "tooltip": "本文"
+          "tooltip": "通知の本文"
         },
         {
-          "field_name": "状態",
-          "type": "string",
-          "tooltip": "状態"
-        },
-        {
-          "field_name": "作成日",
-          "type": "string",
-          "tooltip": "作成日"
-        },
-        {
-          "field_name": "state",
+          "field_name": "通知タイプ",
           "type": "enum",
-          "tooltip": "状態(通知)"
+          "tooltip": "通知の種類（MENTION, ASSIGNEE_CHANGE, DUE_DATE, AWAITING_DECISION, APPROVAL_RESULT, JOB_EXECUTION_RESULT, SYSTEM, CUSTOM）"
         },
         {
-          "field_name": "created_at",
+          "field_name": "送信元事業領域",
           "type": "string",
-          "tooltip": "作成日"
+          "tooltip": "通知の送信元となる事業領域名"
+        },
+        {
+          "field_name": "既読フラグ",
+          "type": "boolean",
+          "tooltip": "既読かどうかのフラグ"
+        },
+        {
+          "field_name": "作成日時",
+          "type": "datetime",
+          "tooltip": "作成日時"
         }
       ],
       "screen_datas": [
@@ -49,16 +39,16 @@
           "display_name": "通知一覧",
           "dummy_data": [
             {
-              "field_name": "チャネル",
-              "value": "通知データ1"
+              "field_name": "タイトル",
+              "value": "メンション通知"
             },
             {
-              "field_name": "宛先",
-              "value": "通知データ1"
+              "field_name": "本文",
+              "value": "あなたはメンションされました"
             },
             {
-              "field_name": "件名",
-              "value": "通知データ1"
+              "field_name": "通知タイプ",
+              "value": "MENTION"
             }
           ]
         },
@@ -66,132 +56,38 @@
           "display_name": "通知詳細",
           "dummy_data": [
             {
-              "field_name": "チャネル",
-              "value": "通知データ2"
+              "field_name": "タイトル",
+              "value": "担当者変更通知"
             },
             {
-              "field_name": "宛先",
-              "value": "通知データ2"
+              "field_name": "本文",
+              "value": "担当者が変更されました"
             },
             {
-              "field_name": "件名",
-              "value": "通知データ2"
+              "field_name": "通知タイプ",
+              "value": "ASSIGNEE_CHANGE"
             }
           ]
         },
         {
-          "display_name": "通知照会",
+          "display_name": "未読通知一覧",
           "dummy_data": [
             {
-              "field_name": "チャネル",
-              "value": "通知データ3"
+              "field_name": "タイトル",
+              "value": "期限通知"
             },
             {
-              "field_name": "宛先",
-              "value": "通知データ3"
+              "field_name": "本文",
+              "value": "期限が近づいています"
             },
             {
-              "field_name": "件名",
-              "value": "通知データ3"
+              "field_name": "通知タイプ",
+              "value": "DUE_DATE"
             }
           ]
         }
       ],
-      "operation": "登録"
-    },
-    {
-      "screen_name": "SCR-01002",
-      "fields": [
-        {
-          "field_name": "タイプ",
-          "type": "string",
-          "tooltip": "タイプ"
-        },
-        {
-          "field_name": "設定",
-          "type": "string",
-          "tooltip": "設定"
-        },
-        {
-          "field_name": "状態",
-          "type": "string",
-          "tooltip": "状態"
-        },
-        {
-          "field_name": "作成日",
-          "type": "string",
-          "tooltip": "作成日"
-        },
-        {
-          "field_name": "更新日",
-          "type": "string",
-          "tooltip": "更新日"
-        },
-        {
-          "field_name": "state",
-          "type": "enum",
-          "tooltip": "状態(通知チャネル)"
-        },
-        {
-          "field_name": "created_at",
-          "type": "string",
-          "tooltip": "作成日"
-        }
-      ],
-      "screen_datas": [
-        {
-          "display_name": "通知チャネル一覧",
-          "dummy_data": [
-            {
-              "field_name": "タイプ",
-              "value": "通知チャネルデータ1"
-            },
-            {
-              "field_name": "設定",
-              "value": "通知チャネルデータ1"
-            },
-            {
-              "field_name": "状態",
-              "value": "通知チャネルデータ1"
-            }
-          ]
-        },
-        {
-          "display_name": "通知チャネル詳細",
-          "dummy_data": [
-            {
-              "field_name": "タイプ",
-              "value": "通知チャネルデータ2"
-            },
-            {
-              "field_name": "設定",
-              "value": "通知チャネルデータ2"
-            },
-            {
-              "field_name": "状態",
-              "value": "通知チャネルデータ2"
-            }
-          ]
-        },
-        {
-          "display_name": "通知チャネル照会",
-          "dummy_data": [
-            {
-              "field_name": "タイプ",
-              "value": "通知チャネルデータ3"
-            },
-            {
-              "field_name": "設定",
-              "value": "通知チャネルデータ3"
-            },
-            {
-              "field_name": "状態",
-              "value": "通知チャネルデータ3"
-            }
-          ]
-        }
-      ],
-      "operation": "登録"
+      "operation": "参照"
     }
   ]
 }

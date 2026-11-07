@@ -1,0 +1,1 @@
+{"system_name":"通知管理システム","system_overview":"各事業領域から共通して利用可能なシステム内通知機能を提供する基盤システム。通知の送信、一覧取得、未読通知の取得、既読マークなどの機能を提供し、通知タイプ（MENTION、ASSIGNEE_CHANGE、DUE_DATE、AWAITING_DECISION、APPROVAL_RESULT、JOB_EXECUTION_RESULT、SYSTEM、CUSTOM）に応じて通知を分類・管理する。"}
