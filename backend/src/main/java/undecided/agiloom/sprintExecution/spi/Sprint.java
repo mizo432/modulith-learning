@@ -20,8 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
@@ -29,7 +29,6 @@ import undecided.supporting.snowflake.SnowflakeId;
     @UniqueConstraint(name = "uk_sprint_product_number", columnNames = {"productId", "sprintNumber"})
 })
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -107,7 +106,7 @@ public class Sprint {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(@NonNull String title, @NonNull String goal, LocalDate endDate, String notes) {
+    public void update(@NonNull String title, @NonNull String goal, @Nullable LocalDate endDate, @Nullable String notes) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
         this.title = title;

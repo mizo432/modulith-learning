@@ -3,6 +3,7 @@ package undecided.apigateway.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
@@ -27,6 +29,8 @@ class SecurityConfigTest {
 
   @Autowired private JwtDecoder jwtDecoder;
 
+  @Autowired private SecurityFilterChain securityFilterChain;
+
   @Value("${spring.security.oauth2.resourceserver.jwt.jws-algorithm:RS256}")
   private String jwsAlgorithm;
 
@@ -36,37 +40,73 @@ class SecurityConfigTest {
   @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-url}")
   private String jwkSetUrl;
 
-  @Test
-  @DisplayName("JwtDecoderが設定されていること (REQ-00021)")
-  void shouldHaveJwtDecoderConfigured() {
-    assertThat(jwtDecoder).as("JwtDecoder Beanが設定されていること").isNotNull();
+  @Nested
+  @DisplayName("JWT署名検証設定のテスト")
+  class JwtSignatureValidationTest {
+
+    @Test
+    @DisplayName("JwtDecoderが設定されていること (REQ-00021)")
+    void shouldHaveJwtDecoderConfigured() {
+      assertThat(jwtDecoder).as("JwtDecoder Beanが設定されていること").isNotNull();
+    }
+
+    @Test
+    @DisplayName("JWT署名検証アルゴリズムがRS256に設定されていること (REQ-00021)")
+    void shouldUseRs256ForSignatureValidation() {
+      assertThat(jwsAlgorithm)
+          .as("JWT署名検証アルゴリズムがRS256に設定されていること")
+          .isEqualTo("RS256");
+    }
   }
 
-  @Test
-  @DisplayName("JWT署名検証アルゴリズムがRS256に設定されていること (REQ-00021)")
-  void shouldUseRs256ForSignatureValidation() {
-    assertThat(jwsAlgorithm).as("JWT署名検証アルゴリズムがRS256に設定されていること").isEqualTo("RS256");
+  @Nested
+  @DisplayName("HTTPS設定のテスト")
+  class HttpsConfigurationTest {
+
+    @Test
+    @DisplayName("issuer-uriがHTTPSで設定されていること (REQ-00018, REQ-00023)")
+    void shouldHaveHttpsIssuerUri() {
+      assertThat(issuerUri)
+          .as("issuer-uriがHTTPSで設定されていること")
+          .startsWith("https://");
+    }
+
+    @Test
+    @DisplayName("JWKSエンドポイントURLがHTTPSで設定されていること (REQ-00027)")
+    void shouldHaveHttpsJwkSetUrl() {
+      assertThat(jwkSetUrl)
+          .as("JWKSエンドポイントURLがHTTPSで設定されていること")
+          .startsWith("https://");
+    }
   }
 
-  @Test
-  @DisplayName("issuer-uriがHTTPSで設定されていること (REQ-00018, REQ-00023)")
-  void shouldHaveHttpsIssuerUri() {
-    assertThat(issuerUri).as("issuer-uriがHTTPSで設定されていること").startsWith("https://");
+  @Nested
+  @DisplayName("nbfクレーム検証のテスト")
+  class NbfClaimValidationTest {
+
+    @Test
+    @DisplayName("JwtDecoderはNimbusJwtDecoderであり、nbfクレーム検証が有効であること (REQ-00030)")
+    void shouldValidateNbfClaim() {
+      // JwtDecoderが設定されていることを確認
+      // Spring SecurityのOAuth2リソースサーバーはデフォルトでnbf (Not Before) クレームを検証する
+      // NimbusJwtDecoderはnbfクレームの検証を自動的に実行するため、
+      // nbf時刻以前のトークンは拒否される
+      assertThat(jwtDecoder)
+          .as("JwtDecoderが設定されており、nbfクレーム検証が有効であること")
+          .isNotNull();
+    }
   }
 
-  @Test
-  @DisplayName("JWKSエンドポイントURLがHTTPSで設定されていること (REQ-00027)")
-  void shouldHaveHttpsJwkSetUrl() {
-    assertThat(jwkSetUrl).as("JWKSエンドポイントURLがHTTPSで設定されていること").startsWith("https://");
-  }
+  @Nested
+  @DisplayName("セキュリティフィルターチェーン設定のテスト")
+  class SecurityFilterChainTest {
 
-  @Test
-  @DisplayName("JwtDecoderはNimbusJwtDecoderであり、nbfクレーム検証が有効であること (REQ-00030)")
-  void shouldValidateNbfClaim() {
-    // JwtDecoderが設定されていることを確認
-    // Spring SecurityのOAuth2リソースサーバーはデフォルトでnbf (Not Before) クレームを検証する
-    // NimbusJwtDecoderはnbfクレームの検証を自動的に実行するため、
-    // nbf時刻以前のトークンは拒否される
-    assertThat(jwtDecoder).as("JwtDecoderが設定されており、nbfクレーム検証が有効であること").isNotNull();
+    @Test
+    @DisplayName("SecurityFilterChain Beanが設定されていること")
+    void shouldHaveSecurityFilterChainConfigured() {
+      assertThat(securityFilterChain)
+          .as("SecurityFilterChain Beanが設定されていること")
+          .isNotNull();
+    }
   }
 }

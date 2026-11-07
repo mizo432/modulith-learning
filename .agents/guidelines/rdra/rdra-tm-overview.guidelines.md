@@ -1,10 +1,10 @@
-# ER（エンティティ関係）モデルの詳細解説
+# ER（エンティティ関係）モデルの概要
 
 **目的**: ERモデルの基本概念、特徴、PlantUML記法の基本を解説する。
 
 ---
 
-**ナビゲーション**: [概要](./rdra-overview.guidelines.md) | **[TM概要]** | [TMフェーズ1](./rdra-tm-phase1.guidelines.md) | [TMフェーズ2](./rdra-tm-phase2.guidelines.md) | [TMフェーズ3](./rdra-tm-phase3.guidelines.md) | [TMフェーズ4](./rdra-tm-phase4.guidelines.md) | [TMフェーズ5](./rdra-tm-phase5.guidelines.md)
+**ナビゲーション**: [概要](./rdra-overview.guidelines.md) | **[TM概要](./rdra-tm-overview.guidelines.md)** | [TMフェーズ1](./rdra-tm-phase1.guidelines.md) | [TMフェーズ2](./rdra-tm-phase2.guidelines.md) | [TMフェーズ3](./rdra-tm-phase3.guidelines.md) | [TMフェーズ4](./rdra-tm-phase4.guidelines.md) | [TMフェーズ5](./rdra-tm-phase5.guidelines.md)
 
 ---
 
