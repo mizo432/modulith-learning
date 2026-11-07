@@ -8,24 +8,27 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Table(name = "impediments")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Impediment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private SnowflakeId id;
 
     @Column(name = "sprint_id", nullable = false)
@@ -63,17 +66,25 @@ public class Impediment {
     private LocalDateTime deletedAt;
 
     public void resolve() {
+        if (this.status != ImpedimentStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Impediment can only be resolved from IN_PROGRESS status, current status: " + this.status);
+        }
         this.status = ImpedimentStatus.RESOLVED;
         this.resolvedAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
     public void startWorkingOn() {
+        if (this.status != ImpedimentStatus.NEW) {
+            throw new IllegalStateException("Impediment can only start working on from NEW status, current status: " + this.status);
+        }
         this.status = ImpedimentStatus.IN_PROGRESS;
         this.updatedAt = LocalDateTime.now();
     }
 
     public void update(@NonNull String title, @NonNull String description, String impact, UUID assigneeId) {
+        checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
+        checkNotNull(description, () -> new IllegalArgumentException("description must not be null"));
         this.title = title;
         this.description = description;
         this.impact = impact;

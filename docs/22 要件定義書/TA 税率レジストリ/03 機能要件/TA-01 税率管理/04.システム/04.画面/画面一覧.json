@@ -1,0 +1,108 @@
+{
+  "screens": [
+    {
+      "screen_name": "SCR-01001",
+      "fields": [
+        {
+          "field_name": "名称",
+          "type": "string",
+          "tooltip": "名称"
+        },
+        {
+          "field_name": "種類",
+          "type": "string",
+          "tooltip": "種類"
+        },
+        {
+          "field_name": "税率",
+          "type": "number",
+          "tooltip": "税率"
+        },
+        {
+          "field_name": "適用期間",
+          "type": "string",
+          "tooltip": "適用期間"
+        },
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "更新日",
+          "type": "string",
+          "tooltip": "更新日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(税率)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "税率一覧",
+          "dummy_data": [
+            {
+              "field_name": "名称",
+              "value": "税率データ1"
+            },
+            {
+              "field_name": "種類",
+              "value": "税率データ1"
+            },
+            {
+              "field_name": "税率",
+              "value": "税率データ1"
+            }
+          ]
+        },
+        {
+          "display_name": "税率詳細",
+          "dummy_data": [
+            {
+              "field_name": "名称",
+              "value": "税率データ2"
+            },
+            {
+              "field_name": "種類",
+              "value": "税率データ2"
+            },
+            {
+              "field_name": "税率",
+              "value": "税率データ2"
+            }
+          ]
+        },
+        {
+          "display_name": "税率照会",
+          "dummy_data": [
+            {
+              "field_name": "名称",
+              "value": "税率データ3"
+            },
+            {
+              "field_name": "種類",
+              "value": "税率データ3"
+            },
+            {
+              "field_name": "税率",
+              "value": "税率データ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録"
+    }
+  ]
+}

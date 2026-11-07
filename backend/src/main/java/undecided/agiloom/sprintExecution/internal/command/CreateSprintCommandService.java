@@ -10,7 +10,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
 @Transactional
-public class CreateSprintCommandService {
+public class CreateSprintCommandService implements CreateSprintCommandServiceInterface {
 
     private final SprintRepository sprintRepository;
 
@@ -19,6 +19,9 @@ public class CreateSprintCommandService {
     }
 
     public SnowflakeId execute(@NonNull CreateSprintCommand command) {
+        if (!command.getEndDate().isAfter(command.getStartDate())) {
+            throw new IllegalArgumentException("endDate must be after startDate");
+        }
         Sprint sprint = Sprint.builder()
                 .productId(command.getProductId())
                 .sprintNumber(command.getSprintNumber())

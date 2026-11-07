@@ -1,0 +1,148 @@
+package undecided.agiloom.sprintExecution.internal.presentation;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.NoSuchElementException;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintStatus;
+import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
+import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
+import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
+import undecided.supporting.snowflake.SnowflakeId;
+
+@Tag("small")
+@DisplayName("SprintCommandControllerの単体テスト")
+@ExtendWith(MockitoExtension.class)
+class SprintCommandControllerTest {
+
+  @Mock private CreateSprintCommandServiceInterface createSprintCommandService;
+  @Mock private UpdateSprintCommandServiceInterface updateSprintCommandService;
+  @Mock private SprintQueryServiceInterface sprintQueryService;
+  @Mock private SprintQueryController sprintQueryController;
+
+  private SprintCommandController controller;
+
+  @BeforeEach
+  void setUp() {
+    controller = new SprintCommandController(
+        createSprintCommandService,
+        updateSprintCommandService,
+        sprintQueryService,
+        sprintQueryController
+    );
+  }
+
+  private Sprint createSprint(SnowflakeId id) {
+    return Sprint.builder()
+        .id(id)
+        .productId(UUID.randomUUID())
+        .sprintNumber(1)
+        .title("Sprint 1")
+        .goal("Goal 1")
+        .startDate(LocalDate.now())
+        .endDate(LocalDate.now().plusWeeks(2))
+        .teamId(UUID.randomUUID())
+        .teamName("Team A")
+        .build();
+  }
+
+  @Nested
+  @DisplayName("createSprint メソッドのテスト")
+  class CreateSprintTest {
+
+    @Test
+    @DisplayName("Sprintを作成してResponseEntityを返すこと")
+    void shouldCreateSprintAndReturnResponseEntity() {
+      // Arrange
+      SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
+      UUID productId = UUID.randomUUID();
+      UUID teamId = UUID.randomUUID();
+      CreateSprintRequest request = CreateSprintRequest.builder()
+          .productId(productId)
+          .sprintNumber(1)
+          .title("Sprint 1")
+          .goal("Goal 1")
+          .startDate(LocalDate.now())
+          .endDate(LocalDate.now().plusWeeks(2))
+          .teamId(teamId)
+          .teamName("Team A")
+          .build();
+
+      Sprint sprint = createSprint(snowflakeId);
+      SprintResponse expectedResponse = SprintResponse.builder()
+          .id(snowflakeId)
+          .title("Sprint 1")
+          .build();
+
+      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
+      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
+      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+
+      // Act
+      ResponseEntity<SprintResponse> result = controller.createSprint(request);
+
+      // Assert
+      assertThat(result.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);
+      assertThat(result.getBody()).isEqualTo(expectedResponse);
+      verify(createSprintCommandService).execute(any());
+    }
+  }
+
+  @Nested
+  @DisplayName("changeStatus メソッドのテスト")
+  class ChangeStatusTest {
+
+    @Test
+    @DisplayName("Sprintのステータスを変更してResponseEntityを返すこと")
+    void shouldChangeStatusAndReturnResponseEntity() {
+      // Arrange
+      SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
+      Sprint sprint = createSprint(snowflakeId);
+      SprintResponse expectedResponse = SprintResponse.builder()
+          .id(snowflakeId)
+          .status(SprintStatus.ACTIVE)
+          .build();
+
+      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
+      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+
+      // Act
+      ResponseEntity<SprintResponse> result = controller.changeStatus(
+          String.valueOf(snowflakeId.value()), SprintStatus.ACTIVE);
+
+      // Assert
+      assertThat(result.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);
+      assertThat(result.getBody()).isEqualTo(expectedResponse);
+      verify(updateSprintCommandService).changeStatus(any(SnowflakeId.class), any(SprintStatus.class));
+    }
+
+    @Test
+    @DisplayName("Sprintが見つからない場合は例外をスローすること")
+    void shouldThrowExceptionWhenSprintNotFound() {
+      // Arrange
+      SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
+      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.empty());
+
+      // Act & Assert
+      assertThatThrownBy(() -> controller.changeStatus(
+          String.valueOf(snowflakeId.value()), SprintStatus.ACTIVE))
+          .isInstanceOf(NoSuchElementException.class);
+    }
+  }
+}

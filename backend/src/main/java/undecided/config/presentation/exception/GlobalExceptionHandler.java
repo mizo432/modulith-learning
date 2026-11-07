@@ -140,6 +140,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   /**
+   * {@code IllegalArgumentException} をハンドリングし、400 Bad Request のエラーレスポンスを返却します。
+   *
+   * <p>ID形式の不正や引数の検証失敗など、クライアントのミスによって発生します。
+   *
+   * @param ex 処理対象の {@code IllegalArgumentException}
+   * @param request エラーが発生した際のリクエスト情報を表す {@code HttpServletRequest} オブジェクト。
+   * @return 400 Bad Request の {@code ProblemDetail} オブジェクト
+   */
+  @ExceptionHandler(IllegalArgumentException.class)
+  public @NonNull ProblemDetail handleIllegalArgument(
+      @NonNull IllegalArgumentException ex, @NonNull HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    problem.setTitle("Bad Request");
+    problem.setInstance(URI.create(request.getRequestURI()));
+    problem.setProperty("errorCode", "ILLEGAL_ARGUMENT");
+    return problem;
+  }
+
+  /**
    * 予期しない例外を記録し、リクエストURIとトレースIDを含む500エラーレスポンスを返します。
    *
    * @param ex 記録する例外

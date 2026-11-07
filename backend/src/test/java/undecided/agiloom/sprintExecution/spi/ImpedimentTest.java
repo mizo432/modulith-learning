@@ -1,6 +1,7 @@
 package undecided.agiloom.sprintExecution.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -51,15 +52,26 @@ class ImpedimentTest {
   class ResolveMethodTest {
 
     @Test
-    @DisplayName("ステータスがRESOLVEDに更新される")
+    @DisplayName("IN_PROGRESS状態からRESOLVEDに更新される")
     void shouldUpdateStatusToResolved() {
       Impediment impediment = createImpediment();
+      impediment.startWorkingOn();
 
       impediment.resolve();
 
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.RESOLVED);
       assertThat(impediment.getResolvedAt()).isNotNull();
       assertThat(impediment.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("NEW状態からresolveするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenResolveFromNew() {
+      Impediment impediment = createImpediment();
+
+      assertThatThrownBy(() -> impediment.resolve())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("NEW");
     }
   }
 
@@ -97,6 +109,26 @@ class ImpedimentTest {
       assertThat(impediment.getAssigneeId()).isEqualTo(assigneeId);
       assertThat(impediment.getUpdatedAt()).isNotNull();
     }
+
+    @Test
+    @DisplayName("タイトルがnullの場合、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsNull() {
+      Impediment impediment = createImpediment();
+
+      assertThatThrownBy(() -> impediment.update(null, "Description", "Impact", UUID.randomUUID()))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("title must not be null");
+    }
+
+    @Test
+    @DisplayName("説明がnullの場合、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenDescriptionIsNull() {
+      Impediment impediment = createImpediment();
+
+      assertThatThrownBy(() -> impediment.update("Title", null, "Impact", UUID.randomUUID()))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("description must not be null");
+    }
   }
 
   @Nested
@@ -121,6 +153,41 @@ class ImpedimentTest {
 
       impediment.resolve();
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.RESOLVED);
+    }
+
+    @Test
+    @DisplayName("IN_PROGRESS状態からstartWorkingOnするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenStartWorkingOnFromInProgress() {
+      Impediment impediment = createImpediment();
+      impediment.startWorkingOn();
+
+      assertThatThrownBy(() -> impediment.startWorkingOn())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("IN_PROGRESS");
+    }
+
+    @Test
+    @DisplayName("RESOLVED状態からresolveするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenResolveFromResolved() {
+      Impediment impediment = createImpediment();
+      impediment.startWorkingOn();
+      impediment.resolve();
+
+      assertThatThrownBy(() -> impediment.resolve())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("RESOLVED");
+    }
+
+    @Test
+    @DisplayName("RESOLVED状態からstartWorkingOnするとIllegalStateExceptionがスローされる")
+    void shouldThrowExceptionWhenStartWorkingOnFromResolved() {
+      Impediment impediment = createImpediment();
+      impediment.startWorkingOn();
+      impediment.resolve();
+
+      assertThatThrownBy(() -> impediment.startWorkingOn())
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("RESOLVED");
     }
   }
 }

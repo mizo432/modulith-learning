@@ -1,29 +1,37 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import java.util.List;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import undecided.agiloom.sprintExecution.spi.Sprint;
-import undecided.agiloom.sprintExecution.internal.query.SprintQueryService;
+import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
 import undecided.supporting.snowflake.SnowflakeId;
 
+// @Validatedを付与することで、@RequestParamへの@Min/@Max制約がSpring MVC層で有効になる
+@Validated
 @RestController
 @RequestMapping("/api/v1/sprints")
 public class SprintQueryController {
 
-    private final SprintQueryService sprintQueryService;
+    // ページネーションの最大サイズ制限（DoS対策）。@Max制約で拒否されるが、防御の纵深として保持
+    private static final int MAX_PAGE_SIZE = 100;
 
-    public SprintQueryController(SprintQueryService sprintQueryService) {
+    private final SprintQueryServiceInterface sprintQueryService;
+
+    public SprintQueryController(SprintQueryServiceInterface sprintQueryService) {
         this.sprintQueryService = sprintQueryService;
     }
 
     @GetMapping
     public List<SprintResponse> getSprints(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(MAX_PAGE_SIZE) int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return sprintQueryService.findAll(pageable).stream()
                 .map(this::toResponse)
@@ -32,10 +40,20 @@ public class SprintQueryController {
 
     @GetMapping("/{id}")
     public SprintResponse getSprint(@PathVariable @NotNull String id) {
-        SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
+        SnowflakeId snowflakeId = parseSnowflakeId(id);
         Sprint sprint = sprintQueryService.findById(snowflakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
         return toResponse(sprint);
+    }
+
+    // IDをSnowflakeIdに変換し、不正な形式の場合はIllegalArgumentExceptionをスローする
+    private SnowflakeId parseSnowflakeId(String id) {
+        try {
+            long value = Long.parseLong(id);
+            return SnowflakeId.of(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Sprint IDは数値である必要があります: " + id, e);
+        }
     }
 
     SprintResponse toResponse(Sprint sprint) {
