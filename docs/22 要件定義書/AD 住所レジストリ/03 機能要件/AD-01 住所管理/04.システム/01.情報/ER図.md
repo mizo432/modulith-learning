@@ -15,6 +15,7 @@ entity "ADDRESS" as ADDRESS {
   番地 : VARCHAR
   建物 : VARCHAR
   郵便番号 : VARCHAR
+  カスタマバーコード値 : VARCHAR
   作成日 : VARCHAR
   更新日 : VARCHAR
 }
@@ -34,6 +35,12 @@ entity "住所" as ADDRESS {
   国 : VARCHAR
   都道府県 : VARCHAR
   市区町村 : VARCHAR
+  番地 : VARCHAR
+  建物 : VARCHAR
+  郵便番号 : VARCHAR
+  カスタマバーコード値 : VARCHAR
+  作成日 : VARCHAR
+  更新日 : VARCHAR
 }
 
 @enduml
