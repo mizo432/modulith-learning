@@ -4,6 +4,7 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.notification.spi.NotificationType;
 
 /**
@@ -26,6 +27,7 @@ public class SendNotificationCommand {
     /**
      * 通知の送信元となるリソースのID（例: タスクID、スプリントIDなど）
      */
+    @Nullable
     private final UUID sourceId;
 
     /**
