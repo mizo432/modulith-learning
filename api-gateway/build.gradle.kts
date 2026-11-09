@@ -54,6 +54,15 @@ dependencyManagement {
     }
 }
 
+// Spring Boot 4.1.1 manages junit-platform-launcher at 1.14.4, but JUnit 6 requires 6.x
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.junit.platform") {
+            useVersion("6.1.3")
+        }
+    }
+}
+
 tasks.test {
     useJUnitPlatform {
         excludeTags("medium", "large")
