@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import undecided.supporting.notification.spi.Notification;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**

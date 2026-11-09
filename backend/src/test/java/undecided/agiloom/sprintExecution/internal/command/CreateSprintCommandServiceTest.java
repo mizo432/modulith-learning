@@ -17,22 +17,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.internal.Sprint;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 @Tag("small")
 @DisplayName("CreateSprintCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class CreateSprintCommandServiceTest {
 
   private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
   private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   @Mock private SprintRepository sprintRepository;
+  @Mock private SnowflakeIdGenerator snowflakeIdGenerator;
   private SprintResponseAssembler sprintResponseAssembler;
 
   private CreateSprintCommandService service;
@@ -40,7 +45,8 @@ class CreateSprintCommandServiceTest {
   @BeforeEach
   void setUp() {
     sprintResponseAssembler = new SprintResponseAssembler();
-    service = new CreateSprintCommandService(sprintRepository, sprintResponseAssembler);
+    service = new CreateSprintCommandService(sprintRepository, sprintResponseAssembler, snowflakeIdGenerator);
+    when(snowflakeIdGenerator.nextId()).thenReturn(1234567890L);
   }
 
   @Nested

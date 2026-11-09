@@ -20,7 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.github.mizo432.shared.exception.BusinessException;
-import undecided.supporting.notification.internal.Notification;
+import undecided.supporting.notification.spi.Notification;
 import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationRequest;
 import undecided.supporting.notification.spi.NotificationType;

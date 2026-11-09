@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.github.mizo432.shared.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.supporting.notification.spi.Notification;
 import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationRequest;
 import undecided.supporting.notification.spi.NotificationService;
