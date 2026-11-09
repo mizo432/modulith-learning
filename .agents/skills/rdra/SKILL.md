@@ -1,5 +1,5 @@
 ---
-name: to-RDRA-model
+name: rdra-top-down
 description: >
   このSkillは、ユーザーとの対話から要求を整理し、RDRA（Relationship Driven Requirement Analysis）モデルを構築してファイルにまとめる。
 
