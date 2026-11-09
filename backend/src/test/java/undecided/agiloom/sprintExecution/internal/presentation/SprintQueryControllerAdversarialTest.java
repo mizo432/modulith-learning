@@ -140,8 +140,8 @@ class SprintQueryControllerAdversarialTest {
   class GetSprintAdversarialTest {
 
     @Test
-    @DisplayName("IDに数値以外の文字列を指定した場合、IllegalArgumentExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionForNonNumericId() {
+    @DisplayName("IDに数値以外の文字列を指定した場合、BusinessExceptionをスローすること")
+    void shouldThrowBusinessExceptionForNonNumericId() {
       // Act & Assert - IDパース時にNumberFormatExceptionをIllegalArgumentExceptionに変換する
       assertThatThrownBy(() -> controller.getSprint("abc"))
           .isInstanceOf(BusinessException.class)
@@ -150,7 +150,7 @@ class SprintQueryControllerAdversarialTest {
 
     @Test
     @DisplayName("IDに空文字列を指定した場合、BusinessExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionForEmptyId() {
+    void shouldThrowBusinessExceptionForEmptyId() {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint(""))
           .isInstanceOf(BusinessException.class)
@@ -158,7 +158,7 @@ class SprintQueryControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("IDに負の値を指定した場合、SnowflakeIdでIllegalArgumentExceptionをスローすること")
+    @DisplayName("IDに負の値を指定した場合、SnowflakeIdの事前条件検証でIllegalArgumentExceptionをスローすること")
     void shouldHandleNegativeId() {
       // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗
       assertThatThrownBy(() -> controller.getSprint("-123"))
@@ -168,7 +168,7 @@ class SprintQueryControllerAdversarialTest {
 
     @Test
     @DisplayName("IDにLong.MAX_VALUEより大きな値を指定した場合、BusinessExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionForOverflowId() {
+    void shouldThrowBusinessExceptionForOverflowId() {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint("99999999999999999999"))
           .isInstanceOf(BusinessException.class)

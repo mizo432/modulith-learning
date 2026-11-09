@@ -42,7 +42,7 @@ class OrganizationQueryImplTest {
 
   @BeforeEach
   void setUp() {
-    testUuid = UUID.randomUUID();
+    testUuid = UUID.fromString("11111111-1111-1111-1111-111111111111");
     testOrganization = createTestOrganization();
   }
 
@@ -199,7 +199,7 @@ class OrganizationQueryImplTest {
   @DisplayName("findById should return empty optional when not found")
   void testFindById_NonExistingId_ShouldReturnEmpty() {
     // Given
-    UUID nonExistingId = UUID.randomUUID();
+    UUID nonExistingId = UUID.fromString("22222222-2222-2222-2222-222222222222");
     when(organizationRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
     // When
@@ -305,9 +305,9 @@ class OrganizationQueryImplTest {
   @DisplayName("findById with different UUIDs should call repository for each")
   void testFindById_DifferentIds_ShouldCallRepositoryForEach() {
     // Given
-    UUID id1 = UUID.randomUUID();
-    UUID id2 = UUID.randomUUID();
-    UUID id3 = UUID.randomUUID();
+    UUID id1 = UUID.fromString("11111111-1111-1111-1111-111111111111");
+    UUID id2 = UUID.fromString("22222222-2222-2222-2222-222222222222");
+    UUID id3 = UUID.fromString("33333333-3333-3333-3333-333333333333");
     when(organizationRepository.findById(id1)).thenReturn(Optional.of(testOrganization));
     when(organizationRepository.findById(id2)).thenReturn(Optional.empty());
     when(organizationRepository.findById(id3)).thenReturn(Optional.of(createTestOrganization()));

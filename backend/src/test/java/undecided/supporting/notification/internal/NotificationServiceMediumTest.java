@@ -3,6 +3,7 @@ package undecided.supporting.notification.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -44,8 +45,8 @@ class NotificationServiceMediumTest {
   @Autowired
   private NotificationRepository notificationRepository;
 
-  private static final UUID RECIPIENT_ID = UUID.randomUUID();
-  private static final UUID SOURCE_ID = UUID.randomUUID();
+  private static final UUID RECIPIENT_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
+  private static final UUID SOURCE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
   private static final String SOURCE_DOMAIN = "agiloom";
 
   @Nested
@@ -157,7 +158,7 @@ class NotificationServiceMediumTest {
     @DisplayName("通知がない受信者の場合は空のリストが返されること")
     void shouldReturnEmptyListWhenNoNotifications() {
       // Arrange
-      UUID emptyRecipientId = UUID.randomUUID();
+      UUID emptyRecipientId = UUID.fromString("55555555-5555-5555-5555-555555555555");
 
       // Act
       List<NotificationDTO> result = notificationService.getNotificationsByRecipient(emptyRecipientId);
@@ -257,16 +258,16 @@ class NotificationServiceMediumTest {
     void shouldThrowExceptionWhenNotificationNotFound() {
       // Act & Assert
       assertThatThrownBy(() -> notificationService.markAsRead("999999999999999999"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("通知が見つかりません");
     }
 
     @Test
-    @DisplayName("無効なID文字列の場合、IllegalArgumentExceptionがスローされること")
+    @DisplayName("無効なID文字列の場合、BusinessExceptionがスローされること")
     void shouldThrowExceptionWhenInvalidIdString() {
-      // Act & Assert - 実装詳細に依存せず、業務的な例外タイプをアサート
+      // Act & Assert
       assertThatThrownBy(() -> notificationService.markAsRead("invalid-id"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("通知IDは数値である必要があります");
     }
 

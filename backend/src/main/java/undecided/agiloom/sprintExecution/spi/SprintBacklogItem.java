@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -23,7 +22,6 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Entity
 @Table(name = "sprint_backlogs")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -65,17 +63,58 @@ public class SprintBacklogItem {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void assignTo(UUID assigneeId) {
+    public void assignTo(@NonNull UUID assigneeId) {
+        checkNotNull(assigneeId, () -> new BusinessException("assigneeId must not be null"));
         this.assigneeId = assigneeId;
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(@NonNull String workDescription, TaskStatus status, UUID assigneeId) {
+    public void update(@NonNull String workDescription, @NonNull TaskStatus status, @NonNull UUID assigneeId) {
         checkNotNull(workDescription, () -> new BusinessException("workDescription must not be null"));
         checkNotNull(status, () -> new BusinessException("status must not be null"));
+        checkNotNull(assigneeId, () -> new BusinessException("assigneeId must not be null"));
+        if (workDescription.trim().length() > 2000) {
+            throw new BusinessException("workDescription must not exceed 2000 characters");
+        }
         this.workDescription = workDescription;
         this.status = status;
         this.assigneeId = assigneeId;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    void setId(SnowflakeId id) {
+        this.id = id;
+    }
+
+    void setSprintId(SnowflakeId sprintId) {
+        this.sprintId = sprintId;
+    }
+
+    void setBacklogItemId(SnowflakeId backlogItemId) {
+        this.backlogItemId = backlogItemId;
+    }
+
+    void setWorkDescription(String workDescription) {
+        this.workDescription = workDescription;
+    }
+
+    void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    void setAssigneeId(UUID assigneeId) {
+        this.assigneeId = assigneeId;
+    }
+
+    void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

@@ -266,7 +266,7 @@ class SprintCommandControllerAdversarialTest {
 
     @Test
     @DisplayName("IDに数値以外の文字列を指定した場合、BusinessExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionForNonNumericId() {
+    void shouldThrowBusinessExceptionForNonNumericId() {
       // Arrange
       ChangeStatusRequest changeStatusRequest = ChangeStatusRequest.builder()
           .status(SprintStatus.ACTIVE)
@@ -279,7 +279,7 @@ class SprintCommandControllerAdversarialTest {
 
     @Test
     @DisplayName("IDに空文字列を指定した場合、BusinessExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionForEmptyId() {
+    void shouldThrowBusinessExceptionForEmptyId() {
       // Arrange
       ChangeStatusRequest changeStatusRequest = ChangeStatusRequest.builder()
           .status(SprintStatus.ACTIVE)
@@ -291,7 +291,7 @@ class SprintCommandControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("IDに負の値を指定した場合、SnowflakeIdでIllegalArgumentExceptionをスローすること")
+    @DisplayName("IDに負の値を指定した場合、SnowflakeIdの事前条件検証でIllegalArgumentExceptionをスローすること")
     void shouldHandleNegativeId() {
       // Arrange
       ChangeStatusRequest changeStatusRequest = ChangeStatusRequest.builder()
@@ -305,7 +305,7 @@ class SprintCommandControllerAdversarialTest {
 
     @Test
     @DisplayName("IDにLong.MAX_VALUEより大きな値を指定した場合、BusinessExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionForOverflowId() {
+    void shouldThrowBusinessExceptionForOverflowId() {
       // Arrange
       ChangeStatusRequest changeStatusRequest = ChangeStatusRequest.builder()
           .status(SprintStatus.ACTIVE)

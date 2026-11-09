@@ -20,7 +20,7 @@ class UuidV7IdValueTest {
     @DisplayName("正常ケース: インスタンスが生成されるべき")
     void shouldCreateNewInstanceSuccessfully() {
       try (var mockedProvider = mockStatic(UuidV7Provider.class)) {
-        UUID mockUuid = UUID.randomUUID();
+        UUID mockUuid = UUID.fromString("44444444-4444-4444-4444-444444444444");
         mockedProvider.when(UuidV7Provider::newInstance).thenReturn(mockUuid);
 
         UuidValue<UuidV7IdValue> result = UuidV7IdValue.newInstance();

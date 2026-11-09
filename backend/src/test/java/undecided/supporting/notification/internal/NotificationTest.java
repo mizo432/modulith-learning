@@ -1,6 +1,9 @@
 package undecided.supporting.notification.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.github.mizo432.shared.exception.BusinessException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -260,6 +263,103 @@ class NotificationTest {
       assertThat(notification.getType()).isEqualTo(newType);
       assertThat(notification.getIsRead()).isTrue();
       assertThat(notification.getDeletedAt()).isEqualTo(newDeletedAt);
+    }
+  }
+
+  @Nested
+  @DisplayName("updateメソッドのテスト")
+  class UpdateMethodTest {
+
+    @Test
+    @DisplayName("titleとcontentが更新される")
+    void shouldUpdateTitleAndContent() {
+      // Arrange
+      Notification notification = createNotification();
+
+      // Act
+      notification.update("New title", "New content", NotificationType.SYSTEM);
+
+      // Assert
+      assertThat(notification.getTitle()).isEqualTo("New title");
+      assertThat(notification.getContent()).isEqualTo("New content");
+      assertThat(notification.getType()).isEqualTo(NotificationType.SYSTEM);
+    }
+
+    @Test
+    @DisplayName("typeはnullで更新できる")
+    void shouldUpdateWithTypeAsNull() {
+      // Arrange
+      Notification notification = createNotification();
+
+      // Act
+      notification.update("New title", "New content", null);
+
+      // Assert
+      assertThat(notification.getTitle()).isEqualTo("New title");
+      assertThat(notification.getContent()).isEqualTo("New content");
+      assertThat(notification.getType()).isEqualTo(TYPE);
+    }
+
+    @Test
+    @DisplayName("titleがnullの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsNull() {
+      // Arrange
+      Notification notification = createNotification();
+
+      // Act & Assert
+      assertThatThrownBy(() -> notification.update(null, "Content", TYPE))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not be null");
+    }
+
+    @Test
+    @DisplayName("contentがnullの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenContentIsNull() {
+      // Arrange
+      Notification notification = createNotification();
+
+      // Act & Assert
+      assertThatThrownBy(() -> notification.update("Title", null, TYPE))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("content must not be null");
+    }
+
+    @Test
+    @DisplayName("titleが空文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsEmpty() {
+      // Arrange
+      Notification notification = createNotification();
+
+      // Act & Assert
+      assertThatThrownBy(() -> notification.update("   ", "Content", TYPE))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not be empty");
+    }
+
+    @Test
+    @DisplayName("titleが200文字を超える場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleExceedsLength() {
+      // Arrange
+      Notification notification = createNotification();
+      String longTitle = "A".repeat(201);
+
+      // Act & Assert
+      assertThatThrownBy(() -> notification.update(longTitle, "Content", TYPE))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not exceed 200 characters");
+    }
+
+    @Test
+    @DisplayName("contentが2000文字を超える場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenContentExceedsLength() {
+      // Arrange
+      Notification notification = createNotification();
+      String longContent = "A".repeat(2001);
+
+      // Act & Assert
+      assertThatThrownBy(() -> notification.update("Title", longContent, TYPE))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("content must not exceed 2000 characters");
     }
   }
 
