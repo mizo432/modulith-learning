@@ -35,17 +35,17 @@ repositories {
     mavenCentral()
 }
 
-extra["guavaVersion"] = "33.7.1-jre"
-extra["icu4jVersion"] = "76.1"
-extra["jiltVersion"] = "1.7"
-extra["jdbcPostgresqlVersion"] = "11.3.4"
-extra["openapiUiVersion"] = "2.8.5"
-extra["jmoleculesBomVersion"] = "2023.2.1"
+extra["guavaVersion"] = "33.7.2-jre"
+extra["icu4jVersion"] = "79.1"
+extra["jiltVersion"] = "1.9.2"
+extra["jdbcPostgresqlVersion"] = "11.20.3"
+extra["openapiUiVersion"] = "2.10.0"
+extra["jmoleculesBomVersion"] = "2023.3.4"
 extra["archunitVersion"] = "1.3.0"
 extra["junitVersion"] = "6.1.3"
-extra["springCloudBomVersion"] = "2025.1.2"
-extra["spotbugsAnnotationVersion"] = "4.10.4"
-extra["libphonenumberVersion"] = "9.0.0"
+extra["springCloudBomVersion"] = "2025.1.4"
+extra["spotbugsAnnotationVersion"] = "4.10.5"
+extra["libphonenumberVersion"] = "9.0.43"
 extra["testcontainersVersion"] = "2.0.5"
 
 dependencies {
@@ -75,7 +75,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.security:spring-security-crypto")
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server:7.1.1")
+    implementation("org.springframework.security:spring-security-oauth2-authorization-server:7.1.2")
 }
 
 tasks.withType<Javadoc> {
@@ -91,7 +91,7 @@ dependencyManagement {
 }
 
 jacoco {
-    toolVersion = "0.8.15"
+    toolVersion = "0.8.16"
 }
 
 tasks.test {
