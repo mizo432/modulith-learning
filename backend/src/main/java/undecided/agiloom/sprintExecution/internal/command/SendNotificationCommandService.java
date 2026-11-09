@@ -17,6 +17,7 @@ import undecided.supporting.notification.spi.NotificationService;
 @Service
 public class SendNotificationCommandService implements SendNotificationCommandServiceInterface {
 
+    /** このサービスが属するモジュールのドメイン名。他のモジュールから通知を送信する場合は、NotificationServiceを直接利用すること。 */
     private static final String SOURCE_DOMAIN = "agiloom";
 
     private final NotificationService notificationService;

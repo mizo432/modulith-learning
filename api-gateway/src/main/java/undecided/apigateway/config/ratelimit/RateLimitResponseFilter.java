@@ -3,6 +3,8 @@ package undecided.apigateway.config.ratelimit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,18 +38,25 @@ public class RateLimitResponseFilter implements HandlerFilterFunction<ServerResp
   private static final String RATE_LIMIT_MESSAGE = "リクエストの送信頻度が高すぎます";
 
   /**
-   * JsonProcessingException発生時のフォールバックJSON。
+   * JsonProcessingException発生時のフォールバックJSONを動的に生成します。
    *
    * <p>設計書 7.2節で定義されたレスポンス形式の簡略版です。
-   * retryAfter、timestamp、pathは実行時に動的に設定されるため、
-   * この定数には含めません。実際にはObjectMapperによるシリアライズが成功するため、
+   * retryAfter、timestamp、pathは実行時に動的に設定されます。
+   * 実際にはObjectMapperによるシリアライズが成功するため、
    * このフォールバックに到達することは極めて稀です。
    *
    * <p>このフォールバックは {@link #objectMapper} のシリアライズが失敗した場合にのみ使用されます。
-   * {@link RateLimitExceededError} の構造が変更された場合、この定数も更新してください。
+   * {@link RateLimitExceededError} の構造が変更された場合、このメソッドも更新してください。
+   *
+   * @param retryAfter リトライ可能時間（秒）
+   * @param path リクエストパス
+   * @return フォールバックJSON文字列
    */
-  private static final String FALLBACK_JSON =
-      "{\"error\":{\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"リクエストの送信頻度が高すぎます\",\"retryAfter\":60,\"timestamp\":\"1970-01-01T00:00:00Z\",\"path\":\"\"}}";
+  private static String fallbackJson(int retryAfter, String path) {
+    String timestamp = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
+    return "{\"error\":{\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"リクエストの送信頻度が高すぎます\",\"retryAfter\":"
+        + retryAfter + ",\"timestamp\":\"" + timestamp + "\",\"path\":\"" + path + "\"}}";
+  }
 
   private final @NonNull ObjectMapper objectMapper;
   private final int defaultRetryAfterSeconds;
@@ -91,7 +100,7 @@ public class RateLimitResponseFilter implements HandlerFilterFunction<ServerResp
         log.error("Failed to serialize rate limit error response", e);
         return ServerResponse.status(HttpStatus.TOO_MANY_REQUESTS)
             .contentType(new MediaType("application", "json", StandardCharsets.UTF_8))
-            .body(FALLBACK_JSON);
+            .body(fallbackJson(retryAfter, path));
       }
     }
 

@@ -126,6 +126,10 @@ public class Role {
     if (description != null && description.trim().length() > 200) {
       throw new BusinessException("description must not exceed 200 characters");
     }
+    // validToが設定されている場合、validFromより後であることを検証する
+    if (this.validTo != null && this.validTo.isBefore(this.validFrom)) {
+      throw new BusinessException("validTo must be after validFrom");
+    }
     this.roleCode = roleCode;
     this.roleName = roleName;
     this.roleTypeCode = roleTypeCode;

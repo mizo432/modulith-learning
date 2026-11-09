@@ -1,5 +1,6 @@
 package undecided.supporting.notification.spi;
 
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -105,13 +106,13 @@ public class Notification {
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = DateProvider.currentLocalDateTime();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     /**
@@ -136,6 +137,9 @@ public class Notification {
         }
         if (title.trim().length() > 200) {
             throw new BusinessException("title must not exceed 200 characters");
+        }
+        if (content.trim().isEmpty()) {
+            throw new BusinessException("content must not be empty");
         }
         if (content.trim().length() > 2000) {
             throw new BusinessException("content must not exceed 2000 characters");

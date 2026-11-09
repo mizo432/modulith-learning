@@ -12,6 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import com.github.mizo432.shared.exception.BusinessException;
 
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -82,13 +83,13 @@ public class Sprint {
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = DateProvider.currentLocalDateTime();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     public void start() {
