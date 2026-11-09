@@ -45,5 +45,11 @@
   "ignoreDeps": [],
   "vulnerabilityAlerts": {
     "enabled": true
+  },
+  "npm": {
+    "fileMatch": [
+      "frontend/package\\.json$",
+      "frontend/package-lock\\.json$"
+    ]
   }
 }

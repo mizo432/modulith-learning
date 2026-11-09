@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         // Flyway（データベース移行ツール）のクラスパス追加
-        classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
+        classpath("org.flywaydb:flyway-database-postgresql:11.20.3")
     }
 }
 plugins {
@@ -18,9 +18,9 @@ plugins {
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("com.github.ben-manes.versions") version "0.67.0"
     // Flywayプラグイン（DBマイグレーション）
-    id("org.flywaydb.flyway") version "11.3.4"
+    id("org.flywaydb.flyway") version "11.20.3"
     jacoco
     // Pitest ミューテーションテストプラグイン
     id("info.solidsoft.pitest") version "1.19.0"
@@ -52,26 +52,26 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "2.1.0"
-extra["springModulithInsightVersion"] = "2.1.0"
-extra["guavaVersion"] = "33.6.0-jre"
-extra["icu4jVersion"] = "77.1"
-extra["yaviVersion"] = "0.16.0"
-extra["jiltVersion"] = "1.8.2"
-extra["jdbcPostgresqlVersion"] = "11.3.4"
-extra["openapiUiVersion"] = "2.8.9"
-extra["jmoleculesBomVersion"] = "2023.2.1"
+extra["springModulithVersion"] = "2.1.2"
+extra["springModulithInsightVersion"] = "2.1.2"
+extra["guavaVersion"] = "33.7.2-jre"
+extra["icu4jVersion"] = "79.1"
+extra["yaviVersion"] = "0.17.2"
+extra["jiltVersion"] = "1.9.2"
+extra["jdbcPostgresqlVersion"] = "11.20.3"
+extra["openapiUiVersion"] = "2.10.0"
+extra["jmoleculesBomVersion"] = "2023.3.4"
 extra["archunitVersion"] = "1.5.1"
-extra["junitVersion"] = "6.1.0"
+extra["junitVersion"] = "6.1.3"
 // Override Spring Boot BOM to align all JUnit artifacts (Jupiter, Platform, Vintage)
-extra["junit-jupiter.version"] = "6.1.0"
-extra["springCloudBomVersion"] = "2025.1.2"
-extra["spotbugsAnnotationVersion"] = "4.9.3"
-extra["libphonenumberVersion"] = "9.0.9"
-extra["poiVersion"] = "5.5.0"
+extra["junit-jupiter.version"] = "6.1.3"
+extra["springCloudBomVersion"] = "2025.1.4"
+extra["spotbugsAnnotationVersion"] = "4.10.5"
+extra["libphonenumberVersion"] = "9.0.43"
+extra["poiVersion"] = "5.5.1"
 extra["jspecifyVersion"] = "1.0.1"
 extra["assertjDbVersion"] = "3.0.2"
-extra["uuidGeneratorVersion"] = "5.1.0"
+extra["uuidGeneratorVersion"] = "5.2.0"
 extra["superCsvVersion"] = "2.4.0"
 extra["testcontainersVersion"] = "2.0.5"
 
@@ -80,7 +80,7 @@ extra["testcontainersVersion"] = "2.0.5"
 configurations.all {
     resolutionStrategy.eachDependency {
         if (requested.group == "org.junit.platform") {
-            useVersion("6.1.0")
+            useVersion("6.1.3")
         }
     }
 }
