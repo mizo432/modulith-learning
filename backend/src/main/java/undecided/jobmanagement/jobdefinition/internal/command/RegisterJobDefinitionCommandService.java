@@ -23,9 +23,10 @@ public class RegisterJobDefinitionCommandService implements RegisterJobDefinitio
   private final SnowflakeIdGenerator snowflakeIdGenerator;
 
   @Override
-  public void register(JobDefinitionDTO jobDefinitionDTO) {
+  public SnowflakeId register(JobDefinitionDTO jobDefinitionDTO) {
     JobDefinition jobDefinition = new JobDefinition();
-    jobDefinition.setId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
+    SnowflakeId id = SnowflakeId.of(snowflakeIdGenerator.nextId());
+    jobDefinition.setId(id);
     jobDefinition.setJobCode(JobCode.of(jobDefinitionDTO.getJobCode()));
     jobDefinition.setVersion(JobVersion.of(jobDefinitionDTO.getVersion()));
     jobDefinition.setParameterSpec(ParameterSpec.of(jobDefinitionDTO.getParameterSpec()));
@@ -38,5 +39,6 @@ public class RegisterJobDefinitionCommandService implements RegisterJobDefinitio
     jobDefinition.setCreatedBy(jobDefinitionDTO.getCreatedBy());
     
     jobDefinitionRepository.save(jobDefinition);
+    return id;
   }
 }

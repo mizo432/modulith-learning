@@ -52,8 +52,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     checkNotNull(e, () -> new NullPointerException("e must not be null."));
     Map<String, Object> error = new HashMap<>();
     error.put("error", e.getMessage());
-    return ProblemDetail.forStatusAndDetail(
-        HttpStatus.BAD_REQUEST, Lists2.getLast(e.getResultMessages().getList()).text());
+    
+    // 空リストの場合のNullPointerExceptionを回避
+    var lastMessage = Lists2.getLast(e.getResultMessages().getList());
+    String detail = (lastMessage != null) ? lastMessage.text() : e.getMessage();
+    
+    return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
   }
 
   /**

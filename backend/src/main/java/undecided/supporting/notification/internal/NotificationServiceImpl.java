@@ -72,15 +72,11 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void markAsRead(String notificationId) {
         Objects.requireNonNull(notificationId, "notificationIdはnullであってはいけません");
-        long idValue;
-        try {
-            idValue = Long.parseLong(notificationId);
-        } catch (NumberFormatException e) {
-            throw new BusinessException("通知IDは数値である必要があります: " + notificationId);
-        }
         SnowflakeId id;
         try {
-            id = SnowflakeId.of(idValue);
+            id = SnowflakeId.of(Long.parseLong(notificationId));
+        } catch (NumberFormatException e) {
+            throw new BusinessException("通知IDは数値である必要があります: " + notificationId);
         } catch (IllegalArgumentException e) {
             throw new BusinessException("通知IDは有効なIDである必要があります: " + notificationId);
         }

@@ -1,8 +1,9 @@
 package undecided.jobmanagement.jobexecution.spi.jobexecution.command;
 
 import undecided.jobmanagement.jobexecution.spi.jobexecution.dto.JobExecutionDTO;
+import undecided.supporting.snowflake.SnowflakeId;
 
 public interface StartJobCommand {
   
-  void startJob(JobExecutionDTO jobExecutionDTO);
+  SnowflakeId startJob(JobExecutionDTO jobExecutionDTO);
 }

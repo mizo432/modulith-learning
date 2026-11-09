@@ -21,9 +21,10 @@ public class StartJobCommandService implements StartJobCommand {
   private final SnowflakeIdGenerator snowflakeIdGenerator;
 
   @Override
-  public void startJob(JobExecutionDTO jobExecutionDTO) {
+  public SnowflakeId startJob(JobExecutionDTO jobExecutionDTO) {
     JobExecution jobExecution = new JobExecution();
-    jobExecution.setId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
+    SnowflakeId id = SnowflakeId.of(snowflakeIdGenerator.nextId());
+    jobExecution.setId(id);
     jobExecution.setExecutionId(ExecutionId.of(jobExecutionDTO.getExecutionId()));
     jobExecution.setJobCode(jobExecutionDTO.getJobCode());
     jobExecution.setState(ExecutionState.PENDING);
@@ -32,5 +33,6 @@ public class StartJobCommandService implements StartJobCommand {
     jobExecution.setCreatedBy(jobExecutionDTO.getCreatedBy());
     
     jobExecutionRepository.save(jobExecution);
+    return id;
   }
 }

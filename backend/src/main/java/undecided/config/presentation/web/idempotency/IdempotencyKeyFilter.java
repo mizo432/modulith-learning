@@ -8,6 +8,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.Ordered;
@@ -88,7 +90,11 @@ public class IdempotencyKeyFilter implements Filter {
     // レスポンス結果をキャッシュに保存（ボディを含む）
     if (idempotencyKeyStore.isKeyNew(key)) {
       byte[] responseBody = wrappedResponse.getContentAsByteArray();
-      String body = responseBody.length > 0 ? new String(responseBody, wrappedResponse.getCharacterEncoding()) : null;
+      // 文字エンコーディングがnullの場合、UTF-8をデフォルトとして使用してマルチバイト文字の破損を防止する
+      Charset charset = wrappedResponse.getCharacterEncoding() != null 
+          ? Charset.forName(wrappedResponse.getCharacterEncoding()) 
+          : StandardCharsets.UTF_8;
+      String body = responseBody.length > 0 ? new String(responseBody, charset) : null;
       idempotencyKeyStore.put(key, wrappedResponse.getStatus(), body);
     }
 
