@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.command.StartJobCommand;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.dto.JobExecutionDTO;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * JobExecutionControllerに対する敵対的検証テスト。
@@ -51,18 +53,16 @@ class JobExecutionControllerAdversarialTest {
   class StartJobAdversarialTest {
 
     @Test
-    @DisplayName("executionIdにSQLインジェクション文字列を含む場合、URI.createでIllegalArgumentExceptionをスローすること")
+    @DisplayName("executionIdにSQLインジェクション文字列を含む場合、UriComponentsBuilderでエンコードされること")
     void shouldRejectSqlInjectionInExecutionId() {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setExecutionId("'; DROP TABLE job_execution; --");
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
-      // Act & Assert - URI.create()が特殊文字';を拒否する
-      // これは間接的な防御だが、バリデーションとしての意図はない
-      assertThatThrownBy(() -> controller.startJob(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Illegal character");
+      // Act & Assert - UriComponentsBuilderが特殊文字をエンコードするため、例外はスローされない
+      ResponseEntity<Void> response = controller.startJob(dto);
+      assertThat(response.getStatusCode().value()).isEqualTo(201);
     }
 
     @Test
@@ -71,7 +71,7 @@ class JobExecutionControllerAdversarialTest {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setState("INVALID_STATE");
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert - 列挙型チェックが欠如
       assertThatCode(() -> controller.startJob(dto))
@@ -84,7 +84,7 @@ class JobExecutionControllerAdversarialTest {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setState(null);
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.startJob(dto))
@@ -97,7 +97,7 @@ class JobExecutionControllerAdversarialTest {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setProcessedCount(-1L);
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.startJob(dto))
@@ -110,7 +110,7 @@ class JobExecutionControllerAdversarialTest {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setProcessedCount(Long.MAX_VALUE);
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.startJob(dto))
@@ -123,7 +123,7 @@ class JobExecutionControllerAdversarialTest {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setErrorMessage("Error\0Injected");
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.startJob(dto))
@@ -136,7 +136,7 @@ class JobExecutionControllerAdversarialTest {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setCheckpointPosition("not-a-valid-checkpoint");
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.startJob(dto))
@@ -158,7 +158,7 @@ class JobExecutionControllerAdversarialTest {
       // Arrange
       JobExecutionDTO dto = createValidDto();
       dto.setCreatedBy(null);
-      doNothing().when(startJobCommand).startJob(any());
+      when(startJobCommand.startJob(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.startJob(dto))

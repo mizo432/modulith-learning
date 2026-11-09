@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.command.RegisterJobDefinitionCommand;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.dto.JobDefinitionDTO;
+import undecided.supporting.snowflake.SnowflakeId;
 
 import java.net.URI;
 
@@ -21,7 +23,10 @@ public class JobDefinitionController {
 
   @PostMapping
   public ResponseEntity<Void> registerJobDefinition(@Valid @RequestBody JobDefinitionDTO jobDefinitionDTO) {
-    registerJobDefinitionCommand.register(jobDefinitionDTO);
-    return ResponseEntity.created(URI.create("/api/job-definitions/" + jobDefinitionDTO.getJobCode())).build();
+    SnowflakeId id = registerJobDefinitionCommand.register(jobDefinitionDTO);
+    URI location = UriComponentsBuilder.fromPath("/api/job-definitions/{id}")
+        .buildAndExpand(id.value())
+        .toUri();
+    return ResponseEntity.created(location).build();
   }
 }

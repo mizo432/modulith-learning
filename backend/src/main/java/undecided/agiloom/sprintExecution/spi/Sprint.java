@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.PostLoad;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -90,6 +91,14 @@ public class Sprint {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = DateProvider.currentLocalDateTime();
+    }
+
+    @PostLoad
+    protected void onLoad() {
+        // @Builder.DefaultはJPAロード時に機能しないため、nullの場合はデフォルト値を設定する
+        if (this.status == null) {
+            this.status = SprintStatus.PLANNED;
+        }
     }
 
     public void start() {

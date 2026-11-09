@@ -31,12 +31,11 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
         Sprint sprint = sprintRepository.findByIdAndDeletedAtIsNull(command.getId())
                 .orElseThrow(() -> new BusinessException("Sprint not found: " + command.getId()));
 
-        sprint.update(
-                command.getTitle() != null ? command.getTitle() : sprint.getTitle(),
-                command.getGoal() != null ? command.getGoal() : sprint.getGoal(),
-                command.getEndDate(),
-                command.getNotes()
-        );
+        // nullが渡された場合は既存の値を使用し、ドメイン層の検証を通過させる
+        String title = command.getTitle() != null ? command.getTitle() : sprint.getTitle();
+        String goal = command.getGoal() != null ? command.getGoal() : sprint.getGoal();
+        
+        sprint.update(title, goal, command.getEndDate(), command.getNotes());
 
         return sprintResponseAssembler.toDTO(sprint);
     }

@@ -4,10 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.command.RegisterJobDefinitionCommand;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.dto.JobDefinitionDTO;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * JobDefinitionControllerに対する敵対的検証テスト。
@@ -61,28 +60,25 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("'; DROP TABLE job_definition; --");
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
-      // Act & Assert - URI.create()が特殊文字';を拒否する
-      // これは間接的な防御だが、バリデーションとしての意図はない
-      assertThatThrownBy(() -> controller.registerJobDefinition(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Illegal character");
+      // Act & Assert - UriComponentsBuilderが特殊文字をエンコードするため、例外はスローされない
+      // 修正後、URIエンコーディングが行われるため、テストの期待値を変更
+      ResponseEntity<Void> response = controller.registerJobDefinition(dto);
+      assertThat(response.getStatusCode().value()).isEqualTo(201);
     }
 
     @Test
-    @DisplayName("jobCodeにXSS文字列を含む場合、URI.createでIllegalArgumentExceptionをスローすること")
+    @DisplayName("jobCodeにXSS文字列を含む場合、UriComponentsBuilderでエンコードされること")
     void shouldRejectXssInJobCode() {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("<script>alert('xss')</script>");
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
-      // Act & Assert - URI.create()が特殊文字<を拒否する
-      // これは間接的な防御だが、バリデーションとしての意図はない
-      assertThatThrownBy(() -> controller.registerJobDefinition(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Illegal character");
+      // Act & Assert - UriComponentsBuilderが特殊文字をエンコードするため、例外はスローされない
+      ResponseEntity<Void> response = controller.registerJobDefinition(dto);
+      assertThat(response.getStatusCode().value()).isEqualTo(201);
     }
 
     @Test
@@ -91,7 +87,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setVersion(null);
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert - versionはオプションフィールドであるためNullが許容される
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -104,7 +100,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setParameterSpec("{invalid json}");
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -117,7 +113,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setParameterSpec("{\"key\": \"value\0injected\"}");
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -125,18 +121,16 @@ class JobDefinitionControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("jobCodeにコマンドインジェクション文字列を含む場合、URI.createでIllegalArgumentExceptionをスローすること")
+    @DisplayName("jobCodeにコマンドインジェクション文字列を含む場合、UriComponentsBuilderでエンコードされること")
     void shouldRejectCommandInjectionInJobCode() {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("TEST_JOB; rm -rf /");
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
-      // Act & Assert - URI.create()が特殊文字;を拒否する
-      // これは間接的な防御だが、バリデーションとしての意図はない
-      assertThatThrownBy(() -> controller.registerJobDefinition(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Illegal character");
+      // Act & Assert - UriComponentsBuilderが特殊文字をエンコードするため、例外はスローされない
+      ResponseEntity<Void> response = controller.registerJobDefinition(dto);
+      assertThat(response.getStatusCode().value()).isEqualTo(201);
     }
 
     @Test
@@ -145,7 +139,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("../../etc/passwd");
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -158,7 +152,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setIsActive(null);
-      doNothing().when(registerJobDefinitionCommand).register(any());
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
