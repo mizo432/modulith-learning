@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -11,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.http.ResponseEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -100,10 +100,12 @@ class SprintCommandControllerAdversarialTest {
 
       when(createSprintCommandService.execute(any())).thenReturn(sprint);
 
-      // Act & Assert - 例外をスローせずに処理できること（JPAのパラメータ化クエリで防御されている前提）
-      // コントローラー層では例外をスローしない
-      assertThatCode(() -> controller.createSprint(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - SQLインジェクション文字列を含むタイトルでも例外をスローせずに処理できること
+      ResponseEntity<SprintResponse> result = controller.createSprint(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
+      assertThat(result.getBody().getId()).isEqualTo(snowflakeId);
     }
 
     @Test
@@ -126,9 +128,12 @@ class SprintCommandControllerAdversarialTest {
 
       when(createSprintCommandService.execute(any())).thenReturn(sprint);
 
-      // Act & Assert
-      assertThatCode(() -> controller.createSprint(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - XSS文字列を含むタイトルでも例外をスローせずに処理できること
+      ResponseEntity<SprintResponse> result = controller.createSprint(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
+      assertThat(result.getBody().getId()).isEqualTo(snowflakeId);
     }
 
     @Test
@@ -150,9 +155,12 @@ class SprintCommandControllerAdversarialTest {
 
       when(createSprintCommandService.execute(any())).thenReturn(sprint);
 
-      // Act & Assert
-      assertThatCode(() -> controller.createSprint(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - Integer.MAX_VALUEを指定しても例外をスローせずに処理できること
+      ResponseEntity<SprintResponse> result = controller.createSprint(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
+      assertThat(result.getBody().getId()).isEqualTo(snowflakeId);
     }
 
     @Test
@@ -205,9 +213,12 @@ class SprintCommandControllerAdversarialTest {
 
       when(createSprintCommandService.execute(any())).thenReturn(sprint);
 
-      // Act & Assert
-      assertThatCode(() -> controller.createSprint(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - 過去の日付を指定しても例外をスローせずに処理できること
+      ResponseEntity<SprintResponse> result = controller.createSprint(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
+      assertThat(result.getBody().getId()).isEqualTo(snowflakeId);
     }
 
     @Test
@@ -230,19 +241,24 @@ class SprintCommandControllerAdversarialTest {
 
       when(createSprintCommandService.execute(any())).thenReturn(sprint);
 
-      // Act & Assert - 文字列長の上限チェックが欠如
-      assertThatCode(() -> controller.createSprint(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - 非常に長いteamNameでも例外をスローせずに処理できること
+      ResponseEntity<SprintResponse> result = controller.createSprint(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
+      assertThat(result.getBody().getId()).isEqualTo(snowflakeId);
     }
 
     @Test
-    @DisplayName("goalにNullバイトを含む文字列を指定した場合")
+    @DisplayName("goalにNullバイトを含む文字列を指定した場合、例外をスローせずに処理すること")
     void shouldHandleNullByteInGoal() {
-      // Arrange - Nullバイトインジェクション
+      // Arrange - Nullバイトインジェクション試行
+      String goalWithNullByte = "Goal\u0000with\u0000null\u0000bytes";
       CreateSprintRequest request = CreateSprintRequest.builder()
           .productId(FIXED_PRODUCT_ID)
           .sprintNumber(1)
           .title("Sprint")
+          .goal(goalWithNullByte)
           .startDate(LocalDate.now())
           .endDate(LocalDate.now().plusWeeks(2))
           .teamId(FIXED_TEAM_ID)
@@ -254,9 +270,12 @@ class SprintCommandControllerAdversarialTest {
 
       when(createSprintCommandService.execute(any())).thenReturn(sprint);
 
-      // Act & Assert
-      assertThatCode(() -> controller.createSprint(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - Nullバイトを含むgoalでも例外をスローせずに処理できること
+      ResponseEntity<SprintResponse> result = controller.createSprint(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
+      assertThat(result.getBody().getId()).isEqualTo(snowflakeId);
     }
   }
 
@@ -291,16 +310,16 @@ class SprintCommandControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("IDに負の値を指定した場合、SnowflakeIdの事前条件検証でIllegalArgumentExceptionをスローすること")
+    @DisplayName("IDに負の値を指定した場合、BusinessExceptionをスローすること")
     void shouldHandleNegativeId() {
       // Arrange
       ChangeStatusRequest changeStatusRequest = ChangeStatusRequest.builder()
           .status(SprintStatus.ACTIVE)
           .build();
-      // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗
+      // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗し、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.changeStatus("-123", changeStatusRequest))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("value must be positive");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("正の値である必要があります");
     }
 
     @Test
@@ -416,9 +435,11 @@ class SprintCommandControllerAdversarialTest {
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
 
-      // Act & Assert - 例外をスローせずに処理できること
-      assertThatCode(() -> controller.sendNotification(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - SQLインジェクション文字列を含むタイトルでも例外をスローせずに処理できること
+      ResponseEntity<NotificationDTO> result = controller.sendNotification(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
     }
 
     @Test
@@ -446,9 +467,11 @@ class SprintCommandControllerAdversarialTest {
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
 
-      // Act & Assert
-      assertThatCode(() -> controller.sendNotification(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - XSS文字列を含むタイトルでも例外をスローせずに処理できること
+      ResponseEntity<NotificationDTO> result = controller.sendNotification(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
     }
 
     @Test
@@ -477,9 +500,11 @@ class SprintCommandControllerAdversarialTest {
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
 
-      // Act & Assert
-      assertThatCode(() -> controller.sendNotification(request))
-          .doesNotThrowAnyException();
+      // Act & Assert - 非常に長いcontentでも例外をスローせずに処理できること
+      ResponseEntity<NotificationDTO> result = controller.sendNotification(request);
+      assertThat(result).isNotNull();
+      assertThat(result.getStatusCode().value()).isEqualTo(201);
+      assertThat(result.getBody()).isNotNull();
     }
 
     @Test
@@ -510,9 +535,12 @@ class SprintCommandControllerAdversarialTest {
 
         when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
 
-        assertThatCode(() -> controller.sendNotification(request))
+        ResponseEntity<NotificationDTO> result = controller.sendNotification(request);
+        assertThat(result)
             .as("通知タイプ %s で通知が送信されること", type)
-            .doesNotThrowAnyException();
+            .isNotNull();
+        assertThat(result.getStatusCode().value()).isEqualTo(201);
+        assertThat(result.getBody().getType()).isEqualTo(type);
       }
     }
   }
