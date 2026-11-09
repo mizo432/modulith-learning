@@ -27,7 +27,7 @@ public class PartyRelationship {
 
   private RelationshipType relationshipType;
 
-  private WhenAassociated whenAssociated;
+  private WhenAssociated whenAssociated;
 
   private WhenDisassociated whenDisassociated;
 
@@ -41,7 +41,7 @@ public class PartyRelationship {
     this.partyId = SnowflakeId.empty();
     this.relatedPartyId = SnowflakeId.empty();
     this.relationshipType = RelationshipType.UNKNOWN;
-    this.whenAssociated = WhenAassociated.empty();
+    this.whenAssociated = WhenAssociated.empty();
     this.whenDisassociated = WhenDisassociated.empty();
   }
 
@@ -61,7 +61,7 @@ public class PartyRelationship {
       SnowflakeId partyId,
       SnowflakeId relatedPartyId,
       RelationshipType relationshipType,
-      WhenAassociated whenAssociated,
+      WhenAssociated whenAssociated,
       WhenDisassociated whenDisassociated) {
     Objects.requireNonNull(relationshipId, "relationshipId must not be null");
     Objects.requireNonNull(partyId, "partyId must not be null");
