@@ -1,124 +1,468 @@
-# AG-04 スプリント実行 API設計
+# AG_アジルーム API詳細設計
 
 ## 1. 概要
 
-本ドキュメントは、AG-04「スプリント実行とインクリメント形成」業務領域のREST API設計を定義します。
+本ドキュメントは、AG_アジルーム事業領域のAPI詳細設計を定義します。**CQRS（Command Query Responsibility Segregation）**に基づき、**Command Service**（書き込み）と**Query Service**（読み込み）を分離して設計します。
 
-スプリント実行は、チームがスプリント目標を共有し、作業計画を日々適応させながら、完成の定義を満たすインクリメントを形成する機能です。
+アジルーム（Agiloom）は、Scrumに基づくアジャイルソフトウェア開発プロジェクトの管理をシステム化する事業領域です。
 
-## 2. 技術スタック
+## 2. 参照
 
-| カテゴリ | テクノロジー |
-|:---|:---|
-| **フレームワーク** | Spring Boot 3.x |
-| **API仕様** | OpenAPI 3.0 |
-| **ドキュメント** | springdoc-openapi |
-| **認証** | JWT (JSON Web Token) |
-| **バリデーション** | Jakarta Validation |
-| **ページネーション** | Spring Data Pagination |
+- 事業領域一覧: `docs/11 事業領域/事業領域一覧.tsv`
+- 業務領域一覧: `docs/12 業務領域/業務領域一覧.tsv`
+- ユースケース一覧: `docs/22 要件定義書/AG アジルーム/03 機能要件/ユースケース一覧.md`
+- 情報一覧: `docs/22 要件定義書/AG アジルーム/03 機能要件/*/04.システム/01.情報/情報一覧.md`
+- 画面属性一覧: `docs/22 要件定義書/AG アジルーム/03 機能要件/*/04.システム/04.画面/SCR-*_画面属性一覧.md`
 
-## 3. 設計ドキュメント一覧
+---
 
-| No. | 設計ドキュメント | 説明 |
-|-----|-----------------|------|
-| 01 | [エンドポイント一覧](01.エンドポイント/エンドポイント一覧.md) | 全リソースのエンドポイント定義 |
-| 02 | [OpenAPI仕様書](01.エンドポイント/OpenAPI仕様書.md) | OpenAPI 3.0形式の完全なAPI仕様 |
-| 03 | [エラーハンドリング設計](02.エラーハンドリング/エラーハンドリング設計.md) | 統一されたエラーレスポンス設計 |
-| 04 | [セキュリティ設計](03.セキュリティ/セキュリティ設計.md) | 認証・認可設計 |
+## 3. CQRS設計
 
-## 4. APIベースURL
+### 3.1 CQRSの基本概念
 
+CQRS（Command Query Responsibility Segregation）は、**書き込み操作（Command）**と**読み込み操作（Query）**を分離する設計パターンです。
+
+| 区分 | Command Service | Query Service |
+|:---|:---|:---|
+| 責務 | データの作成・更新・削除 | データの読み込み・検索 |
+| HTTPメソッド | POST, PUT, PATCH, DELETE | GET |
+| 戻り値 | 処理結果（ステータスコード・ID） | データ（エンティティ・一覧） |
+| 最適化対象 | 一貫性・ビジネスルール | パフォーマンス・キャッシュ |
+| トランザクション | 必須 | 不要（スナップショット読み込み可能） |
+| キャッシュ | 不要 | 積極的に活用 |
+
+### 3.2 Command Service 設計
+
+**書き込み操作を担当するサービス**
+
+- **パッケージ構成**: `undecided.ag.<module>.useCase.command`
+- **命名規則**: `[Entity]CommandService`（例: `SprintCommandService`）
+- **メソッド命名**:
+  - 作成: `create[Entity](Command)` → `createSprint(CreateSprintCommand)`
+  - 更新: `update[Entity](Command)` → `updateSprint(UpdateSprintCommand)`
+  - 削除: `delete[Entity](Command)` → `deleteSprint(DeleteSprintCommand)`
+  - 状態遷移: `[action][Entity](Command)` → `startSprint(StartSprintCommand)`
+- **Commandオブジェクト**: 書き込みリクエストを表現する値オブジェクト
+  - 不変（`final` クラス + `final` フィールド）
+  - バリデーションアノテーションを付与
+  - 例: `CreateSprintCommand`, `StartSprintCommand`
+- **戻り値**: 処理結果のIDまたはステータスを返す
+
+### 3.3 Query Service 設計
+
+**読み込み操作を担当するサービス**
+
+- **パッケージ構成**: `undecided.ag.<module>.useCase.query`
+- **命名規則**: `[Entity]QueryService`（例: `SprintQueryService`）
+- **メソッド命名**:
+  - 単一取得: `get[Entity](Query)` → `getSprint(GetSprintQuery)`
+  - 一覧取得: `list[Entity](Query)` → `listSprints(ListSprintsQuery)`
+  - 検索: `search[Entity](Query)` → `searchSprints(SearchSprintsQuery)`
+  - カウント: `count[Entity](Query)` → `countSprints(CountSprintsQuery)`
+- **Queryオブジェクト**: 読み込みリクエストを表現する値オブジェクト
+  - 不変（`final` クラス + `final` フィールド）
+  - 検索条件・ページネーションパラメータを含む
+  - 例: `GetSprintQuery`, `ListSprintsQuery`
+- **戻り値**: 読み込み結果のDTOを返す
+  - 単一取得: `Optional<[Entity]Dto>` または `[Entity]Dto`
+  - 一覧取得: `Page<[Entity]Dto>` または `List<[Entity]Dto>`
+
+### 3.4 Controller 層の分離
+
+プレゼンテーション層では、CommandとQueryでコントローラーを分離します。
+
+| コントローラー | 責務 | 例 |
+|:---|:---|:---|
+| `[Entity]CommandController` | 書き込みAPI | `SprintCommandController` |
+| `[Entity]QueryController` | 読み込みAPI | `SprintQueryController` |
+
+### 3.5 APIエンドポイントの設計ルール
+
+CQRS分離に基づくAPIエンドポイントの設計ルール：
+
+| 操作 | HTTPメソッド | エンドポイント | Service | Command/Query |
+|:---|:---|:---|:---|:---|
+| 一覧取得 | GET | `/api/v1/[resources]` | QueryService | Query |
+| 単一取得 | GET | `/api/v1/[resources]/{id}` | QueryService | Query |
+| 作成 | POST | `/api/v1/[resources]` | CommandService | Command |
+| 全体更新 | PUT | `/api/v1/[resources]/{id}` | CommandService | Command |
+| 部分更新 | PATCH | `/api/v1/[resources]/{id}` | CommandService | Command |
+| 削除 | DELETE | `/api/v1/[resources]/{id}` | CommandService | Command |
+| 状態遷移 | PATCH | `/api/v1/[resources]/{id}/[action]` | CommandService | Command |
+
+---
+
+## 4. UCからCommand/Queryの分類
+
+AG_アジルームの120ユースケースをCommand/Queryに分類します。
+
+### 4.1 AG-01 プロダクトディスカバリー (26UC)
+
+| ユースケースID | ユースケース名 | Command/Query | 対応Service | HTTPメソッド |
+|----------------|----------------|---------------|-------------|-------------|
+| UC-DIS-001 | Product Visionを作成する | Command | ProductVisionCommandService | POST |
+| UC-DIS-002 | Product Visionを更新する | Command | ProductVisionCommandService | PUT |
+| UC-DIS-003 | Product Visionを参照する | Query | ProductVisionQueryService | GET |
+| UC-DIS-004 | Product Goalを作成する | Command | ProductGoalCommandService | POST |
+| UC-DIS-005 | Product Goalを更新する | Command | ProductGoalCommandService | PUT |
+| UC-DIS-006 | Product Goalを参照する | Query | ProductGoalQueryService | GET |
+| UC-DIS-007 | 課題を登録する | Command | IssueCommandService | POST |
+| UC-DIS-008 | 課題を更新する | Command | IssueCommandService | PUT |
+| UC-DIS-009 | 課題を参照する | Query | IssueQueryService | GET |
+| UC-DIS-010 | 仮説を作成する | Command | HypothesisCommandService | POST |
+| UC-DIS-011 | 仮説を更新する | Command | HypothesisCommandService | PUT |
+| UC-DIS-012 | 仮説を参照する | Query | HypothesisQueryService | GET |
+| UC-DIS-013 | 要望を登録する | Command | RequestCommandService | POST |
+| UC-DIS-014 | ステークホルダーを登録する | Command | StakeholderCommandService | POST |
+| UC-DIS-015 | ステークホルダーを更新する | Command | StakeholderCommandService | PUT |
+| UC-DIS-016 | ステークホルダーを参照する | Query | StakeholderQueryService | GET |
+| UC-DIS-017 | ペルソナを作成する | Command | PersonaCommandService | POST |
+| UC-DIS-018 | ペルソナを更新する | Command | PersonaCommandService | PUT |
+| UC-DIS-019 | ユーザージャーニーを作成する | Command | UserJourneyCommandService | POST |
+| UC-DIS-020 | 成功指標を登録する | Command | SuccessMetricCommandService | POST |
+| UC-DIS-021 | 成功指標を更新する | Command | SuccessMetricCommandService | PUT |
+| UC-DIS-022 | Kano質問票を作成する | Command | KanoQuestionCommandService | POST |
+| UC-DIS-023 | Kano評価を実施する | Command | KanoEvaluationCommandService | POST |
+| UC-DIS-024 | Kano評価結果を参照する | Query | KanoEvaluationQueryService | GET |
+| UC-DIS-025 | 実験計画を作成する | Command | ExperimentCommandService | POST |
+| UC-DIS-026 | 実験結果を記録する | Command | ExperimentCommandService | PUT |
+
+### 4.2 AG-02 要求バックログ管理 (25UC)
+
+| ユースケースID | ユースケース名 | Command/Query | 対応Service | HTTPメソッド |
+|----------------|----------------|---------------|-------------|-------------|
+| UC-BL-001 | 課題を登録する | Command | BacklogIssueCommandService | POST |
+| UC-BL-002 | 課題を更新する | Command | BacklogIssueCommandService | PUT |
+| UC-BL-003 | 課題を参照する | Query | BacklogIssueQueryService | GET |
+| UC-BL-004 | フィードバックを登録する | Command | FeedbackCommandService | POST |
+| UC-BL-005 | フィードバックを更新する | Command | FeedbackCommandService | PUT |
+| UC-BL-006 | フィードバックを参照する | Query | FeedbackQueryService | GET |
+| UC-BL-007 | バックログ項目を作成する | Command | BacklogItemCommandService | POST |
+| UC-BL-008 | バックログ項目を更新する | Command | BacklogItemCommandService | PUT |
+| UC-BL-009 | バックログ項目を参照する | Query | BacklogItemQueryService | GET |
+| UC-BL-010 | バックログ項目を分割する | Command | BacklogItemCommandService | POST |
+| UC-BL-011 | バックログ階層を設定する | Command | BacklogHierarchyCommandService | POST |
+| UC-BL-012 | 優先順位を設定する | Command | PriorityCommandService | POST |
+| UC-BL-013 | 優先順位を更新する | Command | PriorityCommandService | PUT |
+| UC-BL-014 | 業務ルールを登録する | Command | BusinessRuleCommandService | POST |
+| UC-BL-015 | 受入条件を定義する | Command | AcceptanceCriteriaCommandService | POST |
+| UC-BL-016 | コメントを投稿する | Command | CommentCommandService | POST |
+| UC-BL-017 | メンション通知を送信する | Command | NotificationCommandService | POST |
+| UC-BL-018 | バックログリファインメントを行う | Command | BacklogRefinementCommandService | POST |
+| UC-BL-019 | 依存関係を定義する | Command | DependencyCommandService | POST |
+| UC-BL-020 | 変更履歴を参照する | Query | ChangeHistoryQueryService | GET |
+| UC-BL-021 | 要求の関連を設定する | Command | RequirementRelationCommandService | POST |
+| UC-BL-022 | 意思決定を記録する | Command | DecisionCommandService | POST |
+| UC-BL-023 | Story Mappingを行う | Command | StoryMapCommandService | POST |
+| UC-BL-024 | 見積もりを記録する | Command | EstimateCommandService | POST |
+| UC-BL-025 | ソース管理情報を関連付ける | Command | SourceControlCommandService | POST |
+
+### 4.3 AG-03 優先順位決定 (10UC)
+
+| ユースケースID | ユースケース名 | Command/Query | 対応Service | HTTPメソッド |
+|----------------|----------------|---------------|-------------|-------------|
+| UC-PR-001 | 優先順位を設定する | Command | PriorityCommandService | POST |
+| UC-PR-002 | 優先順位を更新する | Command | PriorityCommandService | PUT |
+| UC-PR-003 | 優先順位を参照する | Query | PriorityQueryService | GET |
+| UC-PR-004 | 判断理由を記録する | Command | PriorityReasonCommandService | POST |
+| UC-PR-005 | 判断理由を参照する | Query | PriorityReasonQueryService | GET |
+| UC-PR-006 | Kano質問票を作成する | Command | KanoQuestionCommandService | POST |
+| UC-PR-007 | Kano評価を実施する | Command | KanoEvaluationCommandService | POST |
+| UC-PR-008 | Kano評価結果を参照する | Query | KanoEvaluationQueryService | GET |
+| UC-PR-009 | 価値・リスク・コストを比較する | Query | ValueRiskCostQueryService | GET |
+| UC-PR-010 | Kano分類を用いて優先順位を検討する | Query | KanoPriorityQueryService | GET |
+
+### 4.4 AG-04 スプリント実行 (19UC)
+
+| ユースケースID | ユースケース名 | Command/Query | 対応Service | HTTPメソッド |
+|----------------|----------------|---------------|-------------|-------------|
+| UC-SP-001 | スプリントを作成する | Command | SprintCommandService | POST |
+| UC-SP-002 | スプリントを更新する | Command | SprintCommandService | PUT |
+| UC-SP-003 | スプリントを参照する | Query | SprintQueryService | GET |
+| UC-SP-004 | Sprint Goalを設定する | Command | SprintGoalCommandService | POST |
+| UC-SP-005 | Sprint Goalを更新する | Command | SprintGoalCommandService | PUT |
+| UC-SP-006 | Sprint Backlogを作成する | Command | SprintBacklogCommandService | POST |
+| UC-SP-007 | Sprint Backlogを更新する | Command | SprintBacklogCommandService | PUT |
+| UC-SP-008 | ボードを更新する | Command | BoardCommandService | PATCH |
+| UC-SP-009 | 障害を登録する | Command | ImpedimentCommandService | POST |
+| UC-SP-010 | 障害を更新する | Command | ImpedimentCommandService | PUT |
+| UC-SP-011 | 障害を参照する | Query | ImpedimentQueryService | GET |
+| UC-SP-012 | 依存関係を定義する | Command | DependencyCommandService | POST |
+| UC-SP-013 | 通知を送信する | Command | NotificationCommandService | POST |
+| UC-SP-014 | スプリント進捗を確認する | Query | SprintProgressQueryService | GET |
+| UC-SP-015 | インクリメントを完成確認する | Command | IncrementCommandService | PATCH |
+| UC-SP-016 | デイリースクラムを記録する | Command | DailyScrumCommandService | POST |
+| UC-SP-017 | 作業負荷を確認する | Query | WorkloadQueryService | GET |
+| UC-SP-018 | ソース管理情報を関連付ける | Command | SourceControlCommandService | POST |
+| UC-SP-019 | ビルド・デプロイ状況を確認する | Query | BuildDeployQueryService | GET |
+
+### 4.5 AG-05 品質検証 (19UC)
+
+| ユースケースID | ユースケース名 | Command/Query | 対応Service | HTTPメソッド |
+|----------------|----------------|---------------|-------------|-------------|
+| UC-QL-001 | Definition of Doneを定義する | Command | DefinitionOfDoneCommandService | POST |
+| UC-QL-002 | Definition of Doneを更新する | Command | DefinitionOfDoneCommandService | PUT |
+| UC-QL-003 | Definition of Doneを参照する | Query | DefinitionOfDoneQueryService | GET |
+| UC-QL-004 | 欠陥を登録する | Command | DefectCommandService | POST |
+| UC-QL-005 | 欠陥を更新する | Command | DefectCommandService | PUT |
+| UC-QL-006 | 欠陥を参照する | Query | DefectQueryService | GET |
+| UC-QL-007 | テストケースを作成する | Command | TestCaseCommandService | POST |
+| UC-QL-008 | テストケースを更新する | Command | TestCaseCommandService | PUT |
+| UC-QL-009 | テストケースを参照する | Query | TestCaseQueryService | GET |
+| UC-QL-010 | 受入テストを実行する | Command | AcceptanceTestCommandService | POST |
+| UC-QL-011 | テスト結果を記録する | Command | TestResultCommandService | POST |
+| UC-QL-012 | テスト結果を参照する | Query | TestResultQueryService | GET |
+| UC-QL-013 | 性能要件を定義する | Command | PerformanceRequirementCommandService | POST |
+| UC-QL-014 | 性能テストを実行する | Command | PerformanceTestCommandService | POST |
+| UC-QL-015 | 性能テスト結果を参照する | Query | PerformanceTestResultQueryService | GET |
+| UC-QL-016 | Gatlingレポートを取り込む | Command | GatlingReportCommandService | POST |
+| UC-QL-017 | セキュリティリスクを登録する | Command | SecurityRiskCommandService | POST |
+| UC-QL-018 | セキュリティリスクを更新する | Command | SecurityRiskCommandService | PUT |
+| UC-QL-019 | セキュリティリスクを参照する | Query | SecurityRiskQueryService | GET |
+
+### 4.6 AG-06 成果適応 (21UC)
+
+| ユースケースID | ユースケース名 | Command/Query | 対応Service | HTTPメソッド |
+|----------------|----------------|---------------|-------------|-------------|
+| UC-LR-001 | Sprint Reviewを記録する | Command | SprintReviewCommandService | POST |
+| UC-LR-002 | Sprint Reviewを参照する | Query | SprintReviewQueryService | GET |
+| UC-LR-003 | Sprint Retrospectiveを記録する | Command | RetrospectiveCommandService | POST |
+| UC-LR-004 | Sprint Retrospectiveを参照する | Query | RetrospectiveQueryService | GET |
+| UC-LR-005 | 改善アクションを登録する | Command | ImprovementActionCommandService | POST |
+| UC-LR-006 | 改善アクションを更新する | Command | ImprovementActionCommandService | PUT |
+| UC-LR-007 | 改善アクションを参照する | Query | ImprovementActionQueryService | GET |
+| UC-LR-008 | 改善効果を確認する | Query | ImprovementEffectQueryService | GET |
+| UC-LR-009 | ダッシュボードを表示する | Query | DashboardQueryService | GET |
+| UC-LR-010 | プロジェクト進捗を確認する | Query | ProjectProgressQueryService | GET |
+| UC-LR-011 | リスク一覧を確認する | Query | RiskListQueryService | GET |
+| UC-LR-012 | 判断待ち一覧を確認する | Query | PendingDecisionQueryService | GET |
+| UC-LR-013 | 利用者レビューを計画する | Command | UserReviewCommandService | POST |
+| UC-LR-014 | 利用者レビューを実行する | Command | UserReviewCommandService | POST |
+| UC-LR-015 | 利用者レビュー結果を参照する | Query | UserReviewResultQueryService | GET |
+| UC-LR-016 | Product Goal進捗を確認する | Query | ProductGoalProgressQueryService | GET |
+| UC-LR-017 | 成果指標を測定する | Query | OutcomeMetricQueryService | GET |
+| UC-LR-018 | レポートを出力する | Query | ReportQueryService | GET |
+| UC-LR-019 | Epic／Releaseを振り返る | Command | EpicReleaseReviewCommandService | POST |
+| UC-LR-020 | 品質・性能Insightsを確認する | Query | QualityPerformanceInsightsQueryService | GET |
+| UC-LR-021 | 稼働状況を確認する | Query | OperationStatusQueryService | GET |
+
+---
+
+## 5. APIエンドポイント一覧
+
+### 5.1 プロダクト管理系
+
+#### Product Vision
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/product-visions` | POST | Product Visionを作成する | UC-DIS-001 | ProductVisionCommandService |
+| `/api/v1/product-visions/{id}` | PUT | Product Visionを更新する | UC-DIS-002 | ProductVisionCommandService |
+| `/api/v1/product-visions/{id}` | GET | Product Visionを参照する | UC-DIS-003 | ProductVisionQueryService |
+
+#### Product Goal
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/product-goals` | POST | Product Goalを作成する | UC-DIS-004 | ProductGoalCommandService |
+| `/api/v1/product-goals/{id}` | PUT | Product Goalを更新する | UC-DIS-005 | ProductGoalCommandService |
+| `/api/v1/product-goals/{id}` | GET | Product Goalを参照する | UC-DIS-006 | ProductGoalQueryService |
+
+### 5.2 スプリント実行系
+
+#### Sprints
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/sprints` | POST | スプリントを作成する | UC-SP-001 | SprintCommandService |
+| `/api/v1/sprints/{id}` | PUT | スプリントを更新する | UC-SP-002 | SprintCommandService |
+| `/api/v1/sprints` | GET | スプリント一覧を取得 | UC-SP-003 | SprintQueryService |
+| `/api/v1/sprints/{id}` | GET | スプリント詳細を取得 | UC-SP-003 | SprintQueryService |
+| `/api/v1/sprints/{id}/start` | PATCH | スプリントを開始する | UC-SP-002 | SprintCommandService |
+| `/api/v1/sprints/{id}/complete` | PATCH | スプリントを完了する | UC-SP-002 | SprintCommandService |
+| `/api/v1/sprints/{id}/stats` | GET | スプリント統計情報を取得 | UC-SP-014 | SprintProgressQueryService |
+
+#### Tasks
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/tasks` | POST | タスクを作成 | UC-SP-006 | TaskCommandService |
+| `/api/v1/tasks/{id}` | PUT | タスクを更新 | UC-SP-007 | TaskCommandService |
+| `/api/v1/tasks` | GET | タスク一覧を取得 | UC-SP-014 | TaskQueryService |
+| `/api/v1/tasks/{id}` | GET | タスク詳細を取得 | UC-SP-014 | TaskQueryService |
+| `/api/v1/tasks/{id}/status` | PATCH | タスク状態を変更 | UC-SP-008 | TaskCommandService |
+| `/api/v1/tasks/{id}` | DELETE | タスクを削除 | UC-SP-007 | TaskCommandService |
+| `/api/v1/sprints/{sprintId}/tasks` | GET | スプリントのタスク一覧を取得 | UC-SP-014 | TaskQueryService |
+
+#### Impediments
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/impediments` | POST | 障害を登録 | UC-SP-009 | ImpedimentCommandService |
+| `/api/v1/impediments/{id}` | PUT | 障害を更新 | UC-SP-010 | ImpedimentCommandService |
+| `/api/v1/impediments` | GET | 障害一覧を取得 | UC-SP-011 | ImpedimentQueryService |
+| `/api/v1/impediments/{id}` | GET | 障害詳細を取得 | UC-SP-011 | ImpedimentQueryService |
+| `/api/v1/impediments/{id}/status` | PATCH | 障害状態を変更 | UC-SP-010 | ImpedimentCommandService |
+| `/api/v1/sprints/{sprintId}/impediments` | GET | スプリントの障害一覧を取得 | UC-SP-011 | ImpedimentQueryService |
+
+#### Dependencies
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/dependencies` | POST | 依存関係を定義 | UC-SP-012 | DependencyCommandService |
+| `/api/v1/dependencies` | GET | 依存関係一覧を取得 | UC-SP-012 | DependencyQueryService |
+| `/api/v1/dependencies/{id}` | GET | 依存関係詳細を取得 | UC-SP-012 | DependencyQueryService |
+| `/api/v1/dependencies/{id}` | PUT | 依存関係を更新 | UC-SP-012 | DependencyCommandService |
+| `/api/v1/dependencies/{id}` | DELETE | 依存関係を削除 | UC-SP-012 | DependencyCommandService |
+
+#### Notifications
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/notifications` | POST | 通知を送信 | UC-SP-013 | NotificationCommandService |
+| `/api/v1/notifications` | GET | 通知一覧を取得 | UC-SP-013 | NotificationQueryService |
+| `/api/v1/notifications/{id}` | GET | 通知詳細を取得 | UC-SP-013 | NotificationQueryService |
+| `/api/v1/notifications/{id}/read` | PATCH | 通知を読み済みにする | UC-SP-013 | NotificationCommandService |
+| `/api/v1/notifications/read-all` | PATCH | 全通知を読み済みにする | UC-SP-013 | NotificationCommandService |
+
+#### Activities
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/activities` | GET | アクティビティ一覧を取得 | UC-SP-014 | ActivityQueryService |
+| `/api/v1/sprints/{sprintId}/activities` | GET | スプリントのアクティビティ一覧を取得 | UC-SP-014 | ActivityQueryService |
+
+#### Daily Scrums
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/daily-scrums` | POST | デイリースクラムを記録 | UC-SP-016 | DailyScrumCommandService |
+| `/api/v1/daily-scrums` | GET | デイリースクラム一覧を取得 | UC-SP-016 | DailyScrumQueryService |
+| `/api/v1/daily-scrums/{id}` | GET | デイリースクラム詳細を取得 | UC-SP-016 | DailyScrumQueryService |
+| `/api/v1/daily-scrums/{id}` | PUT | デイリースクラムを更新 | UC-SP-016 | DailyScrumCommandService |
+| `/api/v1/daily-scrums/{id}` | DELETE | デイリースクラムを削除 | UC-SP-016 | DailyScrumCommandService |
+| `/api/v1/sprints/{sprintId}/daily-scrums` | GET | スプリントのスクラム一覧を取得 | UC-SP-016 | DailyScrumQueryService |
+
+### 5.3 品質検証系
+
+#### Definition of Done
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/definition-of-done` | POST | Definition of Doneを定義する | UC-QL-001 | DefinitionOfDoneCommandService |
+| `/api/v1/definition-of-done/{id}` | PUT | Definition of Doneを更新する | UC-QL-002 | DefinitionOfDoneCommandService |
+| `/api/v1/definition-of-done/{id}` | GET | Definition of Doneを参照する | UC-QL-003 | DefinitionOfDoneQueryService |
+
+#### Defects
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/defects` | POST | 欠陥を登録する | UC-QL-004 | DefectCommandService |
+| `/api/v1/defects/{id}` | PUT | 欠陥を更新する | UC-QL-005 | DefectCommandService |
+| `/api/v1/defects` | GET | 欠陥一覧を取得する | UC-QL-006 | DefectQueryService |
+| `/api/v1/defects/{id}` | GET | 欠陥詳細を取得する | UC-QL-006 | DefectQueryService |
+
+#### Test Cases
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/test-cases` | POST | テストケースを作成する | UC-QL-007 | TestCaseCommandService |
+| `/api/v1/test-cases/{id}` | PUT | テストケースを更新する | UC-QL-008 | TestCaseCommandService |
+| `/api/v1/test-cases` | GET | テストケース一覧を取得する | UC-QL-009 | TestCaseQueryService |
+| `/api/v1/test-cases/{id}` | GET | テストケース詳細を取得する | UC-QL-009 | TestCaseQueryService |
+
+### 5.4 成果適応系
+
+#### Sprint Reviews
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/sprint-reviews` | POST | Sprint Reviewを記録する | UC-LR-001 | SprintReviewCommandService |
+| `/api/v1/sprint-reviews` | GET | Sprint Review一覧を取得する | UC-LR-002 | SprintReviewQueryService |
+| `/api/v1/sprint-reviews/{id}` | GET | Sprint Review詳細を取得する | UC-LR-002 | SprintReviewQueryService |
+
+#### Retrospectives
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/retrospectives` | POST | Sprint Retrospectiveを記録する | UC-LR-003 | RetrospectiveCommandService |
+| `/api/v1/retrospectives` | GET | Retrospective一覧を取得する | UC-LR-004 | RetrospectiveQueryService |
+| `/api/v1/retrospectives/{id}` | GET | Retrospective詳細を取得する | UC-LR-004 | RetrospectiveQueryService |
+
+#### Improvement Actions
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/improvement-actions` | POST | 改善アクションを登録する | UC-LR-005 | ImprovementActionCommandService |
+| `/api/v1/improvement-actions/{id}` | PUT | 改善アクションを更新する | UC-LR-006 | ImprovementActionCommandService |
+| `/api/v1/improvement-actions` | GET | 改善アクション一覧を取得する | UC-LR-007 | ImprovementActionQueryService |
+| `/api/v1/improvement-actions/{id}` | GET | 改善アクション詳細を取得する | UC-LR-007 | ImprovementActionQueryService |
+
+#### Dashboard
+
+| エンドポイント | HTTPメソッド | 説明 | 対応UC | Service |
+|---------------|-------------|------|--------|---------|
+| `/api/v1/dashboard` | GET | ダッシュボードを表示する | UC-LR-009 | DashboardQueryService |
+| `/api/v1/dashboard/project-progress` | GET | プロジェクト進捗を確認する | UC-LR-010 | ProjectProgressQueryService |
+| `/api/v1/dashboard/risks` | GET | リスク一覧を確認する | UC-LR-011 | RiskListQueryService |
+| `/api/v1/dashboard/pending-decisions` | GET | 判断待ち一覧を確認する | UC-LR-012 | PendingDecisionQueryService |
+
+---
+
+## 6. Command/Queryオブジェクト
+
+### 6.1 Commandオブジェクト
+
+書き込みリクエストを表現する不変の値オブジェクトです。
+
+```java
+// 例: CreateSprintCommand
+public final class CreateSprintCommand {
+    @NotNull
+    private final Long productId;
+    
+    @NotNull
+    @Min(1)
+    private final Integer sprintNumber;
+    
+    @NotNull
+    @Size(min = 1, max = 100)
+    private final String name;
+    
+    @Size(max = 1000)
+    private final String goal;
+    
+    @NotNull
+    private final LocalDate startDate;
+    
+    @NotNull
+    @Future
+    private final LocalDate endDate;
+    
+    @NotNull
+    private final Long teamId;
+}
 ```
-/api/v1
+
+### 6.2 Queryオブジェクト
+
+読み込みリクエストを表現する不変の値オブジェクトです。
+
+```java
+// 例: ListSprintsQuery
+public final class ListSprintsQuery {
+    private final Long productId;
+    private final String status;
+    private final String keyword;
+    private final LocalDate startDateFrom;
+    private final LocalDate startDateTo;
+    private final int pageNumber;
+    private final int pageSize;
+    private final String sort;
+}
 ```
 
-## 5. リソース一覧
-
-AG-04スプリント実行は以下の7つのリソースを提供します。
-
-| リソース | エンドポイントプレフィックス | 説明 | 情報番号 |
-|---------|---------------------------|------|---------|
-| Sprints | `/sprints` | スプリントの期間・目標情報 | INF-SP-01 |
-| Tasks | `/tasks` | 作業単位の情報 | - |
-| Impediments | `/impediments` | スプリント中の障害 | INF-SP-04 |
-| Dependencies | `/dependencies` | 項目間の依存関係 | INF-SP-05 |
-| Notifications | `/notifications` | スプリント中の通知 | INF-SP-06 |
-| Activities | `/activities` | スプリント中のアクティビティ | INF-SP-07 |
-| Daily Scrums | `/daily-scrums` | デイリースクラムの記録 | - |
-
-## 6. エンドポイント概要
-
-### 6.1 スプリント (Sprints)
-
-| HTTPメソッド | パス | 説明 | ユースケース |
-|-------------|------|------|-------------|
-| GET | `/sprints` | スプリント一覧を取得 | UC-SP-003 |
-| POST | `/sprints` | スプリントを作成 | UC-SP-001 |
-| GET | `/sprints/{id}` | スプリント詳細を取得 | UC-SP-003 |
-| PUT | `/sprints/{id}` | スプリントを更新 | UC-SP-002 |
-| PATCH | `/sprints/{id}/status` | スプリント状態を変更 | UC-SP-002 |
-| GET | `/sprints/{id}/stats` | スプリント統計情報を取得 | UC-SP-014 |
-
-### 6.2 タスク (Tasks)
-
-| HTTPメソッド | パス | 説明 | ユースケース |
-|-------------|------|------|-------------|
-| GET | `/tasks` | タスク一覧を取得 | UC-SP-014 |
-| POST | `/tasks` | タスクを作成 | UC-SP-006 |
-| GET | `/tasks/{id}` | タスク詳細を取得 | UC-SP-014 |
-| PUT | `/tasks/{id}` | タスクを更新 | UC-SP-007 |
-| PATCH | `/tasks/{id}/status` | タスク状態を変更 | UC-SP-008 |
-| DELETE | `/tasks/{id}` | タスクを削除 | UC-SP-007 |
-| GET | `/sprints/{sprintId}/tasks` | スプリントのタスク一覧を取得 | UC-SP-014 |
-
-### 6.3 障害 (Impediments)
-
-| HTTPメソッド | パス | 説明 | ユースケース |
-|-------------|------|------|-------------|
-| GET | `/impediments` | 障害一覧を取得 | UC-SP-011 |
-| POST | `/impediments` | 障害を登録 | UC-SP-009 |
-| GET | `/impediments/{id}` | 障害詳細を取得 | UC-SP-011 |
-| PUT | `/impediments/{id}` | 障害を更新 | UC-SP-010 |
-| PATCH | `/impediments/{id}/status` | 障害状態を変更 | UC-SP-010 |
-| GET | `/sprints/{sprintId}/impediments` | スプリントの障害一覧を取得 | UC-SP-011 |
-
-### 6.4 依存関係 (Dependencies)
-
-| HTTPメソッド | パス | 説明 | ユースケース |
-|-------------|------|------|-------------|
-| GET | `/dependencies` | 依存関係一覧を取得 | UC-SP-012 |
-| POST | `/dependencies` | 依存関係を定義 | UC-SP-012 |
-| GET | `/dependencies/{id}` | 依存関係詳細を取得 | UC-SP-012 |
-| PUT | `/dependencies/{id}` | 依存関係を更新 | UC-SP-012 |
-| DELETE | `/dependencies/{id}` | 依存関係を削除 | UC-SP-012 |
-
-### 6.5 通知 (Notifications)
-
-| HTTPメソッド | パス | 説明 | ユースケース |
-|-------------|------|------|-------------|
-| GET | `/notifications` | 通知一覧を取得 | UC-SP-013 |
-| POST | `/notifications` | 通知を送信 | UC-SP-013 |
-| GET | `/notifications/{id}` | 通知詳細を取得 | UC-SP-013 |
-| PATCH | `/notifications/{id}/read` | 通知を読み済みにする | UC-SP-013 |
-| PATCH | `/notifications/read-all` | 全通知を読み済みにする | UC-SP-013 |
-
-### 6.6 アクティビティ (Activities)
-
-| HTTPメソッド | パス | 説明 | ユースケース |
-|-------------|------|------|-------------|
-| GET | `/activities` | アクティビティ一覧を取得 | UC-SP-014 |
-| GET | `/sprints/{sprintId}/activities` | スプリントのアクティビティ一覧を取得 | UC-SP-014 |
-
-### 6.7 デイリースクラム (Daily Scrums)
-
-| HTTPメソッド | パス | 説明 | ユースケース |
-|-------------|------|------|-------------|
-| GET | `/daily-scrums` | デイリースクラム一覧を取得 | UC-SP-016 |
-| POST | `/daily-scrums` | デイリースクラムを記録 | UC-SP-016 |
-| GET | `/daily-scrums/{id}` | デイリースクラム詳細を取得 | UC-SP-016 |
-| PUT | `/daily-scrums/{id}` | デイリースクラムを更新 | UC-SP-016 |
-| DELETE | `/daily-scrums/{id}` | デイリースクラムを削除 | UC-SP-016 |
-| GET | `/sprints/{sprintId}/daily-scrums` | スプリントのスクラム一覧を取得 | UC-SP-016 |
+---
 
 ## 7. 共通設計
 
@@ -169,6 +513,8 @@ AG-04スプリント実行は以下の7つのリソースを提供します。
 }
 ```
 
+---
+
 ## 8. 認証・認可
 
 - **認証方式**: JWT (Bearer Token)
@@ -180,17 +526,22 @@ AG-04スプリント実行は以下の7つのリソースを提供します。
 | 役割 | 説明 |
 |-----|------|
 | PRODUCT_OWNER | プロダクトオーナー |
-| SCUM_MASTER | スクラムマスター |
+| SCRUM_MASTER | スクラムマスター |
 | DEVELOPER | 開発者 |
 | VIEWER | 閲覧者 |
+
+---
 
 ## 9. バリデーション
 
 - **Jakarta Validation**: `@NotNull`, `@Size`, `@Email` など
 - **カスタムバリデーター**: ビジネスロジックに依存するバリデーション
 
+---
+
 ## 10. 参照
 
-- 要件定義: `docs/22 要件定義書/AG アジルーム/03 機能要件/AG-04 スプリント実行/`
+- 要件定義: `docs/22 要件定義書/AG アジルーム/03 機能要件/`
 - データベース設計: `docs/23 詳細設計書/AG_アジルーム/01 データベース設計/`
 - フロントエンド設計: `docs/23 詳細設計書/AG_アジルーム/02 フロントエンド設計/`
+- api-designスキル: `.agents/skills/api-design/SKILL.md`
