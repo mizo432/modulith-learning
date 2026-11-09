@@ -43,7 +43,8 @@ springdoc:
   api-docs:
     enabled: true
   swagger-ui:
-    enabled: true
+    # 本番環境ではfalseに設定し、API仕様の漏洩を防ぐこと
+    enabled: ${SWAGGER_UI_ENABLED:false}
     path: /swagger-ui.html
     urls:
       - name: backend

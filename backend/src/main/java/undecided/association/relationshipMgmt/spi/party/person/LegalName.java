@@ -126,7 +126,7 @@ public class LegalName implements StringCode<LegalName> {
   }
 
   /** LegalNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
-  @Converter(autoApply = true)
+  @Converter
   public static class LegalNameConverter implements AttributeConverter<LegalName, String> {
 
     /** データベース保存用の区切り文字です。 */

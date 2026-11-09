@@ -112,19 +112,19 @@ public final class NotificationRequest {
          */
         public NotificationRequest build() {
             if (recipientId == null) {
-                throw new BusinessException("recipientId is required");
+                throw new BusinessException("recipientIdは必須です");
             }
             if (sourceDomain == null || sourceDomain.isEmpty()) {
-                throw new BusinessException("sourceDomain is required");
+                throw new BusinessException("sourceDomainは必須です");
             }
             if (title == null || title.isEmpty()) {
-                throw new BusinessException("title is required");
+                throw new BusinessException("titleは必須です");
             }
             if (content == null) {
-                throw new BusinessException("content is required");
+                throw new BusinessException("contentは必須です");
             }
             if (type == null) {
-                throw new BusinessException("type is required");
+                throw new BusinessException("typeは必須です");
             }
             return new NotificationRequest(this);
         }

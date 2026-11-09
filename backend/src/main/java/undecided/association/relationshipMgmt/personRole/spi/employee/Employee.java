@@ -1,11 +1,14 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import com.github.mizo432.shared.exception.BusinessException;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -33,6 +36,18 @@ public class Employee {
 
   private LocalDateTime validTo;
 
+  /**
+   * 作成日時
+   */
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private LocalDateTime createdAt;
+
+  /**
+   * 更新日時
+   */
+  @Column(name = "updated_at", nullable = false)
+  private LocalDateTime updatedAt;
+
   // JPA用パッケージプライベートセッター
   void setEmployeeId(UUID employeeId) {
     this.employeeId = employeeId;
@@ -52,6 +67,25 @@ public class Employee {
 
   void setValidTo(LocalDateTime validTo) {
     this.validTo = validTo;
+  }
+
+  void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = DateProvider.currentLocalDateTime();
+    this.updatedAt = DateProvider.currentLocalDateTime();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    this.updatedAt = DateProvider.currentLocalDateTime();
   }
 
   /**

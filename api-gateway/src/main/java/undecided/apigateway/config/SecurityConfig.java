@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -37,9 +38,12 @@ import undecided.apigateway.config.handlers.JwtAuthenticationEntryPoint;
 public class SecurityConfig {
 
   private final @NonNull CorsProperties corsProperties;
+  private final boolean swaggerUiEnabled;
 
-  public SecurityConfig(@NonNull CorsProperties corsProperties) {
+  public SecurityConfig(@NonNull CorsProperties corsProperties,
+                        @Value("${springdoc.swagger-ui.enabled:false}") boolean swaggerUiEnabled) {
     this.corsProperties = corsProperties;
+    this.swaggerUiEnabled = swaggerUiEnabled;
   }
 
   /**
@@ -116,13 +120,14 @@ public class SecurityConfig {
                     .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
                     .cacheControl(cache -> cache.disable()))
         .authorizeHttpRequests(
-            authorize ->
-                authorize
-                    // Swagger UI は公開
-                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
-                    .permitAll()
-                    // 認証関連エンドポイントは公開（ログイン/トークン更新など）
-                    .requestMatchers("/api/auth/**")
+            authorize -> {
+                // Swagger UI は開発環境でのみ公開。本番環境ではspringdoc.swagger-ui.enabled=falseに設定すること。
+                if (swaggerUiEnabled) {
+                    authorize.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                        .permitAll();
+                }
+                // 認証関連エンドポイントは公開（ログイン/トークン更新など）
+                authorize.requestMatchers("/api/auth/**")
                     .permitAll()
                     // 管理者用APIはROLE_PRODUCT_OWNERのみアクセス可能
                     // 設計書 3.2節にADMINロールが定義されていないため、PRODUCT_OWNERを使用
@@ -136,7 +141,8 @@ public class SecurityConfig {
                     .authenticated()
                     // 明示的に許可されていないルートはすべて拒否
                     .anyRequest()
-                    .denyAll())
+                    .denyAll();
+            })
         .oauth2ResourceServer(
             oauth2 ->
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
