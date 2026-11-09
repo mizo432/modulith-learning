@@ -190,7 +190,7 @@ class SprintCommandControllerTest {
       ResponseEntity<NotificationDTO> result = controller.sendNotification(request);
 
       // Assert
-      assertThat(result.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);
+      assertThat(result.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.CREATED);
       assertThat(result.getBody()).isEqualTo(expectedNotification);
       verify(sendNotificationCommandService).execute(any());
     }

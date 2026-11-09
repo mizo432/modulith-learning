@@ -325,9 +325,18 @@ class NotificationServiceImplTest {
     }
 
     @Test
+    @DisplayName("nullの通知IDの場合、NullPointerExceptionがスローされること")
+    void shouldThrowExceptionWhenNotificationIdIsNull() {
+      // Act & Assert
+      assertThatThrownBy(() -> notificationService.markAsRead(null))
+          .isInstanceOf(NullPointerException.class)
+          .hasMessageContaining("notificationId");
+    }
+
+    @Test
     @DisplayName("無効なID文字列の場合、IllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenInvalidIdString() {
-      // Act & Assert - 実装詳細に依存せず、業務的な例外タイプをアサート
+      // Act & Assert
       assertThatThrownBy(() -> notificationService.markAsRead("invalid-id"))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("通知IDは数値である必要があります");

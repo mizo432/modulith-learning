@@ -26,11 +26,11 @@ public class SprintQueryService implements SprintQueryServiceInterface {
     }
 
     public Optional<SprintDTO> findById(@NonNull SnowflakeId id) {
-        return sprintRepository.findById(id).map(sprintResponseAssembler::toDTO);
+        return sprintRepository.findByIdAndDeletedAtIsNull(id).map(sprintResponseAssembler::toDTO);
     }
 
-    public List<SprintDTO> findAll(Pageable pageable) {
-        return sprintRepository.findAll(pageable).getContent().stream()
+    public List<SprintDTO> findAll(@NonNull Pageable pageable) {
+        return sprintRepository.findAllByDeletedAtIsNull(pageable).getContent().stream()
             .map(sprintResponseAssembler::toDTO)
             .toList();
     }

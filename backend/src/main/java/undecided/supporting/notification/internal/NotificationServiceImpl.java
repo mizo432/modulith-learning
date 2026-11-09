@@ -1,6 +1,7 @@
 package undecided.supporting.notification.internal;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +69,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void markAsRead(String notificationId) {
+        Objects.requireNonNull(notificationId, "notificationIdはnullであってはいけません");
         long idValue;
         try {
             idValue = Long.parseLong(notificationId);
