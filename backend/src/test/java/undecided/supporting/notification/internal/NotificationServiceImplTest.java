@@ -326,11 +326,11 @@ class NotificationServiceImplTest {
     }
 
     @Test
-    @DisplayName("nullの通知IDの場合、NullPointerExceptionがスローされること")
+    @DisplayName("nullの通知IDの場合、BusinessExceptionがスローされること")
     void shouldThrowExceptionWhenNotificationIdIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> notificationService.markAsRead(null))
-          .isInstanceOf(NullPointerException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("notificationId");
     }
 

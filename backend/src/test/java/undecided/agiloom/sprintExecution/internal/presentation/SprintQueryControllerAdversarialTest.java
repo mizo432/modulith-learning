@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -97,8 +96,8 @@ class SprintQueryControllerAdversarialTest {
 
       // Act & Assert - @Max(100)制約により、Spring MVC層ではConstraintViolationExceptionで拒否される
       // ユニットテストではSpring MVC層を通らないため、受理される
-      assertThatCode(() -> controller.getSprints(0, Integer.MAX_VALUE))
-          .doesNotThrowAnyException();
+      List<SprintResponse> result = controller.getSprints(0, Integer.MAX_VALUE);
+      assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -118,8 +117,8 @@ class SprintQueryControllerAdversarialTest {
       when(sprintQueryService.findAll(any(Pageable.class))).thenReturn(List.of());
 
       // Act & Assert
-      assertThatCode(() -> controller.getSprints(Integer.MAX_VALUE, 20))
-          .doesNotThrowAnyException();
+      List<SprintResponse> result = controller.getSprints(Integer.MAX_VALUE, 20);
+      assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -130,8 +129,8 @@ class SprintQueryControllerAdversarialTest {
 
       // Act & Assert - @Max(100)制約により、Spring MVC層ではConstraintViolationExceptionで拒否される
       // ユニットテストではSpring MVC層を通らないため、受理される
-      assertThatCode(() -> controller.getSprints(Integer.MAX_VALUE, Integer.MAX_VALUE))
-          .doesNotThrowAnyException();
+      List<SprintResponse> result = controller.getSprints(Integer.MAX_VALUE, Integer.MAX_VALUE);
+      assertThat(result).isNotNull().isEmpty();
     }
   }
 
@@ -158,12 +157,12 @@ class SprintQueryControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("IDに負の値を指定した場合、SnowflakeIdの事前条件検証でIllegalArgumentExceptionをスローすること")
+    @DisplayName("IDに負の値を指定した場合、BusinessExceptionをスローすること")
     void shouldHandleNegativeId() {
-      // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗
+      // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗し、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprint("-123"))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("value must be positive");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("正の値である必要があります");
     }
 
     @Test

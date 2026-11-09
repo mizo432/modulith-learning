@@ -1,7 +1,6 @@
 package undecided.supporting.notification.internal;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import com.github.mizo432.shared.exception.BusinessException;
 import org.springframework.stereotype.Service;
@@ -71,7 +70,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void markAsRead(String notificationId) {
-        Objects.requireNonNull(notificationId, "notificationIdはnullであってはいけません");
+        if (notificationId == null) {
+            throw new BusinessException("notificationIdはnullであってはいけません");
+        }
         long idValue;
         try {
             idValue = Long.parseLong(notificationId);

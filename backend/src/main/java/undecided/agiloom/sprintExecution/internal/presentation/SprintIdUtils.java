@@ -25,6 +25,8 @@ public final class SprintIdUtils {
             return SnowflakeId.of(value);
         } catch (NumberFormatException e) {
             throw new BusinessException(ResultMessages.error().add(ResultMessage.fromText("Sprint IDは数値である必要があります: " + id)), e);
+        } catch (IllegalArgumentException e) {
+            throw new BusinessException(ResultMessages.error().add(ResultMessage.fromText("Sprint IDは正の値である必要があります: " + id)), e);
         }
     }
 }
