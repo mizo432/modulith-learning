@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
+import java.util.regex.Pattern;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
@@ -84,7 +85,7 @@ public class LegalName implements StringCode<LegalName> {
   }
 
   /**
-   * 法的名前の値を「姓 名」の形式で返します。
+   * 法的名前の値を「姓 名」の形式で返します（表示用）。
    *
    * @return 法的名前の文字列（例: "田中 太郎"）
    */
@@ -95,6 +96,12 @@ public class LegalName implements StringCode<LegalName> {
     }
     String lastNameValue = lastName != null ? lastName.value() : "";
     String firstNameValue = firstName != null ? firstName.value() : "";
+    if (lastNameValue.isEmpty()) {
+      return firstNameValue;
+    }
+    if (firstNameValue.isEmpty()) {
+      return lastNameValue;
+    }
     return lastNameValue + " " + firstNameValue;
   }
 
@@ -122,33 +129,56 @@ public class LegalName implements StringCode<LegalName> {
   @Converter(autoApply = true)
   public static class LegalNameConverter implements AttributeConverter<LegalName, String> {
 
+    /** データベース保存用の区切り文字です。 */
+    private static final String DB_SEPARATOR = "|";
+
     /**
      * エンティティ属性をデータベースカラムに変換します。
+     *
+     * <p>姓と名を区切り文字で連結して保存します。これにより、名前にスペースが含まれる場合でも
+     * 正しく復元できます。
      *
      * @param attribute 変換対象の {@code LegalName} 属性
      * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}
      */
     @Override
     public String convertToDatabaseColumn(LegalName attribute) {
-      return attribute != null ? attribute.value() : null;
+      if (attribute == null) {
+        return null;
+      }
+      String lastNameValue = attribute.lastName != null ? attribute.lastName.value() : null;
+      String firstNameValue = attribute.firstName != null ? attribute.firstName.value() : null;
+      if (lastNameValue == null && firstNameValue == null) {
+        return null;
+      }
+      if (lastNameValue == null) {
+        return firstNameValue;
+      }
+      if (firstNameValue == null) {
+        return lastNameValue;
+      }
+      return lastNameValue + LegalNameConverter.DB_SEPARATOR + firstNameValue;
     }
 
     /**
      * データベースカラムをエンティティ属性に変換します。
+     *
+     * <p>区切り文字で分割して姓と名を復元します。名前にスペースが含まれる場合でも正しく処理できます。
      *
      * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
      * @return 変換された {@code LegalName} インスタンス。データベースデータが {@code null} の場合は空のインスタンス
      */
     @Override
     public LegalName convertToEntityAttribute(@Nullable String dbData) {
-      if (dbData == null) {
+      if (dbData == null || dbData.isBlank()) {
         return LegalName.empty();
       }
-      String[] parts = dbData.split(" ", 2);
+      String[] parts = dbData.split(Pattern.quote(LegalNameConverter.DB_SEPARATOR), 2);
       if (parts.length == 2) {
         return new LegalName(new LastName(parts[0]), new FirstName(parts[1]));
       } else if (parts.length == 1) {
-        return new LegalName(new LastName(parts[0]), new FirstName(""));
+        // 姓のみが保存されている場合は、名をnullとして処理
+        return new LegalName(new LastName(parts[0]), null);
       }
       return LegalName.empty();
     }

@@ -314,7 +314,7 @@ class LegalNameTest {
       void shouldConvertToDatabaseColumn() {
         LegalName legalName = LegalName.of("田中", "太郎");
 
-        assertThat(converter.convertToDatabaseColumn(legalName)).isEqualTo("田中 太郎");
+        assertThat(converter.convertToDatabaseColumn(legalName)).isEqualTo("田中|太郎");
       }
 
       @Test
@@ -331,13 +331,36 @@ class LegalNameTest {
       @Test
       @DisplayName("Stringから属性に変換する")
       void shouldConvertToEntityAttribute() {
-        LegalName result = converter.convertToEntityAttribute("田中 太郎");
+        LegalName result = converter.convertToEntityAttribute("田中|太郎");
 
         assertThat(result).isNotNull();
         assertThat(result.lastName()).isNotNull();
         assertThat(result.lastName().value()).isEqualTo("田中");
         assertThat(result.firstName()).isNotNull();
         assertThat(result.firstName().value()).isEqualTo("太郎");
+      }
+
+      @Test
+      @DisplayName("名前にスペースが含まれる場合にも正しく変換する")
+      void shouldConvertToEntityAttributeWithSpaceInFirstName() {
+        LegalName result = converter.convertToEntityAttribute("田中|太郎 次");
+
+        assertThat(result).isNotNull();
+        assertThat(result.lastName()).isNotNull();
+        assertThat(result.lastName().value()).isEqualTo("田中");
+        assertThat(result.firstName()).isNotNull();
+        assertThat(result.firstName().value()).isEqualTo("太郎 次");
+      }
+
+      @Test
+      @DisplayName("姓のみの場合は名をnullとして復元する")
+      void shouldConvertLastNameOnly() {
+        LegalName result = converter.convertToEntityAttribute("田中");
+
+        assertThat(result).isNotNull();
+        assertThat(result.lastName()).isNotNull();
+        assertThat(result.lastName().value()).isEqualTo("田中");
+        assertThat(result.firstName()).isNull();
       }
 
       @Test
