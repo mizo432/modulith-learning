@@ -22,8 +22,8 @@ repositories {
     mavenCentral()
 }
 
-extra["junitVersion"] = "6.0.1"
-extra["springCloudBomVersion"] = "2025.1.2"
+extra["junitVersion"] = "6.1.3"
+extra["springCloudBomVersion"] = "2025.1.4"
 
 dependencies {
 //    <!-- Spring Boot Starter -->

@@ -22,9 +22,9 @@ repositories {
     mavenCentral()
 }
 
-extra["junitVersion"] = "6.0.1"
-extra["springCloudBomVersion"] = "2025.1.2"
-extra["openapiUiVersion"] = "3.1.1"
+extra["junitVersion"] = "6.1.3"
+extra["springCloudBomVersion"] = "2025.1.4"
+extra["openapiUiVersion"] = "3.2.0"
 extra["bucket4jVersion"] = "8.15.0"
 extra["lettuceVersion"] = "6.5.4.RELEASE"
 
