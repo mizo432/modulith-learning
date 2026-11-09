@@ -1,5 +1,7 @@
 package undecided.generic.bankReg.spi.branch;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,7 +44,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("nullに対するエラーメッセージが含まれること")
           .hasMessageContaining("null");
     }
@@ -52,7 +54,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsEmpty() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of(""))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("空文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -62,7 +64,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsBlank() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of("   "))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("空白のみの文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -72,7 +74,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsTooShort() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of("01"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("桁数が不足している場合のエラーメッセージが含まれること")
           .hasMessageContaining("3 digits");
     }
@@ -82,7 +84,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsTooLong() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of("0001"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("桁数が多い場合のエラーメッセージが含まれること")
           .hasMessageContaining("3 digits");
     }

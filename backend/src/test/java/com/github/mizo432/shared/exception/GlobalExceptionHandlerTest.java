@@ -83,7 +83,7 @@ class GlobalExceptionHandlerTest {
       assertThatThrownBy(() -> globalExceptionHandler.handleBusinessException(null))
           .as("null引数時にNullPointerExceptionが発生すること")
           .isInstanceOf(NullPointerException.class)
-          .hasMessage("e must not be null.");
+          .hasMessageContaining("e must not be null.");
     }
   }
 

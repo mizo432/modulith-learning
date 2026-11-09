@@ -1,5 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
+import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.DateValue;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.time.LocalDate;
@@ -7,8 +10,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
-import com.github.mizo432.shared.value.DateValue;
 
 /**
  * 生年月日を表す値オブジェクトです。
@@ -31,11 +32,11 @@ public class DateOfBirth implements DateValue {
    *
    * @param dateOfBirth 生年月日。{@code null} は許容されません。
    * @return 生年月日の {@code DateOfBirth} インスタンス
-   * @throws IllegalArgumentException 生年月日が {@code null} の場合
+   * @throws BusinessException 生年月日が {@code null} の場合
    */
   public static DateOfBirth of(LocalDate dateOfBirth) {
     if (dateOfBirth == null) {
-      throw new IllegalArgumentException("dateOfBirth must not be null");
+      throw new BusinessException("dateOfBirth must not be null");
     }
     return new DateOfBirth(dateOfBirth);
   }

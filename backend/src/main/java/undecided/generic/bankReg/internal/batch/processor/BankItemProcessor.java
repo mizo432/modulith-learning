@@ -41,7 +41,7 @@ public class BankItemProcessor implements ItemProcessor<BankCsvDto, Bank> {
     BankCode bankCode;
     try {
       bankCode = BankCode.of(rawBankCode);
-    } catch (IllegalArgumentException ex) {
+    } catch (Exception ex) {
       log.warn("Skipping record due to invalid bank code format: {}", item);
       return null;
     }

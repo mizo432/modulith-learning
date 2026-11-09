@@ -1,5 +1,7 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,11 +19,11 @@ public class JobVersion {
 
   public static JobVersion of(String value) {
     com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull(
-        value, () -> new IllegalArgumentException("JobVersion cannot be null"));
+        value, () -> new BusinessException("JobVersion cannot be null"));
     com.github.mizo432.shared.common.precondition.StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
-        () -> new IllegalArgumentException("JobVersion cannot exceed " + MAX_LENGTH + " characters"));
+        () -> new BusinessException("JobVersion cannot exceed " + MAX_LENGTH + " characters"));
     return new JobVersion(value);
   }
 

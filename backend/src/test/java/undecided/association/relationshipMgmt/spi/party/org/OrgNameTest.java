@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.spi.party.org;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -44,24 +46,24 @@ class OrgNameTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> OrgName.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("name must not be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("name must not be null");
     }
 
     @Test
     @DisplayName("空文字を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenEmpty() {
       assertThatThrownBy(() -> OrgName.of(""))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("name must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("name must not be empty");
     }
 
     @Test
     @DisplayName("空白文字のみを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenBlank() {
       assertThatThrownBy(() -> OrgName.of("   "))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("name must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("name must not be empty");
     }
 
     @Test
@@ -69,7 +71,7 @@ class OrgNameTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longName = "a".repeat(101);
       assertThatThrownBy(() -> OrgName.of(longName))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("name must be between");
     }
 

@@ -1,5 +1,7 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,11 +19,11 @@ public class ParameterSpec {
 
   public static ParameterSpec of(String value) {
     com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull(
-        value, () -> new IllegalArgumentException("ParameterSpec cannot be null"));
+        value, () -> new BusinessException("ParameterSpec cannot be null"));
     com.github.mizo432.shared.common.precondition.StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
-        () -> new IllegalArgumentException("ParameterSpec cannot exceed " + MAX_LENGTH + " characters"));
+        () -> new BusinessException("ParameterSpec cannot exceed " + MAX_LENGTH + " characters"));
     return new ParameterSpec(value);
   }
 

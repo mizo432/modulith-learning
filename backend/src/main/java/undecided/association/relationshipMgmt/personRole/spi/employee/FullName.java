@@ -1,11 +1,12 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
-import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import com.github.mizo432.shared.common.precondition.StringPrecondition;
 import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.exception.BusinessException;
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,15 +25,15 @@ public class FullName {
 
   public static FullName of(String value) {
     ObjectPrecondition.checkNotNull(
-        value, () -> new IllegalArgumentException("FullName cannot be null"));
+        value, () -> new BusinessException("FullName cannot be null"));
     StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
-        () -> new IllegalArgumentException("FullName cannot exceed 255 characters"));
+        () -> new BusinessException("FullName cannot exceed 255 characters"));
     StringPrecondition.checkRegex(
         value,
         REGEX,
-        () -> new IllegalArgumentException("FullName must match the pattern " + REGEX));
+        () -> new BusinessException("FullName must match the pattern " + REGEX));
     return new FullName(value);
   }
 

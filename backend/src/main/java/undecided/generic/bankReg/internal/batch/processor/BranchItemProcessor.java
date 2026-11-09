@@ -49,7 +49,7 @@ public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> 
     BankCode bankCode;
     try {
       bankCode = BankCode.of(rawBankCode);
-    } catch (IllegalArgumentException ex) {
+    } catch (Exception ex) {
       log.warn("Skipping record due to invalid bank code format: {}", item);
       return null;
     }
@@ -57,7 +57,7 @@ public class BranchItemProcessor implements ItemProcessor<BranchCsvDto, Branch> 
     BranchCode branchCode;
     try {
       branchCode = BranchCode.of(rawBranchCode);
-    } catch (IllegalArgumentException ex) {
+    } catch (Exception ex) {
       log.warn("Skipping record due to invalid branch code format: {}", item);
       return null;
     }

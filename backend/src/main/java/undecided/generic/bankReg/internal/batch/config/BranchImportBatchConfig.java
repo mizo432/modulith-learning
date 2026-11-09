@@ -1,5 +1,7 @@
 package undecided.generic.bankReg.internal.batch.config;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -36,7 +38,7 @@ public class BranchImportBatchConfig {
     if (inputFile != null && !inputFile.isBlank()) {
       resource = new FileSystemResource(inputFile);
     } else {
-      throw new IllegalArgumentException("inputFile is required for branch import job");
+      throw new BusinessException("inputFile is required for branch import job");
     }
     return new BranchCsvItemReader(resource);
   }

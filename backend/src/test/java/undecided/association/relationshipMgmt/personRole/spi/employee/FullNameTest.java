@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -35,8 +37,8 @@ class FullNameTest {
     void shouldThrowExceptionWhenValueIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> FullName.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("FullName cannot be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("FullName cannot be null");
     }
 
     @Test
@@ -47,8 +49,8 @@ class FullNameTest {
 
       // Act & Assert
       assertThatThrownBy(() -> FullName.of(value))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("FullName cannot exceed 255 characters");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("FullName cannot exceed 255 characters");
     }
 
     @Test
@@ -59,7 +61,7 @@ class FullNameTest {
 
       // Act & Assert
       assertThatThrownBy(() -> FullName.of(value))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("FullName must match the pattern");
     }
 
@@ -71,7 +73,7 @@ class FullNameTest {
 
       // Act & Assert
       assertThatThrownBy(() -> FullName.of(value))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("FullName must match the pattern");
     }
 

@@ -1,5 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party.partyRelationship;
 
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
+import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.value.DateTimeValue;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.time.LocalDateTime;
@@ -7,8 +10,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.common.dateProvider.DateProvider;
-import com.github.mizo432.shared.value.DateTimeValue;
 
 /**
  * Disassociation（関連付け解除）が行われた日時を表す値オブジェクトです。
@@ -31,11 +32,11 @@ public class WhenDisassociated implements DateTimeValue {
    *
    * @param dateTime 関連付け解除日時。{@code null} は許容されません。
    * @return 指定された日時を持つ {@code WhenDisassociated} インスタンス
-   * @throws IllegalArgumentException {@code dateTime} が {@code null} の場合
+   * @throws BusinessException {@code dateTime} が {@code null} の場合
    */
   public static WhenDisassociated of(LocalDateTime dateTime) {
     if (dateTime == null) {
-      throw new IllegalArgumentException("dateTime must not be null");
+      throw new BusinessException("dateTime must not be null");
     }
     return new WhenDisassociated(dateTime);
   }

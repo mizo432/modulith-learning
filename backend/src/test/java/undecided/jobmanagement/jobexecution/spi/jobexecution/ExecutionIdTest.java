@@ -1,5 +1,7 @@
 package undecided.jobmanagement.jobexecution.spi.jobexecution;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -29,8 +31,8 @@ class ExecutionIdTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> ExecutionId.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("ExecutionId cannot be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("ExecutionId cannot be null");
     }
 
     @Test
@@ -38,8 +40,8 @@ class ExecutionIdTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longId = "a".repeat(51);
       assertThatThrownBy(() -> ExecutionId.of(longId))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("ExecutionId cannot exceed 50 characters");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("ExecutionId cannot exceed 50 characters");
     }
 
     @Test

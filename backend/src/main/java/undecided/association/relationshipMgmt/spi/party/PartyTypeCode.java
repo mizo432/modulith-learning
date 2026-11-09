@@ -1,11 +1,12 @@
 package undecided.association.relationshipMgmt.spi.party;
 
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.value.StringCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.value.StringCode;
 
 /**
  * パーティー種類コードを表す値オブジェクトクラス。
@@ -55,18 +56,18 @@ public class PartyTypeCode implements StringCode<PartyTypeCode> {
    *
    * @param partyTypeCode パーティー種類コード（英大文字とアンダースコアのみ、1文字以上20文字以下）
    * @return パーティー種類コードの値オブジェクト
-   * @throws IllegalArgumentException パーティー種類コードがnull、空、文字数制限を超えている、または英大文字とアンダースコアのみで構成されていない場合
+   * @throws BusinessException パーティー種類コードがnull、空、文字数制限を超えている、または英大文字とアンダースコアのみで構成されていない場合
    */
   public static PartyTypeCode of(String partyTypeCode) {
     if (partyTypeCode == null) {
-      throw new IllegalArgumentException("partyTypeCode must not be null");
+      throw new BusinessException("partyTypeCode must not be null");
     }
     String trimmed = partyTypeCode.trim();
     if (trimmed.isEmpty()) {
-      throw new IllegalArgumentException("partyTypeCode must not be empty");
+      throw new BusinessException("partyTypeCode must not be empty");
     }
     if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
-      throw new IllegalArgumentException(
+      throw new BusinessException(
           "partyTypeCode must be between "
               + MIN_LENGTH
               + " and "
@@ -75,7 +76,7 @@ public class PartyTypeCode implements StringCode<PartyTypeCode> {
               + trimmed);
     }
     if (!trimmed.matches(REGEX)) {
-      throw new IllegalArgumentException(
+      throw new BusinessException(
           "partyTypeCode must contain only uppercase letters and underscores, but was: " + trimmed);
     }
     return new PartyTypeCode(trimmed);

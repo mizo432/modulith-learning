@@ -1,11 +1,12 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
-import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import com.github.mizo432.shared.common.precondition.StringPrecondition;
 import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.exception.BusinessException;
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,15 +21,15 @@ public class EmployeeNo {
 
   public static EmployeeNo of(String value) {
     ObjectPrecondition.checkNotNull(
-        value, () -> new IllegalArgumentException("EmployeeNo cannot be null"));
+        value, () -> new BusinessException("EmployeeNo cannot be null"));
     StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
-        () -> new IllegalArgumentException("EmployeeNo cannot exceed 10 characters"));
+        () -> new BusinessException("EmployeeNo cannot exceed 10 characters"));
     StringPrecondition.checkRegex(
         value,
         REGEX,
-        () -> new IllegalArgumentException("EmployeeNo must match the pattern " + REGEX));
+        () -> new BusinessException("EmployeeNo must match the pattern " + REGEX));
     return new EmployeeNo(value);
   }
 

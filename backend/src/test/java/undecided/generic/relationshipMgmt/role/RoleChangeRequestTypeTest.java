@@ -1,5 +1,7 @@
 package undecided.generic.relationshipMgmt.role;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -24,8 +26,8 @@ class RoleChangeRequestTypeTest {
 
       // Act & Assert
       assertThatThrownBy(() -> RoleChangeRequestType.valueOfCode(code))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("code must not be null.");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("code must not be null.");
     }
 
     @Test
