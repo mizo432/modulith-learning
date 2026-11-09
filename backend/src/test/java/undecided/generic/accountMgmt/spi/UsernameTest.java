@@ -1,5 +1,7 @@
 package undecided.generic.accountMgmt.spi;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -52,7 +54,7 @@ class UsernameTest {
       String longName = "a".repeat(51);
 
       assertThatThrownBy(() -> new Username(longName))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("50 characters or less");
     }
 

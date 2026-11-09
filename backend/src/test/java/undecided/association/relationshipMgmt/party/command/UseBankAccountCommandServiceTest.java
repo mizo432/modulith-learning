@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.party.command;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -46,7 +48,7 @@ class UseBankAccountCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.use(null))
           .as("DTOがnullの場合に例外がスローされること")
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("BankAccountUseDtoはnullであってはいけません");
 
       verify(bankAccountUseRepository, never()).save((BankAccountUse) null);
@@ -67,7 +69,7 @@ class UseBankAccountCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.use(dto))
           .as("bankAccountIdがemptyの場合に例外がスローされること")
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("bankAccountIdは必須です");
 
       verify(bankAccountUseRepository, never()).save((BankAccountUse) null);
@@ -88,7 +90,7 @@ class UseBankAccountCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.use(dto))
           .as("partyIdがemptyの場合に例外がスローされること")
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("partyIdは必須です");
 
       verify(bankAccountUseRepository, never()).save((BankAccountUse) null);

@@ -1,5 +1,7 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -29,8 +31,8 @@ class JobCodeTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> JobCode.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("JobCode cannot be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("JobCode cannot be null");
     }
 
     @Test
@@ -38,8 +40,8 @@ class JobCodeTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longCode = "a".repeat(51);
       assertThatThrownBy(() -> JobCode.of(longCode))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("JobCode cannot exceed 50 characters");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("JobCode cannot exceed 50 characters");
     }
 
     @Test

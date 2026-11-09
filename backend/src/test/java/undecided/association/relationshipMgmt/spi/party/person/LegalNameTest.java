@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -51,48 +53,48 @@ class LegalNameTest {
     @DisplayName("姓がnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenLastNameNull() {
       assertThatThrownBy(() -> LegalName.of(null, "太郎"))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("lastName must not be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("lastName must not be null");
     }
 
     @Test
     @DisplayName("名がnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenFirstNameNull() {
       assertThatThrownBy(() -> LegalName.of("田中", null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("firstName must not be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("firstName must not be null");
     }
 
     @Test
     @DisplayName("姓が空文字の場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenLastNameEmpty() {
       assertThatThrownBy(() -> LegalName.of("", "太郎"))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("lastName must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("lastName must not be empty");
     }
 
     @Test
     @DisplayName("名が空文字の場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenFirstNameEmpty() {
       assertThatThrownBy(() -> LegalName.of("田中", ""))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("firstName must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("firstName must not be empty");
     }
 
     @Test
     @DisplayName("姓が空白文字のみの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenLastNameBlank() {
       assertThatThrownBy(() -> LegalName.of("   ", "太郎"))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("lastName must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("lastName must not be empty");
     }
 
     @Test
     @DisplayName("名が空白文字のみの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenFirstNameBlank() {
       assertThatThrownBy(() -> LegalName.of("田中", "   "))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("firstName must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("firstName must not be empty");
     }
 
     @Test
@@ -100,7 +102,7 @@ class LegalNameTest {
     void shouldThrowExceptionWhenLastNameExceedsMaxLength() {
       String longName = "a".repeat(51);
       assertThatThrownBy(() -> LegalName.of(longName, "太郎"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("lastName must be between");
     }
 
@@ -109,7 +111,7 @@ class LegalNameTest {
     void shouldThrowExceptionWhenFirstNameExceedsMaxLength() {
       String longName = "a".repeat(51);
       assertThatThrownBy(() -> LegalName.of("田中", longName))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("firstName must be between");
     }
 

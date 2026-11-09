@@ -1,5 +1,7 @@
 package undecided.generic.bankReg.spi.bank;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,7 +44,7 @@ class BankCodeTest {
     void shouldThrowExceptionWhenCodeIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> BankCode.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("nullに対するエラーメッセージが含まれること")
           .hasMessageContaining("null");
     }
@@ -52,7 +54,7 @@ class BankCodeTest {
     void shouldThrowExceptionWhenCodeIsEmpty() {
       // Act & Assert
       assertThatThrownBy(() -> BankCode.of(""))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("空文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -62,7 +64,7 @@ class BankCodeTest {
     void shouldThrowExceptionWhenCodeIsBlank() {
       // Act & Assert
       assertThatThrownBy(() -> BankCode.of("   "))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("空白のみの文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -72,7 +74,7 @@ class BankCodeTest {
     void shouldThrowExceptionWhenCodeIsTooShort() {
       // Act & Assert
       assertThatThrownBy(() -> BankCode.of("001"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("桁数が不足している場合のエラーメッセージが含まれること")
           .hasMessageContaining("4 digits");
     }
@@ -82,7 +84,7 @@ class BankCodeTest {
     void shouldThrowExceptionWhenCodeIsTooLong() {
       // Act & Assert
       assertThatThrownBy(() -> BankCode.of("00001"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("桁数が多い場合のエラーメッセージが含まれること")
           .hasMessageContaining("4 digits");
     }

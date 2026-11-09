@@ -1,5 +1,7 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -29,8 +31,8 @@ class ParameterSpecTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> ParameterSpec.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("ParameterSpec cannot be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("ParameterSpec cannot be null");
     }
 
     @Test
@@ -38,8 +40,8 @@ class ParameterSpecTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longSpec = "a".repeat(1001);
       assertThatThrownBy(() -> ParameterSpec.of(longSpec))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("ParameterSpec cannot exceed 1000 characters");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("ParameterSpec cannot exceed 1000 characters");
     }
 
     @Test

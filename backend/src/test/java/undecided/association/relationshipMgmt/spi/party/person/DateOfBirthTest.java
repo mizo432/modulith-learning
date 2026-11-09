@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -30,8 +32,8 @@ class DateOfBirthTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> DateOfBirth.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("dateOfBirth must not be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("dateOfBirth must not be null");
     }
   }
 

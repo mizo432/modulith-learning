@@ -39,7 +39,7 @@ public class LegalName implements StringCode<LegalName> {
    * @param lastName 姓（1文字以上50文字以下）
    * @param firstName 名（1文字以上50文字以下）
    * @return 法的名前の値オブジェクト
-   * @throws IllegalArgumentException 姓または名がnull、空、または文字数制限を超えている場合
+   * @throws BusinessException 姓または名がnull、空、または文字数制限を超えている場合
    */
   public static LegalName of(String lastName, String firstName) {
     return new LegalName(LastName.of(lastName), FirstName.of(firstName));

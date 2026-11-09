@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.spi.party.partyRelationship;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -28,8 +30,8 @@ class WhenDisassociatedTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> WhenDisassociated.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("dateTime must not be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("dateTime must not be null");
     }
   }
 

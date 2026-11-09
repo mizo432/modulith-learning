@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -35,8 +37,8 @@ class EmployeeNoTest {
     void shouldThrowExceptionWhenValueIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> EmployeeNo.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("EmployeeNo cannot be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("EmployeeNo cannot be null");
     }
 
     @Test
@@ -47,8 +49,8 @@ class EmployeeNoTest {
 
       // Act & Assert
       assertThatThrownBy(() -> EmployeeNo.of(value))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("EmployeeNo cannot exceed 10 characters");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("EmployeeNo cannot exceed 10 characters");
     }
 
     @Test
@@ -59,8 +61,8 @@ class EmployeeNoTest {
 
       // Act & Assert
       assertThatThrownBy(() -> EmployeeNo.of(value))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("EmployeeNo must match the pattern ^[0-9]{10}$");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("EmployeeNo must match the pattern ^[0-9]{10}$");
     }
 
     @Test
@@ -71,8 +73,8 @@ class EmployeeNoTest {
 
       // Act & Assert
       assertThatThrownBy(() -> EmployeeNo.of(value))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("EmployeeNo must match the pattern ^[0-9]{10}$");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("EmployeeNo must match the pattern ^[0-9]{10}$");
     }
 
     @Test
@@ -83,8 +85,8 @@ class EmployeeNoTest {
 
       // Act & Assert
       assertThatThrownBy(() -> EmployeeNo.of(value))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("EmployeeNo must match the pattern ^[0-9]{10}$");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("EmployeeNo must match the pattern ^[0-9]{10}$");
     }
   }
 

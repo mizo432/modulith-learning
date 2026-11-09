@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.party.command;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -105,7 +107,7 @@ class UseBankAccountCommandServiceMediumTest {
     void shouldThrowExceptionWhenDtoIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> service.use(null))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("BankAccountUseDtoはnullであってはいけません");
 
       // Verify nothing is saved
@@ -126,7 +128,7 @@ class UseBankAccountCommandServiceMediumTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.use(dto))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("bankAccountIdは必須です");
 
       // Verify nothing is saved
@@ -147,7 +149,7 @@ class UseBankAccountCommandServiceMediumTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.use(dto))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("partyIdは必須です");
 
       // Verify nothing is saved
@@ -186,7 +188,7 @@ class UseBankAccountCommandServiceMediumTest {
 
       // Assert
       assertThatThrownBy(() -> service.use(invalidDto))
-          .isInstanceOf(IllegalArgumentException.class);
+          .isInstanceOf(BusinessException.class);
 
       // The valid record should still exist
       List<BankAccountUse> saved = repository.findAll();

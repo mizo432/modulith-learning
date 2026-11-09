@@ -1,11 +1,12 @@
 package undecided.association.relationshipMgmt.spi.party;
 
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.value.StringCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 政府発行の識別子を表す値オブジェクトクラス。
@@ -42,18 +43,18 @@ public class GovtAssignedId implements StringCode<GovtAssignedId> {
    *
    * @param govtAssignedId 政府発行ID（半角数字のみ、1桁以上50桁以下）
    * @return 政府発行IDの値オブジェクト
-   * @throws IllegalArgumentException 政府発行IDがnull、空、桁数制限を超えている、または半角数字のみで構成されていない場合
+   * @throws BusinessException 政府発行IDがnull、空、桁数制限を超えている、または半角数字のみで構成されていない場合
    */
   public static GovtAssignedId of(String govtAssignedId) {
     if (govtAssignedId == null) {
-      throw new IllegalArgumentException("govtAssignedId must not be null");
+      throw new BusinessException("govtAssignedId must not be null");
     }
     String trimmed = govtAssignedId.trim();
     if (trimmed.isEmpty()) {
-      throw new IllegalArgumentException("govtAssignedId must not be empty");
+      throw new BusinessException("govtAssignedId must not be empty");
     }
     if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
-      throw new IllegalArgumentException(
+      throw new BusinessException(
           "govtAssignedId must be between "
               + MIN_LENGTH
               + " and "
@@ -62,7 +63,7 @@ public class GovtAssignedId implements StringCode<GovtAssignedId> {
               + trimmed);
     }
     if (!trimmed.matches("\\d+")) {
-      throw new IllegalArgumentException(
+      throw new BusinessException(
           "govtAssignedId must contain only digits, but was: " + trimmed);
     }
     return new GovtAssignedId(trimmed);

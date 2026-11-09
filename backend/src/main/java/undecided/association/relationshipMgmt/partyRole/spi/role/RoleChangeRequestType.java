@@ -4,9 +4,10 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.exception.BusinessException;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
-import com.github.mizo432.shared.common.primitive.Strings2;
 
 /**
  * RoleChangeRequestTypeは、ロール変更要求の種類を表す列挙型です。 この列挙型は、コードおよびソート順に基づいて異なるタイプのロール変更を識別します。
@@ -45,13 +46,13 @@ public enum RoleChangeRequestType {
   /**
    * 指定されたコードに対応するRoleChangeRequestType列挙型を取得します。
    *
-   * @param code 対応するRoleChangeRequestTypeを決定する文字列コード この値がnullの場合、IllegalArgumentExceptionがスローされます。
+   * @param code 対応するRoleChangeRequestTypeを決定する文字列コード この値がnullの場合、BusinessExceptionがスローされます。
    * @return 指定されたコードに対応するRoleChangeRequestTypeの列挙値 不正または未知のコードが渡された場合はUNKNOWNを返します。
-   * @throws IllegalArgumentException 引数のコードがnullの場合にスローされます。
+   * @throws BusinessException 引数のコードがnullの場合にスローされます。
    */
   @JsonCreator
   public static RoleChangeRequestType valueOfCode(@NonNull String code) {
-    checkNotNull(code, () -> new IllegalArgumentException("code must not be null."));
+    checkNotNull(code, () -> new BusinessException("code must not be null."));
     if (Strings2.equal(code, "null")) return UNKNOWN;
     return switch (code) {
       case "00" -> CREATE;

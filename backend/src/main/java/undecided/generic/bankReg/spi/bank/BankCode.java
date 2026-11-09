@@ -1,5 +1,7 @@
 package undecided.generic.bankReg.spi.bank;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import jakarta.persistence.Embeddable;
 
 /**
@@ -19,18 +21,18 @@ public record BankCode(String value) {
    *
    * @param code 金融機関コード（4桁の文字列）
    * @return 金融機関コードの値オブジェクト
-   * @throws IllegalArgumentException コードがnull、空、または4桁でない場合
+   * @throws BusinessException コードがnull、空、または4桁でない場合
    */
   public static BankCode of(String code) {
     if (code == null) {
-      throw new IllegalArgumentException("bankCode must not be null");
+      throw new BusinessException("bankCode must not be null");
     }
     String trimmed = code.trim();
     if (trimmed.isEmpty()) {
-      throw new IllegalArgumentException("bankCode must not be empty");
+      throw new BusinessException("bankCode must not be empty");
     }
     if (trimmed.length() != LENGTH) {
-      throw new IllegalArgumentException(
+      throw new BusinessException(
           "bankCode must be exactly " + LENGTH + " digits, but was: " + trimmed);
     }
     return new BankCode(trimmed);

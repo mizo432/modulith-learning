@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.spi.party;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -26,24 +28,24 @@ class SearchNameTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> SearchName.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("searchName must not be null");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("searchName must not be null");
     }
 
     @Test
     @DisplayName("空文字を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenEmpty() {
       assertThatThrownBy(() -> SearchName.of(""))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("searchName must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("searchName must not be empty");
     }
 
     @Test
     @DisplayName("空白文字を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenBlank() {
       assertThatThrownBy(() -> SearchName.of("   "))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("searchName must not be empty");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("searchName must not be empty");
     }
 
     @Test
@@ -51,7 +53,7 @@ class SearchNameTest {
     void shouldThrowExceptionWhenTooLong() {
       String longString = "あ".repeat(51);
       assertThatThrownBy(() -> SearchName.of(longString))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("searchName must be between");
     }
 
@@ -59,7 +61,7 @@ class SearchNameTest {
     @DisplayName("半角文字を含む値を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenHalfWidth() {
       assertThatThrownBy(() -> SearchName.of("Yamada"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("searchName must contain only full-width characters");
     }
 

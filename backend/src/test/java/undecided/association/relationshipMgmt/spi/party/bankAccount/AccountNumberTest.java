@@ -1,5 +1,7 @@
 package undecided.association.relationshipMgmt.spi.party.bankAccount;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -62,7 +64,7 @@ class AccountNumberTest {
     void shouldThrowExceptionWhenAccountNumberIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> AccountNumber.of(null))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("nullに対するエラーメッセージが含まれること")
           .hasMessageContaining("null");
     }
@@ -72,7 +74,7 @@ class AccountNumberTest {
     void shouldThrowExceptionWhenAccountNumberIsEmpty() {
       // Act & Assert
       assertThatThrownBy(() -> AccountNumber.of(""))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("空文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -82,7 +84,7 @@ class AccountNumberTest {
     void shouldThrowExceptionWhenAccountNumberIsBlank() {
       // Act & Assert
       assertThatThrownBy(() -> AccountNumber.of("   "))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("空白のみの文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -92,7 +94,7 @@ class AccountNumberTest {
     void shouldThrowExceptionWhenAccountNumberIsTooLong() {
       // Act & Assert
       assertThatThrownBy(() -> AccountNumber.of("12345678"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("桁数が多い場合のエラーメッセージが含まれること")
           .hasMessageContaining("digits");
     }
@@ -102,7 +104,7 @@ class AccountNumberTest {
     void shouldThrowExceptionWhenAccountNumberContainsNonDigits() {
       // Act & Assert
       assertThatThrownBy(() -> AccountNumber.of("ABCDEFG"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("数字以外が含まれる場合のエラーメッセージが含まれること")
           .hasMessageContaining("digits");
     }
@@ -112,7 +114,7 @@ class AccountNumberTest {
     void shouldThrowExceptionWhenAccountNumberContainsMixedCharacters() {
       // Act & Assert
       assertThatThrownBy(() -> AccountNumber.of("123A567"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .as("数字と文字が混在する場合のエラーメッセージが含まれること")
           .hasMessageContaining("digits");
     }
