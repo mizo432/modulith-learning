@@ -50,8 +50,8 @@ class ArchitectureTest {
             .and()
             .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
-            .resideInAnyPackage("..spi..", "..internal..")
-            .because("Entityクラスはドメイン層(spiパッケージ)またはインフラ層(internalパッケージ)に配置されるべきです");
+            .resideInAnyPackage("..spi..")
+            .because("Entityクラスはドメイン層(spiパッケージ)に配置されるべきです");
   }
 
   @AnalyzeClasses(

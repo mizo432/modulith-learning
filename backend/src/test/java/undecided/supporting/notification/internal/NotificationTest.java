@@ -8,6 +8,7 @@ import com.github.mizo432.shared.exception.BusinessException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
+import undecided.supporting.notification.spi.Notification;
 import undecided.supporting.notification.spi.NotificationType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;

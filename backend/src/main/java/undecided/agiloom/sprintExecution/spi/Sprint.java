@@ -1,4 +1,4 @@
-package undecided.agiloom.sprintExecution.internal;
+package undecided.agiloom.sprintExecution.spi;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

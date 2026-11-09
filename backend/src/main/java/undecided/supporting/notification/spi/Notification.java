@@ -1,4 +1,4 @@
-package undecided.supporting.notification.internal;
+package undecided.supporting.notification.spi;
 
 import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Column;

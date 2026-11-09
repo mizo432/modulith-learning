@@ -3,7 +3,7 @@ package undecided.agiloom.sprintExecution.internal.presentation;
 import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
-import undecided.agiloom.sprintExecution.internal.Sprint;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 
 /**

@@ -5,11 +5,12 @@ import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.agiloom.sprintExecution.internal.Sprint;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
 import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.supporting.snowflake.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeIdGenerator;
 import com.github.mizo432.shared.exception.BusinessException;
 
 @Service
@@ -18,11 +19,14 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
 
     private final SprintRepository sprintRepository;
     private final SprintResponseAssembler sprintResponseAssembler;
+    private final SnowflakeIdGenerator snowflakeIdGenerator;
 
     public CreateSprintCommandService(SprintRepository sprintRepository,
-                                      SprintResponseAssembler sprintResponseAssembler) {
+                                      SprintResponseAssembler sprintResponseAssembler,
+                                      SnowflakeIdGenerator snowflakeIdGenerator) {
         this.sprintRepository = sprintRepository;
         this.sprintResponseAssembler = sprintResponseAssembler;
+        this.snowflakeIdGenerator = snowflakeIdGenerator;
     }
 
     public SprintDTO execute(@NonNull CreateSprintCommand command) {
@@ -31,6 +35,7 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
             throw new BusinessException("endDate must be after startDate");
         }
         Sprint sprint = Sprint.builder()
+                .id(SnowflakeId.of(snowflakeIdGenerator.nextId()))
                 .productId(command.getProductId())
                 .sprintNumber(command.getSprintNumber())
                 .title(command.getTitle())
