@@ -131,6 +131,9 @@ public class SecurityConfig {
                     // ヘルスチェックエンドポイントは公開
                     .requestMatchers("/actuator/health")
                     .permitAll()
+                    // 一般APIパスは認証済みユーザーがアクセス可能
+                    .requestMatchers("/api/**")
+                    .authenticated()
                     // 明示的に許可されていないルートはすべて拒否
                     .anyRequest()
                     .denyAll())

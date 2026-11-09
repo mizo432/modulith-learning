@@ -15,6 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
  * 冪等性キーを処理するServlet Filterです。
@@ -47,7 +48,16 @@ public class IdempotencyKeyFilter implements Filter {
     HttpServletResponse httpResponse = (HttpServletResponse) response;
 
     String key = httpRequest.getHeader(IDEMPOTENCY_KEY_HEADER);
-    HttpMethod method = HttpMethod.valueOf(httpRequest.getMethod());
+
+    // HTTPメソッドの検証と変換
+    HttpMethod method;
+    try {
+      method = HttpMethod.valueOf(httpRequest.getMethod());
+    } catch (IllegalArgumentException ex) {
+      // 不正なHTTPメソッドの場合はフィルタをスキップ
+      filterChain.doFilter(request, response);
+      return;
+    }
 
     // 冪等性キーが存在しない場合、または対象外のメソッドの場合はフィルタをスキップ
     if (key == null || key.isBlank() || !IDEMPOTENT_METHODS.contains(method)) {
@@ -69,12 +79,20 @@ public class IdempotencyKeyFilter implements Filter {
     // 新しいキーの場合は、リクエスト属性にキーを保存して処理を続行
     httpRequest.setAttribute(IDEMPOTENCY_KEY_ATTRIBUTE, key);
 
-    // チェーンを続行
-    filterChain.doFilter(request, response);
+    // レスポンスボディをキャプチャするためにWrapperを使用
+    ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(httpResponse);
 
-    // レスポンス結果をキャッシュに保存
+    // チェーンを続行
+    filterChain.doFilter(request, wrappedResponse);
+
+    // レスポンス結果をキャッシュに保存（ボディを含む）
     if (idempotencyKeyStore.isKeyNew(key)) {
-      idempotencyKeyStore.put(key, httpResponse.getStatus(), null);
+      byte[] responseBody = wrappedResponse.getContentAsByteArray();
+      String body = responseBody.length > 0 ? new String(responseBody, wrappedResponse.getCharacterEncoding()) : null;
+      idempotencyKeyStore.put(key, wrappedResponse.getStatus(), body);
     }
+
+    // キャッシュされたコンテンツをクライアントに送信
+    wrappedResponse.copyBodyToResponse();
   }
 }
