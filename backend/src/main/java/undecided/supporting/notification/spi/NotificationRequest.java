@@ -1,5 +1,6 @@
 package undecided.supporting.notification.spi;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import java.util.UUID;
 
 /**
@@ -107,23 +108,23 @@ public final class NotificationRequest {
          * 通知リクエストを構築します。
          *
          * @return 構築された通知リクエスト
-         * @throws IllegalStateException 必須フィールドが設定されていない場合
+         * @throws BusinessException 必須フィールドが設定されていない場合
          */
         public NotificationRequest build() {
             if (recipientId == null) {
-                throw new IllegalStateException("recipientId is required");
+                throw new BusinessException("recipientId is required");
             }
             if (sourceDomain == null || sourceDomain.isEmpty()) {
-                throw new IllegalStateException("sourceDomain is required");
+                throw new BusinessException("sourceDomain is required");
             }
             if (title == null || title.isEmpty()) {
-                throw new IllegalStateException("title is required");
+                throw new BusinessException("title is required");
             }
             if (content == null) {
-                throw new IllegalStateException("content is required");
+                throw new BusinessException("content is required");
             }
             if (type == null) {
-                throw new IllegalStateException("type is required");
+                throw new BusinessException("type is required");
             }
             return new NotificationRequest(this);
         }

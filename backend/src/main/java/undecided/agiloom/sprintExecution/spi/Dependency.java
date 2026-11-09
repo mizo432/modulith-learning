@@ -1,5 +1,6 @@
 package undecided.agiloom.sprintExecution.spi;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,14 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jspecify.annotations.NonNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Table(name = "sprint_dependencies")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,8 +53,40 @@ public class Dependency {
     private LocalDateTime deletedAt;
 
     public void update(@NonNull DependencyType dependencyType, String description) {
+        checkNotNull(dependencyType, () -> new BusinessException("dependencyType must not be null"));
+        if (description != null && description.trim().length() > 1000) {
+            throw new BusinessException("description must not exceed 1000 characters");
+        }
         this.dependencyType = dependencyType;
         this.description = description;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    void setDependencyType(DependencyType dependencyType) {
+        this.dependencyType = dependencyType;
+    }
+
+    void setDescription(String description) {
+        this.description = description;
+    }
+
+    void setSourceItemId(SnowflakeId sourceItemId) {
+        this.sourceItemId = sourceItemId;
+    }
+
+    void setTargetItemId(SnowflakeId targetItemId) {
+        this.targetItemId = targetItemId;
+    }
+
+    void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

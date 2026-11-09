@@ -22,7 +22,7 @@ class EmployeeTest {
     void shouldGetAndSetAllProperties() {
       // Arrange
       Employee employee = new Employee();
-      UUID employeeId = UUID.randomUUID();
+      UUID employeeId = UUID.fromString("11111111-1111-1111-1111-111111111111");
       String lastName = "Tanaka";
       String firstName = "Yuki";
       LocalDateTime validFrom = LocalDateTime.of(2024, 1, 1, 0, 0);
@@ -62,7 +62,7 @@ class EmployeeTest {
     void shouldHandleNullValidTo() {
       // Arrange
       Employee employee = new Employee();
-      employee.setEmployeeId(UUID.randomUUID());
+      employee.setEmployeeId(UUID.fromString("22222222-2222-2222-2222-222222222222"));
       employee.setLastName("Sato");
       employee.setFirstName("Ken");
       employee.setValidFrom(LocalDateTime.of(2024, 1, 1, 0, 0));

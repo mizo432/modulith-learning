@@ -68,8 +68,8 @@ class SendNotificationCommandServiceTest {
     @DisplayName("executeメソッドのテスト")
     class ExecuteTest {
 
-        private static final UUID RECIPIENT_ID = UUID.randomUUID();
-        private static final UUID SOURCE_ID = UUID.randomUUID();
+        private static final UUID RECIPIENT_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
+        private static final UUID SOURCE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
 
         @Test
         @DisplayName("メンション通知が正常に送信されること")

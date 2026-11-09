@@ -1,7 +1,9 @@
 package undecided.agiloom.sprintExecution.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -77,6 +79,16 @@ class SprintBacklogItemTest {
       item.updateStatus(TaskStatus.DONE);
       assertThat(item.getStatus()).isEqualTo(TaskStatus.DONE);
     }
+
+    @Test
+    @DisplayName("statusがnullの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenStatusIsNull() {
+      SprintBacklogItem item = createBacklogItem();
+
+      assertThatThrownBy(() -> item.updateStatus(null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("status must not be null");
+    }
   }
 
   @Nested
@@ -92,6 +104,16 @@ class SprintBacklogItemTest {
 
       assertThat(item.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
       assertThat(item.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("assigneeIdがnullの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenAssigneeIdIsNull() {
+      SprintBacklogItem item = createBacklogItem();
+
+      assertThatThrownBy(() -> item.assignTo(null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("assigneeId must not be null");
     }
   }
 
@@ -110,6 +132,47 @@ class SprintBacklogItemTest {
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
       assertThat(item.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
       assertThat(item.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("workDescriptionがnullの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenWorkDescriptionIsNull() {
+      SprintBacklogItem item = createBacklogItem();
+
+      assertThatThrownBy(() -> item.update(null, TaskStatus.IN_PROGRESS, FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("workDescription must not be null");
+    }
+
+    @Test
+    @DisplayName("statusがnullの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenStatusIsNull() {
+      SprintBacklogItem item = createBacklogItem();
+
+      assertThatThrownBy(() -> item.update("Description", null, FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("status must not be null");
+    }
+
+    @Test
+    @DisplayName("workDescriptionが2000文字を超える場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenWorkDescriptionExceedsLength() {
+      SprintBacklogItem item = createBacklogItem();
+      String longDescription = "A".repeat(2001);
+
+      assertThatThrownBy(() -> item.update(longDescription, TaskStatus.IN_PROGRESS, FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("workDescription must not exceed 2000 characters");
+    }
+
+    @Test
+    @DisplayName("assigneeIdがnullの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenAssigneeIdIsNull() {
+      SprintBacklogItem item = createBacklogItem();
+
+      assertThatThrownBy(() -> item.update("Description", TaskStatus.IN_PROGRESS, null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("assigneeId must not be null");
     }
   }
 }

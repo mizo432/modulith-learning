@@ -1,5 +1,6 @@
 package undecided.supporting.notification.internal;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +15,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -115,5 +119,31 @@ public class Notification {
      */
     public void markAsRead() {
         this.isRead = true;
+    }
+
+    /**
+     * 通知の内容を更新します。
+     *
+     * @param title 通知のタイトル（null不可）
+     * @param content 通知の本文（null不可）
+     * @param type 通知の種類（null可）
+     */
+    public void update(@NonNull String title, @NonNull String content, @Nullable NotificationType type) {
+        checkNotNull(title, () -> new BusinessException("title must not be null"));
+        checkNotNull(content, () -> new BusinessException("content must not be null"));
+        if (title.trim().isEmpty()) {
+            throw new BusinessException("title must not be empty");
+        }
+        if (title.trim().length() > 200) {
+            throw new BusinessException("title must not exceed 200 characters");
+        }
+        if (content.trim().length() > 2000) {
+            throw new BusinessException("content must not exceed 2000 characters");
+        }
+        this.title = title;
+        this.content = content;
+        if (type != null) {
+            this.type = type;
+        }
     }
 }

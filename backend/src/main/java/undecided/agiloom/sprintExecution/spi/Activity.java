@@ -1,5 +1,6 @@
 package undecided.agiloom.sprintExecution.spi;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,13 +15,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.jspecify.annotations.NonNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Table(name = "activities")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,4 +45,37 @@ public class Activity {
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    void setId(SnowflakeId id) {
+        this.id = id;
+    }
+
+    void setSprintId(SnowflakeId sprintId) {
+        this.sprintId = sprintId;
+    }
+
+    void setActorId(UUID actorId) {
+        this.actorId = actorId;
+    }
+
+    void setActivityType(ActivityType activityType) {
+        this.activityType = activityType;
+    }
+
+    void setDescription(String description) {
+        this.description = description;
+    }
+
+    void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void update(@NonNull ActivityType activityType, String description) {
+        checkNotNull(activityType, () -> new BusinessException("activityType must not be null"));
+        if (description != null && description.trim().length() > 2000) {
+            throw new BusinessException("description must not exceed 2000 characters");
+        }
+        this.activityType = activityType;
+        this.description = description;
+    }
 }

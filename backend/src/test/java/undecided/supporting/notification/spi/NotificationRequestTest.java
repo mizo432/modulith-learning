@@ -3,6 +3,7 @@ package undecided.supporting.notification.spi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -58,50 +59,50 @@ class NotificationRequestTest {
     }
 
     @Test
-    @DisplayName("recipientIdがnullの場合、例外がスローされる")
+    @DisplayName("recipientIdがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenRecipientIdIsNull() {
       assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
           .title(TITLE)
           .content(CONTENT)
           .type(TYPE)
           .build())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("recipientId");
     }
 
     @Test
-    @DisplayName("titleがnullの場合、例外がスローされる")
+    @DisplayName("titleがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenTitleIsNull() {
       assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
           .recipientId(RECIPIENT_ID)
           .content(CONTENT)
           .type(TYPE)
           .build())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("title");
     }
 
     @Test
-    @DisplayName("contentがnullの場合、例外がスローされる")
+    @DisplayName("contentがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenContentIsNull() {
       assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
           .recipientId(RECIPIENT_ID)
           .title(TITLE)
           .type(TYPE)
           .build())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("content");
     }
 
     @Test
-    @DisplayName("typeがnullの場合、例外がスローされる")
+    @DisplayName("typeがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenTypeIsNull() {
       assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
           .recipientId(RECIPIENT_ID)
           .title(TITLE)
           .content(CONTENT)
           .build())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("type");
     }
   }

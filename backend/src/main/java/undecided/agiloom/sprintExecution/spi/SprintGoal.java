@@ -1,5 +1,6 @@
 package undecided.agiloom.sprintExecution.spi;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jspecify.annotations.NonNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
@@ -24,7 +25,6 @@ import undecided.supporting.snowflake.SnowflakeId;
     @UniqueConstraint(name = "uk_sprint_goal_sprint", columnNames = {"sprintId"})
 })
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,8 +53,43 @@ public class SprintGoal {
     private LocalDateTime deletedAt;
 
     public void update(@NonNull String goalDescription, String relatedItems) {
+        checkNotNull(goalDescription, () -> new BusinessException("goalDescription must not be null"));
+        if (goalDescription.trim().isEmpty()) {
+            throw new BusinessException("goalDescription must not be empty");
+        }
+        if (goalDescription.trim().length() > 1000) {
+            throw new BusinessException("goalDescription must not exceed 1000 characters");
+        }
         this.goalDescription = goalDescription;
         this.relatedItems = relatedItems;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    void setId(SnowflakeId id) {
+        this.id = id;
+    }
+
+    void setSprintId(SnowflakeId sprintId) {
+        this.sprintId = sprintId;
+    }
+
+    void setGoalDescription(String goalDescription) {
+        this.goalDescription = goalDescription;
+    }
+
+    void setRelatedItems(String relatedItems) {
+        this.relatedItems = relatedItems;
+    }
+
+    void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }
