@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class WhenAassociatedTest {
+class WhenAssociatedTest {
 
   @Nested
   @DisplayName("ofメソッドのテスト")
@@ -20,16 +20,16 @@ class WhenAassociatedTest {
     @DisplayName("有効な日時を指定するとインスタンスが作成される")
     void shouldCreateInstanceWhenValidDateTime() {
       LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
-      WhenAassociated whenAassociated = WhenAassociated.of(dateTime);
+      WhenAssociated whenAssociated = WhenAssociated.of(dateTime);
 
-      assertThat(whenAassociated).isNotNull();
-      assertThat(whenAassociated.value()).isEqualTo(dateTime);
+      assertThat(whenAssociated).isNotNull();
+      assertThat(whenAssociated.value()).isEqualTo(dateTime);
     }
 
     @Test
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
-      assertThatThrownBy(() -> WhenAassociated.of(null))
+      assertThatThrownBy(() -> WhenAssociated.of(null))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("dateTime must not be null");
     }
@@ -42,10 +42,10 @@ class WhenAassociatedTest {
     @Test
     @DisplayName("現在の日時を持つインスタンスが作成される")
     void shouldCreateInstanceWithCurrentDateTime() {
-      WhenAassociated whenAassociated = WhenAassociated.current();
+      WhenAssociated whenAssociated = WhenAssociated.current();
 
-      assertThat(whenAassociated).isNotNull();
-      assertThat(whenAassociated.value()).isNotNull();
+      assertThat(whenAssociated).isNotNull();
+      assertThat(whenAssociated.value()).isNotNull();
     }
   }
 
@@ -56,10 +56,10 @@ class WhenAassociatedTest {
     @Test
     @DisplayName("nullの値を持つインスタンスが作成される")
     void shouldCreateEmptyInstance() {
-      WhenAassociated whenAassociated = WhenAassociated.empty();
+      WhenAssociated whenAssociated = WhenAssociated.empty();
 
-      assertThat(whenAassociated).isNotNull();
-      assertThat(whenAassociated.value()).isNull();
+      assertThat(whenAssociated).isNotNull();
+      assertThat(whenAssociated.value()).isNull();
     }
   }
 
@@ -70,10 +70,10 @@ class WhenAassociatedTest {
     @Test
     @DisplayName("nullの値を持つインスタンスが作成される")
     void shouldCreateInstanceWithNullValue() {
-      WhenAassociated whenAassociated = new WhenAassociated();
+      WhenAssociated whenAssociated = new WhenAssociated();
 
-      assertThat(whenAassociated).isNotNull();
-      assertThat(whenAassociated.value()).isNull();
+      assertThat(whenAssociated).isNotNull();
+      assertThat(whenAssociated.value()).isNull();
     }
   }
 
@@ -85,17 +85,17 @@ class WhenAassociatedTest {
     @DisplayName("保持している日時を返す")
     void shouldReturnHeldDateTime() {
       LocalDateTime dateTime = LocalDateTime.of(2024, 6, 20, 14, 45, 0);
-      WhenAassociated whenAassociated = WhenAassociated.of(dateTime);
+      WhenAssociated whenAssociated = WhenAssociated.of(dateTime);
 
-      assertThat(whenAassociated.value()).isEqualTo(dateTime);
+      assertThat(whenAssociated.value()).isEqualTo(dateTime);
     }
 
     @Test
     @DisplayName("空のインスタンスではnullを返す")
     void shouldReturnNullForEmptyInstance() {
-      WhenAassociated whenAassociated = WhenAassociated.empty();
+      WhenAssociated whenAssociated = WhenAssociated.empty();
 
-      assertThat(whenAassociated.value()).isNull();
+      assertThat(whenAssociated.value()).isNull();
     }
   }
 
@@ -107,17 +107,17 @@ class WhenAassociatedTest {
     @DisplayName("日時を文字列として返す")
     void shouldReturnDateTimeAsString() {
       LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
-      WhenAassociated whenAassociated = WhenAassociated.of(dateTime);
+      WhenAssociated whenAssociated = WhenAssociated.of(dateTime);
 
-      assertThat(whenAassociated.toString()).isEqualTo(dateTime.toString());
+      assertThat(whenAssociated.toString()).isEqualTo(dateTime.toString());
     }
 
     @Test
     @DisplayName("nullの場合はnull文字列を返す")
     void shouldReturnNullStringWhenValueIsNull() {
-      WhenAassociated whenAassociated = WhenAassociated.empty();
+      WhenAssociated whenAssociated = WhenAssociated.empty();
 
-      assertThat(whenAassociated.toString()).isEqualTo("null");
+      assertThat(whenAssociated.toString()).isEqualTo("null");
     }
   }
 
@@ -129,8 +129,8 @@ class WhenAassociatedTest {
     @DisplayName("同じ値を持つインスタンスは等しい")
     void shouldBeEqualWhenSameValue() {
       LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
-      WhenAassociated first = WhenAassociated.of(dateTime);
-      WhenAassociated second = WhenAassociated.of(dateTime);
+      WhenAssociated first = WhenAssociated.of(dateTime);
+      WhenAssociated second = WhenAssociated.of(dateTime);
 
       assertThat(first).isEqualTo(second);
       assertThat(first.hashCode()).isEqualTo(second.hashCode());
@@ -139,8 +139,8 @@ class WhenAassociatedTest {
     @Test
     @DisplayName("異なる値を持つインスタンスは等しくない")
     void shouldNotBeEqualWhenDifferentValue() {
-      WhenAassociated first = WhenAassociated.of(LocalDateTime.of(2024, 1, 15, 10, 30, 0));
-      WhenAassociated second = WhenAassociated.of(LocalDateTime.of(2024, 2, 20, 11, 45, 0));
+      WhenAssociated first = WhenAssociated.of(LocalDateTime.of(2024, 1, 15, 10, 30, 0));
+      WhenAssociated second = WhenAssociated.of(LocalDateTime.of(2024, 2, 20, 11, 45, 0));
 
       assertThat(first).isNotEqualTo(second);
     }
@@ -148,19 +148,19 @@ class WhenAassociatedTest {
     @Test
     @DisplayName("空のインスタンス同士は等しい")
     void shouldBeEqualWhenBothEmpty() {
-      WhenAassociated first = WhenAassociated.empty();
-      WhenAassociated second = WhenAassociated.empty();
+      WhenAssociated first = WhenAssociated.empty();
+      WhenAssociated second = WhenAssociated.empty();
 
       assertThat(first).isEqualTo(second);
     }
   }
 
   @Nested
-  @DisplayName("WhenAassociatedConverterのテスト")
+  @DisplayName("WhenAssociatedConverterのテスト")
   class ConverterTest {
 
-    private final WhenAassociated.WhenAassociatedConverter converter =
-        new WhenAassociated.WhenAassociatedConverter();
+    private final WhenAssociated.WhenAssociatedConverter converter =
+        new WhenAssociated.WhenAssociatedConverter();
 
     @Nested
     @DisplayName("convertToDatabaseColumnメソッドのテスト")
@@ -170,9 +170,9 @@ class WhenAassociatedTest {
       @DisplayName("属性からLocalDateTimeに変換する")
       void shouldConvertToDatabaseColumn() {
         LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
-        WhenAassociated whenAassociated = WhenAassociated.of(dateTime);
+        WhenAssociated whenAssociated = WhenAssociated.of(dateTime);
 
-        assertThat(converter.convertToDatabaseColumn(whenAassociated)).isEqualTo(dateTime);
+        assertThat(converter.convertToDatabaseColumn(whenAssociated)).isEqualTo(dateTime);
       }
 
       @Test
@@ -191,7 +191,7 @@ class WhenAassociatedTest {
       void shouldConvertToEntityAttribute() {
         LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
 
-        WhenAassociated result = converter.convertToEntityAttribute(dateTime);
+        WhenAssociated result = converter.convertToEntityAttribute(dateTime);
 
         assertThat(result).isNotNull();
         assertThat(result.value()).isEqualTo(dateTime);
@@ -200,7 +200,7 @@ class WhenAassociatedTest {
       @Test
       @DisplayName("nullデータベースデータは空のインスタンスを返す")
       void shouldReturnEmptyForNullDatabaseData() {
-        WhenAassociated result = converter.convertToEntityAttribute(null);
+        WhenAssociated result = converter.convertToEntityAttribute(null);
 
         assertThat(result).isNotNull();
         assertThat(result.value()).isNull();

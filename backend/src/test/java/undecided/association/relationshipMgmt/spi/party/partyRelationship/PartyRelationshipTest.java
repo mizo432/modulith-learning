@@ -15,8 +15,8 @@ class PartyRelationshipTest {
   private static final SnowflakeId partyId = SnowflakeId.of(2L);
   private static final SnowflakeId relatedPartyId = SnowflakeId.of(3L);
   private static final RelationshipType relationshipType = RelationshipType.EMPLOYED_BY;
-  private static final WhenAassociated whenAssociated =
-      WhenAassociated.of(LocalDateTime.of(2024, 1, 15, 10, 30, 0));
+  private static final WhenAssociated whenAssociated =
+      WhenAssociated.of(LocalDateTime.of(2024, 1, 15, 10, 30, 0));
   private static final WhenDisassociated whenDisassociated =
       WhenDisassociated.of(LocalDateTime.of(2024, 6, 20, 14, 45, 0));
 
@@ -153,7 +153,7 @@ class PartyRelationshipTest {
               SnowflakeId.of(4L),
               SnowflakeId.of(5L),
               RelationshipType.UNKNOWN,
-              WhenAassociated.empty(),
+              WhenAssociated.empty(),
               WhenDisassociated.empty());
 
       assertThat(first).isEqualTo(second);

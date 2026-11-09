@@ -14,7 +14,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import com.github.mizo432.shared.converter.EncryptedStringConverter;
 
-@Entity(name = "TestEmployee")
+@Entity(name = "Employee")
 @Table(name = "employees")
 @Getter
 public class Employee {

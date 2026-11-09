@@ -18,45 +18,45 @@ import org.jspecify.annotations.Nullable;
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
-public class WhenAassociated implements DateTimeValue {
+public class WhenAssociated implements DateTimeValue {
 
   private final LocalDateTime value;
 
   /** null の {@code LocalDateTime} を持つインスタンスを作成します。 */
-  public WhenAassociated() {
+  public WhenAssociated() {
     this.value = null;
   }
 
   /**
-   * 指定された {@code LocalDateTime} から {@code WhenAassociated} インスタンスを作成します。
+   * 指定された {@code LocalDateTime} から {@code WhenAssociated} インスタンスを作成します。
    *
    * @param dateTime 関連付け日時。{@code null} は許容されません。
-   * @return 指定された日時を持つ {@code WhenAassociated} インスタンス
+   * @return 指定された日時を持つ {@code WhenAssociated} インスタンス
    * @throws BusinessException {@code dateTime} が {@code null} の場合
    */
-  public static WhenAassociated of(LocalDateTime dateTime) {
+  public static WhenAssociated of(LocalDateTime dateTime) {
     if (dateTime == null) {
       throw new BusinessException("dateTime must not be null");
     }
-    return new WhenAassociated(dateTime);
+    return new WhenAssociated(dateTime);
   }
 
   /**
-   * 現在の日時を持つ {@code WhenAassociated} インスタンスを作成します。
+   * 現在の日時を持つ {@code WhenAssociated} インスタンスを作成します。
    *
-   * @return 現在の日時を持つ {@code WhenAassociated} インスタンス
+   * @return 現在の日時を持つ {@code WhenAssociated} インスタンス
    */
-  public static WhenAassociated current() {
-    return new WhenAassociated(DateProvider.currentLocalDateTime());
+  public static WhenAssociated current() {
+    return new WhenAssociated(DateProvider.currentLocalDateTime());
   }
 
   /**
-   * 空の {@code WhenAassociated} インスタンスを作成します。
+   * 空の {@code WhenAssociated} インスタンスを作成します。
    *
-   * @return {@code null} の値を持つ {@code WhenAassociated} インスタンス
+   * @return {@code null} の値を持つ {@code WhenAssociated} インスタンス
    */
-  public static WhenAassociated empty() {
-    return new WhenAassociated();
+  public static WhenAssociated empty() {
+    return new WhenAssociated();
   }
 
   /**
@@ -79,22 +79,22 @@ public class WhenAassociated implements DateTimeValue {
     return String.valueOf(value);
   }
 
-  /** WhenAassociatedとデータベースのLocalDateTimeを相互に変換するためのJPAコンバーターです。 */
+  /** WhenAssociatedとデータベースのLocalDateTimeを相互に変換するためのJPAコンバーターです。 */
   @Converter(autoApply = true)
-  public static class WhenAassociatedConverter
-      implements AttributeConverter<WhenAassociated, LocalDateTime> {
+  public static class WhenAssociatedConverter
+      implements AttributeConverter<WhenAssociated, LocalDateTime> {
 
     @Override
-    public LocalDateTime convertToDatabaseColumn(WhenAassociated attribute) {
+    public LocalDateTime convertToDatabaseColumn(WhenAssociated attribute) {
       return attribute != null ? attribute.value() : null;
     }
 
     @Override
-    public WhenAassociated convertToEntityAttribute(@Nullable LocalDateTime dbData) {
+    public WhenAssociated convertToEntityAttribute(@Nullable LocalDateTime dbData) {
       if (dbData == null) {
-        return WhenAassociated.empty();
+        return WhenAssociated.empty();
       }
-      return new WhenAassociated(dbData);
+      return new WhenAssociated(dbData);
     }
   }
 }
