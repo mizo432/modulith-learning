@@ -1,5 +1,7 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
+import java.util.Objects;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import undecided.agiloom.sprintExecution.internal.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
@@ -19,7 +21,8 @@ public class SprintResponseAssembler {
      * @param sprint Sprintエンティティ
      * @return SprintDTO
      */
-    public SprintDTO toDTO(Sprint sprint) {
+    public SprintDTO toDTO(@NonNull Sprint sprint) {
+        Objects.requireNonNull(sprint, "sprintはnullであってはいけません");
         return SprintDTO.builder()
             .id(sprint.getId())
             .productId(sprint.getProductId())
@@ -44,7 +47,8 @@ public class SprintResponseAssembler {
      * @param sprint SprintDTO
      * @return SprintResponse DTO
      */
-    public SprintResponse toResponse(SprintDTO sprint) {
+    public SprintResponse toResponse(@NonNull SprintDTO sprint) {
+        Objects.requireNonNull(sprint, "sprintはnullであってはいけません");
         return SprintResponse.builder()
                 .id(sprint.getId())
                 .productId(sprint.getProductId())

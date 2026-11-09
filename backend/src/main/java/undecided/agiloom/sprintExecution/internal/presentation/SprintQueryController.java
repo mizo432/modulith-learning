@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
 import undecided.supporting.snowflake.SnowflakeId;
+import com.github.mizo432.shared.exception.BusinessException;
 
 // @Validatedを付与することで、@RequestParamへの@Min/@Max制約がSpring MVC層で有効になる
 @Validated
@@ -45,7 +46,7 @@ public class SprintQueryController {
     public SprintResponse getSprint(@PathVariable @NotNull String id) {
         SnowflakeId snowflakeId = SprintIdUtils.parseSnowflakeId(id);
         SprintDTO sprint = sprintQueryService.findById(snowflakeId)
-                .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
+                .orElseThrow(() -> new BusinessException("Sprint not found: " + id));
         return sprintResponseAssembler.toResponse(sprint);
     }
 }

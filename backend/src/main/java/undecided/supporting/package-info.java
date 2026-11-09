@@ -1,6 +1,6 @@
 @ApplicationModule(
     type = Type.OPEN,
-    allowedDependencies = {"generic", "relationshipMgmt", "common", "value", "agiloom"},
+    allowedDependencies = {"generic", "relationshipMgmt", "common", "value", "agiloom", "exception", "message"},
     id = "supporting",
     displayName = "支援サブドメイン")
 /** ,支援サブドメイン */

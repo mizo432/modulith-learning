@@ -12,6 +12,7 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.github.mizo432.shared.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -66,7 +67,7 @@ public class Impediment {
 
     public void resolve() {
         if (this.status != ImpedimentStatus.IN_PROGRESS) {
-            throw new IllegalStateException("Impediment can only be resolved from IN_PROGRESS status, current status: " + this.status);
+            throw new BusinessException("Impediment can only be resolved from IN_PROGRESS status, current status: " + this.status);
         }
         this.status = ImpedimentStatus.RESOLVED;
         this.resolvedAt = LocalDateTime.now();
@@ -75,15 +76,27 @@ public class Impediment {
 
     public void startWorkingOn() {
         if (this.status != ImpedimentStatus.NEW) {
-            throw new IllegalStateException("Impediment can only start working on from NEW status, current status: " + this.status);
+            throw new BusinessException("Impediment can only start working on from NEW status, current status: " + this.status);
         }
         this.status = ImpedimentStatus.IN_PROGRESS;
         this.updatedAt = LocalDateTime.now();
     }
 
     public void update(@NonNull String title, @NonNull String description, @Nullable String impact, @Nullable UUID assigneeId) {
-        checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
-        checkNotNull(description, () -> new IllegalArgumentException("description must not be null"));
+        checkNotNull(title, () -> new BusinessException("title must not be null"));
+        checkNotNull(description, () -> new BusinessException("description must not be null"));
+        if (title.trim().isEmpty()) {
+            throw new BusinessException("title must not be empty");
+        }
+        if (title.trim().length() > 200) {
+            throw new BusinessException("title must not exceed 200 characters");
+        }
+        if (description.trim().isEmpty()) {
+            throw new BusinessException("description must not be empty");
+        }
+        if (description.trim().length() > 2000) {
+            throw new BusinessException("description must not exceed 2000 characters");
+        }
         this.title = title;
         this.description = description;
         this.impact = impact;

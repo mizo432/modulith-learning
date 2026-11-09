@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.UUID;
+import com.github.mizo432.shared.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -13,6 +14,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Tag("small")
 @DisplayName("Impedimentのテスト")
 class ImpedimentTest {
+
+  private static final UUID FIXED_ASSIGNEE_ID = UUID.fromString("55555555-5555-5555-5555-555555555555");
 
   private Impediment createImpediment() {
     return Impediment.builder()
@@ -65,12 +68,12 @@ class ImpedimentTest {
     }
 
     @Test
-    @DisplayName("NEW状態からresolveするとIllegalStateExceptionがスローされる")
+    @DisplayName("NEW状態からresolveするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenResolveFromNew() {
       Impediment impediment = createImpediment();
 
       assertThatThrownBy(() -> impediment.resolve())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("NEW");
     }
   }
@@ -99,35 +102,86 @@ class ImpedimentTest {
     @DisplayName("全プロパティが更新される")
     void shouldUpdateAllProperties() {
       Impediment impediment = createImpediment();
-      UUID assigneeId = UUID.randomUUID();
 
-      impediment.update("New title", "New description", "New impact", assigneeId);
+      impediment.update("New title", "New description", "New impact", FIXED_ASSIGNEE_ID);
 
       assertThat(impediment.getTitle()).isEqualTo("New title");
       assertThat(impediment.getDescription()).isEqualTo("New description");
       assertThat(impediment.getImpact()).isEqualTo("New impact");
-      assertThat(impediment.getAssigneeId()).isEqualTo(assigneeId);
+      assertThat(impediment.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
       assertThat(impediment.getUpdatedAt()).isNotNull();
     }
 
     @Test
-    @DisplayName("タイトルがnullの場合、IllegalArgumentExceptionがスローされる")
+    @DisplayName("タイトルがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowExceptionWhenTitleIsNull() {
       Impediment impediment = createImpediment();
 
-      assertThatThrownBy(() -> impediment.update(null, "Description", "Impact", UUID.randomUUID()))
-          .isInstanceOf(IllegalArgumentException.class)
+      assertThatThrownBy(() -> impediment.update(null, "Description", "Impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("title must not be null");
     }
 
     @Test
-    @DisplayName("説明がnullの場合、IllegalArgumentExceptionがスローされる")
+    @DisplayName("説明がnullの場合、BusinessExceptionがスローされる")
     void shouldThrowExceptionWhenDescriptionIsNull() {
       Impediment impediment = createImpediment();
 
-      assertThatThrownBy(() -> impediment.update("Title", null, "Impact", UUID.randomUUID()))
-          .isInstanceOf(IllegalArgumentException.class)
+      assertThatThrownBy(() -> impediment.update("Title", null, "Impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("description must not be null");
+    }
+
+    @Test
+    @DisplayName("タイトルが空文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsEmpty() {
+      Impediment impediment = createImpediment();
+
+      assertThatThrownBy(() -> impediment.update("", "Description", "Impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not be empty");
+    }
+
+    @Test
+    @DisplayName("タイトルが空白文字みの場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsBlank() {
+      Impediment impediment = createImpediment();
+
+      assertThatThrownBy(() -> impediment.update("   ", "Description", "Impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not be empty");
+    }
+
+    @Test
+    @DisplayName("タイトルが200文字を超える場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleExceedsLength() {
+      Impediment impediment = createImpediment();
+      String longTitle = "A".repeat(201);
+
+      assertThatThrownBy(() -> impediment.update(longTitle, "Description", "Impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not exceed 200 characters");
+    }
+
+    @Test
+    @DisplayName("説明が空文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenDescriptionIsEmpty() {
+      Impediment impediment = createImpediment();
+
+      assertThatThrownBy(() -> impediment.update("Title", "", "Impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("description must not be empty");
+    }
+
+    @Test
+    @DisplayName("説明が2000文字を超える場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenDescriptionExceedsLength() {
+      Impediment impediment = createImpediment();
+      String longDescription = "A".repeat(2001);
+
+      assertThatThrownBy(() -> impediment.update("Title", longDescription, "Impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("description must not exceed 2000 characters");
     }
   }
 
@@ -156,37 +210,37 @@ class ImpedimentTest {
     }
 
     @Test
-    @DisplayName("IN_PROGRESS状態からstartWorkingOnするとIllegalStateExceptionがスローされる")
+    @DisplayName("IN_PROGRESS状態からstartWorkingOnするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenStartWorkingOnFromInProgress() {
       Impediment impediment = createImpediment();
       impediment.startWorkingOn();
 
       assertThatThrownBy(() -> impediment.startWorkingOn())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("IN_PROGRESS");
     }
 
     @Test
-    @DisplayName("RESOLVED状態からresolveするとIllegalStateExceptionがスローされる")
+    @DisplayName("RESOLVED状態からresolveするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenResolveFromResolved() {
       Impediment impediment = createImpediment();
       impediment.startWorkingOn();
       impediment.resolve();
 
       assertThatThrownBy(() -> impediment.resolve())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("RESOLVED");
     }
 
     @Test
-    @DisplayName("RESOLVED状態からstartWorkingOnするとIllegalStateExceptionがスローされる")
+    @DisplayName("RESOLVED状態からstartWorkingOnするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenStartWorkingOnFromResolved() {
       Impediment impediment = createImpediment();
       impediment.startWorkingOn();
       impediment.resolve();
 
       assertThatThrownBy(() -> impediment.startWorkingOn())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("RESOLVED");
     }
   }

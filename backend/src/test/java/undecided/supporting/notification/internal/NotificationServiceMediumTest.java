@@ -44,9 +44,9 @@ class NotificationServiceMediumTest {
   @Autowired
   private NotificationRepository notificationRepository;
 
-  private final UUID recipientId = UUID.randomUUID();
-  private final UUID sourceId = UUID.randomUUID();
-  private final String sourceDomain = "agiloom";
+  private static final UUID RECIPIENT_ID = UUID.randomUUID();
+  private static final UUID SOURCE_ID = UUID.randomUUID();
+  private static final String SOURCE_DOMAIN = "agiloom";
 
   @Nested
   @DisplayName("sendメソッドの統合テスト")
@@ -56,9 +56,9 @@ class NotificationServiceMediumTest {
     @DisplayName("通知が正常に送信されデータベースに保存されること")
     void shouldSendAndSaveNotification() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
-          .sourceId(sourceId)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
+          .sourceId(SOURCE_ID)
           .title("統合テスト通知")
           .content("統合テストの本文です")
           .type(NotificationType.SYSTEM)
@@ -70,9 +70,9 @@ class NotificationServiceMediumTest {
       // Assert
       assertThat(result).isNotNull();
       assertThat(result.getId()).isNotNull();
-      assertThat(result.getRecipientId()).isEqualTo(recipientId);
-      assertThat(result.getSourceId()).isEqualTo(sourceId);
-      assertThat(result.getSourceDomain()).isEqualTo(sourceDomain);
+      assertThat(result.getRecipientId()).isEqualTo(RECIPIENT_ID);
+      assertThat(result.getSourceId()).isEqualTo(SOURCE_ID);
+      assertThat(result.getSourceDomain()).isEqualTo(SOURCE_DOMAIN);
       assertThat(result.getTitle()).isEqualTo("統合テスト通知");
       assertThat(result.getContent()).isEqualTo("統合テストの本文です");
       assertThat(result.getType()).isEqualTo(NotificationType.SYSTEM);
@@ -85,8 +85,8 @@ class NotificationServiceMediumTest {
     @DisplayName("sourceIdなしで通知が送信されること")
     void shouldSendNotificationWithoutSourceId() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("sourceIdなしの通知")
           .content("sourceIdなしの本文")
           .type(NotificationType.MENTION)
@@ -106,8 +106,8 @@ class NotificationServiceMediumTest {
     void shouldSendNotificationWithAllTypes() {
       // Act & Assert
       for (NotificationType type : NotificationType.values()) {
-        NotificationRequest request = NotificationRequest.builder(sourceDomain)
-            .recipientId(recipientId)
+        NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+            .recipientId(RECIPIENT_ID)
             .title(type + "通知")
             .content(type + "の本文")
             .type(type)
@@ -131,14 +131,14 @@ class NotificationServiceMediumTest {
     @DisplayName("受信者の通知一覧が取得されること")
     void shouldGetNotificationsByRecipient() {
       // Arrange
-      NotificationRequest request1 = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request1 = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("通知1")
           .content("本文1")
           .type(NotificationType.SYSTEM)
           .build();
-      NotificationRequest request2 = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request2 = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("通知2")
           .content("本文2")
           .type(NotificationType.MENTION)
@@ -147,7 +147,7 @@ class NotificationServiceMediumTest {
       notificationService.send(request2);
 
       // Act
-      List<NotificationDTO> result = notificationService.getNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getNotificationsByRecipient(RECIPIENT_ID);
 
       // Assert
       assertThat(result).hasSizeGreaterThanOrEqualTo(2);
@@ -175,14 +175,14 @@ class NotificationServiceMediumTest {
     @DisplayName("未読通知のみが取得されること")
     void shouldGetOnlyUnreadNotifications() {
       // Arrange
-      NotificationRequest request1 = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request1 = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("未読通知")
           .content("未読の本文")
           .type(NotificationType.SYSTEM)
           .build();
-      NotificationRequest request2 = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request2 = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("既読通知")
           .content("既読の本文")
           .type(NotificationType.MENTION)
@@ -195,7 +195,7 @@ class NotificationServiceMediumTest {
       notificationRepository.save(readEntity);
 
       // Act
-      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
 
       // Assert
       assertThat(result).hasSize(1);
@@ -206,8 +206,8 @@ class NotificationServiceMediumTest {
     @DisplayName("未読通知がない場合は空のリストが返されること")
     void shouldReturnEmptyListWhenNoUnreadNotifications() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("既読のみ")
           .content("既読の本文")
           .type(NotificationType.SYSTEM)
@@ -219,7 +219,7 @@ class NotificationServiceMediumTest {
       notificationRepository.save(entity);
 
       // Act
-      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
 
       // Assert
       assertThat(result).isEmpty();
@@ -234,8 +234,8 @@ class NotificationServiceMediumTest {
     @DisplayName("通知が既読としてマークされること")
     void shouldMarkNotificationAsRead() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("既読テスト通知")
           .content("既読テストの本文")
           .type(NotificationType.SYSTEM)
@@ -274,8 +274,8 @@ class NotificationServiceMediumTest {
     @DisplayName("既に既読の通知を再度markAsReadしても問題ないこと")
     void shouldIdempotentMarkAsRead() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("冪等性テスト通知")
           .content("冪等性テストの本文")
           .type(NotificationType.SYSTEM)
@@ -301,8 +301,8 @@ class NotificationServiceMediumTest {
     @DisplayName("sourceDomainで通知が検索されること")
     void shouldFindBySourceDomain() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
           .title("検索テスト通知")
           .content("検索テストの本文")
           .type(NotificationType.SYSTEM)
@@ -310,11 +310,11 @@ class NotificationServiceMediumTest {
       notificationService.send(request);
 
       // Act
-      List<Notification> result = notificationRepository.findBySourceDomainAndDeletedAtIsNull(sourceDomain);
+      List<Notification> result = notificationRepository.findBySourceDomainAndDeletedAtIsNull(SOURCE_DOMAIN);
 
       // Assert
       assertThat(result).isNotEmpty();
-      assertThat(result.get(0).getSourceDomain()).isEqualTo(sourceDomain);
+      assertThat(result.get(0).getSourceDomain()).isEqualTo(SOURCE_DOMAIN);
     }
   }
 }

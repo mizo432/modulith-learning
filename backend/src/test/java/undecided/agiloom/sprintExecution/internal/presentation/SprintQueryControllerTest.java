@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import com.github.mizo432.shared.exception.BusinessException;
 import undecided.supporting.snowflake.SnowflakeId;
 
 import java.time.LocalDate;
@@ -33,26 +34,30 @@ import undecided.supporting.snowflake.SnowflakeId;
 class SprintQueryControllerTest {
 
   @Mock private SprintQueryServiceInterface sprintQueryService;
-  @Mock private SprintResponseAssembler sprintResponseAssembler;
+  private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintQueryController controller;
 
+  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
+
   @BeforeEach
   void setUp() {
+    sprintResponseAssembler = new SprintResponseAssembler();
     controller = new SprintQueryController(sprintQueryService, sprintResponseAssembler);
   }
 
   private SprintDTO createSprintDTO(SnowflakeId id, SprintStatus status) {
     return SprintDTO.builder()
         .id(id)
-        .productId(UUID.randomUUID())
+        .productId(FIXED_PRODUCT_ID)
         .sprintNumber(1)
         .title("Sprint 1")
         .goal("Goal 1")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
         .status(status)
-        .teamId(UUID.randomUUID())
+        .teamId(FIXED_TEAM_ID)
         .teamName("Team A")
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
@@ -106,30 +111,26 @@ class SprintQueryControllerTest {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       SprintDTO sprint = createSprintDTO(snowflakeId, SprintStatus.PLANNED);
-      SprintResponse expectedResponse = SprintResponse.builder()
-          .id(snowflakeId)
-          .title("Sprint 1")
-          .build();
       when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act
       SprintResponse result = controller.getSprint(String.valueOf(snowflakeId.value()));
 
       // Assert
       assertThat(result).isNotNull();
+      assertThat(result.getId()).isEqualTo(snowflakeId);
       assertThat(result.getTitle()).isEqualTo("Sprint 1");
     }
 
     @Test
-    @DisplayName("Sprintが見つからない場合はIllegalArgumentExceptionをスローすること")
+    @DisplayName("Sprintが見つからない場合はBusinessExceptionをスローすること")
     void shouldThrowExceptionWhenNotFound() {
       // Arrange
       when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.empty());
 
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint("1234567890"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Sprint not found");
     }
   }

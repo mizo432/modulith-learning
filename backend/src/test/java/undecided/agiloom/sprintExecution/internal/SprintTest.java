@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.github.mizo432.shared.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -17,16 +18,19 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("Sprintのテスト")
 class SprintTest {
 
+  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
+
   private Sprint createSprint() {
     return Sprint.builder()
         .id(SnowflakeId.of(1L))
-        .productId(UUID.randomUUID())
+        .productId(FIXED_PRODUCT_ID)
         .sprintNumber(1)
         .title("Sprint 1")
         .goal("Complete user authentication")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
-        .teamId(UUID.randomUUID())
+        .teamId(FIXED_TEAM_ID)
         .teamName("Team A")
         .velocity(30)
         .createdAt(LocalDateTime.now())
@@ -90,12 +94,12 @@ class SprintTest {
     }
 
     @Test
-    @DisplayName("PLANNED状態からcompleteするとIllegalStateExceptionがスローされる")
+    @DisplayName("PLANNED状態からcompleteするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenCompleteFromPlanned() {
       Sprint sprint = createSprint();
 
       assertThatThrownBy(() -> sprint.complete())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("PLANNED");
     }
   }
@@ -116,14 +120,14 @@ class SprintTest {
     }
 
     @Test
-    @DisplayName("COMPLETED状態からcancelするとIllegalStateExceptionがスローされる")
+    @DisplayName("COMPLETED状態からcancelするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenCancelFromCompleted() {
       Sprint sprint = createSprint();
       sprint.start();
       sprint.complete();
 
       assertThatThrownBy(() -> sprint.cancel())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("COMPLETED");
     }
   }
@@ -168,23 +172,45 @@ class SprintTest {
     }
 
     @Test
-    @DisplayName("タイトルがnullの場合、IllegalArgumentExceptionがスローされる")
+    @DisplayName("タイトルがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowExceptionWhenTitleIsNull() {
       Sprint sprint = createSprint();
 
       assertThatThrownBy(() -> sprint.update(null, "Goal", null, "Notes"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("title must not be null");
     }
 
     @Test
-    @DisplayName("ゴールがnullの場合、IllegalArgumentExceptionがスローされる")
+    @DisplayName("ゴールがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowExceptionWhenGoalIsNull() {
       Sprint sprint = createSprint();
 
       assertThatThrownBy(() -> sprint.update("Title", null, null, "Notes"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("goal must not be null");
+    }
+
+    @Test
+    @DisplayName("endDateがstartDateより前の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenEndDateIsBeforeStartDate() {
+      Sprint sprint = createSprint();
+      LocalDate pastEndDate = LocalDate.now().minusDays(1);
+
+      assertThatThrownBy(() -> sprint.update("Title", "Goal", pastEndDate, "Notes"))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("endDate must be after startDate");
+    }
+
+    @Test
+    @DisplayName("endDateがstartDateと等しい場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenEndDateEqualsStartDate() {
+      Sprint sprint = createSprint();
+      LocalDate startDate = sprint.getStartDate();
+
+      assertThatThrownBy(() -> sprint.update("Title", "Goal", startDate, "Notes"))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("endDate must be after startDate");
     }
   }
 
@@ -232,26 +258,26 @@ class SprintTest {
     }
 
     @Test
-    @DisplayName("COMPLETED状態からstartするとIllegalStateExceptionがスローされる")
+    @DisplayName("COMPLETED状態からstartするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenStartFromCompleted() {
       Sprint sprint = createSprint();
       sprint.start();
       sprint.complete();
 
       assertThatThrownBy(() -> sprint.start())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("COMPLETED");
     }
 
     @Test
-    @DisplayName("COMPLETED状態からcompleteするとIllegalStateExceptionがスローされる")
+    @DisplayName("COMPLETED状態からcompleteするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenCompleteFromCompleted() {
       Sprint sprint = createSprint();
       sprint.start();
       sprint.complete();
 
       assertThatThrownBy(() -> sprint.complete())
-          .isInstanceOf(IllegalStateException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("COMPLETED");
     }
   }

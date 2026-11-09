@@ -68,16 +68,16 @@ class SendNotificationCommandServiceTest {
     @DisplayName("executeメソッドのテスト")
     class ExecuteTest {
 
-        private final UUID recipientId = UUID.randomUUID();
-        private final UUID sourceId = UUID.randomUUID();
+        private static final UUID RECIPIENT_ID = UUID.randomUUID();
+        private static final UUID SOURCE_ID = UUID.randomUUID();
 
         @Test
         @DisplayName("メンション通知が正常に送信されること")
         void shouldSendMentionNotification() {
             // Arrange
             SendNotificationCommand command = SendNotificationCommand.builder()
-                    .recipientId(recipientId)
-                    .sourceId(sourceId)
+                    .recipientId(RECIPIENT_ID)
+                    .sourceId(SOURCE_ID)
                     .title("メンション通知")
                     .content("あなたはメンションされました")
                     .type(NotificationType.MENTION)
@@ -85,12 +85,12 @@ class SendNotificationCommandServiceTest {
 
             SnowflakeId expectedId = SnowflakeId.of(1234567890L);
             NotificationDTO savedNotification = createNotificationDTO(
-                    expectedId, recipientId, sourceId,
+                    expectedId, RECIPIENT_ID, SOURCE_ID,
                     "メンション通知", "あなたはメンションされました", NotificationType.MENTION);
 
             when(notificationService.send(argThat(req ->
-                    req.getRecipientId().equals(recipientId)
-                            && req.getSourceId().equals(sourceId)
+                    req.getRecipientId().equals(RECIPIENT_ID)
+                            && req.getSourceId().equals(SOURCE_ID)
                             && "メンション通知".equals(req.getTitle())
                             && "あなたはメンションされました".equals(req.getContent())
                             && req.getType() == NotificationType.MENTION
@@ -103,7 +103,7 @@ class SendNotificationCommandServiceTest {
             // Assert
             assertThat(result).isNotNull();
             assertThat(result.getId().value()).isEqualTo(1234567890L);
-            assertThat(result.getRecipientId()).isEqualTo(recipientId);
+            assertThat(result.getRecipientId()).isEqualTo(RECIPIENT_ID);
             assertThat(result.getTitle()).isEqualTo("メンション通知");
             assertThat(result.getType()).isEqualTo(NotificationType.MENTION);
         }
@@ -113,18 +113,18 @@ class SendNotificationCommandServiceTest {
         void shouldSendAssigneeChangeNotification() {
             // Arrange
             SendNotificationCommand command = SendNotificationCommand.builder()
-                    .recipientId(recipientId)
+                    .recipientId(RECIPIENT_ID)
                     .title("担当変更通知")
                     .content("担当者が変更されました")
                     .type(NotificationType.ASSIGNEE_CHANGE)
                     .build();
 
             NotificationDTO savedNotification = createNotificationDTO(
-                    SnowflakeId.of(2234567890L), recipientId, null,
+                    SnowflakeId.of(2234567890L), RECIPIENT_ID, null,
                     "担当変更通知", "担当者が変更されました", NotificationType.ASSIGNEE_CHANGE);
 
             when(notificationService.send(argThat(req ->
-                    req.getRecipientId().equals(recipientId)
+                    req.getRecipientId().equals(RECIPIENT_ID)
                             && "担当変更通知".equals(req.getTitle())
                             && "担当者が変更されました".equals(req.getContent())
                             && req.getType() == NotificationType.ASSIGNEE_CHANGE
@@ -144,18 +144,18 @@ class SendNotificationCommandServiceTest {
         void shouldSendDueDateNotification() {
             // Arrange
             SendNotificationCommand command = SendNotificationCommand.builder()
-                    .recipientId(recipientId)
+                    .recipientId(RECIPIENT_ID)
                     .title("期限通知")
                     .content("期限が近づいています")
                     .type(NotificationType.DUE_DATE)
                     .build();
 
             NotificationDTO savedNotification = createNotificationDTO(
-                    SnowflakeId.of(3234567890L), recipientId, null,
+                    SnowflakeId.of(3234567890L), RECIPIENT_ID, null,
                     "期限通知", "期限が近づいています", NotificationType.DUE_DATE);
 
             when(notificationService.send(argThat(req ->
-                    req.getRecipientId().equals(recipientId)
+                    req.getRecipientId().equals(RECIPIENT_ID)
                             && "期限通知".equals(req.getTitle())
                             && "期限が近づいています".equals(req.getContent())
                             && req.getType() == NotificationType.DUE_DATE
@@ -175,18 +175,18 @@ class SendNotificationCommandServiceTest {
         void shouldSendAwaitingDecisionNotification() {
             // Arrange
             SendNotificationCommand command = SendNotificationCommand.builder()
-                    .recipientId(recipientId)
+                    .recipientId(RECIPIENT_ID)
                     .title("判断待ち通知")
                     .content("あなたの判断を待っています")
                     .type(NotificationType.AWAITING_DECISION)
                     .build();
 
             NotificationDTO savedNotification = createNotificationDTO(
-                    SnowflakeId.of(4234567890L), recipientId, null,
+                    SnowflakeId.of(4234567890L), RECIPIENT_ID, null,
                     "判断待ち通知", "あなたの判断を待っています", NotificationType.AWAITING_DECISION);
 
             when(notificationService.send(argThat(req ->
-                    req.getRecipientId().equals(recipientId)
+                    req.getRecipientId().equals(RECIPIENT_ID)
                             && "判断待ち通知".equals(req.getTitle())
                             && "あなたの判断を待っています".equals(req.getContent())
                             && req.getType() == NotificationType.AWAITING_DECISION
@@ -206,18 +206,18 @@ class SendNotificationCommandServiceTest {
         void shouldSendNotificationWithoutSourceId() {
             // Arrange
             SendNotificationCommand command = SendNotificationCommand.builder()
-                    .recipientId(recipientId)
+                    .recipientId(RECIPIENT_ID)
                     .title("sourceIdなしの通知")
                     .content("sourceIdなしの本文")
                     .type(NotificationType.SYSTEM)
                     .build();
 
             NotificationDTO savedNotification = createNotificationDTO(
-                    SnowflakeId.of(5234567890L), recipientId, null,
+                    SnowflakeId.of(5234567890L), RECIPIENT_ID, null,
                     "sourceIdなしの通知", "sourceIdなしの本文", NotificationType.SYSTEM);
 
             when(notificationService.send(argThat(req ->
-                    req.getRecipientId().equals(recipientId)
+                    req.getRecipientId().equals(RECIPIENT_ID)
                             && "sourceIdなしの通知".equals(req.getTitle())
                             && "sourceIdなしの本文".equals(req.getContent())
                             && req.getType() == NotificationType.SYSTEM
@@ -237,20 +237,20 @@ class SendNotificationCommandServiceTest {
         void shouldPassCorrectRequestToNotificationService() {
             // Arrange
             SendNotificationCommand command = SendNotificationCommand.builder()
-                    .recipientId(recipientId)
-                    .sourceId(sourceId)
+                    .recipientId(RECIPIENT_ID)
+                    .sourceId(SOURCE_ID)
                     .title("テスト通知")
                     .content("テスト本文")
                     .type(NotificationType.CUSTOM)
                     .build();
 
             NotificationDTO savedNotification = createNotificationDTO(
-                    SnowflakeId.of(6234567890L), recipientId, sourceId,
+                    SnowflakeId.of(6234567890L), RECIPIENT_ID, SOURCE_ID,
                     "テスト通知", "テスト本文", NotificationType.CUSTOM);
 
             when(notificationService.send(argThat(req ->
-                    req.getRecipientId().equals(recipientId)
-                            && req.getSourceId().equals(sourceId)
+                    req.getRecipientId().equals(RECIPIENT_ID)
+                            && req.getSourceId().equals(SOURCE_ID)
                             && "テスト通知".equals(req.getTitle())
                             && "テスト本文".equals(req.getContent())
                             && req.getType() == NotificationType.CUSTOM
@@ -262,8 +262,8 @@ class SendNotificationCommandServiceTest {
 
             // Assert - argThatを使用してリクエストの内容を検証
             verify(notificationService).send(argThat(request ->
-                    request.getRecipientId().equals(recipientId)
-                            && request.getSourceId().equals(sourceId)
+                    request.getRecipientId().equals(RECIPIENT_ID)
+                            && request.getSourceId().equals(SOURCE_ID)
                             && "テスト通知".equals(request.getTitle())
                             && "テスト本文".equals(request.getContent())
                             && request.getType() == NotificationType.CUSTOM

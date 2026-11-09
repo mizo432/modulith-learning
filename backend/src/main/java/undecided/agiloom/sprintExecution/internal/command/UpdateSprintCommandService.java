@@ -1,6 +1,7 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAss
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
+import com.github.mizo432.shared.exception.BusinessException;
 
 @Service
 @Transactional
@@ -25,8 +27,9 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
     }
 
     public SprintDTO execute(@NonNull UpdateSprintCommand command) {
+        Objects.requireNonNull(command, "commandはnullであってはいけません");
         Sprint sprint = sprintRepository.findById(command.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + command.getId()));
+                .orElseThrow(() -> new BusinessException("Sprint not found: " + command.getId()));
 
         sprint.update(
                 command.getTitle() != null ? command.getTitle() : sprint.getTitle(),
@@ -39,14 +42,16 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
     }
 
     public SprintDTO changeStatus(@NonNull SnowflakeId id, @NonNull SprintStatus status) {
+        Objects.requireNonNull(id, "idはnullであってはいけません");
+        Objects.requireNonNull(status, "statusはnullであってはいけません");
         Sprint sprint = sprintRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
+                .orElseThrow(() -> new BusinessException("Sprint not found: " + id));
 
         switch (status) {
             case ACTIVE -> sprint.start();
             case COMPLETED -> sprint.complete();
             case CANCELLED -> sprint.cancel();
-            default -> throw new IllegalArgumentException("Invalid status: " + status);
+            default -> throw new BusinessException("Invalid status: " + status);
         }
 
         return sprintResponseAssembler.toDTO(sprint);

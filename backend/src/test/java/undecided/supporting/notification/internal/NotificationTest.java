@@ -26,22 +26,22 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("Notificationエンティティのテスト")
 class NotificationTest {
 
-  private final UUID recipientId = UUID.randomUUID();
-  private final UUID sourceId = UUID.randomUUID();
-  private final String sourceDomain = "agiloom";
-  private final String title = "Task assigned";
-  private final String content = "You have been assigned to a new task";
-  private final NotificationType type = NotificationType.ASSIGNEE_CHANGE;
+  private static final UUID RECIPIENT_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
+  private static final UUID SOURCE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
+  private static final String SOURCE_DOMAIN = "agiloom";
+  private static final String TITLE = "Task assigned";
+  private static final String CONTENT = "You have been assigned to a new task";
+  private static final NotificationType TYPE = NotificationType.ASSIGNEE_CHANGE;
 
   private Notification createNotification() {
     return Notification.builder()
         .id(SnowflakeId.of(1L))
-        .recipientId(recipientId)
-        .sourceId(sourceId)
-        .sourceDomain(sourceDomain)
-        .title(title)
-        .content(content)
-        .type(type)
+        .recipientId(RECIPIENT_ID)
+        .sourceId(SOURCE_ID)
+        .sourceDomain(SOURCE_DOMAIN)
+        .title(TITLE)
+        .content(CONTENT)
+        .type(TYPE)
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
         .build();
@@ -60,12 +60,12 @@ class NotificationTest {
       // Assert
       assertThat(notification).isNotNull();
       assertThat(notification.getId().value()).isEqualTo(1L);
-      assertThat(notification.getRecipientId()).isEqualTo(recipientId);
-      assertThat(notification.getSourceId()).isEqualTo(sourceId);
-      assertThat(notification.getSourceDomain()).isEqualTo(sourceDomain);
-      assertThat(notification.getTitle()).isEqualTo(title);
-      assertThat(notification.getContent()).isEqualTo(content);
-      assertThat(notification.getType()).isEqualTo(type);
+      assertThat(notification.getRecipientId()).isEqualTo(RECIPIENT_ID);
+      assertThat(notification.getSourceId()).isEqualTo(SOURCE_ID);
+      assertThat(notification.getSourceDomain()).isEqualTo(SOURCE_DOMAIN);
+      assertThat(notification.getTitle()).isEqualTo(TITLE);
+      assertThat(notification.getContent()).isEqualTo(CONTENT);
+      assertThat(notification.getType()).isEqualTo(TYPE);
     }
 
     @Test
@@ -87,11 +87,11 @@ class NotificationTest {
       // Act
       Notification notification = Notification.builder()
           .id(SnowflakeId.of(1L))
-          .recipientId(recipientId)
-          .sourceDomain(sourceDomain)
-          .title(title)
-          .content(content)
-          .type(type)
+          .recipientId(RECIPIENT_ID)
+          .sourceDomain(SOURCE_DOMAIN)
+          .title(TITLE)
+          .content(CONTENT)
+          .type(TYPE)
           .createdAt(now)
           .updatedAt(now)
           .build();
@@ -107,11 +107,11 @@ class NotificationTest {
       // Act
       Notification notification = Notification.builder()
           .id(SnowflakeId.of(1L))
-          .recipientId(recipientId)
-          .sourceDomain(sourceDomain)
-          .title(title)
-          .content(content)
-          .type(type)
+          .recipientId(RECIPIENT_ID)
+          .sourceDomain(SOURCE_DOMAIN)
+          .title(TITLE)
+          .content(CONTENT)
+          .type(TYPE)
           .isRead(true)
           .build();
 
@@ -125,11 +125,11 @@ class NotificationTest {
       // Act
       Notification notification = Notification.builder()
           .id(SnowflakeId.of(1L))
-          .recipientId(recipientId)
-          .sourceDomain(sourceDomain)
-          .title(title)
-          .content(content)
-          .type(type)
+          .recipientId(RECIPIENT_ID)
+          .sourceDomain(SOURCE_DOMAIN)
+          .title(TITLE)
+          .content(CONTENT)
+          .type(TYPE)
           .build();
 
       // Assert
@@ -143,10 +143,10 @@ class NotificationTest {
       for (NotificationType notificationType : NotificationType.values()) {
         Notification notification = Notification.builder()
             .id(SnowflakeId.of(1L))
-            .recipientId(recipientId)
-            .sourceDomain(sourceDomain)
-            .title(title)
-            .content(content)
+            .recipientId(RECIPIENT_ID)
+            .sourceDomain(SOURCE_DOMAIN)
+            .title(TITLE)
+            .content(CONTENT)
             .type(notificationType)
             .build();
 
@@ -204,11 +204,11 @@ class NotificationTest {
       // Arrange
       Notification notification = Notification.builder()
           .id(SnowflakeId.of(1L))
-          .recipientId(recipientId)
-          .sourceDomain(sourceDomain)
-          .title(title)
-          .content(content)
-          .type(type)
+          .recipientId(RECIPIENT_ID)
+          .sourceDomain(SOURCE_DOMAIN)
+          .title(TITLE)
+          .content(CONTENT)
+          .type(TYPE)
           .isRead(true)
           .build();
 
@@ -229,8 +229,8 @@ class NotificationTest {
     void shouldSetAllPropertiesWithBuilder() {
       // Arrange
       SnowflakeId newId = SnowflakeId.of(2L);
-      UUID newRecipientId = UUID.randomUUID();
-      UUID newSourceId = UUID.randomUUID();
+      UUID newRecipientId = UUID.fromString("66666666-6666-6666-6666-666666666666");
+      UUID newSourceId = UUID.fromString("77777777-7777-7777-7777-777777777777");
       String newSourceDomain = "jobmanagement";
       String newTitle = "New title";
       String newContent = "New content";

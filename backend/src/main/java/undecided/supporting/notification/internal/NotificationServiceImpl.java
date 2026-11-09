@@ -3,6 +3,7 @@ package undecided.supporting.notification.internal;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import com.github.mizo432.shared.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.supporting.notification.spi.NotificationDTO;
@@ -74,11 +75,11 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             idValue = Long.parseLong(notificationId);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("通知IDは数値である必要があります: " + notificationId, e);
+            throw new BusinessException("通知IDは数値である必要があります: " + notificationId);
         }
         SnowflakeId id = SnowflakeId.of(idValue);
         Notification notification = notificationRepository.findByIdAndDeletedAtIsNull(id)
-            .orElseThrow(() -> new IllegalArgumentException("通知が見つかりません: " + notificationId));
+            .orElseThrow(() -> new BusinessException("通知が見つかりません: " + notificationId));
         notification.markAsRead();
         notificationRepository.save(notification);
     }

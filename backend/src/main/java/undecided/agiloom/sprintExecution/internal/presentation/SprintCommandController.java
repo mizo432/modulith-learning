@@ -46,14 +46,14 @@ public class SprintCommandController {
                 .build();
 
         SprintDTO sprint = createSprintCommandService.execute(command);
-        return ResponseEntity.ok(sprintResponseAssembler.toResponse(sprint));
+        return ResponseEntity.status(201).body(sprintResponseAssembler.toResponse(sprint));
     }
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<SprintResponse> changeStatus(@PathVariable String id,
-                                   @Valid @RequestBody SprintStatus status) {
+                                   @Valid @RequestBody ChangeStatusRequest request) {
         SnowflakeId snowflakeId = SprintIdUtils.parseSnowflakeId(id);
-        SprintDTO sprint = updateSprintCommandService.changeStatus(snowflakeId, status);
+        SprintDTO sprint = updateSprintCommandService.changeStatus(snowflakeId, request.getStatus());
         return ResponseEntity.ok(sprintResponseAssembler.toResponse(sprint));
     }
 

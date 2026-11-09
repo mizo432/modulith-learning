@@ -1,5 +1,8 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
+import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.message.ResultMessage;
+import com.github.mizo432.shared.message.ResultMessages;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -14,14 +17,14 @@ public final class SprintIdUtils {
      *
      * @param id 文字列ID
      * @return SnowflakeId
-     * @throws IllegalArgumentException IDが数値でない場合
+     * @throws BusinessException IDが数値でない場合
      */
     public static SnowflakeId parseSnowflakeId(String id) {
         try {
             long value = Long.parseLong(id);
             return SnowflakeId.of(value);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Sprint IDは数値である必要があります: " + id, e);
+            throw new BusinessException(ResultMessages.error().add(ResultMessage.fromText("Sprint IDは数値である必要があります: " + id)), e);
         }
     }
 }

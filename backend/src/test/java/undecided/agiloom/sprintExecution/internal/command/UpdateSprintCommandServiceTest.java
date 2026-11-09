@@ -2,8 +2,6 @@ package undecided.agiloom.sprintExecution.internal.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -22,32 +20,37 @@ import undecided.agiloom.sprintExecution.internal.Sprint;
 import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
+import com.github.mizo432.shared.exception.BusinessException;
 
 @Tag("small")
 @DisplayName("UpdateSprintCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
 class UpdateSprintCommandServiceTest {
 
-  @Mock private SprintRepository sprintRepository;
-  @Mock private SprintResponseAssembler sprintResponseAssembler;
+  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
+  @Mock private SprintRepository sprintRepository;
+
+  private SprintResponseAssembler sprintResponseAssembler;
   private UpdateSprintCommandService service;
 
   @BeforeEach
   void setUp() {
+    sprintResponseAssembler = new SprintResponseAssembler();
     service = new UpdateSprintCommandService(sprintRepository, sprintResponseAssembler);
   }
 
   private Sprint createSprint(SnowflakeId id, SprintStatus status) {
     return Sprint.builder()
         .id(id)
-        .productId(UUID.randomUUID())
+        .productId(FIXED_PRODUCT_ID)
         .sprintNumber(1)
         .title("Sprint 1")
         .goal("Goal 1")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
-        .teamId(UUID.randomUUID())
+        .teamId(FIXED_TEAM_ID)
         .teamName("Team A")
         .status(status)
         .createdAt(java.time.LocalDateTime.now())
@@ -75,7 +78,6 @@ class UpdateSprintCommandServiceTest {
           .build();
 
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(existingSprint));
-      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.execute(command);
@@ -88,7 +90,7 @@ class UpdateSprintCommandServiceTest {
     }
 
     @Test
-    @DisplayName("Sprintが見つからない場合はIllegalArgumentExceptionをスローすること")
+    @DisplayName("Sprintが見つからない場合はBusinessExceptionをスローすること")
     void shouldThrowExceptionWhenSprintNotFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
@@ -101,7 +103,7 @@ class UpdateSprintCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.execute(command))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Sprint not found");
     }
 
@@ -118,7 +120,6 @@ class UpdateSprintCommandServiceTest {
           .build();
 
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(existingSprint));
-      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.execute(command);
@@ -140,7 +141,6 @@ class UpdateSprintCommandServiceTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(sprint));
-      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.ACTIVE);
@@ -157,7 +157,6 @@ class UpdateSprintCommandServiceTest {
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
       sprint.start();
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(sprint));
-      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.COMPLETED);
@@ -173,7 +172,6 @@ class UpdateSprintCommandServiceTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(sprint));
-      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.CANCELLED);
@@ -183,7 +181,7 @@ class UpdateSprintCommandServiceTest {
     }
 
     @Test
-    @DisplayName("Sprintが見つからない場合はIllegalArgumentExceptionをスローすること")
+    @DisplayName("Sprintが見つからない場合はBusinessExceptionをスローすること")
     void shouldThrowExceptionWhenSprintNotFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
@@ -191,12 +189,12 @@ class UpdateSprintCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.changeStatus(snowflakeId, SprintStatus.ACTIVE))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Sprint not found");
     }
 
     @Test
-    @DisplayName("無効なステータスの場合はIllegalArgumentExceptionをスローすること")
+    @DisplayName("無効なステータスの場合はBusinessExceptionをスローすること")
     void shouldThrowExceptionWhenInvalidStatus() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
@@ -205,7 +203,7 @@ class UpdateSprintCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.changeStatus(snowflakeId, SprintStatus.PLANNED))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Invalid status");
     }
   }
