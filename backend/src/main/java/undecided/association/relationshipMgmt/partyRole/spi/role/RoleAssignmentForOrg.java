@@ -9,7 +9,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
 import undecided.association.relationshipMgmt.orgRole.spi.Organization;
 
 @Entity
@@ -20,7 +19,6 @@ import undecided.association.relationshipMgmt.orgRole.spi.Organization;
       @Index(name = "fk02_role_assignment_for_org", columnList = "organization_id")
     })
 @Getter
-@Setter
 public class RoleAssignmentForOrg {
   @Id private UUID roleAssignmentForOrgId;
 
@@ -30,4 +28,17 @@ public class RoleAssignmentForOrg {
   @ManyToOne
   @JoinColumn(name = "organization_id")
   private Organization organization;
+
+  // JPA用パッケージプライベートセッター
+  void setRoleAssignmentForOrgId(UUID roleAssignmentForOrgId) {
+    this.roleAssignmentForOrgId = roleAssignmentForOrgId;
+  }
+
+  void setRoleId(UUID roleId) {
+    this.roleId = roleId;
+  }
+
+  void setOrganization(Organization organization) {
+    this.organization = organization;
+  }
 }
