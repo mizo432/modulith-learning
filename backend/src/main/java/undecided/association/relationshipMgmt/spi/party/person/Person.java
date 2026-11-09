@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -22,6 +23,7 @@ import undecided.association.relationshipMgmt.spi.party.Party;
 public class Person extends Party {
 
   /** 法的名前。 */
+  @Convert(converter = LegalName.LegalNameConverter.class)
   private LegalName legalName;
 
   /** 生年月日。 */
