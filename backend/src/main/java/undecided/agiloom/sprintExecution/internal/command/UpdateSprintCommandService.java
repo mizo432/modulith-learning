@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.agiloom.sprintExecution.internal.Sprint;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -14,12 +16,15 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class UpdateSprintCommandService implements UpdateSprintCommandServiceInterface {
 
     private final SprintRepository sprintRepository;
+    private final SprintResponseAssembler sprintResponseAssembler;
 
-    public UpdateSprintCommandService(SprintRepository sprintRepository) {
+    public UpdateSprintCommandService(SprintRepository sprintRepository,
+                                      SprintResponseAssembler sprintResponseAssembler) {
         this.sprintRepository = sprintRepository;
+        this.sprintResponseAssembler = sprintResponseAssembler;
     }
 
-    public void execute(@NonNull UpdateSprintCommand command) {
+    public SprintDTO execute(@NonNull UpdateSprintCommand command) {
         Sprint sprint = sprintRepository.findById(command.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + command.getId()));
 
@@ -29,9 +34,11 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
                 command.getEndDate(),
                 command.getNotes()
         );
+
+        return sprintResponseAssembler.toDTO(sprint);
     }
 
-    public void changeStatus(@NonNull SnowflakeId id, @NonNull SprintStatus status) {
+    public SprintDTO changeStatus(@NonNull SnowflakeId id, @NonNull SprintStatus status) {
         Sprint sprint = sprintRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
 
@@ -41,5 +48,7 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
             case CANCELLED -> sprint.cancel();
             default -> throw new IllegalArgumentException("Invalid status: " + status);
         }
+
+        return sprintResponseAssembler.toDTO(sprint);
     }
 }

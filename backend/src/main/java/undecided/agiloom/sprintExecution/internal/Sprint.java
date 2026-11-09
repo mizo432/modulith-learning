@@ -1,14 +1,12 @@
-package undecided.agiloom.sprintExecution.spi;
+package undecided.agiloom.sprintExecution.internal;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Converter;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
@@ -22,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
@@ -72,22 +71,30 @@ public class Sprint {
     private String notes;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     public void start() {
         if (this.status != SprintStatus.PLANNED) {
             throw new IllegalStateException("Sprint can only be started from PLANNED status, current status: " + this.status);
         }
         this.status = SprintStatus.ACTIVE;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void complete() {
@@ -95,7 +102,6 @@ public class Sprint {
             throw new IllegalStateException("Sprint can only be completed from ACTIVE status, current status: " + this.status);
         }
         this.status = SprintStatus.COMPLETED;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void cancel() {
@@ -103,18 +109,25 @@ public class Sprint {
             throw new IllegalStateException("Sprint can only be cancelled from ACTIVE or PLANNED status, current status: " + this.status);
         }
         this.status = SprintStatus.CANCELLED;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void update(@NonNull String title, @NonNull String goal, @Nullable LocalDate endDate, @Nullable String notes) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
+        if (title.trim().isEmpty()) {
+            throw new IllegalArgumentException("title must not be empty");
+        }
+        if (title.length() > 100) {
+            throw new IllegalArgumentException("title must not exceed 100 characters");
+        }
+        if (goal.length() > 1000) {
+            throw new IllegalArgumentException("goal must not exceed 1000 characters");
+        }
         this.title = title;
         this.goal = goal;
         if (endDate != null) {
             this.endDate = endDate;
         }
         this.notes = notes;
-        this.updatedAt = LocalDateTime.now();
     }
 }

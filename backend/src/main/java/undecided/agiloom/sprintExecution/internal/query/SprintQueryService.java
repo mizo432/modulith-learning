@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -16,20 +17,27 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class SprintQueryService implements SprintQueryServiceInterface {
 
     private final SprintRepository sprintRepository;
+    private final SprintResponseAssembler sprintResponseAssembler;
 
-    public SprintQueryService(SprintRepository sprintRepository) {
+    public SprintQueryService(SprintRepository sprintRepository,
+                              SprintResponseAssembler sprintResponseAssembler) {
         this.sprintRepository = sprintRepository;
+        this.sprintResponseAssembler = sprintResponseAssembler;
     }
 
-    public Optional<Sprint> findById(@NonNull SnowflakeId id) {
-        return sprintRepository.findById(id);
+    public Optional<SprintDTO> findById(@NonNull SnowflakeId id) {
+        return sprintRepository.findById(id).map(sprintResponseAssembler::toDTO);
     }
 
-    public List<Sprint> findAll(Pageable pageable) {
-        return sprintRepository.findAll(pageable).getContent();
+    public List<SprintDTO> findAll(Pageable pageable) {
+        return sprintRepository.findAll(pageable).getContent().stream()
+            .map(sprintResponseAssembler::toDTO)
+            .toList();
     }
 
-    public List<Sprint> findByStatus(@NonNull SprintStatus status) {
-        return sprintRepository.findByStatus(status);
+    public List<SprintDTO> findByStatus(@NonNull SprintStatus status) {
+        return sprintRepository.findByStatusAndDeletedAtIsNull(status).stream()
+            .map(sprintResponseAssembler::toDTO)
+            .toList();
     }
 }

@@ -1,10 +1,11 @@
-package undecided.supporting.notification.spi;
+package undecided.supporting.notification.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
+import undecided.supporting.notification.spi.NotificationType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,8 @@ class NotificationTest {
         .title(title)
         .content(content)
         .type(type)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -76,14 +79,26 @@ class NotificationTest {
     }
 
     @Test
-    @DisplayName("デフォルトで作成日時と更新日時が設定されること")
-    void shouldSetCreatedAtAndUpdatedAtByDefault() {
+    @DisplayName("明示的に作成日時と更新日時が設定できること")
+    void shouldSetCreatedAtAndUpdatedAtExplicitly() {
+      // Arrange
+      LocalDateTime now = LocalDateTime.now();
+
       // Act
-      Notification notification = createNotification();
+      Notification notification = Notification.builder()
+          .id(SnowflakeId.of(1L))
+          .recipientId(recipientId)
+          .sourceDomain(sourceDomain)
+          .title(title)
+          .content(content)
+          .type(type)
+          .createdAt(now)
+          .updatedAt(now)
+          .build();
 
       // Assert
-      assertThat(notification.getCreatedAt()).isNotNull();
-      assertThat(notification.getUpdatedAt()).isNotNull();
+      assertThat(notification.getCreatedAt()).isEqualTo(now);
+      assertThat(notification.getUpdatedAt()).isEqualTo(now);
     }
 
     @Test
@@ -161,14 +176,12 @@ class NotificationTest {
     void shouldMarkAsRead() {
       // Arrange
       Notification notification = createNotification();
-      LocalDateTime beforeUpdate = notification.getUpdatedAt();
 
       // Act
       notification.markAsRead();
 
       // Assert
       assertThat(notification.getIsRead()).isTrue();
-      assertThat(notification.getUpdatedAt()).isAfterOrEqualTo(beforeUpdate);
     }
 
     @Test
@@ -208,14 +221,13 @@ class NotificationTest {
   }
 
   @Nested
-  @DisplayName("セッターのテスト")
-  class SetterTest {
+  @DisplayName("ビルダーで各プロパティが設定できること")
+  class BuilderPropertiesTest {
 
     @Test
-    @DisplayName("各プロパティが設定できること")
-    void shouldSetAllProperties() {
+    @DisplayName("ビルダーで各プロパティが設定できること")
+    void shouldSetAllPropertiesWithBuilder() {
       // Arrange
-      Notification notification = new Notification();
       SnowflakeId newId = SnowflakeId.of(2L);
       UUID newRecipientId = UUID.randomUUID();
       UUID newSourceId = UUID.randomUUID();
@@ -226,15 +238,17 @@ class NotificationTest {
       LocalDateTime newDeletedAt = LocalDateTime.now();
 
       // Act
-      notification.setId(newId);
-      notification.setRecipientId(newRecipientId);
-      notification.setSourceId(newSourceId);
-      notification.setSourceDomain(newSourceDomain);
-      notification.setTitle(newTitle);
-      notification.setContent(newContent);
-      notification.setType(newType);
-      notification.setIsRead(true);
-      notification.setDeletedAt(newDeletedAt);
+      Notification notification = Notification.builder()
+          .id(newId)
+          .recipientId(newRecipientId)
+          .sourceId(newSourceId)
+          .sourceDomain(newSourceDomain)
+          .title(newTitle)
+          .content(newContent)
+          .type(newType)
+          .isRead(true)
+          .deletedAt(newDeletedAt)
+          .build();
 
       // Assert
       assertThat(notification.getId()).isEqualTo(newId);

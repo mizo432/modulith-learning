@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -23,9 +23,12 @@ public class SprintQueryController {
     private static final int MAX_PAGE_SIZE = 100;
 
     private final SprintQueryServiceInterface sprintQueryService;
+    private final SprintResponseAssembler sprintResponseAssembler;
 
-    public SprintQueryController(SprintQueryServiceInterface sprintQueryService) {
+    public SprintQueryController(SprintQueryServiceInterface sprintQueryService,
+                                  SprintResponseAssembler sprintResponseAssembler) {
         this.sprintQueryService = sprintQueryService;
+        this.sprintResponseAssembler = sprintResponseAssembler;
     }
 
     @GetMapping
@@ -34,44 +37,15 @@ public class SprintQueryController {
             @RequestParam(defaultValue = "20") @Min(1) @Max(MAX_PAGE_SIZE) int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return sprintQueryService.findAll(pageable).stream()
-                .map(this::toResponse)
+                .map(sprintResponseAssembler::toResponse)
                 .toList();
     }
 
     @GetMapping("/{id}")
     public SprintResponse getSprint(@PathVariable @NotNull String id) {
-        SnowflakeId snowflakeId = parseSnowflakeId(id);
-        Sprint sprint = sprintQueryService.findById(snowflakeId)
+        SnowflakeId snowflakeId = SprintIdUtils.parseSnowflakeId(id);
+        SprintDTO sprint = sprintQueryService.findById(snowflakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
-        return toResponse(sprint);
-    }
-
-    // IDをSnowflakeIdに変換し、不正な形式の場合はIllegalArgumentExceptionをスローする
-    private SnowflakeId parseSnowflakeId(String id) {
-        try {
-            long value = Long.parseLong(id);
-            return SnowflakeId.of(value);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Sprint IDは数値である必要があります: " + id, e);
-        }
-    }
-
-    SprintResponse toResponse(Sprint sprint) {
-        return SprintResponse.builder()
-                .id(sprint.getId())
-                .productId(sprint.getProductId())
-                .sprintNumber(sprint.getSprintNumber())
-                .title(sprint.getTitle())
-                .goal(sprint.getGoal())
-                .startDate(sprint.getStartDate())
-                .endDate(sprint.getEndDate())
-                .status(sprint.getStatus())
-                .teamId(sprint.getTeamId())
-                .teamName(sprint.getTeamName())
-                .velocity(sprint.getVelocity())
-                .notes(sprint.getNotes())
-                .createdAt(sprint.getCreatedAt())
-                .updatedAt(sprint.getUpdatedAt())
-                .build();
+        return sprintResponseAssembler.toResponse(sprint);
     }
 }

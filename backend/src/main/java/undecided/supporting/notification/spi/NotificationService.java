@@ -11,7 +11,7 @@ import java.util.UUID;
  * </p>
  *
  * @see NotificationRequest
- * @see Notification
+ * @see NotificationDTO
  */
 public interface NotificationService {
 
@@ -22,30 +22,31 @@ public interface NotificationService {
      * </p>
      *
      * @param request 通知リクエスト
-     * @return 作成された通知
+     * @return 作成された通知（不変のDTO）
      */
-    Notification send(NotificationRequest request);
+    NotificationDTO send(NotificationRequest request);
 
     /**
      * 受信者の通知一覧を取得します。
      *
      * @param recipientId 受信者ID
-     * @return 通知のリスト
+     * @return 通知のリスト（不変のDTO）
      */
-    List<Notification> getNotificationsByRecipient(UUID recipientId);
+    List<NotificationDTO> getNotificationsByRecipient(UUID recipientId);
 
     /**
      * 受信者の未読通知一覧を取得します。
      *
      * @param recipientId 受信者ID
-     * @return 未読通知のリスト
+     * @return 未読通知のリスト（不変のDTO）
      */
-    List<Notification> getUnreadNotificationsByRecipient(UUID recipientId);
+    List<NotificationDTO> getUnreadNotificationsByRecipient(UUID recipientId);
 
     /**
      * 通知を既読としてマークします。
      *
-     * @param notificationId 通知ID
+     * @param notificationId 通知ID（数値文字列）
+     * @throws IllegalArgumentException notificationIdが数値として解析できない場合
      */
     void markAsRead(String notificationId);
 }

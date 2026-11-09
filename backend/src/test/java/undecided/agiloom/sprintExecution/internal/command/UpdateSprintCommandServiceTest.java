@@ -18,7 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.internal.Sprint;
+import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -28,12 +29,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 class UpdateSprintCommandServiceTest {
 
   @Mock private SprintRepository sprintRepository;
+  @Mock private SprintResponseAssembler sprintResponseAssembler;
 
   private UpdateSprintCommandService service;
 
   @BeforeEach
   void setUp() {
-    service = new UpdateSprintCommandService(sprintRepository);
+    service = new UpdateSprintCommandService(sprintRepository, sprintResponseAssembler);
   }
 
   private Sprint createSprint(SnowflakeId id, SprintStatus status) {
@@ -48,6 +50,8 @@ class UpdateSprintCommandServiceTest {
         .teamId(UUID.randomUUID())
         .teamName("Team A")
         .status(status)
+        .createdAt(java.time.LocalDateTime.now())
+        .updatedAt(java.time.LocalDateTime.now())
         .build();
   }
 
@@ -71,6 +75,7 @@ class UpdateSprintCommandServiceTest {
           .build();
 
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(existingSprint));
+      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.execute(command);
@@ -113,6 +118,7 @@ class UpdateSprintCommandServiceTest {
           .build();
 
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(existingSprint));
+      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.execute(command);
@@ -134,6 +140,7 @@ class UpdateSprintCommandServiceTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.ACTIVE);
@@ -150,6 +157,7 @@ class UpdateSprintCommandServiceTest {
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
       sprint.start();
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.COMPLETED);
@@ -165,6 +173,7 @@ class UpdateSprintCommandServiceTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.CANCELLED);

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import undecided.supporting.snowflake.SnowflakeId;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -32,16 +33,17 @@ import undecided.supporting.snowflake.SnowflakeId;
 class SprintQueryControllerTest {
 
   @Mock private SprintQueryServiceInterface sprintQueryService;
+  @Mock private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintQueryController controller;
 
   @BeforeEach
   void setUp() {
-    controller = new SprintQueryController(sprintQueryService);
+    controller = new SprintQueryController(sprintQueryService, sprintResponseAssembler);
   }
 
-  private Sprint createSprint(SnowflakeId id, SprintStatus status) {
-    return Sprint.builder()
+  private SprintDTO createSprintDTO(SnowflakeId id, SprintStatus status) {
+    return SprintDTO.builder()
         .id(id)
         .productId(UUID.randomUUID())
         .sprintNumber(1)
@@ -49,9 +51,11 @@ class SprintQueryControllerTest {
         .goal("Goal 1")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
+        .status(status)
         .teamId(UUID.randomUUID())
         .teamName("Team A")
-        .status(status)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -65,9 +69,9 @@ class SprintQueryControllerTest {
       // Arrange
       SnowflakeId snowflakeId1 = SnowflakeId.of(1234567890L);
       SnowflakeId snowflakeId2 = SnowflakeId.of(9876543210L);
-      Sprint sprint1 = createSprint(snowflakeId1, SprintStatus.PLANNED);
-      Sprint sprint2 = createSprint(snowflakeId2, SprintStatus.ACTIVE);
-      List<Sprint> sprints = List.of(sprint1, sprint2);
+      SprintDTO sprint1 = createSprintDTO(snowflakeId1, SprintStatus.PLANNED);
+      SprintDTO sprint2 = createSprintDTO(snowflakeId2, SprintStatus.ACTIVE);
+      List<SprintDTO> sprints = List.of(sprint1, sprint2);
 
       when(sprintQueryService.findAll(any(Pageable.class))).thenReturn(sprints);
 
@@ -101,8 +105,13 @@ class SprintQueryControllerTest {
     void shouldReturnSprintResponseWhenFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
+      SprintDTO sprint = createSprintDTO(snowflakeId, SprintStatus.PLANNED);
+      SprintResponse expectedResponse = SprintResponse.builder()
+          .id(snowflakeId)
+          .title("Sprint 1")
+          .build();
       when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act
       SprintResponse result = controller.getSprint(String.valueOf(snowflakeId.value()));

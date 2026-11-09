@@ -37,7 +37,7 @@ class ArchitectureTest {
       importOptions = {ImportOption.DoNotIncludeTests.class})
   static class EntityLayerTest {
     @ArchTest
-    static final ArchRule entity_classes_should_reside_in_spi_package =
+    static final ArchRule entity_classes_should_reside_in_spi_or_internal_package =
         classes()
             .that()
             .areAnnotatedWith(Entity.class)
@@ -50,8 +50,8 @@ class ArchitectureTest {
             .and()
             .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
-            .resideInAPackage("..spi..")
-            .because("Entityクラスはドメイン層(spiパッケージ)に配置されるべきです");
+            .resideInAnyPackage("..spi..", "..internal..")
+            .because("Entityクラスはドメイン層(spiパッケージ)またはインフラ層(internalパッケージ)に配置されるべきです");
   }
 
   @AnalyzeClasses(

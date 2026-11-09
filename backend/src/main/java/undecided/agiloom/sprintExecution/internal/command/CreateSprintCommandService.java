@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.agiloom.sprintExecution.internal.Sprint;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
@@ -13,12 +15,15 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class CreateSprintCommandService implements CreateSprintCommandServiceInterface {
 
     private final SprintRepository sprintRepository;
+    private final SprintResponseAssembler sprintResponseAssembler;
 
-    public CreateSprintCommandService(SprintRepository sprintRepository) {
+    public CreateSprintCommandService(SprintRepository sprintRepository,
+                                      SprintResponseAssembler sprintResponseAssembler) {
         this.sprintRepository = sprintRepository;
+        this.sprintResponseAssembler = sprintResponseAssembler;
     }
 
-    public SnowflakeId execute(@NonNull CreateSprintCommand command) {
+    public SprintDTO execute(@NonNull CreateSprintCommand command) {
         if (!command.getEndDate().isAfter(command.getStartDate())) {
             throw new IllegalArgumentException("endDate must be after startDate");
         }
@@ -34,6 +39,6 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
                 .build();
 
         Sprint saved = sprintRepository.save(sprint);
-        return saved.getId();
+        return sprintResponseAssembler.toDTO(saved);
     }
 }
