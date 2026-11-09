@@ -79,7 +79,12 @@ public class NotificationServiceImpl implements NotificationService {
         } catch (NumberFormatException e) {
             throw new BusinessException("通知IDは数値である必要があります: " + notificationId);
         }
-        SnowflakeId id = SnowflakeId.of(idValue);
+        SnowflakeId id;
+        try {
+            id = SnowflakeId.of(idValue);
+        } catch (IllegalArgumentException e) {
+            throw new BusinessException("通知IDは有効なIDである必要があります: " + notificationId);
+        }
         Notification notification = notificationRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow(() -> new BusinessException("通知が見つかりません: " + notificationId));
         notification.markAsRead();

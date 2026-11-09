@@ -71,21 +71,23 @@ class SprintQueryControllerAdversarialTest {
   class GetSprintsAdversarialTest {
 
     @Test
-    @DisplayName("sizeに負の値を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("sizeに負の値を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectNegativeSize() {
       // Act & Assert - @Validated + @Min(1)により、Spring MVC層ではConstraintViolationExceptionで拒否される
-      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローする
+      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(0, -1))
-          .isInstanceOf(IllegalArgumentException.class);
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("ページネーションパラメータが無効です");
     }
 
     @Test
-    @DisplayName("sizeに0を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("sizeに0を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectZeroSize() {
       // Act & Assert - @Validated + @Min(1)により、Spring MVC層ではConstraintViolationExceptionで拒否される
-      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローする
+      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(0, 0))
-          .isInstanceOf(IllegalArgumentException.class);
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("ページネーションパラメータが無効です");
     }
 
     @Test
@@ -101,13 +103,13 @@ class SprintQueryControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("pageに負の値を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("pageに負の値を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectNegativePage() {
       // Act & Assert - @Validated + @Min(0)により、Spring MVC層ではConstraintViolationExceptionで拒否される
-      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローする
+      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(-1, 20))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Page index must not be less than zero");
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("ページネーションパラメータが無効です");
     }
 
     @Test

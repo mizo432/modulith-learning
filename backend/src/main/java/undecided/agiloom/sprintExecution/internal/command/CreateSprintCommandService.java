@@ -32,7 +32,7 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
     public SprintDTO execute(@NonNull CreateSprintCommand command) {
         Objects.requireNonNull(command, "commandはnullであってはいけません");
         if (!command.getEndDate().isAfter(command.getStartDate())) {
-            throw new BusinessException("endDate must be after startDate");
+            throw new BusinessException("終了日は開始日より後である必要があります");
         }
         Sprint sprint = Sprint.builder()
                 .id(SnowflakeId.of(snowflakeIdGenerator.nextId()))

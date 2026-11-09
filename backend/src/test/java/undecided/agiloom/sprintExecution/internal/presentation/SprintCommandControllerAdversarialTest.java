@@ -183,7 +183,7 @@ class SprintCommandControllerAdversarialTest {
           .thenAnswer(invocation -> {
             undecided.agiloom.sprintExecution.internal.command.CreateSprintCommand cmd = invocation.getArgument(0);
             if (!cmd.getEndDate().isAfter(cmd.getStartDate())) {
-              throw new BusinessException("endDate must be after startDate");
+              throw new BusinessException("終了日は開始日より後である必要があります");
             }
             return SnowflakeId.of(1234567890L);
           });
@@ -191,7 +191,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert - コマンド層でendDateがstartDateより後であることを検証
       assertThatThrownBy(() -> controller.createSprint(request))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("endDate must be after startDate");
+          .hasMessageContaining("終了日は開始日より後である必要があります");
     }
 
     @Test
