@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,26 +37,30 @@ import undecided.supporting.snowflake.SnowflakeId;
 class SprintQueryControllerAdversarialTest {
 
   @Mock private SprintQueryServiceInterface sprintQueryService;
-  @Mock private SprintResponseAssembler sprintResponseAssembler;
+  private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintQueryController controller;
 
   @BeforeEach
   void setUp() {
+    sprintResponseAssembler = new SprintResponseAssembler();
     controller = new SprintQueryController(sprintQueryService, sprintResponseAssembler);
   }
+
+  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   private SprintDTO createSprintDTO(SnowflakeId id, SprintStatus status) {
     return SprintDTO.builder()
         .id(id)
-        .productId(UUID.randomUUID())
+        .productId(FIXED_PRODUCT_ID)
         .sprintNumber(1)
         .title("Sprint 1")
         .goal("Goal 1")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
         .status(status)
-        .teamId(UUID.randomUUID())
+        .teamId(FIXED_TEAM_ID)
         .teamName("Team A")
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
@@ -139,16 +144,16 @@ class SprintQueryControllerAdversarialTest {
     void shouldThrowIllegalArgumentExceptionForNonNumericId() {
       // Act & Assert - IDパース時にNumberFormatExceptionをIllegalArgumentExceptionに変換する
       assertThatThrownBy(() -> controller.getSprint("abc"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDに空文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDに空文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldThrowIllegalArgumentExceptionForEmptyId() {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint(""))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
@@ -162,96 +167,97 @@ class SprintQueryControllerAdversarialTest {
     }
 
     @Test
-    @DisplayName("IDにLong.MAX_VALUEより大きな値を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにLong.MAX_VALUEより大きな値を指定した場合、BusinessExceptionをスローすること")
     void shouldThrowIllegalArgumentExceptionForOverflowId() {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint("99999999999999999999"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにSQLインジェクション文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにSQLインジェクション文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectSqlInjectionInId() {
       // Act & Assert - SQLインジェクション文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("1; DROP TABLE sprint;"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにXSS文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにXSS文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectXssInId() {
       // Act & Assert - XSS文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("<script>alert(1)</script>"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにパストラバーサル文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにパストラバーサル文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectPathTraversalInId() {
       // Act & Assert - パストラバーサル文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("../../etc/passwd"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにコマンドインジェクション文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにコマンドインジェクション文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectCommandInjectionInId() {
       // Act & Assert - コマンドインジェクション文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("1 | rm -rf /"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにスペースを含む文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにスペースを含む文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectIdWithSpaces() {
       // Act & Assert - スペースを含むIDは数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint(" 123 "))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDに浮動小数点数を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDに浮動小数点数を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectFloatingPointId() {
       // Act & Assert - 浮動小数点数は整数としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("123.456"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにNullバイトを含む文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにNullバイトを含む文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectNullByteInId() {
       // Act & Assert - Nullバイトを含む文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("123\0456"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("数値である必要があります");
     }
 
     @Test
-    @DisplayName("IDにUnicode全角数字を含む文字列を指定した場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("IDにUnicode全角数字を含む文字列を指定した場合、BusinessExceptionをスローすること")
     void shouldHandleUnicodeInId() {
-      // Act & Assert - 全角数字はLong.parseLongでNumberFormatExceptionになるが、
-      // SnowflakeId.of()がキャッチしてIllegalArgumentExceptionに変換する
-      // または、Long.parseLongが成功し、Sprint not foundになる
+      // Arrange - 全角数字はLong.parseLongで正常にパースされるが、DBに存在しないためNotFoundになる
+      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.empty());
+      // Act & Assert
       assertThatThrownBy(() -> controller.getSprint("１２３"))
-          .isInstanceOf(IllegalArgumentException.class);
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("Sprint not found");
     }
 
     @Test
-    @DisplayName("Sprintが見つからない場合、IllegalArgumentExceptionをスローすること")
+    @DisplayName("Sprintが見つからない場合、BusinessExceptionをスローすること")
     void shouldThrowExceptionWhenNotFound() {
       // Arrange
       when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.empty());
 
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint("1234567890"))
-          .isInstanceOf(IllegalArgumentException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Sprint not found");
     }
   }

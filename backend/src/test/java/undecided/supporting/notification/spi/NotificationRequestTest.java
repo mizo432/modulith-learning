@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 @DisplayName("NotificationRequestのテスト")
 class NotificationRequestTest {
 
-  UUID recipientId = UUID.randomUUID();
-  UUID sourceId = UUID.randomUUID();
-  String sourceDomain = "agiloom";
-  String title = "Test notification";
-  String content = "This is a test notification";
-  NotificationType type = NotificationType.SYSTEM;
+  private static final UUID RECIPIENT_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
+  private static final UUID SOURCE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
+  private static final String SOURCE_DOMAIN = "agiloom";
+  private static final String TITLE = "Test notification";
+  private static final String CONTENT = "This is a test notification";
+  private static final NotificationType TYPE = NotificationType.SYSTEM;
 
   @Nested
   @DisplayName("ビルダーのテスト")
@@ -27,31 +27,31 @@ class NotificationRequestTest {
     @Test
     @DisplayName("必須フィールドを設定するとビルドできる")
     void shouldBuildWithRequiredFields() {
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
-          .sourceId(sourceId)
-          .title(title)
-          .content(content)
-          .type(type)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
+          .sourceId(SOURCE_ID)
+          .title(TITLE)
+          .content(CONTENT)
+          .type(TYPE)
           .build();
 
       assertThat(request).isNotNull();
-      assertThat(request.getRecipientId()).isEqualTo(recipientId);
-      assertThat(request.getSourceId()).isEqualTo(sourceId);
-      assertThat(request.getSourceDomain()).isEqualTo(sourceDomain);
-      assertThat(request.getTitle()).isEqualTo(title);
-      assertThat(request.getContent()).isEqualTo(content);
-      assertThat(request.getType()).isEqualTo(type);
+      assertThat(request.getRecipientId()).isEqualTo(RECIPIENT_ID);
+      assertThat(request.getSourceId()).isEqualTo(SOURCE_ID);
+      assertThat(request.getSourceDomain()).isEqualTo(SOURCE_DOMAIN);
+      assertThat(request.getTitle()).isEqualTo(TITLE);
+      assertThat(request.getContent()).isEqualTo(CONTENT);
+      assertThat(request.getType()).isEqualTo(TYPE);
     }
 
     @Test
     @DisplayName("sourceIdはオプションである")
     void sourceIdIsOptional() {
-      NotificationRequest request = NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
-          .title(title)
-          .content(content)
-          .type(type)
+      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
+          .title(TITLE)
+          .content(CONTENT)
+          .type(TYPE)
           .build();
 
       assertThat(request.getSourceId()).isNull();
@@ -60,10 +60,10 @@ class NotificationRequestTest {
     @Test
     @DisplayName("recipientIdがnullの場合、例外がスローされる")
     void shouldThrowWhenRecipientIdIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(sourceDomain)
-          .title(title)
-          .content(content)
-          .type(type)
+      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
+          .title(TITLE)
+          .content(CONTENT)
+          .type(TYPE)
           .build())
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("recipientId");
@@ -72,10 +72,10 @@ class NotificationRequestTest {
     @Test
     @DisplayName("titleがnullの場合、例外がスローされる")
     void shouldThrowWhenTitleIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
-          .content(content)
-          .type(type)
+      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
+          .content(CONTENT)
+          .type(TYPE)
           .build())
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("title");
@@ -84,10 +84,10 @@ class NotificationRequestTest {
     @Test
     @DisplayName("contentがnullの場合、例外がスローされる")
     void shouldThrowWhenContentIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
-          .title(title)
-          .type(type)
+      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
+          .title(TITLE)
+          .type(TYPE)
           .build())
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("content");
@@ -96,10 +96,10 @@ class NotificationRequestTest {
     @Test
     @DisplayName("typeがnullの場合、例外がスローされる")
     void shouldThrowWhenTypeIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(sourceDomain)
-          .recipientId(recipientId)
-          .title(title)
-          .content(content)
+      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
+          .recipientId(RECIPIENT_ID)
+          .title(TITLE)
+          .content(CONTENT)
           .build())
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("type");

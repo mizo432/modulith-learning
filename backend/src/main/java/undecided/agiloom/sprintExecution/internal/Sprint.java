@@ -10,6 +10,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+import com.github.mizo432.shared.exception.BusinessException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -92,40 +93,46 @@ public class Sprint {
 
     public void start() {
         if (this.status != SprintStatus.PLANNED) {
-            throw new IllegalStateException("Sprint can only be started from PLANNED status, current status: " + this.status);
+            throw new BusinessException("Sprint can only be started from PLANNED status, current status: " + this.status);
         }
         this.status = SprintStatus.ACTIVE;
     }
 
     public void complete() {
         if (this.status != SprintStatus.ACTIVE) {
-            throw new IllegalStateException("Sprint can only be completed from ACTIVE status, current status: " + this.status);
+            throw new BusinessException("Sprint can only be completed from ACTIVE status, current status: " + this.status);
         }
         this.status = SprintStatus.COMPLETED;
     }
 
     public void cancel() {
         if (this.status != SprintStatus.ACTIVE && this.status != SprintStatus.PLANNED) {
-            throw new IllegalStateException("Sprint can only be cancelled from ACTIVE or PLANNED status, current status: " + this.status);
+            throw new BusinessException("Sprint can only be cancelled from ACTIVE or PLANNED status, current status: " + this.status);
         }
         this.status = SprintStatus.CANCELLED;
     }
 
     public void update(@NonNull String title, @NonNull String goal, @Nullable LocalDate endDate, @Nullable String notes) {
-        checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
-        checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
+        checkNotNull(title, () -> new BusinessException("title must not be null"));
+        checkNotNull(goal, () -> new BusinessException("goal must not be null"));
         if (title.trim().isEmpty()) {
-            throw new IllegalArgumentException("title must not be empty");
+            throw new BusinessException("title must not be empty");
         }
-        if (title.length() > 100) {
-            throw new IllegalArgumentException("title must not exceed 100 characters");
+        if (title.trim().length() > 100) {
+            throw new BusinessException("title must not exceed 100 characters");
         }
-        if (goal.length() > 1000) {
-            throw new IllegalArgumentException("goal must not exceed 1000 characters");
+        if (goal.trim().isEmpty()) {
+            throw new BusinessException("goal must not be empty");
+        }
+        if (goal.trim().length() > 1000) {
+            throw new BusinessException("goal must not exceed 1000 characters");
         }
         this.title = title;
         this.goal = goal;
         if (endDate != null) {
+            if (!endDate.isAfter(this.startDate)) {
+                throw new BusinessException("endDate must be after startDate");
+            }
             this.endDate = endDate;
         }
         this.notes = notes;

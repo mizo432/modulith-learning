@@ -46,7 +46,7 @@ public interface NotificationService {
      * 通知を既読としてマークします。
      *
      * @param notificationId 通知ID（数値文字列）
-     * @throws IllegalArgumentException notificationIdが数値として解析できない場合
+     * @throws BusinessException notificationIdが数値として解析できない場合、または通知が見つからない場合
      */
     void markAsRead(String notificationId);
 }

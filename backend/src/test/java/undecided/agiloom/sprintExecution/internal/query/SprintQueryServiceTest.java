@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -33,29 +32,33 @@ import undecided.supporting.snowflake.SnowflakeId;
 class SprintQueryServiceTest {
 
   @Mock private SprintRepository sprintRepository;
-  @Mock private SprintResponseAssembler sprintResponseAssembler;
 
+  private SprintResponseAssembler sprintResponseAssembler;
   private SprintQueryService service;
 
   @BeforeEach
   void setUp() {
+    sprintResponseAssembler = new SprintResponseAssembler();
     service = new SprintQueryService(sprintRepository, sprintResponseAssembler);
   }
+
+  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   private Sprint createSprint(SnowflakeId id, SprintStatus status) {
     return Sprint.builder()
         .id(id)
-        .productId(UUID.randomUUID())
+        .productId(FIXED_PRODUCT_ID)
         .sprintNumber(1)
         .title("Sprint 1")
         .goal("Goal 1")
-        .startDate(LocalDate.now())
-        .endDate(LocalDate.now().plusWeeks(2))
-        .teamId(UUID.randomUUID())
+        .startDate(LocalDate.of(2024, 1, 1))
+        .endDate(LocalDate.of(2024, 1, 15))
+        .teamId(FIXED_TEAM_ID)
         .teamName("Team A")
         .status(status)
-        .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
+        .createdAt(LocalDateTime.of(2024, 1, 1, 0, 0))
+        .updatedAt(LocalDateTime.of(2024, 1, 1, 0, 0))
         .build();
   }
 
@@ -68,30 +71,24 @@ class SprintQueryServiceTest {
     void shouldReturnSprintWhenFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
-      SprintDTO expectedDto = SprintDTO.builder()
-          .id(snowflakeId)
-          .productId(sprint.getProductId())
-          .sprintNumber(sprint.getSprintNumber())
-          .title(sprint.getTitle())
-          .goal(sprint.getGoal())
-          .startDate(sprint.getStartDate())
-          .endDate(sprint.getEndDate())
-          .status(sprint.getStatus())
-          .teamId(sprint.getTeamId())
-          .teamName(sprint.getTeamName())
-          .createdAt(sprint.getCreatedAt())
-          .updatedAt(sprint.getUpdatedAt())
-          .build();
-      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(sprint));
-      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(expectedDto);
+      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(createSprint(snowflakeId, SprintStatus.PLANNED)));
 
       // Act
       Optional<SprintDTO> result = service.findById(snowflakeId);
 
       // Assert
       assertThat(result).isPresent();
-      assertThat(result.get().getId()).isEqualTo(snowflakeId);
+      SprintDTO dto = result.get();
+      assertThat(dto.getId()).isEqualTo(snowflakeId);
+      assertThat(dto.getProductId()).isEqualTo(FIXED_PRODUCT_ID);
+      assertThat(dto.getSprintNumber()).isEqualTo(1);
+      assertThat(dto.getTitle()).isEqualTo("Sprint 1");
+      assertThat(dto.getGoal()).isEqualTo("Goal 1");
+      assertThat(dto.getStartDate()).isEqualTo(LocalDate.of(2024, 1, 1));
+      assertThat(dto.getEndDate()).isEqualTo(LocalDate.of(2024, 1, 15));
+      assertThat(dto.getStatus()).isEqualTo(SprintStatus.PLANNED);
+      assertThat(dto.getTeamId()).isEqualTo(FIXED_TEAM_ID);
+      assertThat(dto.getTeamName()).isEqualTo("Team A");
     }
 
     @Test
@@ -125,36 +122,6 @@ class SprintQueryServiceTest {
       Page<Sprint> page = new PageImpl<>(sprints);
       Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 20);
       when(sprintRepository.findAllByDeletedAtIsNull(pageable)).thenReturn(page);
-      SprintDTO dto1 = SprintDTO.builder()
-          .id(snowflakeId1)
-          .productId(sprint1.getProductId())
-          .sprintNumber(sprint1.getSprintNumber())
-          .title(sprint1.getTitle())
-          .goal(sprint1.getGoal())
-          .startDate(sprint1.getStartDate())
-          .endDate(sprint1.getEndDate())
-          .status(sprint1.getStatus())
-          .teamId(sprint1.getTeamId())
-          .teamName(sprint1.getTeamName())
-          .createdAt(sprint1.getCreatedAt())
-          .updatedAt(sprint1.getUpdatedAt())
-          .build();
-      SprintDTO dto2 = SprintDTO.builder()
-          .id(snowflakeId2)
-          .productId(sprint2.getProductId())
-          .sprintNumber(sprint2.getSprintNumber())
-          .title(sprint2.getTitle())
-          .goal(sprint2.getGoal())
-          .startDate(sprint2.getStartDate())
-          .endDate(sprint2.getEndDate())
-          .status(sprint2.getStatus())
-          .teamId(sprint2.getTeamId())
-          .teamName(sprint2.getTeamName())
-          .createdAt(sprint2.getCreatedAt())
-          .updatedAt(sprint2.getUpdatedAt())
-          .build();
-      when(sprintResponseAssembler.toDTO(sprint1)).thenReturn(dto1);
-      when(sprintResponseAssembler.toDTO(sprint2)).thenReturn(dto2);
 
       // Act
       List<SprintDTO> result = service.findAll(pageable);
@@ -164,9 +131,11 @@ class SprintQueryServiceTest {
       assertThat(result.get(0).getId()).isEqualTo(snowflakeId1);
       assertThat(result.get(0).getTitle()).isEqualTo("Sprint 1");
       assertThat(result.get(0).getStatus()).isEqualTo(SprintStatus.PLANNED);
+      assertThat(result.get(0).getProductId()).isEqualTo(FIXED_PRODUCT_ID);
       assertThat(result.get(1).getId()).isEqualTo(snowflakeId2);
       assertThat(result.get(1).getTitle()).isEqualTo("Sprint 1");
       assertThat(result.get(1).getStatus()).isEqualTo(SprintStatus.ACTIVE);
+      assertThat(result.get(1).getProductId()).isEqualTo(FIXED_PRODUCT_ID);
     }
 
     @Test
@@ -200,38 +169,6 @@ class SprintQueryServiceTest {
       List<Sprint> sprints = List.of(sprint1, sprint2);
 
       when(sprintRepository.findByStatusAndDeletedAtIsNull(SprintStatus.PLANNED)).thenReturn(sprints);
-      when(sprintResponseAssembler.toDTO(sprint1)).thenReturn(
-          SprintDTO.builder()
-              .id(snowflakeId1)
-              .productId(sprint1.getProductId())
-              .sprintNumber(sprint1.getSprintNumber())
-              .title(sprint1.getTitle())
-              .goal(sprint1.getGoal())
-              .startDate(sprint1.getStartDate())
-              .endDate(sprint1.getEndDate())
-              .status(sprint1.getStatus())
-              .teamId(sprint1.getTeamId())
-              .teamName(sprint1.getTeamName())
-              .createdAt(sprint1.getCreatedAt())
-              .updatedAt(sprint1.getUpdatedAt())
-              .build()
-      );
-      when(sprintResponseAssembler.toDTO(sprint2)).thenReturn(
-          SprintDTO.builder()
-              .id(snowflakeId2)
-              .productId(sprint2.getProductId())
-              .sprintNumber(sprint2.getSprintNumber())
-              .title(sprint2.getTitle())
-              .goal(sprint2.getGoal())
-              .startDate(sprint2.getStartDate())
-              .endDate(sprint2.getEndDate())
-              .status(sprint2.getStatus())
-              .teamId(sprint2.getTeamId())
-              .teamName(sprint2.getTeamName())
-              .createdAt(sprint2.getCreatedAt())
-              .updatedAt(sprint2.getUpdatedAt())
-              .build()
-      );
 
       // Act
       List<SprintDTO> result = service.findByStatus(SprintStatus.PLANNED);
@@ -239,6 +176,10 @@ class SprintQueryServiceTest {
       // Assert
       assertThat(result).hasSize(2);
       assertThat(result).allMatch(dto -> dto.getStatus() == SprintStatus.PLANNED);
+      assertThat(result.get(0).getId()).isEqualTo(snowflakeId1);
+      assertThat(result.get(0).getProductId()).isEqualTo(FIXED_PRODUCT_ID);
+      assertThat(result.get(1).getId()).isEqualTo(snowflakeId2);
+      assertThat(result.get(1).getProductId()).isEqualTo(FIXED_PRODUCT_ID);
     }
 
     @Test

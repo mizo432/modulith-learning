@@ -14,6 +14,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("SprintBacklogItemのテスト")
 class SprintBacklogItemTest {
 
+  private static final UUID FIXED_ASSIGNEE_ID = UUID.fromString("55555555-5555-5555-5555-555555555555");
+
   private SprintBacklogItem createBacklogItem() {
     return SprintBacklogItem.builder()
         .id(SnowflakeId.of(1L))
@@ -85,11 +87,10 @@ class SprintBacklogItemTest {
     @DisplayName("担当者設定が更新される")
     void shouldUpdateAssignee() {
       SprintBacklogItem item = createBacklogItem();
-      UUID assigneeId = UUID.randomUUID();
 
-      item.assignTo(assigneeId);
+      item.assignTo(FIXED_ASSIGNEE_ID);
 
-      assertThat(item.getAssigneeId()).isEqualTo(assigneeId);
+      assertThat(item.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
       assertThat(item.getUpdatedAt()).isNotNull();
     }
   }
@@ -102,13 +103,12 @@ class SprintBacklogItemTest {
     @DisplayName("全プロパティが更新される")
     void shouldUpdateAllProperties() {
       SprintBacklogItem item = createBacklogItem();
-      UUID assigneeId = UUID.randomUUID();
 
-      item.update("New description", TaskStatus.IN_PROGRESS, assigneeId);
+      item.update("New description", TaskStatus.IN_PROGRESS, FIXED_ASSIGNEE_ID);
 
       assertThat(item.getWorkDescription()).isEqualTo("New description");
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
-      assertThat(item.getAssigneeId()).isEqualTo(assigneeId);
+      assertThat(item.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
       assertThat(item.getUpdatedAt()).isNotNull();
     }
   }

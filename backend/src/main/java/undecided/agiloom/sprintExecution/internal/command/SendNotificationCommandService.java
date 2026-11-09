@@ -1,5 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
+import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import undecided.supporting.notification.spi.NotificationDTO;
@@ -26,6 +27,7 @@ public class SendNotificationCommandService implements SendNotificationCommandSe
 
     @Override
     public NotificationDTO execute(@NonNull SendNotificationCommand command) {
+        Objects.requireNonNull(command, "commandはnullであってはいけません");
         NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
                 .recipientId(command.getRecipientId())
                 .sourceId(command.getSourceId())

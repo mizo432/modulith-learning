@@ -1,5 +1,6 @@
 package undecided.agiloom.sprintExecution.spi;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jspecify.annotations.NonNull;
+import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
@@ -58,6 +60,7 @@ public class SprintBacklogItem {
     private LocalDateTime deletedAt;
 
     public void updateStatus(@NonNull TaskStatus status) {
+        checkNotNull(status, () -> new BusinessException("status must not be null"));
         this.status = status;
         this.updatedAt = LocalDateTime.now();
     }
@@ -68,6 +71,8 @@ public class SprintBacklogItem {
     }
 
     public void update(@NonNull String workDescription, TaskStatus status, UUID assigneeId) {
+        checkNotNull(workDescription, () -> new BusinessException("workDescription must not be null"));
+        checkNotNull(status, () -> new BusinessException("status must not be null"));
         this.workDescription = workDescription;
         this.status = status;
         this.assigneeId = assigneeId;
