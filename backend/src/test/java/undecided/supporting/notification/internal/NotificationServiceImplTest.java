@@ -344,6 +344,15 @@ class NotificationServiceImplTest {
     }
 
     @Test
+    @DisplayName("負のID値の場合、BusinessExceptionがスローされること")
+    void shouldThrowExceptionWhenNegativeIdValue() {
+      // Act & Assert
+      assertThatThrownBy(() -> notificationService.markAsRead("-123"))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("通知IDは有効なIDである必要があります");
+    }
+
+    @Test
     @DisplayName("既に既読の通知を再度markAsReadしても問題ないこと")
     void shouldIdempotentMarkAsRead() {
       // Arrange

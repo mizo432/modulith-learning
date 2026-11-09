@@ -36,7 +36,12 @@ public class SprintQueryController {
     public List<SprintResponse> getSprints(
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) @Max(MAX_PAGE_SIZE) int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable;
+        try {
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        } catch (IllegalArgumentException e) {
+            throw new BusinessException("ページネーションパラメータが無効です: page=" + page + ", size=" + size);
+        }
         return sprintQueryService.findAll(pageable).stream()
                 .map(sprintResponseAssembler::toResponse)
                 .toList();
