@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -35,16 +36,17 @@ import undecided.supporting.snowflake.SnowflakeId;
 class SprintQueryControllerAdversarialTest {
 
   @Mock private SprintQueryServiceInterface sprintQueryService;
+  @Mock private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintQueryController controller;
 
   @BeforeEach
   void setUp() {
-    controller = new SprintQueryController(sprintQueryService);
+    controller = new SprintQueryController(sprintQueryService, sprintResponseAssembler);
   }
 
-  private Sprint createSprint(SnowflakeId id, SprintStatus status) {
-    return Sprint.builder()
+  private SprintDTO createSprintDTO(SnowflakeId id, SprintStatus status) {
+    return SprintDTO.builder()
         .id(id)
         .productId(UUID.randomUUID())
         .sprintNumber(1)
@@ -52,9 +54,11 @@ class SprintQueryControllerAdversarialTest {
         .goal("Goal 1")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
+        .status(status)
         .teamId(UUID.randomUUID())
         .teamName("Team A")
-        .status(status)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 

@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,8 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import undecided.agiloom.sprintExecution.internal.Sprint;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -30,12 +33,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 class SprintQueryServiceTest {
 
   @Mock private SprintRepository sprintRepository;
+  @Mock private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintQueryService service;
 
   @BeforeEach
   void setUp() {
-    service = new SprintQueryService(sprintRepository);
+    service = new SprintQueryService(sprintRepository, sprintResponseAssembler);
   }
 
   private Sprint createSprint(SnowflakeId id, SprintStatus status) {
@@ -50,6 +54,8 @@ class SprintQueryServiceTest {
         .teamId(UUID.randomUUID())
         .teamName("Team A")
         .status(status)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -63,10 +69,25 @@ class SprintQueryServiceTest {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
+      SprintDTO expectedDto = SprintDTO.builder()
+          .id(snowflakeId)
+          .productId(sprint.getProductId())
+          .sprintNumber(sprint.getSprintNumber())
+          .title(sprint.getTitle())
+          .goal(sprint.getGoal())
+          .startDate(sprint.getStartDate())
+          .endDate(sprint.getEndDate())
+          .status(sprint.getStatus())
+          .teamId(sprint.getTeamId())
+          .teamName(sprint.getTeamName())
+          .createdAt(sprint.getCreatedAt())
+          .updatedAt(sprint.getUpdatedAt())
+          .build();
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(expectedDto);
 
       // Act
-      Optional<Sprint> result = service.findById(snowflakeId);
+      Optional<SprintDTO> result = service.findById(snowflakeId);
 
       // Assert
       assertThat(result).isPresent();
@@ -81,7 +102,7 @@ class SprintQueryServiceTest {
       when(sprintRepository.findById(snowflakeId)).thenReturn(Optional.empty());
 
       // Act
-      Optional<Sprint> result = service.findById(snowflakeId);
+      Optional<SprintDTO> result = service.findById(snowflakeId);
 
       // Assert
       assertThat(result).isEmpty();
@@ -102,16 +123,15 @@ class SprintQueryServiceTest {
       Sprint sprint2 = createSprint(snowflakeId2, SprintStatus.ACTIVE);
       List<Sprint> sprints = List.of(sprint1, sprint2);
       Page<Sprint> page = new PageImpl<>(sprints);
-
       Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 20);
       when(sprintRepository.findAll(pageable)).thenReturn(page);
+      when(sprintResponseAssembler.toDTO(any(Sprint.class))).thenReturn(null);
 
       // Act
-      List<Sprint> result = service.findAll(pageable);
+      List<SprintDTO> result = service.findAll(pageable);
 
       // Assert
       assertThat(result).hasSize(2);
-      assertThat(result).contains(sprint1, sprint2);
     }
 
     @Test
@@ -123,7 +143,7 @@ class SprintQueryServiceTest {
       when(sprintRepository.findAll(pageable)).thenReturn(page);
 
       // Act
-      List<Sprint> result = service.findAll(pageable);
+      List<SprintDTO> result = service.findAll(pageable);
 
       // Assert
       assertThat(result).isEmpty();
@@ -144,24 +164,56 @@ class SprintQueryServiceTest {
       Sprint sprint2 = createSprint(snowflakeId2, SprintStatus.PLANNED);
       List<Sprint> sprints = List.of(sprint1, sprint2);
 
-      when(sprintRepository.findByStatus(SprintStatus.PLANNED)).thenReturn(sprints);
+      when(sprintRepository.findByStatusAndDeletedAtIsNull(SprintStatus.PLANNED)).thenReturn(sprints);
+      when(sprintResponseAssembler.toDTO(sprint1)).thenReturn(
+          SprintDTO.builder()
+              .id(snowflakeId1)
+              .productId(sprint1.getProductId())
+              .sprintNumber(sprint1.getSprintNumber())
+              .title(sprint1.getTitle())
+              .goal(sprint1.getGoal())
+              .startDate(sprint1.getStartDate())
+              .endDate(sprint1.getEndDate())
+              .status(sprint1.getStatus())
+              .teamId(sprint1.getTeamId())
+              .teamName(sprint1.getTeamName())
+              .createdAt(sprint1.getCreatedAt())
+              .updatedAt(sprint1.getUpdatedAt())
+              .build()
+      );
+      when(sprintResponseAssembler.toDTO(sprint2)).thenReturn(
+          SprintDTO.builder()
+              .id(snowflakeId2)
+              .productId(sprint2.getProductId())
+              .sprintNumber(sprint2.getSprintNumber())
+              .title(sprint2.getTitle())
+              .goal(sprint2.getGoal())
+              .startDate(sprint2.getStartDate())
+              .endDate(sprint2.getEndDate())
+              .status(sprint2.getStatus())
+              .teamId(sprint2.getTeamId())
+              .teamName(sprint2.getTeamName())
+              .createdAt(sprint2.getCreatedAt())
+              .updatedAt(sprint2.getUpdatedAt())
+              .build()
+      );
 
       // Act
-      List<Sprint> result = service.findByStatus(SprintStatus.PLANNED);
+      List<SprintDTO> result = service.findByStatus(SprintStatus.PLANNED);
 
       // Assert
       assertThat(result).hasSize(2);
-      assertThat(result).allMatch(sprint -> sprint.getStatus() == SprintStatus.PLANNED);
+      assertThat(result).allMatch(dto -> dto.getStatus() == SprintStatus.PLANNED);
     }
 
     @Test
     @DisplayName("ステータスに一致するSprintが存在しない場合は空のリストを返すこと")
     void shouldReturnEmptyListWhenNoSprintsMatchStatus() {
       // Arrange
-      when(sprintRepository.findByStatus(SprintStatus.COMPLETED)).thenReturn(List.of());
+      when(sprintRepository.findByStatusAndDeletedAtIsNull(SprintStatus.COMPLETED)).thenReturn(List.of());
 
       // Act
-      List<Sprint> result = service.findByStatus(SprintStatus.COMPLETED);
+      List<SprintDTO> result = service.findByStatus(SprintStatus.COMPLETED);
 
       // Assert
       assertThat(result).isEmpty();

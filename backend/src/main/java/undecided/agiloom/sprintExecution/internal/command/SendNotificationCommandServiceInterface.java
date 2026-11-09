@@ -1,7 +1,7 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import org.jspecify.annotations.NonNull;
-import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationDTO;
 
 /**
  * 通知送信コマンドサービスのインターフェースです。
@@ -15,7 +15,7 @@ public interface SendNotificationCommandServiceInterface {
      * 通知を送信します。
      *
      * @param command 通知送信コマンド
-     * @return 送信された通知
+     * @return 送信された通知（不変のDTO）
      */
-    Notification execute(@NonNull SendNotificationCommand command);
+    NotificationDTO execute(@NonNull SendNotificationCommand command);
 }

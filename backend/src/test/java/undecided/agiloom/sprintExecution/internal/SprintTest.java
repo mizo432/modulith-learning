@@ -1,4 +1,4 @@
-package undecided.agiloom.sprintExecution.spi;
+package undecided.agiloom.sprintExecution.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -28,6 +29,8 @@ class SprintTest {
         .teamId(UUID.randomUUID())
         .teamName("Team A")
         .velocity(30)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -68,7 +71,6 @@ class SprintTest {
       sprint.start();
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.ACTIVE);
-      assertThat(sprint.getUpdatedAt()).isNotNull();
     }
   }
 
@@ -85,7 +87,6 @@ class SprintTest {
       sprint.complete();
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.COMPLETED);
-      assertThat(sprint.getUpdatedAt()).isNotNull();
     }
 
     @Test

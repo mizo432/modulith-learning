@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -19,13 +20,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
-import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
-import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -37,8 +37,7 @@ class SprintCommandControllerTest {
   @Mock private CreateSprintCommandServiceInterface createSprintCommandService;
   @Mock private UpdateSprintCommandServiceInterface updateSprintCommandService;
   @Mock private SendNotificationCommandServiceInterface sendNotificationCommandService;
-  @Mock private SprintQueryServiceInterface sprintQueryService;
-  @Mock private SprintQueryController sprintQueryController;
+  @Mock private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintCommandController controller;
 
@@ -48,13 +47,12 @@ class SprintCommandControllerTest {
         createSprintCommandService,
         updateSprintCommandService,
         sendNotificationCommandService,
-        sprintQueryService,
-        sprintQueryController
+        sprintResponseAssembler
     );
   }
 
-  private Sprint createSprint(SnowflakeId id) {
-    return Sprint.builder()
+  private SprintDTO createSprintDTO(SnowflakeId id) {
+    return SprintDTO.builder()
         .id(id)
         .productId(UUID.randomUUID())
         .sprintNumber(1)
@@ -62,8 +60,11 @@ class SprintCommandControllerTest {
         .goal("Goal 1")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
+        .status(SprintStatus.PLANNED)
         .teamId(UUID.randomUUID())
         .teamName("Team A")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -89,15 +90,14 @@ class SprintCommandControllerTest {
           .teamName("Team A")
           .build();
 
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder()
           .id(snowflakeId)
           .title("Sprint 1")
           .build();
 
-      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(createSprintCommandService.execute(any())).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act
       ResponseEntity<SprintResponse> result = controller.createSprint(request);
@@ -118,14 +118,14 @@ class SprintCommandControllerTest {
     void shouldChangeStatusAndReturnResponseEntity() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder()
           .id(snowflakeId)
           .status(SprintStatus.ACTIVE)
           .build();
 
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(updateSprintCommandService.changeStatus(any(SnowflakeId.class), any(SprintStatus.class))).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act
       ResponseEntity<SprintResponse> result = controller.changeStatus(
@@ -142,12 +142,14 @@ class SprintCommandControllerTest {
     void shouldThrowExceptionWhenSprintNotFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.empty());
+      when(updateSprintCommandService.changeStatus(any(SnowflakeId.class), any(SprintStatus.class)))
+          .thenThrow(new IllegalArgumentException("Sprint not found"));
 
       // Act & Assert
       assertThatThrownBy(() -> controller.changeStatus(
           String.valueOf(snowflakeId.value()), SprintStatus.ACTIVE))
-          .isInstanceOf(NoSuchElementException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Sprint not found");
     }
   }
 
@@ -169,7 +171,7 @@ class SprintCommandControllerTest {
           .type(NotificationType.MENTION)
           .build();
 
-      Notification expectedNotification = Notification.builder()
+      NotificationDTO expectedNotification = NotificationDTO.builder()
           .id(SnowflakeId.of(1234567890L))
           .recipientId(recipientId)
           .sourceId(sourceId)
@@ -177,12 +179,15 @@ class SprintCommandControllerTest {
           .title("テスト通知")
           .content("テスト本文")
           .type(NotificationType.MENTION)
+          .isRead(false)
+          .createdAt(LocalDateTime.now())
+          .updatedAt(LocalDateTime.now())
           .build();
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
 
       // Act
-      ResponseEntity<Notification> result = controller.sendNotification(request);
+      ResponseEntity<NotificationDTO> result = controller.sendNotification(request);
 
       // Assert
       assertThat(result.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);

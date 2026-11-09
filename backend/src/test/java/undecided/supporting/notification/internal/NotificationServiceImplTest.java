@@ -19,7 +19,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.internal.Notification;
+import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationRequest;
 import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -79,6 +80,8 @@ class NotificationServiceImplTest {
         .title(title)
         .content(content)
         .type(type)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -87,7 +90,7 @@ class NotificationServiceImplTest {
   class SendMethodTest {
 
     @Test
-    @DisplayName("通知リクエストから通知が作成され保存されること")
+    @DisplayName("通知リクエストから通知が作成され保存されDTOが返されること")
     void shouldCreateAndSaveNotification() {
       // Arrange
       NotificationRequest request = createRequest();
@@ -96,7 +99,7 @@ class NotificationServiceImplTest {
       when(notificationRepository.save(any(Notification.class))).thenReturn(savedNotification);
 
       // Act
-      Notification result = notificationService.send(request);
+      NotificationDTO result = notificationService.send(request);
 
       // Assert
       assertThat(result).isNotNull();
@@ -132,12 +135,14 @@ class NotificationServiceImplTest {
           .title(title)
           .content(content)
           .type(type)
+          .createdAt(LocalDateTime.now())
+          .updatedAt(LocalDateTime.now())
           .build();
       when(snowflakeIdGenerator.nextId()).thenReturn(2L);
       when(notificationRepository.save(any(Notification.class))).thenReturn(savedNotification);
 
       // Act
-      Notification result = notificationService.send(request);
+      NotificationDTO result = notificationService.send(request);
 
       // Assert
       assertThat(result).isNotNull();
@@ -164,11 +169,13 @@ class NotificationServiceImplTest {
             .title(title)
             .content(content)
             .type(notificationType)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
         when(notificationRepository.save(any(Notification.class))).thenReturn(savedNotification);
 
         // Act
-        Notification result = notificationService.send(request);
+        NotificationDTO result = notificationService.send(request);
 
         // Assert
         assertThat(result.getType()).isEqualTo(notificationType);
@@ -181,7 +188,7 @@ class NotificationServiceImplTest {
   class GetNotificationsByRecipientTest {
 
     @Test
-    @DisplayName("受信者の通知一覧が返されること")
+    @DisplayName("受信者の通知一覧がDTOとして返されること")
     void shouldReturnNotificationsByRecipient() {
       // Arrange
       List<Notification> expectedNotifications = List.of(
@@ -193,32 +200,34 @@ class NotificationServiceImplTest {
               .title("Another notification")
               .content("Content")
               .type(NotificationType.MENTION)
+              .createdAt(LocalDateTime.now())
+              .updatedAt(LocalDateTime.now())
               .build()
       );
-      when(notificationRepository.findByRecipientId(recipientId)).thenReturn(expectedNotifications);
+      when(notificationRepository.findByRecipientIdAndDeletedAtIsNull(recipientId)).thenReturn(expectedNotifications);
 
       // Act
-      List<Notification> result = notificationService.getNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getNotificationsByRecipient(recipientId);
 
       // Assert
       assertThat(result).hasSize(2);
       assertThat(result.get(0).getId().value()).isEqualTo(1L);
       assertThat(result.get(1).getId().value()).isEqualTo(2L);
-      verify(notificationRepository).findByRecipientId(recipientId);
+      verify(notificationRepository).findByRecipientIdAndDeletedAtIsNull(recipientId);
     }
 
     @Test
     @DisplayName("通知がない場合は空のリストが返されること")
     void shouldReturnEmptyListWhenNoNotifications() {
       // Arrange
-      when(notificationRepository.findByRecipientId(recipientId)).thenReturn(List.of());
+      when(notificationRepository.findByRecipientIdAndDeletedAtIsNull(recipientId)).thenReturn(List.of());
 
       // Act
-      List<Notification> result = notificationService.getNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getNotificationsByRecipient(recipientId);
 
       // Assert
       assertThat(result).isEmpty();
-      verify(notificationRepository).findByRecipientId(recipientId);
+      verify(notificationRepository).findByRecipientIdAndDeletedAtIsNull(recipientId);
     }
   }
 
@@ -227,7 +236,7 @@ class NotificationServiceImplTest {
   class GetUnreadNotificationsByRecipientTest {
 
     @Test
-    @DisplayName("未読通知のみが返されること")
+    @DisplayName("未読通知のみがDTOとして返されること")
     void shouldReturnOnlyUnreadNotifications() {
       // Arrange
       List<Notification> unreadNotifications = List.of(
@@ -239,33 +248,35 @@ class NotificationServiceImplTest {
               .content("Content")
               .type(NotificationType.SYSTEM)
               .isRead(false)
+              .createdAt(LocalDateTime.now())
+              .updatedAt(LocalDateTime.now())
               .build()
       );
-      when(notificationRepository.findByRecipientIdAndIsRead(recipientId, false))
+      when(notificationRepository.findByRecipientIdAndIsReadAndDeletedAtIsNull(recipientId, false))
           .thenReturn(unreadNotifications);
 
       // Act
-      List<Notification> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
 
       // Assert
       assertThat(result).hasSize(1);
-      assertThat(result.get(0).getIsRead()).isFalse();
-      verify(notificationRepository).findByRecipientIdAndIsRead(recipientId, false);
+      assertThat(result.get(0).isRead()).isFalse();
+      verify(notificationRepository).findByRecipientIdAndIsReadAndDeletedAtIsNull(recipientId, false);
     }
 
     @Test
     @DisplayName("未読通知がない場合は空のリストが返されること")
     void shouldReturnEmptyListWhenNoUnreadNotifications() {
       // Arrange
-      when(notificationRepository.findByRecipientIdAndIsRead(recipientId, false))
+      when(notificationRepository.findByRecipientIdAndIsReadAndDeletedAtIsNull(recipientId, false))
           .thenReturn(List.of());
 
       // Act
-      List<Notification> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
 
       // Assert
       assertThat(result).isEmpty();
-      verify(notificationRepository).findByRecipientIdAndIsRead(recipientId, false);
+      verify(notificationRepository).findByRecipientIdAndIsReadAndDeletedAtIsNull(recipientId, false);
     }
   }
 
@@ -286,15 +297,16 @@ class NotificationServiceImplTest {
           .content(content)
           .type(type)
           .isRead(false)
+          .createdAt(LocalDateTime.now())
+          .updatedAt(LocalDateTime.now())
           .build();
-      when(notificationRepository.findById(any(SnowflakeId.class))).thenReturn(Optional.of(notification));
+      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class))).thenReturn(Optional.of(notification));
 
       // Act
       notificationService.markAsRead(String.valueOf(notificationId.value()));
 
       // Assert
       assertThat(notification.getIsRead()).isTrue();
-      assertThat(notification.getUpdatedAt()).isNotNull();
       verify(notificationRepository).save(notification);
     }
 
@@ -303,21 +315,22 @@ class NotificationServiceImplTest {
     void shouldThrowExceptionWhenNotificationNotFound() {
       // Arrange
       SnowflakeId notificationId = SnowflakeId.of(999L);
-      when(notificationRepository.findById(any(SnowflakeId.class))).thenReturn(Optional.empty());
+      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class))).thenReturn(Optional.empty());
 
       // Act & Assert
       assertThatThrownBy(() -> notificationService.markAsRead(String.valueOf(notificationId.value())))
           .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Notification not found");
+          .hasMessageContaining("通知が見つかりません");
       verify(notificationRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("無効なID文字列の場合、例外がスローされること")
+    @DisplayName("無効なID文字列の場合、IllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenInvalidIdString() {
-      // Act & Assert
+      // Act & Assert - 実装詳細に依存せず、業務的な例外タイプをアサート
       assertThatThrownBy(() -> notificationService.markAsRead("invalid-id"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("通知IDは数値である必要があります");
     }
 
     @Test
@@ -334,16 +347,16 @@ class NotificationServiceImplTest {
           .content(content)
           .type(type)
           .isRead(true)
+          .createdAt(LocalDateTime.now())
           .updatedAt(beforeUpdate)
           .build();
-      when(notificationRepository.findById(any(SnowflakeId.class))).thenReturn(Optional.of(notification));
+      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class))).thenReturn(Optional.of(notification));
 
       // Act
       notificationService.markAsRead(String.valueOf(notificationId.value()));
 
       // Assert
       assertThat(notification.getIsRead()).isTrue();
-      assertThat(notification.getUpdatedAt()).isAfter(beforeUpdate);
       verify(notificationRepository).save(notification);
     }
   }

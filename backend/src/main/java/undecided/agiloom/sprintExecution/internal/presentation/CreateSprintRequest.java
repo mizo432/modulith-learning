@@ -5,46 +5,36 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import java.util.UUID;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateSprintRequest {
     @NotNull
-    private UUID productId;
+    private final UUID productId;
 
     @NotNull
     @Min(1)
-    private Integer sprintNumber;
+    private final Integer sprintNumber;
 
     @NotBlank
     @Size(max = 100)
-    private String title;
+    private final String title;
 
     @Size(max = 1000)
-    private String goal;
+    private final String goal;
 
     @NotNull
-    private LocalDate startDate;
+    private final LocalDate startDate;
 
     @NotNull
-    private LocalDate endDate;
+    private final LocalDate endDate;
 
     @NotNull
-    private UUID teamId;
+    private final UUID teamId;
 
     @Size(max = 100)
-    private String teamName;
-
-    // endDateがstartDateより後であることを検証するメソッド
-    // @AssertTrueはyavi環境で利用できないため、コマンド層で検証する
-    public boolean isEndDateAfterStartDate() {
-        return endDate == null || startDate == null || endDate.isAfter(startDate);
-    }
+    private final String teamName;
 }

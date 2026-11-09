@@ -1,20 +1,19 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UpdateSprintCommand {
-    private SnowflakeId id;
-    private String title;
-    private String goal;
-    private LocalDate endDate;
-    private String notes;
+    private final SnowflakeId id;
+    private final String title;
+    private final String goal;
+    @Nullable
+    private final LocalDate endDate;
+    @Nullable
+    private final String notes;
 }

@@ -2,9 +2,11 @@ package undecided.agiloom.sprintExecution.internal.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationRequest;
 import undecided.supporting.notification.spi.NotificationService;
 import undecided.supporting.notification.spi.NotificationType;
@@ -46,6 +48,22 @@ class SendNotificationCommandServiceTest {
         service = new SendNotificationCommandService(notificationService);
     }
 
+    private NotificationDTO createNotificationDTO(SnowflakeId id, UUID recipientId, UUID sourceId,
+            String title, String content, NotificationType type) {
+        return NotificationDTO.builder()
+                .id(id)
+                .recipientId(recipientId)
+                .sourceId(sourceId)
+                .sourceDomain("agiloom")
+                .title(title)
+                .content(content)
+                .type(type)
+                .isRead(false)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
     @Nested
     @DisplayName("executeメソッドのテスト")
     class ExecuteTest {
@@ -66,20 +84,21 @@ class SendNotificationCommandServiceTest {
                     .build();
 
             SnowflakeId expectedId = SnowflakeId.of(1234567890L);
-            Notification savedNotification = Notification.builder()
-                    .id(expectedId)
-                    .recipientId(recipientId)
-                    .sourceId(sourceId)
-                    .sourceDomain("agiloom")
-                    .title("メンション通知")
-                    .content("あなたはメンションされました")
-                    .type(NotificationType.MENTION)
-                    .build();
+            NotificationDTO savedNotification = createNotificationDTO(
+                    expectedId, recipientId, sourceId,
+                    "メンション通知", "あなたはメンションされました", NotificationType.MENTION);
 
-            when(notificationService.send(any(NotificationRequest.class))).thenReturn(savedNotification);
+            when(notificationService.send(argThat(req ->
+                    req.getRecipientId().equals(recipientId)
+                            && req.getSourceId().equals(sourceId)
+                            && "メンション通知".equals(req.getTitle())
+                            && "あなたはメンションされました".equals(req.getContent())
+                            && req.getType() == NotificationType.MENTION
+                            && "agiloom".equals(req.getSourceDomain())
+            ))).thenReturn(savedNotification);
 
             // Act
-            Notification result = service.execute(command);
+            NotificationDTO result = service.execute(command);
 
             // Assert
             assertThat(result).isNotNull();
@@ -87,7 +106,6 @@ class SendNotificationCommandServiceTest {
             assertThat(result.getRecipientId()).isEqualTo(recipientId);
             assertThat(result.getTitle()).isEqualTo("メンション通知");
             assertThat(result.getType()).isEqualTo(NotificationType.MENTION);
-            verify(notificationService).send(any(NotificationRequest.class));
         }
 
         @Test
@@ -101,19 +119,20 @@ class SendNotificationCommandServiceTest {
                     .type(NotificationType.ASSIGNEE_CHANGE)
                     .build();
 
-            Notification savedNotification = Notification.builder()
-                    .id(SnowflakeId.of(2234567890L))
-                    .recipientId(recipientId)
-                    .sourceDomain("agiloom")
-                    .title("担当変更通知")
-                    .content("担当者が変更されました")
-                    .type(NotificationType.ASSIGNEE_CHANGE)
-                    .build();
+            NotificationDTO savedNotification = createNotificationDTO(
+                    SnowflakeId.of(2234567890L), recipientId, null,
+                    "担当変更通知", "担当者が変更されました", NotificationType.ASSIGNEE_CHANGE);
 
-            when(notificationService.send(any(NotificationRequest.class))).thenReturn(savedNotification);
+            when(notificationService.send(argThat(req ->
+                    req.getRecipientId().equals(recipientId)
+                            && "担当変更通知".equals(req.getTitle())
+                            && "担当者が変更されました".equals(req.getContent())
+                            && req.getType() == NotificationType.ASSIGNEE_CHANGE
+                            && "agiloom".equals(req.getSourceDomain())
+            ))).thenReturn(savedNotification);
 
             // Act
-            Notification result = service.execute(command);
+            NotificationDTO result = service.execute(command);
 
             // Assert
             assertThat(result).isNotNull();
@@ -131,19 +150,20 @@ class SendNotificationCommandServiceTest {
                     .type(NotificationType.DUE_DATE)
                     .build();
 
-            Notification savedNotification = Notification.builder()
-                    .id(SnowflakeId.of(3234567890L))
-                    .recipientId(recipientId)
-                    .sourceDomain("agiloom")
-                    .title("期限通知")
-                    .content("期限が近づいています")
-                    .type(NotificationType.DUE_DATE)
-                    .build();
+            NotificationDTO savedNotification = createNotificationDTO(
+                    SnowflakeId.of(3234567890L), recipientId, null,
+                    "期限通知", "期限が近づいています", NotificationType.DUE_DATE);
 
-            when(notificationService.send(any(NotificationRequest.class))).thenReturn(savedNotification);
+            when(notificationService.send(argThat(req ->
+                    req.getRecipientId().equals(recipientId)
+                            && "期限通知".equals(req.getTitle())
+                            && "期限が近づいています".equals(req.getContent())
+                            && req.getType() == NotificationType.DUE_DATE
+                            && "agiloom".equals(req.getSourceDomain())
+            ))).thenReturn(savedNotification);
 
             // Act
-            Notification result = service.execute(command);
+            NotificationDTO result = service.execute(command);
 
             // Assert
             assertThat(result).isNotNull();
@@ -161,19 +181,20 @@ class SendNotificationCommandServiceTest {
                     .type(NotificationType.AWAITING_DECISION)
                     .build();
 
-            Notification savedNotification = Notification.builder()
-                    .id(SnowflakeId.of(4234567890L))
-                    .recipientId(recipientId)
-                    .sourceDomain("agiloom")
-                    .title("判断待ち通知")
-                    .content("あなたの判断を待っています")
-                    .type(NotificationType.AWAITING_DECISION)
-                    .build();
+            NotificationDTO savedNotification = createNotificationDTO(
+                    SnowflakeId.of(4234567890L), recipientId, null,
+                    "判断待ち通知", "あなたの判断を待っています", NotificationType.AWAITING_DECISION);
 
-            when(notificationService.send(any(NotificationRequest.class))).thenReturn(savedNotification);
+            when(notificationService.send(argThat(req ->
+                    req.getRecipientId().equals(recipientId)
+                            && "判断待ち通知".equals(req.getTitle())
+                            && "あなたの判断を待っています".equals(req.getContent())
+                            && req.getType() == NotificationType.AWAITING_DECISION
+                            && "agiloom".equals(req.getSourceDomain())
+            ))).thenReturn(savedNotification);
 
             // Act
-            Notification result = service.execute(command);
+            NotificationDTO result = service.execute(command);
 
             // Assert
             assertThat(result).isNotNull();
@@ -191,19 +212,20 @@ class SendNotificationCommandServiceTest {
                     .type(NotificationType.SYSTEM)
                     .build();
 
-            Notification savedNotification = Notification.builder()
-                    .id(SnowflakeId.of(5234567890L))
-                    .recipientId(recipientId)
-                    .sourceDomain("agiloom")
-                    .title("sourceIdなしの通知")
-                    .content("sourceIdなしの本文")
-                    .type(NotificationType.SYSTEM)
-                    .build();
+            NotificationDTO savedNotification = createNotificationDTO(
+                    SnowflakeId.of(5234567890L), recipientId, null,
+                    "sourceIdなしの通知", "sourceIdなしの本文", NotificationType.SYSTEM);
 
-            when(notificationService.send(any(NotificationRequest.class))).thenReturn(savedNotification);
+            when(notificationService.send(argThat(req ->
+                    req.getRecipientId().equals(recipientId)
+                            && "sourceIdなしの通知".equals(req.getTitle())
+                            && "sourceIdなしの本文".equals(req.getContent())
+                            && req.getType() == NotificationType.SYSTEM
+                            && "agiloom".equals(req.getSourceDomain())
+            ))).thenReturn(savedNotification);
 
             // Act
-            Notification result = service.execute(command);
+            NotificationDTO result = service.execute(command);
 
             // Assert
             assertThat(result).isNotNull();
@@ -222,23 +244,31 @@ class SendNotificationCommandServiceTest {
                     .type(NotificationType.CUSTOM)
                     .build();
 
-            Notification savedNotification = Notification.builder()
-                    .id(SnowflakeId.of(6234567890L))
-                    .recipientId(recipientId)
-                    .sourceId(sourceId)
-                    .sourceDomain("agiloom")
-                    .title("テスト通知")
-                    .content("テスト本文")
-                    .type(NotificationType.CUSTOM)
-                    .build();
+            NotificationDTO savedNotification = createNotificationDTO(
+                    SnowflakeId.of(6234567890L), recipientId, sourceId,
+                    "テスト通知", "テスト本文", NotificationType.CUSTOM);
 
-            when(notificationService.send(any(NotificationRequest.class))).thenReturn(savedNotification);
+            when(notificationService.send(argThat(req ->
+                    req.getRecipientId().equals(recipientId)
+                            && req.getSourceId().equals(sourceId)
+                            && "テスト通知".equals(req.getTitle())
+                            && "テスト本文".equals(req.getContent())
+                            && req.getType() == NotificationType.CUSTOM
+                            && "agiloom".equals(req.getSourceDomain())
+            ))).thenReturn(savedNotification);
 
             // Act
             service.execute(command);
 
-            // Assert - NotificationRequestにequalsが実装されていないため、any()で検証
-            verify(notificationService).send(any(NotificationRequest.class));
+            // Assert - argThatを使用してリクエストの内容を検証
+            verify(notificationService).send(argThat(request ->
+                    request.getRecipientId().equals(recipientId)
+                            && request.getSourceId().equals(sourceId)
+                            && "テスト通知".equals(request.getTitle())
+                            && "テスト本文".equals(request.getContent())
+                            && request.getType() == NotificationType.CUSTOM
+                            && "agiloom".equals(request.getSourceDomain())
+            ));
         }
     }
 }

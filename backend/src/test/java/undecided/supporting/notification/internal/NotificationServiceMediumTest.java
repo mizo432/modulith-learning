@@ -14,7 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
-import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.internal.Notification;
+import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationRequest;
 import undecided.supporting.notification.spi.NotificationService;
 import undecided.supporting.notification.spi.NotificationType;
@@ -64,7 +65,7 @@ class NotificationServiceMediumTest {
           .build();
 
       // Act
-      Notification result = notificationService.send(request);
+      NotificationDTO result = notificationService.send(request);
 
       // Assert
       assertThat(result).isNotNull();
@@ -75,7 +76,7 @@ class NotificationServiceMediumTest {
       assertThat(result.getTitle()).isEqualTo("統合テスト通知");
       assertThat(result.getContent()).isEqualTo("統合テストの本文です");
       assertThat(result.getType()).isEqualTo(NotificationType.SYSTEM);
-      assertThat(result.getIsRead()).isFalse();
+      assertThat(result.isRead()).isFalse();
       assertThat(result.getCreatedAt()).isNotNull();
       assertThat(result.getUpdatedAt()).isNotNull();
     }
@@ -92,7 +93,7 @@ class NotificationServiceMediumTest {
           .build();
 
       // Act
-      Notification result = notificationService.send(request);
+      NotificationDTO result = notificationService.send(request);
 
       // Assert
       assertThat(result).isNotNull();
@@ -112,7 +113,7 @@ class NotificationServiceMediumTest {
             .type(type)
             .build();
 
-        Notification result = notificationService.send(request);
+        NotificationDTO result = notificationService.send(request);
 
         assertThat(result)
             .as("通知タイプ %s で通知が送信されること", type)
@@ -146,7 +147,7 @@ class NotificationServiceMediumTest {
       notificationService.send(request2);
 
       // Act
-      List<Notification> result = notificationService.getNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getNotificationsByRecipient(recipientId);
 
       // Assert
       assertThat(result).hasSizeGreaterThanOrEqualTo(2);
@@ -159,7 +160,7 @@ class NotificationServiceMediumTest {
       UUID emptyRecipientId = UUID.randomUUID();
 
       // Act
-      List<Notification> result = notificationService.getNotificationsByRecipient(emptyRecipientId);
+      List<NotificationDTO> result = notificationService.getNotificationsByRecipient(emptyRecipientId);
 
       // Assert
       assertThat(result).isEmpty();
@@ -186,17 +187,19 @@ class NotificationServiceMediumTest {
           .content("既読の本文")
           .type(NotificationType.MENTION)
           .build();
-      Notification unread = notificationService.send(request1);
-      Notification read = notificationService.send(request2);
-      read.markAsRead();
-      notificationRepository.save(read);
+      NotificationDTO unread = notificationService.send(request1);
+      NotificationDTO read = notificationService.send(request2);
+      // DTOは不変なので、Repositoryからエンティティを取得して既読マーク
+      Notification readEntity = notificationRepository.findById(read.getId()).orElseThrow();
+      readEntity.markAsRead();
+      notificationRepository.save(readEntity);
 
       // Act
-      List<Notification> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
 
       // Assert
       assertThat(result).hasSize(1);
-      assertThat(result.get(0).getIsRead()).isFalse();
+      assertThat(result.get(0).isRead()).isFalse();
     }
 
     @Test
@@ -209,12 +212,14 @@ class NotificationServiceMediumTest {
           .content("既読の本文")
           .type(NotificationType.SYSTEM)
           .build();
-      Notification notification = notificationService.send(request);
-      notification.markAsRead();
-      notificationRepository.save(notification);
+      NotificationDTO notification = notificationService.send(request);
+      // DTOは不変なので、Repositoryからエンティティを取得して既読マーク
+      Notification entity = notificationRepository.findById(notification.getId()).orElseThrow();
+      entity.markAsRead();
+      notificationRepository.save(entity);
 
       // Act
-      List<Notification> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
+      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(recipientId);
 
       // Assert
       assertThat(result).isEmpty();
@@ -235,7 +240,7 @@ class NotificationServiceMediumTest {
           .content("既読テストの本文")
           .type(NotificationType.SYSTEM)
           .build();
-      Notification notification = notificationService.send(request);
+      NotificationDTO notification = notificationService.send(request);
       String notificationId = String.valueOf(notification.getId().value());
 
       // Act
@@ -253,15 +258,16 @@ class NotificationServiceMediumTest {
       // Act & Assert
       assertThatThrownBy(() -> notificationService.markAsRead("999999999999999999"))
           .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Notification not found");
+          .hasMessageContaining("通知が見つかりません");
     }
 
     @Test
-    @DisplayName("無効なID文字列の場合、例外がスローされること")
+    @DisplayName("無効なID文字列の場合、IllegalArgumentExceptionがスローされること")
     void shouldThrowExceptionWhenInvalidIdString() {
-      // Act & Assert
+      // Act & Assert - 実装詳細に依存せず、業務的な例外タイプをアサート
       assertThatThrownBy(() -> notificationService.markAsRead("invalid-id"))
-          .isInstanceOf(NumberFormatException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("通知IDは数値である必要があります");
     }
 
     @Test
@@ -274,7 +280,7 @@ class NotificationServiceMediumTest {
           .content("冪等性テストの本文")
           .type(NotificationType.SYSTEM)
           .build();
-      Notification notification = notificationService.send(request);
+      NotificationDTO notification = notificationService.send(request);
       String notificationId = String.valueOf(notification.getId().value());
       notificationService.markAsRead(notificationId);
 
@@ -304,7 +310,7 @@ class NotificationServiceMediumTest {
       notificationService.send(request);
 
       // Act
-      List<Notification> result = notificationRepository.findBySourceDomain(sourceDomain);
+      List<Notification> result = notificationRepository.findBySourceDomainAndDeletedAtIsNull(sourceDomain);
 
       // Assert
       assertThat(result).isNotEmpty();

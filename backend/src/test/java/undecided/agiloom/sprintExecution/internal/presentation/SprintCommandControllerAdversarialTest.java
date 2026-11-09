@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.NoSuchElementException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
-import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
-import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -41,8 +41,7 @@ class SprintCommandControllerAdversarialTest {
   @Mock private CreateSprintCommandServiceInterface createSprintCommandService;
   @Mock private UpdateSprintCommandServiceInterface updateSprintCommandService;
   @Mock private SendNotificationCommandServiceInterface sendNotificationCommandService;
-  @Mock private SprintQueryServiceInterface sprintQueryService;
-  @Mock private SprintQueryController sprintQueryController;
+  @Mock private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintCommandController controller;
 
@@ -52,13 +51,12 @@ class SprintCommandControllerAdversarialTest {
         createSprintCommandService,
         updateSprintCommandService,
         sendNotificationCommandService,
-        sprintQueryService,
-        sprintQueryController
+        sprintResponseAssembler
     );
   }
 
-  private Sprint createSprint(SnowflakeId id) {
-    return Sprint.builder()
+  private SprintDTO createSprintDTO(SnowflakeId id) {
+    return SprintDTO.builder()
         .id(id)
         .productId(UUID.randomUUID())
         .sprintNumber(1)
@@ -66,8 +64,11 @@ class SprintCommandControllerAdversarialTest {
         .goal("Goal 1")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
+        .status(SprintStatus.PLANNED)
         .teamId(UUID.randomUUID())
         .teamName("Team A")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -91,12 +92,11 @@ class SprintCommandControllerAdversarialTest {
           .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder().id(snowflakeId).build();
 
-      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(createSprintCommandService.execute(any())).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act & Assert - 例外をスローせずに処理できること（JPAのパラメータ化クエリで防御されている前提）
       // コントローラー層では例外をスローしない
@@ -120,12 +120,11 @@ class SprintCommandControllerAdversarialTest {
           .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder().id(snowflakeId).build();
 
-      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(createSprintCommandService.execute(any())).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act & Assert
       assertThatCode(() -> controller.createSprint(request))
@@ -147,12 +146,11 @@ class SprintCommandControllerAdversarialTest {
           .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder().id(snowflakeId).build();
 
-      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(createSprintCommandService.execute(any())).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act & Assert
       assertThatCode(() -> controller.createSprint(request))
@@ -205,12 +203,11 @@ class SprintCommandControllerAdversarialTest {
           .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder().id(snowflakeId).build();
 
-      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(createSprintCommandService.execute(any())).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act & Assert
       assertThatCode(() -> controller.createSprint(request))
@@ -233,12 +230,11 @@ class SprintCommandControllerAdversarialTest {
           .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder().id(snowflakeId).build();
 
-      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(createSprintCommandService.execute(any())).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act & Assert - 文字列長の上限チェックが欠如
       assertThatCode(() -> controller.createSprint(request))
@@ -261,12 +257,11 @@ class SprintCommandControllerAdversarialTest {
           .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint sprint = createSprint(snowflakeId);
+      SprintDTO sprint = createSprintDTO(snowflakeId);
       SprintResponse expectedResponse = SprintResponse.builder().id(snowflakeId).build();
 
-      when(createSprintCommandService.execute(any())).thenReturn(snowflakeId);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.of(sprint));
-      when(sprintQueryController.toResponse(any(Sprint.class))).thenReturn(expectedResponse);
+      when(createSprintCommandService.execute(any())).thenReturn(sprint);
+      when(sprintResponseAssembler.toResponse(any(SprintDTO.class))).thenReturn(expectedResponse);
 
       // Act & Assert
       assertThatCode(() -> controller.createSprint(request))
@@ -342,12 +337,14 @@ class SprintCommandControllerAdversarialTest {
     void shouldThrowExceptionWhenSprintNotFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      when(sprintQueryService.findById(any(SnowflakeId.class))).thenReturn(Optional.empty());
+      when(updateSprintCommandService.changeStatus(any(SnowflakeId.class), any(SprintStatus.class)))
+          .thenThrow(new IllegalArgumentException("Sprint not found"));
 
       // Act & Assert
       assertThatThrownBy(() -> controller.changeStatus(
           String.valueOf(snowflakeId.value()), SprintStatus.ACTIVE))
-          .isInstanceOf(NoSuchElementException.class);
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Sprint not found");
     }
 
     @Test
@@ -387,13 +384,16 @@ class SprintCommandControllerAdversarialTest {
           .type(NotificationType.MENTION)
           .build();
 
-      Notification expectedNotification = Notification.builder()
+      NotificationDTO expectedNotification = NotificationDTO.builder()
           .id(SnowflakeId.of(1234567890L))
           .recipientId(recipientId)
           .sourceDomain("agiloom")
           .title("'; DROP TABLE notifications; --")
           .content("テスト本文")
           .type(NotificationType.MENTION)
+          .isRead(false)
+          .createdAt(LocalDateTime.now())
+          .updatedAt(LocalDateTime.now())
           .build();
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
@@ -415,13 +415,16 @@ class SprintCommandControllerAdversarialTest {
           .type(NotificationType.MENTION)
           .build();
 
-      Notification expectedNotification = Notification.builder()
+      NotificationDTO expectedNotification = NotificationDTO.builder()
           .id(SnowflakeId.of(1234567890L))
           .recipientId(recipientId)
           .sourceDomain("agiloom")
           .title("<script>alert('xss')</script>")
           .content("<img src=x onerror=alert(1)>")
           .type(NotificationType.MENTION)
+          .isRead(false)
+          .createdAt(LocalDateTime.now())
+          .updatedAt(LocalDateTime.now())
           .build();
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
@@ -444,13 +447,16 @@ class SprintCommandControllerAdversarialTest {
           .type(NotificationType.SYSTEM)
           .build();
 
-      Notification expectedNotification = Notification.builder()
+      NotificationDTO expectedNotification = NotificationDTO.builder()
           .id(SnowflakeId.of(1234567890L))
           .recipientId(recipientId)
           .sourceDomain("agiloom")
           .title("テスト通知")
           .content(longContent)
           .type(NotificationType.SYSTEM)
+          .isRead(false)
+          .createdAt(LocalDateTime.now())
+          .updatedAt(LocalDateTime.now())
           .build();
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
@@ -475,13 +481,16 @@ class SprintCommandControllerAdversarialTest {
             .type(type)
             .build();
 
-        Notification expectedNotification = Notification.builder()
+        NotificationDTO expectedNotification = NotificationDTO.builder()
             .id(SnowflakeId.of(1234567890L))
             .recipientId(recipientId)
             .sourceDomain("agiloom")
             .title(type + "通知")
             .content(type + "の本文")
             .type(type)
+            .isRead(false)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
 
         when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
