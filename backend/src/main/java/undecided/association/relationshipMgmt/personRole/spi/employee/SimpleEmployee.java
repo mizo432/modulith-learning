@@ -8,13 +8,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
 @Table(name = "employees", schema = "relationship_mgmt")
 @Getter
-@Setter
 public class SimpleEmployee {
   @Id private SnowflakeId employeeId;
 
@@ -39,4 +37,21 @@ public class SimpleEmployee {
           name = "value",
           column = @Column(name = "full_name", nullable = false, length = 255)))
   private FullName fullName;
+
+  // JPA用セッター（spiパッケージのためpublic）
+  public void setEmployeeId(SnowflakeId employeeId) {
+    this.employeeId = employeeId;
+  }
+
+  public void setEmployeeNo(EmployeeNo employeeNo) {
+    this.employeeNo = employeeNo;
+  }
+
+  public void setSearchName(SearchName searchName) {
+    this.searchName = searchName;
+  }
+
+  public void setFullName(FullName fullName) {
+    this.fullName = fullName;
+  }
 }
