@@ -78,31 +78,4 @@ public class Dependency {
         this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
-    void setDependencyType(DependencyType dependencyType) {
-        this.dependencyType = dependencyType;
-    }
-
-    void setDescription(String description) {
-        this.description = description;
-    }
-
-    void setSourceItemId(SnowflakeId sourceItemId) {
-        this.sourceItemId = sourceItemId;
-    }
-
-    void setTargetItemId(SnowflakeId targetItemId) {
-        this.targetItemId = targetItemId;
-    }
-
-    void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
 }

@@ -77,7 +77,7 @@ class SprintQueryControllerAdversarialTest {
       // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(0, -1))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("ページネーションパラメータが無効です");
+          .hasMessageContaining("Invalid pagination parameters");
     }
 
     @Test
@@ -87,7 +87,7 @@ class SprintQueryControllerAdversarialTest {
       // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(0, 0))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("ページネーションパラメータが無効です");
+          .hasMessageContaining("Invalid pagination parameters");
     }
 
     @Test
@@ -109,7 +109,7 @@ class SprintQueryControllerAdversarialTest {
       // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(-1, 20))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("ページネーションパラメータが無効です");
+          .hasMessageContaining("Invalid pagination parameters");
     }
 
     @Test
@@ -146,7 +146,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - IDパース時にNumberFormatExceptionをIllegalArgumentExceptionに変換する
       assertThatThrownBy(() -> controller.getSprint("abc"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -155,7 +155,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint(""))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -164,7 +164,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗し、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprint("-123"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("正の値である必要があります");
+          .hasMessageContaining("must be positive");
     }
 
     @Test
@@ -173,7 +173,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert
       assertThatThrownBy(() -> controller.getSprint("99999999999999999999"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -182,7 +182,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - SQLインジェクション文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("1; DROP TABLE sprint;"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -191,7 +191,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - XSS文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("<script>alert(1)</script>"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -200,7 +200,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - パストラバーサル文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("../../etc/passwd"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -209,7 +209,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - コマンドインジェクション文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("1 | rm -rf /"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -218,7 +218,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - スペースを含むIDは数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint(" 123 "))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -227,7 +227,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - 浮動小数点数は整数としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("123.456"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -236,7 +236,7 @@ class SprintQueryControllerAdversarialTest {
       // Act & Assert - Nullバイトを含む文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.getSprint("123\0456"))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test

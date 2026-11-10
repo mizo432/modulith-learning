@@ -81,31 +81,4 @@ public class SprintGoal {
         this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
-    void setId(SnowflakeId id) {
-        this.id = id;
-    }
-
-    void setSprintId(SnowflakeId sprintId) {
-        this.sprintId = sprintId;
-    }
-
-    void setGoalDescription(String goalDescription) {
-        this.goalDescription = goalDescription;
-    }
-
-    void setRelatedItems(String relatedItems) {
-        this.relatedItems = relatedItems;
-    }
-
-    void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
 }
