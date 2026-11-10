@@ -79,3 +79,12 @@ ratelimit:
   write-capacity: 30
   # NOTE: write-burst-capacityはWebMVCのBucket4jフィルタでは使用されません（@Deprecated）
   # write-burst-capacity: 60
+
+# OpenTelemetry 設定
+otel:
+  service:
+    name: ${OTEL_SERVICE_NAME:api-gateway}
+  exporter:
+    otlp:
+      protocol: grpc
+      # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
