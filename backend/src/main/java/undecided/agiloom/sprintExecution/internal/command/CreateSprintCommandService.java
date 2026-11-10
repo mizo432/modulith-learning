@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +29,8 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
     }
 
     public SprintDTO execute(@NonNull CreateSprintCommand command) {
-        Objects.requireNonNull(command, "commandはnullであってはいけません");
         if (!command.getEndDate().isAfter(command.getStartDate())) {
-            throw new BusinessException("終了日は開始日より後である必要があります");
+            throw new BusinessException("endDate must be after startDate");
         }
         Sprint sprint = Sprint.builder()
                 .id(SnowflakeId.of(snowflakeIdGenerator.nextId()))

@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -49,32 +50,8 @@ public class Activity {
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
+            this.createdAt = DateProvider.currentLocalDateTime();
         }
-    }
-
-    void setId(SnowflakeId id) {
-        this.id = id;
-    }
-
-    void setSprintId(SnowflakeId sprintId) {
-        this.sprintId = sprintId;
-    }
-
-    void setActorId(UUID actorId) {
-        this.actorId = actorId;
-    }
-
-    void setActivityType(ActivityType activityType) {
-        this.activityType = activityType;
-    }
-
-    void setDescription(String description) {
-        this.description = description;
-    }
-
-    void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public void update(@NonNull ActivityType activityType, String description) {

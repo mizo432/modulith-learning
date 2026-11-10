@@ -12,6 +12,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import com.github.mizo432.shared.exception.BusinessException;
@@ -65,16 +66,16 @@ public class Impediment {
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
+            this.createdAt = DateProvider.currentLocalDateTime();
         }
         if (this.updatedAt == null) {
-            this.updatedAt = LocalDateTime.now();
+            this.updatedAt = DateProvider.currentLocalDateTime();
         }
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     @Column(name = "deleted_at")
@@ -85,8 +86,8 @@ public class Impediment {
             throw new BusinessException("Impediment can only be resolved from IN_PROGRESS status, current status: " + this.status);
         }
         this.status = ImpedimentStatus.RESOLVED;
-        this.resolvedAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.resolvedAt = DateProvider.currentLocalDateTime();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     public void startWorkingOn() {
@@ -94,7 +95,7 @@ public class Impediment {
             throw new BusinessException("Impediment can only start working on from NEW status, current status: " + this.status);
         }
         this.status = ImpedimentStatus.IN_PROGRESS;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     public void update(@NonNull String title, @NonNull String description, @Nullable String impact, @Nullable UUID assigneeId) {
@@ -116,6 +117,6 @@ public class Impediment {
         this.description = description;
         this.impact = impact;
         this.assigneeId = assigneeId;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 }

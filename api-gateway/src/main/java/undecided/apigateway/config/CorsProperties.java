@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "cors")
 public class CorsProperties {
 
-  /** 許可されたオリジンのリスト */
+  /** 許可されたオリジンのリスト。本番環境では必ず明示的に設定すること */
   private @NonNull List<String> allowedOrigins =
-      List.of("http://localhost:3000", "https://agiloom.example.com");
+      List.of("http://localhost:3000");
 
   /** 許可されたHTTPメソッドのリスト */
   private @NonNull List<String> allowedMethods =

@@ -1,5 +1,6 @@
 package undecided.apigateway.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,11 +40,14 @@ public class SecurityConfig {
 
   private final @NonNull CorsProperties corsProperties;
   private final boolean swaggerUiEnabled;
+  private final @NonNull ObjectMapper objectMapper;
 
   public SecurityConfig(@NonNull CorsProperties corsProperties,
-                        @Value("${springdoc.swagger-ui.enabled:false}") boolean swaggerUiEnabled) {
+                        @Value("${springdoc.swagger-ui.enabled:false}") boolean swaggerUiEnabled,
+                        @NonNull ObjectMapper objectMapper) {
     this.corsProperties = corsProperties;
     this.swaggerUiEnabled = swaggerUiEnabled;
+    this.objectMapper = objectMapper;
   }
 
   /**
@@ -148,8 +152,8 @@ public class SecurityConfig {
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
         .exceptionHandling(
             ex -> ex
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-                .accessDeniedHandler(new JwtAccessDeniedHandler()));
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
+                .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper)));
 
     return http.build();
   }
