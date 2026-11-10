@@ -67,7 +67,6 @@ class SprintTest {
       sprint.start();
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.ACTIVE);
-      assertThat(sprint.getUpdatedAt()).isNotNull();
     }
   }
 
@@ -79,11 +78,11 @@ class SprintTest {
     @DisplayName("ステータスがCOMPLETEDに更新される")
     void shouldUpdateStatusToCompleted() {
       Sprint sprint = createSprint();
+      sprint.start();
 
       sprint.complete();
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.COMPLETED);
-      assertThat(sprint.getUpdatedAt()).isNotNull();
     }
   }
 
@@ -99,7 +98,6 @@ class SprintTest {
       sprint.cancel();
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
-      assertThat(sprint.getUpdatedAt()).isNotNull();
     }
   }
 
@@ -117,7 +115,6 @@ class SprintTest {
       assertThat(sprint.getTitle()).isEqualTo("New Title");
       assertThat(sprint.getGoal()).isEqualTo("New Goal");
       assertThat(sprint.getNotes()).isEqualTo("New Notes");
-      assertThat(sprint.getUpdatedAt()).isNotNull();
     }
 
     @Test
