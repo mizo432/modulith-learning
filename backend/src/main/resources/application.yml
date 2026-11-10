@@ -3,7 +3,7 @@ server:
   port: 8080
 spring:
   main:
-    lazy-initialization: on
+    lazy-initialization: false
   application:
     name: backend
   batch:
@@ -37,6 +37,7 @@ spring:
     # 事業領域ごとのマイグレーションlocations
     # data-designスキルに従い、事業領域ごとにスキーマを分離する
     locations: >
+      classpath:db/migration,
       classpath:db/migration/as,
       classpath:db/migration/do,
       classpath:db/migration/ef,
@@ -44,9 +45,9 @@ spring:
       classpath:db/migration/ar,
       classpath:db/migration/az,
       classpath:db/migration/nt
-    mvc:
-      problemdetails:
-        enabled: true
+  mvc:
+    problemdetails:
+      enabled: true
   
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
