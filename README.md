@@ -165,7 +165,7 @@ modulith-learning/
 - **PostgreSQL** (ローカルまたは Docker)
 - **Redis** (ローカルまたは Docker)
 - **Node.js 22** (フロントエンド用)
-- **Gradle 9.8.1** (ラッパー同梱)
+- **Gradle 9.9.0** (ラッパー同梱)
 
 ### Docker Compose での依存サービス起動
 
@@ -258,21 +258,6 @@ Analysis）を採用しています。RDRAはPlantUMLを使用してシステム
 
 - **[RDRAダイアグラム例](.agents/skills/rdra/templates/RDRAダイアグラム例/README.md)** —
   図書館システムを題材にしたダイアグラム例
-<<<<<<< HEAD
-    -
-  **[利用シーン図](.agents/skills/rdra/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
-  ユースケース図の例
-    -
-  **[バリエーション条件図](.agents/skills/rdra/templates/RDRAダイアグラム例/02.バリエーション条件図.md)** —
-  バリエーションと条件の定義例
-    -
-  **[ユースケース複合図](.agents/skills/rdra/templates/RDRAダイアグラム例/03.ユースケース複合図.md)** —
-  UC複合図の例
-    -
-  **[ステートマシン図](.agents/skills/rdra/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
-  状態遷移図の例
-    - **[用語集](.agents/skills/rdra/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
-=======
   -
   **[利用シーン図](.agents/skills/rdra/templates/RDRAダイアグラム例/01.利用シーン図.md)** —
   ユースケース図の例
@@ -286,7 +271,6 @@ Analysis）を採用しています。RDRAはPlantUMLを使用してシステム
   **[ステートマシン図](.agents/skills/rdra/templates/RDRAダイアグラム例/04.ステートマシン図.md)** —
   状態遷移図の例
   - **[用語集](.agents/skills/rdra/templates/RDRAダイアグラム例/05.用語集.md)** — 用語集の例
->>>>>>> origin/main
 
 #### Agiloom (AG) のRDRAダイアグラム
 

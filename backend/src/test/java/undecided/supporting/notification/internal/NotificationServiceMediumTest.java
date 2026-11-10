@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.github.mizo432.shared.exception.BusinessException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -20,6 +22,7 @@ import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationRequest;
 import undecided.supporting.notification.spi.NotificationService;
 import undecided.supporting.notification.spi.NotificationType;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * {@code NotificationServiceMediumTest} は、NotificationServiceImpl の統合テストクラスです。
@@ -49,6 +52,23 @@ class NotificationServiceMediumTest {
   private static final UUID SOURCE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
   private static final String SOURCE_DOMAIN = "agiloom";
 
+  private final List<SnowflakeId> createdNotificationIds = new ArrayList<>();
+
+  @AfterEach
+  void cleanup() {
+    // テストで作成した通知を逆順で削除し、外部キー制約違反を回避
+    List<SnowflakeId> ids = new ArrayList<>(createdNotificationIds);
+    ids.sort((a, b) -> Long.compare(b.value(), a.value()));
+    for (SnowflakeId id : ids) {
+      notificationRepository.deleteById(id);
+    }
+    createdNotificationIds.clear();
+  }
+
+  private void trackNotification(SnowflakeId id) {
+    createdNotificationIds.add(id);
+  }
+
   @Nested
   @DisplayName("sendメソッドの統合テスト")
   class SendMethodTest {
@@ -67,6 +87,7 @@ class NotificationServiceMediumTest {
 
       // Act
       NotificationDTO result = notificationService.send(request);
+      trackNotification(result.getId());
 
       // Assert
       assertThat(result).isNotNull();
@@ -95,6 +116,7 @@ class NotificationServiceMediumTest {
 
       // Act
       NotificationDTO result = notificationService.send(request);
+      trackNotification(result.getId());
 
       // Assert
       assertThat(result).isNotNull();
@@ -115,6 +137,7 @@ class NotificationServiceMediumTest {
             .build();
 
         NotificationDTO result = notificationService.send(request);
+        trackNotification(result.getId());
 
         assertThat(result)
             .as("通知タイプ %s で通知が送信されること", type)
@@ -144,8 +167,10 @@ class NotificationServiceMediumTest {
           .content("本文2")
           .type(NotificationType.MENTION)
           .build();
-      notificationService.send(request1);
-      notificationService.send(request2);
+      NotificationDTO sent1 = notificationService.send(request1);
+      NotificationDTO sent2 = notificationService.send(request2);
+      trackNotification(sent1.getId());
+      trackNotification(sent2.getId());
 
       // Act
       List<NotificationDTO> result = notificationService.getNotificationsByRecipient(RECIPIENT_ID);
@@ -190,6 +215,8 @@ class NotificationServiceMediumTest {
           .build();
       NotificationDTO unread = notificationService.send(request1);
       NotificationDTO read = notificationService.send(request2);
+      trackNotification(unread.getId());
+      trackNotification(read.getId());
       // DTOは不変なので、Repositoryからエンティティを取得して既読マーク
       Notification readEntity = notificationRepository.findById(read.getId()).orElseThrow();
       readEntity.markAsRead();
@@ -214,6 +241,7 @@ class NotificationServiceMediumTest {
           .type(NotificationType.SYSTEM)
           .build();
       NotificationDTO notification = notificationService.send(request);
+      trackNotification(notification.getId());
       // DTOは不変なので、Repositoryからエンティティを取得して既読マーク
       Notification entity = notificationRepository.findById(notification.getId()).orElseThrow();
       entity.markAsRead();
@@ -242,6 +270,7 @@ class NotificationServiceMediumTest {
           .type(NotificationType.SYSTEM)
           .build();
       NotificationDTO notification = notificationService.send(request);
+      trackNotification(notification.getId());
       String notificationId = String.valueOf(notification.getId().value());
 
       // Act
@@ -282,6 +311,7 @@ class NotificationServiceMediumTest {
           .type(NotificationType.SYSTEM)
           .build();
       NotificationDTO notification = notificationService.send(request);
+      trackNotification(notification.getId());
       String notificationId = String.valueOf(notification.getId().value());
       notificationService.markAsRead(notificationId);
 
@@ -308,7 +338,8 @@ class NotificationServiceMediumTest {
           .content("検索テストの本文")
           .type(NotificationType.SYSTEM)
           .build();
-      notificationService.send(request);
+      NotificationDTO sent = notificationService.send(request);
+      trackNotification(sent.getId());
 
       // Act
       List<Notification> result = notificationRepository.findBySourceDomainAndDeletedAtIsNull(SOURCE_DOMAIN);

@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -57,16 +58,16 @@ public class SprintBacklogItem {
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
+            this.createdAt = DateProvider.currentLocalDateTime();
         }
         if (this.updatedAt == null) {
-            this.updatedAt = LocalDateTime.now();
+            this.updatedAt = DateProvider.currentLocalDateTime();
         }
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     @Column(name = "deleted_at")
@@ -75,13 +76,13 @@ public class SprintBacklogItem {
     public void updateStatus(@NonNull TaskStatus status) {
         checkNotNull(status, () -> new BusinessException("status must not be null"));
         this.status = status;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     public void assignTo(@NonNull UUID assigneeId) {
         checkNotNull(assigneeId, () -> new BusinessException("assigneeId must not be null"));
         this.assigneeId = assigneeId;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
     public void update(@NonNull String workDescription, @NonNull TaskStatus status, @NonNull UUID assigneeId) {
@@ -94,42 +95,7 @@ public class SprintBacklogItem {
         this.workDescription = workDescription;
         this.status = status;
         this.assigneeId = assigneeId;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = DateProvider.currentLocalDateTime();
     }
 
-    void setId(SnowflakeId id) {
-        this.id = id;
-    }
-
-    void setSprintId(SnowflakeId sprintId) {
-        this.sprintId = sprintId;
-    }
-
-    void setBacklogItemId(SnowflakeId backlogItemId) {
-        this.backlogItemId = backlogItemId;
-    }
-
-    void setWorkDescription(String workDescription) {
-        this.workDescription = workDescription;
-    }
-
-    void setStatus(TaskStatus status) {
-        this.status = status;
-    }
-
-    void setAssigneeId(UUID assigneeId) {
-        this.assigneeId = assigneeId;
-    }
-
-    void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
 }

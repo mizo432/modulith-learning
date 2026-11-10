@@ -1,10 +1,13 @@
 package undecided.apigateway.config.handlers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.time.Instant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +21,16 @@ import org.springframework.security.web.AuthenticationEntryPoint;
  */
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+  private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
+  private static final String CODE = "UNAUTHORIZED";
+  private static final String MESSAGE = "Authentication is required";
+
+  private final @NonNull ObjectMapper objectMapper;
+
+  public JwtAuthenticationEntryPoint(@NonNull ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
   @Override
   public void commence(
       @NonNull HttpServletRequest request,
@@ -28,12 +41,29 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     response.setCharacterEncoding("UTF-8");
 
-    String json =
-        "{\"error\":{\"status\":401,\"code\":\"UNAUTHORIZED\",\"message\":\"認証が必要です\",\"timestamp\":\""
-            + Instant.now()
-            + "\",\"path\":\""
-            + request.getRequestURI()
-            + "\"}}";
-    response.getWriter().write(json);
+    SecurityErrorResponse errorResponse =
+        new SecurityErrorResponse(
+            HttpStatus.UNAUTHORIZED.value(), CODE, MESSAGE, request.getRequestURI());
+
+    try {
+      String json = objectMapper.writeValueAsString(errorResponse);
+      response.getWriter().write(json);
+    } catch (JsonProcessingException e) {
+      log.error("Failed to serialize authentication error response", e);
+      response.getWriter().write(fallbackJson(request.getRequestURI()));
+    }
+  }
+
+  private static String fallbackJson(String path) {
+    return "{\"error\":{\"status\":401,\"code\":\"UNAUTHORIZED\",\"message\":\"Authentication is required\",\"path\":\""
+        + escapeJsonString(path) + "\"}}";
+  }
+
+  private static String escapeJsonString(String value) {
+    return value.replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t");
   }
 }

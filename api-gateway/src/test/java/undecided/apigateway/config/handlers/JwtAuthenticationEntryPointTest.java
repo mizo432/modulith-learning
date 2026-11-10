@@ -5,6 +5,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
@@ -21,10 +24,18 @@ import org.springframework.security.core.AuthenticationException;
 class JwtAuthenticationEntryPointTest {
 
   private JwtAuthenticationEntryPoint entryPoint;
+  private final ObjectMapper objectMapper = createObjectMapper();
+
+  private static ObjectMapper createObjectMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    return mapper;
+  }
 
   @BeforeEach
   void setUp() {
-    entryPoint = new JwtAuthenticationEntryPoint();
+    entryPoint = new JwtAuthenticationEntryPoint(objectMapper);
   }
 
   @Nested
@@ -106,7 +117,7 @@ class JwtAuthenticationEntryPointTest {
           .contains("\"code\":\"UNAUTHORIZED\"");
       assertThat(body)
           .as("レスポンスにmessageフィールドが含まれること")
-          .contains("\"message\":\"認証が必要です\"");
+          .contains("\"message\":\"Authentication is required\"");
       assertThat(body)
           .as("レスポンスにtimestampフィールドが含まれること")
           .contains("\"timestamp\":\"");

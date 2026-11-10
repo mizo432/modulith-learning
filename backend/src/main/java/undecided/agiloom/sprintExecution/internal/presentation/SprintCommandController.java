@@ -1,6 +1,7 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
@@ -50,7 +51,7 @@ public class SprintCommandController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<SprintResponse> changeStatus(@PathVariable String id,
+    public ResponseEntity<SprintResponse> changeStatus(@PathVariable @NotBlank String id,
                                    @Valid @RequestBody ChangeStatusRequest request) {
         SnowflakeId snowflakeId = SprintIdUtils.parseSnowflakeId(id);
         SprintDTO sprint = updateSprintCommandService.changeStatus(snowflakeId, request.getStatus());

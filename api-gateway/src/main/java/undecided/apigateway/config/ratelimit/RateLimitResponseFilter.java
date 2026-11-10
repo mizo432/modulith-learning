@@ -35,7 +35,7 @@ public class RateLimitResponseFilter implements HandlerFilterFunction<ServerResp
 
   private static final Logger log = LoggerFactory.getLogger(RateLimitResponseFilter.class);
   private static final String RATE_LIMIT_CODE = "RATE_LIMIT_EXCEEDED";
-  private static final String RATE_LIMIT_MESSAGE = "リクエストの送信頻度が高すぎます";
+  private static final String RATE_LIMIT_MESSAGE = "Request rate limit exceeded";
 
   /**
    * JsonProcessingException発生時のフォールバックJSONを動的に生成します。
@@ -54,8 +54,16 @@ public class RateLimitResponseFilter implements HandlerFilterFunction<ServerResp
    */
   private static String fallbackJson(int retryAfter, String path) {
     String timestamp = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
-    return "{\"error\":{\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"リクエストの送信頻度が高すぎます\",\"retryAfter\":"
-        + retryAfter + ",\"timestamp\":\"" + timestamp + "\",\"path\":\"" + path + "\"}}";
+    return "{\"error\":{\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"Request rate limit exceeded\",\"retryAfter\":"
+        + retryAfter + ",\"timestamp\":\"" + timestamp + "\",\"path\":\"" + escapeJsonString(path) + "\"}}";
+  }
+
+  private static String escapeJsonString(String value) {
+    return value.replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t");
   }
 
   private final @NonNull ObjectMapper objectMapper;

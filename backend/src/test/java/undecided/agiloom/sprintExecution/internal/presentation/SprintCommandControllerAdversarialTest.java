@@ -293,7 +293,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert - IDパース時にNumberFormatExceptionをBusinessExceptionに変換する
       assertThatThrownBy(() -> controller.changeStatus("abc", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -306,7 +306,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert
       assertThatThrownBy(() -> controller.changeStatus("", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -319,7 +319,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗し、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.changeStatus("-123", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("正の値である必要があります");
+          .hasMessageContaining("must be positive");
     }
 
     @Test
@@ -332,7 +332,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert
       assertThatThrownBy(() -> controller.changeStatus("99999999999999999999", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -345,7 +345,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert - SQLインジェクション文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.changeStatus("1; DROP TABLE sprint;", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -358,7 +358,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert - XSS文字列は数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.changeStatus("<script>alert(1)</script>", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -389,7 +389,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert - スペースを含むIDは数値としてパースできないため拒否される
       assertThatThrownBy(() -> controller.changeStatus(" 123 ", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
 
     @Test
@@ -402,7 +402,7 @@ class SprintCommandControllerAdversarialTest {
       // Act & Assert - 浮動小数点数は整数としてパースできないため拒否される
       assertThatThrownBy(() -> controller.changeStatus("123.456", changeStatusRequest))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("数値である必要があります");
+          .hasMessageContaining("must be numeric");
     }
   }
 
