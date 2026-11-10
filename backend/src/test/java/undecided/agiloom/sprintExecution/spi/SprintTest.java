@@ -1,7 +1,9 @@
 package undecided.agiloom.sprintExecution.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -172,6 +174,128 @@ class SprintTest {
 
       sprint.cancel();
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
+    }
+
+    @Test
+    @DisplayName("PLANNED状態でcompleteすると例外がスローされる")
+    void shouldThrowExceptionWhenCompleteFromPlanned() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.complete())
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("COMPLETED状態でstartすると例外がスローされる")
+    void shouldThrowExceptionWhenStartFromCompleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.complete();
+
+      assertThatThrownBy(() -> sprint.start())
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("COMPLETED状態でcancelすると例外がスローされる")
+    void shouldThrowExceptionWhenCancelFromCompleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.complete();
+
+      assertThatThrownBy(() -> sprint.cancel())
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("CANCELLED状態でstartすると例外がスローされる")
+    void shouldThrowExceptionWhenStartFromCancelled() {
+      Sprint sprint = createSprint();
+      sprint.cancel();
+
+      assertThatThrownBy(() -> sprint.start())
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("ACTIVE状態でstartすると例外がスローされる")
+    void shouldThrowExceptionWhenStartFromActive() {
+      Sprint sprint = createSprint();
+      sprint.start();
+
+      assertThatThrownBy(() -> sprint.start())
+          .isInstanceOf(BusinessException.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("updateメソッドの異常系テスト")
+  class UpdateMethodNegativeTest {
+
+    @Test
+    @DisplayName("titleがnullの場合例外がスローされる")
+    void shouldThrowExceptionWhenTitleIsNull() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update(null, "Goal", null, null))
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("goalがnullの場合例外がスローされる")
+    void shouldThrowExceptionWhenGoalIsNull() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update("Title", null, null, null))
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("titleが空文字の場合例外がスローされる")
+    void shouldThrowExceptionWhenTitleIsEmpty() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update("  ", "Goal", null, null))
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("goalが空文字の場合例外がスローされる")
+    void shouldThrowExceptionWhenGoalIsEmpty() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update("Title", "  ", null, null))
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("titleが100文字を超える場合例外がスローされる")
+    void shouldThrowExceptionWhenTitleExceeds100Chars() {
+      Sprint sprint = createSprint();
+      String longTitle = "A".repeat(101);
+
+      assertThatThrownBy(() -> sprint.update(longTitle, "Goal", null, null))
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("goalが1000文字を超える場合例外がスローされる")
+    void shouldThrowExceptionWhenGoalExceeds1000Chars() {
+      Sprint sprint = createSprint();
+      String longGoal = "G".repeat(1001);
+
+      assertThatThrownBy(() -> sprint.update("Title", longGoal, null, null))
+          .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("endDateがstartDateより前の場合例外がスローされる")
+    void shouldThrowExceptionWhenEndDateBeforeStartDate() {
+      Sprint sprint = createSprint();
+      LocalDate pastDate = LocalDate.now().minusDays(1);
+
+      assertThatThrownBy(() -> sprint.update("Title", "Goal", pastDate, null))
+          .isInstanceOf(BusinessException.class);
     }
   }
 }

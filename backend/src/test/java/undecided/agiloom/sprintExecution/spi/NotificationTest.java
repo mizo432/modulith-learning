@@ -42,13 +42,6 @@ class NotificationTest {
       assertThat(notification.getIsRead()).isFalse();
     }
 
-    @Test
-    @DisplayName("デフォルトでは未読である")
-    void shouldBeUnreadByDefault() {
-      Notification notification = createNotification();
-
-      assertThat(notification.getIsRead()).isFalse();
-    }
   }
 
   @Nested
