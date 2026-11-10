@@ -2,6 +2,7 @@ package undecided.supporting.snowflake.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 import undecided.supporting.snowflake.internal.SnowflakeIdGeneratorImpl;
 import undecided.supporting.snowflake.internal.SnowflakeNodeLeaseManager;
@@ -39,7 +40,8 @@ public class SnowflakeConfiguration {
    * @return Snowflakeアルゴリズムを用いて一意の識別子を生成するためのSnowflakeIdGeneratorインスタンス。
    */
   @Bean
-  public SnowflakeIdGenerator snowflakeIdGenerator(SnowflakeNodeLeaseManager leaseManager) {
+  @Lazy
+  public SnowflakeIdGenerator snowflakeIdGenerator(@Lazy SnowflakeNodeLeaseManager leaseManager) {
     return new SnowflakeIdGeneratorImpl(leaseManager.nodeId(), EPOCH_MILLIS);
   }
 }
