@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -17,7 +19,8 @@ class NotificationTest {
     return Notification.builder()
         .id(SnowflakeId.of(1L))
         .recipientId(UUID.randomUUID())
-        .productId(UUID.randomUUID())
+        .sourceId(UUID.randomUUID())
+        .sourceDomain("agiloom")
         .title("Task assigned")
         .content("You have been assigned to a new task")
         .type(NotificationType.ASSIGNEE_CHANGE)
@@ -60,7 +63,6 @@ class NotificationTest {
       notification.markAsRead();
 
       assertThat(notification.getIsRead()).isTrue();
-      assertThat(notification.getUpdatedAt()).isNotNull();
     }
 
     @Test
