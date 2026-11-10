@@ -24,9 +24,9 @@ public final class SprintIdUtils {
             long value = Long.parseLong(id);
             return SnowflakeId.of(value);
         } catch (NumberFormatException e) {
-            throw new BusinessException(ResultMessages.error().add(ResultMessage.fromText("Sprint IDは数値である必要があります: " + id)), e);
+            throw new BusinessException(ResultMessages.error().add(ResultMessage.fromText("Sprint ID must be numeric: " + id)), e);
         } catch (IllegalArgumentException e) {
-            throw new BusinessException(ResultMessages.error().add(ResultMessage.fromText("Sprint IDは正の値である必要があります: " + id)), e);
+            throw new BusinessException(ResultMessages.error().add(ResultMessage.fromText("Sprint ID must be positive: " + id)), e);
         }
     }
 }

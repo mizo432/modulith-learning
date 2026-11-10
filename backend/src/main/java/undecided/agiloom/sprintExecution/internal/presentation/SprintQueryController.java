@@ -40,7 +40,7 @@ public class SprintQueryController {
         try {
             pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         } catch (IllegalArgumentException e) {
-            throw new BusinessException("ページネーションパラメータが無効です: page=" + page + ", size=" + size);
+            throw new BusinessException("Invalid pagination parameters: page=" + page + ", size=" + size);
         }
         return sprintQueryService.findAll(pageable).stream()
                 .map(sprintResponseAssembler::toResponse)
