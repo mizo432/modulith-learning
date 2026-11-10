@@ -160,7 +160,7 @@ class CreateSprintCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.execute(command))
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("終了日は開始日より後である必要があります");
+          .hasMessageContaining("endDate must be after startDate");
     }
   }
 }

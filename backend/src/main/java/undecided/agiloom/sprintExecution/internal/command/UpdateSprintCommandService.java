@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,6 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
     }
 
     public SprintDTO execute(@NonNull UpdateSprintCommand command) {
-        Objects.requireNonNull(command, "commandはnullであってはいけません");
         Sprint sprint = sprintRepository.findByIdAndDeletedAtIsNull(command.getId())
                 .orElseThrow(() -> new BusinessException("Sprint not found: " + command.getId()));
 
@@ -41,8 +39,6 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
     }
 
     public SprintDTO changeStatus(@NonNull SnowflakeId id, @NonNull SprintStatus status) {
-        Objects.requireNonNull(id, "idはnullであってはいけません");
-        Objects.requireNonNull(status, "statusはnullであってはいけません");
         Sprint sprint = sprintRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new BusinessException("Sprint not found: " + id));
 

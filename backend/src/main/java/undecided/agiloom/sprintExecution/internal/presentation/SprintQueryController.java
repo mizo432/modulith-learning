@@ -3,7 +3,7 @@ package undecided.agiloom.sprintExecution.internal.presentation;
 import java.util.List;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +48,7 @@ public class SprintQueryController {
     }
 
     @GetMapping("/{id}")
-    public SprintResponse getSprint(@PathVariable @NotNull String id) {
+    public SprintResponse getSprint(@PathVariable @NotBlank String id) {
         SnowflakeId snowflakeId = SprintIdUtils.parseSnowflakeId(id);
         SprintDTO sprint = sprintQueryService.findById(snowflakeId)
                 .orElseThrow(() -> new BusinessException("Sprint not found: " + id));
