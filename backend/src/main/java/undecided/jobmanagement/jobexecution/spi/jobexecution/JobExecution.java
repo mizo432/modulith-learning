@@ -10,7 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "job_execution", schema = "job_management")
 @Getter
-@Setter
 public class JobExecution {
 
   @Id
@@ -58,4 +58,70 @@ public class JobExecution {
 
   @Column(name = "created_by", length = 50)
   private String createdBy;
+
+  protected JobExecution() {
+    // JPA用
+  }
+
+  public static JobExecution create(
+      @NonNull SnowflakeId id,
+      @NonNull ExecutionId executionId,
+      @NonNull String jobCode,
+      @NonNull ExecutionState state,
+      @NonNull LocalDateTime createdAt,
+      @Nullable String createdBy) {
+    JobExecution entity = new JobExecution();
+    entity.id = id;
+    entity.executionId = executionId;
+    entity.jobCode = jobCode;
+    entity.state = state;
+    entity.createdAt = createdAt;
+    entity.createdBy = createdBy;
+    return entity;
+  }
+
+  // JPA用パッケージプライベートセッター
+  void setId(SnowflakeId id) {
+    this.id = id;
+  }
+
+  void setExecutionId(ExecutionId executionId) {
+    this.executionId = executionId;
+  }
+
+  void setJobCode(String jobCode) {
+    this.jobCode = jobCode;
+  }
+
+  void setState(ExecutionState state) {
+    this.state = state;
+  }
+
+  void setStartedAt(LocalDateTime startedAt) {
+    this.startedAt = startedAt;
+  }
+
+  void setCompletedAt(LocalDateTime completedAt) {
+    this.completedAt = completedAt;
+  }
+
+  void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+
+  void setProcessedCount(Long processedCount) {
+    this.processedCount = processedCount;
+  }
+
+  void setCheckpointPosition(String checkpointPosition) {
+    this.checkpointPosition = checkpointPosition;
+  }
+
+  void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
 }

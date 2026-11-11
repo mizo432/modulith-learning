@@ -46,20 +46,6 @@ class ExecutionConstraintTest {
     }
   }
 
-  @Nested
-  @DisplayName("コンストラクタのテスト")
-  class ConstructorTest {
-
-    @Test
-    @DisplayName("値を指定してインスタンスが作成される")
-    void shouldCreateInstanceWithValue() {
-      ExecutionConstraint constraint = new ExecutionConstraint(10, 600);
-
-      assertThat(constraint).isNotNull();
-      assertThat(constraint.getMaxConcurrentExecutions()).isEqualTo(10);
-      assertThat(constraint.getTimeoutSeconds()).isEqualTo(600);
-    }
-  }
 
   @Nested
   @DisplayName("equalsとhashCodeのテスト")

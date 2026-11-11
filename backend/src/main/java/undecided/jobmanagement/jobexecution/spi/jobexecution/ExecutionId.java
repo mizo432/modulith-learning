@@ -3,17 +3,19 @@ package undecided.jobmanagement.jobexecution.spi.jobexecution;
 import com.github.mizo432.shared.exception.BusinessException;
 
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ExecutionId {
+public final class ExecutionId {
 
   public static final int MAX_LENGTH = 50;
-  private String value;
+  private final String value;
 
-  public ExecutionId(String value) {
+  // JPA用
+  protected ExecutionId() {
+    this.value = null;
+  }
+
+  ExecutionId(String value) {
     this.value = value;
   }
 

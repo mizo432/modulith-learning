@@ -9,17 +9,21 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FullName {
+public final class FullName {
 
   /** 氏名(全角文字) */
   public static final String REGEX =
       "^[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF01-\uFF5E]+$";
 
   public static final int MAX_LENGTH = 255;
-  private String value;
+  private final String value;
 
-  public FullName(String value) {
+  // JPA用
+  protected FullName() {
+    this.value = null;
+  }
+
+  FullName(String value) {
     this.value = value;
   }
 

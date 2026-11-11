@@ -55,33 +55,6 @@ class ParameterSpecTest {
     }
   }
 
-  @Nested
-  @DisplayName("デフォルトコンストラクタのテスト")
-  class DefaultConstructorTest {
-
-    @Test
-    @DisplayName("nullの値を持つインスタンスが作成される")
-    void shouldCreateInstanceWithNullValue() {
-      ParameterSpec paramSpec = new ParameterSpec();
-
-      assertThat(paramSpec).isNotNull();
-      assertThat(paramSpec.getValue()).isNull();
-    }
-  }
-
-  @Nested
-  @DisplayName("パブリックコンストラクタのテスト")
-  class PublicConstructorTest {
-
-    @Test
-    @DisplayName("値を指定してインスタンスが作成される")
-    void shouldCreateInstanceWithValue() {
-      ParameterSpec paramSpec = new ParameterSpec("--verbose");
-
-      assertThat(paramSpec).isNotNull();
-      assertThat(paramSpec.getValue()).isEqualTo("--verbose");
-    }
-  }
 
   @Nested
   @DisplayName("equalsとhashCodeのテスト")
@@ -120,11 +93,11 @@ class ParameterSpecTest {
     }
 
     @Test
-    @DisplayName("null値の場合はnullが返される")
-    void shouldReturnNullWhenValueIsNull() {
-      ParameterSpec paramSpec = new ParameterSpec();
+    @DisplayName("空文字の値の場合は空文字が返される")
+    void shouldReturnEmptyWhenValueIsEmpty() {
+      ParameterSpec paramSpec = ParameterSpec.of("");
 
-      assertThat(paramSpec.toString()).isNull();
+      assertThat(paramSpec.toString()).isEmpty();
     }
   }
 

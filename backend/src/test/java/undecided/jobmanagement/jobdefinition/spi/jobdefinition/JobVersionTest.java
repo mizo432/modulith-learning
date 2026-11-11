@@ -55,33 +55,6 @@ class JobVersionTest {
     }
   }
 
-  @Nested
-  @DisplayName("デフォルトコンストラクタのテスト")
-  class DefaultConstructorTest {
-
-    @Test
-    @DisplayName("nullの値を持つインスタンスが作成される")
-    void shouldCreateInstanceWithNullValue() {
-      JobVersion jobVersion = new JobVersion();
-
-      assertThat(jobVersion).isNotNull();
-      assertThat(jobVersion.getValue()).isNull();
-    }
-  }
-
-  @Nested
-  @DisplayName("パブリックコンストラクタのテスト")
-  class PublicConstructorTest {
-
-    @Test
-    @DisplayName("値を指定してインスタンスが作成される")
-    void shouldCreateInstanceWithValue() {
-      JobVersion jobVersion = new JobVersion("2.0.0");
-
-      assertThat(jobVersion).isNotNull();
-      assertThat(jobVersion.getValue()).isEqualTo("2.0.0");
-    }
-  }
 
   @Nested
   @DisplayName("equalsとhashCodeのテスト")
@@ -128,11 +101,11 @@ class JobVersionTest {
     }
 
     @Test
-    @DisplayName("null値の場合はnullが返される")
-    void shouldReturnNullWhenValueIsNull() {
-      JobVersion jobVersion = new JobVersion();
+    @DisplayName("空文字の値の場合は空文字が返される")
+    void shouldReturnEmptyWhenValueIsEmpty() {
+      JobVersion jobVersion = JobVersion.of("");
 
-      assertThat(jobVersion.toString()).isNull();
+      assertThat(jobVersion.toString()).isEmpty();
     }
   }
 
