@@ -43,7 +43,7 @@ public class ValidInterval {
    * @return 有効期間の値オブジェクト
    * @throws IllegalArgumentException 有効開始日が {@code null} の場合、または有効終了日が有効開始日より前の場合
    */
-  public static ValidInterval of(LocalDate validFrom, @Nullable LocalDate validTo) {
+  public static ValidInterval create(LocalDate validFrom, @Nullable LocalDate validTo) {
     if (validFrom == null) {
       throw new IllegalArgumentException("validFrom must not be null");
     }
@@ -60,8 +60,8 @@ public class ValidInterval {
    * @return 有効終了日が {@code null} の有効期間の値オブジェクト
    * @throws IllegalArgumentException 有効開始日が {@code null} の場合
    */
-  public static ValidInterval of(LocalDate validFrom) {
-    return of(validFrom, null);
+  public static ValidInterval create(LocalDate validFrom) {
+    return create(validFrom, null);
   }
 
   /**

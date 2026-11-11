@@ -42,7 +42,7 @@ public class SampleAddress {
   private String street;
 
   /** 住所インスタンスを作成します。 */
-  public static SampleAddress of(String country, String prefecture, String city, String street) {
+  public static SampleAddress create(String country, String prefecture, String city, String street) {
     return new SampleAddress(country, prefecture, city, street);
   }
 

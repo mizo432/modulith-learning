@@ -21,7 +21,7 @@ public final class ExecutionConstraint {
     this.timeoutSeconds = timeoutSeconds;
   }
 
-  public static ExecutionConstraint of(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
+  public static ExecutionConstraint create(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
     if (maxConcurrentExecutions != null && maxConcurrentExecutions <= 0) {
       throw new BusinessException("maxConcurrentExecutions must be positive");
     }
