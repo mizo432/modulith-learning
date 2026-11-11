@@ -3,7 +3,7 @@ package undecided.association.relationshipMgmt.partyRole.internal.role;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.association.relationshipMgmt.partyRole.spi.role.RoleAssignmentForOrg;
+import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleAssignmentForOrgDTO;
 
 /**
  * RoleAssignmentsForOrgApiは、組織に関連付けられたロールの割り当て情報を取得するためのREST APIコントローラーです。
@@ -16,13 +16,13 @@ import undecided.association.relationshipMgmt.partyRole.spi.role.RoleAssignmentF
  *
  * <p>エンドポイント: - `/api/roleAssignmentsForOrg`: ロール割り当てデータを提供する基本エンドポイントです。
  *
- * <p>戻り値: - `RoleAssignmentForOrg`: 組織に対するロール割り当てを表すオブジェクト。
+ * <p>戻り値: - `RoleAssignmentForOrgDTO`: 組織に対するロール割り当てを表すDTO。
  */
 @RestController
 @RequestMapping("/api/roleAssignmentsForOrg")
 public class RoleAssignmentsForOrgApi {
   @GetMapping
-  RoleAssignmentForOrg get() {
-    return new RoleAssignmentForOrg();
+  RoleAssignmentForOrgDTO get() {
+    return new RoleAssignmentForOrgDTO(null, null, null);
   }
 }

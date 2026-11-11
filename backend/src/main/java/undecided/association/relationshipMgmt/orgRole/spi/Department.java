@@ -19,6 +19,21 @@ public class Department {
   @Column(unique = true, nullable = false, length = 13, name = "code")
   private DepartmentCode code = DepartmentCode.EMPTY;
 
+  /**
+   * 部署インスタンスを作成します。
+   *
+   * @param code 部署コード
+   * @return 部署インスタンス
+   */
+  public static Department create(@NonNull DepartmentCode code) {
+    if (code == null) {
+      throw new IllegalArgumentException("code must not be null");
+    }
+    Department department = new Department();
+    department.code = code;
+    return department;
+  }
+
   public Department update(@NonNull Department department) {
     return this;
   }

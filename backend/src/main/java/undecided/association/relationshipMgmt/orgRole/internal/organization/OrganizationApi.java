@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.association.relationshipMgmt.orgRole.spi.Organization;
 import undecided.association.relationshipMgmt.orgRole.spi.OrganizationQuery;
+import undecided.association.relationshipMgmt.orgRole.spi.dto.OrganizationDTO;
 
 /** 組織に関連するAPIエンドポイントを提供するコントローラクラスです。 このクラスは組織データの取得およびIDを基にした検索機能を提供します。 */
 @RestController
@@ -24,8 +25,19 @@ public class OrganizationApi {
    * @return 組織オブジェクトのリスト
    */
   @GetMapping()
-  List<Organization> findAll() {
-    return organizationQuery.findAll();
+  List<OrganizationDTO> findAll() {
+    return organizationQuery.findAll().stream()
+        .map(org -> new OrganizationDTO(
+            org.getOrganizationId(),
+            org.getPartyId(),
+            org.getOrganizationCode(),
+            org.getName(),
+            org.getOrganizationTypeCode(),
+            org.getParentOrganizationId(),
+            org.getStatus(),
+            org.getValidFrom(),
+            org.getValidTo()))
+        .toList();
   }
 
   /**
@@ -36,9 +48,19 @@ public class OrganizationApi {
    * @throws EntityNotFoundException 指定されたIDに対応する組織が見つからない場合
    */
   @GetMapping("/{id}")
-  Organization findById(@PathVariable("id") UUID id) {
-    return organizationQuery
+  OrganizationDTO findById(@PathVariable("id") UUID id) {
+    Organization organization = organizationQuery
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Organization not found: " + id + ""));
+    return new OrganizationDTO(
+        organization.getOrganizationId(),
+        organization.getPartyId(),
+        organization.getOrganizationCode(),
+        organization.getName(),
+        organization.getOrganizationTypeCode(),
+        organization.getParentOrganizationId(),
+        organization.getStatus(),
+        organization.getValidFrom(),
+        organization.getValidTo());
   }
 }
