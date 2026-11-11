@@ -27,16 +27,7 @@ public class OrganizationApi {
   @GetMapping()
   List<OrganizationDTO> findAll() {
     return organizationQuery.findAll().stream()
-        .map(org -> new OrganizationDTO(
-            org.getOrganizationId(),
-            org.getPartyId(),
-            org.getOrganizationCode(),
-            org.getName(),
-            org.getOrganizationTypeCode(),
-            org.getParentOrganizationId(),
-            org.getStatus(),
-            org.getValidFrom(),
-            org.getValidTo()))
+        .map(OrganizationDTO::fromEntity)
         .toList();
   }
 
@@ -49,18 +40,10 @@ public class OrganizationApi {
    */
   @GetMapping("/{id}")
   OrganizationDTO findById(@PathVariable("id") UUID id) {
-    Organization organization = organizationQuery
-        .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Organization not found: " + id + ""));
-    return new OrganizationDTO(
-        organization.getOrganizationId(),
-        organization.getPartyId(),
-        organization.getOrganizationCode(),
-        organization.getName(),
-        organization.getOrganizationTypeCode(),
-        organization.getParentOrganizationId(),
-        organization.getStatus(),
-        organization.getValidFrom(),
-        organization.getValidTo());
+    Organization organization =
+        organizationQuery
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Organization not found: " + id));
+    return OrganizationDTO.fromEntity(organization);
   }
 }

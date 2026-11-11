@@ -3,6 +3,7 @@ package undecided.association.relationshipMgmt.orgRole.spi.dto;
 import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import undecided.association.relationshipMgmt.orgRole.spi.Organization;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -69,5 +70,27 @@ public record OrganizationDTO(
         status,
         validFrom,
         validTo);
+  }
+
+  /**
+   * エンティティからDTOに変換します。
+   *
+   * @param organization 組織エンティティ
+   * @return 組織DTO
+   */
+  public static OrganizationDTO fromEntity(@NonNull Organization organization) {
+    if (organization == null) {
+      throw new IllegalArgumentException("organization must not be null");
+    }
+    return new OrganizationDTO(
+        organization.getOrganizationId(),
+        organization.getPartyId(),
+        organization.getOrganizationCode(),
+        organization.getName(),
+        organization.getOrganizationTypeCode(),
+        organization.getParentOrganizationId(),
+        organization.getStatus(),
+        organization.getValidFrom(),
+        organization.getValidTo());
   }
 }
