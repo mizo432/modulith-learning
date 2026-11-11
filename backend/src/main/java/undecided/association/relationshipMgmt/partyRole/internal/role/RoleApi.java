@@ -3,7 +3,7 @@ package undecided.association.relationshipMgmt.partyRole.internal.role;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.association.relationshipMgmt.partyRole.spi.role.Role;
+import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleDTO;
 
 /**
  * RoleApiは、ロール情報を管理するためのREST APIコントローラーです。
@@ -16,13 +16,20 @@ import undecided.association.relationshipMgmt.partyRole.spi.role.Role;
  *
  * <p>エンドポイント: - `/api/roles`: 基本URLにマッピングされており、ロールデータを返却するために使用されます。
  *
- * <p>戻り値: - `Role`: システムで管理されるロールを表すオブジェクト。
+ * <p>戻り値: - `RoleDTO`: システムで管理されるロールを表すDTO。
  */
 @RestController
 @RequestMapping("/api/roles")
 public class RoleApi {
   @GetMapping
-  Role get() {
-    return new Role();
+  RoleDTO get() {
+    return new RoleDTO(
+        null,
+        "",
+        "",
+        "",
+        null,
+        null,
+        null);
   }
 }
