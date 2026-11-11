@@ -42,7 +42,7 @@ public class LegalName implements StringCode<LegalName> {
    * @return 法的名前の値オブジェクト
    * @throws BusinessException 姓または名がnull、空、または文字数制限を超えている場合
    */
-  public static LegalName of(String lastName, String firstName) {
+  public static LegalName create(String lastName, String firstName) {
     return new LegalName(LastName.of(lastName), FirstName.of(firstName));
   }
 
@@ -53,7 +53,7 @@ public class LegalName implements StringCode<LegalName> {
    * @param firstName 名の値オブジェクト
    * @return 法的名前の値オブジェクト
    */
-  public static LegalName of(LastName lastName, FirstName firstName) {
+  public static LegalName create(LastName lastName, FirstName firstName) {
     return new LegalName(lastName, firstName);
   }
 

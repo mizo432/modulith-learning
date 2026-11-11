@@ -11,15 +11,15 @@ import org.junit.jupiter.api.Test;
 class ValidIntervalTest {
 
   @Nested
-  @DisplayName("ofメソッドのテスト")
-  class OfMethodTest {
+  @DisplayName("createメソッドのテスト")
+  class CreateMethodTest {
 
     @Test
     @DisplayName("開始日と終了日を指定するとインスタンスが作成される")
     void shouldCreateInstanceWhenValidDates() {
       LocalDate start = LocalDate.of(2024, 1, 1);
       LocalDate end = LocalDate.of(2024, 12, 31);
-      ValidInterval interval = ValidInterval.of(start, end);
+      ValidInterval interval = ValidInterval.create(start, end);
 
       assertThat(interval).isNotNull();
       assertThat(interval.validFrom()).isEqualTo(start);
@@ -30,7 +30,7 @@ class ValidIntervalTest {
     @DisplayName("開始日のみでインスタンスが作成される")
     void shouldCreateInstanceWithStartDateOnly() {
       LocalDate start = LocalDate.of(2024, 1, 1);
-      ValidInterval interval = ValidInterval.of(start);
+      ValidInterval interval = ValidInterval.create(start);
 
       assertThat(interval).isNotNull();
       assertThat(interval.validFrom()).isEqualTo(start);
@@ -41,7 +41,7 @@ class ValidIntervalTest {
     @DisplayName("終了日が開始日と同じ場合許容される")
     void shouldAllowEndDateEqualToStartDate() {
       LocalDate date = LocalDate.of(2024, 6, 1);
-      ValidInterval interval = ValidInterval.of(date, date);
+      ValidInterval interval = ValidInterval.create(date, date);
 
       assertThat(interval).isNotNull();
       assertThat(interval.validFrom()).isEqualTo(date);
@@ -51,7 +51,7 @@ class ValidIntervalTest {
     @Test
     @DisplayName("開始日がnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenStartDateIsNull() {
-      assertThatThrownBy(() -> ValidInterval.of(null, LocalDate.of(2024, 12, 31)))
+      assertThatThrownBy(() -> ValidInterval.create(null, LocalDate.of(2024, 12, 31)))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("validFrom must not be null");
     }
@@ -62,7 +62,7 @@ class ValidIntervalTest {
       LocalDate start = LocalDate.of(2024, 12, 31);
       LocalDate end = LocalDate.of(2024, 1, 1);
 
-      assertThatThrownBy(() -> ValidInterval.of(start, end))
+      assertThatThrownBy(() -> ValidInterval.create(start, end))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("validTo must not be before validFrom");
     }
@@ -70,7 +70,7 @@ class ValidIntervalTest {
     @Test
     @DisplayName("開始日のみでnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenStartDateIsNullSingleArg() {
-      assertThatThrownBy(() -> ValidInterval.of((LocalDate) null))
+      assertThatThrownBy(() -> ValidInterval.create((LocalDate) null))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("validFrom must not be null");
     }
@@ -121,7 +121,7 @@ class ValidIntervalTest {
     @Test
     @DisplayName("値を持つインスタンスはfalseを返す")
     void shouldReturnFalseForNonEmptyInstance() {
-      ValidInterval interval = ValidInterval.of(LocalDate.of(2024, 1, 1));
+      ValidInterval interval = ValidInterval.create(LocalDate.of(2024, 1, 1));
 
       assertThat(interval.isEmpty()).isFalse();
     }
@@ -135,7 +135,7 @@ class ValidIntervalTest {
     @DisplayName("期間内の日付はtrueを返す")
     void shouldReturnTrueForDateWithinInterval() {
       ValidInterval interval =
-          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(interval.contains(LocalDate.of(2024, 6, 15))).isTrue();
     }
@@ -144,7 +144,7 @@ class ValidIntervalTest {
     @DisplayName("開始日はtrueを返す")
     void shouldReturnTrueForStartDate() {
       ValidInterval interval =
-          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(interval.contains(LocalDate.of(2024, 1, 1))).isTrue();
     }
@@ -153,7 +153,7 @@ class ValidIntervalTest {
     @DisplayName("終了日はtrueを返す")
     void shouldReturnTrueForEndDate() {
       ValidInterval interval =
-          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(interval.contains(LocalDate.of(2024, 12, 31))).isTrue();
     }
@@ -162,7 +162,7 @@ class ValidIntervalTest {
     @DisplayName("開始日より前の日付はfalseを返す")
     void shouldReturnFalseForDateBeforeStart() {
       ValidInterval interval =
-          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(interval.contains(LocalDate.of(2023, 12, 31))).isFalse();
     }
@@ -171,7 +171,7 @@ class ValidIntervalTest {
     @DisplayName("終了日より後の日付はfalseを返す")
     void shouldReturnFalseForDateAfterEnd() {
       ValidInterval interval =
-          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(interval.contains(LocalDate.of(2025, 1, 1))).isFalse();
     }
@@ -179,7 +179,7 @@ class ValidIntervalTest {
     @Test
     @DisplayName("終了日なしで期間内の日付はtrueを返す")
     void shouldReturnTrueForDateWithNoEndDate() {
-      ValidInterval interval = ValidInterval.of(LocalDate.of(2024, 1, 1));
+      ValidInterval interval = ValidInterval.create(LocalDate.of(2024, 1, 1));
 
       assertThat(interval.contains(LocalDate.of(2025, 6, 15))).isTrue();
     }
@@ -188,7 +188,7 @@ class ValidIntervalTest {
     @DisplayName("null日付はfalseを返す")
     void shouldReturnFalseForNullDate() {
       ValidInterval interval =
-          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(interval.contains(null)).isFalse();
     }
@@ -210,7 +210,7 @@ class ValidIntervalTest {
     @DisplayName("開始日と終了日を文字列として返す")
     void shouldReturnStartAndEndAsString() {
       ValidInterval interval =
-          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(interval.toString()).isEqualTo("2024-01-01 ~ 2024-12-31");
     }
@@ -218,7 +218,7 @@ class ValidIntervalTest {
     @Test
     @DisplayName("終了日なしの場合は開始日のみを返す")
     void shouldReturnOnlyStartDateWhenNoEndDate() {
-      ValidInterval interval = ValidInterval.of(LocalDate.of(2024, 1, 1));
+      ValidInterval interval = ValidInterval.create(LocalDate.of(2024, 1, 1));
 
       assertThat(interval.toString()).isEqualTo("2024-01-01 ~ ");
     }
@@ -239,8 +239,8 @@ class ValidIntervalTest {
     @Test
     @DisplayName("同じ値を持つインスタンスは等しい")
     void shouldBeEqualWhenSameValue() {
-      ValidInterval first = ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
-      ValidInterval second = ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+      ValidInterval first = ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+      ValidInterval second = ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(first).isEqualTo(second);
       assertThat(first.hashCode()).isEqualTo(second.hashCode());
@@ -249,8 +249,8 @@ class ValidIntervalTest {
     @Test
     @DisplayName("異なる値を持つインスタンスは等しくない")
     void shouldNotBeEqualWhenDifferentValue() {
-      ValidInterval first = ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
-      ValidInterval second = ValidInterval.of(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31));
+      ValidInterval first = ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+      ValidInterval second = ValidInterval.create(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31));
 
       assertThat(first).isNotEqualTo(second);
     }
@@ -280,7 +280,7 @@ class ValidIntervalTest {
       @DisplayName("属性からStringに変換する")
       void shouldConvertToDatabaseColumn() {
         ValidInterval interval =
-            ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+            ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
         assertThat(converter.convertToDatabaseColumn(interval))
             .isEqualTo("2024-01-01 ~ 2024-12-31");
@@ -301,7 +301,7 @@ class ValidIntervalTest {
       @Test
       @DisplayName("終了日なしの属性を変換する")
       void shouldConvertWithoutEndDate() {
-        ValidInterval interval = ValidInterval.of(LocalDate.of(2024, 1, 1));
+        ValidInterval interval = ValidInterval.create(LocalDate.of(2024, 1, 1));
 
         assertThat(converter.convertToDatabaseColumn(interval)).isEqualTo("2024-01-01 ~ ");
       }

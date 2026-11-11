@@ -14,13 +14,13 @@ import org.junit.jupiter.api.Test;
 class LegalNameTest {
 
   @Nested
-  @DisplayName("ofメソッドのテスト")
-  class OfMethodTest {
+  @DisplayName("createメソッドのテスト")
+  class CreateMethodTest {
 
     @Test
     @DisplayName("有効な姓と名を指定するとインスタンスが作成される")
     void shouldCreateInstanceWhenValidStrings() {
-      LegalName legalName = LegalName.of("田中", "太郎");
+      LegalName legalName = LegalName.create("田中", "太郎");
 
       assertThat(legalName).isNotNull();
       assertThat(legalName.lastName()).isNotNull();
@@ -32,7 +32,7 @@ class LegalNameTest {
     @Test
     @DisplayName("半角文字も許容される")
     void shouldAcceptHalfWidthCharacters() {
-      LegalName legalName = LegalName.of("Tanaka", "Taro");
+      LegalName legalName = LegalName.create("Tanaka", "Taro");
 
       assertThat(legalName).isNotNull();
       assertThat(legalName.lastName().value()).isEqualTo("Tanaka");
@@ -42,7 +42,7 @@ class LegalNameTest {
     @Test
     @DisplayName("全角と半角の混合も許容される")
     void shouldAcceptMixedCharacters() {
-      LegalName legalName = LegalName.of("田中", "Taro");
+      LegalName legalName = LegalName.create("田中", "Taro");
 
       assertThat(legalName).isNotNull();
       assertThat(legalName.lastName().value()).isEqualTo("田中");
@@ -52,7 +52,7 @@ class LegalNameTest {
     @Test
     @DisplayName("姓がnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenLastNameNull() {
-      assertThatThrownBy(() -> LegalName.of(null, "太郎"))
+      assertThatThrownBy(() -> LegalName.create(null, "太郎"))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("lastName must not be null");
     }
@@ -60,7 +60,7 @@ class LegalNameTest {
     @Test
     @DisplayName("名がnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenFirstNameNull() {
-      assertThatThrownBy(() -> LegalName.of("田中", null))
+      assertThatThrownBy(() -> LegalName.create("田中", null))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("firstName must not be null");
     }
@@ -68,7 +68,7 @@ class LegalNameTest {
     @Test
     @DisplayName("姓が空文字の場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenLastNameEmpty() {
-      assertThatThrownBy(() -> LegalName.of("", "太郎"))
+      assertThatThrownBy(() -> LegalName.create("", "太郎"))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("lastName must not be empty");
     }
@@ -76,7 +76,7 @@ class LegalNameTest {
     @Test
     @DisplayName("名が空文字の場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenFirstNameEmpty() {
-      assertThatThrownBy(() -> LegalName.of("田中", ""))
+      assertThatThrownBy(() -> LegalName.create("田中", ""))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("firstName must not be empty");
     }
@@ -84,7 +84,7 @@ class LegalNameTest {
     @Test
     @DisplayName("姓が空白文字のみの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenLastNameBlank() {
-      assertThatThrownBy(() -> LegalName.of("   ", "太郎"))
+      assertThatThrownBy(() -> LegalName.create("   ", "太郎"))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("lastName must not be empty");
     }
@@ -92,7 +92,7 @@ class LegalNameTest {
     @Test
     @DisplayName("名が空白文字のみの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenFirstNameBlank() {
-      assertThatThrownBy(() -> LegalName.of("田中", "   "))
+      assertThatThrownBy(() -> LegalName.create("田中", "   "))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("firstName must not be empty");
     }
@@ -101,7 +101,7 @@ class LegalNameTest {
     @DisplayName("姓が最大文字数を超える場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenLastNameExceedsMaxLength() {
       String longName = "a".repeat(51);
-      assertThatThrownBy(() -> LegalName.of(longName, "太郎"))
+      assertThatThrownBy(() -> LegalName.create(longName, "太郎"))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("lastName must be between");
     }
@@ -110,7 +110,7 @@ class LegalNameTest {
     @DisplayName("名が最大文字数を超える場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenFirstNameExceedsMaxLength() {
       String longName = "a".repeat(51);
-      assertThatThrownBy(() -> LegalName.of("田中", longName))
+      assertThatThrownBy(() -> LegalName.create("田中", longName))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("firstName must be between");
     }
@@ -118,7 +118,7 @@ class LegalNameTest {
     @Test
     @DisplayName("空白はトリムされる")
     void shouldTrimWhitespace() {
-      LegalName legalName = LegalName.of("  田中  ", "  太郎  ");
+      LegalName legalName = LegalName.create("  田中  ", "  太郎  ");
 
       assertThat(legalName.lastName().value()).isEqualTo("田中");
       assertThat(legalName.firstName().value()).isEqualTo("太郎");
@@ -162,7 +162,7 @@ class LegalNameTest {
     @Test
     @DisplayName("姓の値オブジェクトを返す")
     void shouldReturnLastName() {
-      LegalName legalName = LegalName.of("田中", "太郎");
+      LegalName legalName = LegalName.create("田中", "太郎");
 
       assertThat(legalName.lastName()).isNotNull();
       assertThat(legalName.lastName().value()).isEqualTo("田中");
@@ -184,7 +184,7 @@ class LegalNameTest {
     @Test
     @DisplayName("名の値オブジェクトを返す")
     void shouldReturnFirstName() {
-      LegalName legalName = LegalName.of("田中", "太郎");
+      LegalName legalName = LegalName.create("田中", "太郎");
 
       assertThat(legalName.firstName()).isNotNull();
       assertThat(legalName.firstName().value()).isEqualTo("太郎");
@@ -206,7 +206,7 @@ class LegalNameTest {
     @Test
     @DisplayName("「姓 名」の形式で値を返す")
     void shouldReturnHeldValue() {
-      LegalName legalName = LegalName.of("山田", "花子");
+      LegalName legalName = LegalName.create("山田", "花子");
 
       assertThat(legalName.value()).isEqualTo("山田 花子");
     }
@@ -235,7 +235,7 @@ class LegalNameTest {
     @Test
     @DisplayName("値を持つインスタンスはfalseを返す")
     void shouldReturnFalseForNonEmptyInstance() {
-      LegalName legalName = LegalName.of("田中", "太郎");
+      LegalName legalName = LegalName.create("田中", "太郎");
 
       assertThat(legalName.isEmpty()).isFalse();
     }
@@ -248,7 +248,7 @@ class LegalNameTest {
     @Test
     @DisplayName("値をマスクして返す")
     void shouldReturnMaskedValue() {
-      LegalName legalName = LegalName.of("田中", "太郎");
+      LegalName legalName = LegalName.create("田中", "太郎");
 
       assertThat(legalName.toString())
           .as("LegalNameのtoString()は機微な情報をマスクして返すこと")
@@ -273,8 +273,8 @@ class LegalNameTest {
     @Test
     @DisplayName("同じ値を持つインスタンスは等しい")
     void shouldBeEqualWhenSameValue() {
-      LegalName first = LegalName.of("田中", "太郎");
-      LegalName second = LegalName.of("田中", "太郎");
+      LegalName first = LegalName.create("田中", "太郎");
+      LegalName second = LegalName.create("田中", "太郎");
 
       assertThat(first).isEqualTo(second);
       assertThat(first.hashCode()).isEqualTo(second.hashCode());
@@ -283,8 +283,8 @@ class LegalNameTest {
     @Test
     @DisplayName("異なる値を持つインスタンスは等しくない")
     void shouldNotBeEqualWhenDifferentValue() {
-      LegalName first = LegalName.of("田中", "太郎");
-      LegalName second = LegalName.of("山田", "花子");
+      LegalName first = LegalName.create("田中", "太郎");
+      LegalName second = LegalName.create("山田", "花子");
 
       assertThat(first).isNotEqualTo(second);
     }
@@ -312,7 +312,7 @@ class LegalNameTest {
       @Test
       @DisplayName("属性からStringに変換する")
       void shouldConvertToDatabaseColumn() {
-        LegalName legalName = LegalName.of("田中", "太郎");
+        LegalName legalName = LegalName.create("田中", "太郎");
 
         assertThat(converter.convertToDatabaseColumn(legalName)).isEqualTo("田中|太郎");
       }

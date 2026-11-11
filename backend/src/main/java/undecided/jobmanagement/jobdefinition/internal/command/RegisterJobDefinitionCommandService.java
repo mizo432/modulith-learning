@@ -32,7 +32,7 @@ public class RegisterJobDefinitionCommandService implements RegisterJobDefinitio
         jobDefinitionDTO.getParameterSpec() != null
             ? ParameterSpec.of(jobDefinitionDTO.getParameterSpec())
             : null,
-        ExecutionConstraint.of(
+        ExecutionConstraint.create(
             jobDefinitionDTO.getMaxConcurrentExecutions(),
             jobDefinitionDTO.getTimeoutSeconds()),
         LocalDateTime.now(),
