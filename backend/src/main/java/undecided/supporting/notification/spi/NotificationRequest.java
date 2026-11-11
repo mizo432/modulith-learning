@@ -120,7 +120,7 @@ public final class NotificationRequest {
             if (title == null || title.isEmpty()) {
                 throw new BusinessException("titleは必須です");
             }
-            if (content == null) {
+            if (content == null || content.isEmpty()) {
                 throw new BusinessException("contentは必須です");
             }
             if (type == null) {

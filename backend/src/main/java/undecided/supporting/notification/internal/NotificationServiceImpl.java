@@ -38,6 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public NotificationDTO send(NotificationRequest request) {
+        Objects.requireNonNull(request, "requestはnullであってはいけません");
         Notification notification = Notification.builder()
             .id(SnowflakeId.of(snowflakeIdGenerator.nextId()))
             .recipientId(request.getRecipientId())
