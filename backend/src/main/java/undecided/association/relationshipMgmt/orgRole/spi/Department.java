@@ -52,7 +52,7 @@ public class Department {
     if (department == null) {
       throw new IllegalArgumentException("department must not be null");
     }
-    this.code = department.code;
+    this.setCode(department.getCode());
     return this;
   }
 }
