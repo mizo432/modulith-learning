@@ -47,7 +47,7 @@ class NotificationRequestTest {
 
     @Test
     @DisplayName("sourceIdはオプションである")
-    void sourceIdIsOptional() {
+    void shouldAcceptOptionalSourceId() {
       NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
           .recipientId(RECIPIENT_ID)
           .title(TITLE)

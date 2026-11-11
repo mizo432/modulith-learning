@@ -73,6 +73,18 @@ public class JobDefinition {
       @Nullable ExecutionConstraint executionConstraint,
       @NonNull LocalDateTime createdAt,
       @Nullable String createdBy) {
+    if (id == null) {
+      throw new IllegalArgumentException("idはnullであってはいけません");
+    }
+    if (jobCode == null) {
+      throw new IllegalArgumentException("jobCodeはnullであってはいけません");
+    }
+    if (version == null) {
+      throw new IllegalArgumentException("versionはnullであってはいけません");
+    }
+    if (createdAt == null) {
+      throw new IllegalArgumentException("createdAtはnullであってはいけません");
+    }
     JobDefinition entity = new JobDefinition();
     entity.id = id;
     entity.jobCode = jobCode;

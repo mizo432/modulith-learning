@@ -25,7 +25,7 @@ public class OrganizationApi {
    * @return 組織オブジェクトのリスト
    */
   @GetMapping()
-  List<OrganizationDTO> findAll() {
+  public List<OrganizationDTO> findAll() {
     return organizationQuery.findAll().stream()
         .map(OrganizationDTO::fromEntity)
         .toList();
@@ -39,7 +39,7 @@ public class OrganizationApi {
    * @throws EntityNotFoundException 指定されたIDに対応する組織が見つからない場合
    */
   @GetMapping("/{id}")
-  OrganizationDTO findById(@PathVariable("id") UUID id) {
+  public OrganizationDTO findById(@PathVariable("id") UUID id) {
     Organization organization =
         organizationQuery
             .findById(id)

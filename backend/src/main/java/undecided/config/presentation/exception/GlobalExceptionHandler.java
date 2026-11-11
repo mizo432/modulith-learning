@@ -25,6 +25,7 @@ import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
 import com.github.mizo432.shared.logging.ExceptionLogger;
 import com.github.mizo432.shared.exception.ResultMessagesNotificationException;
 import com.github.mizo432.shared.common.primitive.Lists2;
+import com.github.mizo432.shared.exception.BusinessException;
 
 /**
  * アプリケーション全体で発生する例外をハンドリングするクラス。
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    * @return エラーの詳細情報を含む {@code ProblemDetail} オブジェクト。HTTPステータスと最後のメッセージが格納されています。
    */
   @ExceptionHandler(ResultMessagesNotificationException.class)
-  public @NonNull ProblemDetail handleBusinessException(
+  public @NonNull ProblemDetail handleResultMessagesNotificationException(
       @NonNull ResultMessagesNotificationException e) {
     checkNotNull(e, () -> new NullPointerException("e must not be null."));
     Map<String, Object> error = new HashMap<>();
@@ -58,6 +59,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     String detail = (lastMessage != null) ? lastMessage.text() : e.getMessage();
     
     return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
+  }
+
+  /**
+   * {@code BusinessException} をハンドリングし、400 Bad Request のエラーレスポンスを返却します。
+   *
+   * <p>業務ロジックで発生する例外（入力値の不正、状態遷移の失敗など）をクライアントに通知します。
+   *
+   * @param e 処理対象の {@code BusinessException}
+   * @param request エラーが発生した際のリクエスト情報を表す {@code HttpServletRequest} オブジェクト。
+   * @return 400 Bad Request の {@code ProblemDetail} オブジェクト
+   */
+  @ExceptionHandler(BusinessException.class)
+  public @NonNull ProblemDetail handleBusinessException(
+      @NonNull BusinessException e, @NonNull HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    problem.setTitle("Business Error");
+    problem.setInstance(URI.create(request.getRequestURI()));
+    problem.setProperty("errorCode", "BUSINESS_ERROR");
+    return problem;
   }
 
   /**
