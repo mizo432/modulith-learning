@@ -3,17 +3,19 @@ package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 import com.github.mizo432.shared.exception.BusinessException;
 
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class JobCode {
+public final class JobCode {
 
   public static final int MAX_LENGTH = 50;
-  private String value;
+  private final String value;
 
-  public JobCode(String value) {
+  // JPA用
+  protected JobCode() {
+    this.value = null;
+  }
+
+  JobCode(String value) {
     this.value = value;
   }
 

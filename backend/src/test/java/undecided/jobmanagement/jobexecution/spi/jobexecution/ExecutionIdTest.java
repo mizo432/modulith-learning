@@ -55,33 +55,6 @@ class ExecutionIdTest {
     }
   }
 
-  @Nested
-  @DisplayName("デフォルトコンストラクタのテスト")
-  class DefaultConstructorTest {
-
-    @Test
-    @DisplayName("nullの値を持つインスタンスが作成される")
-    void shouldCreateInstanceWithNullValue() {
-      ExecutionId executionId = new ExecutionId();
-
-      assertThat(executionId).isNotNull();
-      assertThat(executionId.getValue()).isNull();
-    }
-  }
-
-  @Nested
-  @DisplayName("パブリックコンストラクタのテスト")
-  class PublicConstructorTest {
-
-    @Test
-    @DisplayName("値を指定してインスタンスが作成される")
-    void shouldCreateInstanceWithValue() {
-      ExecutionId executionId = new ExecutionId("EXEC-002");
-
-      assertThat(executionId).isNotNull();
-      assertThat(executionId.getValue()).isEqualTo("EXEC-002");
-    }
-  }
 
   @Nested
   @DisplayName("equalsとhashCodeのテスト")
@@ -120,11 +93,11 @@ class ExecutionIdTest {
     }
 
     @Test
-    @DisplayName("null値の場合はnullが返される")
-    void shouldReturnNullWhenValueIsNull() {
-      ExecutionId executionId = new ExecutionId();
+    @DisplayName("空文字の値の場合は空文字が返される")
+    void shouldReturnEmptyWhenValueIsEmpty() {
+      ExecutionId executionId = ExecutionId.of("");
 
-      assertThat(executionId.toString()).isNull();
+      assertThat(executionId.toString()).isEmpty();
     }
   }
 

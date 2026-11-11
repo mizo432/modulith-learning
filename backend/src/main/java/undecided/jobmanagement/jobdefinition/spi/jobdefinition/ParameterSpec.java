@@ -3,17 +3,19 @@ package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 import com.github.mizo432.shared.exception.BusinessException;
 
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ParameterSpec {
+public final class ParameterSpec {
 
   public static final int MAX_LENGTH = 1000;
-  private String value;
+  private final String value;
 
-  public ParameterSpec(String value) {
+  // JPA用
+  protected ParameterSpec() {
+    this.value = null;
+  }
+
+  ParameterSpec(String value) {
     this.value = value;
   }
 

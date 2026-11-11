@@ -55,33 +55,6 @@ class JobCodeTest {
     }
   }
 
-  @Nested
-  @DisplayName("デフォルトコンストラクタのテスト")
-  class DefaultConstructorTest {
-
-    @Test
-    @DisplayName("nullの値を持つインスタンスが作成される")
-    void shouldCreateInstanceWithNullValue() {
-      JobCode jobCode = new JobCode();
-
-      assertThat(jobCode).isNotNull();
-      assertThat(jobCode.getValue()).isNull();
-    }
-  }
-
-  @Nested
-  @DisplayName("パブリックコンストラクタのテスト")
-  class PublicConstructorTest {
-
-    @Test
-    @DisplayName("値を指定してインスタンスが作成される")
-    void shouldCreateInstanceWithValue() {
-      JobCode jobCode = new JobCode("JOB002");
-
-      assertThat(jobCode).isNotNull();
-      assertThat(jobCode.getValue()).isEqualTo("JOB002");
-    }
-  }
 
   @Nested
   @DisplayName("equalsとhashCodeのテスト")
@@ -136,11 +109,11 @@ class JobCodeTest {
     }
 
     @Test
-    @DisplayName("null値の場合はnullが返される")
-    void shouldReturnNullWhenValueIsNull() {
-      JobCode jobCode = new JobCode();
+    @DisplayName("空文字の値の場合は空文字が返される")
+    void shouldReturnEmptyWhenValueIsEmpty() {
+      JobCode jobCode = JobCode.of("");
 
-      assertThat(jobCode.toString()).isNull();
+      assertThat(jobCode.toString()).isEmpty();
     }
   }
 

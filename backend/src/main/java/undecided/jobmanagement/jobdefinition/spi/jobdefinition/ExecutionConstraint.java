@@ -1,22 +1,33 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.exception.BusinessException;
+
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ExecutionConstraint {
+public final class ExecutionConstraint {
 
-  private Integer maxConcurrentExecutions;
-  private Integer timeoutSeconds;
+  private final Integer maxConcurrentExecutions;
+  private final Integer timeoutSeconds;
 
-  public ExecutionConstraint(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
+  // JPA用
+  protected ExecutionConstraint() {
+    this.maxConcurrentExecutions = null;
+    this.timeoutSeconds = null;
+  }
+
+  ExecutionConstraint(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
     this.maxConcurrentExecutions = maxConcurrentExecutions;
     this.timeoutSeconds = timeoutSeconds;
   }
 
   public static ExecutionConstraint of(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
+    if (maxConcurrentExecutions != null && maxConcurrentExecutions <= 0) {
+      throw new BusinessException("maxConcurrentExecutions must be positive");
+    }
+    if (timeoutSeconds != null && timeoutSeconds <= 0) {
+      throw new BusinessException("timeoutSeconds must be positive");
+    }
     return new ExecutionConstraint(maxConcurrentExecutions, timeoutSeconds);
   }
 

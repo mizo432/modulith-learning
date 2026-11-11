@@ -24,20 +24,20 @@ public class RegisterJobDefinitionCommandService implements RegisterJobDefinitio
 
   @Override
   public SnowflakeId register(JobDefinitionDTO jobDefinitionDTO) {
-    JobDefinition jobDefinition = new JobDefinition();
     SnowflakeId id = SnowflakeId.of(snowflakeIdGenerator.nextId());
-    jobDefinition.setId(id);
-    jobDefinition.setJobCode(JobCode.of(jobDefinitionDTO.getJobCode()));
-    jobDefinition.setVersion(JobVersion.of(jobDefinitionDTO.getVersion()));
-    jobDefinition.setParameterSpec(ParameterSpec.of(jobDefinitionDTO.getParameterSpec()));
-    jobDefinition.setExecutionConstraint(
+    JobDefinition jobDefinition = JobDefinition.create(
+        id,
+        JobCode.of(jobDefinitionDTO.getJobCode()),
+        JobVersion.of(jobDefinitionDTO.getVersion()),
+        jobDefinitionDTO.getParameterSpec() != null
+            ? ParameterSpec.of(jobDefinitionDTO.getParameterSpec())
+            : null,
         ExecutionConstraint.of(
             jobDefinitionDTO.getMaxConcurrentExecutions(),
-            jobDefinitionDTO.getTimeoutSeconds()));
-    jobDefinition.setIsActive(true);
-    jobDefinition.setCreatedAt(LocalDateTime.now());
-    jobDefinition.setCreatedBy(jobDefinitionDTO.getCreatedBy());
-    
+            jobDefinitionDTO.getTimeoutSeconds()),
+        LocalDateTime.now(),
+        jobDefinitionDTO.getCreatedBy());
+
     jobDefinitionRepository.save(jobDefinition);
     return id;
   }
