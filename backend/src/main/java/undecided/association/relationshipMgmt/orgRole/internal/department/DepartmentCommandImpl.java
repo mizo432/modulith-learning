@@ -4,11 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import undecided.association.relationshipMgmt.orgRole.spi.Department;
 import undecided.association.relationshipMgmt.orgRole.spi.DepartmentCode;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class DepartmentCommandImpl implements DepartmentCommand {
 
   private final DepartmentRepository repository;
@@ -34,6 +36,5 @@ public class DepartmentCommandImpl implements DepartmentCommand {
         oldOption.orElseThrow(
             () -> new EntityNotFoundException("Department not found: " + departmentCode));
     repository.deleteById(oldDepartment.getId());
-    ;
   }
 }

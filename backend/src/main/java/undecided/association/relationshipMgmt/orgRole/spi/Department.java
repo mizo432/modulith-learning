@@ -3,21 +3,29 @@ package undecided.association.relationshipMgmt.orgRole.spi;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Entity
-@Data
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Department {
   @Id private SnowflakeId id = SnowflakeId.EMPTY;
 
   @Column(unique = true, nullable = false, length = 13, name = "code")
   private DepartmentCode code = DepartmentCode.EMPTY;
+
+  /** パッケージプライベートセッター (テスト用) */
+  void setId(SnowflakeId id) {
+    this.id = id;
+  }
+
+  /** パッケージプライベートセッター (テスト用) */
+  void setCode(DepartmentCode code) {
+    this.code = code;
+  }
 
   /**
    * 部署インスタンスを作成します。
@@ -34,7 +42,17 @@ public class Department {
     return department;
   }
 
+  /**
+   * 部署情報を更新します。
+   *
+   * @param department 更新する部署情報
+   * @return 更新された部署インスタンス
+   */
   public Department update(@NonNull Department department) {
+    if (department == null) {
+      throw new IllegalArgumentException("department must not be null");
+    }
+    this.code = department.code;
     return this;
   }
 }
