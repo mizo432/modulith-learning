@@ -1,5 +1,8 @@
 package undecided.jobmanagement.jobexecution.spi.jobexecution;
 
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
+import com.github.mizo432.shared.common.precondition.StringPrecondition;
+import com.github.mizo432.shared.common.primitive.Strings2;
 import com.github.mizo432.shared.exception.BusinessException;
 
 import jakarta.persistence.Embeddable;
@@ -20,9 +23,9 @@ public final class ExecutionId {
   }
 
   public static ExecutionId of(String value) {
-    com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull(
+    ObjectPrecondition.checkNotNull(
         value, () -> new BusinessException("ExecutionId cannot be null"));
-    com.github.mizo432.shared.common.precondition.StringPrecondition.checkMaxLength(
+    StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
         () -> new BusinessException("ExecutionId cannot exceed " + MAX_LENGTH + " characters"));
@@ -35,7 +38,7 @@ public final class ExecutionId {
 
   @Override
   public String toString() {
-    return com.github.mizo432.shared.common.primitive.Strings2.toString(value);
+    return Strings2.toString(value);
   }
 
   @Override

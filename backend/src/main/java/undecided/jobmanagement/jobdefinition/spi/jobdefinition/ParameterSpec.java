@@ -1,5 +1,8 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
+import com.github.mizo432.shared.common.precondition.StringPrecondition;
+import com.github.mizo432.shared.common.primitive.Strings2;
 import com.github.mizo432.shared.exception.BusinessException;
 
 import jakarta.persistence.Embeddable;
@@ -20,9 +23,9 @@ public final class ParameterSpec {
   }
 
   public static ParameterSpec of(String value) {
-    com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull(
+    ObjectPrecondition.checkNotNull(
         value, () -> new BusinessException("ParameterSpec cannot be null"));
-    com.github.mizo432.shared.common.precondition.StringPrecondition.checkMaxLength(
+    StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
         () -> new BusinessException("ParameterSpec cannot exceed " + MAX_LENGTH + " characters"));
@@ -35,7 +38,7 @@ public final class ParameterSpec {
 
   @Override
   public String toString() {
-    return com.github.mizo432.shared.common.primitive.Strings2.toString(value);
+    return Strings2.toString(value);
   }
 
   @Override
