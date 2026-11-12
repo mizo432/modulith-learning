@@ -21,7 +21,7 @@ import undecided.generic.accountMgmt.spi.User;
 public class UserQueryApi {
 
   private final UserQuery userQuery;
-  private final UserQueryImpl userQueryImpl;
+  private final UserQueryService userQueryService;
 
   /**
    * 現在のユーザーの情報を取得します。
@@ -37,7 +37,7 @@ public class UserQueryApi {
             .orElseThrow(() -> new EntityNotFoundException("ユーザーが見つかりません: " + username));
 
     // 初回ログイン状態はauthorizationサービスから取得
-    boolean needsPasswordChange = userQueryImpl.needsPasswordChange(username);
+    boolean needsPasswordChange = userQueryService.needsPasswordChange(username);
 
     UserStatusResponse response = new UserStatusResponse(user.getUsername(), needsPasswordChange);
     return ResponseEntity.ok(response);

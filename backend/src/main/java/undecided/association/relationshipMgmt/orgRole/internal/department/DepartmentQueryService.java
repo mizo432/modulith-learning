@@ -7,7 +7,7 @@ import undecided.association.relationshipMgmt.orgRole.spi.Department;
 import undecided.association.relationshipMgmt.orgRole.spi.DepartmentCode;
 
 @Service
-public class DepartmentQueryImpl implements DepartmentQuery {
+public class DepartmentQueryService implements DepartmentQuery {
 
   @Override
   public Optional<Department> findByCode(DepartmentCode departmentCode) {

@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test;
 import undecided.generic.addressReg.spi.City;
 
 @Tag("small")
-@DisplayName("CityQueryImplのテスト")
-class CityQueryImplTest {
+@DisplayName("CityQueryServiceのテスト")
+class CityQueryServiceTest {
 
   private final CityRepository repository = mock(CityRepository.class);
-  private final CityQueryImpl query = new CityQueryImpl(repository);
+  private final CityQueryService query = new CityQueryService(repository);
 
   @Nested
   @DisplayName("findByLgCodeメソッドのテスト")

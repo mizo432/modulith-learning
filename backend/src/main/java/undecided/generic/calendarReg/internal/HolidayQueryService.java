@@ -14,7 +14,7 @@ import undecided.generic.calendarReg.spi.HolidayQuery;
 /** {@link HolidayQuery} の実装クラス。 */
 @Service
 @RequiredArgsConstructor
-public class HolidayQueryImpl implements HolidayQuery {
+public class HolidayQueryService implements HolidayQuery {
 
   private final HolidayRepository holidayRepository;
 

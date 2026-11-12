@@ -15,7 +15,7 @@ import undecided.generic.accountMgmt.spi.User;
  */
 @RequiredArgsConstructor
 @Service
-public class UserQueryImpl implements UserQuery {
+public class UserQueryService implements UserQuery {
 
   private static final String AUTHORIZATION_SERVICE_URL = "http://localhost:8082";
   private final UserRepository userRepository;

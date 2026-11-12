@@ -11,7 +11,7 @@ import com.github.mizo432.shared.common.primitive.Lists2;
 
 @Service
 @RequiredArgsConstructor
-public class OrganizationQueryImpl implements OrganizationQuery {
+public class OrganizationQueryService implements OrganizationQuery {
   private final OrganizationRepository organizationRepository;
 
   @Override

@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
-import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
+import undecided.agiloom.sprintExecution.internal.query.SprintQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -35,7 +35,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @ExtendWith(MockitoExtension.class)
 class SprintQueryControllerAdversarialTest {
 
-  @Mock private SprintQueryServiceInterface sprintQueryService;
+  @Mock private SprintQuery sprintQueryService;
   private SprintResponseAssembler sprintResponseAssembler;
 
   private SprintQueryController controller;

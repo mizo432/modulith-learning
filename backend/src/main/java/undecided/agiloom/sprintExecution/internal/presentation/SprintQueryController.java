@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
-import undecided.agiloom.sprintExecution.internal.query.SprintQueryServiceInterface;
+import undecided.agiloom.sprintExecution.internal.query.SprintQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 import com.github.mizo432.shared.exception.BusinessException;
 
@@ -23,10 +23,10 @@ public class SprintQueryController {
     // ページネーションの最大サイズ制限（DoS対策）。@Max制約で拒否されるが、防御の纵深として保持
     private static final int MAX_PAGE_SIZE = 100;
 
-    private final SprintQueryServiceInterface sprintQueryService;
+    private final SprintQuery sprintQueryService;
     private final SprintResponseAssembler sprintResponseAssembler;
 
-    public SprintQueryController(SprintQueryServiceInterface sprintQueryService,
+    public SprintQueryController(SprintQuery sprintQueryService,
                                   SprintResponseAssembler sprintResponseAssembler) {
         this.sprintQueryService = sprintQueryService;
         this.sprintResponseAssembler = sprintResponseAssembler;

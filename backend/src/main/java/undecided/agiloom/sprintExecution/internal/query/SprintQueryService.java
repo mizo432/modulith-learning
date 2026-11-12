@@ -14,7 +14,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
 @Transactional(readOnly = true)
-public class SprintQueryService implements SprintQueryServiceInterface {
+public class SprintQueryService implements SprintQuery {
 
     private final SprintRepository sprintRepository;
     private final SprintResponseAssembler sprintResponseAssembler;
