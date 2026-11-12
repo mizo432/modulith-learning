@@ -1,6 +1,8 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessages;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,8 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
     Sprint sprint =
         sprintRepository
             .findByIdAndDeletedAtIsNull(command.getId())
-            .orElseThrow(() -> new BusinessException("Sprint not found: " + command.getId()));
+            .orElseThrow(() -> new BusinessException(
+                ResultMessages.error().add(ResultMessage.fromText("Sprint not found: " + command.getId()))));
 
     // nullが渡された場合は既存の値を使用し、ドメイン層の検証を通過させる
     String title = command.getTitle() != null ? command.getTitle() : sprint.getTitle();
@@ -43,13 +46,15 @@ public class UpdateSprintCommandService implements UpdateSprintCommandServiceInt
     Sprint sprint =
         sprintRepository
             .findByIdAndDeletedAtIsNull(id)
-            .orElseThrow(() -> new BusinessException("Sprint not found: " + id));
+            .orElseThrow(() -> new BusinessException(
+                ResultMessages.error().add(ResultMessage.fromText("Sprint not found: " + id))));
 
     switch (status) {
       case ACTIVE -> sprint.start();
       case COMPLETED -> sprint.complete();
       case CANCELLED -> sprint.cancel();
-      default -> throw new BusinessException("Invalid status: " + status);
+      default -> throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("Invalid status: " + status)));
     }
 
     return sprintResponseAssembler.toDTO(sprint);

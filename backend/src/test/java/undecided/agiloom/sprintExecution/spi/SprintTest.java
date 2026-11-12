@@ -11,27 +11,33 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
 @DisplayName("Sprintのテスト")
 class SprintTest {
 
+  private static final UUID FIXED_PRODUCT_ID =
+      UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
+
   private Sprint createSprint() {
     return Sprint.of(
         SnowflakeId.of(1L),
-        UUID.randomUUID(),
+        FIXED_PRODUCT_ID,
         1,
         "Sprint 1",
         "Complete user authentication",
         LocalDate.now(),
         LocalDate.now().plusWeeks(2),
-        UUID.randomUUID(),
+        FIXED_TEAM_ID,
         "Team A",
         30,
         null,
-        null,
-        null);
+        LocalDateTime.now(),
+        LocalDateTime.now());
   }
 
   @Nested
@@ -79,7 +85,7 @@ class SprintTest {
   class CompleteMethodTest {
 
     @Test
-    @DisplayName("ステータスがCOMPLETEDに更新される")
+    @DisplayName("ACTIVE状態からCOMPLETEDに更新される")
     void shouldUpdateStatusToCompleted() {
       Sprint sprint = createSprint();
       sprint.start();
@@ -88,6 +94,16 @@ class SprintTest {
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.COMPLETED);
     }
+
+    @Test
+    @DisplayName("PLANNED状態からcompleteするとBusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenCompleteFromPlanned() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.complete())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("PLANNED");
+    }
   }
 
   @Nested
@@ -95,13 +111,26 @@ class SprintTest {
   class CancelMethodTest {
 
     @Test
-    @DisplayName("ステータスがCANCELLEDに更新される")
+    @DisplayName("PLANNED状態からCANCELLEDに更新される")
     void shouldUpdateStatusToCancelled() {
       Sprint sprint = createSprint();
 
       sprint.cancel();
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
+      assertThat(sprint.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("COMPLETED状態からcancelするとBusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenCancelFromCompleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.complete();
+
+      assertThatThrownBy(() -> sprint.cancel())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("COMPLETED");
     }
   }
 
@@ -119,6 +148,7 @@ class SprintTest {
       assertThat(sprint.getTitle()).isEqualTo("New Title");
       assertThat(sprint.getGoal()).isEqualTo("New Goal");
       assertThat(sprint.getNotes()).isEqualTo("New Notes");
+      assertThat(sprint.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -141,6 +171,177 @@ class SprintTest {
       sprint.update("Title", "Goal", null, "Notes");
 
       assertThat(sprint.getEndDate()).isEqualTo(originalEndDate);
+    }
+
+    @Test
+    @DisplayName("タイトルがnullの場合、既存値が使用される")
+    void shouldUseExistingTitleWhenNull() {
+      Sprint sprint = createSprint();
+      String originalTitle = sprint.getTitle();
+
+      sprint.update(null, "New Goal", null, null);
+
+      assertThat(sprint.getTitle()).isEqualTo(originalTitle);
+      assertThat(sprint.getGoal()).isEqualTo("New Goal");
+    }
+
+    @Test
+    @DisplayName("ゴールがnullの場合、既存値が使用される")
+    void shouldUseExistingGoalWhenNull() {
+      Sprint sprint = createSprint();
+      String originalGoal = sprint.getGoal();
+
+      sprint.update("New Title", null, null, null);
+
+      assertThat(sprint.getTitle()).isEqualTo("New Title");
+      assertThat(sprint.getGoal()).isEqualTo(originalGoal);
+    }
+
+    @Test
+    @DisplayName("タイトルが空文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsEmpty() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update("  ", "Goal", null, null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not be empty");
+    }
+
+    @Test
+    @DisplayName("ゴールが空文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenGoalIsEmpty() {
+      Sprint sprint = createSprint();
+
+      assertThatThrownBy(() -> sprint.update("Title", "  ", null, null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("goal must not be empty");
+    }
+
+    @Test
+    @DisplayName("タイトルが100文字の場合、更新される")
+    void shouldUpdateTitleWhen100Characters() {
+      Sprint sprint = createSprint();
+      String title100 = "a".repeat(100);
+
+      sprint.update(title100, "Goal", null, null);
+
+      assertThat(sprint.getTitle()).isEqualTo(title100);
+    }
+
+    @Test
+    @DisplayName("タイトルが101文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleExceeds100Characters() {
+      Sprint sprint = createSprint();
+      String title101 = "a".repeat(101);
+
+      assertThatThrownBy(() -> sprint.update(title101, "Goal", null, null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("title must not exceed 100 characters");
+    }
+
+    @Test
+    @DisplayName("ゴールが1000文字の場合、更新される")
+    void shouldUpdateGoalWhen1000Characters() {
+      Sprint sprint = createSprint();
+      String goal1000 = "b".repeat(1000);
+
+      sprint.update("Title", goal1000, null, null);
+
+      assertThat(sprint.getGoal()).isEqualTo(goal1000);
+    }
+
+    @Test
+    @DisplayName("ゴールが1001文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenGoalExceeds1000Characters() {
+      Sprint sprint = createSprint();
+      String goal1001 = "b".repeat(1001);
+
+      assertThatThrownBy(() -> sprint.update("Title", goal1001, null, null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("goal must not exceed 1000 characters");
+    }
+
+    @Test
+    @DisplayName("endDateがstartDateより前の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenEndDateIsBeforeStartDate() {
+      Sprint sprint = createSprint();
+      LocalDate pastEndDate = LocalDate.now().minusDays(1);
+
+      assertThatThrownBy(() -> sprint.update("Title", "Goal", pastEndDate, "Notes"))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("endDate must be after startDate");
+    }
+
+    @Test
+    @DisplayName("endDateがstartDateと等しい場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenEndDateEqualsStartDate() {
+      Sprint sprint = createSprint();
+      LocalDate startDate = sprint.getStartDate();
+
+      assertThatThrownBy(() -> sprint.update("Title", "Goal", startDate, "Notes"))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("endDate must be after startDate");
+    }
+  }
+
+  @Nested
+  @DisplayName("soft-delete関連のテスト")
+  class SoftDeleteTest {
+
+    @Test
+    @DisplayName("setDeletedAtでdeletedAtが設定される")
+    void shouldSetDeletedAt() {
+      Sprint sprint = createSprint();
+      LocalDateTime deletedAt = LocalDateTime.now();
+
+      sprint.setDeletedAt(deletedAt);
+
+      assertThat(sprint.getDeletedAt()).isEqualTo(deletedAt);
+    }
+
+    @Test
+    @DisplayName("soft-deleteされたSprintでstartするとBusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenStartAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.start())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("Sprint is already deleted");
+    }
+
+    @Test
+    @DisplayName("soft-deleteされたSprintでcompleteするとBusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenCompleteAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.complete())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("Sprint is already deleted");
+    }
+
+    @Test
+    @DisplayName("soft-deleteされたSprintでcancelするとBusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenCancelAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.cancel())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("Sprint is already deleted");
+    }
+
+    @Test
+    @DisplayName("soft-deleteされたSprintでupdateするとBusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenUpdateAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.update("New Title", "New Goal", null, null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("Sprint is already deleted");
     }
   }
 
@@ -179,170 +380,36 @@ class SprintTest {
     }
 
     @Test
-    @DisplayName("PLANNED状態でcompleteすると例外がスローされる")
-    void shouldThrowExceptionWhenCompleteFromPlanned() {
+    @DisplayName("PLANNEDからCANCELLEDへ遷移できる")
+    void shouldTransitionFromPlannedToCancelled() {
       Sprint sprint = createSprint();
 
-      assertThatThrownBy(() -> sprint.complete()).isInstanceOf(BusinessException.class);
+      sprint.cancel();
+      assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
     }
 
     @Test
-    @DisplayName("COMPLETED状態でstartすると例外がスローされる")
+    @DisplayName("COMPLETED状態からstartするとBusinessExceptionがスローされる")
     void shouldThrowExceptionWhenStartFromCompleted() {
       Sprint sprint = createSprint();
       sprint.start();
       sprint.complete();
 
-      assertThatThrownBy(() -> sprint.start()).isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> sprint.start())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("COMPLETED");
     }
 
     @Test
-    @DisplayName("COMPLETED状態でcancelすると例外がスローされる")
-    void shouldThrowExceptionWhenCancelFromCompleted() {
+    @DisplayName("COMPLETED状態からcompleteするとBusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenCompleteFromCompleted() {
       Sprint sprint = createSprint();
       sprint.start();
       sprint.complete();
 
-      assertThatThrownBy(() -> sprint.cancel()).isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("CANCELLED状態でstartすると例外がスローされる")
-    void shouldThrowExceptionWhenStartFromCancelled() {
-      Sprint sprint = createSprint();
-      sprint.cancel();
-
-      assertThatThrownBy(() -> sprint.start()).isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("ACTIVE状態でstartすると例外がスローされる")
-    void shouldThrowExceptionWhenStartFromActive() {
-      Sprint sprint = createSprint();
-      sprint.start();
-
-      assertThatThrownBy(() -> sprint.start()).isInstanceOf(BusinessException.class);
-    }
-  }
-
-  @Nested
-  @DisplayName("updateメソッドの異常系テスト")
-  class UpdateMethodNegativeTest {
-
-    @Test
-    @DisplayName("titleがnullの場合例外がスローされる")
-    void shouldThrowExceptionWhenTitleIsNull() {
-      Sprint sprint = createSprint();
-
-      assertThatThrownBy(() -> sprint.update(null, "Goal", null, null))
-          .isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("goalがnullの場合例外がスローされる")
-    void shouldThrowExceptionWhenGoalIsNull() {
-      Sprint sprint = createSprint();
-
-      assertThatThrownBy(() -> sprint.update("Title", null, null, null))
-          .isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("titleが空文字の場合例外がスローされる")
-    void shouldThrowExceptionWhenTitleIsEmpty() {
-      Sprint sprint = createSprint();
-
-      assertThatThrownBy(() -> sprint.update("  ", "Goal", null, null))
-          .isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("goalが空文字の場合例外がスローされる")
-    void shouldThrowExceptionWhenGoalIsEmpty() {
-      Sprint sprint = createSprint();
-
-      assertThatThrownBy(() -> sprint.update("Title", "  ", null, null))
-          .isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("titleが100文字を超える場合例外がスローされる")
-    void shouldThrowExceptionWhenTitleExceeds100Chars() {
-      Sprint sprint = createSprint();
-      String longTitle = "A".repeat(101);
-
-      assertThatThrownBy(() -> sprint.update(longTitle, "Goal", null, null))
-          .isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("goalが1000文字を超える場合例外がスローされる")
-    void shouldThrowExceptionWhenGoalExceeds1000Chars() {
-      Sprint sprint = createSprint();
-      String longGoal = "G".repeat(1001);
-
-      assertThatThrownBy(() -> sprint.update("Title", longGoal, null, null))
-          .isInstanceOf(BusinessException.class);
-    }
-
-    @Test
-    @DisplayName("endDateがstartDateより前の場合例外がスローされる")
-    void shouldThrowExceptionWhenEndDateBeforeStartDate() {
-      Sprint sprint = createSprint();
-      LocalDate pastDate = LocalDate.now().minusDays(1);
-
-      assertThatThrownBy(() -> sprint.update("Title", "Goal", pastDate, null))
-          .isInstanceOf(BusinessException.class);
-    }
-  }
-
-  @Nested
-  @DisplayName("論理削除後の変更禁止テスト")
-  class DeletedEntityChangeProhibitionTest {
-
-    @Test
-    @DisplayName("論理削除後にstartすると例外がスローされる")
-    void shouldThrowExceptionWhenStartAfterDeleted() {
-      Sprint sprint = createSprint();
-      sprint.setDeletedAt(LocalDateTime.now());
-
-      assertThatThrownBy(() -> sprint.start())
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("already deleted");
-    }
-
-    @Test
-    @DisplayName("論理削除後にcompleteすると例外がスローされる")
-    void shouldThrowExceptionWhenCompleteAfterDeleted() {
-      Sprint sprint = createSprint();
-      sprint.start();
-      sprint.setDeletedAt(LocalDateTime.now());
-
       assertThatThrownBy(() -> sprint.complete())
           .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("already deleted");
-    }
-
-    @Test
-    @DisplayName("論理削除後にcancelすると例外がスローされる")
-    void shouldThrowExceptionWhenCancelAfterDeleted() {
-      Sprint sprint = createSprint();
-      sprint.setDeletedAt(LocalDateTime.now());
-
-      assertThatThrownBy(() -> sprint.cancel())
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("already deleted");
-    }
-
-    @Test
-    @DisplayName("論理削除後にupdateすると例外がスローされる")
-    void shouldThrowExceptionWhenUpdateAfterDeleted() {
-      Sprint sprint = createSprint();
-      sprint.setDeletedAt(LocalDateTime.now());
-
-      assertThatThrownBy(() -> sprint.update("New Title", "New Goal", null, null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("already deleted");
+          .hasMessageContaining("COMPLETED");
     }
   }
 }

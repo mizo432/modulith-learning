@@ -4,6 +4,8 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 
 import com.github.mizo432.shared.common.dateProvider.DateProvider;
 import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessages;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -134,6 +136,14 @@ public class Sprint {
       SprintStatus status,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
+    checkNotNull(id, () -> new IllegalArgumentException("id must not be null"));
+    checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
+    checkNotNull(sprintNumber, () -> new IllegalArgumentException("sprintNumber must not be null"));
+    checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
+    checkNotNull(startDate, () -> new IllegalArgumentException("startDate must not be null"));
+    checkNotNull(endDate, () -> new IllegalArgumentException("endDate must not be null"));
+    checkNotNull(teamId, () -> new IllegalArgumentException("teamId must not be null"));
+    
     Sprint sprint = new Sprint();
     sprint.id = id;
     sprint.productId = productId;
@@ -153,65 +163,81 @@ public class Sprint {
 
   public void start() {
     if (this.deletedAt != null) {
-      throw new BusinessException("Sprint is already deleted");
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("Sprint is already deleted")));
     }
     if (this.status != SprintStatus.PLANNED) {
       throw new BusinessException(
-          "Sprint can only be started from PLANNED status, current status: " + this.status);
+          ResultMessages.error().add(ResultMessage.fromText(
+              "Sprint can only be started from PLANNED status, current status: " + this.status)));
     }
     this.status = SprintStatus.ACTIVE;
   }
 
   public void complete() {
     if (this.deletedAt != null) {
-      throw new BusinessException("Sprint is already deleted");
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("Sprint is already deleted")));
     }
     if (this.status != SprintStatus.ACTIVE) {
       throw new BusinessException(
-          "Sprint can only be completed from ACTIVE status, current status: " + this.status);
+          ResultMessages.error().add(ResultMessage.fromText(
+              "Sprint can only be completed from ACTIVE status, current status: " + this.status)));
     }
     this.status = SprintStatus.COMPLETED;
   }
 
   public void cancel() {
     if (this.deletedAt != null) {
-      throw new BusinessException("Sprint is already deleted");
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("Sprint is already deleted")));
     }
     if (this.status != SprintStatus.ACTIVE && this.status != SprintStatus.PLANNED) {
       throw new BusinessException(
-          "Sprint can only be cancelled from ACTIVE or PLANNED status, current status: "
-              + this.status);
+          ResultMessages.error().add(ResultMessage.fromText(
+              "Sprint can only be cancelled from ACTIVE or PLANNED status, current status: "
+                  + this.status)));
     }
     this.status = SprintStatus.CANCELLED;
   }
 
   public void update(
-      @NonNull String title,
-      @NonNull String goal,
+      @Nullable String title,
+      @Nullable String goal,
       @Nullable LocalDate endDate,
       @Nullable String notes) {
     if (this.deletedAt != null) {
-      throw new BusinessException("Sprint is already deleted");
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("Sprint is already deleted")));
     }
-    checkNotNull(title, () -> new BusinessException("title must not be null"));
-    checkNotNull(goal, () -> new BusinessException("goal must not be null"));
-    if (title.trim().isEmpty()) {
-      throw new BusinessException("title must not be empty");
+    String newTitle = (title != null) ? title : this.title;
+    String newGoal = (goal != null) ? goal : this.goal;
+    checkNotNull(newTitle, () -> new BusinessException(
+        ResultMessages.error().add(ResultMessage.fromText("title must not be null"))));
+    checkNotNull(newGoal, () -> new BusinessException(
+        ResultMessages.error().add(ResultMessage.fromText("goal must not be null"))));
+    if (newTitle.trim().isEmpty()) {
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("title must not be empty")));
     }
-    if (title.trim().length() > 100) {
-      throw new BusinessException("title must not exceed 100 characters");
+    if (newTitle.trim().length() > 100) {
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("title must not exceed 100 characters")));
     }
-    if (goal.trim().isEmpty()) {
-      throw new BusinessException("goal must not be empty");
+    if (newGoal.trim().isEmpty()) {
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("goal must not be empty")));
     }
-    if (goal.trim().length() > 1000) {
-      throw new BusinessException("goal must not exceed 1000 characters");
+    if (newGoal.trim().length() > 1000) {
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("goal must not exceed 1000 characters")));
     }
-    this.title = title;
-    this.goal = goal;
+    this.title = newTitle;
+    this.goal = newGoal;
     if (endDate != null) {
       if (!endDate.isAfter(this.startDate)) {
-        throw new BusinessException("endDate must be after startDate");
+        throw new BusinessException(
+            ResultMessages.error().add(ResultMessage.fromText("endDate must be after startDate")));
       }
       this.endDate = endDate;
     }
@@ -222,6 +248,7 @@ public class Sprint {
     this.status = status;
   }
 
+  @jakarta.annotation.Generated("Test")
   void setDeletedAt(LocalDateTime deletedAt) {
     this.deletedAt = deletedAt;
   }

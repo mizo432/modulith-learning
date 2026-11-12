@@ -18,8 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
 import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
 import undecided.agiloom.sprintExecution.spi.Sprint;
@@ -31,7 +29,6 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 @Tag("small")
 @DisplayName("CreateSprintCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class CreateSprintCommandServiceTest {
 
   private static final UUID FIXED_PRODUCT_ID =
@@ -50,7 +47,6 @@ class CreateSprintCommandServiceTest {
     service =
         new CreateSprintCommandService(
             sprintRepository, sprintResponseAssembler, snowflakeIdGenerator);
-    when(snowflakeIdGenerator.nextId()).thenReturn(1234567890L);
   }
 
   @Nested
@@ -61,6 +57,7 @@ class CreateSprintCommandServiceTest {
     @DisplayName("Sprintを作成してRepositoryに保存すること")
     void shouldCreateAndSaveSprint() {
       // Arrange
+      when(snowflakeIdGenerator.nextId()).thenReturn(1234567890L);
       CreateSprintCommand command =
           CreateSprintCommand.builder()
               .productId(FIXED_PRODUCT_ID)
@@ -112,6 +109,7 @@ class CreateSprintCommandServiceTest {
     @DisplayName("保存されたSprintのDTOを返すこと")
     void shouldReturnSavedSprintDto() {
       // Arrange
+      when(snowflakeIdGenerator.nextId()).thenReturn(9876543210L);
       CreateSprintCommand command =
           CreateSprintCommand.builder()
               .productId(FIXED_PRODUCT_ID)

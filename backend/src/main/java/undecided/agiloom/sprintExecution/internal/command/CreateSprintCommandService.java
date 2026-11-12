@@ -1,6 +1,8 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessages;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +32,8 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
 
   public SprintDTO execute(@NonNull CreateSprintCommand command) {
     if (!command.getEndDate().isAfter(command.getStartDate())) {
-      throw new BusinessException("endDate must be after startDate");
+      throw new BusinessException(
+          ResultMessages.error().add(ResultMessage.fromText("endDate must be after startDate")));
     }
     Sprint sprint =
         Sprint.of(
