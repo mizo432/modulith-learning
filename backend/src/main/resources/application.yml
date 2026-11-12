@@ -105,6 +105,18 @@ hikari:
     fallback-pool-size: 30
 
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
+
+# OpenTelemetry 設定
+# 開発環境ではOTLPコレクターが動作しないため、エクスポートを無効化しています。
+# 本番環境では management.otlp.*.export.enabled を true に設定し、エンドポイントを指定してください。
+otel:
+  service:
+    name: ${OTEL_SERVICE_NAME:backend}
+  exporter:
+    otlp:
+      protocol: grpc
+      # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
+
 management:
   endpoints:
     web:
@@ -113,12 +125,9 @@ management:
   endpoint:
     health:
       show-details: always
-
-# OpenTelemetry 設定
-otel:
-  service:
-    name: ${OTEL_SERVICE_NAME:backend}
-  exporter:
-    otlp:
-      protocol: grpc
-      # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
+  tracing:
+    enabled: false
+  otlp:
+    metrics:
+      export:
+        enabled: false
