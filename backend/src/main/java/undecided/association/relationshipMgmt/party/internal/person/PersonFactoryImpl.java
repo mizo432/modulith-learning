@@ -46,7 +46,8 @@ class PersonFactoryImpl implements PersonFactory {
             person.getGovtAssignedId(),
             person.getSearchName(),
             person.getLegalName(),
-            person.getDateOfBirth());
+            person.getDateOfBirth(),
+            person.getPartyRelationships());
     return result;
   }
 }

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -59,7 +60,8 @@ class CreatePersonCommandServiceTest {
         govtAssignedId,
         searchName,
         legalName,
-        dateOfBirth);
+        dateOfBirth,
+        Collections.emptyList());
   }
 
   private Person createPersonWithNullCode() {
@@ -71,7 +73,8 @@ class CreatePersonCommandServiceTest {
         null,
         null,
         LegalName.empty(),
-        DateOfBirth.empty());
+        DateOfBirth.empty(),
+        Collections.emptyList());
   }
 
   private Person createFactoryPerson(SnowflakeId id) {
@@ -88,7 +91,8 @@ class CreatePersonCommandServiceTest {
         govtAssignedId,
         searchName,
         legalName,
-        dateOfBirth);
+        dateOfBirth,
+        Collections.emptyList());
   }
 
   @Nested
