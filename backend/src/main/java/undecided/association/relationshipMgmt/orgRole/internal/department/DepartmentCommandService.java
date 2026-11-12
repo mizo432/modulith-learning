@@ -3,7 +3,7 @@ package undecided.association.relationshipMgmt.orgRole.internal.department;
 import undecided.association.relationshipMgmt.orgRole.spi.Department;
 import undecided.association.relationshipMgmt.orgRole.spi.DepartmentCode;
 
-public interface DepartmentCommand {
+public interface DepartmentCommandService {
   void insert(Department department);
 
   void update(DepartmentCode departmentCode, Department department);

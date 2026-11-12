@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
-import undecided.generic.accountMgmt.UserCommand;
+import undecided.generic.accountMgmt.UserCommandService;
 import com.github.mizo432.shared.exception.BusinessException;
 
 /**
@@ -15,7 +15,7 @@ import com.github.mizo432.shared.exception.BusinessException;
  */
 @RequiredArgsConstructor
 @Service
-public class UserCommandImpl implements UserCommand {
+public class UserCommandServiceImpl implements UserCommandService {
 
   private static final String AUTHORIZATION_SERVICE_URL = "http://localhost:8082";
   private final RestTemplate restTemplate;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import undecided.jobmanagement.jobexecution.spi.jobexecution.command.StartJobCommand;
+import undecided.jobmanagement.jobexecution.spi.jobexecution.command.StartJobCommandService;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.dto.JobExecutionDTO;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -19,11 +19,11 @@ import java.net.URI;
 @RequestMapping("/api/job-executions")
 public class JobExecutionController {
 
-  private final StartJobCommand startJobCommand;
+  private final StartJobCommandService startJobCommandService;
 
   @PostMapping
   public ResponseEntity<Void> startJob(@Valid @RequestBody JobExecutionDTO jobExecutionDTO) {
-    SnowflakeId id = startJobCommand.startJob(jobExecutionDTO);
+    SnowflakeId id = startJobCommandService.startJob(jobExecutionDTO);
     URI location = UriComponentsBuilder.fromPath("/api/job-executions/{id}")
         .buildAndExpand(id.value())
         .toUri();

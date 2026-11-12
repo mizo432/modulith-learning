@@ -8,7 +8,7 @@ import undecided.jobmanagement.jobdefinition.spi.jobdefinition.JobCode;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.JobDefinition;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.JobVersion;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.ParameterSpec;
-import undecided.jobmanagement.jobdefinition.spi.jobdefinition.command.RegisterJobDefinitionCommand;
+import undecided.jobmanagement.jobdefinition.spi.jobdefinition.command.RegisterJobDefinitionCommandService;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.dto.JobDefinitionDTO;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Service
-public class RegisterJobDefinitionCommandService implements RegisterJobDefinitionCommand {
+public class RegisterJobDefinitionCommandServiceImpl implements RegisterJobDefinitionCommandService {
 
   private final JobDefinitionRepository jobDefinitionRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
