@@ -1,3 +1,3 @@
 package undecided.association.relationshipMgmt.spi.party;
 
-public interface CreateOrgCommand {}
+public interface CreateOrgCommandService {}

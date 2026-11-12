@@ -7,7 +7,7 @@ import undecided.association.relationshipMgmt.spi.party.bankAccount.dto.BankAcco
  *
  * <p>パーティが銀行口座を特定の用途で使用する関係を登録するために使用されます。
  */
-public interface UseBankAccountCommand {
+public interface UseBankAccountCommandService {
 
   /**
    * 銀行口座の用途情報を新規登録します。

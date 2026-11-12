@@ -11,7 +11,7 @@ import undecided.association.relationshipMgmt.orgRole.spi.DepartmentCode;
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class DepartmentCommandImpl implements DepartmentCommand {
+public class DepartmentCommandServiceImpl implements DepartmentCommandService {
 
   private final DepartmentRepository repository;
 

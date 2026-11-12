@@ -30,12 +30,12 @@ class UseBankAccountCommandServiceTest {
   private final SnowflakeIdGenerator snowflakeIdGenerator = mock(SnowflakeIdGenerator.class);
   @Mock private BankAccountUseRepository bankAccountUseRepository;
 
-  private UseBankAccountCommandService service;
+  private UseBankAccountCommandServiceImpl service;
 
   @org.junit.jupiter.api.BeforeEach
   void setUp() {
     UseBankAccountFactory factory = new UseBankAccountFactoryImpl(snowflakeIdGenerator);
-    service = new UseBankAccountCommandService(factory, bankAccountUseRepository);
+    service = new UseBankAccountCommandServiceImpl(factory, bankAccountUseRepository);
   }
 
   @Nested

@@ -1,7 +1,7 @@
 package undecided.generic.accountMgmt;
 
 /** ユーザー操作用のコマンドインターフェースです。 */
-public interface UserCommand {
+public interface UserCommandService {
 
   /**
    * パスワードを変更します。

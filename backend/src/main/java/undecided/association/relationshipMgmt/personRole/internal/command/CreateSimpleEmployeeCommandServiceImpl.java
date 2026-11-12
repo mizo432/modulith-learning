@@ -3,14 +3,14 @@ package undecided.association.relationshipMgmt.personRole.internal.command;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import undecided.association.relationshipMgmt.personRole.internal.repository.EmployeeRepository;
-import undecided.association.relationshipMgmt.personRole.spi.employee.CreateSimpleEmployeeCommand;
+import undecided.association.relationshipMgmt.personRole.spi.employee.CreateSimpleEmployeeCommandService;
 import undecided.association.relationshipMgmt.personRole.spi.employee.SimpleEmployee;
 import undecided.association.relationshipMgmt.personRole.spi.employee.dto.EmployeeDto;
 
 /** 従業員の新規作成コマンドサービスです。 EmployeeDtoからSimpleEmployeeエンティティを作成し、データベースに保存します。 */
 @RequiredArgsConstructor
 @Service
-public class CreateSimpleEmployeeCommandService implements CreateSimpleEmployeeCommand {
+public class CreateSimpleEmployeeCommandServiceImpl implements CreateSimpleEmployeeCommandService {
   private final EmployeeFactory employeeFactory;
   private final EmployeeRepository employeeRepository;
 
