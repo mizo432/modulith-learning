@@ -1,4 +1,4 @@
-package undecided.association.relationshipMgmt.party.command;
+package undecided.association.relationshipMgmt.party.internal.bankAccountUse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
-import undecided.association.relationshipMgmt.party.internal.bankAccountUse.BankAccountUseRepository;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUse;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUseType;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.dto.BankAccountUseDto;
@@ -94,6 +93,94 @@ class UseBankAccountCommandServiceMediumTest {
       // Assert
       List<BankAccountUse> saved = repository.findAll();
       assertThat(saved).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("保存されたBankAccountUseのWhenOccuredが正しく設定されること")
+    void shouldSetWhenOccuredCorrectly() {
+      // Arrange
+      SnowflakeId bankAccountId = SnowflakeId.of(1111111111L);
+      SnowflakeId partyId = SnowflakeId.of(2222222222L);
+
+      BankAccountUseDto dto =
+          new BankAccountUseDto(
+              bankAccountId, SnowflakeId.empty(), partyId, BankAccountUseType.UNKNOWN, null);
+
+      // Act
+      service.use(dto);
+
+      // Assert
+      List<BankAccountUse> saved = repository.findAll();
+      assertThat(saved).hasSize(1);
+
+      BankAccountUse savedEntity = saved.get(0);
+      assertThat(savedEntity.getWhenOccured())
+          .as("発生時刻がnullでないこと")
+          .isNotNull();
+      assertThat(savedEntity.getWhenOccured().value())
+          .as("発生時刻の値がnullでないこと")
+          .isNotNull();
+    }
+
+    @Test
+    @DisplayName("保存されたBankAccountUseのIDが一意であること")
+    void shouldHaveUniqueIds() {
+      // Arrange
+      BankAccountUseDto dto1 =
+          new BankAccountUseDto(
+              SnowflakeId.of(1111111111L),
+              SnowflakeId.empty(),
+              SnowflakeId.of(2222222222L),
+              BankAccountUseType.UNKNOWN,
+              null);
+      BankAccountUseDto dto2 =
+          new BankAccountUseDto(
+              SnowflakeId.of(3333333333L),
+              SnowflakeId.empty(),
+              SnowflakeId.of(4444444444L),
+              BankAccountUseType.UNKNOWN,
+              null);
+
+      // Act
+      service.use(dto1);
+      service.use(dto2);
+
+      // Assert
+      List<BankAccountUse> saved = repository.findAll();
+      assertThat(saved).hasSize(2);
+
+      SnowflakeId id1 = saved.get(0).getBankAccountUseId();
+      SnowflakeId id2 = saved.get(1).getBankAccountUseId();
+      assertThat(id1).as("2つのIDは異なること").isNotEqualTo(id2);
+    }
+
+    @Test
+    @DisplayName("同一のbankAccountIdとpartyIdで複数のBankAccountUseが保存できること")
+    void shouldSaveMultipleBankAccountUsesWithSameAccountAndParty() {
+      // Arrange
+      SnowflakeId bankAccountId = SnowflakeId.of(1111111111L);
+      SnowflakeId partyId = SnowflakeId.of(2222222222L);
+
+      BankAccountUseDto dto1 =
+          new BankAccountUseDto(
+              bankAccountId, SnowflakeId.empty(), partyId, BankAccountUseType.UNKNOWN, null);
+      BankAccountUseDto dto2 =
+          new BankAccountUseDto(
+              bankAccountId, SnowflakeId.empty(), partyId, BankAccountUseType.UNKNOWN, null);
+
+      // Act
+      service.use(dto1);
+      service.use(dto2);
+
+      // Assert
+      List<BankAccountUse> saved = repository.findAll();
+      assertThat(saved).hasSize(2);
+
+      // 両方のレコードが同じbankAccountIdとpartyIdを持っていることを確認
+      for (BankAccountUse entity : saved) {
+        assertThat(entity.getBankAccountId().value()).isEqualTo(bankAccountId.value());
+        assertThat(entity.getPartyId().value()).isEqualTo(partyId.value());
+      }
     }
   }
 
