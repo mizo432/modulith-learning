@@ -1,9 +1,9 @@
 package com.github.mizo432.shared.application;
 
-import com.github.mizo432.shared.spring.logging.ExceptionCodeResolver;
-import com.github.mizo432.shared.spring.logging.ExceptionLogger;
-import com.github.mizo432.shared.spring.logging.ResultMessagesLoggingInterceptor;
-import com.github.mizo432.shared.spring.logging.SimpleMappingExceptionCodeResolver;
+import com.github.mizo432.shared.logging.ExceptionCodeResolver;
+import com.github.mizo432.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.logging.ResultMessagesLoggingInterceptor;
+import com.github.mizo432.shared.logging.SimpleMappingExceptionCodeResolver;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import org.springframework.aop.Advisor;

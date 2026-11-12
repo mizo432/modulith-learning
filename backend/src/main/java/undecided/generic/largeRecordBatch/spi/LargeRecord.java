@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.Objects;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -19,6 +19,7 @@ import lombok.ToString;
  * 学ぶためのサンプルデータとして使用されます。
  */
 @Getter
+@Setter
 @ToString
 @Entity
 @Table(
@@ -60,50 +61,4 @@ public class LargeRecord {
   @Size(max = 10)
   @Column(name = "status", comment = "Status (ACTIVE/INACTIVE)", length = 10)
   private String status;
-
-  // JPAおよびバッチ処理用パッケージプライベートセッター
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public void setRecordCode(String recordCode) {
-    this.recordCode = recordCode;
-  }
-
-  public void setRecordName(String recordName) {
-    this.recordName = recordName;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
-  public void setSubCategory(String subCategory) {
-    this.subCategory = subCategory;
-  }
-
-  public void setAmount(Long amount) {
-    this.amount = amount;
-  }
-
-  public void setQuantity(Integer quantity) {
-    this.quantity = quantity;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    LargeRecord that = (LargeRecord) o;
-    return Objects.equals(id, that.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
 }

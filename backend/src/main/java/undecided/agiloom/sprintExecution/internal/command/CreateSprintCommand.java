@@ -2,32 +2,36 @@ package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateSprintCommand {
     @NonNull
-    private final UUID productId;
+    private UUID productId;
 
     @NonNull
-    private final Integer sprintNumber;
+    private Integer sprintNumber;
 
     @NonNull
-    private final String title;
+    private String title;
 
-    private final String goal;
-
-    @NonNull
-    private final LocalDate startDate;
+    private String goal;
 
     @NonNull
-    private final LocalDate endDate;
+    private LocalDate startDate;
 
     @NonNull
-    private final UUID teamId;
+    private LocalDate endDate;
 
-    private final String teamName;
+    @NonNull
+    private UUID teamId;
+
+    private String teamName;
 }

@@ -44,14 +44,14 @@ class SampleAddressTest {
   }
 
   @Nested
-  @DisplayName("createファクトリメソッドのテスト")
-  class CreateMethodTest {
+  @DisplayName("ofファクトリメソッドのテスト")
+  class OfMethodTest {
 
     @Test
-    @DisplayName("createメソッドで住所インスタンスが作成される")
-    void shouldCreateAddressWithCreateMethod() {
+    @DisplayName("ofメソッドで住所インスタンスが作成される")
+    void shouldCreateAddressWithOfMethod() {
       // Act
-      SampleAddress address = SampleAddress.create("日本", "大阪府", "大阪市", "梅田1-1-1");
+      SampleAddress address = SampleAddress.of("日本", "大阪府", "大阪市", "梅田1-1-1");
 
       // Assert
       assertThat(address.getCountry()).isEqualTo("日本");
@@ -64,7 +64,7 @@ class SampleAddressTest {
     @DisplayName("null引数でもインスタンスが作成される")
     void shouldCreateAddressWithNullArguments() {
       // Act
-      SampleAddress address = SampleAddress.create(null, null, null, null);
+      SampleAddress address = SampleAddress.of(null, null, null, null);
 
       // Assert
       assertThat(address).isNotNull();

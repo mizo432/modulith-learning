@@ -10,8 +10,6 @@ import org.flywaydb.core.api.migration.Context;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * employeesテーブルのfirstNameとlastNameカラムの既存データを暗号化するFlyway Javaマイグレーションです。
@@ -20,8 +18,6 @@ import org.slf4j.LoggerFactory;
  * 暗号化されていないデータ（復号化できないデータ）を識別し、それらを暗号化して更新します。
  */
 public class V20261027130000__encrypt_employee_names extends BaseJavaMigration {
-
-  private static final Logger log = LoggerFactory.getLogger(V20261027130000__encrypt_employee_names.class);
 
   private static final String ALGORITHM = "PBEWithHMACSHA512AndAES_256";
   private static final int POOL_SIZE = 2;
@@ -116,6 +112,6 @@ public class V20261027130000__encrypt_employee_names extends BaseJavaMigration {
   }
 
   private void log(Context context, String message) {
-    log.info("[Flyway Migration] " + message);
+    System.out.println("[Flyway Migration] " + message);
   }
 }

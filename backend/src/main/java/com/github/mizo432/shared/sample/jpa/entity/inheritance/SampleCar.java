@@ -3,7 +3,6 @@ package com.github.mizo432.shared.sample.jpa.entity.inheritance;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,17 +39,5 @@ public class SampleCar extends SampleVehicle {
     super(vehicleId, vehicleName, licensePlate);
     this.seatCount = seatCount;
     this.trunkCapacity = trunkCapacity;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    return super.equals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
   }
 }

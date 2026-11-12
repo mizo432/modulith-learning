@@ -7,14 +7,14 @@ CREATE OR REPLACE VIEW undecided_as.v_party_summary AS
 SELECT 
     p.party_id,
     p.party_type,
-    p.simple_name
+    p.simple_mame
 FROM undecided_as.parties p;
 
 -- Viewへのコメント付与
 COMMENT ON VIEW undecided_as.v_party_summary IS 'パーティのサマリー情報を提供するView';
 COMMENT ON COLUMN undecided_as.v_party_summary.party_id IS 'パーティの一意な識別子';
 COMMENT ON COLUMN undecided_as.v_party_summary.party_type IS 'パーティタイプ（PERSON, COMPANY など）';
-COMMENT ON COLUMN undecided_as.v_party_summary.simple_name IS 'パーティの名称';
+COMMENT ON COLUMN undecided_as.v_party_summary.simple_mame IS 'パーティの名称';
 
 -- パーティ集計Materialized Viewの作成
 -- パーティタイプごとの集計結果を物理的に保存します。

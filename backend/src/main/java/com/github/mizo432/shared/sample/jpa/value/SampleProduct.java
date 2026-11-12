@@ -1,7 +1,5 @@
 package com.github.mizo432.shared.sample.jpa.value;
 
-import com.github.mizo432.shared.common.value.ValueObject;
-import com.github.mizo432.shared.sample.jpa.entity.converter.SampleCurrencyCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -11,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.github.mizo432.shared.value.ValueObject;
+import com.github.mizo432.shared.sample.jpa.entity.converter.SampleCurrencyCode;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 

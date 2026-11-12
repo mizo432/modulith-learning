@@ -4,12 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.exception.ResultMessagesNotificationException;
-import com.github.mizo432.shared.common.message.ResultMessage;
-import com.github.mizo432.shared.common.message.ResultMessages;
-import com.github.mizo432.shared.spring.logging.ExceptionLogger;
-import com.github.mizo432.shared.spring.logging.ResultMessagesLoggingInterceptor;
+import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.exception.ResultMessagesNotificationException;
+import com.github.mizo432.shared.message.ResultMessage;
+import com.github.mizo432.shared.message.ResultMessages;
+import com.github.mizo432.shared.message.StandardResultMessageType;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -58,7 +57,8 @@ class ResultMessagesLoggingInterceptorTest {
       when(methodInvocation.proceed()).thenThrow(ex);
 
       // Act & Assert
-      assertThatThrownBy(() -> interceptor.invoke(methodInvocation)).isSameAs(ex);
+      assertThatThrownBy(() -> interceptor.invoke(methodInvocation))
+          .isSameAs(ex);
 
       verify(exceptionLogger, times(1)).error(ex);
       verify(exceptionLogger, never()).warn(ex);
@@ -75,14 +75,14 @@ class ResultMessagesLoggingInterceptorTest {
       ResultMessagesLoggingInterceptor interceptor = new ResultMessagesLoggingInterceptor();
       interceptor.setExceptionLogger(exceptionLogger);
 
-      ResultMessages warningMessages =
-          ResultMessages.warning().add(ResultMessage.fromText("Warning"));
+      ResultMessages warningMessages = ResultMessages.warning().add(ResultMessage.fromText("Warning"));
       ResultMessagesNotificationException ex = new BusinessException(warningMessages);
 
       when(methodInvocation.proceed()).thenThrow(ex);
 
       // Act & Assert
-      assertThatThrownBy(() -> interceptor.invoke(methodInvocation)).isSameAs(ex);
+      assertThatThrownBy(() -> interceptor.invoke(methodInvocation))
+          .isSameAs(ex);
 
       verify(exceptionLogger, times(1)).warn(ex);
       verify(exceptionLogger, never()).error(ex);
@@ -105,7 +105,8 @@ class ResultMessagesLoggingInterceptorTest {
       when(methodInvocation.proceed()).thenThrow(ex);
 
       // Act & Assert
-      assertThatThrownBy(() -> interceptor.invoke(methodInvocation)).isSameAs(ex);
+      assertThatThrownBy(() -> interceptor.invoke(methodInvocation))
+          .isSameAs(ex);
 
       verify(exceptionLogger, times(1)).info(ex);
       verify(exceptionLogger, never()).error(ex);
@@ -128,7 +129,8 @@ class ResultMessagesLoggingInterceptorTest {
       when(methodInvocation.proceed()).thenThrow(ex);
 
       // Act & Assert
-      assertThatThrownBy(() -> interceptor.invoke(methodInvocation)).isSameAs(ex);
+      assertThatThrownBy(() -> interceptor.invoke(methodInvocation))
+          .isSameAs(ex);
 
       verify(exceptionLogger, times(1)).log(ex);
       verify(exceptionLogger, never()).error(ex);
@@ -149,7 +151,8 @@ class ResultMessagesLoggingInterceptorTest {
       when(methodInvocation.proceed()).thenThrow(ex);
 
       // Act & Assert
-      assertThatThrownBy(() -> interceptor.invoke(methodInvocation)).isSameAs(ex);
+      assertThatThrownBy(() -> interceptor.invoke(methodInvocation))
+          .isSameAs(ex);
 
       // exceptionLoggerは呼び出されない
       verify(exceptionLogger, never()).error(any());
@@ -181,7 +184,8 @@ class ResultMessagesLoggingInterceptorTest {
           });
 
       // Act & Assert
-      assertThatThrownBy(() -> interceptor.invoke(outerInvocation)).isSameAs(ex);
+      assertThatThrownBy(() -> interceptor.invoke(outerInvocation))
+          .isSameAs(ex);
 
       // 外側の呼び出し1回分のみのログ記録
       verify(exceptionLogger, times(1)).error(ex);

@@ -1,14 +1,13 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.common.value.StringCode;
-import com.github.mizo432.shared.converter.EncryptedStringConverter;
-import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
+import com.github.mizo432.shared.converter.EncryptedStringConverter;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 姓（ラストネーム）を表す値オブジェクトです。
@@ -40,18 +39,18 @@ public class LastName implements StringCode<LastName> {
    *
    * @param lastName 姓（1文字以上50文字以下）
    * @return 姓の値オブジェクト
-   * @throws BusinessException 姓がnull、空、または文字数制限を超えている場合
+   * @throws IllegalArgumentException 姓がnull、空、または文字数制限を超えている場合
    */
   public static LastName of(String lastName) {
     if (lastName == null) {
-      throw new BusinessException("lastName must not be null");
+      throw new IllegalArgumentException("lastName must not be null");
     }
     String trimmed = lastName.trim();
     if (trimmed.isEmpty()) {
-      throw new BusinessException("lastName must not be empty");
+      throw new IllegalArgumentException("lastName must not be empty");
     }
     if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
-      throw new BusinessException(
+      throw new IllegalArgumentException(
           "lastName must be between "
               + MIN_LENGTH
               + " and "

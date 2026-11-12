@@ -1,6 +1,5 @@
 package undecided.generic.accountMgmt;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -14,7 +13,7 @@ public record Username(@NonNull String value) {
       return;
     }
     if (value.length() > 50) {
-      throw new BusinessException("Username must be 50 characters or less");
+      throw new IllegalArgumentException("Username must be 50 characters or less");
     }
     this.value = value;
   }

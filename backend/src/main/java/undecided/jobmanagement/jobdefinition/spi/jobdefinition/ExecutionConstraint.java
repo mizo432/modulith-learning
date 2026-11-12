@@ -1,33 +1,22 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Embeddable
-public final class ExecutionConstraint {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ExecutionConstraint {
 
-  private final Integer maxConcurrentExecutions;
-  private final Integer timeoutSeconds;
+  private Integer maxConcurrentExecutions;
+  private Integer timeoutSeconds;
 
-  // JPA用
-  protected ExecutionConstraint() {
-    this.maxConcurrentExecutions = null;
-    this.timeoutSeconds = null;
-  }
-
-  ExecutionConstraint(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
+  public ExecutionConstraint(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
     this.maxConcurrentExecutions = maxConcurrentExecutions;
     this.timeoutSeconds = timeoutSeconds;
   }
 
-  public static ExecutionConstraint create(
-      Integer maxConcurrentExecutions, Integer timeoutSeconds) {
-    if (maxConcurrentExecutions != null && maxConcurrentExecutions <= 0) {
-      throw new BusinessException("maxConcurrentExecutions must be positive");
-    }
-    if (timeoutSeconds != null && timeoutSeconds <= 0) {
-      throw new BusinessException("timeoutSeconds must be positive");
-    }
+  public static ExecutionConstraint of(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
     return new ExecutionConstraint(maxConcurrentExecutions, timeoutSeconds);
   }
 
@@ -40,21 +29,12 @@ public final class ExecutionConstraint {
   }
 
   @Override
-  public String toString() {
-    return "ExecutionConstraint{maxConcurrentExecutions="
-        + maxConcurrentExecutions
-        + ", timeoutSeconds="
-        + timeoutSeconds
-        + "}";
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ExecutionConstraint that = (ExecutionConstraint) o;
-    return java.util.Objects.equals(maxConcurrentExecutions, that.maxConcurrentExecutions)
-        && java.util.Objects.equals(timeoutSeconds, that.timeoutSeconds);
+    return java.util.Objects.equals(maxConcurrentExecutions, that.maxConcurrentExecutions) &&
+        java.util.Objects.equals(timeoutSeconds, that.timeoutSeconds);
   }
 
   @Override

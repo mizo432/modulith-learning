@@ -1,27 +1,19 @@
 package undecided.apigateway.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
-import org.springframework.web.cors.CorsConfiguration;
-import undecided.apigateway.config.handlers.JwtAccessDeniedHandler;
-import undecided.apigateway.config.handlers.JwtAuthenticationEntryPoint;
 
 /**
  * APIゲートウェイのセキュリティ設定
@@ -38,45 +30,21 @@ import undecided.apigateway.config.handlers.JwtAuthenticationEntryPoint;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  private final @NonNull CorsProperties corsProperties;
-  private final boolean swaggerUiEnabled;
-  private final @NonNull ObjectMapper objectMapper;
-
-  public SecurityConfig(@NonNull CorsProperties corsProperties,
-                        @Value("${springdoc.swagger-ui.enabled:false}") boolean swaggerUiEnabled,
-                        @NonNull ObjectMapper objectMapper) {
-    this.corsProperties = corsProperties;
-    this.swaggerUiEnabled = swaggerUiEnabled;
-    this.objectMapper = objectMapper;
-  }
-
   /**
-   * JWTのrolesクレームからGrantedAuthorityリストを抽出します。
-   *
-   * <p>設計書 2.3節で定義された`roles`クレームを使用し、各ロールに`ROLE_`プレフィックスを追加します。
-   * これにより、Spring Securityの`hasRole()`メソッドが正しく動作します。
-   *
-   * <p>rolesクレームがnull、またはList以外の型（文字列、数値など）の場合、
-   * 安全にフォールバックして空リストを返します。これは意図的な動作であり、
-   * 不正な形式のクレームを持つトークンを拒否するのではなく、
-   * 権限なしで認証済みとして扱います。
+   * JWTのauthoritiesクレームからGrantedAuthorityリストを抽出します。
    *
    * @param jwt JWTトークン
    * @return GrantedAuthorityのコレクション
    */
-  private static @NonNull Collection<? extends GrantedAuthority> extractAuthorities(@NonNull Jwt jwt) {
-    Object rolesObj = jwt.getClaim("roles");
-    if (rolesObj instanceof List<?> list) {
+  private static Collection<? extends GrantedAuthority> extractAuthorities(Jwt jwt) {
+    Object authoritiesObj = jwt.getClaim("authorities");
+    if (authoritiesObj instanceof List<?> list) {
       return list.stream()
           .filter(obj -> obj instanceof String)
           .map(obj -> (String) obj)
-          .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+          .map(SimpleGrantedAuthority::new)
           .collect(Collectors.toList());
     }
-    // rolesクレームがnull、またはList以外の型（文字列、数値など）の場合、
-    // 安全にフォールバックして空リストを返す。これは意図的な動作であり、
-    // 不正な形式のクレームを持つトークンを拒否するのではなく、
-    // 権限なしで認証済みとして扱う。
     return List.of();
   }
 
@@ -85,75 +53,27 @@ public class SecurityConfig {
    *
    * <p>REQ-00003: APIゲートウェイで認証・認可を行うために、ロールベースのアクセス制御を構成します。
    *
-   * <p>設計書 5節に基づくCORS設定を適用し、設計書 6節に基づくセキュリティヘッダーを追加します。
-   *
    * @param http HttpSecurity
    * @return SecurityFilterChain
    * @throws Exception 例外
    */
   @Bean
-  public @NonNull SecurityFilterChain securityFilterChain(@NonNull HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .cors(
-            cors ->
-                cors.configurationSource(
-                    request -> {
-                      var config = new CorsConfiguration();
-                      config.setAllowedOrigins(corsProperties.getAllowedOrigins());
-                      config.setAllowedMethods(corsProperties.getAllowedMethods());
-                      config.setAllowedHeaders(corsProperties.getAllowedHeaders());
-                      config.setExposedHeaders(corsProperties.getExposedHeaders());
-                      config.setAllowCredentials(corsProperties.isAllowCredentials());
-                      config.setMaxAge(corsProperties.getMaxAge());
-                      return config;
-                    }))
-        .headers(
-            headers ->
-                headers
-                    // contentTypeOptionsはデフォルトでnosniffが有効
-                    .frameOptions(frame -> frame.deny())
-                    .httpStrictTransportSecurity(
-                        hsts ->
-                            hsts.includeSubDomains(true).maxAgeInSeconds(31536000))
-                    .xssProtection(
-                        xss ->
-                            xss.headerValue(
-                                XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
-                    .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
-                    .cacheControl(cache -> cache.disable()))
-        .authorizeHttpRequests(
-            authorize -> {
-                // Swagger UI は開発環境でのみ公開。本番環境ではspringdoc.swagger-ui.enabled=falseに設定すること。
-                if (swaggerUiEnabled) {
-                    authorize.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
-                        .permitAll();
-                }
-                // 認証関連エンドポイントは公開（ログイン/トークン更新など）
-                authorize.requestMatchers("/api/auth/**")
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(
+            authorize ->
+                authorize
+                    // Swagger UI は公開
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                     .permitAll()
-                    // 管理者用APIはROLE_PRODUCT_OWNERのみアクセス可能
-                    // 設計書 3.2節にADMINロールが定義されていないため、PRODUCT_OWNERを使用
+                    // 管理者用APIはROLE_ADMINのみアクセス可能
                     .requestMatchers("/api/admin/**")
-                    .hasRole("PRODUCT_OWNER")
-                    // ヘルスチェックエンドポイントは公開
-                    .requestMatchers("/actuator/health")
-                    .permitAll()
-                    // 一般APIパスは認証済みユーザーがアクセス可能
-                    .requestMatchers("/api/**")
-                    .authenticated()
-                    // 明示的に許可されていないルートはすべて拒否
+                    .hasRole("ADMIN")
+                    // 一般APIは認証済みユーザーならアクセス可能
                     .anyRequest()
-                    .denyAll();
-            })
+                    .authenticated())
         .oauth2ResourceServer(
             oauth2 ->
-                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
-        .exceptionHandling(
-            ex -> ex
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
-                .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper)));
+                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
     return http.build();
   }
@@ -161,14 +81,13 @@ public class SecurityConfig {
   /**
    * JWT認証コンバーターを設定します。
    *
-   * <p>REQ-00003: JWTの「roles」クレームからロール情報を抽出し、各ロールに「ROLE_」プレフィックスを
-   * 追加してSpring SecurityのGrantedAuthorityとして設定します。これにより、APIゲートウェイで
-   * ロールベースの認可が可能になります。
+   * <p>REQ-00003: JWTの「authorities」クレームからロール情報を抽出し、 Spring SecurityのGrantedAuthorityとして設定します。
+   * これにより、APIゲートウェイでロールベースの認可が可能になります。
    *
    * @return Converter<Jwt, ? extends AbstractAuthenticationToken>
    */
   @Bean
-  public @NonNull Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
+  public Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
     return jwt -> {
       Collection<? extends GrantedAuthority> authorities = extractAuthorities(jwt);
       return new JwtAuthenticationToken(jwt, authorities);

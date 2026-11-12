@@ -1,0 +1,6 @@
+属性名	型	PK	必須	説明
+party_type_code	Code	*	Y	パーティー種類コード
+name	String		Y	パーティー種類名
+description	Text		N	パーティー種類の説明
+created_at	DateTime		Y	作成日時
+

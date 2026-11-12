@@ -2,10 +2,6 @@ package undecided.config.presentation.exception;
 
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.exception.ResultMessagesNotificationException;
-import com.github.mizo432.shared.common.primitive.Lists2;
-import com.github.mizo432.shared.spring.logging.ExceptionLogger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
@@ -26,6 +22,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
+import com.github.mizo432.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.exception.ResultMessagesNotificationException;
+import com.github.mizo432.shared.common.primitive.Lists2;
 
 /**
  * アプリケーション全体で発生する例外をハンドリングするクラス。
@@ -48,37 +47,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    * @return エラーの詳細情報を含む {@code ProblemDetail} オブジェクト。HTTPステータスと最後のメッセージが格納されています。
    */
   @ExceptionHandler(ResultMessagesNotificationException.class)
-  public @NonNull ProblemDetail handleResultMessagesNotificationException(
+  public @NonNull ProblemDetail handleBusinessException(
       @NonNull ResultMessagesNotificationException e) {
     checkNotNull(e, () -> new NullPointerException("e must not be null."));
     Map<String, Object> error = new HashMap<>();
     error.put("error", e.getMessage());
-
-    // 空リストの場合のNullPointerExceptionを回避
-    var lastMessage = Lists2.getLast(e.getResultMessages().getList());
-    String detail = (lastMessage != null) ? lastMessage.text() : e.getMessage();
-
-    return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
-  }
-
-  /**
-   * {@code BusinessException} をハンドリングし、400 Bad Request のエラーレスポンスを返却します。
-   *
-   * <p>業務ロジックで発生する例外（入力値の不正、状態遷移の失敗など）をクライアントに通知します。
-   *
-   * @param e 処理対象の {@code BusinessException}
-   * @param request エラーが発生した際のリクエスト情報を表す {@code HttpServletRequest} オブジェクト。
-   * @return 400 Bad Request の {@code ProblemDetail} オブジェクト
-   */
-  @ExceptionHandler(BusinessException.class)
-  public @NonNull ProblemDetail handleBusinessException(
-      @NonNull BusinessException e, @NonNull HttpServletRequest request) {
-    ProblemDetail problem =
-        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-    problem.setTitle("Business Error");
-    problem.setInstance(URI.create(request.getRequestURI()));
-    problem.setProperty("errorCode", "BUSINESS_ERROR");
-    return problem;
+    return ProblemDetail.forStatusAndDetail(
+        HttpStatus.BAD_REQUEST, Lists2.getLast(e.getResultMessages().getList()).text());
   }
 
   /**
@@ -161,26 +136,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
     problem.setTitle("Idempotency Key Conflict");
     problem.setProperty("errorCode", "IDEMPOTENCY_KEY_CONFLICT");
-    return problem;
-  }
-
-  /**
-   * {@code IllegalArgumentException} をハンドリングし、400 Bad Request のエラーレスポンスを返却します。
-   *
-   * <p>ID形式の不正や引数の検証失敗など、クライアントのミスによって発生します。
-   *
-   * @param ex 処理対象の {@code IllegalArgumentException}
-   * @param request エラーが発生した際のリクエスト情報を表す {@code HttpServletRequest} オブジェクト。
-   * @return 400 Bad Request の {@code ProblemDetail} オブジェクト
-   */
-  @ExceptionHandler(IllegalArgumentException.class)
-  public @NonNull ProblemDetail handleIllegalArgument(
-      @NonNull IllegalArgumentException ex, @NonNull HttpServletRequest request) {
-    ProblemDetail problem =
-        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
-    problem.setTitle("Bad Request");
-    problem.setInstance(URI.create(request.getRequestURI()));
-    problem.setProperty("errorCode", "ILLEGAL_ARGUMENT");
     return problem;
   }
 

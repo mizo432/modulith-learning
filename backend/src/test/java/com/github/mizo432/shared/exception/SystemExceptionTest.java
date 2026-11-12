@@ -2,13 +2,10 @@ package com.github.mizo432.shared.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.mizo432.shared.common.exception.SystemException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("small")
 @DisplayName("SystemException のテスト")
 class SystemExceptionTest {
 

@@ -1,12 +1,11 @@
 package undecided.association.relationshipMgmt.spi.party.org;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.common.value.StringCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 組織名を表す値オブジェクトクラス。
@@ -43,18 +42,18 @@ public class OrgName implements StringCode<OrgName> {
    *
    * @param name 組織名（1文字以上100文字以下）
    * @return 組織名の値オブジェクト
-   * @throws BusinessException 組織名がnull、空、または文字数制限を超えている場合
+   * @throws IllegalArgumentException 組織名がnull、空、または文字数制限を超えている場合
    */
   public static OrgName of(String name) {
     if (name == null) {
-      throw new BusinessException("name must not be null");
+      throw new IllegalArgumentException("name must not be null");
     }
     String trimmed = name.trim();
     if (trimmed.isEmpty()) {
-      throw new BusinessException("name must not be empty");
+      throw new IllegalArgumentException("name must not be empty");
     }
     if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
-      throw new BusinessException(
+      throw new IllegalArgumentException(
           "name must be between "
               + MIN_LENGTH
               + " and "

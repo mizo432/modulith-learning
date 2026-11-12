@@ -3,7 +3,6 @@ package undecided.association.relationshipMgmt.personRole.spi.employee;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -36,8 +35,8 @@ class SearchNameTest {
     void shouldThrowExceptionWhenValueIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> SearchName.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("SearchName cannot be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("SearchName cannot be null");
     }
 
     @Test
@@ -48,8 +47,8 @@ class SearchNameTest {
 
       // Act & Assert
       assertThatThrownBy(() -> SearchName.of(value))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("SearchName cannot exceed 50 characters");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("SearchName cannot exceed 50 characters");
     }
 
     @Test
@@ -60,7 +59,7 @@ class SearchNameTest {
 
       // Act & Assert
       assertThatThrownBy(() -> SearchName.of(value))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("SearchName must match the pattern");
     }
 
@@ -72,7 +71,7 @@ class SearchNameTest {
 
       // Act & Assert
       assertThatThrownBy(() -> SearchName.of(value))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("SearchName must match the pattern");
     }
 

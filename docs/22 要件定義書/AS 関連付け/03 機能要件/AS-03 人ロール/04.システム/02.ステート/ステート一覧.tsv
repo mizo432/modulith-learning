@@ -1,6 +1,0 @@
-ステート一覧
-
-状態モデル	状態	遷移先状態	遷移UC	説明	コンテキスト
-PersonRole	start	有効	-	PersonRoleの初期状態	Person管理
-PersonRole	有効	無効	UC-AS-012	PersonRoleを無効にする	Person管理
-PersonRole	無効	end	-	-	Person管理

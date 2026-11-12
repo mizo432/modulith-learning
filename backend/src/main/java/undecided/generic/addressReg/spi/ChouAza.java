@@ -7,8 +7,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Objects;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -20,6 +20,7 @@ import lombok.ToString;
  * <p>エンティティとして、JPAやHibernateを利用してデータベースと連携するための定義が施されています。
  */
 @Getter
+@Setter
 @ToString
 @Entity
 @Table(schema = "undecided_ef", name = "chou_aza", comment = "chou_aza table")
@@ -270,127 +271,5 @@ public class ChouAza {
   @Size(max = 256)
   @Column(name = "remarks", comment = "Remarks", length = 256)
   private String remarks;
-
-  // JPAおよびバッチ処理用セッター
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public void setCityId(Long cityId) {
-    this.cityId = cityId;
-  }
-
-  public void setLgCode(String lgCode) {
-    this.lgCode = lgCode;
-  }
-
-  public void setMachiazaCode(String machiazaCode) {
-    this.machiazaCode = machiazaCode;
-  }
-
-  public void setMachiazaType(String machiazaType) {
-    this.machiazaType = machiazaType;
-  }
-
-  public void setOazaChoName(String oazaChoName) {
-    this.oazaChoName = oazaChoName;
-  }
-
-  public void setOazaChoKana(String oazaChoKana) {
-    this.oazaChoKana = oazaChoKana;
-  }
-
-  public void setOazaChoRoma(String oazaChoRoma) {
-    this.oazaChoRoma = oazaChoRoma;
-  }
-
-  public void setChomeName(String chomeName) {
-    this.chomeName = chomeName;
-  }
-
-  public void setChomeKana(String chomeKana) {
-    this.chomeKana = chomeKana;
-  }
-
-  public void setChomeNumber(String chomeNumber) {
-    this.chomeNumber = chomeNumber;
-  }
-
-  public void setKoazaName(String koazaName) {
-    this.koazaName = koazaName;
-  }
-
-  public void setKoazaKana(String koazaKana) {
-    this.koazaKana = koazaKana;
-  }
-
-  public void setKoazaRoma(String koazaRoma) {
-    this.koazaRoma = koazaRoma;
-  }
-
-  public void setMachiazaDist(String machiazaDist) {
-    this.machiazaDist = machiazaDist;
-  }
-
-  public void setRsdtAddrFlg(Boolean rsdtAddrFlg) {
-    this.rsdtAddrFlg = rsdtAddrFlg;
-  }
-
-  public void setRsdtAddrMtdCode(String rsdtAddrMtdCode) {
-    this.rsdtAddrMtdCode = rsdtAddrMtdCode;
-  }
-
-  public void setOazaChoAkaFlg(Boolean oazaChoAkaFlg) {
-    this.oazaChoAkaFlg = oazaChoAkaFlg;
-  }
-
-  public void setKoazaAkaCode(String koazaAkaCode) {
-    this.koazaAkaCode = koazaAkaCode;
-  }
-
-  public void setOazaChoGsiUncmn(String oazaChoGsiUncmn) {
-    this.oazaChoGsiUncmn = oazaChoGsiUncmn;
-  }
-
-  public void setKoazaGsiUncmn(String koazaGsiUncmn) {
-    this.koazaGsiUncmn = koazaGsiUncmn;
-  }
-
-  public void setStatus(Integer status) {
-    this.status = status;
-  }
-
-  public void setWakeNumFlg(Boolean wakeNumFlg) {
-    this.wakeNumFlg = wakeNumFlg;
-  }
-
-  public void setSrcCode(String srcCode) {
-    this.srcCode = srcCode;
-  }
-
-  public void setEffectiveDate(LocalDate effectiveDate) {
-    this.effectiveDate = effectiveDate;
-  }
-
-  public void setAbolitionData(LocalDate abolitionData) {
-    this.abolitionData = abolitionData;
-  }
-
-  public void setRemarks(String remarks) {
-    this.remarks = remarks;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ChouAza chouAza = (ChouAza) o;
-    return Objects.equals(id, chouAza.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
 
 }

@@ -1,32 +1,27 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
-import com.github.mizo432.shared.common.precondition.StringPrecondition;
-import com.github.mizo432.shared.common.primitive.Strings2;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Embeddable
-public final class JobCode {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class JobCode {
 
   public static final int MAX_LENGTH = 50;
-  private final String value;
+  private String value;
 
-  // JPA用
-  protected JobCode() {
-    this.value = null;
-  }
-
-  JobCode(String value) {
+  public JobCode(String value) {
     this.value = value;
   }
 
   public static JobCode of(String value) {
-    ObjectPrecondition.checkNotNull(value, () -> new BusinessException("JobCode cannot be null"));
-    StringPrecondition.checkMaxLength(
+    com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull(
+        value, () -> new IllegalArgumentException("JobCode cannot be null"));
+    com.github.mizo432.shared.common.precondition.StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
-        () -> new BusinessException("JobCode cannot exceed " + MAX_LENGTH + " characters"));
+        () -> new IllegalArgumentException("JobCode cannot exceed " + MAX_LENGTH + " characters"));
     return new JobCode(value);
   }
 
@@ -36,7 +31,7 @@ public final class JobCode {
 
   @Override
   public String toString() {
-    return Strings2.toString(value);
+    return com.github.mizo432.shared.common.primitive.Strings2.toString(value);
   }
 
   @Override

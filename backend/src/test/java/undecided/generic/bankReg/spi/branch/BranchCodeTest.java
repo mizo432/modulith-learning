@@ -3,7 +3,6 @@ package undecided.generic.bankReg.spi.branch;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -43,7 +42,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of(null))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("nullに対するエラーメッセージが含まれること")
           .hasMessageContaining("null");
     }
@@ -53,7 +52,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsEmpty() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of(""))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("空文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -63,7 +62,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsBlank() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of("   "))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("空白のみの文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -73,7 +72,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsTooShort() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of("01"))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("桁数が不足している場合のエラーメッセージが含まれること")
           .hasMessageContaining("3 digits");
     }
@@ -83,7 +82,7 @@ class BranchCodeTest {
     void shouldThrowExceptionWhenCodeIsTooLong() {
       // Act & Assert
       assertThatThrownBy(() -> BranchCode.of("0001"))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("桁数が多い場合のエラーメッセージが含まれること")
           .hasMessageContaining("3 digits");
     }

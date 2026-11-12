@@ -1,12 +1,11 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
-import com.github.mizo432.shared.common.precondition.StringPrecondition;
-import com.github.mizo432.shared.common.primitive.Strings2;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
+import com.github.mizo432.shared.common.precondition.StringPrecondition;
+import com.github.mizo432.shared.common.primitive.Strings2;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,11 +24,15 @@ public class SearchName {
 
   public static SearchName of(String value) {
     ObjectPrecondition.checkNotNull(
-        value, () -> new BusinessException("SearchName cannot be null"));
+        value, () -> new IllegalArgumentException("SearchName cannot be null"));
     StringPrecondition.checkMaxLength(
-        value, MAX_LENGTH, () -> new BusinessException("SearchName cannot exceed 50 characters"));
+        value,
+        MAX_LENGTH,
+        () -> new IllegalArgumentException("SearchName cannot exceed 50 characters"));
     StringPrecondition.checkRegex(
-        value, REGEX, () -> new BusinessException("SearchName must match the pattern " + REGEX));
+        value,
+        REGEX,
+        () -> new IllegalArgumentException("SearchName must match the pattern " + REGEX));
     return new SearchName(value);
   }
 

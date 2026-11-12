@@ -7,16 +7,16 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.Getter;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import lombok.Setter;
 import undecided.supporting.snowflake.SnowflakeId;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "job_definition", schema = "job_management")
 @Getter
+@Setter
 public class JobDefinition {
 
   @Id
@@ -60,94 +60,4 @@ public class JobDefinition {
 
   @Column(name = "updated_by", length = 50)
   private String updatedBy;
-
-  protected JobDefinition() {
-    // JPA用
-  }
-
-  public static JobDefinition create(
-      @NonNull SnowflakeId id,
-      @NonNull JobCode jobCode,
-      @NonNull JobVersion version,
-      @Nullable ParameterSpec parameterSpec,
-      @Nullable ExecutionConstraint executionConstraint,
-      @NonNull LocalDateTime createdAt,
-      @Nullable String createdBy) {
-    if (id == null) {
-      throw new IllegalArgumentException("idはnullであってはいけません");
-    }
-    if (jobCode == null) {
-      throw new IllegalArgumentException("jobCodeはnullであってはいけません");
-    }
-    if (version == null) {
-      throw new IllegalArgumentException("versionはnullであってはいけません");
-    }
-    if (createdAt == null) {
-      throw new IllegalArgumentException("createdAtはnullであってはいけません");
-    }
-    JobDefinition entity = new JobDefinition();
-    entity.id = id;
-    entity.jobCode = jobCode;
-    entity.version = version;
-    entity.parameterSpec = parameterSpec;
-    entity.executionConstraint = executionConstraint;
-    entity.createdAt = createdAt;
-    entity.createdBy = createdBy;
-    entity.isActive = true;
-    return entity;
-  }
-
-  // JPA用パッケージプライベートセッター
-  void setId(SnowflakeId id) {
-    this.id = id;
-  }
-
-  void setJobCode(JobCode jobCode) {
-    this.jobCode = jobCode;
-  }
-
-  void setVersion(JobVersion version) {
-    this.version = version;
-  }
-
-  void setParameterSpec(ParameterSpec parameterSpec) {
-    this.parameterSpec = parameterSpec;
-  }
-
-  void setExecutionConstraint(ExecutionConstraint executionConstraint) {
-    this.executionConstraint = executionConstraint;
-  }
-
-  void setIsActive(Boolean isActive) {
-    this.isActive = isActive;
-  }
-
-  void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-  }
-
-  void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
-  void setUpdatedBy(String updatedBy) {
-    this.updatedBy = updatedBy;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    JobDefinition that = (JobDefinition) o;
-    return Objects.equals(id, that.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
 }

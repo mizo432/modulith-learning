@@ -1,12 +1,11 @@
 package undecided.association.relationshipMgmt.spi.party;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.common.value.StringCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 検索用名称を表す値オブジェクトクラス。
@@ -47,18 +46,18 @@ public class SearchName implements StringCode<SearchName> {
    *
    * @param searchName 検索用名称（全角文字のみ、1文字以上50文字以下）
    * @return 検索用名称の値オブジェクト
-   * @throws BusinessException 検索用名称がnull、空、文字数制限を超えている、または全角文字のみで構成されていない場合
+   * @throws IllegalArgumentException 検索用名称がnull、空、文字数制限を超えている、または全角文字のみで構成されていない場合
    */
   public static SearchName of(String searchName) {
     if (searchName == null) {
-      throw new BusinessException("searchName must not be null");
+      throw new IllegalArgumentException("searchName must not be null");
     }
     String trimmed = searchName.trim();
     if (trimmed.isEmpty()) {
-      throw new BusinessException("searchName must not be empty");
+      throw new IllegalArgumentException("searchName must not be empty");
     }
     if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
-      throw new BusinessException(
+      throw new IllegalArgumentException(
           "searchName must be between "
               + MIN_LENGTH
               + " and "
@@ -67,7 +66,7 @@ public class SearchName implements StringCode<SearchName> {
               + trimmed);
     }
     if (!trimmed.matches(REGEX)) {
-      throw new BusinessException(
+      throw new IllegalArgumentException(
           "searchName must contain only full-width characters, but was: " + trimmed);
     }
     return new SearchName(trimmed);

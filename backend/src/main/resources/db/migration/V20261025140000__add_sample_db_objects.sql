@@ -40,13 +40,12 @@ CREATE SEQUENCE IF NOT EXISTS undecided_as.seq_sample_party
 -- シーケンスへのコメント付与
 COMMENT ON SEQUENCE undecided_as.seq_sample_party IS 'サンプルパーティID用のシーケンス';
 
--- サンプルビュー（シノニムの代わりにPostgreSQLではビューを使用）
--- 元のテーブル（parties）へのビューを作成します。
-CREATE OR REPLACE VIEW undecided_as.syn_parties AS
-SELECT * FROM undecided_as.parties;
+-- サンプルシノニムの作成
+-- 元のテーブル（parties）へのシノニムを作成します。
+CREATE OR REPLACE SYNONYM undecided_as.syn_parties FOR undecided_as.parties;
 
--- ビューへのコメント付与
-COMMENT ON VIEW undecided_as.syn_parties IS 'partiesテーブルへのビュー（シノニムの代わり）';
+-- シノニムへのコメント付与
+COMMENT ON SYNONYM undecided_as.syn_parties IS 'partiesテーブルへのシノニム';
 
 -- サンプルストアドプロシージャの作成
 -- シーケンスから次の値を取得するプロシージャです。

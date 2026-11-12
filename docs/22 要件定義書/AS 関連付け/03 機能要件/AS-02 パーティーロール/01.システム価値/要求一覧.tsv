@@ -1,5 +1,0 @@
-要求一覧
-ID	要求名	概要	優先度
-FR-AS-02-01	PartyRole付与	PartyにRoleを付与する	MVP
-FR-AS-02-02	PartyRole管理	Roleの有効期間を管理する	MVP
-NFR-AS-02-01	履歴管理	Roleの変更履歴を保持できる	

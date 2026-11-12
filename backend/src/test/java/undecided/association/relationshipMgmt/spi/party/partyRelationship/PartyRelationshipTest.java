@@ -3,54 +3,22 @@ package undecided.association.relationshipMgmt.spi.party.partyRelationship;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import undecided.association.relationshipMgmt.spi.party.GovtAssignedId;
-import undecided.association.relationshipMgmt.spi.party.Party;
-import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
-import undecided.association.relationshipMgmt.spi.party.SearchName;
-import undecided.association.relationshipMgmt.spi.party.person.DateOfBirth;
-import undecided.association.relationshipMgmt.spi.party.person.LegalName;
-import undecided.association.relationshipMgmt.spi.party.person.Person;
 import undecided.supporting.snowflake.SnowflakeId;
 
-@Tag("small")
 class PartyRelationshipTest {
 
   private static final SnowflakeId relationshipId = SnowflakeId.of(1L);
   private static final SnowflakeId partyId = SnowflakeId.of(2L);
   private static final SnowflakeId relatedPartyId = SnowflakeId.of(3L);
   private static final RelationshipType relationshipType = RelationshipType.EMPLOYED_BY;
-  private static final WhenAssociated whenAssociated =
-      WhenAssociated.of(LocalDateTime.of(2024, 1, 15, 10, 30, 0));
+  private static final WhenAassociated whenAssociated =
+      WhenAassociated.of(LocalDateTime.of(2024, 1, 15, 10, 30, 0));
   private static final WhenDisassociated whenDisassociated =
       WhenDisassociated.of(LocalDateTime.of(2024, 6, 20, 14, 45, 0));
-
-  private Person createPerson(SnowflakeId id) {
-    return new Person(
-        id,
-        PartyTypeCode.PERSON,
-        "テスト",
-        "CODE" + id.value(),
-        GovtAssignedId.of(String.valueOf(id.value())),
-        SearchName.of("テスト"),
-        LegalName.create("山田", "太郎"),
-        DateOfBirth.of(LocalDate.of(1990, 1, 1)),
-        Collections.emptyList());
-  }
-
-  private Party party() {
-    return createPerson(partyId);
-  }
-
-  private Party relatedParty() {
-    return createPerson(relatedPartyId);
-  }
 
   @Nested
   @DisplayName("コンストラクタのテスト")
@@ -62,8 +30,8 @@ class PartyRelationshipTest {
       PartyRelationship partyRelationship =
           new PartyRelationship(
               relationshipId,
-              party(),
-              relatedParty(),
+              partyId,
+              relatedPartyId,
               relationshipType,
               whenAssociated,
               whenDisassociated);
@@ -78,14 +46,14 @@ class PartyRelationshipTest {
     }
 
     @Test
-    @DisplayName("relationshipIdがnullの場合NullPointerExceptionがスローされる")
+    @DisplayName("relationshipIdがnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenRelationshipIdIsNull() {
       assertThatThrownBy(
               () ->
                   new PartyRelationship(
                       null,
-                      party(),
-                      relatedParty(),
+                      partyId,
+                      relatedPartyId,
                       relationshipType,
                       whenAssociated,
                       whenDisassociated))
@@ -94,46 +62,46 @@ class PartyRelationshipTest {
     }
 
     @Test
-    @DisplayName("partyがnullの場合NullPointerExceptionがスローされる")
-    void shouldThrowExceptionWhenPartyIsNull() {
+    @DisplayName("partyIdがnullの場合IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenPartyIdIsNull() {
       assertThatThrownBy(
               () ->
                   new PartyRelationship(
                       relationshipId,
                       null,
-                      relatedParty(),
+                      relatedPartyId,
                       relationshipType,
                       whenAssociated,
                       whenDisassociated))
           .isInstanceOf(NullPointerException.class)
-          .hasMessage("party must not be null");
+          .hasMessage("partyId must not be null");
     }
 
     @Test
-    @DisplayName("relatedPartyがnullの場合NullPointerExceptionがスローされる")
-    void shouldThrowExceptionWhenRelatedPartyIsNull() {
+    @DisplayName("relatedPartyIdがnullの場合IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenRelatedPartyIdIsNull() {
       assertThatThrownBy(
               () ->
                   new PartyRelationship(
                       relationshipId,
-                      party(),
+                      partyId,
                       null,
                       relationshipType,
                       whenAssociated,
                       whenDisassociated))
           .isInstanceOf(NullPointerException.class)
-          .hasMessage("relatedParty must not be null");
+          .hasMessage("relatedPartyId must not be null");
     }
 
     @Test
-    @DisplayName("relationshipTypeがnullの場合NullPointerExceptionがスローされる")
+    @DisplayName("relationshipTypeがnullの場合IllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenRelationshipTypeIsNull() {
       assertThatThrownBy(
               () ->
                   new PartyRelationship(
                       relationshipId,
-                      party(),
-                      relatedParty(),
+                      partyId,
+                      relatedPartyId,
                       null,
                       whenAssociated,
                       whenDisassociated))
@@ -146,7 +114,7 @@ class PartyRelationshipTest {
     void shouldCreateInstanceWhenWhenAssociatedIsNull() {
       PartyRelationship partyRelationship =
           new PartyRelationship(
-              relationshipId, party(), relatedParty(), relationshipType, null, whenDisassociated);
+              relationshipId, partyId, relatedPartyId, relationshipType, null, whenDisassociated);
 
       assertThat(partyRelationship).isNotNull();
       assertThat(partyRelationship.getWhenAssociated()).isNull();
@@ -157,7 +125,7 @@ class PartyRelationshipTest {
     void shouldCreateInstanceWhenWhenDisassociatedIsNull() {
       PartyRelationship partyRelationship =
           new PartyRelationship(
-              relationshipId, party(), relatedParty(), relationshipType, whenAssociated, null);
+              relationshipId, partyId, relatedPartyId, relationshipType, whenAssociated, null);
 
       assertThat(partyRelationship).isNotNull();
       assertThat(partyRelationship.getWhenDisassociated()).isNull();
@@ -174,18 +142,18 @@ class PartyRelationshipTest {
       PartyRelationship first =
           new PartyRelationship(
               relationshipId,
-              party(),
-              relatedParty(),
+              partyId,
+              relatedPartyId,
               relationshipType,
               whenAssociated,
               whenDisassociated);
       PartyRelationship second =
           new PartyRelationship(
               relationshipId,
-              createPerson(SnowflakeId.of(4L)),
-              createPerson(SnowflakeId.of(5L)),
+              SnowflakeId.of(4L),
+              SnowflakeId.of(5L),
               RelationshipType.UNKNOWN,
-              WhenAssociated.empty(),
+              WhenAassociated.empty(),
               WhenDisassociated.empty());
 
       assertThat(first).isEqualTo(second);
@@ -198,16 +166,16 @@ class PartyRelationshipTest {
       PartyRelationship first =
           new PartyRelationship(
               relationshipId,
-              party(),
-              relatedParty(),
+              partyId,
+              relatedPartyId,
               relationshipType,
               whenAssociated,
               whenDisassociated);
       PartyRelationship second =
           new PartyRelationship(
               SnowflakeId.of(100L),
-              party(),
-              relatedParty(),
+              partyId,
+              relatedPartyId,
               relationshipType,
               whenAssociated,
               whenDisassociated);

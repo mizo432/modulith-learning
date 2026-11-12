@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,21 +16,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
-import undecided.generic.accountMgmt.internal.user.UserCommandService.PasswordChangeDto;
-import undecided.generic.accountMgmt.internal.user.UserCommandService.UserStatusDto;
+import undecided.generic.accountMgmt.internal.user.UserCommandImpl.PasswordChangeDto;
+import undecided.generic.accountMgmt.internal.user.UserCommandImpl.UserStatusDto;
+import com.github.mizo432.shared.exception.BusinessException;
 
 @Tag("small")
-@DisplayName("UserCommandServiceのテスト")
+@DisplayName("UserCommandImplのテスト")
 @ExtendWith(MockitoExtension.class)
 class UserCommandImplTest {
 
   @Mock private RestTemplate restTemplate;
 
-  private UserCommandService userCommandService;
+  private UserCommandImpl userCommandImpl;
 
   @BeforeEach
   void setUp() {
-    userCommandService = new UserCommandService(restTemplate);
+    userCommandImpl = new UserCommandImpl(restTemplate);
   }
 
   @Nested
@@ -52,7 +52,7 @@ class UserCommandImplTest {
       when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
           .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 
-      userCommandService.changePassword("testuser", request);
+      userCommandImpl.changePassword("testuser", request);
 
       // 初回ログインパスワード変更APIが呼び出されることを検証
       verify(restTemplate).postForEntity(contains("/first-login-password"), any(), eq(Void.class));
@@ -72,7 +72,7 @@ class UserCommandImplTest {
       when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
           .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 
-      userCommandService.changePassword("testuser", request);
+      userCommandImpl.changePassword("testuser", request);
 
       // 通常パスワード変更APIが呼び出されることを検証
       verify(restTemplate).postForEntity(contains("/password"), any(), eq(Void.class));
@@ -83,7 +83,7 @@ class UserCommandImplTest {
     void shouldThrowExceptionWhenNewPasswordIsTooShort() {
       ChangePasswordRequest request = new ChangePasswordRequest(null, "short", "short");
 
-      assertThatThrownBy(() -> userCommandService.changePassword("testuser", request))
+      assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("8文字以上");
     }
@@ -94,7 +94,7 @@ class UserCommandImplTest {
       String longPassword = "a".repeat(65);
       ChangePasswordRequest request = new ChangePasswordRequest(null, longPassword, longPassword);
 
-      assertThatThrownBy(() -> userCommandService.changePassword("testuser", request))
+      assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("64文字以下");
     }
@@ -105,7 +105,7 @@ class UserCommandImplTest {
       ChangePasswordRequest request =
           new ChangePasswordRequest(null, "newPassword123", "differentPass");
 
-      assertThatThrownBy(() -> userCommandService.changePassword("testuser", request))
+      assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("一致しません");
     }
@@ -124,7 +124,7 @@ class UserCommandImplTest {
       when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
           .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 
-      assertThatThrownBy(() -> userCommandService.changePassword("testuser", request))
+      assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("初回ログイン時のパスワード変更に失敗しました");
     }

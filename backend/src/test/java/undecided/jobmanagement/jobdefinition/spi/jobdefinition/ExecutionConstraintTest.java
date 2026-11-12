@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 class ExecutionConstraintTest {
 
   @Nested
-  @DisplayName("createメソッドのテスト")
+  @DisplayName("ofメソッドのテスト")
   class OfMethodTest {
 
     @Test
     @DisplayName("有効な値を指定するとインスタンスが作成される")
     void shouldCreateInstanceWhenValidValues() {
-      ExecutionConstraint constraint = ExecutionConstraint.create(5, 300);
+      ExecutionConstraint constraint = ExecutionConstraint.of(5, 300);
 
       assertThat(constraint).isNotNull();
       assertThat(constraint.getMaxConcurrentExecutions()).isEqualTo(5);
@@ -28,7 +28,7 @@ class ExecutionConstraintTest {
     @Test
     @DisplayName("null値を指定してもインスタンスが作成される")
     void shouldCreateInstanceWhenNullValues() {
-      ExecutionConstraint constraint = ExecutionConstraint.create(null, null);
+      ExecutionConstraint constraint = ExecutionConstraint.of(null, null);
 
       assertThat(constraint).isNotNull();
       assertThat(constraint.getMaxConcurrentExecutions()).isNull();
@@ -38,7 +38,7 @@ class ExecutionConstraintTest {
     @Test
     @DisplayName("片方のみnullでもインスタンスが作成される")
     void shouldCreateInstanceWhenOneNull() {
-      ExecutionConstraint constraint = ExecutionConstraint.create(5, null);
+      ExecutionConstraint constraint = ExecutionConstraint.of(5, null);
 
       assertThat(constraint).isNotNull();
       assertThat(constraint.getMaxConcurrentExecutions()).isEqualTo(5);
@@ -46,6 +46,20 @@ class ExecutionConstraintTest {
     }
   }
 
+  @Nested
+  @DisplayName("コンストラクタのテスト")
+  class ConstructorTest {
+
+    @Test
+    @DisplayName("値を指定してインスタンスが作成される")
+    void shouldCreateInstanceWithValue() {
+      ExecutionConstraint constraint = new ExecutionConstraint(10, 600);
+
+      assertThat(constraint).isNotNull();
+      assertThat(constraint.getMaxConcurrentExecutions()).isEqualTo(10);
+      assertThat(constraint.getTimeoutSeconds()).isEqualTo(600);
+    }
+  }
 
   @Nested
   @DisplayName("equalsとhashCodeのテスト")
@@ -54,8 +68,8 @@ class ExecutionConstraintTest {
     @Test
     @DisplayName("同じ値のインスタンスは等しいと判定される")
     void shouldBeEqualWhenValuesMatch() {
-      ExecutionConstraint c1 = ExecutionConstraint.create(5, 300);
-      ExecutionConstraint c2 = ExecutionConstraint.create(5, 300);
+      ExecutionConstraint c1 = ExecutionConstraint.of(5, 300);
+      ExecutionConstraint c2 = ExecutionConstraint.of(5, 300);
 
       assertThat(c1).isEqualTo(c2);
       assertThat(c1.hashCode()).isEqualTo(c2.hashCode());
@@ -64,8 +78,8 @@ class ExecutionConstraintTest {
     @Test
     @DisplayName("異なる値のインスタンスは等しくないと判定される")
     void shouldBeNotEqualWhenValuesDiffer() {
-      ExecutionConstraint c1 = ExecutionConstraint.create(5, 300);
-      ExecutionConstraint c2 = ExecutionConstraint.create(10, 600);
+      ExecutionConstraint c1 = ExecutionConstraint.of(5, 300);
+      ExecutionConstraint c2 = ExecutionConstraint.of(10, 600);
 
       assertThat(c1).isNotEqualTo(c2);
     }
@@ -73,8 +87,8 @@ class ExecutionConstraintTest {
     @Test
     @DisplayName("null値のインスタンス同士は等しいと判定される")
     void shouldBeEqualWhenBothNull() {
-      ExecutionConstraint c1 = ExecutionConstraint.create(null, null);
-      ExecutionConstraint c2 = ExecutionConstraint.create(null, null);
+      ExecutionConstraint c1 = ExecutionConstraint.of(null, null);
+      ExecutionConstraint c2 = ExecutionConstraint.of(null, null);
 
       assertThat(c1).isEqualTo(c2);
     }

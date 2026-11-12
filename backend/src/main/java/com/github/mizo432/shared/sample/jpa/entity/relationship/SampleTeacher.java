@@ -9,7 +9,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,18 +55,5 @@ public class SampleTeacher {
   public SampleTeacher(SnowflakeId teacherId, String teacherName) {
     this.teacherId = teacherId;
     this.teacherName = teacherName;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SampleTeacher that = (SampleTeacher) o;
-    return Objects.equals(teacherId, that.teacherId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(teacherId);
   }
 }

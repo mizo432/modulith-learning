@@ -1,7 +1,7 @@
 package undecided.config.presentation.web;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
-import com.github.mizo432.shared.spring.logging.ExceptionLogger;
+import com.github.mizo432.shared.logging.ExceptionLogger;
 import java.util.concurrent.Executors;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
@@ -71,7 +71,6 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    *
    * @param registry インターセプターを登録するためのInterceptorRegistryオブジェクト
    */
-  @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(traceLoggingInterceptor());
   }
@@ -124,7 +123,7 @@ public class SpringMvcRestConfig implements WebMvcConfigurer {
    * @return TomcatReactiveWebServerFactoryのカスタマイズを行うためのWebServerFactoryCustomizerオブジェクト
    */
   @Bean
-  public WebServerFactoryCustomizer<TomcatReactiveWebServerFactory> tomcatCustomizer() {
+  public WebServerFactoryCustomizer<TomcatReactiveWebServerFactory> tomCatCustomizeer() {
     return factory ->
         factory.addConnectorCustomizers(connector ->
             connector

@@ -3,14 +3,10 @@ package undecided.association.relationshipMgmt.spi.party;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("small")
-@DisplayName("GovtAssignedIdの単体テスト")
 class GovtAssignedIdTest {
 
   @Nested
@@ -30,30 +26,30 @@ class GovtAssignedIdTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> GovtAssignedId.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("govtAssignedId must not be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("govtAssignedId must not be null");
     }
 
     @Test
     @DisplayName("空文字を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenEmpty() {
       assertThatThrownBy(() -> GovtAssignedId.of(""))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("govtAssignedId must not be empty");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("govtAssignedId must not be empty");
     }
 
     @Test
     @DisplayName("空白文字を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenBlank() {
       assertThatThrownBy(() -> GovtAssignedId.of("   "))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("govtAssignedId must not be empty");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("govtAssignedId must not be empty");
     }
 
     @Test
     @DisplayName("桁数未満の値を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenTooShort() {
-      assertThatThrownBy(() -> GovtAssignedId.of("")).isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> GovtAssignedId.of("")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -61,7 +57,7 @@ class GovtAssignedIdTest {
     void shouldThrowExceptionWhenTooLong() {
       String longString = "1".repeat(51);
       assertThatThrownBy(() -> GovtAssignedId.of(longString))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("govtAssignedId must be between");
     }
 
@@ -69,7 +65,7 @@ class GovtAssignedIdTest {
     @DisplayName("半角数字以外の文字を含む値を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNonDigit() {
       assertThatThrownBy(() -> GovtAssignedId.of("123-456-789"))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("govtAssignedId must contain only digits");
     }
 

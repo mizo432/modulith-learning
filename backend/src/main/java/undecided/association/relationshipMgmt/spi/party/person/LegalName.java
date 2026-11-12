@@ -1,12 +1,12 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
-import com.github.mizo432.shared.common.value.StringCode;
-import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 法的名前を表す値オブジェクトです。
@@ -39,9 +39,9 @@ public class LegalName implements StringCode<LegalName> {
    * @param lastName 姓（1文字以上50文字以下）
    * @param firstName 名（1文字以上50文字以下）
    * @return 法的名前の値オブジェクト
-   * @throws BusinessException 姓または名がnull、空、または文字数制限を超えている場合
+   * @throws IllegalArgumentException 姓または名がnull、空、または文字数制限を超えている場合
    */
-  public static LegalName create(String lastName, String firstName) {
+  public static LegalName of(String lastName, String firstName) {
     return new LegalName(LastName.of(lastName), FirstName.of(firstName));
   }
 
@@ -52,7 +52,7 @@ public class LegalName implements StringCode<LegalName> {
    * @param firstName 名の値オブジェクト
    * @return 法的名前の値オブジェクト
    */
-  public static LegalName create(LastName lastName, FirstName firstName) {
+  public static LegalName of(LastName lastName, FirstName firstName) {
     return new LegalName(lastName, firstName);
   }
 
@@ -84,7 +84,7 @@ public class LegalName implements StringCode<LegalName> {
   }
 
   /**
-   * 法的名前の値を「姓 名」の形式で返します（表示用）。
+   * 法的名前の値を「姓 名」の形式で返します。
    *
    * @return 法的名前の文字列（例: "田中 太郎"）
    */
@@ -95,12 +95,6 @@ public class LegalName implements StringCode<LegalName> {
     }
     String lastNameValue = lastName != null ? lastName.value() : "";
     String firstNameValue = firstName != null ? firstName.value() : "";
-    if (lastNameValue.isEmpty()) {
-      return firstNameValue;
-    }
-    if (firstNameValue.isEmpty()) {
-      return lastNameValue;
-    }
     return lastNameValue + " " + firstNameValue;
   }
 
@@ -125,58 +119,36 @@ public class LegalName implements StringCode<LegalName> {
   }
 
   /** LegalNameとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
-  @Converter
+  @Converter(autoApply = true)
   public static class LegalNameConverter implements AttributeConverter<LegalName, String> {
-
-    /** データベース保存用の区切り文字です。 */
-    private static final String DB_SEPARATOR = "|";
 
     /**
      * エンティティ属性をデータベースカラムに変換します。
-     *
-     * <p>姓と名を区切り文字で連結して保存します。これにより、名前にスペースが含まれる場合でも 正しく復元できます。
      *
      * @param attribute 変換対象の {@code LegalName} 属性
      * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}
      */
     @Override
     public String convertToDatabaseColumn(LegalName attribute) {
-      if (attribute == null) {
-        return null;
-      }
-      String lastNameValue = attribute.lastName != null ? attribute.lastName.value() : null;
-      String firstNameValue = attribute.firstName != null ? attribute.firstName.value() : null;
-      if (lastNameValue == null && firstNameValue == null) {
-        return null;
-      }
-      if (lastNameValue == null) {
-        return firstNameValue;
-      }
-      if (firstNameValue == null) {
-        return lastNameValue;
-      }
-      return lastNameValue + LegalNameConverter.DB_SEPARATOR + firstNameValue;
+      return attribute != null ? attribute.value() : null;
     }
 
     /**
      * データベースカラムをエンティティ属性に変換します。
-     *
-     * <p>区切り文字で分割して姓と名を復元します。名前にスペースが含まれる場合でも正しく処理できます。
      *
      * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
      * @return 変換された {@code LegalName} インスタンス。データベースデータが {@code null} の場合は空のインスタンス
      */
     @Override
     public LegalName convertToEntityAttribute(@Nullable String dbData) {
-      if (dbData == null || dbData.isBlank()) {
+      if (dbData == null) {
         return LegalName.empty();
       }
-      String[] parts = dbData.split(Pattern.quote(LegalNameConverter.DB_SEPARATOR), 2);
+      String[] parts = dbData.split(" ", 2);
       if (parts.length == 2) {
         return new LegalName(new LastName(parts[0]), new FirstName(parts[1]));
       } else if (parts.length == 1) {
-        // 姓のみが保存されている場合は、名をnullとして処理
-        return new LegalName(new LastName(parts[0]), null);
+        return new LegalName(new LastName(parts[0]), new FirstName(""));
       }
       return LegalName.empty();
     }

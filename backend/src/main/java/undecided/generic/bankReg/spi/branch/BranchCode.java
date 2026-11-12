@@ -1,6 +1,5 @@
 package undecided.generic.bankReg.spi.branch;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import jakarta.persistence.Embeddable;
 
 /**
@@ -19,18 +18,18 @@ public record BranchCode(String value) {
    *
    * @param code 支店コード（3桁の文字列）
    * @return 支店コードの値オブジェクト
-   * @throws BusinessException コードがnull、空、または3桁でない場合
+   * @throws IllegalArgumentException コードがnull、空、または3桁でない場合
    */
   public static BranchCode of(String code) {
     if (code == null) {
-      throw new BusinessException("branchCode must not be null");
+      throw new IllegalArgumentException("branchCode must not be null");
     }
     String trimmed = code.trim();
     if (trimmed.isEmpty()) {
-      throw new BusinessException("branchCode must not be empty");
+      throw new IllegalArgumentException("branchCode must not be empty");
     }
     if (trimmed.length() != LENGTH) {
-      throw new BusinessException(
+      throw new IllegalArgumentException(
           "branchCode must be exactly " + LENGTH + " digits, but was: " + trimmed);
     }
     return new BranchCode(trimmed);

@@ -4,11 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.exception.ResultMessagesNotificationException;
-import com.github.mizo432.shared.common.message.ResultMessage;
-import com.github.mizo432.shared.common.message.ResultMessages;
-import com.github.mizo432.shared.spring.logging.ExceptionLogger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -34,6 +29,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.context.request.WebRequest;
 import undecided.config.presentation.exception.GlobalExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
+import com.github.mizo432.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.message.ResultMessage;
+import com.github.mizo432.shared.message.ResultMessages;
 
 @Tag("small")
 @DisplayName("GlobalExceptionHandlerの単体テスト")
@@ -50,31 +48,22 @@ class GlobalExceptionHandlerTest {
     globalExceptionHandler = new GlobalExceptionHandler(exceptionLogger);
   }
 
-  /** テスト用のResultMessagesNotificationException実装 */
-  static class TestResultMessagesNotificationException extends ResultMessagesNotificationException {
-    TestResultMessagesNotificationException(ResultMessages messages) {
-      super(messages);
-    }
-  }
-
   @Nested
-  @DisplayName("handleResultMessagesNotificationExceptionメソッドのテスト")
-  class HandleResultMessagesNotificationExceptionTest {
+  @DisplayName("handleBusinessExceptionメソッドのテスト")
+  class HandleBusinessExceptionTest {
 
-    /** ResultMessagesNotificationExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すことを検証します。 */
+    /** BusinessExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すことを検証します。 */
     @Test
-    @DisplayName("ResultMessagesNotificationExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すこと")
-    void shouldReturnBadRequestProblemDetailWhenResultMessagesNotificationExceptionOccurs() {
+    @DisplayName("BusinessExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すこと")
+    void shouldReturnBadRequestProblemDetailWhenBusinessExceptionOccurs() {
       // Arrange
       String errorMessage = "Business error occurred";
       ResultMessages resultMessages =
           ResultMessages.error().add(ResultMessage.fromText(errorMessage));
-      ResultMessagesNotificationException exception =
-          new TestResultMessagesNotificationException(resultMessages);
+      BusinessException exception = new BusinessException(resultMessages);
 
       // Act
-      ProblemDetail response =
-          globalExceptionHandler.handleResultMessagesNotificationException(exception);
+      ProblemDetail response = globalExceptionHandler.handleBusinessException(exception);
 
       // Assert
       assertThat(response).as("ProblemDetailがnullでないこと").isNotNull();
@@ -91,40 +80,10 @@ class GlobalExceptionHandlerTest {
     @DisplayName("引数がnullの場合にNullPointerExceptionをスローすること")
     void shouldThrowNullPointerExceptionWhenArgumentIsNull() {
       // Act & Assert
-      assertThatThrownBy(
-              () -> globalExceptionHandler.handleResultMessagesNotificationException(null))
+      assertThatThrownBy(() -> globalExceptionHandler.handleBusinessException(null))
           .as("null引数時にNullPointerExceptionが発生すること")
           .isInstanceOf(NullPointerException.class)
-          .hasMessageContaining("e must not be null.");
-    }
-  }
-
-  @Nested
-  @DisplayName("handleBusinessExceptionメソッドのテスト")
-  class HandleBusinessExceptionTest {
-
-    /** BusinessExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すことを検証します。 */
-    @Test
-    @DisplayName("BusinessExceptionを適切に処理し、BAD_REQUESTのProblemDetailを返すこと")
-    void shouldReturnBadRequestProblemDetailWhenBusinessExceptionOccurs() {
-      // Arrange
-      String errorMessage = "Business error occurred";
-      BusinessException exception = new BusinessException(errorMessage);
-      HttpServletRequest request = mock(HttpServletRequest.class);
-      when(request.getRequestURI()).thenReturn("/api/test");
-
-      // Act
-      ProblemDetail response = globalExceptionHandler.handleBusinessException(exception, request);
-
-      // Assert
-      assertThat(response).as("ProblemDetailがnullでないこと").isNotNull();
-      assertThat(response.getStatus())
-          .as("HTTPステータスが400 BAD_REQUESTであること")
-          .isEqualTo(HttpStatus.BAD_REQUEST.value());
-      assertThat(response.getDetail())
-          .as("エラーメッセージがResultMessagesのtoString()形式であること")
-          .contains(errorMessage);
-      assertThat(response.getTitle()).as("タイトルがBusiness Errorであること").isEqualTo("Business Error");
+          .hasMessage("e must not be null.");
     }
   }
 

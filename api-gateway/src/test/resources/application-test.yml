@@ -6,19 +6,8 @@ spring:
           issuer-uri: https://localhost:8443
           jwk-set-url: https://localhost:8443/oauth2/jwks
           jws-algorithm: RS256
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      password:
 eureka:
   client:
     enabled: false
     register-with-eureka: false
     fetch-registry: false
-
-# テスト環境ではRedisベースの分散レートリミッティングを無効化
-# インメモリのローカルバケットにフォールバックします
-ratelimit:
-  redis:
-    enabled: false

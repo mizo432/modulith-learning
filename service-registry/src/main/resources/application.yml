@@ -27,12 +27,3 @@ management:
     web:
       exposure:
         include: beans,health,env,info,loggers,heapdump,threaddump,metrics,prometheus
-
-# OpenTelemetry 設定
-otel:
-  service:
-    name: ${OTEL_SERVICE_NAME:service-registry}
-  exporter:
-    otlp:
-      protocol: grpc
-      # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}

@@ -1,0 +1,7 @@
+属性名	型	PK	必須	説明
+event_id	SnowflakeID	*	Y	イベントの一意な識別子
+org_id	SnowflakeID		Y	組織の識別子
+event_type	Code		Y	イベントの種類
+event_time	DateTime		Y	イベント発生時刻
+payload	JSON		N	イベントペイロード
+

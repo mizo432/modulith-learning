@@ -2,9 +2,6 @@ package undecided;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.mizo432.shared.common.annotation.DoNotCall;
-import com.github.mizo432.shared.common.annotation.VisibleForTesting;
-import com.github.mizo432.shared.common.value.ValueObject;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -14,6 +11,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
+import com.github.mizo432.shared.common.annotation.DoNotCall;
+import com.github.mizo432.shared.common.annotation.VisibleForTesting;
+import com.github.mizo432.shared.value.ValueObject;
 
 @Tag("small")
 @DisplayName("Spring Modulithの検証テスト")
@@ -22,8 +22,7 @@ class ModulithTest {
   ApplicationModules modules = ApplicationModules.of(ModulithDemoApplication.class);
 
   @Test
-  @DisplayName("パッケージ準拠性を検証する")
-  void shouldVerifyPackageConformity() {
+  void verifyPackageConformity() {
     System.out.println(new File(".").getAbsolutePath());
 
     System.out.println(modules.toString());
@@ -31,14 +30,12 @@ class ModulithTest {
   }
 
   @Test
-  @DisplayName("Modulithドキュメントを作成する")
-  void shouldCreateModulithsDocumentation() {
+  void createModulithsDocumentation() {
     new Documenter(modules).writeModulesAsPlantUml().writeIndividualModulesAsPlantUml();
   }
 
   @Test
-  @DisplayName("DoNotCallアノテーションが付与されたメソッドは@Deprecatedも付与されていることを検証する")
-  void shouldVerifyDoNotCallAnnotationHasDeprecated() throws ClassNotFoundException {
+  void verifyDoNotCallAnnotationHasDeprecated() throws ClassNotFoundException {
     // DoNotCall アノテーションが付与されたメソッドは必ず @Deprecated も付与されていることを確認
     Class<?>[] classesWithDoNotCall = {
       com.github.mizo432.shared.common.primitive.Sets2.class,
@@ -48,38 +45,38 @@ class ModulithTest {
     for (Class<?> clazz : classesWithDoNotCall) {
       Arrays.stream(clazz.getDeclaredMethods())
           .filter(method -> method.isAnnotationPresent(DoNotCall.class))
-          .forEach(method -> {
-            assertThat(method.isAnnotationPresent(Deprecated.class))
-                .as(
-                    "DoNotCall アノテーションが付与されたメソッド '%s.%s' は @Deprecated も付与されているべきです",
-                    method.getDeclaringClass().getSimpleName(), method.getName())
-                .isTrue();
-          });
+          .forEach(
+              method -> {
+                assertThat(method.isAnnotationPresent(Deprecated.class))
+                    .as(
+                        "DoNotCall アノテーションが付与されたメソッド '%s.%s' は @Deprecated も付与されているべきです",
+                        method.getDeclaringClass().getSimpleName(), method.getName())
+                    .isTrue();
+              });
     }
   }
 
   @Test
-  @DisplayName("VisibleForTestingアノテーションが付与されたメソッドはstaticであることを検証する")
-  void shouldVerifyVisibleForTestingAnnotationIsStatic() throws ClassNotFoundException {
+  void verifyVisibleForTestingAnnotationIsStatic() throws ClassNotFoundException {
     // VisibleForTesting アノテーションが付与されたメソッドは static であることを確認
-    Class<?>[] classesWithVisibleForTesting = {ValueObject.class};
+    Class<?>[] classesWithVisibleForTesting = {com.github.mizo432.shared.value.ValueObject.class};
 
     for (Class<?> clazz : classesWithVisibleForTesting) {
       Arrays.stream(clazz.getDeclaredMethods())
           .filter(method -> method.isAnnotationPresent(VisibleForTesting.class))
-          .forEach(method -> {
-            assertThat(Modifier.isStatic(method.getModifiers()))
-                .as(
-                    "VisibleForTesting アノテーションが付与されたメソッド '%s.%s' は static であるべきです",
-                    method.getDeclaringClass().getSimpleName(), method.getName())
-                .isTrue();
-          });
+          .forEach(
+              method -> {
+                assertThat(Modifier.isStatic(method.getModifiers()))
+                    .as(
+                        "VisibleForTesting アノテーションが付与されたメソッド '%s.%s' は static であるべきです",
+                        method.getDeclaringClass().getSimpleName(), method.getName())
+                    .isTrue();
+              });
     }
   }
 
   @Test
-  @DisplayName("RestControllerはCQRS分離に従っていることを検証する")
-  void shouldVerifyRestControllerCQRSSeparation() throws ClassNotFoundException {
+  void verifyRestControllerCQRSSeparation() throws ClassNotFoundException {
     // CQRSパターンに従い、RestControllerはQueryとCommandを混在させていないことを確認
     // QueryControllerは@GetMappingのみ、CommandControllerは@PostMapping/@PutMapping/@DeleteMapping/@PatchMappingのみを使用すべき
     Class<?>[] controllerClasses = {
@@ -90,43 +87,24 @@ class ModulithTest {
       undecided.generic.accountMgmt.internal.user.UserQueryApi.class,
       undecided.generic.accountMgmt.internal.user.UserCommandApi.class,
       // Organization module (Query only)
-      undecided
-          .association
-          .relationshipMgmt
-          .orgRole
-          .internal
-          .organization
-          .OrganizationQueryApi
-          .class,
+      undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationApi.class,
       // Role module (Query only)
-      undecided.association.relationshipMgmt.partyRole.internal.role.RoleQueryApi.class,
-      undecided
-          .association
-          .relationshipMgmt
-          .partyRole
-          .internal
-          .role
-          .RoleAssignmentsForEmpQueryApi
-          .class,
-      undecided
-          .association
-          .relationshipMgmt
-          .partyRole
-          .internal
-          .role
-          .RoleAssignmentsForOrgQueryApi
-          .class,
+      undecided.association.relationshipMgmt.partyRole.internal.role.RoleApi.class,
+      undecided.association.relationshipMgmt.partyRole.internal.role.RoleAssignmentsForEmpApi.class,
+      undecided.association.relationshipMgmt.partyRole.internal.role.RoleAssignmentsForOrgApi.class,
       // Employee module (Query only)
-      undecided.association.relationshipMgmt.personRole.internal.employee.EmployeeQueryApi.class,
+      undecided.association.relationshipMgmt.personRole.internal.employee.EmployeeApi.class,
+      // Prefecture module (Query only)
+      undecided.generic.addressReg.internal.presentation.api.PrefectureApi.class,
       // Greeting module (Query only)
-      undecided.generic.greeting.internal.GreetingQueryApi.class,
-      undecided.generic.greeting.internal.Greeting1QueryApi.class,
-      undecided.generic.greeting.internal.Greeting2QueryApi.class,
-      undecided.generic.greeting.internal.Greeting3QueryApi.class,
-      undecided.generic.greeting.internal.Greeting4QueryApi.class,
-      undecided.generic.greeting.internal.Greeting5QueryApi.class,
-      undecided.generic.greeting.internal.Greeting6QueryApi.class,
-      undecided.generic.greeting.internal.Greeting7QueryApi.class
+      undecided.generic.greeting.internal.GreetingApi.class,
+      undecided.generic.greeting.internal.Greeting1Api.class,
+      undecided.generic.greeting.internal.Greeting2Api.class,
+      undecided.generic.greeting.internal.Greeting3Api.class,
+      undecided.generic.greeting.internal.Greeting4Api.class,
+      undecided.generic.greeting.internal.Greeting5Api.class,
+      undecided.generic.greeting.internal.Greeting6Api.class,
+      undecided.generic.greeting.internal.Greeting7Api.class
     };
 
     for (Class<?> controllerClass : controllerClasses) {

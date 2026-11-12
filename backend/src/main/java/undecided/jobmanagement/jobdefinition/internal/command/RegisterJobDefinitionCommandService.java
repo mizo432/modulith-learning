@@ -23,22 +23,20 @@ public class RegisterJobDefinitionCommandService implements RegisterJobDefinitio
   private final SnowflakeIdGenerator snowflakeIdGenerator;
 
   @Override
-  public SnowflakeId register(JobDefinitionDTO jobDefinitionDTO) {
-    SnowflakeId id = SnowflakeId.of(snowflakeIdGenerator.nextId());
-    JobDefinition jobDefinition = JobDefinition.create(
-        id,
-        JobCode.of(jobDefinitionDTO.getJobCode()),
-        JobVersion.of(jobDefinitionDTO.getVersion()),
-        jobDefinitionDTO.getParameterSpec() != null
-            ? ParameterSpec.of(jobDefinitionDTO.getParameterSpec())
-            : null,
-        ExecutionConstraint.create(
+  public void register(JobDefinitionDTO jobDefinitionDTO) {
+    JobDefinition jobDefinition = new JobDefinition();
+    jobDefinition.setId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
+    jobDefinition.setJobCode(JobCode.of(jobDefinitionDTO.getJobCode()));
+    jobDefinition.setVersion(JobVersion.of(jobDefinitionDTO.getVersion()));
+    jobDefinition.setParameterSpec(ParameterSpec.of(jobDefinitionDTO.getParameterSpec()));
+    jobDefinition.setExecutionConstraint(
+        ExecutionConstraint.of(
             jobDefinitionDTO.getMaxConcurrentExecutions(),
-            jobDefinitionDTO.getTimeoutSeconds()),
-        LocalDateTime.now(),
-        jobDefinitionDTO.getCreatedBy());
-
+            jobDefinitionDTO.getTimeoutSeconds()));
+    jobDefinition.setIsActive(true);
+    jobDefinition.setCreatedAt(LocalDateTime.now());
+    jobDefinition.setCreatedBy(jobDefinitionDTO.getCreatedBy());
+    
     jobDefinitionRepository.save(jobDefinition);
-    return id;
   }
 }

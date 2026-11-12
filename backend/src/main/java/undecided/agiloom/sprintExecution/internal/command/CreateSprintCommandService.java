@@ -1,57 +1,36 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.message.ResultMessage;
-import com.github.mizo432.shared.common.message.ResultMessages;
+import java.time.LocalDate;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
 import undecided.agiloom.sprintExecution.spi.Sprint;
-import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.supporting.snowflake.SnowflakeId;
-import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 @Service
 @Transactional
-public class CreateSprintCommandService implements CreateSprintCommandServiceInterface {
+public class CreateSprintCommandService {
 
-  private final SprintRepository sprintRepository;
-  private final SprintResponseAssembler sprintResponseAssembler;
-  private final SnowflakeIdGenerator snowflakeIdGenerator;
+    private final SprintRepository sprintRepository;
 
-  public CreateSprintCommandService(
-      SprintRepository sprintRepository,
-      SprintResponseAssembler sprintResponseAssembler,
-      SnowflakeIdGenerator snowflakeIdGenerator) {
-    this.sprintRepository = sprintRepository;
-    this.sprintResponseAssembler = sprintResponseAssembler;
-    this.snowflakeIdGenerator = snowflakeIdGenerator;
-  }
-
-  public SprintDTO execute(@NonNull CreateSprintCommand command) {
-    if (!command.getEndDate().isAfter(command.getStartDate())) {
-      throw new BusinessException(
-          ResultMessages.error().add(ResultMessage.fromText("endDate must be after startDate")));
+    public CreateSprintCommandService(SprintRepository sprintRepository) {
+        this.sprintRepository = sprintRepository;
     }
-    Sprint sprint =
-        Sprint.of(
-            SnowflakeId.of(snowflakeIdGenerator.nextId()),
-            command.getProductId(),
-            command.getSprintNumber(),
-            command.getTitle(),
-            command.getGoal(),
-            command.getStartDate(),
-            command.getEndDate(),
-            command.getTeamId(),
-            command.getTeamName(),
-            null,
-            null,
-            null,
-            null);
 
-    Sprint saved = sprintRepository.save(sprint);
-    return sprintResponseAssembler.toDTO(saved);
-  }
+    public SnowflakeId execute(@NonNull CreateSprintCommand command) {
+        Sprint sprint = Sprint.builder()
+                .productId(command.getProductId())
+                .sprintNumber(command.getSprintNumber())
+                .title(command.getTitle())
+                .goal(command.getGoal())
+                .startDate(command.getStartDate())
+                .endDate(command.getEndDate())
+                .teamId(command.getTeamId())
+                .teamName(command.getTeamName())
+                .build();
+
+        Sprint saved = sprintRepository.save(sprint);
+        return saved.getId();
+    }
 }

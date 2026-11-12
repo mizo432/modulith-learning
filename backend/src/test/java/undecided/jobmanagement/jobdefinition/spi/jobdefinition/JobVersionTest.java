@@ -3,7 +3,6 @@ package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -30,8 +29,8 @@ class JobVersionTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> JobVersion.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("JobVersion cannot be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("JobVersion cannot be null");
     }
 
     @Test
@@ -39,8 +38,8 @@ class JobVersionTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longVersion = "a".repeat(21);
       assertThatThrownBy(() -> JobVersion.of(longVersion))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("JobVersion cannot exceed 20 characters");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("JobVersion cannot exceed 20 characters");
     }
 
     @Test
@@ -51,6 +50,34 @@ class JobVersionTest {
 
       assertThat(jobVersion).isNotNull();
       assertThat(jobVersion.getValue()).hasSize(20);
+    }
+  }
+
+  @Nested
+  @DisplayName("デフォルトコンストラクタのテスト")
+  class DefaultConstructorTest {
+
+    @Test
+    @DisplayName("nullの値を持つインスタンスが作成される")
+    void shouldCreateInstanceWithNullValue() {
+      JobVersion jobVersion = new JobVersion();
+
+      assertThat(jobVersion).isNotNull();
+      assertThat(jobVersion.getValue()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("パブリックコンストラクタのテスト")
+  class PublicConstructorTest {
+
+    @Test
+    @DisplayName("値を指定してインスタンスが作成される")
+    void shouldCreateInstanceWithValue() {
+      JobVersion jobVersion = new JobVersion("2.0.0");
+
+      assertThat(jobVersion).isNotNull();
+      assertThat(jobVersion.getValue()).isEqualTo("2.0.0");
     }
   }
 
@@ -99,11 +126,11 @@ class JobVersionTest {
     }
 
     @Test
-    @DisplayName("空文字の値の場合は空文字が返される")
-    void shouldReturnEmptyWhenValueIsEmpty() {
-      JobVersion jobVersion = JobVersion.of("");
+    @DisplayName("null値の場合はnullが返される")
+    void shouldReturnNullWhenValueIsNull() {
+      JobVersion jobVersion = new JobVersion();
 
-      assertThat(jobVersion.toString()).isEmpty();
+      assertThat(jobVersion.toString()).isNull();
     }
   }
 

@@ -15,27 +15,25 @@ repositories {
     mavenCentral()
 }
 
-extra["guavaVersion"] = "33.7.2-jre"
-extra["jspecifyVersion"] = "1.0.1"
-extra["icu4jVersion"] = "79.1"
-extra["uuidGeneratorVersion"] = "5.2.0"
-extra["lombokVersion"] = "1.18.48"
-extra["commonsLang3Version"] = "3.21.0"
+extra["guavaVersion"] = "33.6.0-jre"
+extra["jspecifyVersion"] = "1.0.0"
+extra["icu4jVersion"] = "77.1"
+extra["uuidGeneratorVersion"] = "5.1.0"
+extra["lombokVersion"] = "1.18.38"
+extra["commonsLang3Version"] = "3.17.0"
 extra["jakartaValidationApiVersion"] = "3.1.1"
-extra["jakartaPersistenceApiVersion"] = "3.1.0"
-extra["slf4jVersion"] = "2.0.20"
-extra["junitVersion"] = "6.1.3"
-extra["assertjVersion"] = "3.27.7"
-extra["mockitoVersion"] = "5.24.0"
+extra["slf4jVersion"] = "2.0.17"
+extra["junitVersion"] = "6.1.0"
+extra["assertjVersion"] = "3.27.3"
+extra["mockitoVersion"] = "5.15.2"
 
 dependencies {
     compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
     annotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
-    compileOnly("org.springframework.modulith:spring-modulith-api:2.1.2")
+    compileOnly("org.springframework.modulith:spring-modulith-api:2.1.0")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
     implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("jakarta.validation:jakarta.validation-api:${property("jakartaValidationApiVersion")}")
-    implementation("jakarta.persistence:jakarta.persistence-api:${property("jakartaPersistenceApiVersion")}")
     implementation("org.apache.commons:commons-lang3:${property("commonsLang3Version")}")
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     implementation("com.fasterxml.uuid:java-uuid-generator:${property("uuidGeneratorVersion")}")

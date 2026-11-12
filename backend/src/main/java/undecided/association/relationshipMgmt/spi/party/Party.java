@@ -1,23 +1,17 @@
 package undecided.association.relationshipMgmt.spi.party;
 
-import com.github.mizo432.shared.common.primitive.Lists2;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.envers.Audited;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
-import undecided.association.relationshipMgmt.spi.party.partyRelationship.PartyRelationship;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -28,11 +22,9 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Table(name = "party", schema = SchemaRelationshipMgmt.NAME)
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Audited
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@AllArgsConstructor
 public abstract class Party {
   @Id
   @Column(name = "party_id")
@@ -50,24 +42,17 @@ public abstract class Party {
   @Column(name = "code", unique = true, length = 50)
   private String code;
 
+  /** 有効開始日。 */
+  @Column(name = "valid_from", nullable = false)
+  private LocalDateTime validFrom;
+
+  /** 有効終了日。 */
+  @Column(name = "valid_to")
+  private LocalDateTime validTo;
+
   /** 政府発行の識別子（例：マイナンバー、法人番号など）。 */
   private GovtAssignedId govtAssignedId;
 
   /** 検索用名称（全角文字）。 */
   private SearchName searchName;
-
-  @ManyToMany private List<PartyRelationship> partyRelationships = Lists2.newArrayList();
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Party party = (Party) o;
-    return Objects.equals(partyId, party.partyId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(partyId);
-  }
 }

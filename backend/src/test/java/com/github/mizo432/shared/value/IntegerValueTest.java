@@ -1,16 +1,14 @@
 package com.github.mizo432.shared.value;
 
-import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 import static org.assertj.core.api.Assertions.*;
+import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
-import com.github.mizo432.shared.common.value.IntegerValue;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import com.github.mizo432.shared.value.IntegerValue;
 
-@Tag("small")
 @DisplayName("IntegerValueのテスト")
 class IntegerValueTest {
 
@@ -426,8 +424,10 @@ class IntegerValueTest {
       TestIntegerValue value = new TestIntegerValue(20);
 
       // Act & Assert
-      assertThatThrownBy(() ->
-              IntegerValue.IntegerValues.checkRangeClosedOpen(value, EXCEPTION_SUPPLIER, 10, 20))
+      assertThatThrownBy(
+              () ->
+                  IntegerValue.IntegerValues.checkRangeClosedOpen(
+                      value, EXCEPTION_SUPPLIER, 10, 20))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -468,8 +468,10 @@ class IntegerValueTest {
       TestIntegerValue value = new TestIntegerValue(10);
 
       // Act & Assert
-      assertThatThrownBy(() ->
-              IntegerValue.IntegerValues.checkRangeOpenClosed(value, EXCEPTION_SUPPLIER, 10, 20))
+      assertThatThrownBy(
+              () ->
+                  IntegerValue.IntegerValues.checkRangeOpenClosed(
+                      value, EXCEPTION_SUPPLIER, 10, 20))
           .isInstanceOf(RuntimeException.class);
     }
 
@@ -743,8 +745,10 @@ class IntegerValueTest {
       TestIntegerValue value = new TestIntegerValue(25);
 
       // Act & Assert
-      assertThatThrownBy(() ->
-              IntegerValue.IntegerValues.checkRangeClosed(value, CUSTOM_EXCEPTION_SUPPLIER, 10, 20))
+      assertThatThrownBy(
+              () ->
+                  IntegerValue.IntegerValues.checkRangeClosed(
+                      value, CUSTOM_EXCEPTION_SUPPLIER, 10, 20))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("Invalid value");
     }

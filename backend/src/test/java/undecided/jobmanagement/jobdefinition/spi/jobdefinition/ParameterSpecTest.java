@@ -3,7 +3,6 @@ package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -30,8 +29,8 @@ class ParameterSpecTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> ParameterSpec.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("ParameterSpec cannot be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("ParameterSpec cannot be null");
     }
 
     @Test
@@ -39,8 +38,8 @@ class ParameterSpecTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longSpec = "a".repeat(1001);
       assertThatThrownBy(() -> ParameterSpec.of(longSpec))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("ParameterSpec cannot exceed 1000 characters");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("ParameterSpec cannot exceed 1000 characters");
     }
 
     @Test
@@ -51,6 +50,34 @@ class ParameterSpecTest {
 
       assertThat(paramSpec).isNotNull();
       assertThat(paramSpec.getValue()).hasSize(1000);
+    }
+  }
+
+  @Nested
+  @DisplayName("デフォルトコンストラクタのテスト")
+  class DefaultConstructorTest {
+
+    @Test
+    @DisplayName("nullの値を持つインスタンスが作成される")
+    void shouldCreateInstanceWithNullValue() {
+      ParameterSpec paramSpec = new ParameterSpec();
+
+      assertThat(paramSpec).isNotNull();
+      assertThat(paramSpec.getValue()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("パブリックコンストラクタのテスト")
+  class PublicConstructorTest {
+
+    @Test
+    @DisplayName("値を指定してインスタンスが作成される")
+    void shouldCreateInstanceWithValue() {
+      ParameterSpec paramSpec = new ParameterSpec("--verbose");
+
+      assertThat(paramSpec).isNotNull();
+      assertThat(paramSpec.getValue()).isEqualTo("--verbose");
     }
   }
 
@@ -91,11 +118,11 @@ class ParameterSpecTest {
     }
 
     @Test
-    @DisplayName("空文字の値の場合は空文字が返される")
-    void shouldReturnEmptyWhenValueIsEmpty() {
-      ParameterSpec paramSpec = ParameterSpec.of("");
+    @DisplayName("null値の場合はnullが返される")
+    void shouldReturnNullWhenValueIsNull() {
+      ParameterSpec paramSpec = new ParameterSpec();
 
-      assertThat(paramSpec.toString()).isEmpty();
+      assertThat(paramSpec.toString()).isNull();
     }
   }
 

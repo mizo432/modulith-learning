@@ -1,33 +1,27 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
-import com.github.mizo432.shared.common.precondition.StringPrecondition;
-import com.github.mizo432.shared.common.primitive.Strings2;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Embeddable
-public final class ParameterSpec {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ParameterSpec {
 
   public static final int MAX_LENGTH = 1000;
-  private final String value;
+  private String value;
 
-  // JPA用
-  protected ParameterSpec() {
-    this.value = null;
-  }
-
-  ParameterSpec(String value) {
+  public ParameterSpec(String value) {
     this.value = value;
   }
 
   public static ParameterSpec of(String value) {
-    ObjectPrecondition.checkNotNull(
-        value, () -> new BusinessException("ParameterSpec cannot be null"));
-    StringPrecondition.checkMaxLength(
+    com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull(
+        value, () -> new IllegalArgumentException("ParameterSpec cannot be null"));
+    com.github.mizo432.shared.common.precondition.StringPrecondition.checkMaxLength(
         value,
         MAX_LENGTH,
-        () -> new BusinessException("ParameterSpec cannot exceed " + MAX_LENGTH + " characters"));
+        () -> new IllegalArgumentException("ParameterSpec cannot exceed " + MAX_LENGTH + " characters"));
     return new ParameterSpec(value);
   }
 
@@ -37,7 +31,7 @@ public final class ParameterSpec {
 
   @Override
   public String toString() {
-    return Strings2.toString(value);
+    return com.github.mizo432.shared.common.primitive.Strings2.toString(value);
   }
 
   @Override

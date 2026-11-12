@@ -3,14 +3,12 @@ package undecided.association.relationshipMgmt.spi.party.person;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("small")
-@DisplayName("LastNameの単体テスト")
 class LastNameTest {
 
   @Nested
@@ -48,24 +46,24 @@ class LastNameTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> LastName.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("lastName must not be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("lastName must not be null");
     }
 
     @Test
     @DisplayName("空文字を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenEmpty() {
       assertThatThrownBy(() -> LastName.of(""))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("lastName must not be empty");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("lastName must not be empty");
     }
 
     @Test
     @DisplayName("空白文字のみを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenBlank() {
       assertThatThrownBy(() -> LastName.of("   "))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("lastName must not be empty");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("lastName must not be empty");
     }
 
     @Test
@@ -73,7 +71,7 @@ class LastNameTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longName = "a".repeat(51);
       assertThatThrownBy(() -> LastName.of(longName))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("lastName must be between");
     }
 
@@ -165,7 +163,9 @@ class LastNameTest {
     void shouldReturnMaskedValue() {
       LastName lastName = LastName.of("田中");
 
-      assertThat(lastName.toString()).as("LastNameのtoString()は機微な情報をマスクして返すこと").isEqualTo("田*");
+      assertThat(lastName.toString())
+          .as("LastNameのtoString()は機微な情報をマスクして返すこと")
+          .isEqualTo("田*");
     }
 
     @Test
@@ -173,7 +173,9 @@ class LastNameTest {
     void shouldReturnNullWhenValueIsNull() {
       LastName lastName = LastName.empty();
 
-      assertThat(lastName.toString()).as("空のLastNameのtoString()はnullを返すこと").isNull();
+      assertThat(lastName.toString())
+          .as("空のLastNameのtoString()はnullを返すこと")
+          .isNull();
     }
   }
 

@@ -1,6 +1,0 @@
-ステート一覧
-
-状態モデル	状態	遷移先状態	遷移UC	説明	コンテキスト
-OrganizationRole	start	有効	-	OrganizationRoleの初期状態	組織管理
-OrganizationRole	有効	無効	UC-AS-016	OrganizationRoleを無効にする	組織管理
-OrganizationRole	無効	end	-	-	組織管理

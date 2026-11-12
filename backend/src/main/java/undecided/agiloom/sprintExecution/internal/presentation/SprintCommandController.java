@@ -1,36 +1,34 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import undecided.agiloom.sprintExecution.spi.SprintDTO;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommand;
-import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
-import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommand;
-import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommandServiceInterface;
-import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
-import undecided.supporting.notification.spi.NotificationDTO;
+import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandService;
+import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandService;
+import undecided.agiloom.sprintExecution.internal.query.SprintQueryService;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
 @RequestMapping("/api/v1/sprints")
 public class SprintCommandController {
 
-    private final CreateSprintCommandServiceInterface createSprintCommandService;
-    private final UpdateSprintCommandServiceInterface updateSprintCommandService;
-    private final SendNotificationCommandServiceInterface sendNotificationCommandService;
-    private final SprintResponseAssembler sprintResponseAssembler;
+    private final CreateSprintCommandService createSprintCommandService;
+    private final UpdateSprintCommandService updateSprintCommandService;
+    private final SprintQueryService sprintQueryService;
+    private final SprintQueryController sprintQueryController;
 
-    public SprintCommandController(CreateSprintCommandServiceInterface createSprintCommandService,
-                            UpdateSprintCommandServiceInterface updateSprintCommandService,
-                            SendNotificationCommandServiceInterface sendNotificationCommandService,
-                            SprintResponseAssembler sprintResponseAssembler) {
+    public SprintCommandController(CreateSprintCommandService createSprintCommandService,
+                            UpdateSprintCommandService updateSprintCommandService,
+                            SprintQueryService sprintQueryService,
+                            SprintQueryController sprintQueryController) {
         this.createSprintCommandService = createSprintCommandService;
         this.updateSprintCommandService = updateSprintCommandService;
-        this.sendNotificationCommandService = sendNotificationCommandService;
-        this.sprintResponseAssembler = sprintResponseAssembler;
+        this.sprintQueryService = sprintQueryService;
+        this.sprintQueryController = sprintQueryController;
     }
 
     @PostMapping
@@ -46,38 +44,17 @@ public class SprintCommandController {
                 .teamName(request.getTeamName())
                 .build();
 
-        SprintDTO sprint = createSprintCommandService.execute(command);
-        return ResponseEntity.status(201).body(sprintResponseAssembler.toResponse(sprint));
+        SnowflakeId id = createSprintCommandService.execute(command);
+        Sprint sprint = sprintQueryService.findById(id).orElseThrow();
+        return ResponseEntity.ok(sprintQueryController.toResponse(sprint));
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<SprintResponse> changeStatus(@PathVariable @NotBlank String id,
-                                   @Valid @RequestBody ChangeStatusRequest request) {
-        SnowflakeId snowflakeId = SprintIdUtils.parseSnowflakeId(id);
-        SprintDTO sprint = updateSprintCommandService.changeStatus(snowflakeId, request.getStatus());
-        return ResponseEntity.ok(sprintResponseAssembler.toResponse(sprint));
-    }
-
-    /**
-     * 通知を送信します。
-     * <p>
-     * UC-SP-013 通知を送信する
-     * </p>
-     *
-     * @param request 通知送信リクエスト
-     * @return 送信された通知
-     */
-    @PostMapping("/notifications")
-    public ResponseEntity<NotificationDTO> sendNotification(@Valid @RequestBody SendNotificationRequest request) {
-        SendNotificationCommand command = SendNotificationCommand.builder()
-                .recipientId(request.getRecipientId())
-                .sourceId(request.getSourceId())
-                .title(request.getTitle())
-                .content(request.getContent())
-                .type(request.getType())
-                .build();
-
-        NotificationDTO notification = sendNotificationCommandService.execute(command);
-        return ResponseEntity.status(201).body(notification);
+    public ResponseEntity<SprintResponse> changeStatus(@PathVariable @NotNull String id,
+                                       @RequestBody @NotNull SprintStatus status) {
+        SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
+        updateSprintCommandService.changeStatus(snowflakeId, status);
+        Sprint sprint = sprintQueryService.findById(snowflakeId).orElseThrow();
+        return ResponseEntity.ok(sprintQueryController.toResponse(sprint));
     }
 }

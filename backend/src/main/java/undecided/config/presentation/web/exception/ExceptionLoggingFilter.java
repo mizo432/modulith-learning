@@ -1,6 +1,6 @@
 package undecided.config.presentation.web.exception;
 
-import com.github.mizo432.shared.spring.logging.ExceptionLogger;
+import com.github.mizo432.shared.logging.ExceptionLogger;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -57,41 +57,50 @@ public class ExceptionLoggingFilter implements Filter {
     try {
       filterChain.doFilter(servletRequest, servletResponse);
     } catch (IOException e) {
-      this.logIOException(e);
+      this.logIOException(e, servletRequest, servletResponse);
       throw e;
     } catch (ServletException e) {
-      this.logServletException(e);
+      this.logServletException(e, servletRequest, servletResponse);
       throw e;
     } catch (RuntimeException e) {
-      this.logRuntimeException(e);
+      this.logRuntimeException(e, servletRequest, servletResponse);
       throw e;
     }
   }
 
   /**
-   * IOExceptionをログとして記録します。
+   * IOExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
    *
    * @param ioException 記録するIOExceptionオブジェクト
+   * @param request エラーログのコンテキストとなる ServletRequest
+   * @param response エラーログのコンテキストとなる ServletResponse
    */
-  protected void logIOException(IOException ioException) {
+  protected void logIOException(
+      IOException ioException, ServletRequest request, ServletResponse response) {
     this.exceptionLogger.error(ioException);
   }
 
   /**
-   * ServletExceptionをログとして記録します。
+   * ServletExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
    *
    * @param servletException 記録するServletExceptionオブジェクト
+   * @param request エラーログのコンテキストとなるServletRequest
+   * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logServletException(ServletException servletException) {
+  protected void logServletException(
+      ServletException servletException, ServletRequest request, ServletResponse response) {
     this.exceptionLogger.error(servletException);
   }
 
   /**
-   * RuntimeExceptionをログとして記録します。
+   * RuntimeExceptionをログとして記録します。 指定された例外オブジェクト、リクエスト、レスポンスを基にエラーログを出力します。
    *
    * @param runtimeException 記録するRuntimeExceptionオブジェクト
+   * @param request エラーログのコンテキストとなるServletRequest
+   * @param response エラーログのコンテキストとなるServletResponse
    */
-  protected void logRuntimeException(RuntimeException runtimeException) {
+  protected void logRuntimeException(
+      RuntimeException runtimeException, ServletRequest request, ServletResponse response) {
     this.exceptionLogger.error(runtimeException);
   }
 

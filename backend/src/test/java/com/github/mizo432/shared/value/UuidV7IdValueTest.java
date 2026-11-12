@@ -3,16 +3,12 @@ package com.github.mizo432.shared.value;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mockStatic;
 
-import com.github.mizo432.shared.common.uuidV7Provider.UuidV7Provider;
-import com.github.mizo432.shared.common.value.UuidV7IdValue;
-import com.github.mizo432.shared.common.value.UuidValue;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import com.github.mizo432.shared.common.uuidV7Provider.UuidV7Provider;
 
-@Tag("small")
 @DisplayName("UuidV7IdValueのテスト")
 class UuidV7IdValueTest {
 
@@ -24,7 +20,7 @@ class UuidV7IdValueTest {
     @DisplayName("正常ケース: インスタンスが生成されるべき")
     void shouldCreateNewInstanceSuccessfully() {
       try (var mockedProvider = mockStatic(UuidV7Provider.class)) {
-        UUID mockUuid = UUID.fromString("44444444-4444-4444-4444-444444444444");
+        UUID mockUuid = UUID.randomUUID();
         mockedProvider.when(UuidV7Provider::newInstance).thenReturn(mockUuid);
 
         UuidValue<UuidV7IdValue> result = UuidV7IdValue.newInstance();

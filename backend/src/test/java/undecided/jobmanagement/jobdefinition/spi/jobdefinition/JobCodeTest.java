@@ -3,7 +3,6 @@ package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -30,8 +29,8 @@ class JobCodeTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> JobCode.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("JobCode cannot be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("JobCode cannot be null");
     }
 
     @Test
@@ -39,8 +38,8 @@ class JobCodeTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longCode = "a".repeat(51);
       assertThatThrownBy(() -> JobCode.of(longCode))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("JobCode cannot exceed 50 characters");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("JobCode cannot exceed 50 characters");
     }
 
     @Test
@@ -51,6 +50,34 @@ class JobCodeTest {
 
       assertThat(jobCode).isNotNull();
       assertThat(jobCode.getValue()).hasSize(50);
+    }
+  }
+
+  @Nested
+  @DisplayName("デフォルトコンストラクタのテスト")
+  class DefaultConstructorTest {
+
+    @Test
+    @DisplayName("nullの値を持つインスタンスが作成される")
+    void shouldCreateInstanceWithNullValue() {
+      JobCode jobCode = new JobCode();
+
+      assertThat(jobCode).isNotNull();
+      assertThat(jobCode.getValue()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("パブリックコンストラクタのテスト")
+  class PublicConstructorTest {
+
+    @Test
+    @DisplayName("値を指定してインスタンスが作成される")
+    void shouldCreateInstanceWithValue() {
+      JobCode jobCode = new JobCode("JOB002");
+
+      assertThat(jobCode).isNotNull();
+      assertThat(jobCode.getValue()).isEqualTo("JOB002");
     }
   }
 
@@ -107,11 +134,11 @@ class JobCodeTest {
     }
 
     @Test
-    @DisplayName("空文字の値の場合は空文字が返される")
-    void shouldReturnEmptyWhenValueIsEmpty() {
-      JobCode jobCode = JobCode.of("");
+    @DisplayName("null値の場合はnullが返される")
+    void shouldReturnNullWhenValueIsNull() {
+      JobCode jobCode = new JobCode();
 
-      assertThat(jobCode.toString()).isEmpty();
+      assertThat(jobCode.toString()).isNull();
     }
   }
 

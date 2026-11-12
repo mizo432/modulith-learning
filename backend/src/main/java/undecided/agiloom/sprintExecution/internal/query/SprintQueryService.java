@@ -7,37 +7,29 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
-import undecided.agiloom.sprintExecution.spi.SprintDTO;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
 @Transactional(readOnly = true)
-public class SprintQueryService implements SprintQuery {
+public class SprintQueryService {
 
     private final SprintRepository sprintRepository;
-    private final SprintResponseAssembler sprintResponseAssembler;
 
-    public SprintQueryService(SprintRepository sprintRepository,
-                              SprintResponseAssembler sprintResponseAssembler) {
+    public SprintQueryService(SprintRepository sprintRepository) {
         this.sprintRepository = sprintRepository;
-        this.sprintResponseAssembler = sprintResponseAssembler;
     }
 
-    public Optional<SprintDTO> findById(@NonNull SnowflakeId id) {
-        return sprintRepository.findByIdAndDeletedAtIsNull(id).map(sprintResponseAssembler::toDTO);
+    public Optional<Sprint> findById(@NonNull SnowflakeId id) {
+        return sprintRepository.findById(id);
     }
 
-    public List<SprintDTO> findAll(@NonNull Pageable pageable) {
-        return sprintRepository.findAllByDeletedAtIsNull(pageable).getContent().stream()
-            .map(sprintResponseAssembler::toDTO)
-            .toList();
+    public List<Sprint> findAll(Pageable pageable) {
+        return sprintRepository.findAll(pageable).getContent();
     }
 
-    public List<SprintDTO> findByStatus(@NonNull SprintStatus status) {
-        return sprintRepository.findByStatusAndDeletedAtIsNull(status).stream()
-            .map(sprintResponseAssembler::toDTO)
-            .toList();
+    public List<Sprint> findByStatus(@NonNull SprintStatus status) {
+        return sprintRepository.findByStatus(status);
     }
 }

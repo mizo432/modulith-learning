@@ -7,6 +7,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(
@@ -16,6 +17,7 @@ import lombok.Getter;
       @Index(name = "fk02_role_assignment_for_emp", columnList = "employee_id")
     })
 @Getter
+@Setter
 public class RoleAssignmentForEmp {
   @Id private UUID roleAssignmentForEmpId;
 
@@ -24,17 +26,4 @@ public class RoleAssignmentForEmp {
 
   @Column(name = "employee_id")
   private UUID employeeId;
-
-  // JPA用パッケージプライベートセッター
-  void setRoleAssignmentForEmpId(UUID roleAssignmentForEmpId) {
-    this.roleAssignmentForEmpId = roleAssignmentForEmpId;
-  }
-
-  void setRoleId(UUID roleId) {
-    this.roleId = roleId;
-  }
-
-  void setEmployeeId(UUID employeeId) {
-    this.employeeId = employeeId;
-  }
 }

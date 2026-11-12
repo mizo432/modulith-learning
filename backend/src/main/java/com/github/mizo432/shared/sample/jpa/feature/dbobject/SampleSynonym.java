@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,18 +59,5 @@ public class SampleSynonym {
     this.partyId = partyId;
     this.partyType = partyType;
     this.simpleName = simpleName;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SampleSynonym that = (SampleSynonym) o;
-    return Objects.equals(partyId, that.partyId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(partyId);
   }
 }

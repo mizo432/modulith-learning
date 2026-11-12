@@ -8,8 +8,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.Ordered;
@@ -17,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
  * 冪等性キーを処理するServlet Filterです。
@@ -50,16 +47,7 @@ public class IdempotencyKeyFilter implements Filter {
     HttpServletResponse httpResponse = (HttpServletResponse) response;
 
     String key = httpRequest.getHeader(IDEMPOTENCY_KEY_HEADER);
-
-    // HTTPメソッドの検証と変換
-    HttpMethod method;
-    try {
-      method = HttpMethod.valueOf(httpRequest.getMethod());
-    } catch (IllegalArgumentException ex) {
-      // 不正なHTTPメソッドの場合はフィルタをスキップ
-      filterChain.doFilter(request, response);
-      return;
-    }
+    HttpMethod method = HttpMethod.valueOf(httpRequest.getMethod());
 
     // 冪等性キーが存在しない場合、または対象外のメソッドの場合はフィルタをスキップ
     if (key == null || key.isBlank() || !IDEMPOTENT_METHODS.contains(method)) {
@@ -81,24 +69,12 @@ public class IdempotencyKeyFilter implements Filter {
     // 新しいキーの場合は、リクエスト属性にキーを保存して処理を続行
     httpRequest.setAttribute(IDEMPOTENCY_KEY_ATTRIBUTE, key);
 
-    // レスポンスボディをキャプチャするためにWrapperを使用
-    ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(httpResponse);
-
     // チェーンを続行
-    filterChain.doFilter(request, wrappedResponse);
+    filterChain.doFilter(request, response);
 
-    // レスポンス結果をキャッシュに保存（ボディを含む）
+    // レスポンス結果をキャッシュに保存
     if (idempotencyKeyStore.isKeyNew(key)) {
-      byte[] responseBody = wrappedResponse.getContentAsByteArray();
-      // 文字エンコーディングがnullの場合、UTF-8をデフォルトとして使用してマルチバイト文字の破損を防止する
-      Charset charset = wrappedResponse.getCharacterEncoding() != null 
-          ? Charset.forName(wrappedResponse.getCharacterEncoding()) 
-          : StandardCharsets.UTF_8;
-      String body = responseBody.length > 0 ? new String(responseBody, charset) : null;
-      idempotencyKeyStore.put(key, wrappedResponse.getStatus(), body);
+      idempotencyKeyStore.put(key, httpResponse.getStatus(), null);
     }
-
-    // キャッシュされたコンテンツをクライアントに送信
-    wrappedResponse.copyBodyToResponse();
   }
 }

@@ -1,9 +1,9 @@
 package undecided.association.relationshipMgmt.spi.party.bankAccount.dto;
 
-import com.github.mizo432.shared.common.value.datetime.WhenOccured;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUseType;
+import com.github.mizo432.shared.value.datetime.WhenOccured;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**

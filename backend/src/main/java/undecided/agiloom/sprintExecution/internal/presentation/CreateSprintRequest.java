@@ -2,39 +2,37 @@ package undecided.agiloom.sprintExecution.internal.presentation;
 
 import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.util.UUID;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateSprintRequest {
     @NotNull
-    private final UUID productId;
+    private UUID productId;
 
     @NotNull
-    @Min(1)
-    private final Integer sprintNumber;
+    private Integer sprintNumber;
 
     @NotBlank
-    @Size(max = 100)
-    private final String title;
+    private String title;
 
-    @Size(max = 1000)
-    private final String goal;
+    private String goal;
 
     @NotNull
-    private final LocalDate startDate;
+    private LocalDate startDate;
 
     @NotNull
-    private final LocalDate endDate;
+    private LocalDate endDate;
 
     @NotNull
-    private final UUID teamId;
+    private UUID teamId;
 
-    @Size(max = 100)
-    private final String teamName;
+    private String teamName;
 }

@@ -7,7 +7,6 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.github.mizo432.shared.common.value.LongValue;
 import com.google.common.collect.ComparisonChain;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Convert;
@@ -19,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import com.github.mizo432.shared.value.LongValue;
 
 /**
  * SnowflakeIdクラスは、Snowflakeアルゴリズムによって生成される一意の長整数IDを表すクラスです。

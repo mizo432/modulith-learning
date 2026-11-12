@@ -1,5 +1,0 @@
-条件一覧
-
-条件	説明	利用場面	バリエーション	状態モデル	コンテキスト
-Partyの一意性	Partyの識別子は一意であること	Party登録時	-	Party	Party管理
-Partyタイプの有効性	Partyタイプは定義された値のみ使用できる	Party登録時	Partyタイプ	-	Party管理

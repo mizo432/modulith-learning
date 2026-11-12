@@ -2,6 +2,7 @@ package com.github.mizo432.shared.entity;
 
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Immutable;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.data.annotation.Immutable;
  */
 @MappedSuperclass
 @Getter
+@Setter
 @Immutable
 public abstract class PptEntity<T extends PptEntity<T>> extends BusinessEntity<PptEntity<T>> {
   // PPTはParty(パーティ), Place(場所)そして Thing(物)を表します。

@@ -1,6 +1,5 @@
 package undecided.config.presentation.web.exception;
 
-import com.github.mizo432.shared.spring.logging.ExceptionLogger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashSet;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import com.github.mizo432.shared.logging.ExceptionLogger;
 
 /**
  * HandlerExceptionResolverLoggingInterceptorクラスは、SpringフレームワークのMethodInterceptorを実装したクラスです。

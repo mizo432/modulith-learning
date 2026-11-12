@@ -38,7 +38,6 @@ class LargeRecordWriterTest {
 
     @Test
     @DisplayName("正常なChunkの場合、リポジトリにsaveAllを呼び出すこと")
-    @SuppressWarnings("unchecked")
     void shouldSaveAllItemsWhenChunkIsValid() {
       // Arrange
       LargeRecord record1 = new LargeRecord();

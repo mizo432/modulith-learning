@@ -3,7 +3,6 @@ package undecided.jobmanagement.jobexecution.spi.jobexecution;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -30,8 +29,8 @@ class ExecutionIdTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> ExecutionId.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("ExecutionId cannot be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("ExecutionId cannot be null");
     }
 
     @Test
@@ -39,8 +38,8 @@ class ExecutionIdTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longId = "a".repeat(51);
       assertThatThrownBy(() -> ExecutionId.of(longId))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("ExecutionId cannot exceed 50 characters");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("ExecutionId cannot exceed 50 characters");
     }
 
     @Test
@@ -51,6 +50,34 @@ class ExecutionIdTest {
 
       assertThat(executionId).isNotNull();
       assertThat(executionId.getValue()).hasSize(50);
+    }
+  }
+
+  @Nested
+  @DisplayName("デフォルトコンストラクタのテスト")
+  class DefaultConstructorTest {
+
+    @Test
+    @DisplayName("nullの値を持つインスタンスが作成される")
+    void shouldCreateInstanceWithNullValue() {
+      ExecutionId executionId = new ExecutionId();
+
+      assertThat(executionId).isNotNull();
+      assertThat(executionId.getValue()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("パブリックコンストラクタのテスト")
+  class PublicConstructorTest {
+
+    @Test
+    @DisplayName("値を指定してインスタンスが作成される")
+    void shouldCreateInstanceWithValue() {
+      ExecutionId executionId = new ExecutionId("EXEC-002");
+
+      assertThat(executionId).isNotNull();
+      assertThat(executionId.getValue()).isEqualTo("EXEC-002");
     }
   }
 
@@ -91,11 +118,11 @@ class ExecutionIdTest {
     }
 
     @Test
-    @DisplayName("空文字の値の場合は空文字が返される")
-    void shouldReturnEmptyWhenValueIsEmpty() {
-      ExecutionId executionId = ExecutionId.of("");
+    @DisplayName("null値の場合はnullが返される")
+    void shouldReturnNullWhenValueIsNull() {
+      ExecutionId executionId = new ExecutionId();
 
-      assertThat(executionId.toString()).isEmpty();
+      assertThat(executionId.toString()).isNull();
     }
   }
 

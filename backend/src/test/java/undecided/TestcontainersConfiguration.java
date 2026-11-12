@@ -3,7 +3,6 @@ package undecided;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
-import org.junit.jupiter.api.Tag;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -16,7 +15,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
  * <p><b>パフォーマンス最適化</b>: コンテナは静的フィールドで共有され、テストクラス間で1回だけ起動されます。
  * これにより、テスト実行時のコンテナ起動オーバーヘッドが大幅に削減されます。
  */
-@Tag("medium")
 @TestConfiguration(proxyBeanMethods = false)
 public class TestcontainersConfiguration {
 

@@ -3,7 +3,6 @@ package com.github.mizo432.shared.sample.jpa.entity.inheritance;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,17 +44,5 @@ public class SampleLaptop extends SampleDevice {
     this.cpuCores = cpuCores;
     this.memoryGb = memoryGb;
     this.storageGb = storageGb;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    return super.equals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
   }
 }

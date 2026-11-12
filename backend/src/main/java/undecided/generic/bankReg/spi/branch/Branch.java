@@ -8,9 +8,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.jspecify.annotations.NonNull;
 import undecided.generic.bankReg.spi.bank.BankCode;
@@ -21,6 +21,7 @@ import undecided.generic.bankReg.spi.bank.BankCode;
  * <p>このクラスは、データベースの「undecided_ef.branches」テーブルに対応し、 BankcodeJP の Master Export から取り込んだ支店の情報を保持します。
  */
 @Getter
+@Setter
 @ToString
 @Entity
 @IdClass(Branch.BranchId.class)
@@ -142,6 +143,7 @@ public class Branch {
 
   /** 支店と金融機関の複合キー。 */
   @Getter
+  @Setter
   @EqualsAndHashCode
   public static class BranchId implements Serializable {
     @Column(name = "bank_code", nullable = false, length = 4)
@@ -149,56 +151,5 @@ public class Branch {
 
     @Column(name = "branch_code", nullable = false, length = BranchCode.LENGTH)
     private String branchCode;
-
-    public void setBankCode(String bankCode) {
-      this.bankCode = bankCode;
-    }
-
-    public void setBranchCode(String branchCode) {
-      this.branchCode = branchCode;
-    }
-  }
-
-  // JPAおよびバッチ処理用パッケージプライベートセッター
-  public void setBranchCode(BranchCode branchCode) {
-    this.branchCode = branchCode;
-  }
-
-  public void setBankCode(String bankCode) {
-    this.bankCode = bankCode;
-  }
-
-  public void setBranchName(String branchName) {
-    this.branchName = branchName;
-  }
-
-  public void setBranchHalfKana(String branchHalfKana) {
-    this.branchHalfKana = branchHalfKana;
-  }
-
-  public void setBranchFullKana(String branchFullKana) {
-    this.branchFullKana = branchFullKana;
-  }
-
-  public void setBranchHiragana(String branchHiragana) {
-    this.branchHiragana = branchHiragana;
-  }
-
-  public void setDatasetId(String datasetId) {
-    this.datasetId = datasetId;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Branch branch = (Branch) o;
-    return Objects.equals(branchCode, branch.branchCode)
-        && Objects.equals(bankCode, branch.bankCode);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(branchCode, bankCode);
   }
 }

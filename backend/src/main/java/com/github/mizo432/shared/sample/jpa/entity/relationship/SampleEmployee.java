@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,18 +36,5 @@ public class SampleEmployee {
     this.employeeId = employeeId;
     this.employeeName = employeeName;
     this.employeeNo = employeeNo;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SampleEmployee that = (SampleEmployee) o;
-    return Objects.equals(employeeId, that.employeeId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(employeeId);
   }
 }

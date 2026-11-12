@@ -1,5 +1,0 @@
-要求一覧
-ID	要求名	概要	優先度
-FR-AS-01	Party登録	個人や組織を登録する	MVP
-FR-AS-02	Party検索	条件に一致するPartyを検索する	MVP
-NFR-AS-01	ID管理	安定したIDで対象を参照できる	

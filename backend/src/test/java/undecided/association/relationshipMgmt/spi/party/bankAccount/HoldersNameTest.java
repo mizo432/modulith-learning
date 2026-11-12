@@ -3,7 +3,6 @@ package undecided.association.relationshipMgmt.spi.party.bankAccount;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -86,7 +85,7 @@ class HoldersNameTest {
     void shouldThrowExceptionWhenHoldersNameIsNull() {
       // Act & Assert
       assertThatThrownBy(() -> HoldersName.of(null))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("nullに対するエラーメッセージが含まれること")
           .hasMessageContaining("null");
     }
@@ -96,7 +95,7 @@ class HoldersNameTest {
     void shouldThrowExceptionWhenHoldersNameIsEmpty() {
       // Act & Assert
       assertThatThrownBy(() -> HoldersName.of(""))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("空文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -106,7 +105,7 @@ class HoldersNameTest {
     void shouldThrowExceptionWhenHoldersNameIsBlank() {
       // Act & Assert
       assertThatThrownBy(() -> HoldersName.of("   "))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("空白のみの文字列に対するエラーメッセージが含まれること")
           .hasMessageContaining("empty");
     }
@@ -119,7 +118,7 @@ class HoldersNameTest {
 
       // Act & Assert
       assertThatThrownBy(() -> HoldersName.of(tooLongName))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("文字数が多い場合のエラーメッセージが含まれること")
           .hasMessageContaining("characters");
     }
@@ -129,7 +128,7 @@ class HoldersNameTest {
     void shouldThrowExceptionWhenHoldersNameContainsInvalidCharacters() {
       // Act & Assert
       assertThatThrownBy(() -> HoldersName.of("田中@太郎"))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("無効文字が含まれる場合のエラーメッセージが含まれること")
           .hasMessageContaining("invalid");
     }
@@ -139,7 +138,7 @@ class HoldersNameTest {
     void shouldThrowExceptionWhenHoldersNameContainsEmoji() {
       // Act & Assert
       assertThatThrownBy(() -> HoldersName.of("田中🎉太郎"))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .as("絵文字が含まれる場合のエラーメッセージが含まれること")
           .hasMessageContaining("invalid");
     }

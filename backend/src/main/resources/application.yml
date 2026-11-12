@@ -3,7 +3,7 @@ server:
   port: 8080
 spring:
   main:
-    lazy-initialization: false
+    lazy-initialization: on
   application:
     name: backend
   batch:
@@ -31,15 +31,12 @@ spring:
     enabled: true
     outOfOrder: true
     baseline-on-migrate: true
-    baseline-description: "<< Flyway Baseline >>"
-    baseline-version: 0
     user: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
     url: ${SYSTEM_JDBC_URL:jdbc:postgresql://localhost:5432/postgres}
     # 事業領域ごとのマイグレーションlocations
     # data-designスキルに従い、事業領域ごとにスキーマを分離する
     locations: >
-      classpath:db/migration,
       classpath:db/migration/as,
       classpath:db/migration/do,
       classpath:db/migration/ef,
@@ -47,9 +44,9 @@ spring:
       classpath:db/migration/ar,
       classpath:db/migration/az,
       classpath:db/migration/nt
-  mvc:
-    problemdetails:
-      enabled: true
+    mvc:
+      problemdetails:
+        enabled: true
   
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
@@ -105,18 +102,6 @@ hikari:
     fallback-pool-size: 30
 
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
-
-# OpenTelemetry 設定
-# 開発環境ではOTLPコレクターが動作しないため、エクスポートを無効化しています。
-# 本番環境では management.otlp.*.export.enabled を true に設定し、エンドポイントを指定してください。
-otel:
-  service:
-    name: ${OTEL_SERVICE_NAME:backend}
-  exporter:
-    otlp:
-      protocol: grpc
-      # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
-
 management:
   endpoints:
     web:
@@ -125,9 +110,3 @@ management:
   endpoint:
     health:
       show-details: always
-  tracing:
-    enabled: false
-  otlp:
-    metrics:
-      export:
-        enabled: false

@@ -1,12 +1,11 @@
 package undecided.association.relationshipMgmt.spi.party.bankAccount;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.common.value.StringCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 銀行口座の口座番号を表す値オブジェクトクラス。
@@ -43,18 +42,18 @@ public class AccountNumber implements StringCode<AccountNumber> {
    *
    * @param accountNumber 口座番号（半角数字のみ、1桁以上7桁以下）
    * @return 口座番号の値オブジェクト
-   * @throws BusinessException 口座番号がnull、空、桁数制限を超えている、または半角数字のみで構成されていない場合
+   * @throws IllegalArgumentException 口座番号がnull、空、桁数制限を超えている、または半角数字のみで構成されていない場合
    */
   public static AccountNumber of(String accountNumber) {
     if (accountNumber == null) {
-      throw new BusinessException("accountNumber must not be null");
+      throw new IllegalArgumentException("accountNumber must not be null");
     }
     String trimmed = accountNumber.trim();
     if (trimmed.isEmpty()) {
-      throw new BusinessException("accountNumber must not be empty");
+      throw new IllegalArgumentException("accountNumber must not be empty");
     }
     if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
-      throw new BusinessException(
+      throw new IllegalArgumentException(
           "accountNumber must be between "
               + MIN_LENGTH
               + " and "
@@ -63,7 +62,8 @@ public class AccountNumber implements StringCode<AccountNumber> {
               + trimmed);
     }
     if (!trimmed.matches("\\d+")) {
-      throw new BusinessException("accountNumber must contain only digits, but was: " + trimmed);
+      throw new IllegalArgumentException(
+          "accountNumber must contain only digits, but was: " + trimmed);
     }
     return new AccountNumber(trimmed);
   }

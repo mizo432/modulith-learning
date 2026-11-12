@@ -1,8 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party.org;
 
-import com.github.mizo432.shared.common.value.datetime.ValidInterval;
 import lombok.Getter;
 import undecided.association.relationshipMgmt.spi.party.Party;
+import com.github.mizo432.shared.value.datetime.ValidInterval;
 
 /**
  * 組織（法人、団体など）を表すエンティティクラス。

@@ -1,6 +1,5 @@
 package undecided.generic.bankReg.internal.batch.config;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -13,9 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
+import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
 import undecided.config.batch.BatchJobListener;
 import undecided.config.batch.BatchStepListener;
-import undecided.generic.bankReg.internal.batch.dto.BranchCsvDto;
 import undecided.generic.bankReg.internal.batch.processor.BranchItemProcessor;
 import undecided.generic.bankReg.internal.batch.reader.BranchCsvItemReader;
 import undecided.generic.bankReg.internal.batch.writer.BranchItemWriter;
@@ -37,7 +36,7 @@ public class BranchImportBatchConfig {
     if (inputFile != null && !inputFile.isBlank()) {
       resource = new FileSystemResource(inputFile);
     } else {
-      throw new BusinessException("inputFile is required for branch import job");
+      throw new IllegalArgumentException("inputFile is required for branch import job");
     }
     return new BranchCsvItemReader(resource);
   }

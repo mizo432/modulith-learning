@@ -73,12 +73,3 @@ management:
   endpoint:
     health:
       show-details: always
-
-# OpenTelemetry 設定
-otel:
-  service:
-    name: ${OTEL_SERVICE_NAME:authorization}
-  exporter:
-    otlp:
-      protocol: grpc
-      # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}

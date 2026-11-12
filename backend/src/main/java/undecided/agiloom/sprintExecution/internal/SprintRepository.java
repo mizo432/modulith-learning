@@ -3,8 +3,6 @@ package undecided.agiloom.sprintExecution.internal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import undecided.agiloom.sprintExecution.spi.Sprint;
@@ -13,15 +11,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 public interface SprintRepository extends CrudRepository<Sprint, SnowflakeId>, PagingAndSortingRepository<Sprint, SnowflakeId> {
 
-    List<Sprint> findByProductIdAndDeletedAtIsNull(UUID productId);
+    List<Sprint> findByProductId(UUID productId);
 
-    Optional<Sprint> findByProductIdAndSprintNumberAndDeletedAtIsNull(UUID productId, Integer sprintNumber);
+    Optional<Sprint> findByProductIdAndSprintNumber(UUID productId, Integer sprintNumber);
 
-    List<Sprint> findByTeamIdAndDeletedAtIsNull(UUID teamId);
+    List<Sprint> findByTeamId(UUID teamId);
 
-    List<Sprint> findByStatusAndDeletedAtIsNull(SprintStatus status);
-
-    Optional<Sprint> findByIdAndDeletedAtIsNull(SnowflakeId id);
-
-    Page<Sprint> findAllByDeletedAtIsNull(Pageable pageable);
+    List<Sprint> findByStatus(SprintStatus status);
 }

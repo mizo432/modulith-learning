@@ -22,16 +22,15 @@ repositories {
     mavenCentral()
 }
 
-extra["junitVersion"] = "6.1.3"
-extra["springCloudBomVersion"] = "2025.1.4"
+extra["junitVersion"] = "6.0.1"
+extra["springCloudBomVersion"] = "2025.1.2"
 
 dependencies {
 //    <!-- Spring Boot Starter -->
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-opentelemetry")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junitVersion")}")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("com.github.ben-manes.caffeine:caffeine")
 }
 

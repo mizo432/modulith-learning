@@ -48,24 +48,6 @@ class HttpSessionEventLoggingListenerTest {
           .as("セッション作成イベントの処理で例外が発生しないこと")
           .doesNotThrowAnyException();
     }
-
-    @Test
-    @DisplayName("セッションが作成された場合、セッションIDが正しく取得されること")
-    void shouldGetSessionIdWhenSessionCreated() {
-      // Arrange
-      HttpSession session = mock(HttpSession.class);
-      when(session.getId()).thenReturn("test-session-id");
-      HttpSessionEvent event = new HttpSessionEvent(session);
-
-      // Act
-      listener.sessionCreated(event);
-
-      // Assert
-      // リスナーはログ出力のみを行い、例外をスローしないことを確認
-      assertThatCode(() -> listener.sessionCreated(event))
-          .as("セッション作成イベントの処理で例外が発生しないこと")
-          .doesNotThrowAnyException();
-    }
   }
 
   @Nested

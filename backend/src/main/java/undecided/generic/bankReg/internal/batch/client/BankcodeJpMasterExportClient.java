@@ -2,7 +2,6 @@ package undecided.generic.bankReg.internal.batch.client;
 
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
-import com.github.mizo432.shared.common.exception.SystemException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -14,6 +13,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
+import com.github.mizo432.shared.exception.SystemException;
 
 /**
  * BankcodeJP Master Export API のクライアント。
@@ -101,19 +101,20 @@ public class BankcodeJpMasterExportClient {
     restClient
         .get()
         .uri(URI.create(downloadUrl.downloadUrl()))
-        .exchange((request, response) -> {
-          if (response.getStatusCode().isError()) {
-            throw new SystemException(
-                ERROR_CODE,
-                "Failed to download Master Export ZIP: HTTP " + response.getStatusCode());
-          }
-          try (InputStream body = response.getBody()) {
-            Files.copy(body, target, StandardCopyOption.REPLACE_EXISTING);
-          } catch (IOException e) {
-            throw new SystemException(ERROR_CODE, "Failed to save Master Export ZIP", e);
-          }
-          return null;
-        });
+        .exchange(
+            (request, response) -> {
+              if (response.getStatusCode().isError()) {
+                throw new SystemException(
+                    ERROR_CODE,
+                    "Failed to download Master Export ZIP: HTTP " + response.getStatusCode());
+              }
+              try (InputStream body = response.getBody()) {
+                Files.copy(body, target, StandardCopyOption.REPLACE_EXISTING);
+              } catch (IOException e) {
+                throw new SystemException(ERROR_CODE, "Failed to save Master Export ZIP", e);
+              }
+              return null;
+            });
   }
 
   private String requireApiKey() {

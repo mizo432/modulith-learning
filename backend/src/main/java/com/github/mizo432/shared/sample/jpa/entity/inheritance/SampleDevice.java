@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,18 +56,5 @@ public abstract class SampleDevice {
     this.deviceId = deviceId;
     this.deviceName = deviceName;
     this.serialNumber = serialNumber;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SampleDevice that = (SampleDevice) o;
-    return Objects.equals(deviceId, that.deviceId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(deviceId);
   }
 }

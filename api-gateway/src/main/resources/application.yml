@@ -27,74 +27,108 @@ spring:
     gateway:
       server:
         webmvc:
-          # ルーティングは GatewayServerApplication.java の rateLimitedApiRoutes() で定義
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}
-      # SSL/TLS接続を有効化（本番環境ではtrueに設定してください）
-      ssl:
-        enabled: ${REDIS_SSL_ENABLED:false}
-      # 接続タイムアウト（ミリ秒）
-      timeout: ${REDIS_TIMEOUT:5000}
+          routes:
+            - id: api-departments
+              uri: lb://backend/api/departments
+              predicates:
+                - Path=/api/departments/**
+            - id: api-employees
+              uri: lb://backend/api/employees
+              predicates:
+                - Path=/api/employees/**
+            - id: api-organizations
+              uri: lb://backend/api/organizations
+              predicates:
+                - Path=/api/organizations/**
+            - id: api-roles
+              uri: lb://backend/api/roles
+              predicates:
+                - Path=/api/roles/**
+            - id: api-roleAssignmentsFor
+              uri: lb://backend/api/roleAssignmentsFor
+              predicates:
+                - Path=/api/roleAssignmentsFor/**
+            - id: api-roleAssignmentsForOrg
+              uri: lb://backend/api/roleAssignmentsForOrg
+              predicates:
+                - Path=/api/roleAssignmentsForOrg/**
+            - id: api-users
+              uri: lb://backend/api/users
+              predicates:
+                - Path=/api/users/**
+            - id: api-prefectures
+              uri: lb://backend/api/prefectures
+              predicates:
+                - Path=/api/prefectures/**
+            - id: api-greeting
+              uri: lb://backend/api/greeting
+              predicates:
+                - Path=/api/greeting/**
+            - id: api-greeting1
+              uri: lb://backend/api/greeting1
+              predicates:
+                - Path=/api/greeting1/**
+            - id: api-greeting2
+              uri: lb://backend/api/greeting2
+              predicates:
+                - Path=/api/greeting2/**
+            - id: api-greeting3
+              uri: lb://backend/api/greeting3
+              predicates:
+                - Path=/api/greeting3/**
+            - id: api-greeting4
+              uri: lb://backend/api/greeting4
+              predicates:
+                - Path=/api/greeting4/**
+            - id: api-greeting5
+              uri: lb://backend/api/greeting5
+              predicates:
+                - Path=/api/greeting5/**
+            - id: api-greeting6
+              uri: lb://backend/api/greeting6
+              predicates:
+                - Path=/api/greeting6/**
+            - id: api-greeting7
+              uri: lb://backend/api/greeting7
+              predicates:
+                - Path=/api/greeting7/**
+            - id: api-sprints
+              uri: lb://backend/api/v1/sprints
+              predicates:
+                - Path=/api/v1/sprints/**
+            - id: api-job-definitions
+              uri: lb://backend/api/job-definitions
+              predicates:
+                - Path=/api/job-definitions/**
+            - id: api-job-executions
+              uri: lb://backend/api/job-executions
+              predicates:
+                - Path=/api/job-executions/**
+            - id: do-databases
+              uri: lb://backend/do/databases
+              predicates:
+                - Path=/do/databases/**
+            - id: api-docs
+              uri: lb://backend
+              predicates:
+                - Path=/v3/api-docs/**
+            - id: swagger-ui
+              uri: lb://backend
+              predicates:
+                - Path=/swagger-ui/**
 
 springdoc:
   api-docs:
     enabled: true
   swagger-ui:
-    # 本番環境ではfalseに設定し、API仕様の漏洩を防ぐこと
-    enabled: ${SWAGGER_UI_ENABLED:false}
+    enabled: true
     path: /swagger-ui.html
     urls:
       - name: backend
         url: /v3/api-docs
 
-# NOTE: 開発環境ではHTTP接続を使用しています。
-# 本番環境ではEurekaサービスレジストリへのHTTPS接続を有効化してください。
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-
-# レートリミッティング設定
-# 詳細設計書に基づく制限設定
-ratelimit:
-  # Redisベースの分散レートリミッティングを有効化
-  # falseの場合、インメモリのローカルバケットにフォールバックします
-  redis:
-    enabled: true
-  # デフォルト（GETリクエスト）: 1分あたり100回
-  capacity: 100
-  # NOTE: burst-capacityはWebMVCのBucket4jフィルタでは使用されません（@Deprecated）
-  # burst-capacity: 200
-  period-seconds: 60
-  # 認証関連エンドポイント: 1分あたり5回
-  auth-capacity: 5
-  # NOTE: auth-burst-capacityはWebMVCのBucket4jフィルタでは使用されません（@Deprecated）
-  # auth-burst-capacity: 10
-  # トークン更新エンドポイント: 1分あたり10回
-  auth-refresh-capacity: 10
-  # 書き込み操作（POST/PUT/PATCH/DELETE）: 1分あたり30回
-  write-capacity: 30
-  # NOTE: write-burst-capacityはWebMVCのBucket4jフィルタでは使用されません（@Deprecated）
-  # write-burst-capacity: 60
-
-# OpenTelemetry 設定
-# 開発環境ではOTLPコレクターが動作しないため、エクスポートを無効化しています。
-# 本番環境では management.otlp.*.export.enabled を true に設定し、エンドポイントを指定してください。
-otel:
-  service:
-    name: ${OTEL_SERVICE_NAME:api-gateway}
-  exporter:
-    otlp:
-      protocol: grpc
-      # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
-
-management:
-  tracing:
-    enabled: false
-  otlp:
-    metrics:
-      export:
-        enabled: false
+#  eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://${PROJECT_NAME:-default}-service-registry:8761/eureka
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka

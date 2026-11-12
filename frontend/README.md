@@ -35,10 +35,9 @@
 
 - **React 18**: ユーザーインターフェースを構築するための JavaScript ライブラリ
 - **TypeScript**: 型安全性と優れた開発者体験のため
-- **Material-UI (MUI v5)**: Google の Material Design を実装した React コンポーネントライブラリ
-- **React Router v6**: ナビゲーションとルーティング用
+- **Material-UI (MUI)**: Google の Material Design を実装した React コンポーネントライブラリ
+- **React Router**: ナビゲーションとルーティング用
 - **Axios**: バックエンドとの API 通信用
-- **React Context**: 認証状態の管理用
 
 ## プロジェクト構造
 
@@ -49,45 +48,17 @@ frontend/
 │   └── manifest.json       # PWA マニフェスト
 ├── src/                    # ソースコード
 │   ├── components/         # 再利用可能な UI コンポーネント
-│   │   ├── Header.tsx      # アプリケーションヘッダー
-│   │   ├── SideMenu.tsx    # サイドメニュー
-│   │   └── TabNavigation.tsx # タブナビゲーション
-│   ├── contexts/           # React Context
-│   │   └── AuthContext.tsx # 認証コンテキスト
+│   │   └── Header.tsx      # アプリケーションヘッダー
 │   ├── pages/              # ページコンポーネント
 │   │   ├── Dashboard.tsx   # ダッシュボードページ
-│   │   ├── Login.tsx       # ログインページ
-│   │   ├── ChangePassword.tsx # パスワード変更ページ
-│   │   ├── ProductSelection.tsx # プロダクト選択ページ
-│   │   ├── NotFound.tsx    # 404 ページ
-│   │   ├── projects/       # プロジェクト関連ページ
-│   │   │   ├── ProjectList.tsx   # プロジェクト一覧
-│   │   │   ├── ProjectDetail.tsx # プロジェクト詳細
-│   │   │   ├── ProjectCreate.tsx # プロジェクト作成
-│   │   │   └── ProjectEdit.tsx   # プロジェクト編集
-│   │   └── users/          # ユーザー関連ページ
-│   │       ├── UserList.tsx   # ユーザー一覧
-│   │       ├── UserCreate.tsx # ユーザー作成
-│   │       └── UserEdit.tsx   # ユーザー編集
+│   │   └── NotFound.tsx    # 404 ページ
 │   ├── services/           # API 通信用サービス
-│   │   ├── api.ts          # Axios 設定
-│   │   ├── epicService.ts  # エピックAPIサービス
-│   │   ├── productService.ts # プロダクトAPIサービス
-│   │   ├── projectService.ts # プロジェクトAPIサービス
-│   │   ├── sprintService.ts # スプリントAPIサービス
-│   │   ├── teamService.ts  # チームAPIサービス
-│   │   └── userService.ts  # ユーザーAPIサービス
+│   │   └── api.ts          # Axios 設定
 │   ├── App.tsx             # メインアプリケーションコンポーネント
-│   ├── App.test.tsx        # アプリケーションテスト
 │   ├── index.tsx           # アプリケーションエントリーポイント
 │   ├── index.css           # グローバルスタイル
 │   ├── theme.ts            # MUI テーマ設定
 │   └── reportWebVitals.ts  # パフォーマンスモニタリング
-├── .env                    # デフォルト環境変数
-├── .env.local              # ローカル環境変数
-├── .env.development        # 開発環境変数
-├── .env.staging            # ステージング環境変数
-├── .env.production         # 本番環境変数
 ├── package.json            # NPM 依存関係とスクリプト
 ├── tsconfig.json           # TypeScript 設定
 └── build.gradle.kts        # Gradle ビルド設定
@@ -97,8 +68,8 @@ frontend/
 
 ### 前提条件
 
-- Node.js (v22.14.0 以降)
-- npm (v10.9.2 以降)
+- Node.js (v20.12.2 以降)
+- npm (v10.5.0 以降)
 
 ### 環境設定
 
@@ -161,20 +132,12 @@ frontend/
 
 ## バックエンドとの通信
 
-フロントエンドは Axios を使用してバックエンドと通信します。API サービスは `src/services/` ディレクトリで管理され、以下を提供します：
+フロントエンドは Axios を使用してバックエンドと通信します。API サービスは `src/services/api.ts`
+で設定され、以下を提供します：
 
-- `api.ts`: ベース URL 設定、JWT トークンによる認証、HTTP ステータスコードのエラー処理
-- `epicService.ts`: エピック関連の API 通信
-- `productService.ts`: プロダクト関連の API 通信
-- `projectService.ts`: プロジェクト関連の API 通信
-- `sprintService.ts`: スプリント関連の API 通信
-- `teamService.ts`: チーム関連の API 通信
-- `userService.ts`: ユーザー関連の API 通信
-
-## 認証管理
-
-フロントエンドは React Context を使用して認証状態を管理します。`src/contexts/AuthContext.tsx`
-で認証状態を提供し、ログイン・ログアウト機能を実現しています。
+- ベース URL 設定
+- JWT トークンによる認証
+- 一般的な HTTP ステータスコードのエラー処理
 
 ## デプロイメント
 

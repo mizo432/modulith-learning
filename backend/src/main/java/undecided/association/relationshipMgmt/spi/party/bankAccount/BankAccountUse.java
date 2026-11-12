@@ -1,12 +1,12 @@
 package undecided.association.relationshipMgmt.spi.party.bankAccount;
 
-import com.github.mizo432.shared.common.value.datetime.WhenOccured;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
+import com.github.mizo432.shared.value.datetime.WhenOccured;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**

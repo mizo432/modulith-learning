@@ -3,14 +3,10 @@ package undecided.association.relationshipMgmt.spi.party.org;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("small")
-@DisplayName("OrgNameの単体テスト")
 class OrgNameTest {
 
   @Nested
@@ -48,24 +44,24 @@ class OrgNameTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> OrgName.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("name must not be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("name must not be null");
     }
 
     @Test
     @DisplayName("空文字を指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenEmpty() {
       assertThatThrownBy(() -> OrgName.of(""))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("name must not be empty");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("name must not be empty");
     }
 
     @Test
     @DisplayName("空白文字のみを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenBlank() {
       assertThatThrownBy(() -> OrgName.of("   "))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("name must not be empty");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("name must not be empty");
     }
 
     @Test
@@ -73,7 +69,7 @@ class OrgNameTest {
     void shouldThrowExceptionWhenExceedsMaxLength() {
       String longName = "a".repeat(101);
       assertThatThrownBy(() -> OrgName.of(longName))
-          .isInstanceOf(BusinessException.class)
+          .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("name must be between");
     }
 

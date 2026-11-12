@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -73,18 +72,5 @@ public abstract class SampleVehicle {
     ACTIVE,
     INACTIVE,
     MAINTENANCE
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SampleVehicle that = (SampleVehicle) o;
-    return Objects.equals(vehicleId, that.vehicleId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(vehicleId);
   }
 }

@@ -1,6 +1,0 @@
-序号	属性名	型	必須/任意	個体指定子	初期値	制約
-1	Party	String	必須		-	-
-2	Roleタイプ	String	必須		-	-
-3	有効期間	String	任意		-	-
-4	状態	String	任意		-	-
-5	作成日	String	任意		-	-

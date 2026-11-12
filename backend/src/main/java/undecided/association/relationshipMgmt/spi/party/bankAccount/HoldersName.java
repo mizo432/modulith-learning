@@ -1,12 +1,11 @@
 package undecided.association.relationshipMgmt.spi.party.bankAccount;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.common.value.StringValue;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.value.StringValue;
 
 /**
  * 銀行口座の口座名義人を表す値オブジェクトクラス。
@@ -45,25 +44,26 @@ public class HoldersName implements StringValue<HoldersName> {
    *
    * @param holdersName 口座名義人の名前（null不可、空不可、最大100文字）
    * @return 口座名義人の値オブジェクト
-   * @throws BusinessException 名前がnull、空、空白のみ、最大文字数を超えている、 または許可されていない文字を含む場合
+   * @throws IllegalArgumentException 名前がnull、空、空白のみ、最大文字数を超えている、 または許可されていない文字を含む場合
    */
   public static HoldersName of(String holdersName) {
     if (holdersName == null) {
-      throw new BusinessException("holdersName must not be null");
+      throw new IllegalArgumentException("holdersName must not be null");
     }
     String trimmed = holdersName.trim();
     if (trimmed.isEmpty()) {
-      throw new BusinessException("holdersName must not be empty");
+      throw new IllegalArgumentException("holdersName must not be empty");
     }
     if (trimmed.length() > MAX_LENGTH) {
-      throw new BusinessException(
+      throw new IllegalArgumentException(
           "holdersName must not exceed "
               + MAX_LENGTH
               + " characters, but was: "
               + trimmed.length());
     }
     if (!trimmed.matches(REGEX)) {
-      throw new BusinessException("holdersName contains invalid characters, but was: " + trimmed);
+      throw new IllegalArgumentException(
+          "holdersName contains invalid characters, but was: " + trimmed);
     }
     return new HoldersName(trimmed);
   }

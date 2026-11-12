@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.association.relationshipMgmt.orgRole.spi.Department;
 import undecided.association.relationshipMgmt.orgRole.spi.DepartmentCode;
-import undecided.association.relationshipMgmt.orgRole.spi.dto.DepartmentDTO;
 
 /**
  * 部署情報の取得（Query）を担当するREST APIコントローラーです。
@@ -26,10 +25,8 @@ public class DepartmentQueryApi {
    * @return
    */
   @GetMapping
-  List<DepartmentDTO> findAll() {
-    return query.findAll().stream()
-        .map(dept -> new DepartmentDTO(dept.getId(), dept.getCode()))
-        .toList();
+  List<Department> findAll() {
+    return query.findAll();
   }
 
   /**
@@ -37,10 +34,9 @@ public class DepartmentQueryApi {
    * @return
    */
   @GetMapping("/{depertmentCode}")
-  DepartmentDTO getById(@PathVariable DepartmentCode departmentCode) {
-    Department department = query
+  Department getById(@PathVariable DepartmentCode departmentCode) {
+    return query
         .findByCode(departmentCode)
         .orElseThrow(() -> new EntityNotFoundException("Department not found"));
-    return new DepartmentDTO(department.getId(), department.getCode());
   }
 }

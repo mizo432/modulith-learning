@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,18 +46,5 @@ public class SampleStudent {
     this.studentId = studentId;
     this.studentName = studentName;
     this.course = course;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SampleStudent that = (SampleStudent) o;
-    return Objects.equals(studentId, that.studentId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(studentId);
   }
 }

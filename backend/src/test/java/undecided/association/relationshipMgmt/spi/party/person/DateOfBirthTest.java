@@ -3,7 +3,6 @@ package undecided.association.relationshipMgmt.spi.party.person;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("small")
-@DisplayName("DateOfBirthの単体テスト")
 class DateOfBirthTest {
 
   @Nested
@@ -32,8 +30,8 @@ class DateOfBirthTest {
     @DisplayName("nullを指定するとIllegalArgumentExceptionがスローされる")
     void shouldThrowExceptionWhenNull() {
       assertThatThrownBy(() -> DateOfBirth.of(null))
-          .isInstanceOf(BusinessException.class)
-          .hasMessageContaining("dateOfBirth must not be null");
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("dateOfBirth must not be null");
     }
   }
 
@@ -107,7 +105,9 @@ class DateOfBirthTest {
     void shouldReturnNullWhenValueIsNull() {
       DateOfBirth dateOfBirth = DateOfBirth.empty();
 
-      assertThat(dateOfBirth.toString()).as("空のDateOfBirthのtoString()はnullを返すこと").isNull();
+      assertThat(dateOfBirth.toString())
+          .as("空のDateOfBirthのtoString()はnullを返すこと")
+          .isNull();
     }
   }
 
