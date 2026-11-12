@@ -81,6 +81,8 @@ ratelimit:
   # write-burst-capacity: 60
 
 # OpenTelemetry 設定
+# 開発環境ではOTLPコレクターが動作しないため、エクスポートを無効化しています。
+# 本番環境では management.otlp.*.export.enabled を true に設定し、エンドポイントを指定してください。
 otel:
   service:
     name: ${OTEL_SERVICE_NAME:api-gateway}
@@ -88,3 +90,11 @@ otel:
     otlp:
       protocol: grpc
       # endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
+
+management:
+  tracing:
+    enabled: false
+  otlp:
+    metrics:
+      export:
+        enabled: false
