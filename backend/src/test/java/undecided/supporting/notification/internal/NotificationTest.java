@@ -189,9 +189,9 @@ class NotificationTest {
     }
 
     @Test
-    @DisplayName("既読后再呼び出ししても問題ないこと")
+    @DisplayName("markAsReadは冪等であること")
     void shouldIdempotentMarkAsRead() {
-      // Arrange
+      // Arrange: 未読の通知を2回markAsRead
       Notification notification = createNotification();
 
       // Act
@@ -200,13 +200,9 @@ class NotificationTest {
 
       // Assert
       assertThat(notification.getIsRead()).isTrue();
-    }
 
-    @Test
-    @DisplayName("既に既読の通知をmarkAsReadしても問題ないこと")
-    void shouldMarkAlreadyReadNotification() {
-      // Arrange
-      Notification notification = Notification.builder()
+      // Arrange: 既に既読の通知をmarkAsRead
+      Notification readNotification = Notification.builder()
           .id(SnowflakeId.of(1L))
           .recipientId(RECIPIENT_ID)
           .sourceDomain(SOURCE_DOMAIN)
@@ -217,10 +213,10 @@ class NotificationTest {
           .build();
 
       // Act
-      notification.markAsRead();
+      readNotification.markAsRead();
 
       // Assert
-      assertThat(notification.getIsRead()).isTrue();
+      assertThat(readNotification.getIsRead()).isTrue();
     }
   }
 
@@ -323,6 +319,18 @@ class NotificationTest {
       assertThatThrownBy(() -> notification.update("Title", null, TYPE))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("content must not be null");
+    }
+
+    @Test
+    @DisplayName("contentが空文字の場合、BusinessExceptionがスローされる")
+    void shouldThrowExceptionWhenContentIsEmpty() {
+      // Arrange
+      Notification notification = createNotification();
+
+      // Act & Assert
+      assertThatThrownBy(() -> notification.update("Title", "   ", TYPE))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("content must not be empty");
     }
 
     @Test

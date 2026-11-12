@@ -1,5 +1,8 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
+import com.github.mizo432.shared.common.precondition.StringPrecondition;
+import com.github.mizo432.shared.common.primitive.Strings2;
 import com.github.mizo432.shared.exception.BusinessException;
 
 import jakarta.persistence.Embeddable;
@@ -20,11 +23,8 @@ public final class JobVersion {
   }
 
   public static JobVersion of(String value) {
-    com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull(
-        value, () -> new BusinessException("JobVersion cannot be null"));
-    com.github.mizo432.shared.common.precondition.StringPrecondition.checkMaxLength(
-        value,
-        MAX_LENGTH,
+    ObjectPrecondition.checkNotNull(value, () -> new BusinessException("JobVersion cannot be null"));
+    StringPrecondition.checkMaxLength(value, MAX_LENGTH,
         () -> new BusinessException("JobVersion cannot exceed " + MAX_LENGTH + " characters"));
     return new JobVersion(value);
   }
@@ -35,7 +35,7 @@ public final class JobVersion {
 
   @Override
   public String toString() {
-    return com.github.mizo432.shared.common.primitive.Strings2.toString(value);
+    return Strings2.toString(value);
   }
 
   @Override

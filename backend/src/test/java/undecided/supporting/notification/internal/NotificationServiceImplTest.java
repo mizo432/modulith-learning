@@ -308,7 +308,7 @@ class NotificationServiceImplTest {
 
       // Assert
       assertThat(notification.getIsRead()).isTrue();
-      verify(notificationRepository).save(notification);
+      // JPAのdirty checkingで自動的に変更が検出されるため、save()は呼び出されない
     }
 
     @Test
@@ -376,7 +376,7 @@ class NotificationServiceImplTest {
 
       // Assert
       assertThat(notification.getIsRead()).isTrue();
-      verify(notificationRepository).save(notification);
+      // JPAのdirty checkingで自動的に変更が検出されるため、save()は呼び出されない
     }
   }
 }
