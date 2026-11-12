@@ -84,7 +84,7 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.findByIdAndDeletedAtIsNull(id)
             .orElseThrow(() -> new BusinessException("通知が見つかりません: " + notificationId));
         notification.markAsRead();
-        notificationRepository.save(notification);
+        // JPAのdirty checkingで自動的に変更が検出されるため、明示的なsave()は不要
     }
 
     /**

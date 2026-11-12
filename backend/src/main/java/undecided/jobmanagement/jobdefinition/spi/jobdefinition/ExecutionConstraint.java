@@ -40,6 +40,12 @@ public final class ExecutionConstraint {
   }
 
   @Override
+  public String toString() {
+    return "ExecutionConstraint{maxConcurrentExecutions=" + maxConcurrentExecutions 
+        + ", timeoutSeconds=" + timeoutSeconds + "}";
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;

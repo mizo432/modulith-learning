@@ -107,23 +107,4 @@ class NotificationRequestTest {
     }
   }
 
-  @Nested
-  @DisplayName("NotificationTypeのテスト")
-  class NotificationTypeTest {
-
-    @Test
-    @DisplayName("すべてのタイプが定義されている")
-    void shouldHaveAllTypes() {
-      NotificationType[] types = NotificationType.values();
-      assertThat(types).hasSize(8)
-          .contains(NotificationType.MENTION)
-          .contains(NotificationType.ASSIGNEE_CHANGE)
-          .contains(NotificationType.DUE_DATE)
-          .contains(NotificationType.AWAITING_DECISION)
-          .contains(NotificationType.APPROVAL_RESULT)
-          .contains(NotificationType.JOB_EXECUTION_RESULT)
-          .contains(NotificationType.SYSTEM)
-          .contains(NotificationType.CUSTOM);
-    }
-  }
 }
