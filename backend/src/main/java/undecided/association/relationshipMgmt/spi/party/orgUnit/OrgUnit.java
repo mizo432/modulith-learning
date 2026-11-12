@@ -2,11 +2,17 @@ package undecided.association.relationshipMgmt.spi.party.orgUnit;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.Party;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -46,4 +52,15 @@ public class OrgUnit extends Party {
   /** 組織単位の状態（ACTIVE, INACTIVEなど）。 */
   @Column(name = "status", nullable = false, length = 20)
   private OrgUnitStatus status;
+
+  /** 上位組織（親組織単位）。 */
+  @ManyToOne
+  @JoinColumn(name = "parent_org_unit_id", insertable = false, updatable = false)
+  private OrgUnit largers;
+
+  /** 下位組織（子組織単位の一覧）。 */
+  @Setter
+  @OneToMany
+  @JoinColumn(name = "parent_org_unit_id")
+  private List<OrgUnit> smallers = new ArrayList<>();
 }
