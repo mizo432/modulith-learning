@@ -18,7 +18,7 @@ plugins {
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
-    id("com.github.ben-manes.versions") version "0.67.0"
+    id("io.github.ben-manes.versions") version "0.67.0"
     // Flywayプラグイン（DBマイグレーション）
     id("org.flywaydb.flyway") version "11.20.3"
     jacoco
@@ -283,7 +283,7 @@ val largeTest = tasks.register("largeTest", Test::class.java) {
     shouldRunAfter("mediumTest")
 }
 
-apply(plugin = "com.github.ben-manes.versions")
+apply(plugin = "io.github.ben-manes.versions")
 
 
 tasks.named<DependencyUpdatesTask>("dependencyUpdates").configure {
