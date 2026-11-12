@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("small")
+@DisplayName("FirstNameの単体テスト")
 class FirstNameTest {
 
   @Nested

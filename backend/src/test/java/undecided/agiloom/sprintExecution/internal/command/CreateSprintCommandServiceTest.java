@@ -115,6 +115,7 @@ class CreateSprintCommandServiceTest {
               .productId(FIXED_PRODUCT_ID)
               .sprintNumber(2)
               .title("Sprint 2")
+              .goal("")
               .startDate(LocalDate.now())
               .endDate(LocalDate.now().plusWeeks(2))
               .teamId(FIXED_TEAM_ID)
@@ -127,7 +128,7 @@ class CreateSprintCommandServiceTest {
               FIXED_PRODUCT_ID,
               2,
               "Sprint 2",
-              null,
+              "",
               LocalDate.now(),
               LocalDate.now().plusWeeks(2),
               FIXED_TEAM_ID,
@@ -172,6 +173,47 @@ class CreateSprintCommandServiceTest {
       assertThatThrownBy(() -> service.execute(command))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("endDate must be after startDate");
+    }
+
+    @Test
+    @DisplayName("goalがnullの場合、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenGoalIsNull() {
+      // Arrange
+      when(snowflakeIdGenerator.nextId()).thenReturn(1234567890L);
+      CreateSprintCommand command =
+          CreateSprintCommand.builder()
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(1)
+              .title("Sprint 1")
+              .goal(null)
+              .startDate(LocalDate.now())
+              .endDate(LocalDate.now().plusWeeks(2))
+              .teamId(FIXED_TEAM_ID)
+              .teamName("Team A")
+              .build();
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.execute(command))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("goal must not be null");
+    }
+
+    @Test
+    @DisplayName("titleがnullの場合、NullPointerExceptionがスローされる")
+    void shouldThrowExceptionWhenTitleIsNull() {
+      // CreateSprintCommandのtitleは@NonNullのため、builderでnullを設定するとNullPointerException
+      assertThatThrownBy(() ->
+          CreateSprintCommand.builder()
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(1)
+              .title(null)
+              .goal("Goal 1")
+              .startDate(LocalDate.now())
+              .endDate(LocalDate.now().plusWeeks(2))
+              .teamId(FIXED_TEAM_ID)
+              .teamName("Team A")
+              .build())
+          .isInstanceOf(NullPointerException.class);
     }
   }
 }

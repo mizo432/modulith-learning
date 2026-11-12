@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("small")
+@DisplayName("DateOfBirthの単体テスト")
 class DateOfBirthTest {
 
   @Nested
