@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.Party;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -21,6 +22,7 @@ import com.github.mizo432.shared.value.datetime.ValidInterval;
 @Table(name = "Org", schema = SchemaRelationshipMgmt.NAME)
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Org extends Party {
@@ -46,4 +48,16 @@ public class Org extends Party {
   /** 組織の状態（ACTIVE, INACTIVEなど）。 */
   @Column(name = "status", nullable = false, length = 20)
   private OrgStatus status;
+
+  /**
+   * 空のOrgインスタンスを作成します。
+   *
+   * <p>このメソッドは、protectedコンストラクタにアクセスできない外部クラスから
+   * Orgインスタンスを作成するために使用されます。
+   *
+   * @return 空のOrgインスタンス
+   */
+  public static Org createNew() {
+    return new Org();
+  }
 }
