@@ -1,6 +1,6 @@
-package com.github.mizo432.shared.exception;
+package com.github.mizo432.shared.common.exception;
 
-import com.github.mizo432.shared.message.ResultMessages;
+import com.github.mizo432.shared.common.message.ResultMessages;
 
 /**
  * NotFoundBusinessException クラスは、指定されたリソースが見つからない場合にスローされる業務例外です。

@@ -1,5 +1,9 @@
 package com.github.mizo432.shared.logging;
 
+import static com.github.mizo432.shared.common.primitive.Strings2.defaultIfBlank;
+
+import com.github.mizo432.shared.exception.ExceptionLevel;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
 import jakarta.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -8,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-import com.github.mizo432.shared.exception.ExceptionLevel;
-import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
 
 /**
  * 例外情報をログとして記録するためのユーティリティクラス。
@@ -324,15 +325,9 @@ public class ExceptionLogger {
    * @return フォーマットされたログメッセージ
    */
   protected String formatLogMessage(String exceptionCode, String exceptionMessage) {
-    String bindingExceptionCode = exceptionCode;
-    String bindingExceptionMessage = exceptionMessage;
-    if (!StringUtils.hasText(exceptionCode)) {
-      bindingExceptionCode = this.defaultCode;
-    }
 
-    if (!StringUtils.hasText(exceptionMessage)) {
-      bindingExceptionMessage = this.defaultMessage;
-    }
+    String bindingExceptionCode = defaultIfBlank(exceptionCode, this.defaultCode);
+    String bindingExceptionMessage = defaultIfBlank(exceptionMessage, this.defaultMessage);
 
     // 機微な情報のマスクを適用
     if (this.maskSensitiveData) {

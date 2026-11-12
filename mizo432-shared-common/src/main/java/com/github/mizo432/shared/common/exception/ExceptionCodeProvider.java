@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.exception;
+package com.github.mizo432.shared.common.exception;
 
 /**
  * 例外コードを提供するためのインターフェース。 このインターフェースを実装することで、例外に関連付けられたユニークなコードを 管理・提供する機能を持たせられまます。

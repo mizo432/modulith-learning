@@ -22,6 +22,7 @@ extra["uuidGeneratorVersion"] = "5.2.0"
 extra["lombokVersion"] = "1.18.48"
 extra["commonsLang3Version"] = "3.21.0"
 extra["jakartaValidationApiVersion"] = "3.1.1"
+extra["jakartaPersistenceApiVersion"] = "3.1.0"
 extra["slf4jVersion"] = "2.0.20"
 extra["junitVersion"] = "6.1.3"
 extra["assertjVersion"] = "3.27.7"
@@ -34,6 +35,7 @@ dependencies {
     implementation("com.google.guava:guava:${property("guavaVersion")}")
     implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("jakarta.validation:jakarta.validation-api:${property("jakartaValidationApiVersion")}")
+    implementation("jakarta.persistence:jakarta.persistence-api:${property("jakartaPersistenceApiVersion")}")
     implementation("org.apache.commons:commons-lang3:${property("commonsLang3Version")}")
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     implementation("com.fasterxml.uuid:java-uuid-generator:${property("uuidGeneratorVersion")}")

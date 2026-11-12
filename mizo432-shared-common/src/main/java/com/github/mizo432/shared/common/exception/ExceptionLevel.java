@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.exception;
+package com.github.mizo432.shared.common.exception;
 
 /**
  * 例外のレベルを定義する列挙型。 それぞれの値は、例外の重大度を表します。

@@ -1,11 +1,11 @@
-package com.github.mizo432.shared.exception;
+package com.github.mizo432.shared.common.exception;
 
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessageType;
+import com.github.mizo432.shared.common.message.ResultMessages;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.message.ResultMessage;
-import com.github.mizo432.shared.message.ResultMessageType;
-import com.github.mizo432.shared.message.ResultMessages;
 
 /**
  * {@code ResultMessagesNotificationException} クラスは、{@code RuntimeException} クラスの抽象サブクラスです。
