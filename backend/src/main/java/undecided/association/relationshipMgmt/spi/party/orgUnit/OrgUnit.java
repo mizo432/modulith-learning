@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.Party;
+import undecided.association.relationshipMgmt.spi.party.org.Org;
 import undecided.supporting.snowflake.SnowflakeId;
 import com.github.mizo432.shared.value.datetime.ValidInterval;
 
@@ -52,6 +53,11 @@ public class OrgUnit extends Party {
   /** 組織単位の状態（ACTIVE, INACTIVEなど）。 */
   @Column(name = "status", nullable = false, length = 20)
   private OrgUnitStatus status;
+
+  /** 所属する組織。OrgUnit は必ず1件の Org を持つ。 */
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "org_id", nullable = false)
+  private Org org;
 
   /** 上位組織（親組織単位）。 */
   @ManyToOne
