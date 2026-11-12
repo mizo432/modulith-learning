@@ -11,7 +11,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * Sprintクエリサービスのインターフェースです。
  */
-public interface SprintQueryServiceInterface {
+public interface SprintQuery {
 
   /**
    * IDでSprintを検索します。

@@ -13,7 +13,7 @@ import undecided.generic.addressReg.spi.CityQuery;
 /** {@link CityQuery} の実装クラス。 */
 @Service
 @RequiredArgsConstructor
-public class CityQueryImpl implements CityQuery {
+public class CityQueryService implements CityQuery {
 
   private final CityRepository repository;
 

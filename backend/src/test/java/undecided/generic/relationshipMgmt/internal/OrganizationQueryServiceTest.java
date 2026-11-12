@@ -18,24 +18,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationQueryImpl;
+import undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationQueryService;
 import undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationRepository;
 import undecided.association.relationshipMgmt.orgRole.spi.Organization;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
- * Unit tests for {@link OrganizationQueryImpl}.
+ * Unit tests for {@link OrganizationQueryService}.
  *
  * <p>This test class validates the query implementation for organization operations. Tests verify
  * proper delegation to the repository and correct data transformation.
  */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("OrganizationQueryImpl Unit Tests")
-class OrganizationQueryImplTest {
+@DisplayName("OrganizationQueryService Unit Tests")
+class OrganizationQueryServiceTest {
 
   @Mock private OrganizationRepository organizationRepository;
 
-  @InjectMocks private OrganizationQueryImpl organizationQueryImpl;
+  @InjectMocks private OrganizationQueryService organizationQueryService;
 
   private Organization testOrganization;
   private UUID testUuid;
@@ -86,7 +86,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findAll()).thenReturn(organizations);
 
     // When
-    List<Organization> result = organizationQueryImpl.findAll();
+    List<Organization> result = organizationQueryService.findAll();
 
     // Then
     assertThat(result).isNotNull();
@@ -102,7 +102,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findAll()).thenReturn(new ArrayList<>());
 
     // When
-    List<Organization> result = organizationQueryImpl.findAll();
+    List<Organization> result = organizationQueryService.findAll();
 
     // Then
     assertThat(result).isNotNull();
@@ -121,7 +121,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findAll()).thenReturn(organizations);
 
     // When
-    List<Organization> result = organizationQueryImpl.findAll();
+    List<Organization> result = organizationQueryService.findAll();
 
     // Then
     assertThat(result).isNotNull();
@@ -138,7 +138,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findAll()).thenReturn(organizations);
 
     // When
-    List<Organization> result = organizationQueryImpl.findAll();
+    List<Organization> result = organizationQueryService.findAll();
 
     // Then
     assertThat(result).isNotNull();
@@ -154,7 +154,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findAll()).thenReturn(new ArrayList<>());
 
     // When
-    organizationQueryImpl.findAll();
+    organizationQueryService.findAll();
 
     // Then
     verify(organizationRepository, times(1)).findAll();
@@ -169,7 +169,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findAll()).thenReturn(organizations);
 
     // When
-    List<Organization> result = organizationQueryImpl.findAll();
+    List<Organization> result = organizationQueryService.findAll();
 
     // Then
     assertThat(result.get(0).getOrganizationCode()).isEqualTo("0001010203004");
@@ -186,7 +186,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryService.findById(testUuid);
 
     // Then
     assertThat(result).isPresent();
@@ -203,7 +203,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(nonExistingId);
+    Optional<Organization> result = organizationQueryService.findById(nonExistingId);
 
     // Then
     assertThat(result).isEmpty();
@@ -217,7 +217,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(null)).thenReturn(Optional.empty());
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(null);
+    Optional<Organization> result = organizationQueryService.findById(null);
 
     // Then
     assertThat(result).isEmpty();
@@ -231,7 +231,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
     // When
-    organizationQueryImpl.findById(testUuid);
+    organizationQueryService.findById(testUuid);
 
     // Then
     verify(organizationRepository, times(1)).findById(testUuid);
@@ -244,7 +244,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryService.findById(testUuid);
 
     // Then
     assertThat(result).isPresent();
@@ -263,7 +263,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryService.findById(testUuid);
 
     // Then
     assertThat(result).isPresent();
@@ -279,7 +279,7 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(orgWithValidTo));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryService.findById(testUuid);
 
     // Then
     assertThat(result).isPresent();
@@ -293,9 +293,9 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
     // When
-    organizationQueryImpl.findById(testUuid);
-    organizationQueryImpl.findById(testUuid);
-    organizationQueryImpl.findById(testUuid);
+    organizationQueryService.findById(testUuid);
+    organizationQueryService.findById(testUuid);
+    organizationQueryService.findById(testUuid);
 
     // Then
     verify(organizationRepository, times(3)).findById(testUuid);
@@ -313,9 +313,9 @@ class OrganizationQueryImplTest {
     when(organizationRepository.findById(id3)).thenReturn(Optional.of(createTestOrganization()));
 
     // When
-    organizationQueryImpl.findById(id1);
-    organizationQueryImpl.findById(id2);
-    organizationQueryImpl.findById(id3);
+    organizationQueryService.findById(id1);
+    organizationQueryService.findById(id2);
+    organizationQueryService.findById(id3);
 
     // Then
     verify(organizationRepository, times(1)).findById(id1);

@@ -11,7 +11,7 @@ import undecided.generic.addressReg.spi.PrefectureQuery;
 
 @Service
 @RequiredArgsConstructor
-public class PrefectureQueryImpl implements PrefectureQuery {
+public class PrefectureQueryService implements PrefectureQuery {
 
   private final PrefectureRepository repository;
 

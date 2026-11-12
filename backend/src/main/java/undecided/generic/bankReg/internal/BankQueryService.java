@@ -14,7 +14,7 @@ import undecided.generic.bankReg.spi.bank.BankQuery;
 /** {@link BankQuery} の実装クラス。 */
 @Service
 @RequiredArgsConstructor
-public class BankQueryImpl implements BankQuery {
+public class BankQueryService implements BankQuery {
 
   private final BankRepository bankRepository;
 

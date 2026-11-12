@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test;
 import undecided.generic.addressReg.spi.ChouAza;
 
 @Tag("small")
-@DisplayName("ChouAzaQueryImplのテスト")
-class ChouAzaQueryImplTest {
+@DisplayName("ChouAzaQueryServiceのテスト")
+class ChouAzaQueryServiceTest {
 
   private final ChouAzaRepository repository = mock(ChouAzaRepository.class);
-  private final ChouAzaQueryImpl query = new ChouAzaQueryImpl(repository);
+  private final ChouAzaQueryService query = new ChouAzaQueryService(repository);
 
   @Nested
   @DisplayName("findByLgCodeAndMachiazaCodeメソッドのテスト")

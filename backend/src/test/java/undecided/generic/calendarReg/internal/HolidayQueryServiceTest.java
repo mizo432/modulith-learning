@@ -15,11 +15,11 @@ import org.junit.jupiter.api.Test;
 import undecided.generic.calendarReg.spi.Holiday;
 
 @Tag("small")
-@DisplayName("HolidayQueryImplのテスト")
-class HolidayQueryImplTest {
+@DisplayName("HolidayQueryServiceのテスト")
+class HolidayQueryServiceTest {
 
   private final HolidayRepository repository = mock(HolidayRepository.class);
-  private final HolidayQueryImpl query = new HolidayQueryImpl(repository);
+  private final HolidayQueryService query = new HolidayQueryService(repository);
 
   @Nested
   @DisplayName("findByHolidayDateメソッドのテスト")
