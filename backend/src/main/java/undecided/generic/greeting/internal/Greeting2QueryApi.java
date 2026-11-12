@@ -6,15 +6,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/greeting5")
+@RequestMapping("/api/greeting2")
 @RequiredArgsConstructor
-public class Greeting5Api {
+public class Greeting2QueryApi {
 
   private final ExceptionService exceptionService;
 
   @GetMapping
   String get() {
-    throw exceptionService.throwPrimaryException();
-    // return "Hello World";
+    throw exceptionService.throwErrorException();
   }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleAssignmentForOrgDTO;
 
 /**
- * RoleAssignmentsForOrgApiは、組織に関連付けられたロールの割り当て情報を取得するためのREST APIコントローラーです。
+ * RoleAssignmentsForOrgQueryApiは、組織に関連付けられたロールの割り当て情報を取得するためのREST APIコントローラーです。
  *
  * <p>主に以下の機能を提供します: - 指定されたエンドポイントへのリクエストに対して、組織に関連するロール割り当て情報を返却する。
  *
@@ -20,7 +20,7 @@ import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleAssignmentFo
  */
 @RestController
 @RequestMapping("/api/roleAssignmentsForOrg")
-public class RoleAssignmentsForOrgApi {
+public class RoleAssignmentsForOrgQueryApi {
   @GetMapping
   RoleAssignmentForOrgDTO get() {
     return new RoleAssignmentForOrgDTO(null, null, null);

@@ -1,5 +1,6 @@
 package undecided.generic.addressReg.internal.presentation.api;
 
+import com.github.mizo432.shared.exception.NotFoundBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,17 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.generic.addressReg.spi.Prefecture;
 import undecided.generic.addressReg.spi.PrefectureQuery;
-import com.github.mizo432.shared.exception.NotFoundBusinessException;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/prefectures")
-public class PrefectureApi {
+class PrefectureQueryApi {
 
   /**
    * 都道府県情報を取得するためのクエリオブジェクト。
    *
-   * <p>このフィールドは、{@link PrefectureApi} クラスにおいて都道府県データの検索処理を実行するために使用されます。 主に {@link
+   * <p>このフィールドは、{@link PrefectureQueryApi} クラスにおいて都道府県データの検索処理を実行するために使用されます。 主に {@link
    * PrefectureQuery#findByCode(String)} メソッドを利用して、 指定したコードに基づき該当する {@link Prefecture} エンティティを取得します。
    *
    * <p>注意点: このフィールドは不変であるため、初期化後に変更することはできません。

@@ -2,6 +2,8 @@ package undecided;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.mizo432.shared.common.annotation.DoNotCall;
+import com.github.mizo432.shared.common.annotation.VisibleForTesting;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -11,9 +13,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
-import com.github.mizo432.shared.common.annotation.DoNotCall;
-import com.github.mizo432.shared.common.annotation.VisibleForTesting;
-import com.github.mizo432.shared.value.ValueObject;
 
 @Tag("small")
 @DisplayName("Spring Modulithの検証テスト")
@@ -45,14 +44,13 @@ class ModulithTest {
     for (Class<?> clazz : classesWithDoNotCall) {
       Arrays.stream(clazz.getDeclaredMethods())
           .filter(method -> method.isAnnotationPresent(DoNotCall.class))
-          .forEach(
-              method -> {
-                assertThat(method.isAnnotationPresent(Deprecated.class))
-                    .as(
-                        "DoNotCall アノテーションが付与されたメソッド '%s.%s' は @Deprecated も付与されているべきです",
-                        method.getDeclaringClass().getSimpleName(), method.getName())
-                    .isTrue();
-              });
+          .forEach(method -> {
+            assertThat(method.isAnnotationPresent(Deprecated.class))
+                .as(
+                    "DoNotCall アノテーションが付与されたメソッド '%s.%s' は @Deprecated も付与されているべきです",
+                    method.getDeclaringClass().getSimpleName(), method.getName())
+                .isTrue();
+          });
     }
   }
 
@@ -64,14 +62,13 @@ class ModulithTest {
     for (Class<?> clazz : classesWithVisibleForTesting) {
       Arrays.stream(clazz.getDeclaredMethods())
           .filter(method -> method.isAnnotationPresent(VisibleForTesting.class))
-          .forEach(
-              method -> {
-                assertThat(Modifier.isStatic(method.getModifiers()))
-                    .as(
-                        "VisibleForTesting アノテーションが付与されたメソッド '%s.%s' は static であるべきです",
-                        method.getDeclaringClass().getSimpleName(), method.getName())
-                    .isTrue();
-              });
+          .forEach(method -> {
+            assertThat(Modifier.isStatic(method.getModifiers()))
+                .as(
+                    "VisibleForTesting アノテーションが付与されたメソッド '%s.%s' は static であるべきです",
+                    method.getDeclaringClass().getSimpleName(), method.getName())
+                .isTrue();
+          });
     }
   }
 
@@ -87,24 +84,43 @@ class ModulithTest {
       undecided.generic.accountMgmt.internal.user.UserQueryApi.class,
       undecided.generic.accountMgmt.internal.user.UserCommandApi.class,
       // Organization module (Query only)
-      undecided.association.relationshipMgmt.orgRole.internal.organization.OrganizationApi.class,
+      undecided
+          .association
+          .relationshipMgmt
+          .orgRole
+          .internal
+          .organization
+          .OrganizationQueryApi
+          .class,
       // Role module (Query only)
-      undecided.association.relationshipMgmt.partyRole.internal.role.RoleApi.class,
-      undecided.association.relationshipMgmt.partyRole.internal.role.RoleAssignmentsForEmpApi.class,
-      undecided.association.relationshipMgmt.partyRole.internal.role.RoleAssignmentsForOrgApi.class,
+      undecided.association.relationshipMgmt.partyRole.internal.role.RoleQueryApi.class,
+      undecided
+          .association
+          .relationshipMgmt
+          .partyRole
+          .internal
+          .role
+          .RoleAssignmentsForEmpQueryApi
+          .class,
+      undecided
+          .association
+          .relationshipMgmt
+          .partyRole
+          .internal
+          .role
+          .RoleAssignmentsForOrgQueryApi
+          .class,
       // Employee module (Query only)
-      undecided.association.relationshipMgmt.personRole.internal.employee.EmployeeApi.class,
-      // Prefecture module (Query only)
-      undecided.generic.addressReg.internal.presentation.api.PrefectureApi.class,
+      undecided.association.relationshipMgmt.personRole.internal.employee.EmployeeQueryApi.class,
       // Greeting module (Query only)
-      undecided.generic.greeting.internal.GreetingApi.class,
-      undecided.generic.greeting.internal.Greeting1Api.class,
-      undecided.generic.greeting.internal.Greeting2Api.class,
-      undecided.generic.greeting.internal.Greeting3Api.class,
-      undecided.generic.greeting.internal.Greeting4Api.class,
-      undecided.generic.greeting.internal.Greeting5Api.class,
-      undecided.generic.greeting.internal.Greeting6Api.class,
-      undecided.generic.greeting.internal.Greeting7Api.class
+      undecided.generic.greeting.internal.GreetingQueryApi.class,
+      undecided.generic.greeting.internal.Greeting1QueryApi.class,
+      undecided.generic.greeting.internal.Greeting2QueryApi.class,
+      undecided.generic.greeting.internal.Greeting3QueryApi.class,
+      undecided.generic.greeting.internal.Greeting4QueryApi.class,
+      undecided.generic.greeting.internal.Greeting5QueryApi.class,
+      undecided.generic.greeting.internal.Greeting6QueryApi.class,
+      undecided.generic.greeting.internal.Greeting7QueryApi.class
     };
 
     for (Class<?> controllerClass : controllerClasses) {

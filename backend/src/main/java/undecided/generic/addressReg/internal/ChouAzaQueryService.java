@@ -13,7 +13,7 @@ import undecided.generic.addressReg.spi.ChouAzaQuery;
 /** {@link ChouAzaQuery} の実装クラス。 */
 @Service
 @RequiredArgsConstructor
-public class ChouAzaQueryService implements ChouAzaQuery {
+class ChouAzaQueryService implements ChouAzaQuery {
 
   private final ChouAzaRepository repository;
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleAssignmentForEmpDTO;
 
 /**
- * RoleAssignmentsForEmpApiは、従業員に関連付けられたロールの情報を取得するためのREST APIコントローラーです。
+ * RoleAssignmentsForEmpQueryApiは、従業員に関連付けられたロールの情報を取得するためのREST APIコントローラーです。
  *
  * <p>主に以下の機能を提供します: - 指定されたエンドポイントへのリクエストに対して、従業員のロール割り当て情報を返却する。
  *
@@ -20,7 +20,7 @@ import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleAssignmentFo
  */
 @RestController
 @RequestMapping("/api/roleAssignmentsFor")
-public class RoleAssignmentsForEmpApi {
+public class RoleAssignmentsForEmpQueryApi {
   @GetMapping
   RoleAssignmentForEmpDTO get() {
     return new RoleAssignmentForEmpDTO(null, null, null);
