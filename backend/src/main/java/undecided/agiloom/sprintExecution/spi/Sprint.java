@@ -123,14 +123,14 @@ public class Sprint {
    * @return 新しく作成されたSprintインスタンス
    */
   public static Sprint of(
-      SnowflakeId id,
-      UUID productId,
-      Integer sprintNumber,
-      String title,
-      String goal,
-      LocalDate startDate,
-      LocalDate endDate,
-      UUID teamId,
+      @NonNull SnowflakeId id,
+      @NonNull UUID productId,
+      @NonNull Integer sprintNumber,
+      @NonNull String title,
+      @NonNull String goal,
+      @NonNull LocalDate startDate,
+      @NonNull LocalDate endDate,
+      @NonNull UUID teamId,
       String teamName,
       Integer velocity,
       SprintStatus status,
@@ -140,6 +140,7 @@ public class Sprint {
     checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
     checkNotNull(sprintNumber, () -> new IllegalArgumentException("sprintNumber must not be null"));
     checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
+    checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
     checkNotNull(startDate, () -> new IllegalArgumentException("startDate must not be null"));
     checkNotNull(endDate, () -> new IllegalArgumentException("endDate must not be null"));
     checkNotNull(teamId, () -> new IllegalArgumentException("teamId must not be null"));
@@ -244,6 +245,7 @@ public class Sprint {
     this.notes = notes;
   }
 
+  @jakarta.annotation.Generated("Test")
   void setStatus(SprintStatus status) {
     this.status = status;
   }
