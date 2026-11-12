@@ -12,9 +12,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -23,9 +24,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Entity
 @Table(name = "activities")
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Activity {
   @Id private SnowflakeId id;
 
@@ -52,6 +52,34 @@ public class Activity {
     }
   }
 
+  /**
+   * 新しいActivityを作成する静的ファクトリーメソッドです。
+   *
+   * @param id ActivityのID
+   * @param sprintId スプリントID
+   * @param actorId 実行者ID
+   * @param activityType アクティビティタイプ
+   * @param description 説明
+   * @param createdAt 作成日時（nullの場合自動設定）
+   * @return 新しく作成されたActivityインスタンス
+   */
+  public static Activity of(
+      SnowflakeId id,
+      SnowflakeId sprintId,
+      UUID actorId,
+      ActivityType activityType,
+      String description,
+      LocalDateTime createdAt) {
+    Activity activity = new Activity();
+    activity.id = id;
+    activity.sprintId = sprintId;
+    activity.actorId = actorId;
+    activity.activityType = activityType;
+    activity.description = description;
+    activity.createdAt = createdAt;
+    return activity;
+  }
+
   public void update(@NonNull ActivityType activityType, String description) {
     checkNotNull(activityType, () -> new BusinessException("activityType must not be null"));
     if (description != null && description.trim().length() > 2000) {
@@ -59,5 +87,18 @@ public class Activity {
     }
     this.activityType = activityType;
     this.description = description;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Activity activity = (Activity) o;
+    return Objects.equals(id, activity.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

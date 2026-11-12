@@ -6,8 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.Objects;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -17,7 +17,6 @@ import lombok.ToString;
  * から取り込んだ金融機関の情報を保持します。
  */
 @Getter
-@Setter
 @ToString
 @Entity
 @Table(schema = "undecided_ef", name = "banks", comment = "bank table")
@@ -97,5 +96,51 @@ public class Bank {
    */
   public BankCode getBankCodeValue() {
     return bankCode;
+  }
+
+  // JPAおよびバッチ処理用パッケージプライベートセッター
+  public void setBankCode(BankCode bankCode) {
+    this.bankCode = bankCode;
+  }
+
+  public void setBankName(String bankName) {
+    this.bankName = bankName;
+  }
+
+  public void setBankHalfKana(String bankHalfKana) {
+    this.bankHalfKana = bankHalfKana;
+  }
+
+  public void setBankFullKana(String bankFullKana) {
+    this.bankFullKana = bankFullKana;
+  }
+
+  public void setBankFullHira(String bankFullHira) {
+    this.bankFullHira = bankFullHira;
+  }
+
+  public void setBusinessTypeCode(String businessTypeCode) {
+    this.businessTypeCode = businessTypeCode;
+  }
+
+  public void setBusinessType(String businessType) {
+    this.businessType = businessType;
+  }
+
+  public void setDatasetId(String datasetId) {
+    this.datasetId = datasetId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Bank bank = (Bank) o;
+    return Objects.equals(bankCode, bank.bankCode);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(bankCode);
   }
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +26,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Audited
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Party {
   @Id
   @Column(name = "party_id")
@@ -48,4 +49,17 @@ public abstract class Party {
 
   /** 検索用名称（全角文字）。 */
   private SearchName searchName;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Party party = (Party) o;
+    return Objects.equals(partyId, party.partyId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(partyId);
+  }
 }

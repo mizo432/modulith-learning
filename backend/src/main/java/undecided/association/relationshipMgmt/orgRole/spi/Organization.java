@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -86,5 +87,18 @@ public class Organization {
     this.parentOrganizationId = parentOrganizationId;
     this.status = status;
     this.validFrom = validFrom;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Organization that = (Organization) o;
+    return Objects.equals(organizationId, that.organizationId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(organizationId);
   }
 }

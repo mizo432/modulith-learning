@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.github.mizo432.shared.common.exception.BusinessException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,22 +20,25 @@ class ImpedimentTest {
       UUID.fromString("55555555-5555-5555-5555-555555555555");
 
   private Impediment createImpediment() {
-    return Impediment.builder()
-        .id(SnowflakeId.of(1L))
-        .sprintId(SnowflakeId.of(100L))
-        .title("Database connection issue")
-        .description("Cannot connect to production database")
-        .impact("Blocking all deployments")
-        .build();
+    return Impediment.of(
+        SnowflakeId.of(1L),
+        SnowflakeId.of(100L),
+        "Database connection issue",
+        "Cannot connect to production database",
+        "Blocking all deployments",
+        null,
+        null,
+        null,
+        null);
   }
 
   @Nested
-  @DisplayName("ビルダーのテスト")
-  class BuilderTest {
+  @DisplayName("ファクトリーメソッドのテスト")
+  class FactoryMethodTest {
 
     @Test
-    @DisplayName("ビルダーでインスタンスが作成される")
-    void shouldCreateInstanceWithBuilder() {
+    @DisplayName("ファクトリーメソッドでインスタンスが作成される")
+    void shouldCreateInstanceWithFactoryMethod() {
       Impediment impediment = createImpediment();
 
       assertThat(impediment).isNotNull();
@@ -65,7 +69,6 @@ class ImpedimentTest {
 
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.RESOLVED);
       assertThat(impediment.getResolvedAt()).isNotNull();
-      assertThat(impediment.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -91,7 +94,6 @@ class ImpedimentTest {
       impediment.startWorkingOn();
 
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.IN_PROGRESS);
-      assertThat(impediment.getUpdatedAt()).isNotNull();
     }
   }
 
@@ -110,7 +112,6 @@ class ImpedimentTest {
       assertThat(impediment.getDescription()).isEqualTo("New description");
       assertThat(impediment.getImpact()).isEqualTo("New impact");
       assertThat(impediment.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
-      assertThat(impediment.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -245,6 +246,46 @@ class ImpedimentTest {
       assertThatThrownBy(() -> impediment.startWorkingOn())
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("RESOLVED");
+    }
+  }
+
+  @Nested
+  @DisplayName("論理削除後の変更禁止テスト")
+  class DeletedEntityChangeProhibitionTest {
+
+    @Test
+    @DisplayName("論理削除後にresolveすると例外がスローされる")
+    void shouldThrowExceptionWhenResolveAfterDeleted() {
+      Impediment impediment = createImpediment();
+      impediment.startWorkingOn();
+      impediment.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> impediment.resolve())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
+    }
+
+    @Test
+    @DisplayName("論理削除後にstartWorkingOnすると例外がスローされる")
+    void shouldThrowExceptionWhenStartWorkingOnAfterDeleted() {
+      Impediment impediment = createImpediment();
+      impediment.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> impediment.startWorkingOn())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
+    }
+
+    @Test
+    @DisplayName("論理削除後にupdateすると例外がスローされる")
+    void shouldThrowExceptionWhenUpdateAfterDeleted() {
+      Impediment impediment = createImpediment();
+      impediment.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(
+              () -> impediment.update("New title", "New description", "New impact", FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
     }
   }
 }
