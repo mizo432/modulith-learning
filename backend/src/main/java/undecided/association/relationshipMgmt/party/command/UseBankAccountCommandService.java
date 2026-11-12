@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.association.relationshipMgmt.party.repository.BankAccountUseRepository;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUse;
-import undecided.association.relationshipMgmt.spi.party.bankAccount.UseBankAccountCommandService;
+import undecided.association.relationshipMgmt.spi.party.bankAccount.UseBankAccountCommand;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.dto.BankAccountUseDto;
 
 /**
@@ -16,7 +16,7 @@ import undecided.association.relationshipMgmt.spi.party.bankAccount.dto.BankAcco
  */
 @RequiredArgsConstructor
 @Service
-public class UseBankAccountCommandServiceImpl implements UseBankAccountCommandService {
+public class UseBankAccountCommandService implements UseBankAccountCommand {
   private final UseBankAccountFactory useBankAccountFactory;
   private final BankAccountUseRepository bankAccountUseRepository;
 

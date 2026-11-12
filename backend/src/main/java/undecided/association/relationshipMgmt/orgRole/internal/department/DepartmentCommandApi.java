@@ -25,7 +25,7 @@ import undecided.association.relationshipMgmt.orgRole.spi.dto.DepartmentDTO;
 @RequestMapping("/api/departments")
 @RequiredArgsConstructor
 public class DepartmentCommandApi {
-  private final DepartmentCommandService commandService;
+  private final DepartmentCommand command;
 
   /**
    * 新規部署を作成します。
@@ -38,7 +38,7 @@ public class DepartmentCommandApi {
   ResponseEntity<Void> post(
       @RequestBody DepartmentDTO departmentDTO, UriComponentsBuilder uriComponentsBuilder) {
     Department department = Department.create(departmentDTO.code());
-    commandService.insert(department);
+    command.insert(department);
     URI uri =
         uriComponentsBuilder
             .path("api/departments/{departmentCode}")
@@ -57,7 +57,7 @@ public class DepartmentCommandApi {
   ResponseEntity<Void> put(
       @PathVariable DepartmentCode departmentCode, @RequestBody DepartmentDTO departmentDTO) {
     Department department = Department.create(departmentDTO.code());
-    commandService.update(departmentCode, department);
+    command.update(departmentCode, department);
     return ResponseEntity.noContent().build();
   }
 
@@ -72,7 +72,7 @@ public class DepartmentCommandApi {
   ResponseEntity<Void> patch(
       @PathVariable DepartmentCode departmentCode, @RequestBody DepartmentDTO departmentDTO) {
     Department department = Department.create(departmentDTO.code());
-    commandService.update(departmentCode, department);
+    command.update(departmentCode, department);
     return ResponseEntity.noContent().build();
   }
 
@@ -84,7 +84,7 @@ public class DepartmentCommandApi {
    */
   @DeleteMapping("/{departmentCode}")
   ResponseEntity<Void> delete(@PathVariable DepartmentCode departmentCode) {
-    commandService.delete(departmentCode);
+    command.delete(departmentCode);
     return ResponseEntity.noContent().build();
   }
 }
