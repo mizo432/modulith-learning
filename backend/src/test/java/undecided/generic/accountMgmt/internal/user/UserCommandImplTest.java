@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
 import undecided.generic.accountMgmt.internal.user.UserCommandService.PasswordChangeDto;
 import undecided.generic.accountMgmt.internal.user.UserCommandService.UserStatusDto;
-import com.github.mizo432.shared.exception.BusinessException;
 
 @Tag("small")
 @DisplayName("UserCommandServiceのテスト")

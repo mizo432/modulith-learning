@@ -1,7 +1,7 @@
 package undecided.config.presentation.web;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
-import com.github.mizo432.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.spring.logging.ExceptionLogger;
 import java.util.concurrent.Executors;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;

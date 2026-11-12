@@ -1,8 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.exception.BusinessException;
-import com.github.mizo432.shared.value.StringCode;
+import com.github.mizo432.shared.common.value.StringCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
@@ -63,8 +63,7 @@ public class GovtAssignedId implements StringCode<GovtAssignedId> {
               + trimmed);
     }
     if (!trimmed.matches("\\d+")) {
-      throw new BusinessException(
-          "govtAssignedId must contain only digits, but was: " + trimmed);
+      throw new BusinessException("govtAssignedId must contain only digits, but was: " + trimmed);
     }
     return new GovtAssignedId(trimmed);
   }

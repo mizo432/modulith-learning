@@ -3,9 +3,10 @@ package com.github.mizo432.shared.exception;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import com.github.mizo432.shared.common.exception.ResultMessagesNotificationException;
+import com.github.mizo432.shared.common.message.ResultMessages;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import com.github.mizo432.shared.message.ResultMessages;
 
 /**
  * {@code ResultMessagesNotificationExceptionTest} クラスは、{@link ResultMessagesNotificationException}

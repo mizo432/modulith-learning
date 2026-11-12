@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.message;
+package com.github.mizo432.shared.common.message;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

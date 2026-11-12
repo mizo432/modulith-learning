@@ -1,9 +1,9 @@
 package undecided.supporting.notification.internal;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import com.github.mizo432.shared.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.supporting.notification.spi.Notification;
@@ -15,10 +15,8 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 /**
  * 通知サービスの実装クラスです。
- * <p>
- * 各事業領域から注入して、システム内通知を送信できます。
- * JPAエンティティとSPIのDTO間で変換を行います。
- * </p>
+ *
+ * <p>各事業領域から注入して、システム内通知を送信できます。 JPAエンティティとSPIのDTO間で変換を行います。
  *
  * @see NotificationService
  * @see NotificationRequest
@@ -26,20 +24,21 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private final NotificationRepository notificationRepository;
-    private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final NotificationRepository notificationRepository;
+  private final SnowflakeIdGenerator snowflakeIdGenerator;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository,
-                                   SnowflakeIdGenerator snowflakeIdGenerator) {
-        this.notificationRepository = notificationRepository;
-        this.snowflakeIdGenerator = snowflakeIdGenerator;
-    }
+  public NotificationServiceImpl(
+      NotificationRepository notificationRepository, SnowflakeIdGenerator snowflakeIdGenerator) {
+    this.notificationRepository = notificationRepository;
+    this.snowflakeIdGenerator = snowflakeIdGenerator;
+  }
 
-    @Override
-    @Transactional
-    public NotificationDTO send(NotificationRequest request) {
-        Objects.requireNonNull(request, "requestはnullであってはいけません");
-        Notification notification = Notification.builder()
+  @Override
+  @Transactional
+  public NotificationDTO send(NotificationRequest request) {
+    Objects.requireNonNull(request, "requestはnullであってはいけません");
+    Notification notification =
+        Notification.builder()
             .id(SnowflakeId.of(snowflakeIdGenerator.nextId()))
             .recipientId(request.getRecipientId())
             .sourceId(request.getSourceId())
@@ -49,59 +48,61 @@ public class NotificationServiceImpl implements NotificationService {
             .type(request.getType())
             .build();
 
-        Notification saved = notificationRepository.save(notification);
-        return toDTO(saved);
-    }
+    Notification saved = notificationRepository.save(notification);
+    return toDTO(saved);
+  }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<NotificationDTO> getNotificationsByRecipient(UUID recipientId) {
-        return notificationRepository.findByRecipientIdAndDeletedAtIsNull(recipientId).stream()
-            .map(this::toDTO)
-            .toList();
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public List<NotificationDTO> getNotificationsByRecipient(UUID recipientId) {
+    return notificationRepository.findByRecipientIdAndDeletedAtIsNull(recipientId).stream()
+        .map(this::toDTO)
+        .toList();
+  }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<NotificationDTO> getUnreadNotificationsByRecipient(UUID recipientId) {
-        return notificationRepository.findByRecipientIdAndIsReadAndDeletedAtIsNull(recipientId, false).stream()
-            .map(this::toDTO)
-            .toList();
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public List<NotificationDTO> getUnreadNotificationsByRecipient(UUID recipientId) {
+    return notificationRepository
+        .findByRecipientIdAndIsReadAndDeletedAtIsNull(recipientId, false)
+        .stream()
+        .map(this::toDTO)
+        .toList();
+  }
 
-    @Override
-    @Transactional
-    public void markAsRead(String notificationId) {
-        Objects.requireNonNull(notificationId, "notificationIdはnullであってはいけません");
-        SnowflakeId id;
-        try {
-            id = SnowflakeId.of(Long.parseLong(notificationId));
-        } catch (NumberFormatException e) {
-            throw new BusinessException("通知IDは数値である必要があります: " + notificationId);
-        } catch (IllegalArgumentException e) {
-            throw new BusinessException("通知IDは有効なIDである必要があります: " + notificationId);
-        }
-        Notification notification = notificationRepository.findByIdAndDeletedAtIsNull(id)
+  @Override
+  @Transactional
+  public void markAsRead(String notificationId) {
+    Objects.requireNonNull(notificationId, "notificationIdはnullであってはいけません");
+    SnowflakeId id;
+    try {
+      id = SnowflakeId.of(Long.parseLong(notificationId));
+    } catch (NumberFormatException e) {
+      throw new BusinessException("通知IDは数値である必要があります: " + notificationId);
+    } catch (IllegalArgumentException e) {
+      throw new BusinessException("通知IDは有効なIDである必要があります: " + notificationId);
+    }
+    Notification notification =
+        notificationRepository
+            .findByIdAndDeletedAtIsNull(id)
             .orElseThrow(() -> new BusinessException("通知が見つかりません: " + notificationId));
-        notification.markAsRead();
-        // JPAのdirty checkingで自動的に変更が検出されるため、明示的なsave()は不要
-    }
+    notification.markAsRead();
+    // JPAのdirty checkingで自動的に変更が検出されるため、明示的なsave()は不要
+  }
 
-    /**
-     * JPAエンティティをSPIのDTOに変換します。
-     */
-    private NotificationDTO toDTO(Notification entity) {
-        return NotificationDTO.builder()
-            .id(entity.getId())
-            .recipientId(entity.getRecipientId())
-            .sourceId(entity.getSourceId())
-            .sourceDomain(entity.getSourceDomain())
-            .title(entity.getTitle())
-            .content(entity.getContent())
-            .type(entity.getType())
-            .isRead(entity.getIsRead())
-            .createdAt(entity.getCreatedAt())
-            .updatedAt(entity.getUpdatedAt())
-            .build();
-    }
+  /** JPAエンティティをSPIのDTOに変換します。 */
+  private NotificationDTO toDTO(Notification entity) {
+    return NotificationDTO.builder()
+        .id(entity.getId())
+        .recipientId(entity.getRecipientId())
+        .sourceId(entity.getSourceId())
+        .sourceDomain(entity.getSourceDomain())
+        .title(entity.getTitle())
+        .content(entity.getContent())
+        .type(entity.getType())
+        .isRead(entity.getIsRead())
+        .createdAt(entity.getCreatedAt())
+        .updatedAt(entity.getUpdatedAt())
+        .build();
+  }
 }

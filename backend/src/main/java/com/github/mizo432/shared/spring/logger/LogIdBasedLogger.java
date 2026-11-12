@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.logger;
+package com.github.mizo432.shared.spring.logger;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -18,6 +18,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * 指定されたメッセージIDが見つからない場合は、デフォルトのフォーマットでメッセージIDと引数を出力します。
  *
  * <p>使用例：
+ *
  * <pre>
  * private static final LogIdBasedLogger log = LogIdBasedLogger.getLogger(MyClass.class);
  *

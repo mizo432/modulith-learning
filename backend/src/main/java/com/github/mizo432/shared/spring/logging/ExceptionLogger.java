@@ -1,8 +1,8 @@
-package com.github.mizo432.shared.logging;
+package com.github.mizo432.shared.spring.logging;
 
 import static com.github.mizo432.shared.common.primitive.Strings2.defaultIfBlank;
 
-import com.github.mizo432.shared.exception.ExceptionLevel;
+import com.github.mizo432.shared.common.exception.ExceptionLevel;
 import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
 import jakarta.annotation.PostConstruct;
 import java.text.MessageFormat;

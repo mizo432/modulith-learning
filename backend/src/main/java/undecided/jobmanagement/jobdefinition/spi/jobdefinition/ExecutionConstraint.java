@@ -1,7 +1,6 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
+import com.github.mizo432.shared.common.exception.BusinessException;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -21,7 +20,8 @@ public final class ExecutionConstraint {
     this.timeoutSeconds = timeoutSeconds;
   }
 
-  public static ExecutionConstraint create(Integer maxConcurrentExecutions, Integer timeoutSeconds) {
+  public static ExecutionConstraint create(
+      Integer maxConcurrentExecutions, Integer timeoutSeconds) {
     if (maxConcurrentExecutions != null && maxConcurrentExecutions <= 0) {
       throw new BusinessException("maxConcurrentExecutions must be positive");
     }
@@ -41,8 +41,11 @@ public final class ExecutionConstraint {
 
   @Override
   public String toString() {
-    return "ExecutionConstraint{maxConcurrentExecutions=" + maxConcurrentExecutions 
-        + ", timeoutSeconds=" + timeoutSeconds + "}";
+    return "ExecutionConstraint{maxConcurrentExecutions="
+        + maxConcurrentExecutions
+        + ", timeoutSeconds="
+        + timeoutSeconds
+        + "}";
   }
 
   @Override
@@ -50,8 +53,8 @@ public final class ExecutionConstraint {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ExecutionConstraint that = (ExecutionConstraint) o;
-    return java.util.Objects.equals(maxConcurrentExecutions, that.maxConcurrentExecutions) &&
-        java.util.Objects.equals(timeoutSeconds, that.timeoutSeconds);
+    return java.util.Objects.equals(maxConcurrentExecutions, that.maxConcurrentExecutions)
+        && java.util.Objects.equals(timeoutSeconds, that.timeoutSeconds);
   }
 
   @Override

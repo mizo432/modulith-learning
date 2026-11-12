@@ -1,8 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party.partyRelationship;
 
 import com.github.mizo432.shared.common.dateProvider.DateProvider;
-import com.github.mizo432.shared.exception.BusinessException;
-import com.github.mizo432.shared.value.DateTimeValue;
+import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.value.DateTimeValue;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.time.LocalDateTime;

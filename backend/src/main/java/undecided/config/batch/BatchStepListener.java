@@ -1,11 +1,11 @@
 package undecided.config.batch;
 
+import com.github.mizo432.shared.spring.logger.LogIdBasedLogger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.step.StepExecution;
 import org.springframework.batch.core.listener.StepExecutionListener;
-import com.github.mizo432.shared.logger.LogIdBasedLogger;
+import org.springframework.batch.core.step.StepExecution;
 
 /**
  * バッチステップの開始・終了時にログ出力を行う共通リスナークラス。
@@ -47,9 +47,7 @@ public class BatchStepListener implements StepExecutionListener {
     // エラーがある場合はログ出力
     if (!stepExecution.getFailureExceptions().isEmpty()) {
       log.warn("w.batch.2011", jobName, stepName, stepExecution.getFailureExceptions().size());
-      stepExecution
-          .getFailureExceptions()
-          .forEach(e -> log.warn("w.batch.2012", e.getMessage()));
+      stepExecution.getFailureExceptions().forEach(e -> log.warn("w.batch.2012", e.getMessage()));
     }
     return null;
   }

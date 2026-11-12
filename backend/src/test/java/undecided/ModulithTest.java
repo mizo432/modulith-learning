@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.mizo432.shared.common.annotation.DoNotCall;
 import com.github.mizo432.shared.common.annotation.VisibleForTesting;
+import com.github.mizo432.shared.common.value.ValueObject;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -57,7 +58,7 @@ class ModulithTest {
   @Test
   void verifyVisibleForTestingAnnotationIsStatic() throws ClassNotFoundException {
     // VisibleForTesting アノテーションが付与されたメソッドは static であることを確認
-    Class<?>[] classesWithVisibleForTesting = {com.github.mizo432.shared.value.ValueObject.class};
+    Class<?>[] classesWithVisibleForTesting = {ValueObject.class};
 
     for (Class<?> clazz : classesWithVisibleForTesting) {
       Arrays.stream(clazz.getDeclaredMethods())

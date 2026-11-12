@@ -2,6 +2,7 @@ package com.github.mizo432.shared.logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.mizo432.shared.spring.logger.LogIdBasedLogger;
 import java.lang.reflect.Field;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;

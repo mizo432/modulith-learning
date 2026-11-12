@@ -1,10 +1,10 @@
-package com.github.mizo432.shared.value;
+package com.github.mizo432.shared.common.value;
 
 import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
+import com.github.mizo432.shared.common.uuidV7Provider.UuidV7Provider;
 import java.io.Serializable;
 import java.util.UUID;
-import com.github.mizo432.shared.common.uuidV7Provider.UuidV7Provider;
 
 /**
  * UuidV7IdValueクラスは、UUIDバージョン7を取り扱うための値オブジェクトクラスです。

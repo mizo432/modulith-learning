@@ -1,4 +1,4 @@
-package undecided.association.relationshipMgmt.personRole.internal.command;
+package undecided.association.relationshipMgmt.personRole.internal.employee;
 
 import org.springframework.stereotype.Component;
 import undecided.association.relationshipMgmt.personRole.spi.employee.SimpleEmployee;

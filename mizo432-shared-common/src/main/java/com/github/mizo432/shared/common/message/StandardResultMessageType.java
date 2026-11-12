@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.message;
+package com.github.mizo432.shared.common.message;
 
 /**
  * {@code StandardResultMessageType} enumは {@code ResultMessageType} インターフェースを実装し、

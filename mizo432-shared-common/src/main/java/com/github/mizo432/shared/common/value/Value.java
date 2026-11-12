@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.value;
+package com.github.mizo432.shared.common.value;
 
 /**
  * 単一の値を保持するシンプルな値オブジェクトを表すインターフェースです。

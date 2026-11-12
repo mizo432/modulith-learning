@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,9 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
-import undecided.association.relationshipMgmt.party.internal.person.CreatePersonCommandService;
-import undecided.association.relationshipMgmt.party.internal.person.PersonFactory;
-import undecided.association.relationshipMgmt.party.internal.person.PersonRepository;
 import undecided.association.relationshipMgmt.spi.party.GovtAssignedId;
 import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
 import undecided.association.relationshipMgmt.spi.party.SearchName;
@@ -103,7 +101,7 @@ class CreatePersonCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.create(null))
           .as("Personがnullの場合にBusinessExceptionがスローされること")
-          .isInstanceOf(com.github.mizo432.shared.exception.BusinessException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("個人情報はnullにできません");
 
       verify(personFactory, never()).create((Person) null);
@@ -128,7 +126,7 @@ class CreatePersonCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.create(input))
           .as("重複キーでBusinessExceptionがスローされること")
-          .isInstanceOf(com.github.mizo432.shared.exception.BusinessException.class)
+          .isInstanceOf(BusinessException.class)
           .hasMessageContaining("指定されたコードを持つ個人は既に存在します")
           .hasMessageContaining("T001")
           .hasCauseInstanceOf(DataIntegrityViolationException.class);

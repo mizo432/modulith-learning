@@ -1,10 +1,9 @@
 package undecided.jobmanagement.jobexecution.spi.jobexecution;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import com.github.mizo432.shared.common.precondition.StringPrecondition;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.exception.BusinessException;
-
 import jakarta.persistence.Embeddable;
 
 @Embeddable

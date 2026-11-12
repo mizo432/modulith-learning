@@ -6,9 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import java.util.UUID;
-import com.github.mizo432.shared.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -33,7 +33,8 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class CreateSprintCommandServiceTest {
 
-  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_PRODUCT_ID =
+      UUID.fromString("11111111-1111-1111-1111-111111111111");
   private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   @Mock private SprintRepository sprintRepository;
@@ -45,7 +46,9 @@ class CreateSprintCommandServiceTest {
   @BeforeEach
   void setUp() {
     sprintResponseAssembler = new SprintResponseAssembler();
-    service = new CreateSprintCommandService(sprintRepository, sprintResponseAssembler, snowflakeIdGenerator);
+    service =
+        new CreateSprintCommandService(
+            sprintRepository, sprintResponseAssembler, snowflakeIdGenerator);
     when(snowflakeIdGenerator.nextId()).thenReturn(1234567890L);
   }
 
@@ -57,31 +60,33 @@ class CreateSprintCommandServiceTest {
     @DisplayName("Sprintを作成してRepositoryに保存すること")
     void shouldCreateAndSaveSprint() {
       // Arrange
-      CreateSprintCommand command = CreateSprintCommand.builder()
-          .productId(FIXED_PRODUCT_ID)
-          .sprintNumber(1)
-          .title("Sprint 1")
-          .goal("Goal 1")
-          .startDate(LocalDate.now())
-          .endDate(LocalDate.now().plusWeeks(2))
-          .teamId(FIXED_TEAM_ID)
-          .teamName("Team A")
-          .build();
+      CreateSprintCommand command =
+          CreateSprintCommand.builder()
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(1)
+              .title("Sprint 1")
+              .goal("Goal 1")
+              .startDate(LocalDate.now())
+              .endDate(LocalDate.now().plusWeeks(2))
+              .teamId(FIXED_TEAM_ID)
+              .teamName("Team A")
+              .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      Sprint savedSprint = Sprint.builder()
-          .id(snowflakeId)
-          .productId(FIXED_PRODUCT_ID)
-          .sprintNumber(1)
-          .title("Sprint 1")
-          .goal("Goal 1")
-          .startDate(LocalDate.now())
-          .endDate(LocalDate.now().plusWeeks(2))
-          .teamId(FIXED_TEAM_ID)
-          .teamName("Team A")
-          .createdAt(java.time.LocalDateTime.now())
-          .updatedAt(java.time.LocalDateTime.now())
-          .build();
+      Sprint savedSprint =
+          Sprint.builder()
+              .id(snowflakeId)
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(1)
+              .title("Sprint 1")
+              .goal("Goal 1")
+              .startDate(LocalDate.now())
+              .endDate(LocalDate.now().plusWeeks(2))
+              .teamId(FIXED_TEAM_ID)
+              .teamName("Team A")
+              .createdAt(java.time.LocalDateTime.now())
+              .updatedAt(java.time.LocalDateTime.now())
+              .build();
 
       when(sprintRepository.save(any(Sprint.class))).thenReturn(savedSprint);
 
@@ -105,27 +110,29 @@ class CreateSprintCommandServiceTest {
     @DisplayName("保存されたSprintのDTOを返すこと")
     void shouldReturnSavedSprintDto() {
       // Arrange
-      CreateSprintCommand command = CreateSprintCommand.builder()
-          .productId(FIXED_PRODUCT_ID)
-          .sprintNumber(2)
-          .title("Sprint 2")
-          .startDate(LocalDate.now())
-          .endDate(LocalDate.now().plusWeeks(2))
-          .teamId(FIXED_TEAM_ID)
-          .build();
+      CreateSprintCommand command =
+          CreateSprintCommand.builder()
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(2)
+              .title("Sprint 2")
+              .startDate(LocalDate.now())
+              .endDate(LocalDate.now().plusWeeks(2))
+              .teamId(FIXED_TEAM_ID)
+              .build();
 
       SnowflakeId snowflakeId = SnowflakeId.of(9876543210L);
-      Sprint savedSprint = Sprint.builder()
-          .id(snowflakeId)
-          .productId(FIXED_PRODUCT_ID)
-          .sprintNumber(2)
-          .title("Sprint 2")
-          .startDate(LocalDate.now())
-          .endDate(LocalDate.now().plusWeeks(2))
-          .teamId(FIXED_TEAM_ID)
-          .createdAt(java.time.LocalDateTime.now())
-          .updatedAt(java.time.LocalDateTime.now())
-          .build();
+      Sprint savedSprint =
+          Sprint.builder()
+              .id(snowflakeId)
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(2)
+              .title("Sprint 2")
+              .startDate(LocalDate.now())
+              .endDate(LocalDate.now().plusWeeks(2))
+              .teamId(FIXED_TEAM_ID)
+              .createdAt(java.time.LocalDateTime.now())
+              .updatedAt(java.time.LocalDateTime.now())
+              .build();
 
       when(sprintRepository.save(any(Sprint.class))).thenReturn(savedSprint);
 
@@ -146,16 +153,17 @@ class CreateSprintCommandServiceTest {
     @DisplayName("endDateがstartDateより前の場合、BusinessExceptionがスローされる")
     void shouldThrowExceptionWhenEndDateIsBeforeStartDate() {
       // Arrange
-      CreateSprintCommand command = CreateSprintCommand.builder()
-          .productId(FIXED_PRODUCT_ID)
-          .sprintNumber(1)
-          .title("Sprint 1")
-          .goal("Goal 1")
-          .startDate(LocalDate.now().plusWeeks(2))
-          .endDate(LocalDate.now())
-          .teamId(FIXED_TEAM_ID)
-          .teamName("Team A")
-          .build();
+      CreateSprintCommand command =
+          CreateSprintCommand.builder()
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(1)
+              .title("Sprint 1")
+              .goal("Goal 1")
+              .startDate(LocalDate.now().plusWeeks(2))
+              .endDate(LocalDate.now())
+              .teamId(FIXED_TEAM_ID)
+              .teamName("Team A")
+              .build();
 
       // Act & Assert
       assertThatThrownBy(() -> service.execute(command))

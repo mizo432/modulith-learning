@@ -3,7 +3,7 @@ package undecided.agiloom.sprintExecution.spi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("Activityのテスト")
 class ActivityTest {
 
-  private static final UUID FIXED_ACTOR_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
+  private static final UUID FIXED_ACTOR_ID =
+      UUID.fromString("33333333-3333-3333-3333-333333333333");
 
   private Activity createActivity() {
     return Activity.builder()
@@ -50,12 +51,13 @@ class ActivityTest {
     @Test
     @DisplayName("descriptionはオプションである")
     void descriptionIsOptional() {
-      Activity activity = Activity.builder()
-          .id(SnowflakeId.of(2L))
-          .sprintId(SnowflakeId.of(100L))
-          .actorId(FIXED_ACTOR_ID)
-          .activityType(ActivityType.COMMENT_ADDED)
-          .build();
+      Activity activity =
+          Activity.builder()
+              .id(SnowflakeId.of(2L))
+              .sprintId(SnowflakeId.of(100L))
+              .actorId(FIXED_ACTOR_ID)
+              .activityType(ActivityType.COMMENT_ADDED)
+              .build();
 
       assertThat(activity.getDescription()).isNull();
     }
@@ -69,12 +71,13 @@ class ActivityTest {
     @DisplayName("すべてのアクティビティタイプでインスタンスが作成される")
     void shouldCreateWithAllActivityTypes() {
       for (ActivityType type : ActivityType.values()) {
-        Activity activity = Activity.builder()
-            .id(SnowflakeId.of(1L))
-            .sprintId(SnowflakeId.of(100L))
-            .actorId(FIXED_ACTOR_ID)
-            .activityType(type)
-            .build();
+        Activity activity =
+            Activity.builder()
+                .id(SnowflakeId.of(1L))
+                .sprintId(SnowflakeId.of(100L))
+                .actorId(FIXED_ACTOR_ID)
+                .activityType(type)
+                .build();
 
         assertThat(activity.getActivityType()).isEqualTo(type);
       }

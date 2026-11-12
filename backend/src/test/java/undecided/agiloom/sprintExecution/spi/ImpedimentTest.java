@@ -3,8 +3,8 @@ package undecided.agiloom.sprintExecution.spi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.util.UUID;
-import com.github.mizo432.shared.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -15,7 +15,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("Impedimentのテスト")
 class ImpedimentTest {
 
-  private static final UUID FIXED_ASSIGNEE_ID = UUID.fromString("55555555-5555-5555-5555-555555555555");
+  private static final UUID FIXED_ASSIGNEE_ID =
+      UUID.fromString("55555555-5555-5555-5555-555555555555");
 
   private Impediment createImpediment() {
     return Impediment.builder()
@@ -158,7 +159,8 @@ class ImpedimentTest {
       Impediment impediment = createImpediment();
       String longTitle = "A".repeat(201);
 
-      assertThatThrownBy(() -> impediment.update(longTitle, "Description", "Impact", FIXED_ASSIGNEE_ID))
+      assertThatThrownBy(
+              () -> impediment.update(longTitle, "Description", "Impact", FIXED_ASSIGNEE_ID))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("title must not exceed 200 characters");
     }
@@ -179,7 +181,8 @@ class ImpedimentTest {
       Impediment impediment = createImpediment();
       String longDescription = "A".repeat(2001);
 
-      assertThatThrownBy(() -> impediment.update("Title", longDescription, "Impact", FIXED_ASSIGNEE_ID))
+      assertThatThrownBy(
+              () -> impediment.update("Title", longDescription, "Impact", FIXED_ASSIGNEE_ID))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("description must not exceed 2000 characters");
     }

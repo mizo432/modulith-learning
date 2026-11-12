@@ -1,7 +1,6 @@
 package undecided.generic.accountMgmt;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
+import com.github.mizo432.shared.common.exception.BusinessException;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 

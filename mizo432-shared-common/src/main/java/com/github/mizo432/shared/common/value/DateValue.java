@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.value;
+package com.github.mizo432.shared.common.value;
 
 import java.time.LocalDate;
 

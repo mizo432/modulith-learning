@@ -1,8 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party.bankAccount;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.exception.BusinessException;
-import com.github.mizo432.shared.value.StringValue;
+import com.github.mizo432.shared.common.value.StringValue;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
@@ -63,8 +63,7 @@ public class HoldersName implements StringValue<HoldersName> {
               + trimmed.length());
     }
     if (!trimmed.matches(REGEX)) {
-      throw new BusinessException(
-          "holdersName contains invalid characters, but was: " + trimmed);
+      throw new BusinessException("holdersName contains invalid characters, but was: " + trimmed);
     }
     return new HoldersName(trimmed);
   }

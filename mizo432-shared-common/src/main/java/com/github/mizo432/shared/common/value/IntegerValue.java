@@ -1,10 +1,10 @@
-package com.github.mizo432.shared.value;
+package com.github.mizo432.shared.common.value;
 
 import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
+import com.github.mizo432.shared.common.precondition.IntegerPrecondition;
 import java.util.function.Supplier;
 import org.jspecify.annotations.NonNull;
-import com.github.mizo432.shared.common.precondition.IntegerPrecondition;
 
 /**
  * IntegerValueクラスは、型Integerの単一の値をカプセル化する値オブジェクトを表します。

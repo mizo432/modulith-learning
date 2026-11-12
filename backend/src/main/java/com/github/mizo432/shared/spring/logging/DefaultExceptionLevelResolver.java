@@ -1,8 +1,8 @@
-package com.github.mizo432.shared.logging;
+package com.github.mizo432.shared.spring.logging;
 
 import static org.springframework.util.StringUtils.hasText;
 
-import com.github.mizo432.shared.exception.ExceptionLevel;
+import com.github.mizo432.shared.common.exception.ExceptionLevel;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -47,7 +47,7 @@ public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
     if (!hasText(exceptionCode)) {
       return ExceptionLevel.ERROR;
     }
-    
+
     char prefix = Character.toLowerCase(exceptionCode.charAt(0));
     return switch (prefix) {
       case 'e' -> ExceptionLevel.ERROR;

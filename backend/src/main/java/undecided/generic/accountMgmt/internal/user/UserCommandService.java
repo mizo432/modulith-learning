@@ -1,12 +1,12 @@
 package undecided.generic.accountMgmt.internal.user;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
 import undecided.generic.accountMgmt.UserCommand;
-import com.github.mizo432.shared.exception.BusinessException;
 
 /**
  * ユーザー操作の実装クラスです。

@@ -3,7 +3,7 @@ package undecided.supporting.notification.spi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,13 +28,14 @@ class NotificationRequestTest {
     @Test
     @DisplayName("必須フィールドを設定するとビルドできる")
     void shouldBuildWithRequiredFields() {
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .sourceId(SOURCE_ID)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .sourceId(SOURCE_ID)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .build();
 
       assertThat(request).isNotNull();
       assertThat(request.getRecipientId()).isEqualTo(RECIPIENT_ID);
@@ -48,12 +49,13 @@ class NotificationRequestTest {
     @Test
     @DisplayName("sourceIdはオプションである")
     void shouldAcceptOptionalSourceId() {
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .build();
 
       assertThat(request.getSourceId()).isNull();
     }
@@ -61,11 +63,12 @@ class NotificationRequestTest {
     @Test
     @DisplayName("recipientIdがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenRecipientIdIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .build())
+      assertThatThrownBy(() ->
+              NotificationRequest.builder(SOURCE_DOMAIN)
+                  .title(TITLE)
+                  .content(CONTENT)
+                  .type(TYPE)
+                  .build())
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("recipientId");
     }
@@ -73,11 +76,12 @@ class NotificationRequestTest {
     @Test
     @DisplayName("titleがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenTitleIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .content(CONTENT)
-          .type(TYPE)
-          .build())
+      assertThatThrownBy(() ->
+              NotificationRequest.builder(SOURCE_DOMAIN)
+                  .recipientId(RECIPIENT_ID)
+                  .content(CONTENT)
+                  .type(TYPE)
+                  .build())
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("title");
     }
@@ -85,11 +89,12 @@ class NotificationRequestTest {
     @Test
     @DisplayName("contentがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenContentIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title(TITLE)
-          .type(TYPE)
-          .build())
+      assertThatThrownBy(() ->
+              NotificationRequest.builder(SOURCE_DOMAIN)
+                  .recipientId(RECIPIENT_ID)
+                  .title(TITLE)
+                  .type(TYPE)
+                  .build())
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("content");
     }
@@ -97,14 +102,14 @@ class NotificationRequestTest {
     @Test
     @DisplayName("typeがnullの場合、BusinessExceptionがスローされる")
     void shouldThrowWhenTypeIsNull() {
-      assertThatThrownBy(() -> NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title(TITLE)
-          .content(CONTENT)
-          .build())
+      assertThatThrownBy(() ->
+              NotificationRequest.builder(SOURCE_DOMAIN)
+                  .recipientId(RECIPIENT_ID)
+                  .title(TITLE)
+                  .content(CONTENT)
+                  .build())
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("type");
     }
   }
-
 }

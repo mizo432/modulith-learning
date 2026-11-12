@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.value;
+package com.github.mizo432.shared.common.value;
 
 /**
  * SingleValueインターフェースは、型Tの単一の値を保持するオブジェクトを表します。 これはValueObjectインターフェースを拡張しています。

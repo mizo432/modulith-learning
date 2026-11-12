@@ -1,6 +1,6 @@
-package com.github.mizo432.shared.logging;
+package com.github.mizo432.shared.spring.logging;
 
-import com.github.mizo432.shared.exception.ExceptionLevel;
+import com.github.mizo432.shared.common.exception.ExceptionLevel;
 
 /**
  * 例外のレベルを解決するためのインタフェース。

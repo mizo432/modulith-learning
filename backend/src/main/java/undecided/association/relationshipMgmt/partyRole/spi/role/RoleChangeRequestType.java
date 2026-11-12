@@ -4,8 +4,8 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.exception.BusinessException;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 

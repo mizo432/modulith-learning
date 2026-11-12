@@ -3,12 +3,9 @@ package undecided.agiloom.sprintExecution.internal.presentation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import com.github.mizo432.shared.exception.BusinessException;
-import undecided.supporting.snowflake.SnowflakeId;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,9 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import undecided.agiloom.sprintExecution.internal.query.SprintQuery;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
-import undecided.agiloom.sprintExecution.internal.query.SprintQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -33,13 +30,12 @@ import undecided.supporting.snowflake.SnowflakeId;
 @ExtendWith(MockitoExtension.class)
 class SprintQueryControllerTest {
 
+  private static final UUID FIXED_PRODUCT_ID =
+      UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
   @Mock private SprintQuery sprintQueryService;
   private SprintResponseAssembler sprintResponseAssembler;
-
   private SprintQueryController controller;
-
-  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
-  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   @BeforeEach
   void setUp() {

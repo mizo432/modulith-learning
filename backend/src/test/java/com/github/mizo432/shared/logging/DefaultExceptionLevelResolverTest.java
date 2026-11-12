@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.github.mizo432.shared.exception.ExceptionLevel;
-import com.github.mizo432.shared.exception.SystemException;
+import com.github.mizo432.shared.common.exception.ExceptionLevel;
+import com.github.mizo432.shared.common.exception.SystemException;
+import com.github.mizo432.shared.spring.logging.DefaultExceptionLevelResolver;
+import com.github.mizo432.shared.spring.logging.ExceptionCodeResolver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -15,14 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * {@code DefaultExceptionLevelResolverTest} は、DefaultExceptionLevelResolver の単体テストクラスです。
- * <p>
- * 規約要件:
- * 1. @Tag("small") を付与
- * 2. クラス・メソッドともに日本語 @DisplayName を付与
- * 3. 対象メソッドごとに @Nested クラスでグループ化
- * 4. メソッド名は should で開始し、アンダースコアを使用しない
- * 5. package-private 可視性
- * 6. null や境界値のテストを含める
+ *
+ * <p>規約要件: 1. @Tag("small") を付与 2. クラス・メソッドともに日本語 @DisplayName を付与 3. 対象メソッドごとに @Nested クラスでグループ化
+ * 4. メソッド名は should で開始し、アンダースコアを使用しない 5. package-private 可視性 6. null や境界値のテストを含める
  */
 @Tag("small")
 @DisplayName("DefaultExceptionLevelResolverの単体テスト")
@@ -230,4 +227,3 @@ class DefaultExceptionLevelResolverTest {
     }
   }
 }
-

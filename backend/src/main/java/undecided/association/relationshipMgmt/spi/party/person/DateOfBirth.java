@@ -1,8 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.value.DateValue;
 import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
-import com.github.mizo432.shared.value.DateValue;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.time.LocalDate;

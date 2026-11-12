@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,18 +17,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
-import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.internal.presentation.SprintResponseAssembler;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
-import com.github.mizo432.shared.exception.BusinessException;
 
 @Tag("small")
 @DisplayName("UpdateSprintCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
 class UpdateSprintCommandServiceTest {
 
-  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_PRODUCT_ID =
+      UUID.fromString("11111111-1111-1111-1111-111111111111");
   private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   @Mock private SprintRepository sprintRepository;
@@ -69,15 +70,17 @@ class UpdateSprintCommandServiceTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint existingSprint = createSprint(snowflakeId, SprintStatus.PLANNED);
 
-      UpdateSprintCommand command = UpdateSprintCommand.builder()
-          .id(snowflakeId)
-          .title("Updated Title")
-          .goal("Updated Goal")
-          .endDate(LocalDate.now().plusWeeks(3))
-          .notes("Updated notes")
-          .build();
+      UpdateSprintCommand command =
+          UpdateSprintCommand.builder()
+              .id(snowflakeId)
+              .title("Updated Title")
+              .goal("Updated Goal")
+              .endDate(LocalDate.now().plusWeeks(3))
+              .notes("Updated notes")
+              .build();
 
-      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(existingSprint));
+      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId))
+          .thenReturn(Optional.of(existingSprint));
 
       // Act
       service.execute(command);
@@ -94,10 +97,8 @@ class UpdateSprintCommandServiceTest {
     void shouldThrowExceptionWhenSprintNotFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      UpdateSprintCommand command = UpdateSprintCommand.builder()
-          .id(snowflakeId)
-          .title("Updated Title")
-          .build();
+      UpdateSprintCommand command =
+          UpdateSprintCommand.builder().id(snowflakeId).title("Updated Title").build();
 
       when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.empty());
 
@@ -114,12 +115,11 @@ class UpdateSprintCommandServiceTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint existingSprint = createSprint(snowflakeId, SprintStatus.PLANNED);
 
-      UpdateSprintCommand command = UpdateSprintCommand.builder()
-          .id(snowflakeId)
-          .title("Updated Title")
-          .build();
+      UpdateSprintCommand command =
+          UpdateSprintCommand.builder().id(snowflakeId).title("Updated Title").build();
 
-      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(existingSprint));
+      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId))
+          .thenReturn(Optional.of(existingSprint));
 
       // Act
       service.execute(command);
@@ -140,7 +140,8 @@ class UpdateSprintCommandServiceTest {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
-      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId))
+          .thenReturn(Optional.of(sprint));
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.ACTIVE);
@@ -156,7 +157,8 @@ class UpdateSprintCommandServiceTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
       sprint.start();
-      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId))
+          .thenReturn(Optional.of(sprint));
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.COMPLETED);
@@ -171,7 +173,8 @@ class UpdateSprintCommandServiceTest {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
-      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId))
+          .thenReturn(Optional.of(sprint));
 
       // Act
       service.changeStatus(snowflakeId, SprintStatus.CANCELLED);
@@ -199,7 +202,8 @@ class UpdateSprintCommandServiceTest {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint sprint = createSprint(snowflakeId, SprintStatus.PLANNED);
-      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId)).thenReturn(Optional.of(sprint));
+      when(sprintRepository.findByIdAndDeletedAtIsNull(snowflakeId))
+          .thenReturn(Optional.of(sprint));
 
       // Act & Assert
       assertThatThrownBy(() -> service.changeStatus(snowflakeId, SprintStatus.PLANNED))

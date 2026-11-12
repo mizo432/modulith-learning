@@ -8,7 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -167,21 +167,11 @@ class UseBankAccountCommandServiceTest {
       verify(bankAccountUseRepository).save(bankAccountUseCaptor.capture());
       BankAccountUse savedEntity = bankAccountUseCaptor.getValue();
 
-      assertThat(savedEntity.getBankAccountUseId())
-          .as("生成されたIDが設定されること")
-          .isEqualTo(generatedId);
-      assertThat(savedEntity.getBankAccountId())
-          .as("銀行口座IDが設定されること")
-          .isEqualTo(bankAccountId);
-      assertThat(savedEntity.getPartyId())
-          .as("パーティIDが設定されること")
-          .isEqualTo(partyId);
-      assertThat(savedEntity.getType())
-          .as("用途種別が設定されること")
-          .isEqualTo(BankAccountUseType.UNKNOWN);
-      assertThat(savedEntity.getWhenOccured())
-          .as("発生時刻が設定されること")
-          .isNotNull();
+      assertThat(savedEntity.getBankAccountUseId()).as("生成されたIDが設定されること").isEqualTo(generatedId);
+      assertThat(savedEntity.getBankAccountId()).as("銀行口座IDが設定されること").isEqualTo(bankAccountId);
+      assertThat(savedEntity.getPartyId()).as("パーティIDが設定されること").isEqualTo(partyId);
+      assertThat(savedEntity.getType()).as("用途種別が設定されること").isEqualTo(BankAccountUseType.UNKNOWN);
+      assertThat(savedEntity.getWhenOccured()).as("発生時刻が設定されること").isNotNull();
     }
 
     @Test
@@ -212,7 +202,8 @@ class UseBankAccountCommandServiceTest {
       service.use(dto2);
 
       // Assert
-      verify(bankAccountUseRepository, org.mockito.Mockito.times(2)).save(any(BankAccountUse.class));
+      verify(bankAccountUseRepository, org.mockito.Mockito.times(2))
+          .save(any(BankAccountUse.class));
     }
   }
 }
