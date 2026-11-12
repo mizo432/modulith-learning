@@ -505,7 +505,6 @@ jobs:
     if: |
       github.event_name == 'pull_request' &&
       always() &&
-      secrets.SONAR_TOKEN != '' &&
       (needs.backend-test.result == 'success' || needs.backend-test.result == 'skipped') &&
       (needs.backend-medium-test.result == 'success' || needs.backend-medium-test.result == 'skipped') &&
       (needs.api-gateway-test.result == 'success' || needs.api-gateway-test.result == 'skipped') &&
@@ -543,6 +542,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "SONAR_TOKEN is not set. Skipping SonarQube analysis."
+            exit 0
+          fi
           ./gradlew sonar --no-parallel \
             -Dsonar.token=${SONAR_TOKEN} \
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
