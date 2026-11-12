@@ -16,7 +16,7 @@ repositories {
 }
 
 extra["guavaVersion"] = "33.6.0-jre"
-extra["jspecifyVersion"] = "1.0.0"
+extra["jspecifyVersion"] = "1.0.1"
 extra["icu4jVersion"] = "77.1"
 extra["uuidGeneratorVersion"] = "5.1.0"
 extra["lombokVersion"] = "1.18.38"

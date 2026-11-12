@@ -1,0 +1,3 @@
+業務一覧
+ID	業務名	概要	主なアクター	アクティビティ	UC	関連情報	関連状態
+BUC-AS-02	Role付与・管理	PartyにRoleを付与・管理する	ACT-01	Roleの付与;Roleの更新;Roleの参照;Roleの削除	UC-AS-005;UC-AS-006;UC-AS-007;UC-AS-008	PartyRole	有効;無効

@@ -1,12 +1,30 @@
 ---
-name: rdra-top-down
+name: to-RDRA-model
 description: >
   このSkillは、ユーザーとの対話から要求を整理し、RDRA（Relationship Driven Requirement Analysis）モデルを構築してファイルにまとめる。
 
 # RDRA (Relationship Driven Requirement Analysis) Skill
 ---
 
-RDRAについては[RDRAガイドライン](../../../guidelines/rdra/rdra-model.guidelines.md)を参照してください。
+RDRAについては[RDRAガイドライン](../../guidelines/rdra/rdra-model.guidelines.md)を参照してください。
+
+**ガイドライン一覧**:
+
+- [概要](../../guidelines/rdra/rdra-overview.guidelines.md) — RDRAの基本概念、4つのレイヤー、ダイアグラム、モデル要素
+- [ドキュメント配置](../../guidelines/rdra/rdra-document-structure.guidelines.md) — 事業領域ディレクトリ構造
+- [フェーズ1](../../guidelines/rdra/rdra-phase1.guidelines.md) — 初期要望から要素を抽出する
+- [フェーズ2](../../guidelines/rdra/rdra-phase2.guidelines.md) — 要素を再整理し詳細化する
+- [フェーズ3](../../guidelines/rdra/rdra-phase3.guidelines.md) — 要素を再整理する
+- [フェーズ4](../../guidelines/rdra/rdra-phase4.guidelines.md) — 要素を関連付ける
+- [フェーズ5](../../guidelines/rdra/rdra-phase5.guidelines.md) — システム概要を定義する
+- [フェーズ6](../../guidelines/rdra/rdra-phase6.guidelines.md) — 仕様を生成する
+- [フェーズ7](../../guidelines/rdra/rdra-phase7.guidelines.md) — 画面照会を生成する
+- [要件組み立て](../../guidelines/rdra/rdra-requirement-assembly.guidelines.md) —
+  要素を関連付け、要件を具体化する
+- [整合性確認](../../guidelines/rdra/rdra-consistency-check.guidelines.md) — 整合性を確認し精度を高める
+- [チェックリスト](../../guidelines/rdra/rdra-checklist.guidelines.md) — 各フェーズの完了確認項目
+- [設計連携](../../guidelines/rdra/rdra-design-integration.guidelines.md) — RDRA成果物と設計プロセスとの連携
+- [情報ルール](../../guidelines/rdra/rdra-information-rules.guidelines.md) — 情報一覧の情報種類、履歴管理、実現方法
 
 ## Purpose
 
@@ -38,7 +56,8 @@ RDRAについては[RDRAガイドライン](../../../guidelines/rdra/rdra-model.
 
 ### 2. RDRA の基本概念
 
-RDRAについては[RDRAガイドライン](../../../guidelines/rdra/rdra-model.guidelines.md)を参照してください。
+RDRAの基本概念については[RDRA概要ガイドライン](../../guidelines/rdra/rdra-overview.guidelines.md)
+を参照してください。
 
 #### RDRAのモデル要素
 
@@ -271,7 +290,7 @@ RDRAによる要件定義は、「7つのフェーズ」で計画的に進めま
 
 ##### チェックリスト
 
-詳細な確認項目は [requirement.md](../../../guidelines/rdra/checklists/requirement.md) を参照してください。
+詳細な確認項目は [requirement.md](../../guidelines/rdra/checklists/requirement.md) を参照してください。
 
 **チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
 
@@ -330,7 +349,7 @@ RDRAによる要件定義は、「7つのフェーズ」で計画的に進めま
 
 ##### チェックリスト
 
-詳細な確認項目は [requirement-assembly.md](../../../guidelines/rdra/checklists/requirement-assembly.md)
+詳細な確認項目は [requirement-assembly.md](../../guidelines/rdra/checklists/requirement-assembly.md)
 を参照してください。
 
 **チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
@@ -386,7 +405,7 @@ RDRAによる要件定義は、「7つのフェーズ」で計画的に進めま
 
 ##### チェックリスト
 
-詳細な確認項目は [requirement-assembly.md](../../../guidelines/rdra/checklists/requirement-assembly.md)
+詳細な確認項目は [requirement-assembly.md](../../guidelines/rdra/checklists/requirement-assembly.md)
 を参照してください。
 
 **チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
@@ -445,7 +464,7 @@ Sheet形式に変換し、BUCは関連モデル形式へ展開し、バリエー
 
 ##### チェックリスト
 
-詳細な確認項目は [requirement-assembly.md](../../../guidelines/rdra/checklists/requirement-assembly.md)
+詳細な確認項目は [requirement-assembly.md](../../guidelines/rdra/checklists/requirement-assembly.md)
 を参照してください。
 
 **チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
@@ -475,7 +494,7 @@ Sheet形式に変換し、BUCは関連モデル形式へ展開し、バリエー
 
 ##### チェックリスト
 
-詳細な確認項目は [requirement-assembly.md](../../../rdra/checklists/requirement-assembly.md)
+詳細な確認項目は [requirement-assembly.md](../../guidelines/rdra/checklists/requirement-assembly.md)
 を参照してください。
 
 **チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
@@ -588,7 +607,7 @@ Sheet形式に変換し、BUCは関連モデル形式へ展開し、バリエー
 - 状態モデル図は `04.システム/02.ステート/ステートマシン図.md` に配置する
 - 各状態間の遷移と、その遷移をトリガーするユースケースを明記する
 
-状態モデル図の作成手順は [状態モデル図作成ガイドライン](../../../guidelines/docs/state-model.guidelines.md)
+状態モデル図の作成手順は [状態モデル図作成ガイドライン](../../guidelines/docs/state-model.guidelines.md)
 を参照
 
 **UC複合図の作成**
@@ -597,7 +616,7 @@ Sheet形式に変換し、BUCは関連モデル形式へ展開し、バリエー
 - UC複合図は `03.システム境界/UC複合図.md` に配置する
 - アクター、外部システム、ユースケース、画面、イベント、情報、条件の関係性を視覚的に表現する
 
-UC複合図の作成手順は [UC複合図作成ガイドライン](../../../guidelines/docs/uc-composite.guidelines.md)
+UC複合図の作成手順は [UC複合図作成ガイドライン](../../guidelines/docs/uc-composite.guidelines.md)
 を参照
 
 **業務ルールの種類**
@@ -614,7 +633,7 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 
 業務ルールをこれらの種類に分類することで、ルールの性質や優先度を明確にし、要件定義の精度を高めることができます。
 
-**ID命名規約**: [guidelines/id-naming-conventions.guidelines.md](guidelines/id-naming-conventions.guidelines.md)
+**ID命名規約**: [id-naming-conventions.guidelines.md](guidelines/id-naming-conventions.guidelines.md)
 を参照する
 
 - ビジネスユースケースとビジネスアクターの関連付けは必須
@@ -634,21 +653,52 @@ UC複合図の作成手順は [UC複合図作成ガイドライン](../../../gui
 
 **要件組み立てフェーズ実行時の準備作業：情報属性一覧の作成**
 
-要件組み立てフェーズの実行を指示された際には、事前に各情報（エンティティ）毎に「情報属性一覧」ファイルを作成します。TM（T字形ER）モデルに基づき、各情報の個体指定子と属性を詳細に定義することで、実装レベルの仕様化を支援します。
+要件組み立てフェーズの実行を指示された際には、事前に各情報（エンティティ）毎に「情報属性一覧」ファイルを作成します。ER（エンティティ関係）モデルに基づき、各情報の主キーと属性を詳細に定義することで、実装レベルの仕様化を支援します。
+
+ERモデルの詳細は [rdra-tm-overview.guidelines.md](../../guidelines/rdra/rdra-tm-overview.guidelines.md)
+を参照してください。
+
+**ERモデルに基づく情報属性一覧の構造**:
+
+ERモデルでは、エンティティを矩形で表現し、主キー（個体指定子）と属性を定義します。PlantUMLのInformation
+Engineering記法を使用します。
+
+```plantuml
+@startuml
+entity "エンティティ名" as EntityName {
+  * id : INTEGER <<not null>>
+  --
+  属性1 : VARCHAR
+  属性2 : VARCHAR
+  属性3 : DATE
+}
+@enduml
+```
+
+ERモデルでは、エンティティを以下の2つに分類します：
+
+| 分類                | 記号 | 説明                                                                                   |
+|---------------------|------|----------------------------------------------------------------------------------------|
+| イベント (Event)    | E    | システム内で発生する出来事を表す情報。タイムスタンプを持つ。                           |
+| リソース (Resource) | R    | 独立したエンティティとして存在する主要なデータ。主キーを持ち、他の情報が参照する対象。 |
 
 **情報属性一覧の作成手順**:
 
 1. フェーズ1でリストアップした情報（情報一覧.tsv）を基に、各情報毎にファイルを作成する
-2. TM（T字形ER）モデルの構造に従い、左側に個体指定子（ID）、右側に属性を配置する
-3. database.rule.mdで定義されたエンティティ命名規則と3大要素（単一性・同一性・カテゴリ）を適用する
-4. 各属性の型（String, Integer, Long, Double, Boolean, Date, DateTime, Enum）と必須/任意を定義する
-5. 情報間の関連関係を明記する
+2. ERモデルの構造に従い、主キー（個体指定子）と属性を定義する
+    - 主キー：エンティティを一意に識別する属性。属性一覧で「個体指定子」列に「✓」をマークする
+    - 属性：エンティティの特性を表す一般属性
+3. ERモデルの分類（イベントE / リソースR）に従い、情報を分類する
+4. エンティティ命名規則と3大要素（単一性・同一性・カテゴリ）を適用する
+5. 各属性の型（String, Integer, Long, Double, Boolean, Date, DateTime, Enum）と必須/任意を定義する
+6. 情報間の関連関係を明記する
 
 **ファイル配置規則**:
 
 - Markdownファイル: `04.システム/01.情報/02.属性/[情報ID] 情報名_情報属性一覧.md`
 - TSVファイル: `04.システム/01.情報/02.属性/[情報ID] 情報名_情報属性一覧.tsv`
 -
+
 テンプレート: [情報属性一覧.md](../../guidelines/rdra/templates/情報属性一覧.md), [情報属性一覧.tsv](../../guidelines/rdra/templates/情報属性一覧.tsv)
 
 **エンティティ命名規則**:
@@ -713,6 +763,7 @@ Engineering記法）で視覚化し、データモデルの全体像を明確に
 - Markdownファイル: `04.システム/04.画面/[画面ID] 画面名_画面属性一覧.md`
 - TSVファイル: `04.システム/04.画面/[画面ID] 画面名_画面属性一覧.tsv`
 -
+
 テンプレート: [画面属性一覧.md](../../guidelines/rdra/templates/画面属性一覧.md), [画面属性一覧.tsv](../../guidelines/rdra/templates/画面属性一覧.tsv)
 
 **要件組み立てフェーズ実行時の準備作業：画面ER図の作成**
@@ -768,6 +819,7 @@ Engineering記法）で視覚化し、画面のデータ構造を明確にしま
 - Markdownファイル: `04.システム/03.イベント/[イベントID] イベント名_イベント属性一覧.md`
 - TSVファイル: `04.システム/03.イベント/[イベントID] イベント名_イベント属性一覧.tsv`
 -
+
 テンプレート: [イベント属性一覧.md](../../guidelines/rdra/templates/イベント属性一覧.md), [イベント属性一覧.tsv](../../guidelines/rdra/templates/イベント属性一覧.tsv)
 
 **要件組み立てフェーズ実行時の準備作業：イベントER図の作成**
@@ -806,7 +858,8 @@ Engineering記法）で視覚化し、イベントのデータ構造を明確に
 
 ##### チェックリスト
 
-詳細な確認項目は [issue-creation.md](../../../guidelines/rdra/checklists/issue-creation.md) を参照してください。
+詳細な確認項目は [issue-creation.md](../../guidelines/rdra/checklists/issue-creation.md)
+を参照してください。
 
 **チェックエラー時の処理**: [チェックエラー時の処理](#チェックエラー時の処理)を参照してください。
 
@@ -828,7 +881,7 @@ Engineering記法）で視覚化し、イベントのデータ構造を明確に
 
 出力ディレクトリは以下の階層構造に従います：
 
-[ドキュメント格納先ディレクトリ命名規則 (Document Directory Naming Guidelines)](../../../guidelines/docs/directory-name.guidelines.md)
+[ドキュメント格納先ディレクトリ命名規則 (Document Directory Naming Guidelines)](../../guidelines/docs/directory-name.guidelines.md)
 を参照してください。
 
 **完了報告**:
@@ -858,19 +911,9 @@ Engineering記法）で視覚化し、イベントのデータ構造を明確に
 
 「03 機能要件」のシステム層における情報一覧では、各情報を以下の4つの情報種類に分類します：
 
-| 情報種類     | 説明                                         | 例                                           |
-|--------------|----------------------------------------------|----------------------------------------------|
-| **イベント** | システムで発生するイベント情報               | パーティ登録完了、組織登録完了               |
-| **リソース** | エンティティや主要なデータリソース           | パーティ、個人、法人、組織、ユーザー         |
-| **対応表**   | 2つの情報間の対応関係（N:1, 1:N, N:M）       | ロール割り当て、住所、銀行口座、パーティ関係 |
-| **対照表**   | コードと名称などの対照関係（マスターデータ） | 都道府県、金融機関、祝日                     |
+TM分析を行い情報種類を決定する
 
-##### 分類ガイドライン
-
-1. **リソース**: 独立したエンティティとして存在する主要なデータ。主キーを持ち、他の情報が参照する対象。
-2. **対応表**: 2つ以上のリソース間の関係性を表す情報。結合キーや外部キーを持つ。
-3. **対照表**: コードと名称の対応など、マスターデータとして参照される情報。lookupテーブル的な役割。
-4. **イベント**: システム内で発生する出来事を表す情報。タイムスタンプを持つ。
+[ER（エンティティ関係）モデルの詳細解説](../../guidelines/rdra/rdra-tm-overview.guidelines.md)を参照
 
 ---
 
@@ -891,24 +934,7 @@ Engineering記法）で視覚化し、イベントのデータ構造を明確に
 
 ---
 
-#### 4.12 情報一覧の証跡要列
-
-情報一覧には「証跡要」列を追加し、証跡管理が必要なリソースに「Y」、不要なリソースに「N」を出力します。
-
-| 値    | 意味                                                                          | 例                                                                                                                                         |
-|-------|-------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| **Y** | 監査証跡（Audit Trail）が必要なビジネスエンティティ。変更の誰・いつ・何を記録 | パーティ、個人、法人、組織、部署、従業員、ロール、ロール割り当て、ユーザー                                                                 |
-| **N** | 監査証跡が不要なマスターデータ・構造情報・参照データ                          | 住所、銀行口座、パーティ関係、都道府県、市区町村、町字、金融機関、支店、祝日、データベース、スキーマ、テーブル、View、カラム、インデックス |
-
-##### 判定ガイドライン
-
-1. **Y（証跡要）**:
-   監査・コンプライアンス上、変更の責任者（who）と変更日時（when）および変更内容（what）を記録する必要がある重要なビジネスエンティティ。財務・人事・権限管理など、不正や誤操作の検出が必要な情報。
-2. **N（証跡不要）**: 参照用のマスターデータ、対照表、構造情報、または関係情報。監査証跡の必要性が低い情報。
-
----
-
-#### 4.13 情報一覧の実現方法
+#### 4.12 情報一覧の実現方法
 
 各情報をシステム上でどのように実現するかを記載します。
 
@@ -921,7 +947,7 @@ Engineering記法）で視覚化し、イベントのデータ構造を明確に
 
 ---
 
-### 4. 重要ルール (Important Rules)
+### 5. 重要ルール (Important Rules)
 
 1. **RDRAはモデルベースの要件定義手法**:
     - RDRAは「Relationship Driven Requirement Analysis」の略称で、読み方は「ラドラ」
@@ -959,7 +985,7 @@ Engineering記法）で視覚化し、イベントのデータ構造を明確に
 
 ---
 
-### 5. 付属テンプレートとチェックリスト (Resources)
+### 6. 付属テンプレートとチェックリスト (Resources)
 
 - **ガイドライン**:
     - [id-naming-conventions.guidelines.md](guidelines/id-naming-conventions.guidelines.md): RDRA
@@ -1046,6 +1072,7 @@ Engineering記法）で視覚化し、イベントのデータ構造を明確に
     - [05.用語集](../../guidelines/rdra/templates/RDRAダイアグラム例/05.用語集.md): 用語集の例（4レイヤー全体）
 
 - **チェックリスト**:
-    - [requirement.md](../../../guidelines/rdra/checklists/requirement.md): 要件分析時の確認項目
-    - [requirement-assembly.md](../../../guidelines/rdra/checklists/requirement-assembly.md): 要件組み立て時の確認項目
-    - [issue-creation.md](../../../guidelines/rdra/checklists/issue-creation.md): Issue 作成時の確認項目
+    - [requirement.md](../../guidelines/rdra/checklists/requirement.md): 要件分析時の確認項目
+    - [requirement-assembly.md](../../guidelines/rdra/checklists/requirement-assembly.md):
+      要件組み立て時の確認項目
+    - [issue-creation.md](../../guidelines/rdra/checklists/issue-creation.md): Issue 作成時の確認項目

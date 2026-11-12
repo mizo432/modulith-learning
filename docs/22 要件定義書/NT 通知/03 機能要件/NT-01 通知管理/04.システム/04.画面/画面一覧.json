@@ -1,0 +1,197 @@
+{
+  "screens": [
+    {
+      "screen_name": "SCR-01001",
+      "fields": [
+        {
+          "field_name": "チャネル",
+          "type": "string",
+          "tooltip": "チャネル"
+        },
+        {
+          "field_name": "宛先",
+          "type": "string",
+          "tooltip": "宛先"
+        },
+        {
+          "field_name": "件名",
+          "type": "string",
+          "tooltip": "件名"
+        },
+        {
+          "field_name": "本文",
+          "type": "string",
+          "tooltip": "本文"
+        },
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(通知)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "通知一覧",
+          "dummy_data": [
+            {
+              "field_name": "チャネル",
+              "value": "通知データ1"
+            },
+            {
+              "field_name": "宛先",
+              "value": "通知データ1"
+            },
+            {
+              "field_name": "件名",
+              "value": "通知データ1"
+            }
+          ]
+        },
+        {
+          "display_name": "通知詳細",
+          "dummy_data": [
+            {
+              "field_name": "チャネル",
+              "value": "通知データ2"
+            },
+            {
+              "field_name": "宛先",
+              "value": "通知データ2"
+            },
+            {
+              "field_name": "件名",
+              "value": "通知データ2"
+            }
+          ]
+        },
+        {
+          "display_name": "通知照会",
+          "dummy_data": [
+            {
+              "field_name": "チャネル",
+              "value": "通知データ3"
+            },
+            {
+              "field_name": "宛先",
+              "value": "通知データ3"
+            },
+            {
+              "field_name": "件名",
+              "value": "通知データ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録"
+    },
+    {
+      "screen_name": "SCR-01002",
+      "fields": [
+        {
+          "field_name": "タイプ",
+          "type": "string",
+          "tooltip": "タイプ"
+        },
+        {
+          "field_name": "設定",
+          "type": "string",
+          "tooltip": "設定"
+        },
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "更新日",
+          "type": "string",
+          "tooltip": "更新日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(通知チャネル)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "通知チャネル一覧",
+          "dummy_data": [
+            {
+              "field_name": "タイプ",
+              "value": "通知チャネルデータ1"
+            },
+            {
+              "field_name": "設定",
+              "value": "通知チャネルデータ1"
+            },
+            {
+              "field_name": "状態",
+              "value": "通知チャネルデータ1"
+            }
+          ]
+        },
+        {
+          "display_name": "通知チャネル詳細",
+          "dummy_data": [
+            {
+              "field_name": "タイプ",
+              "value": "通知チャネルデータ2"
+            },
+            {
+              "field_name": "設定",
+              "value": "通知チャネルデータ2"
+            },
+            {
+              "field_name": "状態",
+              "value": "通知チャネルデータ2"
+            }
+          ]
+        },
+        {
+          "display_name": "通知チャネル照会",
+          "dummy_data": [
+            {
+              "field_name": "タイプ",
+              "value": "通知チャネルデータ3"
+            },
+            {
+              "field_name": "設定",
+              "value": "通知チャネルデータ3"
+            },
+            {
+              "field_name": "状態",
+              "value": "通知チャネルデータ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+業務一覧
+ID	業務名	概要	主なアクター	アクティビティ	UC	関連情報	関連状態
+BUC-AS-03	PersonRole管理	従業員やメンバーを管理する	ACT-01	PersonRoleの登録;PersonRoleの更新;PersonRoleの参照;所属の管理	UC-AS-009;UC-AS-010;UC-AS-011;UC-AS-012	PersonRole	有効;無効

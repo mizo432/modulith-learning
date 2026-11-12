@@ -1,0 +1,180 @@
+{
+  "businesses": [
+    {
+      "business_name": "金融機関管理",
+      "BUCs": [
+        {
+          "buc_name": "金融機関管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "金融機関管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actorGroups": [
+    {
+      "group_name": "管理者",
+      "actors": [
+        {
+          "actor_name": "システム管理者",
+          "screen_names": [
+            "SCR-01001"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "利用者",
+      "actors": [
+        {
+          "actor_name": "従業員",
+          "screen_names": [
+            "SCR-01001"
+          ]
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "screen_name": "SCR-01001",
+      "fields": [
+        {
+          "field_name": "名前",
+          "type": "string",
+          "tooltip": "名前"
+        },
+        {
+          "field_name": "コード",
+          "type": "string",
+          "tooltip": "コード"
+        },
+        {
+          "field_name": "支店",
+          "type": "string",
+          "tooltip": "支店"
+        },
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "更新日",
+          "type": "string",
+          "tooltip": "更新日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(金融機関)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "金融機関一覧",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "金融機関データ1"
+            },
+            {
+              "field_name": "コード",
+              "value": "金融機関データ1"
+            },
+            {
+              "field_name": "支店",
+              "value": "金融機関データ1"
+            }
+          ]
+        },
+        {
+          "display_name": "金融機関詳細",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "金融機関データ2"
+            },
+            {
+              "field_name": "コード",
+              "value": "金融機関データ2"
+            },
+            {
+              "field_name": "支店",
+              "value": "金融機関データ2"
+            }
+          ]
+        },
+        {
+          "display_name": "金融機関照会",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "金融機関データ3"
+            },
+            {
+              "field_name": "コード",
+              "value": "金融機関データ3"
+            },
+            {
+              "field_name": "支店",
+              "value": "金融機関データ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録",
+      "data_access": [
+        {
+          "entity": "FINANCIAL_INSTITUTION",
+          "CRUD": [
+            "C",
+            "R",
+            "U",
+            "D"
+          ],
+          "isMain": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "actorGroups": [
+    {
+      "group_name": "申請者",
+      "actors": [
+        {
+          "actor_name": "従業員",
+          "screen_names": [
+            "SCR-01001",
+            "SCR-01002"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "承認者",
+      "actors": [
+        {
+          "actor_name": "管理者",
+          "screen_names": [
+            "SCR-01001",
+            "SCR-01002"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "管理者",
+      "actors": [
+        {
+          "actor_name": "システム管理者",
+          "screen_names": [
+            "SCR-01001",
+            "SCR-01002"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "screens": [
+    {
+      "screen_name": "SCR-01001",
+      "fields": [
+        {
+          "field_name": "種類",
+          "type": "string",
+          "tooltip": "種類"
+        },
+        {
+          "field_name": "レイアウト",
+          "type": "string",
+          "tooltip": "レイアウト"
+        },
+        {
+          "field_name": "テンプレート",
+          "type": "string",
+          "tooltip": "テンプレート"
+        },
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "更新日",
+          "type": "string",
+          "tooltip": "更新日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(帳票定義)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "帳票定義一覧",
+          "dummy_data": [
+            {
+              "field_name": "種類",
+              "value": "帳票定義データ1"
+            },
+            {
+              "field_name": "レイアウト",
+              "value": "帳票定義データ1"
+            },
+            {
+              "field_name": "テンプレート",
+              "value": "帳票定義データ1"
+            }
+          ]
+        },
+        {
+          "display_name": "帳票定義詳細",
+          "dummy_data": [
+            {
+              "field_name": "種類",
+              "value": "帳票定義データ2"
+            },
+            {
+              "field_name": "レイアウト",
+              "value": "帳票定義データ2"
+            },
+            {
+              "field_name": "テンプレート",
+              "value": "帳票定義データ2"
+            }
+          ]
+        },
+        {
+          "display_name": "帳票定義照会",
+          "dummy_data": [
+            {
+              "field_name": "種類",
+              "value": "帳票定義データ3"
+            },
+            {
+              "field_name": "レイアウト",
+              "value": "帳票定義データ3"
+            },
+            {
+              "field_name": "テンプレート",
+              "value": "帳票定義データ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録"
+    }
+  ]
+}
