@@ -683,6 +683,7 @@ class SensitiveLoggerWrapperTest {
 
     @Test
     @DisplayName("builderのlog(Supplier)でメッセージがマスクされる")
+    @SuppressWarnings("unchecked")
     void shouldMaskSupplierInLog() {
       when(mockLogger.atInfo()).thenReturn(mockBuilder);
 
