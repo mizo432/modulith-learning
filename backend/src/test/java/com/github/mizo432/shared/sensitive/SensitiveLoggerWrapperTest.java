@@ -635,6 +635,7 @@ class SensitiveLoggerWrapperTest {
 
     @Test
     @DisplayName("builderのSupplier引数がマスクされる")
+    @SuppressWarnings("unchecked")
     void shouldMaskSupplierArgument() {
       when(mockLogger.atInfo()).thenReturn(mockBuilder);
       when(mockBuilder.addArgument(any(Supplier.class))).thenReturn(mockBuilder);
@@ -669,6 +670,7 @@ class SensitiveLoggerWrapperTest {
 
     @Test
     @DisplayName("builderのSupplierメッセージがマスクされる")
+    @SuppressWarnings("unchecked")
     void shouldMaskSupplierMessage() {
       when(mockLogger.atInfo()).thenReturn(mockBuilder);
       when(mockBuilder.setMessage(any(Supplier.class))).thenReturn(mockBuilder);

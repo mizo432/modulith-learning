@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  *
  * <p>組織関連のクエリ実装を検証します。リポジトリへの適切な委譲とデータ変換の正確性をテストします。
  */
+@Tag("small")
 @ExtendWith(MockitoExtension.class)
 @DisplayName("OrganizationQueryService のテスト")
 class OrganizationQueryServiceTest {

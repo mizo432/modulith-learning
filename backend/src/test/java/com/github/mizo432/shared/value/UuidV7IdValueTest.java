@@ -9,8 +9,10 @@ import com.github.mizo432.shared.common.value.UuidValue;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("small")
 @DisplayName("UuidV7IdValueのテスト")
 class UuidV7IdValueTest {
 

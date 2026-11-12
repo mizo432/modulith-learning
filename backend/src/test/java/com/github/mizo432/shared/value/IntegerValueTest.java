@@ -7,8 +7,10 @@ import com.github.mizo432.shared.common.value.IntegerValue;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("small")
 @DisplayName("IntegerValueのテスト")
 class IntegerValueTest {
 

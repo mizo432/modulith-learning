@@ -7,8 +7,10 @@ import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("small")
 class WhenAssociatedTest {
 
   @Nested
