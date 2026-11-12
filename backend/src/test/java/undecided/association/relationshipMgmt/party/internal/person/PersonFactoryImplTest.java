@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -68,7 +69,8 @@ class PersonFactoryImplTest {
               govtAssignedId,
               searchName,
               legalName,
-              dateOfBirth);
+              dateOfBirth,
+              Collections.emptyList());
 
       // Act
       Person result = factory.create(input);
@@ -134,7 +136,8 @@ class PersonFactoryImplTest {
               null,
               null,
               LegalName.empty(),
-              DateOfBirth.empty());
+              DateOfBirth.empty(),
+              Collections.emptyList());
 
       // Act
       Person result = factory.create(input);
@@ -163,6 +166,7 @@ class PersonFactoryImplTest {
         govtAssignedId,
         searchName,
         legalName,
-        dateOfBirth);
+        dateOfBirth,
+        Collections.emptyList());
   }
 }

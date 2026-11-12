@@ -3,7 +3,7 @@ package undecided.association.relationshipMgmt.spi.party.person;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.util.Objects;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +13,7 @@ import undecided.association.relationshipMgmt.spi.party.GovtAssignedId;
 import undecided.association.relationshipMgmt.spi.party.Party;
 import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
 import undecided.association.relationshipMgmt.spi.party.SearchName;
+import undecided.association.relationshipMgmt.spi.party.partyRelationship.PartyRelationship;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -44,8 +45,9 @@ public class Person extends Party {
       GovtAssignedId govtAssignedId,
       SearchName searchName,
       LegalName legalName,
-      DateOfBirth dateOfBirth) {
-    super(partyId, partyTypeCode, name, code, govtAssignedId, searchName);
+      DateOfBirth dateOfBirth,
+      List<PartyRelationship> partyRelationships) {
+    super(partyId, partyTypeCode, name, code, govtAssignedId, searchName, partyRelationships);
     this.legalName = legalName;
     this.dateOfBirth = dateOfBirth;
   }
