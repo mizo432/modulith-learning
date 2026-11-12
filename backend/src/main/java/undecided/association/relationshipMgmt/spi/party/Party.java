@@ -13,6 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
+import undecided.association.relationshipMgmt.spi.party.contact.Contact;
+import undecided.association.relationshipMgmt.spi.party.contact.PhoneNo;
+import undecided.association.relationshipMgmt.spi.party.person.DateOfDie;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -36,9 +39,17 @@ public abstract class Party {
   @Column(name = "party_type_code", nullable = false, length = 20)
   private PartyTypeCode partyTypeCode;
 
-  /** 名称。 */
-  @Column(name = "name", nullable = false, length = 100)
-  private String name;
+  /** 死亡日（個人の場合）。 */
+  @Column(name = "date_of_die")
+  private DateOfDie dateOfDie;
+
+  /** 連絡先アドレス（メールアドレスなど）。 */
+  @Column(name = "contact", length = 200)
+  private Contact contact;
+
+  /** 電話番号。 */
+  @Column(name = "phone_no", length = 20)
+  private PhoneNo phoneNo;
 
   /** コード（一意制約）。 */
   @Column(name = "code", unique = true, length = 50)

@@ -67,7 +67,6 @@ class CreateOrgCommandServiceMediumTest {
       assertThat(savedEntity.getPartyId()).isNotNull();
       assertThat(savedEntity.getPartyId()).isNotEqualTo(SnowflakeId.empty());
       assertThat(savedEntity.getPartyTypeCode()).isEqualTo(PartyTypeCode.ORG);
-      assertThat(savedEntity.getName()).isEqualTo("テスト組織");
       assertThat(savedEntity.getCode()).isEqualTo("ORG001");
       assertThat(savedEntity.getOrgName()).isEqualTo(OrgName.of("テスト組織"));
       assertThat(savedEntity.getOrgCode()).isEqualTo(OrgCode.of("ORG001"));
@@ -85,7 +84,6 @@ class CreateOrgCommandServiceMediumTest {
       Org parentOrg = Org.createNew();
       parentOrg.setPartyId(SnowflakeId.of(1111111111L));
       parentOrg.setPartyTypeCode(PartyTypeCode.ORG);
-      parentOrg.setName("親組織");
       parentOrg.setCode("PARENT001");
       parentOrg.setValidFrom(java.time.LocalDateTime.now());
       parentOrg.setOrgName(OrgName.of("親組織"));

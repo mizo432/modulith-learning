@@ -66,7 +66,6 @@ public class CreateOrgUnitCommandService implements CreateOrgUnitCommand {
     OrgUnit orgUnit = OrgUnit.createNew();
     orgUnit.setPartyId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
     orgUnit.setPartyTypeCode(PartyTypeCode.ORG_UNIT);
-    orgUnit.setName(orgUnitDto.getOrgUnitName().value());
     orgUnit.setCode(orgUnitDto.getOrgUnitCode().value());
     orgUnit.setValidFrom(LocalDateTime.now());
     orgUnit.setValidTo(null);

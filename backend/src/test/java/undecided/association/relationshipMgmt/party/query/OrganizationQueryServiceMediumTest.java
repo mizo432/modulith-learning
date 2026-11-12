@@ -131,7 +131,6 @@ class OrganizationQueryServiceMediumTest {
     Org org = Org.createNew();
     org.setPartyId(SnowflakeId.of(Long.parseLong(orgCode.replace("ORG", "1"))));
     org.setPartyTypeCode(PartyTypeCode.ORG);
-    org.setName(orgName);
     org.setCode(orgCode);
     org.setValidFrom(java.time.LocalDateTime.now());
     org.setOrgName(OrgName.of(orgName));

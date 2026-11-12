@@ -56,7 +56,6 @@ public class CreateOrgCommandService implements CreateOrgCommand {
     Org org = Org.createNew();
     org.setPartyId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
     org.setPartyTypeCode(PartyTypeCode.ORG);
-    org.setName(orgDto.getOrgName().value());
     org.setCode(orgDto.getOrgCode().value());
     org.setValidFrom(LocalDateTime.now());
     org.setValidTo(null);
