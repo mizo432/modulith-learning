@@ -40,6 +40,9 @@ public class PartyTypeCode implements StringCode<PartyTypeCode> {
   /** ORG種類コード。 */
   public static final PartyTypeCode ORG = new PartyTypeCode("ORG");
 
+  /** ORG_UNIT種類コード。 */
+  public static final PartyTypeCode ORG_UNIT = new PartyTypeCode("ORG_UNIT");
+
   private final String value;
 
   protected PartyTypeCode() {

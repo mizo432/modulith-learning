@@ -79,6 +79,7 @@ class SprintTest {
     @DisplayName("ステータスがCOMPLETEDに更新される")
     void shouldUpdateStatusToCompleted() {
       Sprint sprint = createSprint();
+      sprint.start();
 
       sprint.complete();
 

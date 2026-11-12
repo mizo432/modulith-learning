@@ -54,6 +54,7 @@ class ImpedimentTest {
     @DisplayName("ステータスがRESOLVEDに更新される")
     void shouldUpdateStatusToResolved() {
       Impediment impediment = createImpediment();
+      impediment.startWorkingOn();
 
       impediment.resolve();
 

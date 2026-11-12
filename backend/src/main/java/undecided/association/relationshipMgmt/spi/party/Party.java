@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -23,6 +24,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public abstract class Party {

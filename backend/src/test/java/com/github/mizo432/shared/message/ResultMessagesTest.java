@@ -4,30 +4,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("small")
+@DisplayName("ResultMessagesのテスト")
 class ResultMessagesTest {
 
   @Test
-  void testSuccessFactoryMethod() {
+  @DisplayName("successファクトリメソッドでSUCCESSタイプのインスタンスが作成される")
+  void shouldCreateSuccessTypeInstance() {
     ResultMessages resultMessages = ResultMessages.success();
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.getType()).isEqualTo(StandardResultMessageType.SUCCESS);
   }
 
   @Test
-  void testInfoFactoryMethod() {
+  @DisplayName("infoファクトリメソッドでINFOタイプのインスタンスが作成される")
+  void shouldCreateInfoTypeInstance() {
     ResultMessages resultMessages = ResultMessages.info();
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.getType()).isEqualTo(StandardResultMessageType.INFO);
   }
 
-  // And so on for the rest of the factory methods
-
   @Test
-  void testAddResultMessage() {
+  @DisplayName("addメソッドでメッセージが追加される")
+  void shouldAddMessage() {
     ResultMessages resultMessages = ResultMessages.success();
     resultMessages.add("Test");
     assertThat(resultMessages).isNotNull();
@@ -36,7 +39,8 @@ class ResultMessagesTest {
   }
 
   @Test
-  void testAddAllResultMessages() {
+  @DisplayName("addAllメソッドで複数のメッセージが追加される")
+  void shouldAddMultipleMessages() {
     ResultMessage res1 = new ResultMessage("Test 1", null, null);
     ResultMessage res2 = new ResultMessage("Test 2", null, null);
     ResultMessages resultMessages = ResultMessages.success();
@@ -48,7 +52,8 @@ class ResultMessagesTest {
   }
 
   @Test
-  void testAddAllResultMessagesMultiple() {
+  @DisplayName("addAllメソッドで3つのメッセージが追加される")
+  void shouldAddThreeMessages() {
     ResultMessage res1 = new ResultMessage("Test 1", null, null);
     ResultMessage res2 = new ResultMessage("Test 2", null, null);
     ResultMessage res3 = new ResultMessage("Test 3", null, null);
@@ -62,34 +67,40 @@ class ResultMessagesTest {
   }
 
   @Test
-  void testWarningFactoryMethod() {
+  @DisplayName("warningファクトリメソッドでWARNINGタイプのインスタンスが作成される")
+  void shouldCreateWarningTypeInstance() {
     ResultMessages resultMessages = ResultMessages.warning();
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.getType()).isEqualTo(StandardResultMessageType.WARNING);
   }
 
   @Test
-  void testSecondaryFactoryMethod() {
+  @DisplayName("secondaryファクトリメソッドでSECONDARYタイプのインスタンスが作成される")
+  void shouldCreateSecondaryTypeInstance() {
     ResultMessages resultMessages = ResultMessages.secondary();
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.getType()).isEqualTo(StandardResultMessageType.SECONDARY);
   }
 
   @Test
-  void testLightFactoryMethod() {
+  @DisplayName("lightファクトリメソッドでLIGHTタイプのインスタンスが作成される")
+  void shouldCreateLightTypeInstance() {
     ResultMessages resultMessages = ResultMessages.light();
     assertThat(resultMessages).isNotNull();
     assertThat(resultMessages.getType()).isEqualTo(StandardResultMessageType.LIGHT);
   }
 
   @Test
-  void testDarkFactoryMethod() {
+  @DisplayName("darkファクトリメソッドでDARKタイプのインスタンスが作成される")
+  void shouldCreateDarkTypeInstance() {
     ResultMessages resultMessages = ResultMessages.dark();
     assertThat(resultMessages).isNotNull();
+    assertThat(resultMessages.getType()).isEqualTo(StandardResultMessageType.DARK);
   }
 
   @Test
-  void testAddAllResultMessagesCollection() {
+  @DisplayName("addAllメソッドでCollectionのメッセージが追加される")
+  void shouldAddMessageCollection() {
     Collection<ResultMessage> messages = new ArrayList<>();
     messages.add(new ResultMessage("Test 1", null, null));
     messages.add(new ResultMessage("Test 2", null, null));

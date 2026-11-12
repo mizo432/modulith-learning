@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,13 +25,11 @@ import undecided.association.relationshipMgmt.orgRole.spi.Organization;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
- * Unit tests for {@link OrganizationQueryImpl}.
- *
- * <p>This test class validates the query implementation for organization operations. Tests verify
- * proper delegation to the repository and correct data transformation.
+ * {@link OrganizationQueryImpl} のユニットテストクラスです。
+ * リポジトリへの委譲とデータ変換の正確性を検証します。
  */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("OrganizationQueryImpl Unit Tests")
+@DisplayName("OrganizationQueryImplのテスト")
 class OrganizationQueryImplTest {
 
   @Mock private OrganizationRepository organizationRepository;
@@ -74,11 +73,13 @@ class OrganizationQueryImplTest {
     }
   }
 
-  // ========== findAll() Tests ==========
+  @Nested
+  @DisplayName("findAllメソッドのテスト")
+  class FindAllTest {
 
-  @Test
-  @DisplayName("findAll should return all organizations from repository")
-  void testFindAll_ShouldReturnAllOrganizations() {
+    @Test
+    @DisplayName("リポジトリからすべての組織を返す")
+    void shouldReturnAllOrganizations() {
     // Given
     List<Organization> organizations = new ArrayList<>();
     organizations.add(testOrganization);
@@ -95,9 +96,9 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findAll();
   }
 
-  @Test
-  @DisplayName("findAll should return empty list when repository is empty")
-  void testFindAll_EmptyRepository_ShouldReturnEmptyList() {
+    @Test
+    @DisplayName("リポジトリが空の場合は空のリストを返す")
+    void shouldReturnEmptyListWhenRepositoryIsEmpty() {
     // Given
     when(organizationRepository.findAll()).thenReturn(new ArrayList<>());
 
@@ -110,9 +111,9 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findAll();
   }
 
-  @Test
-  @DisplayName("findAll should handle large number of organizations")
-  void testFindAll_LargeDataset_ShouldReturnAllItems() {
+    @Test
+    @DisplayName("大量の組織データでもすべて返す")
+    void shouldReturnAllItemsWithLargeDataset() {
     // Given
     List<Organization> organizations = new ArrayList<>();
     for (int i = 0; i < 1000; i++) {
@@ -129,9 +130,9 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findAll();
   }
 
-  @Test
-  @DisplayName("findAll should return modifiable list")
-  void testFindAll_ShouldReturnModifiableList() {
+    @Test
+    @DisplayName("変更可能なリストを返す")
+    void shouldReturnModifiableList() {
     // Given
     List<Organization> organizations = new ArrayList<>();
     organizations.add(testOrganization);
@@ -147,9 +148,9 @@ class OrganizationQueryImplTest {
     assertThat(result).hasSize(2);
   }
 
-  @Test
-  @DisplayName("findAll should call repository exactly once")
-  void testFindAll_ShouldCallRepositoryOnce() {
+    @Test
+    @DisplayName("リポジトリを1回だけ呼び出す")
+    void shouldCallRepositoryOnce() {
     // Given
     when(organizationRepository.findAll()).thenReturn(new ArrayList<>());
 
@@ -160,28 +161,28 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findAll();
   }
 
-  @Test
-  @DisplayName("findAll should preserve organization data integrity")
-  void testFindAll_ShouldPreserveDataIntegrity() {
-    // Given
-    List<Organization> organizations = new ArrayList<>();
-    organizations.add(testOrganization);
-    when(organizationRepository.findAll()).thenReturn(organizations);
+    @Test
+    @DisplayName("組織データの整合性を保持する")
+    void shouldPreserveDataIntegrity() {
+      List<Organization> organizations = new ArrayList<>();
+      organizations.add(testOrganization);
+      when(organizationRepository.findAll()).thenReturn(organizations);
 
-    // When
-    List<Organization> result = organizationQueryImpl.findAll();
+      List<Organization> result = organizationQueryImpl.findAll();
 
-    // Then
-    assertThat(result.get(0).getOrganizationCode()).isEqualTo("0001010203004");
-    assertThat(result.get(0).getName()).isEqualTo("Test Organization");
-    assertThat(result.get(0).getOrganizationTypeCode()).isEqualTo("DEPARTMENT");
+      assertThat(result.get(0).getOrganizationCode()).isEqualTo("0001010203004");
+      assertThat(result.get(0).getName()).isEqualTo("Test Organization");
+      assertThat(result.get(0).getOrganizationTypeCode()).isEqualTo("DEPARTMENT");
+    }
   }
 
-  // ========== findById() Tests ==========
+  @Nested
+  @DisplayName("findByIdメソッドのテスト")
+  class FindByIdTest {
 
-  @Test
-  @DisplayName("findById should return organization when found")
-  void testFindById_ExistingId_ShouldReturnOrganization() {
+    @Test
+    @DisplayName("存在するIDで組織を返す")
+    void shouldReturnOrganizationWhenFound() {
     // Given
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
@@ -195,9 +196,9 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findById(testUuid);
   }
 
-  @Test
-  @DisplayName("findById should return empty optional when not found")
-  void testFindById_NonExistingId_ShouldReturnEmpty() {
+    @Test
+    @DisplayName("存在しないIDの場合は空のOptionalを返す")
+    void shouldReturnEmptyWhenNotFound() {
     // Given
     UUID nonExistingId = UUID.randomUUID();
     when(organizationRepository.findById(nonExistingId)).thenReturn(Optional.empty());
@@ -210,9 +211,9 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findById(nonExistingId);
   }
 
-  @Test
-  @DisplayName("findById should handle null UUID gracefully")
-  void testFindById_NullId_ShouldDelegateToRepository() {
+    @Test
+    @DisplayName("null IDの場合はリポジトリに委譲する")
+    void shouldDelegateToRepositoryWhenIdIsNull() {
     // Given
     when(organizationRepository.findById(null)).thenReturn(Optional.empty());
 
@@ -224,9 +225,9 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findById(null);
   }
 
-  @Test
-  @DisplayName("findById should call repository exactly once")
-  void testFindById_ShouldCallRepositoryOnce() {
+    @Test
+    @DisplayName("リポジトリを1回だけ呼び出す")
+    void shouldCallRepositoryOnce() {
     // Given
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
@@ -237,9 +238,9 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(1)).findById(testUuid);
   }
 
-  @Test
-  @DisplayName("findById should preserve organization data integrity")
-  void testFindById_ShouldPreserveDataIntegrity() {
+    @Test
+    @DisplayName("組織データの整合性を保持する")
+    void shouldPreserveDataIntegrity() {
     // Given
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
@@ -255,9 +256,9 @@ class OrganizationQueryImplTest {
     assertThat(org.getValidFrom()).isNotNull();
   }
 
-  @Test
-  @DisplayName("findById should return organization with null validTo")
-  void testFindById_OrganizationWithNullValidTo_ShouldSucceed() {
+    @Test
+    @DisplayName("validToがnullの組織を返す")
+    void shouldReturnOrganizationWithNullValidTo() {
     // Given
     // validTo is null by default when using the constructor
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
@@ -270,9 +271,9 @@ class OrganizationQueryImplTest {
     assertThat(result.get().getValidTo()).isNull();
   }
 
-  @Test
-  @DisplayName("findById should return organization with validTo set")
-  void testFindById_OrganizationWithValidTo_ShouldSucceed() {
+    @Test
+    @DisplayName("validToが設定された組織を返す")
+    void shouldReturnOrganizationWithValidTo() {
     // Given
     LocalDateTime validTo = LocalDateTime.now().plusDays(30);
     Organization orgWithValidTo = createTestOrganizationWithValidTo(validTo);
@@ -286,9 +287,9 @@ class OrganizationQueryImplTest {
     assertThat(result.get().getValidTo()).isEqualTo(validTo);
   }
 
-  @Test
-  @DisplayName("Multiple findById calls should all delegate to repository")
-  void testFindById_MultipleCalls_ShouldDelegateEachTime() {
+    @Test
+    @DisplayName("複数の呼び出しでそれぞれリポジトリに委譲する")
+    void shouldDelegateToRepositoryOnMultipleCalls() {
     // Given
     when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
 
@@ -301,25 +302,23 @@ class OrganizationQueryImplTest {
     verify(organizationRepository, times(3)).findById(testUuid);
   }
 
-  @Test
-  @DisplayName("findById with different UUIDs should call repository for each")
-  void testFindById_DifferentIds_ShouldCallRepositoryForEach() {
-    // Given
-    UUID id1 = UUID.randomUUID();
-    UUID id2 = UUID.randomUUID();
-    UUID id3 = UUID.randomUUID();
-    when(organizationRepository.findById(id1)).thenReturn(Optional.of(testOrganization));
-    when(organizationRepository.findById(id2)).thenReturn(Optional.empty());
-    when(organizationRepository.findById(id3)).thenReturn(Optional.of(createTestOrganization()));
+    @Test
+    @DisplayName("異なるIDでそれぞれリポジトリを呼び出す")
+    void shouldCallRepositoryForEachDifferentId() {
+      UUID id1 = UUID.randomUUID();
+      UUID id2 = UUID.randomUUID();
+      UUID id3 = UUID.randomUUID();
+      when(organizationRepository.findById(id1)).thenReturn(Optional.of(testOrganization));
+      when(organizationRepository.findById(id2)).thenReturn(Optional.empty());
+      when(organizationRepository.findById(id3)).thenReturn(Optional.of(createTestOrganization()));
 
-    // When
-    organizationQueryImpl.findById(id1);
-    organizationQueryImpl.findById(id2);
-    organizationQueryImpl.findById(id3);
+      organizationQueryImpl.findById(id1);
+      organizationQueryImpl.findById(id2);
+      organizationQueryImpl.findById(id3);
 
-    // Then
-    verify(organizationRepository, times(1)).findById(id1);
-    verify(organizationRepository, times(1)).findById(id2);
-    verify(organizationRepository, times(1)).findById(id3);
+      verify(organizationRepository, times(1)).findById(id1);
+      verify(organizationRepository, times(1)).findById(id2);
+      verify(organizationRepository, times(1)).findById(id3);
+    }
   }
 }

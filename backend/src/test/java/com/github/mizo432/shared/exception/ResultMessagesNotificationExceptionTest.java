@@ -1,48 +1,47 @@
 package com.github.mizo432.shared.exception;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import com.github.mizo432.shared.message.ResultMessages;
 
 /**
- * {@code ResultMessagesNotificationExceptionTest} クラスは、{@link ResultMessagesNotificationException}
- * のテストを行うためのユニットテストクラスです。このクラスでは、例外のコンストラクタおよびメソッドの動作について検証を行います。
- *
- * <p>内部クラス {@code ResultMessagesNotificationExceptionTestImpl} を使用して、 {@code
- * ResultMessagesNotificationException} を直接インスタンス化できない場合のテスト実行を容易にしています。
- *
- * <p>主なテストケース: - 単一引数コンストラクタのテスト - 2つの引数を持つコンストラクタのテスト - {@code getMessage()} メソッドの動作確認
+ * {@code ResultMessagesNotificationException} のユニットテストクラスです。
+ * 例外のコンストラクタおよびメソッドの動作を検証します。
  */
 @Tag("small")
+@DisplayName("ResultMessagesNotificationExceptionのテスト")
 class ResultMessagesNotificationExceptionTest {
 
   @Test
-  void testSingleArgumentConstructor() {
+  @DisplayName("単一引数コンストラクタでResultMessagesが設定される")
+  void shouldSetResultMessagesWithSingleArgumentConstructor() {
     ResultMessages messages = ResultMessages.success();
     ResultMessagesNotificationException exception =
         new ResultMessagesNotificationExceptionTestImpl(messages);
-    assertSame(messages, exception.getResultMessages());
+    assertThat(exception.getResultMessages()).isSameAs(messages);
   }
 
   @Test
-  void testTwoArgumentConstructor() {
+  @DisplayName("2引数コンストラクタでCauseとResultMessagesが設定される")
+  void shouldSetCauseAndResultMessagesWithTwoArgumentConstructor() {
     ResultMessages messages = ResultMessages.success();
     Throwable cause = new Throwable();
     ResultMessagesNotificationException exception =
         new ResultMessagesNotificationExceptionTestImpl(messages, cause);
-    assertSame(cause, exception.getCause());
-    assertSame(messages, exception.getResultMessages());
+    assertThat(exception.getCause()).isSameAs(cause);
+    assertThat(exception.getResultMessages()).isSameAs(messages);
   }
 
   @Test
-  void testGetMessage() {
+  @DisplayName("getMessageはResultMessagesのtoStringを返す")
+  void shouldReturnResultMessagesToStringAsMessage() {
     ResultMessages messages = ResultMessages.success();
     ResultMessagesNotificationException exception =
         new ResultMessagesNotificationExceptionTestImpl(messages);
-    assertEquals(messages.toString(), exception.getMessage());
+    assertThat(exception.getMessage()).isEqualTo(messages.toString());
   }
 
   static class ResultMessagesNotificationExceptionTestImpl
