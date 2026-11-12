@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import com.github.mizo432.shared.value.datetime.ValidInterval;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
+import org.jspecify.annotations.Nullable;
 
 /**
  * 組織単位新規作成のコマンドサービスです。
@@ -71,11 +72,19 @@ public class CreateOrgUnitCommandService implements CreateOrgUnitCommand {
     orgUnit.setValidTo(null);
     orgUnit.setGovtAssignedId(null);
     orgUnit.setSearchName(null);
+    // 親組織単位IDがnullでない場合は、親組織単位の存在を確認する
+    @Nullable SnowflakeId parentOrgUnitId = orgUnitDto.getParentOrgUnitId();
+    if (parentOrgUnitId != null) {
+      orgUnitRepository.findById(parentOrgUnitId).orElseThrow(
+          () -> new IllegalArgumentException("指定された親OrgUnitが存在しません: " + parentOrgUnitId)
+      );
+    }
+
     orgUnit.setOrgUnitName(orgUnitDto.getOrgUnitName());
     orgUnit.setValidInterval(ValidInterval.empty());
     orgUnit.setOrgUnitCode(orgUnitDto.getOrgUnitCode());
     orgUnit.setOrgUnitTypeCode(orgUnitDto.getOrgUnitTypeCode());
-    orgUnit.setParentOrgUnitId(orgUnitDto.getParentOrgUnitId());
+    orgUnit.setParentOrgUnitId(parentOrgUnitId);
     orgUnit.setStatus(orgUnitDto.getStatus());
     orgUnit.setOrg(org);
     orgUnitRepository.save(orgUnit);

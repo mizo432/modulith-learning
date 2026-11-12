@@ -93,6 +93,8 @@ class OrgUnitDtoTest {
 
       // Assert
       assertThat(result).isNotNull();
+      assertThat(result).contains("テスト部署");
+      assertThat(result).contains("DEPT001");
     }
   }
 }

@@ -62,11 +62,19 @@ public class CreateOrgCommandService implements CreateOrgCommand {
     org.setValidTo(null);
     org.setGovtAssignedId(null);
     org.setSearchName(null);
+    // 親組織IDがnullでない場合は、親組織の存在を確認する
+    @Nullable SnowflakeId parentOrgId = orgDto.getParentOrgId();
+    if (parentOrgId != null) {
+      orgRepository.findById(parentOrgId).orElseThrow(
+          () -> new IllegalArgumentException("指定された親Orgが存在しません: " + parentOrgId)
+      );
+    }
+
     org.setOrgName(orgDto.getOrgName());
     org.setValidInterval(ValidInterval.empty());
     org.setOrgCode(orgDto.getOrgCode());
     org.setOrgTypeCode(orgDto.getOrgTypeCode());
-    org.setParentOrgId(orgDto.getParentOrgId());
+    org.setParentOrgId(parentOrgId);
     org.setStatus(orgDto.getStatus());
     orgRepository.save(org);
   }

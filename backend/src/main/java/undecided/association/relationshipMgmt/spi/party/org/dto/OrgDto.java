@@ -2,6 +2,7 @@ package undecided.association.relationshipMgmt.spi.party.org.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import undecided.association.relationshipMgmt.spi.party.org.OrgCode;
 import undecided.association.relationshipMgmt.spi.party.org.OrgName;
 import undecided.association.relationshipMgmt.spi.party.org.OrgStatus;
@@ -16,6 +17,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  */
 @Getter
 @RequiredArgsConstructor
+@ToString
 public class OrgDto {
 
   /**

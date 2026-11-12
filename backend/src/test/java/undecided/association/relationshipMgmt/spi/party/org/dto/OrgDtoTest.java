@@ -83,6 +83,8 @@ class OrgDtoTest {
 
       // Assert
       assertThat(result).isNotNull();
+      assertThat(result).contains("テスト組織");
+      assertThat(result).contains("ORG001");
     }
   }
 }
