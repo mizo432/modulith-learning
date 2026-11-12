@@ -14,6 +14,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  * 組織階層を表すエンティティクラス。
  *
  * <p>このクラスは、組織の階層構造を管理します。
+ * partyIdを使用してParty体系と統合されています。
  */
 @Entity
 @Table(name = "organization_hierarchy", schema = SchemaRelationshipMgmt.NAME)
@@ -24,13 +25,13 @@ public class OrganizationHierarchy {
   @Column(name = "hierarchy_id")
   private SnowflakeId hierarchyId;
 
-  /** 組織ID。 */
-  @Column(name = "organization_id", nullable = false)
-  private SnowflakeId organizationId;
+  /** 組織のパーティーID。 */
+  @Column(name = "party_id", nullable = false)
+  private SnowflakeId partyId;
 
-  /** 親組織ID。 */
-  @Column(name = "parent_organization_id", nullable = false)
-  private SnowflakeId parentOrganizationId;
+  /** 親組織のパーティーID。 */
+  @Column(name = "parent_party_id", nullable = false)
+  private SnowflakeId parentPartyId;
 
   /** 階層レベル。 */
   @Column(name = "level", nullable = false)
@@ -44,20 +45,20 @@ public class OrganizationHierarchy {
    * 組織階層を作成します。
    *
    * @param hierarchyId 階層ID
-   * @param organizationId 組織ID
-   * @param parentOrganizationId 親組織ID
+   * @param partyId 組織のパーティーID
+   * @param parentPartyId 親組織のパーティーID
    * @param level 階層レベル
    * @param order 順序
    */
   public OrganizationHierarchy(
       SnowflakeId hierarchyId,
-      SnowflakeId organizationId,
-      SnowflakeId parentOrganizationId,
+      SnowflakeId partyId,
+      SnowflakeId parentPartyId,
       int level,
       int order) {
     this.hierarchyId = hierarchyId;
-    this.organizationId = organizationId;
-    this.parentOrganizationId = parentOrganizationId;
+    this.partyId = partyId;
+    this.parentPartyId = parentPartyId;
     this.level = level;
     this.order = order;
   }
