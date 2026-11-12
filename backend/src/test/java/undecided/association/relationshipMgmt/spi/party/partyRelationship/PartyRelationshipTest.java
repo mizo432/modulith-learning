@@ -6,9 +6,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import undecided.supporting.snowflake.SnowflakeId;
 
+@Tag("small")
 class PartyRelationshipTest {
 
   private static final SnowflakeId relationshipId = SnowflakeId.of(1L);

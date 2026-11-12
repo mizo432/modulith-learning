@@ -22,7 +22,8 @@ class ModulithTest {
   ApplicationModules modules = ApplicationModules.of(ModulithDemoApplication.class);
 
   @Test
-  void verifyPackageConformity() {
+  @DisplayName("パッケージ準拠性を検証する")
+  void shouldVerifyPackageConformity() {
     System.out.println(new File(".").getAbsolutePath());
 
     System.out.println(modules.toString());
@@ -30,12 +31,14 @@ class ModulithTest {
   }
 
   @Test
-  void createModulithsDocumentation() {
+  @DisplayName("Modulithドキュメントを作成する")
+  void shouldCreateModulithsDocumentation() {
     new Documenter(modules).writeModulesAsPlantUml().writeIndividualModulesAsPlantUml();
   }
 
   @Test
-  void verifyDoNotCallAnnotationHasDeprecated() throws ClassNotFoundException {
+  @DisplayName("DoNotCallアノテーションが付与されたメソッドは@Deprecatedも付与されていることを検証する")
+  void shouldVerifyDoNotCallAnnotationHasDeprecated() throws ClassNotFoundException {
     // DoNotCall アノテーションが付与されたメソッドは必ず @Deprecated も付与されていることを確認
     Class<?>[] classesWithDoNotCall = {
       com.github.mizo432.shared.common.primitive.Sets2.class,
@@ -56,7 +59,8 @@ class ModulithTest {
   }
 
   @Test
-  void verifyVisibleForTestingAnnotationIsStatic() throws ClassNotFoundException {
+  @DisplayName("VisibleForTestingアノテーションが付与されたメソッドはstaticであることを検証する")
+  void shouldVerifyVisibleForTestingAnnotationIsStatic() throws ClassNotFoundException {
     // VisibleForTesting アノテーションが付与されたメソッドは static であることを確認
     Class<?>[] classesWithVisibleForTesting = {ValueObject.class};
 
@@ -74,7 +78,8 @@ class ModulithTest {
   }
 
   @Test
-  void verifyRestControllerCQRSSeparation() throws ClassNotFoundException {
+  @DisplayName("RestControllerはCQRS分離に従っていることを検証する")
+  void shouldVerifyRestControllerCQRSSeparation() throws ClassNotFoundException {
     // CQRSパターンに従い、RestControllerはQueryとCommandを混在させていないことを確認
     // QueryControllerは@GetMappingのみ、CommandControllerは@PostMapping/@PutMapping/@DeleteMapping/@PatchMappingのみを使用すべき
     Class<?>[] controllerClasses = {

@@ -7,9 +7,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import undecided.association.relationshipMgmt.partyRole.spi.role.RoleChangeRequestType;
 
+@Tag("small")
 @DisplayName("RoleChangeRequestTypeクラスのテスト")
 class RoleChangeRequestTypeTest {
 
