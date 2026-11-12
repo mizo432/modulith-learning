@@ -1,4 +1,4 @@
-package undecided.association.relationshipMgmt.party.repository;
+package undecided.association.relationshipMgmt.party.internal.bankAccountUse;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
