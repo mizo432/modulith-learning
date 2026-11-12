@@ -505,6 +505,7 @@ jobs:
     if: |
       github.event_name == 'pull_request' &&
       always() &&
+      secrets.SONAR_TOKEN != '' &&
       (needs.backend-test.result == 'success' || needs.backend-test.result == 'skipped') &&
       (needs.backend-medium-test.result == 'success' || needs.backend-medium-test.result == 'skipped') &&
       (needs.api-gateway-test.result == 'success' || needs.api-gateway-test.result == 'skipped') &&
