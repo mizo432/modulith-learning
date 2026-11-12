@@ -7,8 +7,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Objects;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -20,7 +20,6 @@ import lombok.ToString;
  * <p>エンティティとして、JPAやHibernateを利用してデータベースと連携するための定義が施されています。
  */
 @Getter
-@Setter
 @ToString
 @Entity
 @Table(schema = "undecided_ef", name = "cities", comment = "city table")
@@ -164,4 +163,78 @@ public class City {
   @Size(max = 256)
   @Column(name = "remarks", comment = "Remarks", length = 256)
   private String remarks;
+
+  // JPAおよびバッチ処理用パッケージプライベートセッター
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setPrefectureId(Long prefectureId) {
+    this.prefectureId = prefectureId;
+  }
+
+  public void setLgCode(String lgCode) {
+    this.lgCode = lgCode;
+  }
+
+  public void setCountryName(String countryName) {
+    this.countryName = countryName;
+  }
+
+  public void setCountryKana(String countryKana) {
+    this.countryKana = countryKana;
+  }
+
+  public void setCountryRoma(String countryRoma) {
+    this.countryRoma = countryRoma;
+  }
+
+  public void setCityName(String cityName) {
+    this.cityName = cityName;
+  }
+
+  public void setCityKana(String cityKana) {
+    this.cityKana = cityKana;
+  }
+
+  public void setCityRoma(String cityRoma) {
+    this.cityRoma = cityRoma;
+  }
+
+  public void setWardName(String wardName) {
+    this.wardName = wardName;
+  }
+
+  public void setWardKana(String wardKana) {
+    this.wardKana = wardKana;
+  }
+
+  public void setWardRoma(String wardRoma) {
+    this.wardRoma = wardRoma;
+  }
+
+  public void setEffectiveDate(LocalDate effectiveDate) {
+    this.effectiveDate = effectiveDate;
+  }
+
+  public void setAbolitionData(LocalDate abolitionData) {
+    this.abolitionData = abolitionData;
+  }
+
+  public void setRemarks(String remarks) {
+    this.remarks = remarks;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    City city = (City) o;
+    return Objects.equals(id, city.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

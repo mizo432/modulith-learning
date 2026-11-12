@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,5 +50,18 @@ public class SamplePartySummaryMV {
   public SamplePartySummaryMV(String partyType, Long partyCount) {
     this.partyType = partyType;
     this.partyCount = partyCount;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SamplePartySummaryMV that = (SamplePartySummaryMV) o;
+    return Objects.equals(partyType, that.partyType);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(partyType);
   }
 }

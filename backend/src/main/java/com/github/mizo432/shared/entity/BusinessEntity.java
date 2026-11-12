@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Immutable;
 
@@ -18,15 +17,14 @@ import org.springframework.data.annotation.Immutable;
  * <p>このクラスを拡張する際は、{@code BusinessEntity}を継承した具体的なエンティティタイプを提供する必要があります。
  *
  * <p>アノテーション: - {@code @MappedSuperclass}: このクラスがJPAにおいてマッピングされたスーパークラスであることを示します。
- * このため、フィールドはエンティティによって継承されます。 - {@code @Getter} および {@code @Setter}:
- * Lombokアノテーションにより、すべてのフィールドに対して 自動的にゲッターおよびセッターが生成されます。 - {@code @Immutable}:
+ * このため、フィールドはエンティティによって継承されます。 - {@code @Getter}:
+ * Lombokアノテーションにより、すべてのフィールドに対して 自動的にゲッターが生成されます。 - {@code @Immutable}:
  * このクラスまたはそのサブクラスのオブジェクトが作成後に変更されないことを示します。
  *
  * @param <E> {@code BusinessEntity}を拡張するエンティティのタイプ。
  */
 @MappedSuperclass
 @Getter
-@Setter
 @Immutable
 public abstract class BusinessEntity<E extends BusinessEntity<E>> {
 
@@ -49,4 +47,22 @@ public abstract class BusinessEntity<E extends BusinessEntity<E>> {
    * <p>この値はエンティティが初期作成された際に設定され、その後変更されることはありません。
    */
   @Column private Long createdBy;
+
+  /**
+   * JPAライフサイクルのために {@code createdAt} を設定します。
+   *
+   * @param createdAt 作成日時
+   */
+  void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  /**
+   * JPAライフサイクルのために {@code createdBy} を設定します。
+   *
+   * @param createdBy 作成者ID
+   */
+  void setCreatedBy(Long createdBy) {
+    this.createdBy = createdBy;
+  }
 }

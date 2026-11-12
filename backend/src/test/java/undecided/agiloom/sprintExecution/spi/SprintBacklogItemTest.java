@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.github.mizo432.shared.common.exception.BusinessException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,21 +20,24 @@ class SprintBacklogItemTest {
       UUID.fromString("55555555-5555-5555-5555-555555555555");
 
   private SprintBacklogItem createBacklogItem() {
-    return SprintBacklogItem.builder()
-        .id(SnowflakeId.of(1L))
-        .sprintId(SnowflakeId.of(100L))
-        .backlogItemId(SnowflakeId.of(200L))
-        .workDescription("Implement login feature")
-        .build();
+    return SprintBacklogItem.of(
+        SnowflakeId.of(1L),
+        SnowflakeId.of(100L),
+        SnowflakeId.of(200L),
+        "Implement login feature",
+        null,
+        null,
+        null,
+        null);
   }
 
   @Nested
-  @DisplayName("ビルダーのテスト")
-  class BuilderTest {
+  @DisplayName("ファクトリーメソッドのテスト")
+  class FactoryMethodTest {
 
     @Test
-    @DisplayName("ビルダーでインスタンスが作成される")
-    void shouldCreateInstanceWithBuilder() {
+    @DisplayName("ファクトリーメソッドでインスタンスが作成される")
+    void shouldCreateInstanceWithFactoryMethod() {
       SprintBacklogItem item = createBacklogItem();
 
       assertThat(item).isNotNull();
@@ -62,7 +66,6 @@ class SprintBacklogItemTest {
       item.updateStatus(TaskStatus.IN_PROGRESS);
 
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
-      assertThat(item.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -103,7 +106,6 @@ class SprintBacklogItemTest {
       item.assignTo(FIXED_ASSIGNEE_ID);
 
       assertThat(item.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
-      assertThat(item.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -131,7 +133,6 @@ class SprintBacklogItemTest {
       assertThat(item.getWorkDescription()).isEqualTo("New description");
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
       assertThat(item.getAssigneeId()).isEqualTo(FIXED_ASSIGNEE_ID);
-      assertThat(item.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -174,6 +175,45 @@ class SprintBacklogItemTest {
       assertThatThrownBy(() -> item.update("Description", TaskStatus.IN_PROGRESS, null))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("assigneeId must not be null");
+    }
+  }
+
+  @Nested
+  @DisplayName("論理削除後の変更禁止テスト")
+  class DeletedEntityChangeProhibitionTest {
+
+    @Test
+    @DisplayName("論理削除後にupdateStatusすると例外がスローされる")
+    void shouldThrowExceptionWhenUpdateStatusAfterDeleted() {
+      SprintBacklogItem item = createBacklogItem();
+      item.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> item.updateStatus(TaskStatus.IN_PROGRESS))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
+    }
+
+    @Test
+    @DisplayName("論理削除後にassignToすると例外がスローされる")
+    void shouldThrowExceptionWhenAssignToAfterDeleted() {
+      SprintBacklogItem item = createBacklogItem();
+      item.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> item.assignTo(FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
+    }
+
+    @Test
+    @DisplayName("論理削除後にupdateすると例外がスローされる")
+    void shouldThrowExceptionWhenUpdateAfterDeleted() {
+      SprintBacklogItem item = createBacklogItem();
+      item.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(
+              () -> item.update("New description", TaskStatus.IN_PROGRESS, FIXED_ASSIGNEE_ID))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
     }
   }
 }

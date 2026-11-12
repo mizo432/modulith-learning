@@ -33,17 +33,20 @@ public class CreateSprintCommandService implements CreateSprintCommandServiceInt
       throw new BusinessException("endDate must be after startDate");
     }
     Sprint sprint =
-        Sprint.builder()
-            .id(SnowflakeId.of(snowflakeIdGenerator.nextId()))
-            .productId(command.getProductId())
-            .sprintNumber(command.getSprintNumber())
-            .title(command.getTitle())
-            .goal(command.getGoal())
-            .startDate(command.getStartDate())
-            .endDate(command.getEndDate())
-            .teamId(command.getTeamId())
-            .teamName(command.getTeamName())
-            .build();
+        Sprint.of(
+            SnowflakeId.of(snowflakeIdGenerator.nextId()),
+            command.getProductId(),
+            command.getSprintNumber(),
+            command.getTitle(),
+            command.getGoal(),
+            command.getStartDate(),
+            command.getEndDate(),
+            command.getTeamId(),
+            command.getTeamName(),
+            null,
+            null,
+            null,
+            null);
 
     Sprint saved = sprintRepository.save(sprint);
     return sprintResponseAssembler.toDTO(saved);

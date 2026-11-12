@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,27 +18,29 @@ import undecided.supporting.snowflake.SnowflakeId;
 class SprintTest {
 
   private Sprint createSprint() {
-    return Sprint.builder()
-        .id(SnowflakeId.of(1L))
-        .productId(UUID.randomUUID())
-        .sprintNumber(1)
-        .title("Sprint 1")
-        .goal("Complete user authentication")
-        .startDate(LocalDate.now())
-        .endDate(LocalDate.now().plusWeeks(2))
-        .teamId(UUID.randomUUID())
-        .teamName("Team A")
-        .velocity(30)
-        .build();
+    return Sprint.of(
+        SnowflakeId.of(1L),
+        UUID.randomUUID(),
+        1,
+        "Sprint 1",
+        "Complete user authentication",
+        LocalDate.now(),
+        LocalDate.now().plusWeeks(2),
+        UUID.randomUUID(),
+        "Team A",
+        30,
+        null,
+        null,
+        null);
   }
 
   @Nested
-  @DisplayName("ビルダーのテスト")
-  class BuilderTest {
+  @DisplayName("ファクトリーメソッドのテスト")
+  class FactoryMethodTest {
 
     @Test
-    @DisplayName("ビルダーでインスタンスが作成される")
-    void shouldCreateInstanceWithBuilder() {
+    @DisplayName("ファクトリーメソッドでインスタンスが作成される")
+    void shouldCreateInstanceWithFactoryMethod() {
       Sprint sprint = createSprint();
 
       assertThat(sprint).isNotNull();
@@ -290,6 +293,56 @@ class SprintTest {
 
       assertThatThrownBy(() -> sprint.update("Title", "Goal", pastDate, null))
           .isInstanceOf(BusinessException.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("論理削除後の変更禁止テスト")
+  class DeletedEntityChangeProhibitionTest {
+
+    @Test
+    @DisplayName("論理削除後にstartすると例外がスローされる")
+    void shouldThrowExceptionWhenStartAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.start())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
+    }
+
+    @Test
+    @DisplayName("論理削除後にcompleteすると例外がスローされる")
+    void shouldThrowExceptionWhenCompleteAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.start();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.complete())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
+    }
+
+    @Test
+    @DisplayName("論理削除後にcancelすると例外がスローされる")
+    void shouldThrowExceptionWhenCancelAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.cancel())
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
+    }
+
+    @Test
+    @DisplayName("論理削除後にupdateすると例外がスローされる")
+    void shouldThrowExceptionWhenUpdateAfterDeleted() {
+      Sprint sprint = createSprint();
+      sprint.setDeletedAt(LocalDateTime.now());
+
+      assertThatThrownBy(() -> sprint.update("New Title", "New Goal", null, null))
+          .isInstanceOf(BusinessException.class)
+          .hasMessageContaining("already deleted");
     }
   }
 }

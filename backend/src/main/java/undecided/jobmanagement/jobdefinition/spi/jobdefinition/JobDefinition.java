@@ -7,12 +7,12 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "job_definition", schema = "job_management")
@@ -136,5 +136,18 @@ public class JobDefinition {
 
   void setUpdatedBy(String updatedBy) {
     this.updatedBy = updatedBy;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    JobDefinition that = (JobDefinition) o;
+    return Objects.equals(id, that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

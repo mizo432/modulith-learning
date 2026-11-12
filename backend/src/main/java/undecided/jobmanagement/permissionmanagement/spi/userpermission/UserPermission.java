@@ -10,7 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 import undecided.supporting.snowflake.SnowflakeId;
 
 import java.time.LocalDateTime;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_permission", schema = "job_management")
 @Getter
-@Setter
 public class UserPermission {
 
   @Id
@@ -45,4 +43,37 @@ public class UserPermission {
 
   @Column(name = "created_by", length = 50)
   private String createdBy;
+
+  // JPA用パッケージプライベートセッター
+  void setId(SnowflakeId id) {
+    this.id = id;
+  }
+
+  void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  void setRole(Role role) {
+    this.role = role;
+  }
+
+  void setCompanyCode(String companyCode) {
+    this.companyCode = companyCode;
+  }
+
+  void setStoreCode(String storeCode) {
+    this.storeCode = storeCode;
+  }
+
+  void setIsActive(Boolean isActive) {
+    this.isActive = isActive;
+  }
+
+  void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
 }

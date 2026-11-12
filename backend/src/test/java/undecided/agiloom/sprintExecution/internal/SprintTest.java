@@ -24,29 +24,29 @@ class SprintTest {
   private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   private Sprint createSprint() {
-    return Sprint.builder()
-        .id(SnowflakeId.of(1L))
-        .productId(FIXED_PRODUCT_ID)
-        .sprintNumber(1)
-        .title("Sprint 1")
-        .goal("Complete user authentication")
-        .startDate(LocalDate.now())
-        .endDate(LocalDate.now().plusWeeks(2))
-        .teamId(FIXED_TEAM_ID)
-        .teamName("Team A")
-        .velocity(30)
-        .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
-        .build();
+    return Sprint.of(
+        SnowflakeId.of(1L),
+        FIXED_PRODUCT_ID,
+        1,
+        "Sprint 1",
+        "Complete user authentication",
+        LocalDate.now(),
+        LocalDate.now().plusWeeks(2),
+        FIXED_TEAM_ID,
+        "Team A",
+        30,
+        null,
+        LocalDateTime.now(),
+        LocalDateTime.now());
   }
 
   @Nested
-  @DisplayName("ビルダーのテスト")
-  class BuilderTest {
+  @DisplayName("ファクトリーメソッドのテスト")
+  class FactoryMethodTest {
 
     @Test
-    @DisplayName("ビルダーでインスタンスが作成される")
-    void shouldCreateInstanceWithBuilder() {
+    @DisplayName("ファクトリーメソッドでインスタンスが作成される")
+    void shouldCreateInstanceWithFactoryMethod() {
       Sprint sprint = createSprint();
 
       assertThat(sprint).isNotNull();

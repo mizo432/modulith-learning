@@ -20,23 +20,22 @@ class ActivityTest {
       UUID.fromString("33333333-3333-3333-3333-333333333333");
 
   private Activity createActivity() {
-    return Activity.builder()
-        .id(SnowflakeId.of(1L))
-        .sprintId(SnowflakeId.of(100L))
-        .actorId(FIXED_ACTOR_ID)
-        .activityType(ActivityType.STATUS_CHANGE)
-        .description("Sprint status changed to ACTIVE")
-        .createdAt(LocalDateTime.now())
-        .build();
+    return Activity.of(
+        SnowflakeId.of(1L),
+        SnowflakeId.of(100L),
+        FIXED_ACTOR_ID,
+        ActivityType.STATUS_CHANGE,
+        "Sprint status changed to ACTIVE",
+        LocalDateTime.now());
   }
 
   @Nested
-  @DisplayName("ビルダーのテスト")
-  class BuilderTest {
+  @DisplayName("ファクトリーメソッドのテスト")
+  class FactoryMethodTest {
 
     @Test
-    @DisplayName("ビルダーでインスタンスが作成される")
-    void shouldCreateInstanceWithBuilder() {
+    @DisplayName("ファクトリーメソッドでインスタンスが作成される")
+    void shouldCreateInstanceWithFactoryMethod() {
       Activity activity = createActivity();
 
       assertThat(activity).isNotNull();
@@ -52,12 +51,13 @@ class ActivityTest {
     @DisplayName("descriptionはオプションである")
     void descriptionIsOptional() {
       Activity activity =
-          Activity.builder()
-              .id(SnowflakeId.of(2L))
-              .sprintId(SnowflakeId.of(100L))
-              .actorId(FIXED_ACTOR_ID)
-              .activityType(ActivityType.COMMENT_ADDED)
-              .build();
+          Activity.of(
+              SnowflakeId.of(2L),
+              SnowflakeId.of(100L),
+              FIXED_ACTOR_ID,
+              ActivityType.COMMENT_ADDED,
+              null,
+              null);
 
       assertThat(activity.getDescription()).isNull();
     }
@@ -72,12 +72,13 @@ class ActivityTest {
     void shouldCreateWithAllActivityTypes() {
       for (ActivityType type : ActivityType.values()) {
         Activity activity =
-            Activity.builder()
-                .id(SnowflakeId.of(1L))
-                .sprintId(SnowflakeId.of(100L))
-                .actorId(FIXED_ACTOR_ID)
-                .activityType(type)
-                .build();
+            Activity.of(
+                SnowflakeId.of(1L),
+                SnowflakeId.of(100L),
+                FIXED_ACTOR_ID,
+                type,
+                null,
+                null);
 
         assertThat(activity.getActivityType()).isEqualTo(type);
       }

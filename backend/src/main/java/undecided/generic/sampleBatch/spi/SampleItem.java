@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.Objects;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -18,7 +18,6 @@ import lombok.ToString;
  * <p>このクラスは、バッチ処理の基本パターン（Job/Step/Launcher）を学ぶためのサンプルデータとして使用されます。
  */
 @Getter
-@Setter
 @ToString
 @Entity
 @Table(schema = "undecided_ef", name = "sample_items", comment = "sample item table for batch demo")
@@ -45,4 +44,38 @@ public class SampleItem {
 
   @Column(name = "price", comment = "Price")
   private Long price;
+
+  // JPAおよびバッチ処理用パッケージプライベートセッター
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setItemCode(String itemCode) {
+    this.itemCode = itemCode;
+  }
+
+  public void setItemName(String itemName) {
+    this.itemName = itemName;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
+  public void setPrice(Long price) {
+    this.price = price;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SampleItem that = (SampleItem) o;
+    return Objects.equals(id, that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

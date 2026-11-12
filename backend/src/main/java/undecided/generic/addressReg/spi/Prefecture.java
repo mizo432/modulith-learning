@@ -7,8 +7,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Objects;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -20,7 +20,6 @@ import lombok.ToString;
  * <p>エンティティとして、JPAやHibernateを利用してデータベースと連携するための 定義が施されています。
  */
 @Getter
-@Setter
 @ToString
 @Entity
 @Table(schema = "undecided_ef", name = "prefectures", comment = "prefecture table")
@@ -119,4 +118,54 @@ public class Prefecture {
   @Size(max = 256)
   @Column(name = "remarks", comment = "Remarks", length = 256)
   private String remarks;
+
+  // JPAおよびバッチ処理用パッケージプライベートセッター
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setPrefectureCode(String prefectureCode) {
+    this.prefectureCode = prefectureCode;
+  }
+
+  public void setLgCode(String lgCode) {
+    this.lgCode = lgCode;
+  }
+
+  public void setPrefName(String prefName) {
+    this.prefName = prefName;
+  }
+
+  public void setPrefKana(String prefKana) {
+    this.prefKana = prefKana;
+  }
+
+  public void setPrefRoma(String prefRoma) {
+    this.prefRoma = prefRoma;
+  }
+
+  public void setEffectiveDate(LocalDate effectiveDate) {
+    this.effectiveDate = effectiveDate;
+  }
+
+  public void setAbolitionData(LocalDate abolitionData) {
+    this.abolitionData = abolitionData;
+  }
+
+  public void setRemarks(String remarks) {
+    this.remarks = remarks;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Prefecture that = (Prefecture) o;
+    return Objects.equals(id, that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

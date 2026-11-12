@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,19 +75,20 @@ class CreateSprintCommandServiceTest {
 
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       Sprint savedSprint =
-          Sprint.builder()
-              .id(snowflakeId)
-              .productId(FIXED_PRODUCT_ID)
-              .sprintNumber(1)
-              .title("Sprint 1")
-              .goal("Goal 1")
-              .startDate(LocalDate.now())
-              .endDate(LocalDate.now().plusWeeks(2))
-              .teamId(FIXED_TEAM_ID)
-              .teamName("Team A")
-              .createdAt(java.time.LocalDateTime.now())
-              .updatedAt(java.time.LocalDateTime.now())
-              .build();
+          Sprint.of(
+              snowflakeId,
+              FIXED_PRODUCT_ID,
+              1,
+              "Sprint 1",
+              "Goal 1",
+              LocalDate.now(),
+              LocalDate.now().plusWeeks(2),
+              FIXED_TEAM_ID,
+              "Team A",
+              null,
+              null,
+              LocalDateTime.now(),
+              LocalDateTime.now());
 
       when(sprintRepository.save(any(Sprint.class))).thenReturn(savedSprint);
 
@@ -122,17 +124,20 @@ class CreateSprintCommandServiceTest {
 
       SnowflakeId snowflakeId = SnowflakeId.of(9876543210L);
       Sprint savedSprint =
-          Sprint.builder()
-              .id(snowflakeId)
-              .productId(FIXED_PRODUCT_ID)
-              .sprintNumber(2)
-              .title("Sprint 2")
-              .startDate(LocalDate.now())
-              .endDate(LocalDate.now().plusWeeks(2))
-              .teamId(FIXED_TEAM_ID)
-              .createdAt(java.time.LocalDateTime.now())
-              .updatedAt(java.time.LocalDateTime.now())
-              .build();
+          Sprint.of(
+              snowflakeId,
+              FIXED_PRODUCT_ID,
+              2,
+              "Sprint 2",
+              null,
+              LocalDate.now(),
+              LocalDate.now().plusWeeks(2),
+              FIXED_TEAM_ID,
+              null,
+              null,
+              null,
+              LocalDateTime.now(),
+              LocalDateTime.now());
 
       when(sprintRepository.save(any(Sprint.class))).thenReturn(savedSprint);
 

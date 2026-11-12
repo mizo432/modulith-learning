@@ -3,6 +3,7 @@ package undecided.association.relationshipMgmt.spi.party.person;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +26,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Person extends Party {
   /** 法的名前。 */
   @Convert(converter = LegalName.LegalNameConverter.class)
@@ -47,5 +48,17 @@ public class Person extends Party {
     super(partyId, partyTypeCode, name, code, govtAssignedId, searchName);
     this.legalName = legalName;
     this.dateOfBirth = dateOfBirth;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

@@ -46,20 +46,21 @@ class SprintQueryServiceTest {
   private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   private Sprint createSprint(SnowflakeId id, SprintStatus status) {
-    return Sprint.builder()
-        .id(id)
-        .productId(FIXED_PRODUCT_ID)
-        .sprintNumber(1)
-        .title("Sprint 1")
-        .goal("Goal 1")
-        .startDate(LocalDate.of(2024, 1, 1))
-        .endDate(LocalDate.of(2024, 1, 15))
-        .teamId(FIXED_TEAM_ID)
-        .teamName("Team A")
-        .status(status)
-        .createdAt(LocalDateTime.of(2024, 1, 1, 0, 0))
-        .updatedAt(LocalDateTime.of(2024, 1, 1, 0, 0))
-        .build();
+    Sprint sprint = Sprint.of(
+        id,
+        FIXED_PRODUCT_ID,
+        1,
+        "Sprint 1",
+        "Goal 1",
+        LocalDate.of(2024, 1, 1),
+        LocalDate.of(2024, 1, 15),
+        FIXED_TEAM_ID,
+        "Team A",
+        null,
+        status,
+        LocalDateTime.of(2024, 1, 1, 0, 0),
+        LocalDateTime.of(2024, 1, 1, 0, 0));
+    return sprint;
   }
 
   @Nested

@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -80,5 +81,18 @@ public class SampleProductSearch {
    */
   public static Specification<SampleProductSearch> priceBetween(Long minPrice, Long maxPrice) {
     return (root, query, cb) -> cb.between(root.get("price"), minPrice, maxPrice);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SampleProductSearch that = (SampleProductSearch) o;
+    return Objects.equals(productId, that.productId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(productId);
   }
 }
