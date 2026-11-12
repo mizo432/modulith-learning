@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.spi.party;
 
+import com.github.mizo432.shared.common.primitive.Lists2;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,15 +8,14 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
-import undecided.association.relationshipMgmt.spi.party.contact.Contact;
-import undecided.association.relationshipMgmt.spi.party.contact.PhoneNo;
-import undecided.association.relationshipMgmt.spi.party.person.DateOfDie;
+import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -39,18 +39,6 @@ public abstract class Party {
   @Column(name = "party_type_code", nullable = false, length = 20)
   private PartyTypeCode partyTypeCode;
 
-  /** 死亡日（個人の場合）。 */
-  @Column(name = "date_of_die")
-  private DateOfDie dateOfDie;
-
-  /** 連絡先アドレス（メールアドレスなど）。 */
-  @Column(name = "contact", length = 200)
-  private Contact contact;
-
-  /** 電話番号。 */
-  @Column(name = "phone_no", length = 20)
-  private PhoneNo phoneNo;
-
   /** コード（一意制約）。 */
   @Column(name = "code", unique = true, length = 50)
   private String code;
@@ -68,4 +56,6 @@ public abstract class Party {
 
   /** 検索用名称（全角文字）。 */
   private SearchName searchName;
+
+  private List<ContactUse> contactUses = Lists2.newArrayList();
 }

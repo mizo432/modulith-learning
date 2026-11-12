@@ -26,4 +26,7 @@ public class Person extends Party {
 
   /** 生年月日。 */
   private DateOfBirth dateOfBirth;
+
+  /** 死亡日。 */
+  private DateOfDie dateOfDie;
 }
