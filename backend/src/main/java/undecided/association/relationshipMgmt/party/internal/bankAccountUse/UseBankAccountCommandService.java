@@ -1,10 +1,9 @@
-package undecided.association.relationshipMgmt.party.command;
+package undecided.association.relationshipMgmt.party.internal.bankAccountUse;
 
 import com.github.mizo432.shared.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import undecided.association.relationshipMgmt.party.internal.bankAccountUse.BankAccountUseRepository;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUse;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.UseBankAccountCommand;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.dto.BankAccountUseDto;

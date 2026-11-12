@@ -6,11 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -22,6 +22,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Table(name = "party", schema = SchemaRelationshipMgmt.NAME)
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Audited
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -41,14 +42,6 @@ public abstract class Party {
   /** コード（一意制約）。 */
   @Column(name = "code", unique = true, length = 50)
   private String code;
-
-  /** 有効開始日。 */
-  @Column(name = "valid_from", nullable = false)
-  private LocalDateTime validFrom;
-
-  /** 有効終了日。 */
-  @Column(name = "valid_to")
-  private LocalDateTime validTo;
 
   /** 政府発行の識別子（例：マイナンバー、法人番号など）。 */
   private GovtAssignedId govtAssignedId;

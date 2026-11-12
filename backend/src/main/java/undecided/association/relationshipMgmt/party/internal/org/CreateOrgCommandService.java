@@ -1,4 +1,4 @@
-package undecided.association.relationshipMgmt.party.command;
+package undecided.association.relationshipMgmt.party.internal.org;
 
 import org.springframework.stereotype.Service;
 import undecided.association.relationshipMgmt.spi.party.CreateOrgCommand;
