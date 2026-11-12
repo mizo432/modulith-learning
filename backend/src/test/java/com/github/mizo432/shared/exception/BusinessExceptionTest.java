@@ -132,7 +132,7 @@ class BusinessExceptionTest {
       BusinessException exception = new BusinessException(message);
       assertThat(exception.toString())
           .isEqualTo(
-              "com.github.mizo432.shared.exception.BusinessException: ResultMessages [type=error, list=[Business Exception Message]]");
+              "com.github.mizo432.shared.common.exception.BusinessException: ResultMessages [type=error, list=[Business Exception Message]]");
       logger.warn(exception.toString(), exception);
     }
   }

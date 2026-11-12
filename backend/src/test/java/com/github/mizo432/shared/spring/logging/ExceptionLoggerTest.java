@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.logging;
+package com.github.mizo432.shared.spring.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
