@@ -28,6 +28,7 @@ import com.github.mizo432.shared.value.datetime.ValidInterval;
 @Table(name = "OrgUnit", schema = SchemaRelationshipMgmt.NAME)
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class OrgUnit extends Party {
@@ -69,4 +70,16 @@ public class OrgUnit extends Party {
   @OneToMany
   @JoinColumn(name = "parent_org_unit_id")
   private List<OrgUnit> smallers = new ArrayList<>();
+
+  /**
+   * 空のOrgUnitインスタンスを作成します。
+   *
+   * <p>このメソッドは、protectedコンストラクタにアクセスできない外部クラスから
+   * OrgUnitインスタンスを作成するために使用されます。
+   *
+   * @return 空のOrgUnitインスタンス
+   */
+  public static OrgUnit createNew() {
+    return new OrgUnit();
+  }
 }
