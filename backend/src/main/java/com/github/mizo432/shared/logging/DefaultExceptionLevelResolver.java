@@ -3,7 +3,8 @@ package com.github.mizo432.shared.logging;
 import static org.springframework.util.StringUtils.hasText;
 
 import com.github.mizo432.shared.exception.ExceptionLevel;
-import com.github.mizo432.shared.exception.ExceptionCodeProvider;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * 例外のレベルを解決するデフォルトの実装クラス。
@@ -13,7 +14,7 @@ import com.github.mizo432.shared.exception.ExceptionCodeProvider;
  */
 public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
 
-  private ExceptionCodeResolver exceptionCodeResolver;
+  private @Nullable ExceptionCodeResolver exceptionCodeResolver;
 
   /**
    * デフォルトの例外レベルを解決するためのクラスのデフォルトコンストラクタ。
@@ -40,22 +41,20 @@ public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
    * @param ex 判定対象の例外オブジェクト
    * @return 解決された例外レベル
    */
-  public ExceptionLevel resolveExceptionLevel(Exception ex) {
+  @Override
+  public @NonNull ExceptionLevel resolveExceptionLevel(@NonNull Exception ex) {
     String exceptionCode = this.resolveExceptionCode(ex);
     if (!hasText(exceptionCode)) {
       return ExceptionLevel.ERROR;
-    } else {
-      String exceptionCodePrefix = exceptionCode.substring(0, 1);
-      if ("e".equalsIgnoreCase(exceptionCodePrefix)) {
-        return ExceptionLevel.ERROR;
-      } else if ("w".equalsIgnoreCase(exceptionCodePrefix)) {
-        return ExceptionLevel.WARN;
-      } else {
-        return "i".equalsIgnoreCase(exceptionCodePrefix)
-            ? ExceptionLevel.INFO
-            : ExceptionLevel.ERROR;
-      }
     }
+    
+    char prefix = Character.toLowerCase(exceptionCode.charAt(0));
+    return switch (prefix) {
+      case 'e' -> ExceptionLevel.ERROR;
+      case 'w' -> ExceptionLevel.WARN;
+      case 'i' -> ExceptionLevel.INFO;
+      default -> ExceptionLevel.ERROR;
+    };
   }
 
   /**
@@ -64,12 +63,9 @@ public class DefaultExceptionLevelResolver implements ExceptionLevelResolver {
    * @param ex 解決対象の例外オブジェクト
    * @return 解決された例外コード。{@code null} が返される場合もあります。
    */
-  protected String resolveExceptionCode(Exception ex) {
-    String exceptionCode = null;
-    if (this.exceptionCodeResolver != null) {
-      exceptionCode = this.exceptionCodeResolver.resolveExceptionCode(ex);
-    }
-
-    return exceptionCode;
+  protected @Nullable String resolveExceptionCode(@NonNull Exception ex) {
+    return this.exceptionCodeResolver != null
+        ? this.exceptionCodeResolver.resolveExceptionCode(ex)
+        : null;
   }
 }
