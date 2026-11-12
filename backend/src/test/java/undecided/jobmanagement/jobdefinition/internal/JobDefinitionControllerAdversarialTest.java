@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import undecided.jobmanagement.jobdefinition.spi.jobdefinition.command.RegisterJobDefinitionCommandService;
+import undecided.jobmanagement.jobdefinition.spi.jobdefinition.command.RegisterJobDefinitionCommand;
 import undecided.jobmanagement.jobdefinition.spi.jobdefinition.dto.JobDefinitionDTO;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -29,13 +29,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 @ExtendWith(MockitoExtension.class)
 class JobDefinitionControllerAdversarialTest {
 
-  @Mock private RegisterJobDefinitionCommandService registerJobDefinitionCommandService;
+  @Mock private RegisterJobDefinitionCommand registerJobDefinitionCommand;
 
   private JobDefinitionController controller;
 
   @BeforeEach
   void setUp() {
-    controller = new JobDefinitionController(registerJobDefinitionCommandService);
+    controller = new JobDefinitionController(registerJobDefinitionCommand);
   }
 
   private JobDefinitionDTO createValidDto() {
@@ -60,7 +60,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("'; DROP TABLE job_definition; --");
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert - UriComponentsBuilderが特殊文字をエンコードするため、例外はスローされない
       // 修正後、URIエンコーディングが行われるため、テストの期待値を変更
@@ -74,7 +74,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("<script>alert('xss')</script>");
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert - UriComponentsBuilderが特殊文字をエンコードするため、例外はスローされない
       ResponseEntity<Void> response = controller.registerJobDefinition(dto);
@@ -87,7 +87,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setVersion(null);
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert - versionはオプションフィールドであるためNullが許容される
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -100,7 +100,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setParameterSpec("{invalid json}");
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -113,7 +113,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setParameterSpec("{\"key\": \"value\0injected\"}");
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -126,7 +126,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("TEST_JOB; rm -rf /");
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert - UriComponentsBuilderが特殊文字をエンコードするため、例外はスローされない
       ResponseEntity<Void> response = controller.registerJobDefinition(dto);
@@ -139,7 +139,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setJobCode("../../etc/passwd");
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))
@@ -152,7 +152,7 @@ class JobDefinitionControllerAdversarialTest {
       // Arrange
       JobDefinitionDTO dto = createValidDto();
       dto.setIsActive(null);
-      when(registerJobDefinitionCommandService.register(any())).thenReturn(SnowflakeId.of(1234567890L));
+      when(registerJobDefinitionCommand.register(any())).thenReturn(SnowflakeId.of(1234567890L));
 
       // Act & Assert
       assertThatCode(() -> controller.registerJobDefinition(dto))

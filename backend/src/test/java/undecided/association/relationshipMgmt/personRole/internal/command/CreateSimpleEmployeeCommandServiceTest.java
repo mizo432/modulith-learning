@@ -29,11 +29,11 @@ class CreateSimpleEmployeeCommandServiceTest {
 
   @Mock private EmployeeRepository employeeRepository;
 
-  private CreateSimpleEmployeeCommandServiceImpl service;
+  private CreateSimpleEmployeeCommandService service;
 
   @BeforeEach
   void setUp() {
-    service = new CreateSimpleEmployeeCommandServiceImpl(employeeFactory, employeeRepository);
+    service = new CreateSimpleEmployeeCommandService(employeeFactory, employeeRepository);
   }
 
   @Nested

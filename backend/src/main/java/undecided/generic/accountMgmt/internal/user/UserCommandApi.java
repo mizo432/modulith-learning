@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
-import undecided.generic.accountMgmt.UserCommandService;
+import undecided.generic.accountMgmt.UserCommand;
 
 /**
  * ユーザー情報の変更（Command）を担当するREST APIコントローラーです。
@@ -20,7 +20,7 @@ import undecided.generic.accountMgmt.UserCommandService;
 @RequiredArgsConstructor
 public class UserCommandApi {
 
-  private final UserCommandService userCommandService;
+  private final UserCommand userCommand;
 
   /**
    * パスワードを変更します。
@@ -32,7 +32,7 @@ public class UserCommandApi {
   @PutMapping("/{username}/password")
   ResponseEntity<Void> changePassword(
       @PathVariable String username, @RequestBody ChangePasswordRequest request) {
-    userCommandService.changePassword(username, request);
+    userCommand.changePassword(username, request);
     return ResponseEntity.noContent().build();
   }
 }

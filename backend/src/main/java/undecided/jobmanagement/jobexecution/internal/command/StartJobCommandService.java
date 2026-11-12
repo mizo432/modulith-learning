@@ -6,7 +6,7 @@ import undecided.jobmanagement.jobexecution.internal.repository.JobExecutionRepo
 import undecided.jobmanagement.jobexecution.spi.jobexecution.ExecutionId;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.ExecutionState;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.JobExecution;
-import undecided.jobmanagement.jobexecution.spi.jobexecution.command.StartJobCommandService;
+import undecided.jobmanagement.jobexecution.spi.jobexecution.command.StartJobCommand;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.dto.JobExecutionDTO;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Service
-public class StartJobCommandServiceImpl implements StartJobCommandService {
+public class StartJobCommandService implements StartJobCommand {
 
   private final JobExecutionRepository jobExecutionRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;

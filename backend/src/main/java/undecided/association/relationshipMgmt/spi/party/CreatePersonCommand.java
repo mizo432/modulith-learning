@@ -1,3 +1,3 @@
 package undecided.association.relationshipMgmt.spi.party;
 
-public interface CreatePersonCommandService {}
+public interface CreatePersonCommand {}

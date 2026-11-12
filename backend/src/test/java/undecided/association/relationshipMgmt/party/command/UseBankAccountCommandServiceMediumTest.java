@@ -29,7 +29,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("UseBankAccountCommandServiceの統合テスト")
 class UseBankAccountCommandServiceMediumTest {
 
-  @Autowired private UseBankAccountCommandServiceImpl service;
+  @Autowired private UseBankAccountCommandService service;
 
   @Autowired private BankAccountUseRepository repository;
 
