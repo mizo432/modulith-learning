@@ -1,10 +1,9 @@
 package undecided.association.relationshipMgmt.party.command;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.exception.BusinessException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import undecided.TestcontainersConfiguration;
-import undecided.association.relationshipMgmt.party.repository.BankAccountUseRepository;
+import undecided.association.relationshipMgmt.party.internal.bankAccountUse.BankAccountUseRepository;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUse;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUseType;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.dto.BankAccountUseDto;
@@ -187,8 +186,7 @@ class UseBankAccountCommandServiceMediumTest {
               null);
 
       // Assert
-      assertThatThrownBy(() -> service.use(invalidDto))
-          .isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> service.use(invalidDto)).isInstanceOf(BusinessException.class);
 
       // The valid record should still exist
       List<BankAccountUse> saved = repository.findAll();

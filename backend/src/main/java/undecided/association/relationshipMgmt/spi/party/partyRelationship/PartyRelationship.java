@@ -11,10 +11,10 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * パーティ間の関係を表すJPAエンティティです。
  *
- * <p>このエンティティは、パーティ（人物や組織など）之间存在する関連付けを管理し、 関係の種類や関連付け日時、関連付け解除日時を保持します。
+ * <p>このエンティティは、パーティ（人物や組織など）之间存在する関連付けを管理し、関係の種類や関連付け日時、関連付け解除日時を保持します。
  */
-@Table(name = "party_relationships", schema = "party_relationship_mgmt")
 @Entity
+@Table(name = "party_relationships", schema = "party_relationship_mgmt")
 @Getter
 @EqualsAndHashCode(of = "relationshipId")
 public class PartyRelationship {
@@ -54,7 +54,6 @@ public class PartyRelationship {
    * @param relationshipType 関係の種類。{@code null} は許容されません。
    * @param whenAssociated 関連付け日時。{@code null} の可能性があります。
    * @param whenDisassociated 関連付け解除日時。{@code null} の可能性があります。
-   * @throws BusinessException 必須パラメータが {@code null} の場合
    */
   public PartyRelationship(
       SnowflakeId relationshipId,
