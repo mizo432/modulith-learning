@@ -16,7 +16,7 @@ import undecided.association.relationshipMgmt.orgRole.spi.dto.OrganizationDTO;
 @RestController
 @RequestMapping("/api/organizations")
 @RequiredArgsConstructor
-public class OrganizationApi {
+public class OrganizationQueryApi {
   private final OrganizationQuery organizationQuery;
 
   /**

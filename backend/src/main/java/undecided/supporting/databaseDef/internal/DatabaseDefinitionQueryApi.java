@@ -27,11 +27,11 @@ import undecided.supporting.databaseDef.ViewDefinitionResponse;
  */
 @RestController
 @RequestMapping("/do/databases")
-public class DatabaseDefinitionApi {
+public class DatabaseDefinitionQueryApi {
 
   private final DatabaseMetadataService metadataService;
 
-  public DatabaseDefinitionApi(DatabaseMetadataService metadataService) {
+  public DatabaseDefinitionQueryApi(DatabaseMetadataService metadataService) {
     this.metadataService = metadataService;
   }
 

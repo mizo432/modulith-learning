@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleDTO;
 
 /**
- * RoleApiは、ロール情報を管理するためのREST APIコントローラーです。
+ * RoleQueryApiは、ロール情報を管理するためのREST APIコントローラーです。
  *
  * <p>主に以下の機能を提供します: - 指定されたエンドポイントへのリクエストに対して、ロール情報を返却します。
  *
@@ -20,7 +20,7 @@ import undecided.association.relationshipMgmt.partyRole.spi.dto.RoleDTO;
  */
 @RestController
 @RequestMapping("/api/roles")
-public class RoleApi {
+public class RoleQueryApi {
   @GetMapping
   RoleDTO get() {
     return new RoleDTO(

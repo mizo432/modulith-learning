@@ -7,7 +7,7 @@ import undecided.association.relationshipMgmt.personRole.spi.employee.dto.Employ
 
 @RestController
 @RequestMapping("/api/employees")
-public class EmployeeApi {
+public class EmployeeQueryApi {
   @GetMapping
   EmployeeDto get() {
     return new EmployeeDto(null, null, null, null);
