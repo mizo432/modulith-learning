@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.exception;
+package com.github.mizo432.shared.common.exception;
 
 /**
  * このクラスは RuntimeException クラスのサブクラスであり、ExceptionCodeProvider インターフェースを実装する システム例外を表します。

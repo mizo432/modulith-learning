@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.exception;
+package com.github.mizo432.shared.common.exception;
 
 /**
  * I/O 操作に関連するランタイム例外です。

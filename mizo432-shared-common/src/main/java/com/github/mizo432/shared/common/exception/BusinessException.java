@@ -1,7 +1,7 @@
-package com.github.mizo432.shared.exception;
+package com.github.mizo432.shared.common.exception;
 
-import com.github.mizo432.shared.message.ResultMessage;
-import com.github.mizo432.shared.message.ResultMessages;
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessages;
 
 /**
  * BusinessException クラスは、業務関連のエラーを処理するためのカスタム例外です。
