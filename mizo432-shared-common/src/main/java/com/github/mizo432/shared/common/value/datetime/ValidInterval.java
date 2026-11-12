@@ -1,4 +1,4 @@
-package com.github.mizo432.shared.value.datetime;
+package com.github.mizo432.shared.common.value.datetime;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

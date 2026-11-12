@@ -1,10 +1,9 @@
 package undecided.jobmanagement.jobdefinition.spi.jobdefinition;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import com.github.mizo432.shared.common.precondition.StringPrecondition;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.exception.BusinessException;
-
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -24,7 +23,9 @@ public final class JobCode {
 
   public static JobCode of(String value) {
     ObjectPrecondition.checkNotNull(value, () -> new BusinessException("JobCode cannot be null"));
-    StringPrecondition.checkMaxLength(value, MAX_LENGTH,
+    StringPrecondition.checkMaxLength(
+        value,
+        MAX_LENGTH,
         () -> new BusinessException("JobCode cannot exceed " + MAX_LENGTH + " characters"));
     return new JobCode(value);
   }

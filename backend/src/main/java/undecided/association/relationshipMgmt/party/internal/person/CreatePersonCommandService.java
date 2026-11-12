@@ -1,8 +1,8 @@
 package undecided.association.relationshipMgmt.party.internal.person;
 
-import com.github.mizo432.shared.exception.BusinessException;
-import com.github.mizo432.shared.message.ResultMessage;
-import com.github.mizo432.shared.message.ResultMessages;
+import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessages;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

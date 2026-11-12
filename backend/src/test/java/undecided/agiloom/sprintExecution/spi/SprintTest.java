@@ -3,9 +3,8 @@ package undecided.agiloom.sprintExecution.spi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -181,8 +180,7 @@ class SprintTest {
     void shouldThrowExceptionWhenCompleteFromPlanned() {
       Sprint sprint = createSprint();
 
-      assertThatThrownBy(() -> sprint.complete())
-          .isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> sprint.complete()).isInstanceOf(BusinessException.class);
     }
 
     @Test
@@ -192,8 +190,7 @@ class SprintTest {
       sprint.start();
       sprint.complete();
 
-      assertThatThrownBy(() -> sprint.start())
-          .isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> sprint.start()).isInstanceOf(BusinessException.class);
     }
 
     @Test
@@ -203,8 +200,7 @@ class SprintTest {
       sprint.start();
       sprint.complete();
 
-      assertThatThrownBy(() -> sprint.cancel())
-          .isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> sprint.cancel()).isInstanceOf(BusinessException.class);
     }
 
     @Test
@@ -213,8 +209,7 @@ class SprintTest {
       Sprint sprint = createSprint();
       sprint.cancel();
 
-      assertThatThrownBy(() -> sprint.start())
-          .isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> sprint.start()).isInstanceOf(BusinessException.class);
     }
 
     @Test
@@ -223,8 +218,7 @@ class SprintTest {
       Sprint sprint = createSprint();
       sprint.start();
 
-      assertThatThrownBy(() -> sprint.start())
-          .isInstanceOf(BusinessException.class);
+      assertThatThrownBy(() -> sprint.start()).isInstanceOf(BusinessException.class);
     }
   }
 

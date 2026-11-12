@@ -1,7 +1,8 @@
 package undecided.association.relationshipMgmt.partyRole.spi.role;
 
-import com.github.mizo432.shared.exception.BusinessException;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+
+import com.github.mizo432.shared.common.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -107,7 +108,11 @@ public class Role {
    * @param roleTypeCode ロール種類コード（null不可）
    * @param description 説明（null可）
    */
-  public void update(@NonNull String roleCode, @NonNull String roleName, @NonNull String roleTypeCode, @Nullable String description) {
+  public void update(
+      @NonNull String roleCode,
+      @NonNull String roleName,
+      @NonNull String roleTypeCode,
+      @Nullable String description) {
     checkNotNull(roleCode, () -> new BusinessException("roleCode must not be null"));
     checkNotNull(roleName, () -> new BusinessException("roleName must not be null"));
     checkNotNull(roleTypeCode, () -> new BusinessException("roleTypeCode must not be null"));

@@ -1,6 +1,6 @@
 package undecided.config.presentation.web.exception;
 
-import com.github.mizo432.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.spring.logging.ExceptionLogger;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;

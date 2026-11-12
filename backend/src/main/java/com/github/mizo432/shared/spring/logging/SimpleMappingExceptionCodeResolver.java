@@ -1,12 +1,12 @@
-package com.github.mizo432.shared.logging;
+package com.github.mizo432.shared.spring.logging;
 
+import com.github.mizo432.shared.common.exception.ExceptionCodeProvider;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-import com.github.mizo432.shared.exception.ExceptionCodeProvider;
 
 /**
  * SimpleMappingExceptionCodeResolverクラスは、例外に関連付けられたコードを解決するための処理を提供します。

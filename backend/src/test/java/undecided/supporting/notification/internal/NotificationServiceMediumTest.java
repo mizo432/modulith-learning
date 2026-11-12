@@ -3,7 +3,7 @@ package undecided.supporting.notification.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,14 +26,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * {@code NotificationServiceMediumTest} は、NotificationServiceImpl の統合テストクラスです。
- * <p>
- * 規約要件:
- * 1. @Tag("medium") を付与
- * 2. @ActiveProfiles("test") および @Import(TestcontainersConfiguration.class) で PostgreSQL コンテナを利用
- * 3. クラス・メソッドともに日本語 @DisplayName を付与
- * 4. 対象メソッドごとに @Nested クラスでグループ化
- * 5. メソッド名は should で開始し、アンダースコアを使用しない
- * 6. package-private 可視性
+ *
+ * <p>規約要件: 1. @Tag("medium") を付与 2. @ActiveProfiles("test")
+ * および @Import(TestcontainersConfiguration.class) で PostgreSQL コンテナを利用 3.
+ * クラス・メソッドともに日本語 @DisplayName を付与 4. 対象メソッドごとに @Nested クラスでグループ化 5. メソッド名は should
+ * で開始し、アンダースコアを使用しない 6. package-private 可視性
  */
 @Tag("medium")
 @SpringBootTest
@@ -42,17 +39,12 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("NotificationServiceの統合テスト")
 class NotificationServiceMediumTest {
 
-  @Autowired
-  private NotificationService notificationService;
-
-  @Autowired
-  private NotificationRepository notificationRepository;
-
   private static final UUID RECIPIENT_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
   private static final UUID SOURCE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
   private static final String SOURCE_DOMAIN = "agiloom";
-
   private final List<SnowflakeId> createdNotificationIds = new ArrayList<>();
+  @Autowired private NotificationService notificationService;
+  @Autowired private NotificationRepository notificationRepository;
 
   @AfterEach
   void cleanup() {
@@ -77,13 +69,14 @@ class NotificationServiceMediumTest {
     @DisplayName("通知が正常に送信されデータベースに保存されること")
     void shouldSendAndSaveNotification() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .sourceId(SOURCE_ID)
-          .title("統合テスト通知")
-          .content("統合テストの本文です")
-          .type(NotificationType.SYSTEM)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .sourceId(SOURCE_ID)
+              .title("統合テスト通知")
+              .content("統合テストの本文です")
+              .type(NotificationType.SYSTEM)
+              .build();
 
       // Act
       NotificationDTO result = notificationService.send(request);
@@ -107,12 +100,13 @@ class NotificationServiceMediumTest {
     @DisplayName("sourceIdなしで通知が送信されること")
     void shouldSendNotificationWithoutSourceId() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("sourceIdなしの通知")
-          .content("sourceIdなしの本文")
-          .type(NotificationType.MENTION)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("sourceIdなしの通知")
+              .content("sourceIdなしの本文")
+              .type(NotificationType.MENTION)
+              .build();
 
       // Act
       NotificationDTO result = notificationService.send(request);
@@ -129,19 +123,18 @@ class NotificationServiceMediumTest {
     void shouldSendNotificationWithAllTypes() {
       // Act & Assert
       for (NotificationType type : NotificationType.values()) {
-        NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-            .recipientId(RECIPIENT_ID)
-            .title(type + "通知")
-            .content(type + "の本文")
-            .type(type)
-            .build();
+        NotificationRequest request =
+            NotificationRequest.builder(SOURCE_DOMAIN)
+                .recipientId(RECIPIENT_ID)
+                .title(type + "通知")
+                .content(type + "の本文")
+                .type(type)
+                .build();
 
         NotificationDTO result = notificationService.send(request);
         trackNotification(result.getId());
 
-        assertThat(result)
-            .as("通知タイプ %s で通知が送信されること", type)
-            .isNotNull();
+        assertThat(result).as("通知タイプ %s で通知が送信されること", type).isNotNull();
         assertThat(result.getType()).isEqualTo(type);
       }
     }
@@ -155,18 +148,20 @@ class NotificationServiceMediumTest {
     @DisplayName("受信者の通知一覧が取得されること")
     void shouldGetNotificationsByRecipient() {
       // Arrange
-      NotificationRequest request1 = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("通知1")
-          .content("本文1")
-          .type(NotificationType.SYSTEM)
-          .build();
-      NotificationRequest request2 = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("通知2")
-          .content("本文2")
-          .type(NotificationType.MENTION)
-          .build();
+      NotificationRequest request1 =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("通知1")
+              .content("本文1")
+              .type(NotificationType.SYSTEM)
+              .build();
+      NotificationRequest request2 =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("通知2")
+              .content("本文2")
+              .type(NotificationType.MENTION)
+              .build();
       NotificationDTO sent1 = notificationService.send(request1);
       NotificationDTO sent2 = notificationService.send(request2);
       trackNotification(sent1.getId());
@@ -186,7 +181,8 @@ class NotificationServiceMediumTest {
       UUID emptyRecipientId = UUID.fromString("55555555-5555-5555-5555-555555555555");
 
       // Act
-      List<NotificationDTO> result = notificationService.getNotificationsByRecipient(emptyRecipientId);
+      List<NotificationDTO> result =
+          notificationService.getNotificationsByRecipient(emptyRecipientId);
 
       // Assert
       assertThat(result).isEmpty();
@@ -201,18 +197,20 @@ class NotificationServiceMediumTest {
     @DisplayName("未読通知のみが取得されること")
     void shouldGetOnlyUnreadNotifications() {
       // Arrange
-      NotificationRequest request1 = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("未読通知")
-          .content("未読の本文")
-          .type(NotificationType.SYSTEM)
-          .build();
-      NotificationRequest request2 = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("既読通知")
-          .content("既読の本文")
-          .type(NotificationType.MENTION)
-          .build();
+      NotificationRequest request1 =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("未読通知")
+              .content("未読の本文")
+              .type(NotificationType.SYSTEM)
+              .build();
+      NotificationRequest request2 =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("既読通知")
+              .content("既読の本文")
+              .type(NotificationType.MENTION)
+              .build();
       NotificationDTO unread = notificationService.send(request1);
       NotificationDTO read = notificationService.send(request2);
       trackNotification(unread.getId());
@@ -223,7 +221,8 @@ class NotificationServiceMediumTest {
       notificationRepository.save(readEntity);
 
       // Act
-      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
+      List<NotificationDTO> result =
+          notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
 
       // Assert
       assertThat(result).hasSize(1);
@@ -234,12 +233,13 @@ class NotificationServiceMediumTest {
     @DisplayName("未読通知がない場合は空のリストが返されること")
     void shouldReturnEmptyListWhenNoUnreadNotifications() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("既読のみ")
-          .content("既読の本文")
-          .type(NotificationType.SYSTEM)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("既読のみ")
+              .content("既読の本文")
+              .type(NotificationType.SYSTEM)
+              .build();
       NotificationDTO notification = notificationService.send(request);
       trackNotification(notification.getId());
       // DTOは不変なので、Repositoryからエンティティを取得して既読マーク
@@ -248,7 +248,8 @@ class NotificationServiceMediumTest {
       notificationRepository.save(entity);
 
       // Act
-      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
+      List<NotificationDTO> result =
+          notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
 
       // Assert
       assertThat(result).isEmpty();
@@ -263,12 +264,13 @@ class NotificationServiceMediumTest {
     @DisplayName("通知が既読としてマークされること")
     void shouldMarkNotificationAsRead() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("既読テスト通知")
-          .content("既読テストの本文")
-          .type(NotificationType.SYSTEM)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("既読テスト通知")
+              .content("既読テストの本文")
+              .type(NotificationType.SYSTEM)
+              .build();
       NotificationDTO notification = notificationService.send(request);
       trackNotification(notification.getId());
       String notificationId = String.valueOf(notification.getId().value());
@@ -304,12 +306,13 @@ class NotificationServiceMediumTest {
     @DisplayName("既に既読の通知を再度markAsReadしても問題ないこと")
     void shouldIdempotentMarkAsRead() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("冪等性テスト通知")
-          .content("冪等性テストの本文")
-          .type(NotificationType.SYSTEM)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("冪等性テスト通知")
+              .content("冪等性テストの本文")
+              .type(NotificationType.SYSTEM)
+              .build();
       NotificationDTO notification = notificationService.send(request);
       trackNotification(notification.getId());
       String notificationId = String.valueOf(notification.getId().value());
@@ -332,17 +335,19 @@ class NotificationServiceMediumTest {
     @DisplayName("sourceDomainで通知が検索されること")
     void shouldFindBySourceDomain() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title("検索テスト通知")
-          .content("検索テストの本文")
-          .type(NotificationType.SYSTEM)
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title("検索テスト通知")
+              .content("検索テストの本文")
+              .type(NotificationType.SYSTEM)
+              .build();
       NotificationDTO sent = notificationService.send(request);
       trackNotification(sent.getId());
 
       // Act
-      List<Notification> result = notificationRepository.findBySourceDomainAndDeletedAtIsNull(SOURCE_DOMAIN);
+      List<Notification> result =
+          notificationRepository.findBySourceDomainAndDeletedAtIsNull(SOURCE_DOMAIN);
 
       // Assert
       assertThat(result).isNotEmpty();

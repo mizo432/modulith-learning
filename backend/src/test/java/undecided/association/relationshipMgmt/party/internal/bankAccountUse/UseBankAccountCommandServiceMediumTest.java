@@ -3,7 +3,7 @@ package undecided.association.relationshipMgmt.party.internal.bankAccountUse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -114,12 +114,8 @@ class UseBankAccountCommandServiceMediumTest {
       assertThat(saved).hasSize(1);
 
       BankAccountUse savedEntity = saved.get(0);
-      assertThat(savedEntity.getWhenOccured())
-          .as("発生時刻がnullでないこと")
-          .isNotNull();
-      assertThat(savedEntity.getWhenOccured().value())
-          .as("発生時刻の値がnullでないこと")
-          .isNotNull();
+      assertThat(savedEntity.getWhenOccured()).as("発生時刻がnullでないこと").isNotNull();
+      assertThat(savedEntity.getWhenOccured().value()).as("発生時刻の値がnullでないこと").isNotNull();
     }
 
     @Test

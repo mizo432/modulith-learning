@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.github.mizo432.shared.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,14 +20,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import undecided.agiloom.sprintExecution.internal.query.SprintQuery;
 import undecided.agiloom.sprintExecution.spi.SprintDTO;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
-import undecided.agiloom.sprintExecution.internal.query.SprintQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
- * SprintQueryControllerに対する敵対的検証テスト。
- * 不正なページネーションパラメータ、IDインジェクション、境界値攻撃など、
+ * SprintQueryControllerに対する敵対的検証テスト。 不正なページネーションパラメータ、IDインジェクション、境界値攻撃など、
  * 悪意のあるクエリリクエストに対するシステムの堅牢性を検証します。
  */
 @Tag("small")
@@ -35,9 +34,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 @ExtendWith(MockitoExtension.class)
 class SprintQueryControllerAdversarialTest {
 
+  private static final UUID FIXED_PRODUCT_ID =
+      UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
   @Mock private SprintQuery sprintQueryService;
   private SprintResponseAssembler sprintResponseAssembler;
-
   private SprintQueryController controller;
 
   @BeforeEach
@@ -45,9 +46,6 @@ class SprintQueryControllerAdversarialTest {
     sprintResponseAssembler = new SprintResponseAssembler();
     controller = new SprintQueryController(sprintQueryService, sprintResponseAssembler);
   }
-
-  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
-  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   private SprintDTO createSprintDTO(SnowflakeId id, SprintStatus status) {
     return SprintDTO.builder()
@@ -74,7 +72,8 @@ class SprintQueryControllerAdversarialTest {
     @DisplayName("sizeに負の値を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectNegativeSize() {
       // Act & Assert - @Validated + @Min(1)により、Spring MVC層ではConstraintViolationExceptionで拒否される
-      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
+      // ユニットテストではSpring
+      // MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(0, -1))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Invalid pagination parameters");
@@ -84,7 +83,8 @@ class SprintQueryControllerAdversarialTest {
     @DisplayName("sizeに0を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectZeroSize() {
       // Act & Assert - @Validated + @Min(1)により、Spring MVC層ではConstraintViolationExceptionで拒否される
-      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
+      // ユニットテストではSpring
+      // MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(0, 0))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Invalid pagination parameters");
@@ -106,7 +106,8 @@ class SprintQueryControllerAdversarialTest {
     @DisplayName("pageに負の値を指定した場合、BusinessExceptionをスローすること")
     void shouldRejectNegativePage() {
       // Act & Assert - @Validated + @Min(0)により、Spring MVC層ではConstraintViolationExceptionで拒否される
-      // ユニットテストではSpring MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
+      // ユニットテストではSpring
+      // MVC層を通らないため、PageRequest.of()がIllegalArgumentExceptionをスローし、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprints(-1, 20))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Invalid pagination parameters");
@@ -161,7 +162,8 @@ class SprintQueryControllerAdversarialTest {
     @Test
     @DisplayName("IDに負の値を指定した場合、BusinessExceptionをスローすること")
     void shouldHandleNegativeId() {
-      // Act & Assert - Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗し、BusinessExceptionに変換される
+      // Act & Assert -
+      // Long.parseLong("-123")は正常にパースされるが、SnowflakeId.of()で正の値チェックに失敗し、BusinessExceptionに変換される
       assertThatThrownBy(() -> controller.getSprint("-123"))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("must be positive");

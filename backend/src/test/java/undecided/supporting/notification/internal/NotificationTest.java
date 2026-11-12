@@ -3,28 +3,22 @@ package undecided.supporting.notification.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
-import undecided.supporting.notification.spi.Notification;
-import undecided.supporting.notification.spi.NotificationType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import undecided.supporting.notification.spi.Notification;
+import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * {@code NotificationTest} は、Notificationエンティティの単体テストクラスです。
- * <p>
- * 規約要件:
- * 1. @Tag("small") を付与
- * 2. クラス・メソッドともに日本語 @DisplayName を付与
- * 3. 対象メソッドごとに @Nested クラスでグループ化
- * 4. メソッド名は should で開始し、アンダースコアを使用しない
- * 5. package-private 可視性
- * 6. null や境界値のテストを含める
+ *
+ * <p>規約要件: 1. @Tag("small") を付与 2. クラス・メソッドともに日本語 @DisplayName を付与 3. 対象メソッドごとに @Nested クラスでグループ化
+ * 4. メソッド名は should で開始し、アンダースコアを使用しない 5. package-private 可視性 6. null や境界値のテストを含める
  */
 @Tag("small")
 @DisplayName("Notificationエンティティのテスト")
@@ -89,16 +83,17 @@ class NotificationTest {
       LocalDateTime now = LocalDateTime.now();
 
       // Act
-      Notification notification = Notification.builder()
-          .id(SnowflakeId.of(1L))
-          .recipientId(RECIPIENT_ID)
-          .sourceDomain(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .createdAt(now)
-          .updatedAt(now)
-          .build();
+      Notification notification =
+          Notification.builder()
+              .id(SnowflakeId.of(1L))
+              .recipientId(RECIPIENT_ID)
+              .sourceDomain(SOURCE_DOMAIN)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .createdAt(now)
+              .updatedAt(now)
+              .build();
 
       // Assert
       assertThat(notification.getCreatedAt()).isEqualTo(now);
@@ -109,15 +104,16 @@ class NotificationTest {
     @DisplayName("明示的に既読としてビルドできること")
     void shouldBuildAsRead() {
       // Act
-      Notification notification = Notification.builder()
-          .id(SnowflakeId.of(1L))
-          .recipientId(RECIPIENT_ID)
-          .sourceDomain(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .isRead(true)
-          .build();
+      Notification notification =
+          Notification.builder()
+              .id(SnowflakeId.of(1L))
+              .recipientId(RECIPIENT_ID)
+              .sourceDomain(SOURCE_DOMAIN)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .isRead(true)
+              .build();
 
       // Assert
       assertThat(notification.getIsRead()).isTrue();
@@ -127,14 +123,15 @@ class NotificationTest {
     @DisplayName("sourceIdなしでビルドできること")
     void shouldBuildWithoutSourceId() {
       // Act
-      Notification notification = Notification.builder()
-          .id(SnowflakeId.of(1L))
-          .recipientId(RECIPIENT_ID)
-          .sourceDomain(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .build();
+      Notification notification =
+          Notification.builder()
+              .id(SnowflakeId.of(1L))
+              .recipientId(RECIPIENT_ID)
+              .sourceDomain(SOURCE_DOMAIN)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .build();
 
       // Assert
       assertThat(notification.getSourceId()).isNull();
@@ -145,14 +142,15 @@ class NotificationTest {
     void shouldBuildWithDifferentTypes() {
       // Act & Assert
       for (NotificationType notificationType : NotificationType.values()) {
-        Notification notification = Notification.builder()
-            .id(SnowflakeId.of(1L))
-            .recipientId(RECIPIENT_ID)
-            .sourceDomain(SOURCE_DOMAIN)
-            .title(TITLE)
-            .content(CONTENT)
-            .type(notificationType)
-            .build();
+        Notification notification =
+            Notification.builder()
+                .id(SnowflakeId.of(1L))
+                .recipientId(RECIPIENT_ID)
+                .sourceDomain(SOURCE_DOMAIN)
+                .title(TITLE)
+                .content(CONTENT)
+                .type(notificationType)
+                .build();
 
         assertThat(notification.getType())
             .as("通知タイプ %s でビルドできること", notificationType)
@@ -202,15 +200,16 @@ class NotificationTest {
       assertThat(notification.getIsRead()).isTrue();
 
       // Arrange: 既に既読の通知をmarkAsRead
-      Notification readNotification = Notification.builder()
-          .id(SnowflakeId.of(1L))
-          .recipientId(RECIPIENT_ID)
-          .sourceDomain(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .isRead(true)
-          .build();
+      Notification readNotification =
+          Notification.builder()
+              .id(SnowflakeId.of(1L))
+              .recipientId(RECIPIENT_ID)
+              .sourceDomain(SOURCE_DOMAIN)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .isRead(true)
+              .build();
 
       // Act
       readNotification.markAsRead();
@@ -238,17 +237,18 @@ class NotificationTest {
       LocalDateTime newDeletedAt = LocalDateTime.now();
 
       // Act
-      Notification notification = Notification.builder()
-          .id(newId)
-          .recipientId(newRecipientId)
-          .sourceId(newSourceId)
-          .sourceDomain(newSourceDomain)
-          .title(newTitle)
-          .content(newContent)
-          .type(newType)
-          .isRead(true)
-          .deletedAt(newDeletedAt)
-          .build();
+      Notification notification =
+          Notification.builder()
+              .id(newId)
+              .recipientId(newRecipientId)
+              .sourceId(newSourceId)
+              .sourceDomain(newSourceDomain)
+              .title(newTitle)
+              .content(newContent)
+              .type(newType)
+              .isRead(true)
+              .deletedAt(newDeletedAt)
+              .build();
 
       // Assert
       assertThat(notification.getId()).isEqualTo(newId);
@@ -383,7 +383,8 @@ class NotificationTest {
       NotificationType[] types = NotificationType.values();
 
       // Assert
-      assertThat(types).hasSize(8)
+      assertThat(types)
+          .hasSize(8)
           .contains(NotificationType.MENTION)
           .contains(NotificationType.ASSIGNEE_CHANGE)
           .contains(NotificationType.DUE_DATE)

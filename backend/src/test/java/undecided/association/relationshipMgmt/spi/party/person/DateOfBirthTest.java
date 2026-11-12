@@ -1,10 +1,9 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -107,9 +106,7 @@ class DateOfBirthTest {
     void shouldReturnNullWhenValueIsNull() {
       DateOfBirth dateOfBirth = DateOfBirth.empty();
 
-      assertThat(dateOfBirth.toString())
-          .as("空のDateOfBirthのtoString()はnullを返すこと")
-          .isNull();
+      assertThat(dateOfBirth.toString()).as("空のDateOfBirthのtoString()はnullを返すこと").isNull();
     }
   }
 

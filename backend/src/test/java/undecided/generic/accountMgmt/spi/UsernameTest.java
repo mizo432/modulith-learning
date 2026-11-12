@@ -1,10 +1,9 @@
 package undecided.generic.accountMgmt.spi;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;

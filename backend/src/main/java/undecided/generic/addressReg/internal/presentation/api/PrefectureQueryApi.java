@@ -1,6 +1,6 @@
 package undecided.generic.addressReg.internal.presentation.api;
 
-import com.github.mizo432.shared.exception.NotFoundBusinessException;
+import com.github.mizo432.shared.common.exception.NotFoundBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

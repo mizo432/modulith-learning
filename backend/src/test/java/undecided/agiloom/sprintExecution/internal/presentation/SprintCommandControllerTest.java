@@ -7,9 +7,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.github.mizo432.shared.exception.BusinessException;
-import java.time.LocalDateTime;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,14 +22,13 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import undecided.agiloom.sprintExecution.spi.SprintDTO;
-import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommand;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommand;
 import undecided.agiloom.sprintExecution.internal.command.SendNotificationCommandServiceInterface;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandServiceInterface;
-import undecided.agiloom.sprintExecution.internal.presentation.ChangeStatusRequest;
+import undecided.agiloom.sprintExecution.spi.SprintDTO;
+import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -39,32 +38,32 @@ import undecided.supporting.snowflake.SnowflakeId;
 @ExtendWith(MockitoExtension.class)
 class SprintCommandControllerTest {
 
+  private static final UUID FIXED_PRODUCT_ID =
+      UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
+  private static final UUID FIXED_RECIPIENT_ID =
+      UUID.fromString("33333333-3333-3333-3333-333333333333");
+  private static final UUID FIXED_SOURCE_ID =
+      UUID.fromString("44444444-4444-4444-4444-444444444444");
   @Mock private CreateSprintCommandServiceInterface createSprintCommandService;
   @Mock private UpdateSprintCommandServiceInterface updateSprintCommandService;
   @Mock private SendNotificationCommandServiceInterface sendNotificationCommandService;
   private SprintResponseAssembler sprintResponseAssembler;
-
   @Captor private ArgumentCaptor<CreateSprintCommand> commandCaptor;
   @Captor private ArgumentCaptor<SendNotificationCommand> notificationCommandCaptor;
   @Captor private ArgumentCaptor<SnowflakeId> snowflakeIdCaptor;
-
   private SprintCommandController controller;
 
   @BeforeEach
   void setUp() {
     sprintResponseAssembler = new SprintResponseAssembler();
-    controller = new SprintCommandController(
-        createSprintCommandService,
-        updateSprintCommandService,
-        sendNotificationCommandService,
-        sprintResponseAssembler
-    );
+    controller =
+        new SprintCommandController(
+            createSprintCommandService,
+            updateSprintCommandService,
+            sendNotificationCommandService,
+            sprintResponseAssembler);
   }
-
-  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
-  private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
-  private static final UUID FIXED_RECIPIENT_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
-  private static final UUID FIXED_SOURCE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
 
   private SprintDTO createSprintDTO(SnowflakeId id) {
     return SprintDTO.builder()
@@ -94,16 +93,17 @@ class SprintCommandControllerTest {
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
       LocalDate startDate = LocalDate.now();
       LocalDate endDate = LocalDate.now().plusWeeks(2);
-      CreateSprintRequest request = CreateSprintRequest.builder()
-          .productId(FIXED_PRODUCT_ID)
-          .sprintNumber(1)
-          .title("Sprint 1")
-          .goal("Goal 1")
-          .startDate(startDate)
-          .endDate(endDate)
-          .teamId(FIXED_TEAM_ID)
-          .teamName("Team A")
-          .build();
+      CreateSprintRequest request =
+          CreateSprintRequest.builder()
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(1)
+              .title("Sprint 1")
+              .goal("Goal 1")
+              .startDate(startDate)
+              .endDate(endDate)
+              .teamId(FIXED_TEAM_ID)
+              .teamName("Team A")
+              .build();
 
       SprintDTO sprint = createSprintDTO(snowflakeId);
 
@@ -139,37 +139,39 @@ class SprintCommandControllerTest {
     void shouldChangeStatusAndReturnResponseEntity() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      SprintDTO sprint = SprintDTO.builder()
-          .id(snowflakeId)
-          .productId(FIXED_PRODUCT_ID)
-          .sprintNumber(1)
-          .title("Sprint 1")
-          .goal("Goal 1")
-          .startDate(LocalDate.now())
-          .endDate(LocalDate.now().plusWeeks(2))
-          .status(SprintStatus.ACTIVE)
-          .teamId(FIXED_TEAM_ID)
-          .teamName("Team A")
-          .createdAt(LocalDateTime.now())
-          .updatedAt(LocalDateTime.now())
-          .build();
+      SprintDTO sprint =
+          SprintDTO.builder()
+              .id(snowflakeId)
+              .productId(FIXED_PRODUCT_ID)
+              .sprintNumber(1)
+              .title("Sprint 1")
+              .goal("Goal 1")
+              .startDate(LocalDate.now())
+              .endDate(LocalDate.now().plusWeeks(2))
+              .status(SprintStatus.ACTIVE)
+              .teamId(FIXED_TEAM_ID)
+              .teamName("Team A")
+              .createdAt(LocalDateTime.now())
+              .updatedAt(LocalDateTime.now())
+              .build();
 
-      ChangeStatusRequest request = ChangeStatusRequest.builder()
-          .status(SprintStatus.ACTIVE)
-          .build();
+      ChangeStatusRequest request =
+          ChangeStatusRequest.builder().status(SprintStatus.ACTIVE).build();
 
-      when(updateSprintCommandService.changeStatus(any(SnowflakeId.class), any(SprintStatus.class))).thenReturn(sprint);
+      when(updateSprintCommandService.changeStatus(any(SnowflakeId.class), any(SprintStatus.class)))
+          .thenReturn(sprint);
 
       // Act
-      ResponseEntity<SprintResponse> result = controller.changeStatus(
-          String.valueOf(snowflakeId.value()), request);
+      ResponseEntity<SprintResponse> result =
+          controller.changeStatus(String.valueOf(snowflakeId.value()), request);
 
       // Assert
       assertThat(result.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.OK);
       assertThat(result.getBody()).isNotNull();
       assertThat(result.getBody().getId()).isEqualTo(snowflakeId);
       assertThat(result.getBody().getStatus()).isEqualTo(SprintStatus.ACTIVE);
-      verify(updateSprintCommandService).changeStatus(snowflakeIdCaptor.capture(), eq(SprintStatus.ACTIVE));
+      verify(updateSprintCommandService)
+          .changeStatus(snowflakeIdCaptor.capture(), eq(SprintStatus.ACTIVE));
       assertThat(snowflakeIdCaptor.getValue().value()).isEqualTo(snowflakeId.value());
     }
 
@@ -178,16 +180,15 @@ class SprintCommandControllerTest {
     void shouldThrowExceptionWhenSprintNotFound() {
       // Arrange
       SnowflakeId snowflakeId = SnowflakeId.of(1234567890L);
-      ChangeStatusRequest request = ChangeStatusRequest.builder()
-          .status(SprintStatus.ACTIVE)
-          .build();
+      ChangeStatusRequest request =
+          ChangeStatusRequest.builder().status(SprintStatus.ACTIVE).build();
 
       when(updateSprintCommandService.changeStatus(any(SnowflakeId.class), any(SprintStatus.class)))
           .thenThrow(new BusinessException("Sprint not found"));
 
       // Act & Assert
-      assertThatThrownBy(() -> controller.changeStatus(
-          String.valueOf(snowflakeId.value()), request))
+      assertThatThrownBy(
+              () -> controller.changeStatus(String.valueOf(snowflakeId.value()), request))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("Sprint not found");
     }
@@ -201,26 +202,28 @@ class SprintCommandControllerTest {
     @DisplayName("通知を送信してResponseEntityを返すこと")
     void shouldSendNotificationAndReturnResponseEntity() {
       // Arrange
-      SendNotificationRequest request = SendNotificationRequest.builder()
-          .recipientId(FIXED_RECIPIENT_ID)
-          .sourceId(FIXED_SOURCE_ID)
-          .title("テスト通知")
-          .content("テスト本文")
-          .type(NotificationType.MENTION)
-          .build();
+      SendNotificationRequest request =
+          SendNotificationRequest.builder()
+              .recipientId(FIXED_RECIPIENT_ID)
+              .sourceId(FIXED_SOURCE_ID)
+              .title("テスト通知")
+              .content("テスト本文")
+              .type(NotificationType.MENTION)
+              .build();
 
-      NotificationDTO expectedNotification = NotificationDTO.builder()
-          .id(SnowflakeId.of(1234567890L))
-          .recipientId(FIXED_RECIPIENT_ID)
-          .sourceId(FIXED_SOURCE_ID)
-          .sourceDomain("agiloom")
-          .title("テスト通知")
-          .content("テスト本文")
-          .type(NotificationType.MENTION)
-          .isRead(false)
-          .createdAt(LocalDateTime.now())
-          .updatedAt(LocalDateTime.now())
-          .build();
+      NotificationDTO expectedNotification =
+          NotificationDTO.builder()
+              .id(SnowflakeId.of(1234567890L))
+              .recipientId(FIXED_RECIPIENT_ID)
+              .sourceId(FIXED_SOURCE_ID)
+              .sourceDomain("agiloom")
+              .title("テスト通知")
+              .content("テスト本文")
+              .type(NotificationType.MENTION)
+              .isRead(false)
+              .createdAt(LocalDateTime.now())
+              .updatedAt(LocalDateTime.now())
+              .build();
 
       when(sendNotificationCommandService.execute(any())).thenReturn(expectedNotification);
 

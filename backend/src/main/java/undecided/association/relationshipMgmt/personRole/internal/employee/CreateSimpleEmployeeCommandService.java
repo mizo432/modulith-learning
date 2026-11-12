@@ -1,8 +1,7 @@
-package undecided.association.relationshipMgmt.personRole.internal.command;
+package undecided.association.relationshipMgmt.personRole.internal.employee;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import undecided.association.relationshipMgmt.personRole.internal.repository.EmployeeRepository;
 import undecided.association.relationshipMgmt.personRole.spi.employee.CreateSimpleEmployeeCommand;
 import undecided.association.relationshipMgmt.personRole.spi.employee.SimpleEmployee;
 import undecided.association.relationshipMgmt.personRole.spi.employee.dto.EmployeeDto;

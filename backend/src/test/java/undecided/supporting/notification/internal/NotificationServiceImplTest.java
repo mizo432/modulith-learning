@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.github.mizo432.shared.exception.BusinessException;
 import undecided.supporting.notification.spi.Notification;
 import undecided.supporting.notification.spi.NotificationDTO;
 import undecided.supporting.notification.spi.NotificationRequest;
@@ -29,14 +29,9 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 /**
  * {@code NotificationServiceImplTest} は、NotificationServiceImpl の単体テストクラスです。
- * <p>
- * 規約要件:
- * 1. @Tag("small") を付与
- * 2. クラス・メソッドともに日本語 @DisplayName を付与
- * 3. 対象メソッドごとに @Nested クラスでグループ化
- * 4. メソッド名は should で開始し、アンダースコアを使用しない
- * 5. package-private 可視性
- * 6. null や境界値のテストを含める
+ *
+ * <p>規約要件: 1. @Tag("small") を付与 2. クラス・メソッドともに日本語 @DisplayName を付与 3. 対象メソッドごとに @Nested クラスでグループ化
+ * 4. メソッド名は should で開始し、アンダースコアを使用しない 5. package-private 可視性 6. null や境界値のテストを含める
  */
 @Tag("small")
 @DisplayName("NotificationServiceImplの単体テスト")
@@ -50,17 +45,13 @@ class NotificationServiceImplTest {
   private static final String CONTENT = "This is a test notification";
   private static final NotificationType TYPE = NotificationType.SYSTEM;
 
-  @Mock
-  private NotificationRepository notificationRepository;
+  @Mock private NotificationRepository notificationRepository;
 
-  @Mock
-  private SnowflakeIdGenerator snowflakeIdGenerator;
+  @Mock private SnowflakeIdGenerator snowflakeIdGenerator;
 
-  @InjectMocks
-  private NotificationServiceImpl notificationService;
+  @InjectMocks private NotificationServiceImpl notificationService;
 
-  @Captor
-  private ArgumentCaptor<Notification> notificationCaptor;
+  @Captor private ArgumentCaptor<Notification> notificationCaptor;
 
   private NotificationRequest createRequest() {
     return NotificationRequest.builder(SOURCE_DOMAIN)
@@ -123,22 +114,24 @@ class NotificationServiceImplTest {
     @DisplayName("sourceIdがnullの場合でも通知が作成されること")
     void shouldCreateNotificationWithoutSourceId() {
       // Arrange
-      NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-          .recipientId(RECIPIENT_ID)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .build();
-      Notification savedNotification = Notification.builder()
-          .id(SnowflakeId.of(2L))
-          .recipientId(RECIPIENT_ID)
-          .sourceDomain(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .createdAt(LocalDateTime.now())
-          .updatedAt(LocalDateTime.now())
-          .build();
+      NotificationRequest request =
+          NotificationRequest.builder(SOURCE_DOMAIN)
+              .recipientId(RECIPIENT_ID)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .build();
+      Notification savedNotification =
+          Notification.builder()
+              .id(SnowflakeId.of(2L))
+              .recipientId(RECIPIENT_ID)
+              .sourceDomain(SOURCE_DOMAIN)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .createdAt(LocalDateTime.now())
+              .updatedAt(LocalDateTime.now())
+              .build();
       when(snowflakeIdGenerator.nextId()).thenReturn(2L);
       when(notificationRepository.save(any(Notification.class))).thenReturn(savedNotification);
 
@@ -157,22 +150,24 @@ class NotificationServiceImplTest {
       // Arrange
       when(snowflakeIdGenerator.nextId()).thenReturn(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
       for (NotificationType notificationType : NotificationType.values()) {
-        NotificationRequest request = NotificationRequest.builder(SOURCE_DOMAIN)
-            .recipientId(RECIPIENT_ID)
-            .title(TITLE)
-            .content(CONTENT)
-            .type(notificationType)
-            .build();
-        Notification savedNotification = Notification.builder()
-            .id(SnowflakeId.of(1L))
-            .recipientId(RECIPIENT_ID)
-            .sourceDomain(SOURCE_DOMAIN)
-            .title(TITLE)
-            .content(CONTENT)
-            .type(notificationType)
-            .createdAt(LocalDateTime.now())
-            .updatedAt(LocalDateTime.now())
-            .build();
+        NotificationRequest request =
+            NotificationRequest.builder(SOURCE_DOMAIN)
+                .recipientId(RECIPIENT_ID)
+                .title(TITLE)
+                .content(CONTENT)
+                .type(notificationType)
+                .build();
+        Notification savedNotification =
+            Notification.builder()
+                .id(SnowflakeId.of(1L))
+                .recipientId(RECIPIENT_ID)
+                .sourceDomain(SOURCE_DOMAIN)
+                .title(TITLE)
+                .content(CONTENT)
+                .type(notificationType)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
         when(notificationRepository.save(any(Notification.class))).thenReturn(savedNotification);
 
         // Act
@@ -192,20 +187,21 @@ class NotificationServiceImplTest {
     @DisplayName("受信者の通知一覧がDTOとして返されること")
     void shouldReturnNotificationsByRecipient() {
       // Arrange
-      List<Notification> expectedNotifications = List.of(
-          createSavedNotification(),
-          Notification.builder()
-              .id(SnowflakeId.of(2L))
-              .recipientId(RECIPIENT_ID)
-              .sourceDomain(SOURCE_DOMAIN)
-              .title("Another notification")
-              .content("Content")
-              .type(NotificationType.MENTION)
-              .createdAt(LocalDateTime.now())
-              .updatedAt(LocalDateTime.now())
-              .build()
-      );
-      when(notificationRepository.findByRecipientIdAndDeletedAtIsNull(RECIPIENT_ID)).thenReturn(expectedNotifications);
+      List<Notification> expectedNotifications =
+          List.of(
+              createSavedNotification(),
+              Notification.builder()
+                  .id(SnowflakeId.of(2L))
+                  .recipientId(RECIPIENT_ID)
+                  .sourceDomain(SOURCE_DOMAIN)
+                  .title("Another notification")
+                  .content("Content")
+                  .type(NotificationType.MENTION)
+                  .createdAt(LocalDateTime.now())
+                  .updatedAt(LocalDateTime.now())
+                  .build());
+      when(notificationRepository.findByRecipientIdAndDeletedAtIsNull(RECIPIENT_ID))
+          .thenReturn(expectedNotifications);
 
       // Act
       List<NotificationDTO> result = notificationService.getNotificationsByRecipient(RECIPIENT_ID);
@@ -221,7 +217,8 @@ class NotificationServiceImplTest {
     @DisplayName("通知がない場合は空のリストが返されること")
     void shouldReturnEmptyListWhenNoNotifications() {
       // Arrange
-      when(notificationRepository.findByRecipientIdAndDeletedAtIsNull(RECIPIENT_ID)).thenReturn(List.of());
+      when(notificationRepository.findByRecipientIdAndDeletedAtIsNull(RECIPIENT_ID))
+          .thenReturn(List.of());
 
       // Act
       List<NotificationDTO> result = notificationService.getNotificationsByRecipient(RECIPIENT_ID);
@@ -240,29 +237,31 @@ class NotificationServiceImplTest {
     @DisplayName("未読通知のみがDTOとして返されること")
     void shouldReturnOnlyUnreadNotifications() {
       // Arrange
-      List<Notification> unreadNotifications = List.of(
-          Notification.builder()
-              .id(SnowflakeId.of(1L))
-              .recipientId(RECIPIENT_ID)
-              .sourceDomain(SOURCE_DOMAIN)
-              .title("Unread notification")
-              .content("Content")
-              .type(NotificationType.SYSTEM)
-              .isRead(false)
-              .createdAt(LocalDateTime.now())
-              .updatedAt(LocalDateTime.now())
-              .build()
-      );
+      List<Notification> unreadNotifications =
+          List.of(
+              Notification.builder()
+                  .id(SnowflakeId.of(1L))
+                  .recipientId(RECIPIENT_ID)
+                  .sourceDomain(SOURCE_DOMAIN)
+                  .title("Unread notification")
+                  .content("Content")
+                  .type(NotificationType.SYSTEM)
+                  .isRead(false)
+                  .createdAt(LocalDateTime.now())
+                  .updatedAt(LocalDateTime.now())
+                  .build());
       when(notificationRepository.findByRecipientIdAndIsReadAndDeletedAtIsNull(RECIPIENT_ID, false))
           .thenReturn(unreadNotifications);
 
       // Act
-      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
+      List<NotificationDTO> result =
+          notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
 
       // Assert
       assertThat(result).hasSize(1);
       assertThat(result.get(0).isRead()).isFalse();
-      verify(notificationRepository).findByRecipientIdAndIsReadAndDeletedAtIsNull(RECIPIENT_ID, false);
+      verify(notificationRepository)
+          .findByRecipientIdAndIsReadAndDeletedAtIsNull(RECIPIENT_ID, false);
     }
 
     @Test
@@ -273,11 +272,13 @@ class NotificationServiceImplTest {
           .thenReturn(List.of());
 
       // Act
-      List<NotificationDTO> result = notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
+      List<NotificationDTO> result =
+          notificationService.getUnreadNotificationsByRecipient(RECIPIENT_ID);
 
       // Assert
       assertThat(result).isEmpty();
-      verify(notificationRepository).findByRecipientIdAndIsReadAndDeletedAtIsNull(RECIPIENT_ID, false);
+      verify(notificationRepository)
+          .findByRecipientIdAndIsReadAndDeletedAtIsNull(RECIPIENT_ID, false);
     }
   }
 
@@ -290,18 +291,20 @@ class NotificationServiceImplTest {
     void shouldMarkNotificationAsRead() {
       // Arrange
       SnowflakeId notificationId = SnowflakeId.of(1L);
-      Notification notification = Notification.builder()
-          .id(notificationId)
-          .recipientId(RECIPIENT_ID)
-          .sourceDomain(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .isRead(false)
-          .createdAt(LocalDateTime.now())
-          .updatedAt(LocalDateTime.now())
-          .build();
-      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class))).thenReturn(Optional.of(notification));
+      Notification notification =
+          Notification.builder()
+              .id(notificationId)
+              .recipientId(RECIPIENT_ID)
+              .sourceDomain(SOURCE_DOMAIN)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .isRead(false)
+              .createdAt(LocalDateTime.now())
+              .updatedAt(LocalDateTime.now())
+              .build();
+      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class)))
+          .thenReturn(Optional.of(notification));
 
       // Act
       notificationService.markAsRead(String.valueOf(notificationId.value()));
@@ -316,10 +319,12 @@ class NotificationServiceImplTest {
     void shouldThrowExceptionWhenNotificationNotFound() {
       // Arrange
       SnowflakeId notificationId = SnowflakeId.of(999L);
-      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class))).thenReturn(Optional.empty());
+      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class)))
+          .thenReturn(Optional.empty());
 
       // Act & Assert
-      assertThatThrownBy(() -> notificationService.markAsRead(String.valueOf(notificationId.value())))
+      assertThatThrownBy(
+              () -> notificationService.markAsRead(String.valueOf(notificationId.value())))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("通知が見つかりません");
       verify(notificationRepository, never()).save(any());
@@ -358,18 +363,20 @@ class NotificationServiceImplTest {
       // Arrange
       SnowflakeId notificationId = SnowflakeId.of(1L);
       LocalDateTime beforeUpdate = LocalDateTime.now().minusSeconds(10);
-      Notification notification = Notification.builder()
-          .id(notificationId)
-          .recipientId(RECIPIENT_ID)
-          .sourceDomain(SOURCE_DOMAIN)
-          .title(TITLE)
-          .content(CONTENT)
-          .type(TYPE)
-          .isRead(true)
-          .createdAt(LocalDateTime.now())
-          .updatedAt(beforeUpdate)
-          .build();
-      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class))).thenReturn(Optional.of(notification));
+      Notification notification =
+          Notification.builder()
+              .id(notificationId)
+              .recipientId(RECIPIENT_ID)
+              .sourceDomain(SOURCE_DOMAIN)
+              .title(TITLE)
+              .content(CONTENT)
+              .type(TYPE)
+              .isRead(true)
+              .createdAt(LocalDateTime.now())
+              .updatedAt(beforeUpdate)
+              .build();
+      when(notificationRepository.findByIdAndDeletedAtIsNull(any(SnowflakeId.class)))
+          .thenReturn(Optional.of(notification));
 
       // Act
       notificationService.markAsRead(String.valueOf(notificationId.value()));

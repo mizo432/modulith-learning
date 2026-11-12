@@ -1,6 +1,6 @@
 package undecided.association.relationshipMgmt.party.internal.bankAccountUse;
 
-import com.github.mizo432.shared.value.datetime.WhenOccured;
+import com.github.mizo432.shared.common.value.datetime.WhenOccured;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;

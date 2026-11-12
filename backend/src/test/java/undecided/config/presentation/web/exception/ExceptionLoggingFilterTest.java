@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import com.github.mizo432.shared.logging.ExceptionLogger;
+import com.github.mizo432.shared.spring.logging.ExceptionLogger;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;

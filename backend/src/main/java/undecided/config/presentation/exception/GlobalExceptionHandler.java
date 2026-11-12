@@ -2,6 +2,10 @@ package undecided.config.presentation.exception;
 
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.ResultMessagesNotificationException;
+import com.github.mizo432.shared.common.primitive.Lists2;
+import com.github.mizo432.shared.spring.logging.ExceptionLogger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
@@ -22,10 +26,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import undecided.config.presentation.web.idempotency.IdempotencyKeyException;
-import com.github.mizo432.shared.logging.ExceptionLogger;
-import com.github.mizo432.shared.exception.ResultMessagesNotificationException;
-import com.github.mizo432.shared.common.primitive.Lists2;
-import com.github.mizo432.shared.exception.BusinessException;
 
 /**
  * アプリケーション全体で発生する例外をハンドリングするクラス。
@@ -53,11 +53,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     checkNotNull(e, () -> new NullPointerException("e must not be null."));
     Map<String, Object> error = new HashMap<>();
     error.put("error", e.getMessage());
-    
+
     // 空リストの場合のNullPointerExceptionを回避
     var lastMessage = Lists2.getLast(e.getResultMessages().getList());
     String detail = (lastMessage != null) ? lastMessage.text() : e.getMessage();
-    
+
     return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
   }
 
@@ -73,7 +73,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(BusinessException.class)
   public @NonNull ProblemDetail handleBusinessException(
       @NonNull BusinessException e, @NonNull HttpServletRequest request) {
-    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    ProblemDetail problem =
+        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     problem.setTitle("Business Error");
     problem.setInstance(URI.create(request.getRequestURI()));
     problem.setProperty("errorCode", "BUSINESS_ERROR");
@@ -175,7 +176,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(IllegalArgumentException.class)
   public @NonNull ProblemDetail handleIllegalArgument(
       @NonNull IllegalArgumentException ex, @NonNull HttpServletRequest request) {
-    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    ProblemDetail problem =
+        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
     problem.setTitle("Bad Request");
     problem.setInstance(URI.create(request.getRequestURI()));
     problem.setProperty("errorCode", "ILLEGAL_ARGUMENT");

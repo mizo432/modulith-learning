@@ -3,6 +3,7 @@ package com.github.mizo432.shared.value.datetime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.common.value.datetime.ValidInterval;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -239,8 +240,10 @@ class ValidIntervalTest {
     @Test
     @DisplayName("同じ値を持つインスタンスは等しい")
     void shouldBeEqualWhenSameValue() {
-      ValidInterval first = ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
-      ValidInterval second = ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+      ValidInterval first =
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+      ValidInterval second =
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 
       assertThat(first).isEqualTo(second);
       assertThat(first.hashCode()).isEqualTo(second.hashCode());
@@ -249,8 +252,10 @@ class ValidIntervalTest {
     @Test
     @DisplayName("異なる値を持つインスタンスは等しくない")
     void shouldNotBeEqualWhenDifferentValue() {
-      ValidInterval first = ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
-      ValidInterval second = ValidInterval.create(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31));
+      ValidInterval first =
+          ValidInterval.create(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+      ValidInterval second =
+          ValidInterval.create(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31));
 
       assertThat(first).isNotEqualTo(second);
     }

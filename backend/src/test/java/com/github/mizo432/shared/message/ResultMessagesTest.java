@@ -2,6 +2,9 @@ package com.github.mizo432.shared.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessages;
+import com.github.mizo432.shared.common.message.StandardResultMessageType;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.jupiter.api.Tag;

@@ -1,7 +1,6 @@
 package undecided.generic.bankReg.spi.branch;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
+import com.github.mizo432.shared.common.exception.BusinessException;
 import jakarta.persistence.Embeddable;
 
 /**

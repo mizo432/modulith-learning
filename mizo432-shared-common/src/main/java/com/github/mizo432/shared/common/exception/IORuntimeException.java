@@ -3,11 +3,9 @@ package com.github.mizo432.shared.common.exception;
 /**
  * I/O 操作に関連するランタイム例外です。
  *
- * <p>ファイル入出力、ネットワーク通信、データベースアクセスなどの I/O 操作中に発生した
- * エラーを {@link SystemException} としてラップするために使用されます。
+ * <p>ファイル入出力、ネットワーク通信、データベースアクセスなどの I/O 操作中に発生した エラーを {@link SystemException} としてラップするために使用されます。
  *
- * <p>チェック例外である {@code IOException} をランタイム例外として扱うことで、
- * 例外伝播の負担を軽減し、適切なレイヤーで一括処理できるようにします。
+ * <p>チェック例外である {@code IOException} をランタイム例外として扱うことで、 例外伝播の負担を軽減し、適切なレイヤーで一括処理できるようにします。
  */
 public class IORuntimeException extends SystemException {
   /**

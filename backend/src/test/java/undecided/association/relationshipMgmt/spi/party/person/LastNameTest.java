@@ -1,10 +1,9 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
-import com.github.mizo432.shared.exception.BusinessException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -165,9 +164,7 @@ class LastNameTest {
     void shouldReturnMaskedValue() {
       LastName lastName = LastName.of("田中");
 
-      assertThat(lastName.toString())
-          .as("LastNameのtoString()は機微な情報をマスクして返すこと")
-          .isEqualTo("田*");
+      assertThat(lastName.toString()).as("LastNameのtoString()は機微な情報をマスクして返すこと").isEqualTo("田*");
     }
 
     @Test
@@ -175,9 +172,7 @@ class LastNameTest {
     void shouldReturnNullWhenValueIsNull() {
       LastName lastName = LastName.empty();
 
-      assertThat(lastName.toString())
-          .as("空のLastNameのtoString()はnullを返すこと")
-          .isNull();
+      assertThat(lastName.toString()).as("空のLastNameのtoString()はnullを返すこと").isNull();
     }
   }
 

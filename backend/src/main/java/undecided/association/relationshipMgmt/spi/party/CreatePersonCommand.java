@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.spi.party;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import org.jspecify.annotations.NonNull;
 import undecided.association.relationshipMgmt.spi.party.person.Person;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -14,13 +15,11 @@ public interface CreatePersonCommand {
   /**
    * 個人情報を作成して永続化します。
    *
-   * <p>引数で渡された個人情報を基にエンティティを作成し、データベースに保存します。
-   * 重複するコードが存在する場合は、{@link com.github.mizo432.shared.exception.BusinessException} がスローされます。
+   * <p>引数で渡された個人情報を基にエンティティを作成し、データベースに保存します。 重複するコードが存在する場合は、{@link BusinessException} がスローされます。
    *
    * @param person 作成する個人の情報（null は不可）
    * @return 作成された個人の Snowflake ID
-   * @throws com.github.mizo432.shared.exception.BusinessException 引数が null の場合、または重複するコードが存在する場合
+   * @throws BusinessException 引数が null の場合、または重複するコードが存在する場合
    */
-  @NonNull
-  SnowflakeId create(@NonNull Person person);
+  @NonNull SnowflakeId create(@NonNull Person person);
 }

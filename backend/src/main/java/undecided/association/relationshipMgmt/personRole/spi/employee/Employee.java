@@ -1,8 +1,10 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
-import com.github.mizo432.shared.common.dateProvider.DateProvider;
-import com.github.mizo432.shared.exception.BusinessException;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+
+import com.github.mizo432.shared.common.dateProvider.DateProvider;
+import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.converter.EncryptedStringConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -15,7 +17,6 @@ import java.util.UUID;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.converter.EncryptedStringConverter;
 
 @Entity(name = "EmployeeEmployee")
 @Table(name = "employees")
@@ -36,15 +37,11 @@ public class Employee {
 
   private LocalDateTime validTo;
 
-  /**
-   * 作成日時
-   */
+  /** 作成日時 */
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
-  /**
-   * 更新日時
-   */
+  /** 更新日時 */
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
@@ -96,7 +93,11 @@ public class Employee {
    * @param validFrom 有効開始日（null不可）
    * @param validTo 有効終了日（null可）
    */
-  public void update(@NonNull String lastName, @NonNull String firstName, @NonNull LocalDateTime validFrom, @Nullable LocalDateTime validTo) {
+  public void update(
+      @NonNull String lastName,
+      @NonNull String firstName,
+      @NonNull LocalDateTime validFrom,
+      @Nullable LocalDateTime validTo) {
     checkNotNull(lastName, () -> new BusinessException("lastName must not be null"));
     checkNotNull(firstName, () -> new BusinessException("firstName must not be null"));
     checkNotNull(validFrom, () -> new BusinessException("validFrom must not be null"));

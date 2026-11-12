@@ -1,9 +1,9 @@
 package undecided.generic.greeting.internal;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.exception.SystemException;
+import com.github.mizo432.shared.common.message.ResultMessages;
 import org.springframework.stereotype.Service;
-import com.github.mizo432.shared.exception.BusinessException;
-import com.github.mizo432.shared.exception.SystemException;
-import com.github.mizo432.shared.message.ResultMessages;
 
 @Service
 public class ExceptionServiceImpl implements ExceptionService {

@@ -1,11 +1,11 @@
 package undecided.config.batch;
 
+import com.github.mizo432.shared.spring.logger.LogIdBasedLogger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListener;
 import org.springframework.batch.core.step.StepExecution;
-import com.github.mizo432.shared.logger.LogIdBasedLogger;
 
 /**
  * バッチジョブの開始・終了時にログ出力を行う共通リスナークラス。
@@ -49,11 +49,8 @@ public class BatchJobListener implements JobExecutionListener {
 
     // エラーがある場合はログ出力
     if (!jobExecution.getAllFailureExceptions().isEmpty()) {
-      log.warn(
-          "w.batch.2001", jobName, jobExecution.getAllFailureExceptions().size());
-      jobExecution
-          .getAllFailureExceptions()
-          .forEach(e -> log.warn("w.batch.2002", e.getMessage()));
+      log.warn("w.batch.2001", jobName, jobExecution.getAllFailureExceptions().size());
+      jobExecution.getAllFailureExceptions().forEach(e -> log.warn("w.batch.2002", e.getMessage()));
     }
   }
 }

@@ -1,13 +1,14 @@
-package com.github.mizo432.shared.message;
+package com.github.mizo432.shared.common.message;
 
-import static com.github.mizo432.shared.message.StandardResultMessageType.DANGER;
-import static com.github.mizo432.shared.message.StandardResultMessageType.INFO;
-import static com.github.mizo432.shared.message.StandardResultMessageType.SUCCESS;
-import static com.github.mizo432.shared.message.StandardResultMessageType.WARNING;
+import static com.github.mizo432.shared.common.message.StandardResultMessageType.DANGER;
+import static com.github.mizo432.shared.common.message.StandardResultMessageType.INFO;
+import static com.github.mizo432.shared.common.message.StandardResultMessageType.SUCCESS;
+import static com.github.mizo432.shared.common.message.StandardResultMessageType.WARNING;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 import static com.github.mizo432.shared.common.primitive.Lists2.newArrayList;
 import static com.github.mizo432.shared.common.primitive.Objects2.nonNull;
 
+import com.github.mizo432.shared.common.primitive.Strings2;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
-import com.github.mizo432.shared.common.primitive.Strings2;
 
 /**
  * 複数の結果メッセージを管理するためのクラスです。

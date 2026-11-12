@@ -3,6 +3,7 @@ package com.github.mizo432.shared.message;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.common.message.MessageFormatter;
 import java.util.MissingResourceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

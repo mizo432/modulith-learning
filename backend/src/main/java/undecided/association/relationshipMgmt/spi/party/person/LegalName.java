@@ -1,13 +1,12 @@
 package undecided.association.relationshipMgmt.spi.party.person;
 
-import java.util.regex.Pattern;
+import com.github.mizo432.shared.common.value.StringCode;
+import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.sensitive.SensitiveDataMasker;
-import com.github.mizo432.shared.value.StringCode;
 
 /**
  * 法的名前を表す値オブジェクトです。
@@ -135,8 +134,7 @@ public class LegalName implements StringCode<LegalName> {
     /**
      * エンティティ属性をデータベースカラムに変換します。
      *
-     * <p>姓と名を区切り文字で連結して保存します。これにより、名前にスペースが含まれる場合でも
-     * 正しく復元できます。
+     * <p>姓と名を区切り文字で連結して保存します。これにより、名前にスペースが含まれる場合でも 正しく復元できます。
      *
      * @param attribute 変換対象の {@code LegalName} 属性
      * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}

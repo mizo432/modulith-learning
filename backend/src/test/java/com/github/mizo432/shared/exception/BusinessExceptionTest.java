@@ -2,16 +2,17 @@ package com.github.mizo432.shared.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
+import com.github.mizo432.shared.common.message.ResultMessage;
+import com.github.mizo432.shared.common.message.ResultMessageType;
+import com.github.mizo432.shared.common.message.ResultMessages;
+import com.github.mizo432.shared.common.message.StandardResultMessageType;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import com.github.mizo432.shared.message.ResultMessage;
-import com.github.mizo432.shared.message.ResultMessageType;
-import com.github.mizo432.shared.message.ResultMessages;
-import com.github.mizo432.shared.message.StandardResultMessageType;
 
 @Tag("small")
 @DisplayName("BusinessException のテスト")

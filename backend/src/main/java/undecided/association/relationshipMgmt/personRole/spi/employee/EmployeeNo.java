@@ -1,9 +1,9 @@
 package undecided.association.relationshipMgmt.personRole.spi.employee;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import com.github.mizo432.shared.common.precondition.StringPrecondition;
 import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.exception.BusinessException;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -23,13 +23,9 @@ public class EmployeeNo {
     ObjectPrecondition.checkNotNull(
         value, () -> new BusinessException("EmployeeNo cannot be null"));
     StringPrecondition.checkMaxLength(
-        value,
-        MAX_LENGTH,
-        () -> new BusinessException("EmployeeNo cannot exceed 10 characters"));
+        value, MAX_LENGTH, () -> new BusinessException("EmployeeNo cannot exceed 10 characters"));
     StringPrecondition.checkRegex(
-        value,
-        REGEX,
-        () -> new BusinessException("EmployeeNo must match the pattern " + REGEX));
+        value, REGEX, () -> new BusinessException("EmployeeNo must match the pattern " + REGEX));
     return new EmployeeNo(value);
   }
 

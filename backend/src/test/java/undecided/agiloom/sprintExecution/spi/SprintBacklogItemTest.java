@@ -3,8 +3,7 @@ package undecided.agiloom.sprintExecution.spi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.mizo432.shared.exception.BusinessException;
-import java.time.LocalDateTime;
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,7 +15,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("SprintBacklogItemのテスト")
 class SprintBacklogItemTest {
 
-  private static final UUID FIXED_ASSIGNEE_ID = UUID.fromString("55555555-5555-5555-5555-555555555555");
+  private static final UUID FIXED_ASSIGNEE_ID =
+      UUID.fromString("55555555-5555-5555-5555-555555555555");
 
   private SprintBacklogItem createBacklogItem() {
     return SprintBacklogItem.builder()
@@ -160,7 +160,8 @@ class SprintBacklogItemTest {
       SprintBacklogItem item = createBacklogItem();
       String longDescription = "A".repeat(2001);
 
-      assertThatThrownBy(() -> item.update(longDescription, TaskStatus.IN_PROGRESS, FIXED_ASSIGNEE_ID))
+      assertThatThrownBy(
+              () -> item.update(longDescription, TaskStatus.IN_PROGRESS, FIXED_ASSIGNEE_ID))
           .isInstanceOf(BusinessException.class)
           .hasMessageContaining("workDescription must not exceed 2000 characters");
     }

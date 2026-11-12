@@ -1,6 +1,5 @@
 /** 値オブジェクトを格納 */
 @ApplicationModule(id = "value", type = ApplicationModule.Type.OPEN)
-package com.github.mizo432.shared.value;
+package com.github.mizo432.shared.common.value;
 
 import org.springframework.modulith.ApplicationModule;
-

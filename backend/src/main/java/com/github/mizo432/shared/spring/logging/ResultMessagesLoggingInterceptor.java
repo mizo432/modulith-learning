@@ -1,13 +1,13 @@
-package com.github.mizo432.shared.logging;
+package com.github.mizo432.shared.spring.logging;
 
+import com.github.mizo432.shared.common.exception.ResultMessagesNotificationException;
+import com.github.mizo432.shared.common.message.StandardResultMessageType;
 import jakarta.annotation.Nonnull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.InitializingBean;
-import com.github.mizo432.shared.exception.ResultMessagesNotificationException;
-import com.github.mizo432.shared.message.StandardResultMessageType;
 
 /**
  * メソッド呼び出しをインターセプトし、例外のログ記録やスレッドローカルなコンテキスト管理を行うインターセプタです。
@@ -32,8 +32,8 @@ public class ResultMessagesLoggingInterceptor implements MethodInterceptor, Init
    *
    * <p>主な特徴: - スレッドごとに固有の {@link MethodInvocation} インスタンスを保持します。 -
    * フィールドへのアクセスはスレッドセーフであり、複数スレッド環境下でも 隔離されたコンテキストで動作します。 -
-   * このフィールドを使用して、メソッドの特定の呼び出しが「開始ポイント」であるかどうかを判定します。 -
-   * Virtual Thread 環境でも同じスレッド内で使用されるため、{@link ThreadLocal} で問題なく動作します。
+   * このフィールドを使用して、メソッドの特定の呼び出しが「開始ポイント」であるかどうかを判定します。 - Virtual Thread 環境でも同じスレッド内で使用されるため、{@link
+   * ThreadLocal} で問題なく動作します。
    *
    * <p>注意事項: - このフィールドは {@code final} 修飾子が付けられているため、一度設定された値を変更することはできません。 -
    * 値の初期化およびクリアは、一貫性のあるスレッドロックなしの状態を保障するために適切に実施する必要があります。

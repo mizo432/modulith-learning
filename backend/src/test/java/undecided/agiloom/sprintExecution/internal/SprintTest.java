@@ -3,10 +3,10 @@ package undecided.agiloom.sprintExecution.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.github.mizo432.shared.common.exception.BusinessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import com.github.mizo432.shared.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -19,7 +19,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("Sprintのテスト")
 class SprintTest {
 
-  private static final UUID FIXED_PRODUCT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private static final UUID FIXED_PRODUCT_ID =
+      UUID.fromString("11111111-1111-1111-1111-111111111111");
   private static final UUID FIXED_TEAM_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
   private Sprint createSprint() {

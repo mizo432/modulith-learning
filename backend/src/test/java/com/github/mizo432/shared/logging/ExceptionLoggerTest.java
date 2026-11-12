@@ -5,8 +5,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import com.github.mizo432.shared.common.exception.ExceptionLevel;
+import com.github.mizo432.shared.spring.logging.ExceptionCodeResolver;
+import com.github.mizo432.shared.spring.logging.ExceptionLevelResolver;
+import com.github.mizo432.shared.spring.logging.ExceptionLogger;
+import com.github.mizo432.shared.spring.logging.SimpleMappingExceptionCodeResolver;
 import java.util.LinkedHashMap;
-import com.github.mizo432.shared.exception.ExceptionLevel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -553,9 +557,7 @@ class ExceptionLoggerTest {
       String result = logger.formatLogMessage("E001", "User not found: taro@example.com");
 
       // Assert
-      assertThat(result)
-          .as("maskSensitiveData有効時はメールアドレスがマスクされること")
-          .contains("t***@example.com");
+      assertThat(result).as("maskSensitiveData有効時はメールアドレスがマスクされること").contains("t***@example.com");
       assertThat(result).doesNotContain("taro@example.com");
     }
 
@@ -572,9 +574,7 @@ class ExceptionLoggerTest {
       String result = logger.formatLogMessage("E001", "Contact: 09012345678");
 
       // Assert
-      assertThat(result)
-          .as("maskSensitiveData有効時は電話番号がマスクされること")
-          .contains("*******5678");
+      assertThat(result).as("maskSensitiveData有効時は電話番号がマスクされること").contains("*******5678");
       assertThat(result).doesNotContain("09012345678");
     }
 
@@ -588,8 +588,7 @@ class ExceptionLoggerTest {
       logger.afterPropertiesSet();
 
       // Act
-      String result =
-          logger.formatLogMessage("E001", "User: taro@example.com, Phone: 09012345678");
+      String result = logger.formatLogMessage("E001", "User: taro@example.com, Phone: 09012345678");
 
       // Assert
       assertThat(result).contains("t***@example.com");
@@ -611,9 +610,7 @@ class ExceptionLoggerTest {
       String result = logger.formatLogMessage("E001", "User: taro@example.com, Phone: 09012345678");
 
       // Assert
-      assertThat(result)
-          .as("maskSensitiveData無効時は機微な情報がマスクされないこと")
-          .contains("taro@example.com");
+      assertThat(result).as("maskSensitiveData無効時は機微な情報がマスクされないこと").contains("taro@example.com");
       assertThat(result).contains("09012345678");
     }
 
@@ -677,8 +674,7 @@ class ExceptionLoggerTest {
       logger.afterPropertiesSet();
 
       // Act
-      String result =
-          logger.formatLogMessage("E001", "Users: a@foo.com and b@bar.org");
+      String result = logger.formatLogMessage("E001", "Users: a@foo.com and b@bar.org");
 
       // Assert
       assertThat(result).contains("a***@foo.com");
