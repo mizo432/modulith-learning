@@ -5,6 +5,6 @@
   "instruction": "日本語でお願いします。\nAvoid overly verbose descriptions or unnecessary details.\nStart with a short sentence in imperative form, no more than 50 characters long.\nThen leave an empty line and continue with a more detailed explanation.\nWrite only one sentence for the first part, and two or three sentences at most for the detailed explanation."
 }]]></component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="" vcs="Git" />
   </component>
 </project>

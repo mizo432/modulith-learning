@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.envers.Audited;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.partyRelationship.PartyRelationship;
@@ -30,6 +32,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public abstract class Party {
   @Id
   @Column(name = "party_id")
@@ -53,7 +56,7 @@ public abstract class Party {
   /** 検索用名称（全角文字）。 */
   private SearchName searchName;
 
-  private List<PartyRelationship> partyRelationships = Lists2.newArrayList();
+  @ManyToMany private List<PartyRelationship> partyRelationships = Lists2.newArrayList();
 
   @Override
   public boolean equals(Object o) {
