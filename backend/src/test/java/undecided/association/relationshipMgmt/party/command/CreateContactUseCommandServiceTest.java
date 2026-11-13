@@ -20,9 +20,9 @@ import undecided.association.relationshipMgmt.party.repository.OrgRepository;
 import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
 import undecided.association.relationshipMgmt.party.repository.PersonRepository;
 import undecided.association.relationshipMgmt.spi.party.contact.Address;
-import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
+import undecided.association.relationshipMgmt.spi.party.contact.EmailAddress;
 import undecided.association.relationshipMgmt.spi.party.contact.PhoneNo;
 import undecided.association.relationshipMgmt.spi.party.contact.dto.CreateContactUseDto;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -75,7 +75,7 @@ class CreateContactUseCommandServiceTest {
       CreateContactUseDto dto =
           new CreateContactUseDto(
               SnowflakeId.empty(),
-              Contact.of("user@example.com"),
+              EmailAddress.of("user@example.com"),
               PhoneNo.of("090-1234-5678"),
               Address.empty(),
               ContactUseType.HOME);
@@ -90,8 +90,8 @@ class CreateContactUseCommandServiceTest {
     }
 
     @Test
-    @DisplayName("contactがnullの場合、IllegalArgumentExceptionをスローすること")
-    void shouldThrowExceptionWhenContactIsNull() {
+    @DisplayName("emailAddressがnullの場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowExceptionWhenEmailAddressIsNull() {
       // Arrange
       CreateContactUseDto dto =
           new CreateContactUseDto(
@@ -103,30 +103,30 @@ class CreateContactUseCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.createAndUse(dto))
-          .as("contactがnullの場合に例外がスローされること")
+          .as("emailAddressがnullの場合に例外がスローされること")
           .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("contactは必須です");
+          .hasMessageContaining("emailAddressは必須です");
 
       verify(contactUseRepository, never()).save((ContactUse) any());
     }
 
     @Test
-    @DisplayName("contactがemptyの場合、IllegalArgumentExceptionをスローすること")
-    void shouldThrowExceptionWhenContactIsEmpty() {
+    @DisplayName("emailAddressがemptyの場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowExceptionWhenEmailAddressIsEmpty() {
       // Arrange
       CreateContactUseDto dto =
           new CreateContactUseDto(
               SnowflakeId.of(1111111111L),
-              Contact.empty(),
+              EmailAddress.empty(),
               PhoneNo.of("090-1234-5678"),
               Address.empty(),
               ContactUseType.HOME);
 
       // Act & Assert
       assertThatThrownBy(() -> service.createAndUse(dto))
-          .as("contactがemptyの場合に例外がスローされること")
+          .as("emailAddressがemptyの場合に例外がスローされること")
           .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("contactは必須です");
+          .hasMessageContaining("emailAddressは必須です");
 
       verify(contactUseRepository, never()).save((ContactUse) any());
     }
@@ -147,7 +147,7 @@ class CreateContactUseCommandServiceTest {
       CreateContactUseDto dto =
           new CreateContactUseDto(
               SnowflakeId.of(1111111111L),
-              Contact.of("user@example.com"),
+              EmailAddress.of("user@example.com"),
               PhoneNo.of("090-1234-5678"),
               Address.of("東京都"),
               ContactUseType.HOME);
@@ -162,7 +162,7 @@ class CreateContactUseCommandServiceTest {
       ContactUse saved = captor.getValue();
       assertThat(saved.getContactUseId().value()).isEqualTo(generatedId.value());
       assertThat(saved.getPartyId().value()).isEqualTo(SnowflakeId.of(1111111111L).value());
-      assertThat(saved.getContact().value()).isEqualTo("user@example.com");
+      assertThat(saved.getEmailAddress().value()).isEqualTo("user@example.com");
       assertThat(saved.getPhoneNo().value()).isEqualTo("090-1234-5678");
       assertThat(saved.getAddress().value()).isEqualTo("東京都");
       assertThat(saved.getType()).isEqualTo(ContactUseType.HOME);
@@ -179,7 +179,7 @@ class CreateContactUseCommandServiceTest {
       CreateContactUseDto dto =
           new CreateContactUseDto(
               SnowflakeId.of(1111111111L),
-              Contact.of("user@example.com"),
+              EmailAddress.of("user@example.com"),
               null,
               null,
               null);

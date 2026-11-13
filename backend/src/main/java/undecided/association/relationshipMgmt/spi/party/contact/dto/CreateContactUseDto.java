@@ -3,8 +3,8 @@ package undecided.association.relationshipMgmt.spi.party.contact.dto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import undecided.association.relationshipMgmt.spi.party.contact.Address;
-import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
+import undecided.association.relationshipMgmt.spi.party.contact.EmailAddress;
 import undecided.association.relationshipMgmt.spi.party.contact.PhoneNo;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -23,9 +23,9 @@ public class CreateContactUseDto {
   private final SnowflakeId partyId;
 
   /**
-   * 連絡先アドレス（メールアドレスなど）。
+   * メールアドレス。
    */
-  private final Contact contact;
+  private final EmailAddress emailAddress;
 
   /**
    * 電話番号。

@@ -24,6 +24,8 @@ import undecided.supporting.snowflake.SnowflakeId;
  * {@link Address}値オブジェクトのみを使用するようにしました。これによりデータの二重管理による
  * 整合性問題を解消しました。
  *
+ * <p>Mi2修正により、非推奨の{@link Contact}型から{@link EmailAddress}型に移行しました。
+ *
  * <p>C3修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
  * インスタンスを作成します。
  */
@@ -41,8 +43,8 @@ public class ContactUse {
   @Column(name = "party_id")
   private SnowflakeId partyId = SnowflakeId.EMPTY;
 
-  /** 連絡先アドレス（非推奨、{@link EmailAddress}を使用してください）。 */
-  private Contact contact = Contact.empty();
+  /** メールアドレス。 */
+  private EmailAddress emailAddress = EmailAddress.empty();
 
   /** 電話番号。 */
   private PhoneNo phoneNo = PhoneNo.empty();
@@ -61,9 +63,12 @@ public class ContactUse {
   /**
    * 連絡先の使用履歴を新規作成します。
    *
+   * <p>Mi2修正により、{@code contact}パラメータが{@code emailAddress}に置き換えられました。
+   * 非推奨の{@link Contact}型から{@link EmailAddress}型に移行しました。
+   *
    * @param contactUseId 連絡先使用ID
    * @param partyId パーティID
-   * @param contact 連絡先
+   * @param emailAddress メールアドレス
    * @param phoneNo 電話番号
    * @param address 住所
    * @param type 種類
@@ -73,7 +78,7 @@ public class ContactUse {
   public static ContactUse create(
       SnowflakeId contactUseId,
       SnowflakeId partyId,
-      Contact contact,
+      EmailAddress emailAddress,
       PhoneNo phoneNo,
       Address address,
       ContactUseType type,
@@ -82,7 +87,7 @@ public class ContactUse {
     ContactUse contactUse = new ContactUse();
     contactUse.contactUseId = contactUseId;
     contactUse.partyId = partyId;
-    contactUse.contact = contact;
+    contactUse.emailAddress = emailAddress;
     contactUse.phoneNo = phoneNo;
     contactUse.address = address;
     contactUse.type = type;

@@ -9,7 +9,6 @@ import undecided.association.relationshipMgmt.party.repository.OrgRepository;
 import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
 import undecided.association.relationshipMgmt.party.repository.PersonRepository;
 import undecided.association.relationshipMgmt.spi.party.contact.Address;
-import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
 import undecided.association.relationshipMgmt.spi.party.contact.CreateContactUseCommand;
@@ -50,8 +49,8 @@ public class CreateContactUseCommandService implements CreateContactUseCommand {
     if (dto.getPartyId() == null || dto.getPartyId().isEmpty()) {
       throw new IllegalArgumentException("partyIdは必須です");
     }
-    if (dto.getContact() == null || dto.getContact().isEmpty()) {
-      throw new IllegalArgumentException("contactは必須です");
+    if (dto.getEmailAddress() == null || dto.getEmailAddress().isEmpty()) {
+      throw new IllegalArgumentException("emailAddressは必須です");
     }
 
     // パーティの存在を確認
@@ -69,7 +68,7 @@ public class CreateContactUseCommandService implements CreateContactUseCommand {
     ContactUse contactUse = ContactUse.create(
         contactUseId,
         dto.getPartyId(),
-        dto.getContact(),
+        dto.getEmailAddress(),
         dto.getPhoneNo() != null ? dto.getPhoneNo() : PhoneNo.empty(),
         address,
         dto.getType() != null ? dto.getType() : ContactUseType.UNKNOWN,
