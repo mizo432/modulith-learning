@@ -52,7 +52,7 @@ public class ContactUse {
   private PhoneNo phoneNo = PhoneNo.empty();
 
   /** 住所の値オブジェクト。完全な住所情報を保持します。 */
-  @Column(name = "address", length = 200)
+  @Column(name = "address", columnDefinition = "text")
   private Address address = Address.empty();
 
   /** 連絡先の種類（EMAIL, PHONE, ADDRESSなど）。 */
