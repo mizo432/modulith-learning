@@ -7,7 +7,8 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 
 @Entity
 @Table(
@@ -17,13 +18,29 @@ import lombok.Setter;
       @Index(name = "fk02_role_assignment_for_emp", columnList = "employee_id")
     })
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoleAssignmentForEmp {
-  @Id private UUID roleAssignmentForEmpId;
+  @Id protected UUID roleAssignmentForEmpId;
 
   @Column(name = "role_id")
-  private UUID roleId;
+  protected UUID roleId;
 
   @Column(name = "employee_id")
-  private UUID employeeId;
+  protected UUID employeeId;
+
+  /**
+   * 従業員のロール割り当てを新規作成します。
+   *
+   * @param roleAssignmentForEmpId 割り当てID
+   * @param roleId ロールID
+   * @param employeeId 従業員ID
+   * @return 新規作成されたRoleAssignmentForEmpインスタンス
+   */
+  public static RoleAssignmentForEmp create(UUID roleAssignmentForEmpId, UUID roleId, UUID employeeId) {
+    RoleAssignmentForEmp entity = new RoleAssignmentForEmp();
+    entity.roleAssignmentForEmpId = roleAssignmentForEmpId;
+    entity.roleId = roleId;
+    entity.employeeId = employeeId;
+    return entity;
+  }
 }

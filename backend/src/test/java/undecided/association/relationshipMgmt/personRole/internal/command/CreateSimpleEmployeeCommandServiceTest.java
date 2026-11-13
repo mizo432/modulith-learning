@@ -51,11 +51,7 @@ class CreateSimpleEmployeeCommandServiceTest {
 
       EmployeeDto dto = new EmployeeDto(employeeId, employeeNo, searchName, fullName);
 
-      SimpleEmployee simpleEmployee = new SimpleEmployee();
-      simpleEmployee.setEmployeeId(employeeId);
-      simpleEmployee.setEmployeeNo(employeeNo);
-      simpleEmployee.setSearchName(searchName);
-      simpleEmployee.setFullName(fullName);
+      SimpleEmployee simpleEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
       when(employeeFactory.create(dto)).thenReturn(simpleEmployee);
 
@@ -78,11 +74,7 @@ class CreateSimpleEmployeeCommandServiceTest {
 
       EmployeeDto dto = new EmployeeDto(employeeId, employeeNo, searchName, fullName);
 
-      SimpleEmployee simpleEmployee = new SimpleEmployee();
-      simpleEmployee.setEmployeeId(employeeId);
-      simpleEmployee.setEmployeeNo(employeeNo);
-      simpleEmployee.setSearchName(searchName);
-      simpleEmployee.setFullName(fullName);
+      SimpleEmployee simpleEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
       when(employeeFactory.create(dto)).thenReturn(simpleEmployee);
 

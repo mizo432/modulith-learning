@@ -9,7 +9,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 import undecided.association.relationshipMgmt.spi.party.org.Org;
 
 @Entity
@@ -20,14 +21,30 @@ import undecided.association.relationshipMgmt.spi.party.org.Org;
       @Index(name = "fk02_role_assignment_for_org", columnList = "org_id")
     })
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoleAssignmentForOrg {
-  @Id private UUID roleAssignmentForOrgId;
+  @Id protected UUID roleAssignmentForOrgId;
 
   @Column(name = "role_id")
-  private UUID roleId;
+  protected UUID roleId;
 
   @ManyToOne
   @JoinColumn(name = "org_id")
-  private Org org;
+  protected Org org;
+
+  /**
+   * 組織のロール割り当てを新規作成します。
+   *
+   * @param roleAssignmentForOrgId 割り当てID
+   * @param roleId ロールID
+   * @param org 組織エンティティ
+   * @return 新規作成されたRoleAssignmentForOrgインスタンス
+   */
+  public static RoleAssignmentForOrg create(UUID roleAssignmentForOrgId, UUID roleId, Org org) {
+    RoleAssignmentForOrg entity = new RoleAssignmentForOrg();
+    entity.roleAssignmentForOrgId = roleAssignmentForOrgId;
+    entity.roleId = roleId;
+    entity.org = org;
+    return entity;
+  }
 }

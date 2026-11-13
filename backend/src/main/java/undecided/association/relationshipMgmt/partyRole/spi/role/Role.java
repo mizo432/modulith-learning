@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -22,41 +23,73 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Entity
 @Table(name = "party_role", schema = SchemaRelationshipMgmt.NAME)
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role {
   @Id
   @Column(name = "role_id")
-  private SnowflakeId roleId;
+  protected SnowflakeId roleId;
 
   /** ロールコード（一意制約）。 */
   @Column(name = "role_code", nullable = false, unique = true, length = 30)
-  private String roleCode;
+  protected String roleCode;
 
   /** ロール名称。 */
   @Column(name = "role_name", nullable = false, length = 50)
-  private String roleName;
+  protected String roleName;
 
   /** ロール種類コード。 */
   @Column(name = "role_type_code", nullable = false, length = 20)
-  private String roleTypeCode;
+  protected String roleTypeCode;
 
   /** 説明。 */
   @Column(name = "description", length = 200)
-  private String description;
+  protected String description;
 
   /** 有効開始日。 */
   @Column(name = "valid_from", nullable = false)
-  private LocalDateTime validFrom;
+  protected LocalDateTime validFrom;
 
   /** 有効終了日。 */
   @Column(name = "valid_to")
-  private LocalDateTime validTo;
+  protected LocalDateTime validTo;
 
   @OneToMany
   @JoinColumn(name = "role_id")
-  private List<RoleAssignmentForOrg> orgsAssigned = new ArrayList<>();
+  protected List<RoleAssignmentForOrg> orgsAssigned = new ArrayList<>();
 
   @OneToMany
   @JoinColumn(name = "role_id")
-  private List<RoleAssignmentForEmp> empsAssigned = new ArrayList<>();
+  protected List<RoleAssignmentForEmp> empsAssigned = new ArrayList<>();
+
+  /**
+   * ロールを新規作成します。
+   *
+   * @param roleId ロールID
+   * @param roleCode ロールコード
+   * @param roleName ロール名称
+   * @param roleTypeCode ロール種類コード
+   * @param description 説明
+   * @param validFrom 有効開始日
+   * @param validTo 有効終了日
+   * @return 新規作成されたRoleインスタンス
+   */
+  public static Role create(
+      SnowflakeId roleId,
+      String roleCode,
+      String roleName,
+      String roleTypeCode,
+      String description,
+      LocalDateTime validFrom,
+      LocalDateTime validTo
+  ) {
+    Role role = new Role();
+    role.roleId = roleId;
+    role.roleCode = roleCode;
+    role.roleName = roleName;
+    role.roleTypeCode = roleTypeCode;
+    role.description = description;
+    role.validFrom = validFrom;
+    role.validTo = validTo;
+    return role;
+  }
 }
