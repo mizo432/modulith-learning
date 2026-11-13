@@ -85,7 +85,6 @@ tasks.withType<Javadoc> {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
-        mavenBom("org.springframework.boot:spring-boot-dependencies:4.1.2")
     }
 }
 
