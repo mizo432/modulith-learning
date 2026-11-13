@@ -1,6 +1,8 @@
 package undecided.association.relationshipMgmt.spi.party.phoneNumber;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -51,5 +53,6 @@ public class PhoneNumberEntity {
    *
    * <p>用途: 連絡手段に応じた処理を行うために使用されます。
    */
+  @Enumerated(EnumType.STRING)
   private PhoneNumberType type = PhoneNumberType.UNKNOWN;
 }
