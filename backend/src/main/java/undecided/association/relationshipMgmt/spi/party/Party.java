@@ -8,9 +8,9 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -35,7 +35,6 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Party {
 
   /** パーティの一意な識別子（Snowflake ID）。 */
@@ -64,4 +63,37 @@ public abstract class Party {
 
   /** 検索用名称（全角文字）。パーティの検索や表示に使用されます。 */
   protected SearchName searchName;
+
+  /**
+   * パーティの共通フィールドを初期化します。
+   *
+   * <p>M4/M5修正により、{@link undecided.association.relationshipMgmt.spi.party.org.Org#create}と
+   * {@link undecided.association.relationshipMgmt.spi.party.orgUnit.OrgUnit#create}の重複コードを
+   * この基底クラスに共通化しました。サブクラスのファクトリメソッドから呼び出されます。
+   *
+   * @param partyId パーティID
+   * @param partyTypeCode パーティ種類コード
+   * @param code コード
+   * @param validFrom 有効開始日
+   * @param validTo 有効終了日（null可）
+   * @param govtAssignedId 政府発行識別子（null可）
+   * @param searchName 検索用名称（null可）
+   */
+  protected void initParty(
+      SnowflakeId partyId,
+      PartyTypeCode partyTypeCode,
+      String code,
+      LocalDateTime validFrom,
+      @Nullable LocalDateTime validTo,
+      @Nullable GovtAssignedId govtAssignedId,
+      @Nullable SearchName searchName
+  ) {
+    this.partyId = partyId;
+    this.partyTypeCode = partyTypeCode;
+    this.code = code;
+    this.validFrom = validFrom;
+    this.validTo = validTo;
+    this.govtAssignedId = govtAssignedId;
+    this.searchName = searchName;
+  }
 }

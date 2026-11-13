@@ -14,8 +14,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
+import undecided.association.relationshipMgmt.spi.party.GovtAssignedId;
 import undecided.association.relationshipMgmt.spi.party.Party;
 import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
+import undecided.association.relationshipMgmt.spi.party.SearchName;
 import undecided.association.relationshipMgmt.spi.party.org.Org;
 import undecided.supporting.snowflake.SnowflakeId;
 import com.github.mizo432.shared.value.datetime.ValidInterval;
@@ -99,14 +101,46 @@ public class OrgUnit extends Party {
       OrgUnitStatus status,
       Org org
   ) {
+    return create(partyId, code, validFrom, orgUnitName, orgUnitCode, orgUnitTypeCode,
+        parentOrgUnitId, status, org, null, null, null);
+  }
+
+  /**
+   * 組織単位を新規作成します（オプションフィールドを含むオーバーロード）。
+   *
+   * <p>M4修正により、{@code validTo}、{@code govtAssignedId}、{@code searchName}を
+   * {@code @Nullable}パラメータとして受け取るようになりました。
+   *
+   * @param partyId パーティID
+   * @param code コード
+   * @param validFrom 有効開始日
+   * @param orgUnitName 組織単位名
+   * @param orgUnitCode 組織単位コード
+   * @param orgUnitTypeCode 組織単位種類コード
+   * @param parentOrgUnitId 親組織単位ID（null可）
+   * @param status 状態
+   * @param org 所属する組織
+   * @param validTo 有効終了日（null可）
+   * @param govtAssignedId 政府発行識別子（null可）
+   * @param searchName 検索用名称（null可）
+   * @return 新規作成されたOrgUnitインスタンス
+   */
+  public static OrgUnit create(
+      SnowflakeId partyId,
+      String code,
+      LocalDateTime validFrom,
+      OrgUnitName orgUnitName,
+      OrgUnitCode orgUnitCode,
+      OrgUnitTypeCode orgUnitTypeCode,
+      @Nullable SnowflakeId parentOrgUnitId,
+      OrgUnitStatus status,
+      Org org,
+      @Nullable LocalDateTime validTo,
+      @Nullable GovtAssignedId govtAssignedId,
+      @Nullable SearchName searchName
+  ) {
     OrgUnit orgUnit = new OrgUnit();
-    orgUnit.partyId = partyId;
-    orgUnit.partyTypeCode = PartyTypeCode.ORG_UNIT;
-    orgUnit.code = code;
-    orgUnit.validFrom = validFrom;
-    orgUnit.validTo = null;
-    orgUnit.govtAssignedId = null;
-    orgUnit.searchName = null;
+    orgUnit.initParty(partyId, PartyTypeCode.ORG_UNIT, code, validFrom, validTo, govtAssignedId, searchName);
     orgUnit.orgUnitName = orgUnitName;
     orgUnit.validInterval = ValidInterval.empty();
     orgUnit.orgUnitCode = orgUnitCode;
