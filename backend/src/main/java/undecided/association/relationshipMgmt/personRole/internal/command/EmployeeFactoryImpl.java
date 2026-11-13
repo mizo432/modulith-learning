@@ -11,7 +11,7 @@ public class EmployeeFactoryImpl implements EmployeeFactory {
   /**
    * EmployeeDtoからSimpleEmployeeエンティティを作成します。
    *
-   * @param employeeDto 従業員情報のDTO。employeeId、employeeNo、searchName、fullNameを含みます。
+   * @param employeeDto 従業員情報のDTO。employeeId、employeeNo、searchName、fullName、person、emailAddress、phoneNoを含みます。
    * @return 作成されたSimpleEmployeeエンティティ。
    */
   @Override

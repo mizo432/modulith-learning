@@ -8,7 +8,6 @@ import undecided.association.relationshipMgmt.party.repository.ContactUseReposit
 import undecided.association.relationshipMgmt.party.repository.OrgRepository;
 import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
 import undecided.association.relationshipMgmt.party.repository.PersonRepository;
-import undecided.association.relationshipMgmt.spi.party.contact.Address;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
 import undecided.association.relationshipMgmt.spi.party.contact.CreateContactUseCommand;
@@ -64,13 +63,11 @@ public class CreateContactUseCommandService implements CreateContactUseCommand {
 
     // 連絡先用途を作成
     SnowflakeId contactUseId = snowflakeIdGenerator.nextIdValue();
-    Address address = dto.getAddress() != null ? dto.getAddress() : Address.empty();
     ContactUse contactUse = ContactUse.create(
         contactUseId,
         dto.getPartyId(),
         dto.getEmailAddress(),
         dto.getPhoneNo() != null ? dto.getPhoneNo() : PhoneNo.empty(),
-        address,
         dto.getType() != null ? dto.getType() : ContactUseType.UNKNOWN,
         WhenOccured.current());
     contactUseRepository.save(contactUse);

@@ -17,12 +17,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * 連絡先の使用履歴を表すエンティティです。
  *
- * <p>パーティと連絡先アドレスの関連付けを管理します。連絡先の種類（メール、電話、住所など）ごとに
+ * <p>パーティと連絡先アドレスの関連付けを管理します。連絡先の種類（メール、電話など）ごとに
  * 使用履歴を記録し、いつどの連絡先が使用されたかを追跡できます。
- *
- * <p>M3修正により、重複していた個別の住所フィールド（prefName, prefKanaなど17個）が削除され、
- * {@link Address}値オブジェクトのみを使用するようにしました。これによりデータの二重管理による
- * 整合性問題を解消しました。
  *
  * <p>Mi2修正により、非推奨の{@link Contact}型から{@link EmailAddress}型に移行しました。
  *
@@ -51,10 +47,6 @@ public class ContactUse {
   @Column(name = "phone_no", length = 20)
   private PhoneNo phoneNo = PhoneNo.empty();
 
-  /** 住所の値オブジェクト。完全な住所情報を保持します。 */
-  @Column(name = "address", columnDefinition = "text")
-  private Address address = Address.empty();
-
   /** 連絡先の種類（EMAIL, PHONE, ADDRESSなど）。 */
   @Enumerated(EnumType.STRING)
   private ContactUseType type = ContactUseType.UNKNOWN;
@@ -72,7 +64,6 @@ public class ContactUse {
    * @param partyId パーティID
    * @param emailAddress メールアドレス
    * @param phoneNo 電話番号
-   * @param address 住所
    * @param type 種類
    * @param whenOccured 発生時刻
    * @return 新規作成されたContactUseインスタンス
@@ -82,7 +73,6 @@ public class ContactUse {
       SnowflakeId partyId,
       EmailAddress emailAddress,
       PhoneNo phoneNo,
-      Address address,
       ContactUseType type,
       @Nullable WhenOccured whenOccured
   ) {
@@ -91,7 +81,6 @@ public class ContactUse {
     contactUse.partyId = partyId;
     contactUse.emailAddress = emailAddress;
     contactUse.phoneNo = phoneNo;
-    contactUse.address = address;
     contactUse.type = type;
     contactUse.whenOccured = whenOccured != null ? whenOccured : WhenOccured.empty();
     return contactUse;

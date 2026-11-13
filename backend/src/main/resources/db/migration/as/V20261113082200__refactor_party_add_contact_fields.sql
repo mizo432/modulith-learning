@@ -25,7 +25,6 @@ create table undecided_as.ContactUses
     party_id       bigint          not null,
     contact        varchar(200),
     phone_no       varchar(20),
-    address        text,
     type           varchar(20)     not null,
     when_occured   timestamp
 );

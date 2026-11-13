@@ -79,7 +79,11 @@ public class PhoneNo extends ContactBase {
       if (dbData == null) {
         return PhoneNo.empty();
       }
-      return new PhoneNo(dbData);
+      try {
+        return PhoneNo.of(dbData);
+      } catch (IllegalArgumentException e) {
+        return PhoneNo.empty();
+      }
     }
   }
 }

@@ -1,9 +1,13 @@
 package undecided.association.relationshipMgmt.personRole.internal.command;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.ArgumentCaptor;
 
 import com.github.mizo432.shared.value.datetime.WhenOccured;
 import org.junit.jupiter.api.BeforeEach;
@@ -136,6 +140,69 @@ class CreateSimpleEmployeeCommandServiceTest {
       verify(personRepository).save(person);
       verify(contactUseRepository, times(2)).save(any());
       verify(employeeRepository).save(any(SimpleEmployee.class));
+    }
+
+    @Test
+    @DisplayName("employeeDtoがnullの場合IllegalArgumentExceptionをスローすること")
+    void shouldThrowIllegalArgumentExceptionWhenEmployeeDtoIsNull() {
+      // Act & Assert
+      assertThatThrownBy(() -> service.create(null))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("employeeDto must not be null");
+    }
+
+    @Test
+    @DisplayName("ContactUseに正しいメールアドレスと電話番号が設定されること")
+    void shouldSaveContactUseWithCorrectEmailAddressAndPhoneNo() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(1111111111L);
+      EmployeeNo employeeNo = EmployeeNo.of("1111111111");
+      SearchName searchName = SearchName.of("テスト太郎");
+      FullName fullName = FullName.of("テスト太郎");
+      Person person = Person.create(
+          SnowflakeId.of(5000000003L),
+          PartyTypeCode.of("PERSON"),
+          "P003",
+          LocalDateTime.now(),
+          LegalName.of("テスト", "太郎"),
+          DateOfBirth.of(LocalDate.of(1995, 3, 20)),
+          DateOfDie.empty());
+
+      EmailAddress emailAddress = EmailAddress.of("test@example.com");
+      PhoneNo phoneNo = PhoneNo.of("07012345678");
+
+      EmployeeDto dto = new EmployeeDto(employeeId, employeeNo, searchName, fullName, person, emailAddress, phoneNo);
+
+      SimpleEmployee simpleEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
+
+      when(employeeFactory.create(dto)).thenReturn(simpleEmployee);
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(
+          SnowflakeId.of(9000000010L), // emailContactUseId
+          SnowflakeId.of(9000000011L)); // phoneContactUseId
+
+      // Act
+      service.create(dto);
+
+      // Assert
+      verify(personRepository).save(person);
+
+      ArgumentCaptor<undecided.association.relationshipMgmt.spi.party.contact.ContactUse> contactUseCaptor = forClass(undecided.association.relationshipMgmt.spi.party.contact.ContactUse.class);
+      verify(contactUseRepository, times(2)).save(contactUseCaptor.capture());
+
+      java.util.List<undecided.association.relationshipMgmt.spi.party.contact.ContactUse> capturedContactUses = contactUseCaptor.getAllValues();
+      assertThat(capturedContactUses).hasSize(2);
+
+      undecided.association.relationshipMgmt.spi.party.contact.ContactUse emailContactUse = capturedContactUses.get(0);
+      assertThat(emailContactUse.getType()).isEqualTo(undecided.association.relationshipMgmt.spi.party.contact.ContactUseType.EMAIL);
+      assertThat(emailContactUse.getEmailAddress().value()).isEqualTo("test@example.com");
+      assertThat(emailContactUse.getPhoneNo()).isEqualTo(PhoneNo.empty());
+
+      undecided.association.relationshipMgmt.spi.party.contact.ContactUse phoneContactUse = capturedContactUses.get(1);
+      assertThat(phoneContactUse.getType()).isEqualTo(undecided.association.relationshipMgmt.spi.party.contact.ContactUseType.PHONE);
+      assertThat(phoneContactUse.getPhoneNo().value()).isEqualTo("07012345678");
+      assertThat(phoneContactUse.getEmailAddress()).isEqualTo(EmailAddress.empty());
+
+      verify(employeeRepository).save(simpleEmployee);
     }
   }
 }

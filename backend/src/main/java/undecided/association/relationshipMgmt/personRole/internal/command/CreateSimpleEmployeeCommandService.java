@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.personRole.internal.command;
 
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import com.github.mizo432.shared.value.datetime.WhenOccured;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import undecided.association.relationshipMgmt.personRole.internal.repository.Emp
 import undecided.association.relationshipMgmt.personRole.spi.employee.CreateSimpleEmployeeCommand;
 import undecided.association.relationshipMgmt.personRole.spi.employee.SimpleEmployee;
 import undecided.association.relationshipMgmt.personRole.spi.employee.dto.EmployeeDto;
-import undecided.association.relationshipMgmt.spi.party.contact.Address;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
 import undecided.association.relationshipMgmt.spi.party.contact.EmailAddress;
@@ -18,7 +18,7 @@ import undecided.association.relationshipMgmt.spi.party.contact.PhoneNo;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
-/** 従業員の新規作成コマンドサービスです。 EmployeeDtoからSimpleEmployeeエンティティを作成し、データベースに保存します。 */
+/** 従業員の新規作成コマンドサービスです。 EmployeeDtoからPerson、ContactUse（メールアドレス・電話番号）、SimpleEmployeeエンティティを作成し、データベースに保存します。 */
 @RequiredArgsConstructor
 @Service
 public class CreateSimpleEmployeeCommandService implements CreateSimpleEmployeeCommand {
@@ -38,6 +38,7 @@ public class CreateSimpleEmployeeCommandService implements CreateSimpleEmployeeC
   @Override
   @Transactional
   public void create(EmployeeDto employeeDto) {
+    ObjectPrecondition.checkNotNull(employeeDto, () -> new IllegalArgumentException("employeeDto must not be null"));
     // Personを保存
     personRepository.save(employeeDto.person());
 
@@ -48,7 +49,6 @@ public class CreateSimpleEmployeeCommandService implements CreateSimpleEmployeeC
         employeeDto.person().getPartyId(),
         employeeDto.emailAddress(),
         PhoneNo.empty(),
-        Address.empty(),
         ContactUseType.EMAIL,
         WhenOccured.current());
     contactUseRepository.save(emailContactUse);
@@ -60,7 +60,6 @@ public class CreateSimpleEmployeeCommandService implements CreateSimpleEmployeeC
         employeeDto.person().getPartyId(),
         EmailAddress.empty(),
         employeeDto.phoneNo(),
-        Address.empty(),
         ContactUseType.PHONE,
         WhenOccured.current());
     contactUseRepository.save(phoneContactUse);
