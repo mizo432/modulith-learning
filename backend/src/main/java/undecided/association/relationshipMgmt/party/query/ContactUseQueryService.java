@@ -6,19 +6,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.association.relationshipMgmt.party.repository.ContactUseRepository;
-import undecided.association.relationshipMgmt.spi.party.contact.ContactQuery;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
+import undecided.association.relationshipMgmt.spi.party.contact.ContactUseQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * 連絡先（ContactUse）情報を取得するためのクエリサービスです。
  *
- * <p>ContactQueryインターフェースを実装し、連絡先データの検索機能を提供します。
+ * <p>ContactUseQueryインターフェースを実装し、連絡先データの検索機能を提供します。
  */
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-public class ContactQueryService implements ContactQuery {
+public class ContactUseQueryService implements ContactUseQuery {
 
   private final ContactUseRepository contactUseRepository;
 

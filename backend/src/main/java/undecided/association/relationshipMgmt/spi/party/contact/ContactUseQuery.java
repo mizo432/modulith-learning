@@ -9,7 +9,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  *
  * <p>このインターフェースを実装することで、連絡先のデータにアクセスするための機能を提供します。
  */
-public interface ContactQuery {
+public interface ContactUseQuery {
 
   /**
    * 全ての連絡先情報を取得します。
