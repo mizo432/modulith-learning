@@ -135,6 +135,30 @@ class CreateBankAccountUseCommandServiceTest {
     }
 
     @Test
+    @DisplayName("accountNumberがemptyの場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowExceptionWhenAccountNumberIsEmpty() {
+      // Arrange
+      CreateBankAccountUseDto dto =
+          new CreateBankAccountUseDto(
+              SnowflakeId.of(1111111111L),
+              SnowflakeId.of(2222222222L),
+              AccountType.ORDINARY_ACCOUNT,
+              AccountNumber.empty(),
+              HoldersName.of("田中太郎"),
+              SnowflakeId.of(3333333333L),
+              BankAccountUseType.UNKNOWN);
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.createAndUse(dto))
+          .as("accountNumberがemptyの場合に例外がスローされること")
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("accountNumberは必須です");
+
+      verify(bankAccountRepository, never()).save((BankAccount) any());
+      verify(bankAccountUseRepository, never()).save((BankAccountUse) any());
+    }
+
+    @Test
     @DisplayName("holdersNameがnullの場合、IllegalArgumentExceptionをスローすること")
     void shouldThrowExceptionWhenHoldersNameIsNull() {
       // Arrange
@@ -151,6 +175,30 @@ class CreateBankAccountUseCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.createAndUse(dto))
           .as("holdersNameがnullの場合に例外がスローされること")
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("holdersNameは必須です");
+
+      verify(bankAccountRepository, never()).save((BankAccount) any());
+      verify(bankAccountUseRepository, never()).save((BankAccountUse) any());
+    }
+
+    @Test
+    @DisplayName("holdersNameがemptyの場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowExceptionWhenHoldersNameIsEmpty() {
+      // Arrange
+      CreateBankAccountUseDto dto =
+          new CreateBankAccountUseDto(
+              SnowflakeId.of(1111111111L),
+              SnowflakeId.of(2222222222L),
+              AccountType.ORDINARY_ACCOUNT,
+              AccountNumber.of("1234567"),
+              HoldersName.empty(),
+              SnowflakeId.of(3333333333L),
+              BankAccountUseType.UNKNOWN);
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.createAndUse(dto))
+          .as("holdersNameがemptyの場合に例外がスローされること")
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("holdersNameは必須です");
 

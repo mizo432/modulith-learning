@@ -123,6 +123,28 @@ class CreateBankAccountCommandServiceTest {
     }
 
     @Test
+    @DisplayName("accountNumberがemptyの場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowExceptionWhenAccountNumberIsEmpty() {
+      // Arrange
+      BankAccountDto dto =
+          new BankAccountDto(
+              SnowflakeId.empty(),
+              SnowflakeId.of(1111111111L),
+              SnowflakeId.of(2222222222L),
+              AccountType.ORDINARY_ACCOUNT,
+              AccountNumber.empty(),
+              HoldersName.of("田中太郎"));
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.create(dto))
+          .as("accountNumberがemptyの場合に例外がスローされること")
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("accountNumberは必須です");
+
+      verify(bankAccountRepository, never()).save((BankAccount) any());
+    }
+
+    @Test
     @DisplayName("holdersNameがnullの場合、IllegalArgumentExceptionをスローすること")
     void shouldThrowExceptionWhenHoldersNameIsNull() {
       // Arrange
@@ -138,6 +160,28 @@ class CreateBankAccountCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.create(dto))
           .as("holdersNameがnullの場合に例外がスローされること")
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("holdersNameは必須です");
+
+      verify(bankAccountRepository, never()).save((BankAccount) any());
+    }
+
+    @Test
+    @DisplayName("holdersNameがemptyの場合、IllegalArgumentExceptionをスローすること")
+    void shouldThrowExceptionWhenHoldersNameIsEmpty() {
+      // Arrange
+      BankAccountDto dto =
+          new BankAccountDto(
+              SnowflakeId.empty(),
+              SnowflakeId.of(1111111111L),
+              SnowflakeId.of(2222222222L),
+              AccountType.ORDINARY_ACCOUNT,
+              AccountNumber.of("1234567"),
+              HoldersName.empty());
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.create(dto))
+          .as("holdersNameがemptyの場合に例外がスローされること")
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("holdersNameは必須です");
 
