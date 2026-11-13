@@ -40,10 +40,10 @@ public class CreateBankAccountUseCommandService implements CreateBankAccountUseC
     if (dto == null) {
       throw new IllegalArgumentException("CreateBankAccountUseDtoはnullであってはいけません");
     }
-    if (dto.getBankId().isEmpty()) {
+    if (dto.getBankId() == null || dto.getBankId().isEmpty()) {
       throw new IllegalArgumentException("bankIdは必須です");
     }
-    if (dto.getBankBranchId().isEmpty()) {
+    if (dto.getBankBranchId() == null || dto.getBankBranchId().isEmpty()) {
       throw new IllegalArgumentException("bankBranchIdは必須です");
     }
     if (dto.getAccountNumber() == null || dto.getAccountNumber().isEmpty()) {
@@ -52,7 +52,7 @@ public class CreateBankAccountUseCommandService implements CreateBankAccountUseC
     if (dto.getHoldersName() == null || dto.getHoldersName().isEmpty()) {
       throw new IllegalArgumentException("holdersNameは必須です");
     }
-    if (dto.getPartyId().isEmpty()) {
+    if (dto.getPartyId() == null || dto.getPartyId().isEmpty()) {
       throw new IllegalArgumentException("partyIdは必須です");
     }
 
