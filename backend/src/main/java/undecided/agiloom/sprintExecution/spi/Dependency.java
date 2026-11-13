@@ -21,7 +21,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * 依存関係エンティティ。
  *
- * <p>Sprint 内のバックログ項目間の依存関係を管理します。
+ * <p>Sprint 内のバックログ項目間の依存関係を管理します。タスクやストーリー間の依存関係を明確にし、
+ * 開発の順序やブロック要因を把握するために使用されます。
+ *
+ * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
+ * インスタンスを作成します。{@code @Builder}は既存のコードとの互換性のために維持されています。
  */
 @Entity
 @Table(name = "sprint_dependencies")
@@ -30,33 +34,42 @@ import undecided.supporting.snowflake.SnowflakeId;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Dependency {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected SnowflakeId id;
 
-    @Column(name = "source_item_id", nullable = false)
-    protected SnowflakeId sourceItemId;
+  /** 依存関係の一意な識別子。 */
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  protected SnowflakeId id;
 
-    @Column(name = "target_item_id", nullable = false)
-    protected SnowflakeId targetItemId;
+  /** 依存元のバックログ項目のID。 */
+  @Column(name = "source_item_id", nullable = false)
+  protected SnowflakeId sourceItemId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "dependency_type", nullable = false, length = 20)
-    protected DependencyType dependencyType;
+  /** 依存先のバックログ項目のID。 */
+  @Column(name = "target_item_id", nullable = false)
+  protected SnowflakeId targetItemId;
 
-    @Column(length = 1000)
-    protected String description;
+  /** 依存関係の種類（BLOCKS, REQUIRES, AFFECTSなど）。 */
+  @Enumerated(EnumType.STRING)
+  @Column(name = "dependency_type", nullable = false, length = 20)
+  protected DependencyType dependencyType;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @Builder.Default
-    protected LocalDateTime createdAt = LocalDateTime.now();
+  /** 依存関係の詳細な説明。 */
+  @Column(length = 1000)
+  protected String description;
 
-    @Column(name = "updated_at", nullable = false)
-    @Builder.Default
-    protected LocalDateTime updatedAt = LocalDateTime.now();
+  /** 依存関係が作成された日時。 */
+  @Column(name = "created_at", nullable = false, updatable = false)
+  @Builder.Default
+  protected LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "deleted_at")
-    protected LocalDateTime deletedAt;
+  /** 依存関係が最後に更新された日時。 */
+  @Column(name = "updated_at", nullable = false)
+  @Builder.Default
+  protected LocalDateTime updatedAt = LocalDateTime.now();
+
+  /** 依存関係が論理削除された日時。nullの場合は未削除です。 */
+  @Column(name = "deleted_at")
+  protected LocalDateTime deletedAt;
 
     /**
      * 依存関係を新規作成します。

@@ -13,6 +13,14 @@ import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import undecided.association.relationshipMgmt.spi.party.org.Org;
 
+/**
+ * 組織へのロール割り当てを表すエンティティクラス。
+ *
+ * <p>このクラスは、組織にロールを割り当てるための関連付けを管理します。
+ * 複数のロールを複数の組織に割り当てることができます。
+ *
+ * <p>C6修正により{@code @Setter}は削除され、{@code create()}ファクトリメソッドを使用してインスタンスを作成します。
+ */
 @Entity
 @Table(
     name = "role_assignment_for_org",
@@ -23,11 +31,16 @@ import undecided.association.relationshipMgmt.spi.party.org.Org;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoleAssignmentForOrg {
-  @Id protected UUID roleAssignmentForOrgId;
 
+  /** ロール割り当ての一意な識別子。 */
+  @Id
+  protected UUID roleAssignmentForOrgId;
+
+  /** 割り当てられるロールのID。 */
   @Column(name = "role_id")
   protected UUID roleId;
 
+  /** ロールが割り当てられる組織。 */
   @ManyToOne
   @JoinColumn(name = "org_id")
   protected Org org;

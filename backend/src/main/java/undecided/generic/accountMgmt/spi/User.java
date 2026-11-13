@@ -15,7 +15,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * ユーザーアカウントを表すエンティティです。
  *
- * <p>機微情報（パスワード、初回ログインフラグ）は専用DB（authorization）に保管するため、 このエンティティには非機微情報のみを含みます。
+ * <p>機微情報（パスワード、初回ログインフラグ）は専用DB（authorization）に保管するため、
+ * このエンティティには非機微情報のみを含みます。
+ *
+ * <p>C8修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
+ * インスタンスを作成します。
  */
 @Entity
 @Table(name = "users")
@@ -23,16 +27,20 @@ import undecided.supporting.snowflake.SnowflakeId;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
+  /** ユーザーの一意な識別子（Snowflake ID）。 */
   @Id
   @Column(columnDefinition = "bigint")
   protected SnowflakeId id = SnowflakeId.EMPTY;
 
+  /** ユーザー名。ログインに使用される一意な識別子です。 */
   @Column(unique = true, nullable = false, length = 50)
   protected String username;
 
+  /** ユーザーの有効開始日。この日時からユーザーアカウントが有効となります。 */
   @Column(nullable = false)
   protected LocalDateTime validFrom;
 
+  /** ユーザーの有効終了日。この日時までユーザーアカウントが有効となります。nullの場合は現在も有効です。 */
   protected LocalDateTime validTo;
 
   /**

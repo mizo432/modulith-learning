@@ -22,7 +22,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * アクティビティエンティティ。
  *
- * <p>Sprint 内のアクティビティを記録します。
+ * <p>Sprint 内のアクティビティを記録します。チームメンバーの行動や出来事を追跡し、
+ * Sprintの進捗状況を可視化するために使用されます。
+ *
+ * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
+ * インスタンスを作成します。{@code @Builder}は既存のコードとの互換性のために維持されています。
  */
 @Entity
 @Table(name = "activities")
@@ -31,26 +35,33 @@ import undecided.supporting.snowflake.SnowflakeId;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Activity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected SnowflakeId id;
 
-    @Column(name = "sprint_id", nullable = false)
-    protected SnowflakeId sprintId;
+  /** アクティビティの一意な識別子。 */
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  protected SnowflakeId id;
 
-    @Column(name = "actor_id", nullable = false)
-    protected UUID actorId;
+  /** 関連するSprintのID。 */
+  @Column(name = "sprint_id", nullable = false)
+  protected SnowflakeId sprintId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "activity_type", nullable = false, length = 30)
-    protected ActivityType activityType;
+  /** アクティビティを実行したユーザーのID。 */
+  @Column(name = "actor_id", nullable = false)
+  protected UUID actorId;
 
-    @Column(length = 2000)
-    protected String description;
+  /** アクティビティの種類（TASK_CREATED, TASK_UPDATED, COMMENT_ADDEDなど）。 */
+  @Enumerated(EnumType.STRING)
+  @Column(name = "activity_type", nullable = false, length = 30)
+  protected ActivityType activityType;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @Builder.Default
-    protected LocalDateTime createdAt = LocalDateTime.now();
+  /** アクティビティの詳細な説明。 */
+  @Column(length = 2000)
+  protected String description;
+
+  /** アクティビティが作成された日時。 */
+  @Column(name = "created_at", nullable = false, updatable = false)
+  @Builder.Default
+  protected LocalDateTime createdAt = LocalDateTime.now();
 
     /**
      * アクティビティを新規作成します。

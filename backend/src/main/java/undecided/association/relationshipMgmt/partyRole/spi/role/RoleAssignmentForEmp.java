@@ -10,6 +10,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 
+/**
+ * 従業員へのロール割り当てを表すエンティティクラス。
+ *
+ * <p>このクラスは、従業員にロールを割り当てるための関連付けを管理します。
+ * 複数のロールを複数の従業員に割り当てることができます。
+ *
+ * <p>C6修正により{@code @Setter}は削除され、{@code create()}ファクトリメソッドを使用してインスタンスを作成します。
+ */
 @Entity
 @Table(
     name = "role_assignment_for_emp",
@@ -20,11 +28,16 @@ import lombok.AccessLevel;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoleAssignmentForEmp {
-  @Id protected UUID roleAssignmentForEmpId;
 
+  /** ロール割り当ての一意な識別子。 */
+  @Id
+  protected UUID roleAssignmentForEmpId;
+
+  /** 割り当てられるロールのID。 */
   @Column(name = "role_id")
   protected UUID roleId;
 
+  /** ロールが割り当てられる従業員のID。 */
   @Column(name = "employee_id")
   protected UUID employeeId;
 

@@ -78,15 +78,31 @@ public class PhoneNumber implements StringValue {
     return value != null ? value : "null";
   }
 
-  /** PhoneNumberとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
+  /**
+   * PhoneNumberとデータベースの文字列を相互に変換するためのJPAコンバーターです。
+   *
+   * <p>データベースから読み込んだ不正なデータに対しては、{@code empty()}を返して安全にフォールバックします。
+   */
   @Converter(autoApply = true)
   public static class PhoneNumberConverter implements AttributeConverter<PhoneNumber, String> {
 
+    /**
+     * エンティティ属性をデータベースカラムに変換します。
+     *
+     * @param attribute 変換対象の {@code PhoneNumber} 属性
+     * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}
+     */
     @Override
     public String convertToDatabaseColumn(PhoneNumber attribute) {
       return attribute != null ? attribute.value() : null;
     }
 
+    /**
+     * データベースカラムをエンティティ属性に変換します。
+     *
+     * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
+     * @return 変換された {@code PhoneNumber} インスタンス。データベースデータが {@code null} または不正な場合は空のインスタンス
+     */
     @Override
     public PhoneNumber convertToEntityAttribute(@Nullable String dbData) {
       if (dbData == null) {

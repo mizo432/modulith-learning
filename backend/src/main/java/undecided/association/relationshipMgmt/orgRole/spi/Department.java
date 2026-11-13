@@ -47,6 +47,12 @@ public class Department {
     return department;
   }
 
+  /**
+   * 部署情報を更新します。
+   *
+   * @param department 更新後の部署情報
+   * @return 更新された部署インスタンス
+   */
   public Department update(@NonNull Department department) {
     return this;
   }

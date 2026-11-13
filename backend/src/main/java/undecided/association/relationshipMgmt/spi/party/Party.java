@@ -18,6 +18,17 @@ import undecided.supporting.snowflake.SnowflakeId;
  * パーティ（個人や法人など）を表す抽象エンティティクラス。
  *
  * <p>このクラスは、関係管理において対象となるパーティの共通属性を保持します。
+ * 継承戦略は{@link InheritanceType#TABLE_PER_CLASS}であり、各サブクラスごとに独立したテーブルが作成されます。
+ *
+ * <p>サブクラス:
+ * <ul>
+ *   <li>{@link undecided.association.relationshipMgmt.spi.party.org.Org} - 組織（法人、団体など）</li>
+ *   <li>{@link undecided.association.relationshipMgmt.spi.party.orgUnit.OrgUnit} - 組織単位（部門、チームなど）</li>
+ *   <li>{@link undecided.association.relationshipMgmt.spi.party.person.Person} - 個人</li>
+ * </ul>
+ *
+ * <p>このクラスのフィールドは{@code protected}として宣言されており、サブクラスからのアクセスを許可しつつ、
+ * 外部からの直接変更を防いでいます。C3修正により{@code @Setter}は削除され、ドメインの不変性が保護されています。
  */
 @Table(name = "party", schema = SchemaRelationshipMgmt.NAME)
 @Entity
@@ -26,29 +37,31 @@ import undecided.supporting.snowflake.SnowflakeId;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Party {
+
+  /** パーティの一意な識別子（Snowflake ID）。 */
   @Id
   @Column(name = "party_id")
   protected SnowflakeId partyId;
 
-  /** パーティー種類コード（MASTER, PERSON, ORG）。 */
+  /** パーティの種類コード（MASTER, PERSON, ORG）。 */
   @Column(name = "party_type_code", nullable = false, length = 20)
   protected PartyTypeCode partyTypeCode;
 
-  /** コード（一意制約）。 */
+  /** パーティのコード（一意制約）。システム内での一意な識別に使用されます。 */
   @Column(name = "code", unique = true, length = 50)
   protected String code;
 
-  /** 有効開始日。 */
+  /** パーティの有効開始日。この日時からパーティが有効となります。 */
   @Column(name = "valid_from", nullable = false)
   protected LocalDateTime validFrom;
 
-  /** 有効終了日。 */
+  /** パーティの有効終了日。この日時までパーティが有効となります。nullの場合は現在も有効です。 */
   @Column(name = "valid_to")
   protected LocalDateTime validTo;
 
-  /** 政府発行の識別子（例：マイナンバー、法人番号など）。 */
+  /** 政府発行の識別子（例：マイナンバー、法人番号など）。外部システムとの連携に使用されます。 */
   protected GovtAssignedId govtAssignedId;
 
-  /** 検索用名称（全角文字）。 */
+  /** 検索用名称（全角文字）。パーティの検索や表示に使用されます。 */
   protected SearchName searchName;
 }

@@ -706,10 +706,20 @@ public class Address extends ContactBase {
     return sb.toString();
   }
 
-  /** Addressとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
+  /**
+   * Addressとデータベースの文字列を相互に変換するためのJPAコンバーターです。
+   *
+   * <p>データベースから読み込んだ不正なデータに対しては、{@code empty()}を返して安全にフォールバックします。
+   */
   @Converter(autoApply = true)
   public static class AddressConverter implements AttributeConverter<Address, String> {
 
+    /**
+     * エンティティ属性をデータベースカラムに変換します。
+     *
+     * @param attribute 変換対象の {@code Address} 属性
+     * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}
+     */
     @Override
     public String convertToDatabaseColumn(Address attribute) {
       if (attribute == null) {
@@ -718,6 +728,12 @@ public class Address extends ContactBase {
       return attribute.value();
     }
 
+    /**
+     * データベースカラムをエンティティ属性に変換します。
+     *
+     * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
+     * @return 変換された {@code Address} インスタンス。データベースデータが {@code null} または不正な場合は空のインスタンス
+     */
     @Override
     public Address convertToEntityAttribute(@Nullable String dbData) {
       if (dbData == null) {

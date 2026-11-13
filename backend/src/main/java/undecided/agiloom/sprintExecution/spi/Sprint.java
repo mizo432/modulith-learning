@@ -28,7 +28,12 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * Sprintエンティティ。
  *
- * <p>アジャイル開発におけるSprintを管理します。
+ * <p>アジャイル開発におけるSprintを管理します。Sprintは固定期間の開発サイクルであり、
+ * チームが計画・実行・レビュー・振り返りを行う単位として機能します。
+ * Sprintは状態遷移（PLANNED → ACTIVE → COMPLETED/CANCELLED）を持ち、適切なフローで管理されます。
+ *
+ * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
+ * インスタンスを作成します。{@code @Builder}は既存のコードとの互換性のために維持されています。
  */
 @Entity
 @Table(name = "sprints", uniqueConstraints = {
@@ -39,54 +44,70 @@ import undecided.supporting.snowflake.SnowflakeId;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Sprint {
-    @Id
-    protected SnowflakeId id;
 
-    @Column(name = "product_id", nullable = false)
-    protected UUID productId;
+  /** Sprintの一意な識別子。 */
+  @Id
+  protected SnowflakeId id;
 
-    @Column(name = "sprint_number", nullable = false)
-    protected Integer sprintNumber;
+  /** 関連する製品のID。 */
+  @Column(name = "product_id", nullable = false)
+  protected UUID productId;
 
-    @Column(nullable = false, length = 100)
-    protected String title;
+  /** Sprintの番号。製品ごとに連番で管理されます。 */
+  @Column(name = "sprint_number", nullable = false)
+  protected Integer sprintNumber;
 
-    @Column(name = "goal", length = 1000)
-    protected String goal;
+  /** Sprintのタイトル。Sprintのテーマや目的を簡潔に表現します。 */
+  @Column(nullable = false, length = 100)
+  protected String title;
 
-    @Column(name = "start_date", nullable = false)
-    protected LocalDate startDate;
+  /** Sprintの目標。チームがSprintの期間中に達成すべき目標を記述します。 */
+  @Column(name = "goal", length = 1000)
+  protected String goal;
 
-    @Column(name = "end_date", nullable = false)
-    protected LocalDate endDate;
+  /** Sprintの開始日。 */
+  @Column(name = "start_date", nullable = false)
+  protected LocalDate startDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    @Builder.Default
-    protected SprintStatus status = SprintStatus.PLANNED;
+  /** Sprintの終了日。 */
+  @Column(name = "end_date", nullable = false)
+  protected LocalDate endDate;
 
-    @Column(name = "team_id", nullable = false)
-    protected UUID teamId;
+  /** Sprintの状態（PLANNED, ACTIVE, COMPLETED, CANCELLEDなど）。 */
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  @Builder.Default
+  protected SprintStatus status = SprintStatus.PLANNED;
 
-    @Column(name = "team_name", length = 100)
-    protected String teamName;
+  /** Sprintを担当するチームのID。 */
+  @Column(name = "team_id", nullable = false)
+  protected UUID teamId;
 
-    @Column(length = 10)
-    protected Integer velocity;
+  /** Sprintを担当するチームの名前。 */
+  @Column(name = "team_name", length = 100)
+  protected String teamName;
 
-    @Column(length = 2000)
-    protected String notes;
+  /** チームのベロシティ。Sprintで処理できる作業量の目安です。 */
+  @Column(length = 10)
+  protected Integer velocity;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @Builder.Default
-    protected LocalDateTime createdAt = LocalDateTime.now();
+  /** Sprintに関する補足メモ。 */
+  @Column(length = 2000)
+  protected String notes;
 
-    @Column(name = "updated_at", nullable = false)
-    @Builder.Default
-    protected LocalDateTime updatedAt = LocalDateTime.now();
+  /** Sprintが作成された日時。 */
+  @Column(name = "created_at", nullable = false, updatable = false)
+  @Builder.Default
+  protected LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "deleted_at")
-    protected LocalDateTime deletedAt;
+  /** Sprintが最後に更新された日時。 */
+  @Column(name = "updated_at", nullable = false)
+  @Builder.Default
+  protected LocalDateTime updatedAt = LocalDateTime.now();
+
+  /** Sprintが論理削除された日時。nullの場合は未削除です。 */
+  @Column(name = "deleted_at")
+  protected LocalDateTime deletedAt;
 
     /**
      * Sprintを新規作成します。
