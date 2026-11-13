@@ -16,6 +16,7 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,63 +25,123 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
+/**
+ * Sprintエンティティ。
+ *
+ * <p>アジャイル開発におけるSprintを管理します。
+ */
 @Entity
 @Table(name = "sprints", uniqueConstraints = {
     @UniqueConstraint(name = "uk_sprint_product_number", columnNames = {"productId", "sprintNumber"})
 })
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Sprint {
     @Id
-    private SnowflakeId id;
+    protected SnowflakeId id;
 
     @Column(name = "product_id", nullable = false)
-    private UUID productId;
+    protected UUID productId;
 
     @Column(name = "sprint_number", nullable = false)
-    private Integer sprintNumber;
+    protected Integer sprintNumber;
 
     @Column(nullable = false, length = 100)
-    private String title;
+    protected String title;
 
     @Column(name = "goal", length = 1000)
-    private String goal;
+    protected String goal;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    protected LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    protected LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private SprintStatus status = SprintStatus.PLANNED;
+    protected SprintStatus status = SprintStatus.PLANNED;
 
     @Column(name = "team_id", nullable = false)
-    private UUID teamId;
+    protected UUID teamId;
 
     @Column(name = "team_name", length = 100)
-    private String teamName;
+    protected String teamName;
 
     @Column(length = 10)
-    private Integer velocity;
+    protected Integer velocity;
 
     @Column(length = 2000)
-    private String notes;
+    protected String notes;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    protected LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at", nullable = false)
     @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    protected LocalDateTime updatedAt = LocalDateTime.now();
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    protected LocalDateTime deletedAt;
+
+    /**
+     * Sprintを新規作成します。
+     *
+     * @param id ID
+     * @param productId 製品ID
+     * @param sprintNumber Sprint番号
+     * @param title タイトル
+     * @param goal 目標
+     * @param startDate 開始日
+     * @param endDate 終了日
+     * @param status 状態
+     * @param teamId チームID
+     * @param teamName チーム名
+     * @param velocity ベロシティ
+     * @param notes メモ
+     * @param createdAt 作成日時
+     * @param updatedAt 更新日時
+     * @param deletedAt 削除日時
+     * @return 新規作成されたSprintインスタンス
+     */
+    public static Sprint create(
+            @NonNull SnowflakeId id,
+            @NonNull UUID productId,
+            @NonNull Integer sprintNumber,
+            @NonNull String title,
+            @Nullable String goal,
+            @NonNull LocalDate startDate,
+            @NonNull LocalDate endDate,
+            @NonNull SprintStatus status,
+            @NonNull UUID teamId,
+            @Nullable String teamName,
+            @Nullable Integer velocity,
+            @Nullable String notes,
+            @NonNull LocalDateTime createdAt,
+            @NonNull LocalDateTime updatedAt,
+            @Nullable LocalDateTime deletedAt) {
+        return Sprint.builder()
+                .id(id)
+                .productId(productId)
+                .sprintNumber(sprintNumber)
+                .title(title)
+                .goal(goal)
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(status)
+                .teamId(teamId)
+                .teamName(teamName)
+                .velocity(velocity)
+                .notes(notes)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .deletedAt(deletedAt)
+                .build();
+    }
 
     public void start() {
         if (this.status != SprintStatus.PLANNED) {
