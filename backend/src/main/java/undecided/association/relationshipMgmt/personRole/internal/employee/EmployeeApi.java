@@ -10,6 +10,11 @@ import undecided.association.relationshipMgmt.personRole.spi.employee.Employee;
 public class EmployeeApi {
   @GetMapping
   Employee get() {
-    return new Employee();
+    return Employee.create(
+        java.util.UUID.randomUUID(),
+        "",
+        "",
+        java.time.LocalDateTime.now(),
+        null);
   }
 }

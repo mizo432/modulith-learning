@@ -1,15 +1,31 @@
 package undecided.association.relationshipMgmt.spi.party.org;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
+import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
+import undecided.association.relationshipMgmt.spi.party.GovtAssignedId;
 import undecided.association.relationshipMgmt.spi.party.Party;
+import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
+import undecided.association.relationshipMgmt.spi.party.SearchName;
+import undecided.supporting.snowflake.SnowflakeId;
 import com.github.mizo432.shared.value.datetime.ValidInterval;
+import java.time.LocalDateTime;
 
 /**
- * 組織（法人、団体など）を表すエンティティクラス。
+ * 組織（法人、団体など）を表すJPAエンティティクラス。
  *
- * <p>このクラスは {@link Party} を継承し、組織固有の属性（組織名、有効期間など）を保持します。
+ * <p>このクラスは {@link Party} を拡張し、組織特有の属性（組織名、組織コード、組織種類、
+ * 親組織、状態など）を保持します。
  */
+@Table(name = "Org", schema = SchemaRelationshipMgmt.NAME)
+@Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Org extends Party {
 
   /** 組織の正式名称。 */
@@ -17,4 +33,89 @@ public class Org extends Party {
 
   /** 組織の有効期間（開始日から終了日までの範囲）。 */
   private ValidInterval validInterval;
+
+  /** 組織コード（一意制約）。 */
+  @Column(name = "org_code", unique = true, length = 30)
+  private OrgCode orgCode;
+
+  /** 組織種類コード（COMPANY, STORE, DEPARTMENTなど）。 */
+  @Column(name = "org_type_code", nullable = false, length = 20)
+  private OrgTypeCode orgTypeCode;
+
+  /** 親組織ID（自己参照）。 */
+  @Column(name = "parent_org_id")
+  private SnowflakeId parentOrgId;
+
+  /** 組織の状態（ACTIVE, INACTIVEなど）。 */
+  @Column(name = "status", nullable = false, length = 20)
+  private OrgStatus status;
+
+  /**
+   * 組織を新規作成します。
+   *
+   * @param partyId パーティID
+   * @param code コード
+   * @param validFrom 有効開始日
+   * @param orgName 組織名
+   * @param orgCode 組織コード
+   * @param orgTypeCode 組織種類コード
+   * @param parentOrgId 親組織ID（null可）
+   * @param status 状態
+   * @return 新規作成されたOrgインスタンス
+   */
+  public static Org create(
+      SnowflakeId partyId,
+      String code,
+      LocalDateTime validFrom,
+      OrgName orgName,
+      OrgCode orgCode,
+      OrgTypeCode orgTypeCode,
+      @Nullable SnowflakeId parentOrgId,
+      OrgStatus status
+  ) {
+    return create(partyId, code, validFrom, orgName, orgCode, orgTypeCode, parentOrgId, status, null, null, null);
+  }
+
+  /**
+   * 組織を新規作成します（オプションフィールドを含むオーバーロード）。
+   *
+   * <p>M4修正により、{@code validTo}、{@code govtAssignedId}、{@code searchName}を
+   * {@code @Nullable}パラメータとして受け取るようになりました。
+   *
+   * @param partyId パーティID
+   * @param code コード
+   * @param validFrom 有効開始日
+   * @param orgName 組織名
+   * @param orgCode 組織コード
+   * @param orgTypeCode 組織種類コード
+   * @param parentOrgId 親組織ID（null可）
+   * @param status 状態
+   * @param validTo 有効終了日（null可）
+   * @param govtAssignedId 政府発行識別子（null可）
+   * @param searchName 検索用名称（null可）
+   * @return 新規作成されたOrgインスタンス
+   */
+  public static Org create(
+      SnowflakeId partyId,
+      String code,
+      LocalDateTime validFrom,
+      OrgName orgName,
+      OrgCode orgCode,
+      OrgTypeCode orgTypeCode,
+      @Nullable SnowflakeId parentOrgId,
+      OrgStatus status,
+      @Nullable LocalDateTime validTo,
+      @Nullable GovtAssignedId govtAssignedId,
+      @Nullable SearchName searchName
+  ) {
+    Org org = new Org();
+    org.initParty(partyId, PartyTypeCode.ORG, code, validFrom, validTo, govtAssignedId, searchName);
+    org.orgName = orgName;
+    org.validInterval = ValidInterval.empty();
+    org.orgCode = orgCode;
+    org.orgTypeCode = orgTypeCode;
+    org.parentOrgId = parentOrgId;
+    org.status = status;
+    return org;
+  }
 }

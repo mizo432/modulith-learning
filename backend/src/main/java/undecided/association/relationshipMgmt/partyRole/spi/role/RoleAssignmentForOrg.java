@@ -9,25 +9,55 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
-import undecided.association.relationshipMgmt.orgRole.spi.Organization;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
+import undecided.association.relationshipMgmt.spi.party.org.Org;
 
+/**
+ * 組織へのロール割り当てを表すエンティティクラス。
+ *
+ * <p>このクラスは、組織にロールを割り当てるための関連付けを管理します。
+ * 複数のロールを複数の組織に割り当てることができます。
+ *
+ * <p>C6修正により{@code @Setter}は削除され、{@code create()}ファクトリメソッドを使用してインスタンスを作成します。
+ */
 @Entity
 @Table(
     name = "role_assignment_for_org",
     indexes = {
       @Index(name = "fk01_role_assignment_for_org", columnList = "role_id"),
-      @Index(name = "fk02_role_assignment_for_org", columnList = "organization_id")
+      @Index(name = "fk02_role_assignment_for_org", columnList = "org_id")
     })
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoleAssignmentForOrg {
-  @Id private UUID roleAssignmentForOrgId;
 
+  /** ロール割り当ての一意な識別子。 */
+  @Id
+  protected UUID roleAssignmentForOrgId;
+
+  /** 割り当てられるロールのID。 */
   @Column(name = "role_id")
-  private UUID roleId;
+  protected UUID roleId;
 
+  /** ロールが割り当てられる組織。 */
   @ManyToOne
-  @JoinColumn(name = "organization_id")
-  private Organization organization;
+  @JoinColumn(name = "org_id")
+  protected Org org;
+
+  /**
+   * 組織のロール割り当てを新規作成します。
+   *
+   * @param roleAssignmentForOrgId 割り当てID
+   * @param roleId ロールID
+   * @param org 組織エンティティ
+   * @return 新規作成されたRoleAssignmentForOrgインスタンス
+   */
+  public static RoleAssignmentForOrg create(UUID roleAssignmentForOrgId, UUID roleId, Org org) {
+    RoleAssignmentForOrg entity = new RoleAssignmentForOrg();
+    entity.roleAssignmentForOrgId = roleAssignmentForOrgId;
+    entity.roleId = roleId;
+    entity.org = org;
+    return entity;
+  }
 }

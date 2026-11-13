@@ -18,10 +18,9 @@ class EmployeeTest {
   class PropertyAccessTest {
 
     @Test
-    @DisplayName("各プロパティの設定と取得が正常に動作すること")
-    void shouldGetAndSetAllProperties() {
+    @DisplayName("ファクトリメソッドで各プロパティが設定されたEmployeeが作成されること")
+    void shouldCreateEmployeeWithFactoryMethod() {
       // Arrange
-      Employee employee = new Employee();
       UUID employeeId = UUID.randomUUID();
       String lastName = "Tanaka";
       String firstName = "Yuki";
@@ -29,11 +28,7 @@ class EmployeeTest {
       LocalDateTime validTo = LocalDateTime.of(2025, 12, 31, 23, 59);
 
       // Act
-      employee.setEmployeeId(employeeId);
-      employee.setLastName(lastName);
-      employee.setFirstName(firstName);
-      employee.setValidFrom(validFrom);
-      employee.setValidTo(validTo);
+      Employee employee = Employee.create(employeeId, lastName, firstName, validFrom, validTo);
 
       // Assert
       assertThat(employee.getEmployeeId()).isEqualTo(employeeId);
@@ -44,10 +39,10 @@ class EmployeeTest {
     }
 
     @Test
-    @DisplayName("初期状態では全プロパティがnullであること")
-    void shouldHaveNullPropertiesByDefault() {
+    @DisplayName("JPA用のプロテクテッドコンストラクタで生成されたインスタンスは全プロパティがnullであること")
+    void shouldHaveNullPropertiesByDefault() throws Exception {
       // Arrange
-      Employee employee = new Employee();
+      Employee employee = Employee.class.getDeclaredConstructor().newInstance();
 
       // Assert
       assertThat(employee.getEmployeeId()).isNull();
@@ -61,11 +56,8 @@ class EmployeeTest {
     @DisplayName("validToがnullでも正常に動作すること")
     void shouldHandleNullValidTo() {
       // Arrange
-      Employee employee = new Employee();
-      employee.setEmployeeId(UUID.randomUUID());
-      employee.setLastName("Sato");
-      employee.setFirstName("Ken");
-      employee.setValidFrom(LocalDateTime.of(2024, 1, 1, 0, 0));
+      Employee employee = Employee.create(
+          UUID.randomUUID(), "Sato", "Ken", LocalDateTime.of(2024, 1, 1, 0, 0), null);
 
       // Assert
       assertThat(employee.getValidTo()).isNull();
@@ -77,12 +69,9 @@ class EmployeeTest {
     @Test
     @DisplayName("氏名に日本語文字列を設定できること")
     void shouldHandleJapaneseNames() {
-      // Arrange
-      Employee employee = new Employee();
-
       // Act
-      employee.setLastName("田中");
-      employee.setFirstName("由紀");
+      Employee employee = Employee.create(
+          UUID.randomUUID(), "田中", "由紀", LocalDateTime.of(2024, 1, 1, 0, 0), null);
 
       // Assert
       assertThat(employee.getLastName()).isEqualTo("田中");
@@ -93,12 +82,11 @@ class EmployeeTest {
     @DisplayName("氏名に長い文字列を設定できること")
     void shouldHandleLongNames() {
       // Arrange
-      Employee employee = new Employee();
       String longName = "A".repeat(100);
 
       // Act
-      employee.setLastName(longName);
-      employee.setFirstName(longName);
+      Employee employee = Employee.create(
+          UUID.randomUUID(), longName, longName, LocalDateTime.of(2024, 1, 1, 0, 0), null);
 
       // Assert
       assertThat(employee.getLastName()).isEqualTo(longName);

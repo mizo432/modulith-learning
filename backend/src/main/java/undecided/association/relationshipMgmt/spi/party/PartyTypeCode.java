@@ -1,11 +1,11 @@
 package undecided.association.relationshipMgmt.spi.party;
 
+import com.github.mizo432.shared.common.primitive.Strings2;
+import com.github.mizo432.shared.value.StringCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.common.primitive.Strings2;
-import com.github.mizo432.shared.value.StringCode;
 
 /**
  * パーティー種類コードを表す値オブジェクトクラス。
@@ -31,14 +31,17 @@ public class PartyTypeCode implements StringCode<PartyTypeCode> {
   /** パーティー種類コードの正規表現（英大文字とアンダースコアのみ）。 */
   public static final String REGEX = "^[A-Z_]+$";
 
-  /** MASTER種類コード。 */
-  public static final PartyTypeCode MASTER = new PartyTypeCode("MASTER");
+  /** 不明 */
+  public static final PartyTypeCode UNKNOWN = new PartyTypeCode("UNKNOWN");
 
   /** PERSON種類コード。 */
   public static final PartyTypeCode PERSON = new PartyTypeCode("PERSON");
 
   /** ORG種類コード。 */
   public static final PartyTypeCode ORG = new PartyTypeCode("ORG");
+
+  /** ORG_UNIT種類コード。 */
+  public static final PartyTypeCode ORG_UNIT = new PartyTypeCode("ORG_UNIT");
 
   private final String value;
 

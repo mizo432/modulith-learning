@@ -11,16 +11,15 @@ public class EmployeeFactoryImpl implements EmployeeFactory {
   /**
    * EmployeeDtoからSimpleEmployeeエンティティを作成します。
    *
-   * @param employeeDto 従業員情報のDTO。employeeId、employeeNo、searchName、fullNameを含みます。
+   * @param employeeDto 従業員情報のDTO。employeeId、employeeNo、searchName、fullName、person、emailAddress、phoneNoを含みます。
    * @return 作成されたSimpleEmployeeエンティティ。
    */
   @Override
   public SimpleEmployee create(EmployeeDto employeeDto) {
-    SimpleEmployee simpleEmployee = new SimpleEmployee();
-    simpleEmployee.setEmployeeId(employeeDto.employeeId());
-    simpleEmployee.setEmployeeNo(employeeDto.employeeNo());
-    simpleEmployee.setSearchName(employeeDto.searchName());
-    simpleEmployee.setFullName(employeeDto.fullName());
-    return simpleEmployee;
+    return SimpleEmployee.create(
+        employeeDto.employeeId(),
+        employeeDto.employeeNo(),
+        employeeDto.searchName(),
+        employeeDto.fullName());
   }
 }

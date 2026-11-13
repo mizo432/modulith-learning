@@ -16,6 +16,7 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,63 +25,144 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
+/**
+ * Sprintエンティティ。
+ *
+ * <p>アジャイル開発におけるSprintを管理します。Sprintは固定期間の開発サイクルであり、
+ * チームが計画・実行・レビュー・振り返りを行う単位として機能します。
+ * Sprintは状態遷移（PLANNED → ACTIVE → COMPLETED/CANCELLED）を持ち、適切なフローで管理されます。
+ *
+ * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
+ * インスタンスを作成します。{@code @Builder}は既存のコードとの互換性のために維持されています。
+ */
 @Entity
 @Table(name = "sprints", uniqueConstraints = {
     @UniqueConstraint(name = "uk_sprint_product_number", columnNames = {"productId", "sprintNumber"})
 })
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Sprint {
-    @Id
-    private SnowflakeId id;
 
-    @Column(name = "product_id", nullable = false)
-    private UUID productId;
+  /** Sprintの一意な識別子。 */
+  @Id
+  protected SnowflakeId id;
 
-    @Column(name = "sprint_number", nullable = false)
-    private Integer sprintNumber;
+  /** 関連する製品のID。 */
+  @Column(name = "product_id", nullable = false)
+  protected UUID productId;
 
-    @Column(nullable = false, length = 100)
-    private String title;
+  /** Sprintの番号。製品ごとに連番で管理されます。 */
+  @Column(name = "sprint_number", nullable = false)
+  protected Integer sprintNumber;
 
-    @Column(name = "goal", length = 1000)
-    private String goal;
+  /** Sprintのタイトル。Sprintのテーマや目的を簡潔に表現します。 */
+  @Column(nullable = false, length = 100)
+  protected String title;
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+  /** Sprintの目標。チームがSprintの期間中に達成すべき目標を記述します。 */
+  @Column(name = "goal", length = 1000)
+  protected String goal;
 
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+  /** Sprintの開始日。 */
+  @Column(name = "start_date", nullable = false)
+  protected LocalDate startDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    @Builder.Default
-    private SprintStatus status = SprintStatus.PLANNED;
+  /** Sprintの終了日。 */
+  @Column(name = "end_date", nullable = false)
+  protected LocalDate endDate;
 
-    @Column(name = "team_id", nullable = false)
-    private UUID teamId;
+  /** Sprintの状態（PLANNED, ACTIVE, COMPLETED, CANCELLEDなど）。 */
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  @Builder.Default
+  protected SprintStatus status = SprintStatus.PLANNED;
 
-    @Column(name = "team_name", length = 100)
-    private String teamName;
+  /** Sprintを担当するチームのID。 */
+  @Column(name = "team_id", nullable = false)
+  protected UUID teamId;
 
-    @Column(length = 10)
-    private Integer velocity;
+  /** Sprintを担当するチームの名前。 */
+  @Column(name = "team_name", length = 100)
+  protected String teamName;
 
-    @Column(length = 2000)
-    private String notes;
+  /** チームのベロシティ。Sprintで処理できる作業量の目安です。 */
+  @Column(length = 10)
+  protected Integer velocity;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+  /** Sprintに関する補足メモ。 */
+  @Column(length = 2000)
+  protected String notes;
 
-    @Column(name = "updated_at", nullable = false)
-    @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
+  /** Sprintが作成された日時。 */
+  @Column(name = "created_at", nullable = false, updatable = false)
+  @Builder.Default
+  protected LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+  /** Sprintが最後に更新された日時。 */
+  @Column(name = "updated_at", nullable = false)
+  @Builder.Default
+  protected LocalDateTime updatedAt = LocalDateTime.now();
+
+  /** Sprintが論理削除された日時。nullの場合は未削除です。 */
+  @Column(name = "deleted_at")
+  protected LocalDateTime deletedAt;
+
+    /**
+     * Sprintを新規作成します。
+     *
+     * @param id ID
+     * @param productId 製品ID
+     * @param sprintNumber Sprint番号
+     * @param title タイトル
+     * @param goal 目標
+     * @param startDate 開始日
+     * @param endDate 終了日
+     * @param status 状態
+     * @param teamId チームID
+     * @param teamName チーム名
+     * @param velocity ベロシティ
+     * @param notes メモ
+     * @param createdAt 作成日時
+     * @param updatedAt 更新日時
+     * @param deletedAt 削除日時
+     * @return 新規作成されたSprintインスタンス
+     */
+    public static Sprint create(
+            @NonNull SnowflakeId id,
+            @NonNull UUID productId,
+            @NonNull Integer sprintNumber,
+            @NonNull String title,
+            @Nullable String goal,
+            @NonNull LocalDate startDate,
+            @NonNull LocalDate endDate,
+            @NonNull SprintStatus status,
+            @NonNull UUID teamId,
+            @Nullable String teamName,
+            @Nullable Integer velocity,
+            @Nullable String notes,
+            @NonNull LocalDateTime createdAt,
+            @NonNull LocalDateTime updatedAt,
+            @Nullable LocalDateTime deletedAt) {
+        return Sprint.builder()
+                .id(id)
+                .productId(productId)
+                .sprintNumber(sprintNumber)
+                .title(title)
+                .goal(goal)
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(status)
+                .teamId(teamId)
+                .teamName(teamName)
+                .velocity(velocity)
+                .notes(notes)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .deletedAt(deletedAt)
+                .build();
+    }
 
     public void start() {
         if (this.status != SprintStatus.PLANNED) {

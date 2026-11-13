@@ -10,53 +10,93 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * パーティーロール定義を表すエンティティクラス。
  *
- * <p>このクラスは、パーティーに割り当てられるロールの定義を管理します。
+ * <p>このクラスは、パーティーに割り当てられるロールの定義を管理します。ロールは組織や個人に割り当てられ、
+ * 権限や責任を定義するための単位として使用されます。
+ *
+ * <p>C6修正により{@code @Setter}は削除され、{@code create()}ファクトリメソッドを使用してインスタンスを作成します。
  */
 @Entity
 @Table(name = "party_role", schema = SchemaRelationshipMgmt.NAME)
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role {
+
+  /** ロールの一意な識別子（Snowflake ID）。 */
   @Id
   @Column(name = "role_id")
-  private SnowflakeId roleId;
+  protected SnowflakeId roleId;
 
-  /** ロールコード（一意制約）。 */
+  /** ロールコード（一意制約）。システム内での一意な識別に使用されます。 */
   @Column(name = "role_code", nullable = false, unique = true, length = 30)
-  private String roleCode;
+  protected String roleCode;
 
-  /** ロール名称。 */
+  /** ロールの名称。ロールを人間が理解しやすい名前で識別します。 */
   @Column(name = "role_name", nullable = false, length = 50)
-  private String roleName;
+  protected String roleName;
 
-  /** ロール種類コード。 */
+  /** ロールの種類コード。ロールの性質を分類します。 */
   @Column(name = "role_type_code", nullable = false, length = 20)
-  private String roleTypeCode;
+  protected String roleTypeCode;
 
-  /** 説明。 */
+  /** ロールの説明。ロールの詳細な説明や用途を記述します。 */
   @Column(name = "description", length = 200)
-  private String description;
+  protected String description;
 
-  /** 有効開始日。 */
+  /** ロールの有効開始日。この日時からロールが有効となります。 */
   @Column(name = "valid_from", nullable = false)
-  private LocalDateTime validFrom;
+  protected LocalDateTime validFrom;
 
-  /** 有効終了日。 */
+  /** ロールの有効終了日。この日時までロールが有効となります。nullの場合は現在も有効です。 */
   @Column(name = "valid_to")
-  private LocalDateTime validTo;
+  protected LocalDateTime validTo;
 
+  /** このロールが割り当てられている組織の一覧。 */
   @OneToMany
   @JoinColumn(name = "role_id")
-  private List<RoleAssignmentForOrg> orgsAssigned = new ArrayList<>();
+  protected List<RoleAssignmentForOrg> orgsAssigned = new ArrayList<>();
 
+  /** このロールが割り当てられている従業員の一覧。 */
   @OneToMany
   @JoinColumn(name = "role_id")
-  private List<RoleAssignmentForEmp> empsAssigned = new ArrayList<>();
+  protected List<RoleAssignmentForEmp> empsAssigned = new ArrayList<>();
+
+  /**
+   * ロールを新規作成します。
+   *
+   * @param roleId ロールID
+   * @param roleCode ロールコード
+   * @param roleName ロール名称
+   * @param roleTypeCode ロール種類コード
+   * @param description 説明
+   * @param validFrom 有効開始日
+   * @param validTo 有効終了日
+   * @return 新規作成されたRoleインスタンス
+   */
+  public static Role create(
+      SnowflakeId roleId,
+      String roleCode,
+      String roleName,
+      String roleTypeCode,
+      String description,
+      LocalDateTime validFrom,
+      LocalDateTime validTo
+  ) {
+    Role role = new Role();
+    role.roleId = roleId;
+    role.roleCode = roleCode;
+    role.roleName = roleName;
+    role.roleTypeCode = roleTypeCode;
+    role.description = description;
+    role.validFrom = validFrom;
+    role.validTo = validTo;
+    return role;
+  }
 }

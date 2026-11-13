@@ -493,7 +493,6 @@ jobs:
       pull-requests: read
       checks: write
     runs-on: ubuntu-26.04
-    if: github.event_name == 'pull_request'
     needs:
       - backend-test
       - backend-medium-test
@@ -503,7 +502,17 @@ jobs:
       - authorization-medium-test
       - service-registry-test
       - mizo432-shared-common-test
-    needs-result: 'all-were-successful || success()'
+    if: |
+      github.event_name == 'pull_request' &&
+      always() &&
+      (needs.backend-test.result == 'success' || needs.backend-test.result == 'skipped') &&
+      (needs.backend-medium-test.result == 'success' || needs.backend-medium-test.result == 'skipped') &&
+      (needs.api-gateway-test.result == 'success' || needs.api-gateway-test.result == 'skipped') &&
+      (needs.api-gateway-medium-test.result == 'success' || needs.api-gateway-medium-test.result == 'skipped') &&
+      (needs.authorization-test.result == 'success' || needs.authorization-test.result == 'skipped') &&
+      (needs.authorization-medium-test.result == 'success' || needs.authorization-medium-test.result == 'skipped') &&
+      (needs.service-registry-test.result == 'success' || needs.service-registry-test.result == 'skipped') &&
+      (needs.mizo432-shared-common-test.result == 'success' || needs.mizo432-shared-common-test.result == 'skipped')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -533,7 +542,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew sonar \
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "SONAR_TOKEN is not set. Skipping SonarQube analysis."
+            exit 0
+          fi
+          ./gradlew sonar --no-parallel \
             -Dsonar.token=${SONAR_TOKEN} \
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
             -Dsonar.pullrequest.branch=${{ github.head_ref }} \

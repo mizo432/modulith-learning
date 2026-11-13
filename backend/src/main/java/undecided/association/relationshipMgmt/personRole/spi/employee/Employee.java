@@ -8,26 +8,67 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 import com.github.mizo432.shared.converter.EncryptedStringConverter;
 
+/**
+ * 従業員エンティティ。
+ *
+ * <p>従業員の氏名、有効期間などを管理します。氏名は{@link EncryptedStringConverter}を使用して暗号化して保存されます。
+ *
+ * <p>C6修正により{@code @Setter}は削除され、{@code create()}ファクトリメソッドを使用してインスタンスを作成します。
+ */
 @Entity(name = "TestEmployee")
 @Table(name = "employees")
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Employee {
-  @Id private UUID employeeId;
 
+  /** 従業員の一意な識別子。 */
+  @Id
+  protected UUID employeeId;
+
+  /** 従業員の姓。暗号化して保存されます。 */
   @Column(nullable = false)
   @Convert(converter = EncryptedStringConverter.class)
-  private String lastName;
+  protected String lastName;
 
+  /** 従業員の名。暗号化して保存されます。 */
   @Column(nullable = false)
   @Convert(converter = EncryptedStringConverter.class)
-  private String firstName;
+  protected String firstName;
 
+  /** 従業員の有効開始日。この日時から従業員が有効となります。 */
   @Column(nullable = false)
-  private LocalDateTime validFrom;
+  protected LocalDateTime validFrom;
 
-  private LocalDateTime validTo;
+  /** 従業員の有効終了日。この日時まで従業員が有効となります。nullの場合は現在も有効です。 */
+  protected LocalDateTime validTo;
+
+  /**
+   * 従業員を新規作成します。
+   *
+   * @param employeeId 従業員ID
+   * @param lastName 姓
+   * @param firstName 名
+   * @param validFrom 有効開始日
+   * @param validTo 有効終了日
+   * @return 新規作成されたEmployeeインスタンス
+   */
+  public static Employee create(
+      UUID employeeId,
+      String lastName,
+      String firstName,
+      LocalDateTime validFrom,
+      LocalDateTime validTo
+  ) {
+    Employee employee = new Employee();
+    employee.employeeId = employeeId;
+    employee.lastName = lastName;
+    employee.firstName = firstName;
+    employee.validFrom = validFrom;
+    employee.validTo = validTo;
+    return employee;
+  }
 }
