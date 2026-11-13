@@ -32,8 +32,9 @@ import undecided.supporting.snowflake.SnowflakeId;
  * チームが計画・実行・レビュー・振り返りを行う単位として機能します。
  * Sprintは状態遷移（PLANNED → ACTIVE → COMPLETED/CANCELLED）を持ち、適切なフローで管理されます。
  *
- * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
- * インスタンスを作成します。{@code @Builder}は既存のコードとの互換性のために維持されています。
+ * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられました。
+ * インスタンスは{@code @Builder}を使用して作成します。
+ * {@code @AllArgsConstructor}は{@code @Builder}の動作に必要な内部用コンストラクタです。
  */
 @Entity
 @Table(name = "sprints", uniqueConstraints = {
@@ -108,61 +109,6 @@ public class Sprint {
   /** Sprintが論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
   protected LocalDateTime deletedAt;
-
-    /**
-     * Sprintを新規作成します。
-     *
-     * @param id ID
-     * @param productId 製品ID
-     * @param sprintNumber Sprint番号
-     * @param title タイトル
-     * @param goal 目標
-     * @param startDate 開始日
-     * @param endDate 終了日
-     * @param status 状態
-     * @param teamId チームID
-     * @param teamName チーム名
-     * @param velocity ベロシティ
-     * @param notes メモ
-     * @param createdAt 作成日時
-     * @param updatedAt 更新日時
-     * @param deletedAt 削除日時
-     * @return 新規作成されたSprintインスタンス
-     */
-    public static Sprint create(
-            @NonNull SnowflakeId id,
-            @NonNull UUID productId,
-            @NonNull Integer sprintNumber,
-            @NonNull String title,
-            @Nullable String goal,
-            @NonNull LocalDate startDate,
-            @NonNull LocalDate endDate,
-            @NonNull SprintStatus status,
-            @NonNull UUID teamId,
-            @Nullable String teamName,
-            @Nullable Integer velocity,
-            @Nullable String notes,
-            @NonNull LocalDateTime createdAt,
-            @NonNull LocalDateTime updatedAt,
-            @Nullable LocalDateTime deletedAt) {
-        return Sprint.builder()
-                .id(id)
-                .productId(productId)
-                .sprintNumber(sprintNumber)
-                .title(title)
-                .goal(goal)
-                .startDate(startDate)
-                .endDate(endDate)
-                .status(status)
-                .teamId(teamId)
-                .teamName(teamName)
-                .velocity(velocity)
-                .notes(notes)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .deletedAt(deletedAt)
-                .build();
-    }
 
     public void start() {
         if (this.status != SprintStatus.PLANNED) {
