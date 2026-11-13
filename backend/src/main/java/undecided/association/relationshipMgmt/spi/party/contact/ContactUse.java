@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.spi.party.contact;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -22,6 +23,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @AllArgsConstructor
 public class ContactUse {
   @Id private SnowflakeId contactUseId = SnowflakeId.EMPTY;
+  @Column(name = "party_id")
   private SnowflakeId partyId = SnowflakeId.EMPTY;
   private Contact contact = Contact.empty();
   private PhoneNo phoneNo = PhoneNo.empty();
