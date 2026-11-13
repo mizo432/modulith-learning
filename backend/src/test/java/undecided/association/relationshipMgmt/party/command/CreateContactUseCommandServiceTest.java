@@ -19,6 +19,7 @@ import undecided.association.relationshipMgmt.party.repository.ContactUseReposit
 import undecided.association.relationshipMgmt.party.repository.OrgRepository;
 import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
 import undecided.association.relationshipMgmt.party.repository.PersonRepository;
+import undecided.association.relationshipMgmt.spi.party.contact.Address;
 import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
@@ -76,6 +77,7 @@ class CreateContactUseCommandServiceTest {
               SnowflakeId.empty(),
               Contact.of("user@example.com"),
               PhoneNo.of("090-1234-5678"),
+              Address.empty(),
               ContactUseType.HOME);
 
       // Act & Assert
@@ -93,7 +95,11 @@ class CreateContactUseCommandServiceTest {
       // Arrange
       CreateContactUseDto dto =
           new CreateContactUseDto(
-              SnowflakeId.of(1111111111L), null, PhoneNo.of("090-1234-5678"), ContactUseType.HOME);
+              SnowflakeId.of(1111111111L),
+              null,
+              PhoneNo.of("090-1234-5678"),
+              Address.empty(),
+              ContactUseType.HOME);
 
       // Act & Assert
       assertThatThrownBy(() -> service.createAndUse(dto))
@@ -113,6 +119,7 @@ class CreateContactUseCommandServiceTest {
               SnowflakeId.of(1111111111L),
               Contact.empty(),
               PhoneNo.of("090-1234-5678"),
+              Address.empty(),
               ContactUseType.HOME);
 
       // Act & Assert
@@ -142,6 +149,7 @@ class CreateContactUseCommandServiceTest {
               SnowflakeId.of(1111111111L),
               Contact.of("user@example.com"),
               PhoneNo.of("090-1234-5678"),
+              Address.of("東京都"),
               ContactUseType.HOME);
 
       // Act
@@ -156,6 +164,7 @@ class CreateContactUseCommandServiceTest {
       assertThat(saved.getPartyId().value()).isEqualTo(SnowflakeId.of(1111111111L).value());
       assertThat(saved.getContact().value()).isEqualTo("user@example.com");
       assertThat(saved.getPhoneNo().value()).isEqualTo("090-1234-5678");
+      assertThat(saved.getAddress().value()).isEqualTo("東京都");
       assertThat(saved.getType()).isEqualTo(ContactUseType.HOME);
     }
 
@@ -169,7 +178,11 @@ class CreateContactUseCommandServiceTest {
 
       CreateContactUseDto dto =
           new CreateContactUseDto(
-              SnowflakeId.of(1111111111L), Contact.of("user@example.com"), null, null);
+              SnowflakeId.of(1111111111L),
+              Contact.of("user@example.com"),
+              null,
+              null,
+              null);
 
       // Act
       service.createAndUse(dto);

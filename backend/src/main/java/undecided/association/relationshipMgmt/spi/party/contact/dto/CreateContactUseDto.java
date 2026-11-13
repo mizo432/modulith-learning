@@ -2,6 +2,7 @@ package undecided.association.relationshipMgmt.spi.party.contact.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import undecided.association.relationshipMgmt.spi.party.contact.Address;
 import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
 import undecided.association.relationshipMgmt.spi.party.contact.PhoneNo;
@@ -30,6 +31,11 @@ public class CreateContactUseDto {
    * 電話番号。
    */
   private final PhoneNo phoneNo;
+
+  /**
+   * 住所。
+   */
+  private final Address address;
 
   /**
    * 連絡先の用途種別（自宅、職場など）。

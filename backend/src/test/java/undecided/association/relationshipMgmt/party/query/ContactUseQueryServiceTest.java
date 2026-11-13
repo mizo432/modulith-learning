@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.association.relationshipMgmt.party.repository.ContactUseRepository;
+import undecided.association.relationshipMgmt.spi.party.contact.Address;
 import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
@@ -48,6 +49,7 @@ class ContactUseQueryServiceTest {
               SnowflakeId.of(100L),
               Contact.of("user1@example.com"),
               PhoneNo.of("090-1111-1111"),
+              Address.empty(),
               ContactUseType.HOME,
               null);
       ContactUse contactUse2 =
@@ -56,6 +58,7 @@ class ContactUseQueryServiceTest {
               SnowflakeId.of(100L),
               Contact.of("user2@example.com"),
               PhoneNo.of("090-2222-2222"),
+              Address.empty(),
               ContactUseType.WORK,
               null);
 
@@ -99,6 +102,7 @@ class ContactUseQueryServiceTest {
               SnowflakeId.of(100L),
               Contact.of("user@example.com"),
               PhoneNo.of("090-1234-5678"),
+              Address.empty(),
               ContactUseType.HOME,
               null);
 
@@ -142,6 +146,7 @@ class ContactUseQueryServiceTest {
               partyId,
               Contact.of("user1@example.com"),
               PhoneNo.of("090-1111-1111"),
+              Address.empty(),
               ContactUseType.HOME,
               null);
       ContactUse contactUse2 =
@@ -150,6 +155,7 @@ class ContactUseQueryServiceTest {
               partyId,
               Contact.of("user2@example.com"),
               PhoneNo.of("090-2222-2222"),
+              Address.empty(),
               ContactUseType.WORK,
               null);
 

@@ -29,6 +29,7 @@ public class ContactUse {
   private SnowflakeId partyId = SnowflakeId.EMPTY;
   private Contact contact = Contact.empty();
   private PhoneNo phoneNo = PhoneNo.empty();
+  private Address address = Address.empty();
   @Enumerated(EnumType.STRING)
   private ContactUseType type = ContactUseType.UNKNOWN;
   private WhenOccured whenOccured = WhenOccured.empty();

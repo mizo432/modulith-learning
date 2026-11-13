@@ -2,32 +2,35 @@ package undecided.association.relationshipMgmt.spi.party.contact;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.value.StringValue;
 
 /**
  * 連絡先アドレス（メールアドレスなど）を表す値オブジェクトです。
  *
- * <p>このクラスは {@link StringValue} インターフェースを実装し、連絡先アドレスを不変の値として保持します。
+ * <p>このクラスは {@link ContactBase} を継承し、連絡先アドレスを不変の値として保持します。
+ * 後方互換性のために残されており、{@link EmailAddress} をラップします。
+ *
+ * @deprecated {@link EmailAddress} を使用してください。
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode
-public class Contact implements StringValue {
+@Deprecated
+@EqualsAndHashCode(callSuper = true)
+public class Contact extends ContactBase {
 
   /** 連絡先アドレスの最大文字数。 */
   public static final int MAX_LENGTH = 200;
 
-  /** 連絡先アドレスの最小文字数。 */
-  public static final int MIN_LENGTH = 1;
-
-  private final String value;
+  private final ContactType type;
 
   /** null の値を持つインスタンスを作成します。 */
   public Contact() {
-    value = null;
+    super();
+    this.type = ContactType.EMAIL;
+  }
+
+  private Contact(String value) {
+    super(value);
+    this.type = ContactType.EMAIL;
   }
 
   /**
@@ -56,23 +59,9 @@ public class Contact implements StringValue {
     return new Contact();
   }
 
-  /**
-   * 値が空かどうかを返します。
-   *
-   * @return 値が {@code null} または空の場合に {@code true}
-   */
-  public boolean isEmpty() {
-    return value == null || value.isBlank();
-  }
-
-  /**
-   * 保持している文字列を返します。
-   *
-   * @return 連絡先アドレス。{@code null} の可能性があります。
-   */
   @Override
-  public String value() {
-    return value;
+  public ContactType type() {
+    return type;
   }
 
   @Override

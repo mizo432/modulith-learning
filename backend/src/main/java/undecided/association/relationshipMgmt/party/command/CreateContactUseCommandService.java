@@ -8,6 +8,7 @@ import undecided.association.relationshipMgmt.party.repository.ContactUseReposit
 import undecided.association.relationshipMgmt.party.repository.OrgRepository;
 import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
 import undecided.association.relationshipMgmt.party.repository.PersonRepository;
+import undecided.association.relationshipMgmt.spi.party.contact.Address;
 import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
@@ -70,6 +71,7 @@ public class CreateContactUseCommandService implements CreateContactUseCommand {
             dto.getPartyId(),
             dto.getContact(),
             dto.getPhoneNo() != null ? dto.getPhoneNo() : PhoneNo.empty(),
+            dto.getAddress() != null ? dto.getAddress() : Address.empty(),
             dto.getType() != null ? dto.getType() : ContactUseType.UNKNOWN,
             WhenOccured.current());
     contactUseRepository.save(contactUse);
