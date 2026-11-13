@@ -50,17 +50,14 @@ class ContactQueryServiceTest {
               Contact.of("user1@example.com"),
               PhoneNo.of("090-1111-1111"),
               Address.empty(),
+              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
               ContactUseType.HOME,
               null);
-      ContactUse contactUse2 =
-          new ContactUse(
-              SnowflakeId.of(2L),
-              SnowflakeId.of(100L),
-              Contact.of("user2@example.com"),
-              PhoneNo.of("090-2222-2222"),
-              Address.empty(),
-              ContactUseType.WORK,
-              null);
+      ContactUse contactUse2 = new ContactUse(
+          SnowflakeId.of(2L), SnowflakeId.of(100L), Contact.of("user2@example.com"),
+          PhoneNo.of("090-2222-2222"), Address.empty(),
+              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+              ContactUseType.WORK, null);
 
       when(contactUseRepository.findAll()).thenReturn(List.of(contactUse1, contactUse2));
 
@@ -103,6 +100,7 @@ class ContactQueryServiceTest {
               Contact.of("user@example.com"),
               PhoneNo.of("090-1234-5678"),
               Address.empty(),
+              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
               ContactUseType.HOME,
               null);
 
@@ -147,6 +145,7 @@ class ContactQueryServiceTest {
               Contact.of("user1@example.com"),
               PhoneNo.of("090-1111-1111"),
               Address.empty(),
+              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
               ContactUseType.HOME,
               null);
       ContactUse contactUse2 =
@@ -156,6 +155,7 @@ class ContactQueryServiceTest {
               Contact.of("user2@example.com"),
               PhoneNo.of("090-2222-2222"),
               Address.empty(),
+              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
               ContactUseType.WORK,
               null);
 

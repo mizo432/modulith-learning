@@ -29,7 +29,44 @@ public class ContactUse {
   private SnowflakeId partyId = SnowflakeId.EMPTY;
   private Contact contact = Contact.empty();
   private PhoneNo phoneNo = PhoneNo.empty();
+  @Column(name = "address", length = 200)
   private Address address = Address.empty();
+  @Column(name = "pref_name", length = 10)
+  private String prefName;
+  @Column(name = "pref_kana", length = 15)
+  private String prefKana;
+  @Column(name = "postal_code", length = 8)
+  private String postalCode;
+  @Column(name = "country_name", length = 50)
+  private String countryName;
+  @Column(name = "country_kana", length = 50)
+  private String countryKana;
+  @Column(name = "city_name", length = 20)
+  private String cityName;
+  @Column(name = "city_kana", length = 20)
+  private String cityKana;
+  @Column(name = "ward_name", length = 20)
+  private String wardName;
+  @Column(name = "ward_kana", length = 20)
+  private String wardKana;
+  @Column(name = "oaza_cho_name", length = 20)
+  private String oazaChoName;
+  @Column(name = "oaza_cho_kana", length = 20)
+  private String oazaChoKana;
+  @Column(name = "chome_name", length = 20)
+  private String chomeName;
+  @Column(name = "chome_kana", length = 20)
+  private String chomeKana;
+  @Column(name = "koaza_name", length = 20)
+  private String koazaName;
+  @Column(name = "koaza_kana", length = 20)
+  private String koazaKana;
+  @Column(name = "building_name", length = 50)
+  private String buildingName;
+  @Column(name = "building_kana", length = 50)
+  private String buildingKana;
+  @Column(name = "room_no", length = 20)
+  private String roomNo;
   @Enumerated(EnumType.STRING)
   private ContactUseType type = ContactUseType.UNKNOWN;
   private WhenOccured whenOccured = WhenOccured.empty();
