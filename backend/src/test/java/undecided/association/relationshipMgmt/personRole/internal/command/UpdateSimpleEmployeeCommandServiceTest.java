@@ -35,6 +35,7 @@ import undecided.association.relationshipMgmt.spi.party.person.DateOfBirth;
 import undecided.association.relationshipMgmt.spi.party.person.DateOfDie;
 import undecided.association.relationshipMgmt.spi.party.person.LegalName;
 import undecided.association.relationshipMgmt.spi.party.person.Person;
+import com.github.mizo432.shared.exception.NotFoundBusinessException;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -133,8 +134,8 @@ class UpdateSimpleEmployeeCommandServiceTest {
     }
 
     @Test
-    @DisplayName("従業員が見つからない場合IllegalArgumentExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionWhenEmployeeNotFound() {
+    @DisplayName("従業員が見つからない場合NotFoundBusinessExceptionをスローすること")
+    void shouldThrowNotFoundBusinessExceptionWhenEmployeeNotFound() {
       // Arrange
       SnowflakeId employeeId = SnowflakeId.of(9999999999L);
       EmployeeNo employeeNo = EmployeeNo.of("9999999999");
@@ -155,13 +156,12 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.update(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("Employee not found: " + employeeId);
+          .isInstanceOf(NotFoundBusinessException.class);
     }
 
     @Test
-    @DisplayName("Personが見つからない場合IllegalArgumentExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionWhenPersonNotFound() {
+    @DisplayName("Personが見つからない場合NotFoundBusinessExceptionをスローすること")
+    void shouldThrowNotFoundBusinessExceptionWhenPersonNotFound() {
       // Arrange
       SnowflakeId employeeId = SnowflakeId.of(1234567890L);
       SnowflakeId partyId = SnowflakeId.of(5000000001L);
@@ -190,13 +190,12 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.update(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("Person not found: " + partyId);
+          .isInstanceOf(NotFoundBusinessException.class);
     }
 
     @Test
-    @DisplayName("メールアドレスのContactUseが見つからない場合IllegalArgumentExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionWhenEmailContactUseNotFound() {
+    @DisplayName("メールアドレスのContactUseが見つからない場合NotFoundBusinessExceptionをスローすること")
+    void shouldThrowNotFoundBusinessExceptionWhenEmailContactUseNotFound() {
       // Arrange
       SnowflakeId employeeId = SnowflakeId.of(1234567890L);
       SnowflakeId partyId = SnowflakeId.of(5000000001L);
@@ -235,13 +234,12 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.update(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("Email ContactUse not found for party: " + partyId);
+          .isInstanceOf(NotFoundBusinessException.class);
     }
 
     @Test
-    @DisplayName("電話番号のContactUseが見つからない場合IllegalArgumentExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionWhenPhoneContactUseNotFound() {
+    @DisplayName("電話番号のContactUseが見つからない場合NotFoundBusinessExceptionをスローすること")
+    void shouldThrowNotFoundBusinessExceptionWhenPhoneContactUseNotFound() {
       // Arrange
       SnowflakeId employeeId = SnowflakeId.of(1234567890L);
       SnowflakeId partyId = SnowflakeId.of(5000000001L);
@@ -284,8 +282,7 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.update(dto))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("Phone ContactUse not found for party: " + partyId);
+          .isInstanceOf(NotFoundBusinessException.class);
     }
 
     @Test

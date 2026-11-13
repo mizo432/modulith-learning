@@ -1,6 +1,7 @@
 package undecided.association.relationshipMgmt.personRole.internal.command;
 
 import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
+import com.github.mizo432.shared.exception.NotFoundBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,24 +38,24 @@ public class UpdateSimpleEmployeeCommandService implements UpdateSimpleEmployeeC
 
     // SimpleEmployeeを検索
     SimpleEmployee simpleEmployee = employeeRepository.findById(employeeDto.employeeId())
-        .orElseThrow(() -> new IllegalArgumentException("Employee not found: " + employeeDto.employeeId()));
+        .orElseThrow(() -> new NotFoundBusinessException("Employee", "employeeId", String.valueOf(employeeDto.employeeId())));
 
     // Personを検索して更新
     SnowflakeId partyId = employeeDto.person().getPartyId();
     Person person = personRepository.findById(partyId)
-        .orElseThrow(() -> new IllegalArgumentException("Person not found: " + partyId));
+        .orElseThrow(() -> new NotFoundBusinessException("Person", "partyId", String.valueOf(partyId)));
     person.update(employeeDto.person().getLegalName(), employeeDto.person().getDateOfBirth(), employeeDto.person().getDateOfDie());
     personRepository.save(person);
 
     // メールアドレスのContactUseを更新
     ContactUse emailContactUse = contactUseRepository.findByPartyIdAndType(employeeDto.person().getPartyId(), ContactUseType.EMAIL)
-        .orElseThrow(() -> new IllegalArgumentException("Email ContactUse not found for party: " + employeeDto.person().getPartyId()));
+        .orElseThrow(() -> new NotFoundBusinessException("ContactUse", "partyId+type", employeeDto.person().getPartyId() + "+EMAIL"));
     emailContactUse.updateEmailAddress(employeeDto.emailAddress());
     contactUseRepository.save(emailContactUse);
 
     // 電話番号のContactUseを更新
     ContactUse phoneContactUse = contactUseRepository.findByPartyIdAndType(employeeDto.person().getPartyId(), ContactUseType.PHONE)
-        .orElseThrow(() -> new IllegalArgumentException("Phone ContactUse not found for party: " + employeeDto.person().getPartyId()));
+        .orElseThrow(() -> new NotFoundBusinessException("ContactUse", "partyId+type", employeeDto.person().getPartyId() + "+PHONE"));
     phoneContactUse.updatePhoneNo(employeeDto.phoneNo());
     contactUseRepository.save(phoneContactUse);
 
