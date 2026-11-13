@@ -11,5 +11,11 @@ public enum ContactUseType {
   /** 職場 */
   WORK,
   /** その他 */
-  OTHER
+  OTHER,
+  /** メール */
+  EMAIL,
+  /** 電話 */
+  PHONE,
+  /** 住所 */
+  ADDRESS
 }

@@ -16,11 +16,10 @@ public class EmployeeFactoryImpl implements EmployeeFactory {
    */
   @Override
   public SimpleEmployee create(EmployeeDto employeeDto) {
-    SimpleEmployee simpleEmployee = new SimpleEmployee();
-    simpleEmployee.setEmployeeId(employeeDto.employeeId());
-    simpleEmployee.setEmployeeNo(employeeDto.employeeNo());
-    simpleEmployee.setSearchName(employeeDto.searchName());
-    simpleEmployee.setFullName(employeeDto.fullName());
-    return simpleEmployee;
+    return SimpleEmployee.create(
+        employeeDto.employeeId(),
+        employeeDto.employeeNo(),
+        employeeDto.searchName(),
+        employeeDto.fullName());
   }
 }

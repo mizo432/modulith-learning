@@ -23,6 +23,13 @@ import undecided.association.relationshipMgmt.partyRole.spi.role.Role;
 public class RoleApi {
   @GetMapping
   Role get() {
-    return new Role();
+    return Role.create(
+        undecided.supporting.snowflake.SnowflakeId.EMPTY,
+        "",
+        "",
+        "",
+        null,
+        java.time.LocalDateTime.now(),
+        null);
   }
 }

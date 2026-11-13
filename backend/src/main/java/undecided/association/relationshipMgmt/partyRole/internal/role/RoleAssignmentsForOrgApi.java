@@ -23,6 +23,6 @@ import undecided.association.relationshipMgmt.partyRole.spi.role.RoleAssignmentF
 public class RoleAssignmentsForOrgApi {
   @GetMapping
   RoleAssignmentForOrg get() {
-    return new RoleAssignmentForOrg();
+    return RoleAssignmentForOrg.create(java.util.UUID.randomUUID(), java.util.UUID.randomUUID(), null);
   }
 }

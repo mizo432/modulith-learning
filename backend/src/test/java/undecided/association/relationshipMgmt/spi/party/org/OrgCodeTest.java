@@ -239,4 +239,117 @@ class OrgCodeTest {
       assertThat(OrgCode.MAX_LENGTH).isEqualTo(30);
     }
   }
+
+  @Nested
+  @DisplayName("OrgCodeConverterのテスト")
+  class OrgCodeConverterTest {
+
+    private final OrgCode.OrgCodeConverter converter = new OrgCode.OrgCodeConverter();
+
+    @Nested
+    @DisplayName("convertToDatabaseColumnメソッドのテスト")
+    class ConvertToDatabaseColumnTest {
+
+      @Test
+      @DisplayName("OrgCodeをデータベース用の文字列に変換すること")
+      void shouldConvertOrgCodeToDatabaseString() {
+        // Arrange
+        OrgCode orgCode = OrgCode.of("ORG001");
+
+        // Act
+        String dbData = converter.convertToDatabaseColumn(orgCode);
+
+        // Assert
+        assertThat(dbData).as("データベース用の文字列に変換されること").isEqualTo("ORG001");
+      }
+
+      @Test
+      @DisplayName("nullのOrgCodeはnullに変換すること")
+      void shouldConvertNullOrgCodeToNull() {
+        // Act
+        String dbData = converter.convertToDatabaseColumn(null);
+
+        // Assert
+        assertThat(dbData).as("nullのOrgCodeはnullに変換されること").isNull();
+      }
+
+      @Test
+      @DisplayName("空のOrgCodeはnullに変換すること")
+      void shouldConvertEmptyOrgCodeToNull() {
+        // Arrange
+        OrgCode orgCode = OrgCode.empty();
+
+        // Act
+        String dbData = converter.convertToDatabaseColumn(orgCode);
+
+        // Assert
+        assertThat(dbData).as("空のOrgCodeはnullに変換されること").isNull();
+      }
+    }
+
+    @Nested
+    @DisplayName("convertToEntityAttributeメソッドのテスト")
+    class ConvertToEntityAttributeTest {
+
+      @Test
+      @DisplayName("データベース用の文字列をOrgCodeに変換すること")
+      void shouldConvertDatabaseStringToOrgCode() {
+        // Arrange
+        String dbData = "ORG001";
+
+        // Act
+        OrgCode orgCode = converter.convertToEntityAttribute(dbData);
+
+        // Assert
+        assertThat(orgCode).as("OrgCodeに変換されること").isNotNull();
+        assertThat(orgCode.value()).as("値が保持されること").isEqualTo("ORG001");
+      }
+
+      @Test
+      @DisplayName("nullのデータベースデータは空のOrgCodeに変換すること")
+      void shouldConvertNullToEmptyOrgCode() {
+        // Act
+        OrgCode orgCode = converter.convertToEntityAttribute(null);
+
+        // Assert
+        assertThat(orgCode).as("OrgCodeインスタンスが作成されること").isNotNull();
+        assertThat(orgCode.isEmpty()).as("空のOrgCodeであること").isTrue();
+      }
+
+      @Test
+      @DisplayName("不正なデータベースデータはIllegalArgumentExceptionをスローすること")
+      void shouldThrowExceptionForInvalidData() {
+        // Arrange
+        String invalidData = "ORG@001"; // 特殊文字を含む不正なデータ
+
+        // Act & Assert
+        assertThatThrownBy(() -> converter.convertToEntityAttribute(invalidData))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Invalid OrgCode value")
+            .hasMessageContaining(invalidData);
+      }
+
+      @Test
+      @DisplayName("空文字列のデータベースデータはIllegalArgumentExceptionをスローすること")
+      void shouldThrowExceptionForEmptyString() {
+        // Act & Assert
+        assertThatThrownBy(() -> converter.convertToEntityAttribute(""))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Invalid OrgCode value");
+      }
+
+      @Test
+      @DisplayName("文字数超過のデータベースデータはIllegalArgumentExceptionをスローすること")
+      void shouldThrowExceptionForTooLongData() {
+        // Arrange
+        String tooLongData = "1234567890123456789012345678901"; // 31文字
+
+        // Act & Assert
+        assertThatThrownBy(() -> converter.convertToEntityAttribute(tooLongData))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Invalid OrgCode value")
+            .hasMessageContaining(tooLongData);
+      }
+    }
+  }
 }

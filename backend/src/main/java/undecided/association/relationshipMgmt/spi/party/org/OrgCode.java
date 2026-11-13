@@ -131,13 +131,19 @@ public class OrgCode implements StringCode<OrgCode> {
      *
      * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
      * @return 変換された {@code OrgCode} インスタンス。データベースデータが {@code null} の場合は空のインスタンス
+     * @throws IllegalArgumentException データベースデータが不正な {@code OrgCode} 値の場合
      */
     @Override
     public OrgCode convertToEntityAttribute(@Nullable String dbData) {
       if (dbData == null) {
         return OrgCode.empty();
       }
-      return new OrgCode(dbData);
+      try {
+        return OrgCode.of(dbData);
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException(
+            "Invalid OrgCode value in database: " + dbData, e);
+      }
     }
   }
 }

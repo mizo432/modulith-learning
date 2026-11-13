@@ -14,9 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.association.relationshipMgmt.party.repository.ContactUseRepository;
-import undecided.association.relationshipMgmt.spi.party.contact.Contact;
+import undecided.association.relationshipMgmt.spi.party.contact.Address;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
+import undecided.association.relationshipMgmt.spi.party.contact.EmailAddress;
 import undecided.association.relationshipMgmt.spi.party.contact.PhoneNo;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -42,22 +43,22 @@ class ContactQueryServiceTest {
     @DisplayName("全ての連絡先情報が取得されること")
     void shouldReturnAllContactUses() {
       // Arrange
-      ContactUse contactUse1 =
-          new ContactUse(
-              SnowflakeId.of(1L),
-              SnowflakeId.of(100L),
-              Contact.of("user1@example.com"),
-              PhoneNo.of("090-1111-1111"),
-              ContactUseType.HOME,
-              null);
-      ContactUse contactUse2 =
-          new ContactUse(
-              SnowflakeId.of(2L),
-              SnowflakeId.of(100L),
-              Contact.of("user2@example.com"),
-              PhoneNo.of("090-2222-2222"),
-              ContactUseType.WORK,
-              null);
+      ContactUse contactUse1 = ContactUse.create(
+          SnowflakeId.of(1L),
+          SnowflakeId.of(100L),
+          EmailAddress.of("user1@example.com"),
+          PhoneNo.of("090-1111-1111"),
+          Address.empty(),
+          ContactUseType.HOME,
+          null);
+      ContactUse contactUse2 = ContactUse.create(
+          SnowflakeId.of(2L),
+          SnowflakeId.of(100L),
+          EmailAddress.of("user2@example.com"),
+          PhoneNo.of("090-2222-2222"),
+          Address.empty(),
+          ContactUseType.WORK,
+          null);
 
       when(contactUseRepository.findAll()).thenReturn(List.of(contactUse1, contactUse2));
 
@@ -66,8 +67,8 @@ class ContactQueryServiceTest {
 
       // Assert
       assertThat(result).as("全ての連絡先情報が取得されること").hasSize(2);
-      assertThat(result.get(0).getContact().value()).isEqualTo("user1@example.com");
-      assertThat(result.get(1).getContact().value()).isEqualTo("user2@example.com");
+      assertThat(result.get(0).getEmailAddress().value()).isEqualTo("user1@example.com");
+      assertThat(result.get(1).getEmailAddress().value()).isEqualTo("user2@example.com");
     }
 
     @Test
@@ -93,14 +94,14 @@ class ContactQueryServiceTest {
     void shouldReturnContactUseWhenIdExists() {
       // Arrange
       SnowflakeId id = SnowflakeId.of(1L);
-      ContactUse contactUse =
-          new ContactUse(
-              id,
-              SnowflakeId.of(100L),
-              Contact.of("user@example.com"),
-              PhoneNo.of("090-1234-5678"),
-              ContactUseType.HOME,
-              null);
+      ContactUse contactUse = ContactUse.create(
+          id,
+          SnowflakeId.of(100L),
+          EmailAddress.of("user@example.com"),
+          PhoneNo.of("090-1234-5678"),
+          Address.empty(),
+          ContactUseType.HOME,
+          null);
 
       when(contactUseRepository.findById(id)).thenReturn(Optional.of(contactUse));
 
@@ -109,7 +110,7 @@ class ContactQueryServiceTest {
 
       // Assert
       assertThat(result).as("連絡先情報が取得されること").isPresent();
-      assertThat(result.get().getContact().value()).isEqualTo("user@example.com");
+      assertThat(result.get().getEmailAddress().value()).isEqualTo("user@example.com");
     }
 
     @Test
@@ -136,22 +137,22 @@ class ContactQueryServiceTest {
     void shouldReturnContactUsesByPartyId() {
       // Arrange
       SnowflakeId partyId = SnowflakeId.of(100L);
-      ContactUse contactUse1 =
-          new ContactUse(
-              SnowflakeId.of(1L),
-              partyId,
-              Contact.of("user1@example.com"),
-              PhoneNo.of("090-1111-1111"),
-              ContactUseType.HOME,
-              null);
-      ContactUse contactUse2 =
-          new ContactUse(
-              SnowflakeId.of(2L),
-              partyId,
-              Contact.of("user2@example.com"),
-              PhoneNo.of("090-2222-2222"),
-              ContactUseType.WORK,
-              null);
+      ContactUse contactUse1 = ContactUse.create(
+          SnowflakeId.of(1L),
+          partyId,
+          EmailAddress.of("user1@example.com"),
+          PhoneNo.of("090-1111-1111"),
+          Address.empty(),
+          ContactUseType.HOME,
+          null);
+      ContactUse contactUse2 = ContactUse.create(
+          SnowflakeId.of(2L),
+          partyId,
+          EmailAddress.of("user2@example.com"),
+          PhoneNo.of("090-2222-2222"),
+          Address.empty(),
+          ContactUseType.WORK,
+          null);
 
       when(contactUseRepository.findByPartyId(partyId)).thenReturn(List.of(contactUse1, contactUse2));
 

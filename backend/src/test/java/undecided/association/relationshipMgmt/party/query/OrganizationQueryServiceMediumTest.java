@@ -128,15 +128,16 @@ class OrganizationQueryServiceMediumTest {
    * @return 保存されたOrgエンティティ
    */
   private Org createAndSaveOrg(String orgCode, String orgName) {
-    Org org = Org.createNew();
-    org.setPartyId(SnowflakeId.of(Long.parseLong(orgCode.replace("ORG", "1"))));
-    org.setPartyTypeCode(PartyTypeCode.ORG);
-    org.setCode(orgCode);
-    org.setValidFrom(java.time.LocalDateTime.now());
-    org.setOrgName(OrgName.of(orgName));
-    org.setOrgCode(OrgCode.of(orgCode));
-    org.setOrgTypeCode(OrgTypeCode.COMPANY);
-    org.setStatus(OrgStatus.ACTIVE);
+    Org org = Org.create(
+        SnowflakeId.of(Long.parseLong(orgCode.replace("ORG", "1"))),
+        orgCode,
+        java.time.LocalDateTime.now(),
+        OrgName.of(orgName),
+        OrgCode.of(orgCode),
+        OrgTypeCode.COMPANY,
+        null,
+        OrgStatus.ACTIVE
+    );
     return repository.save(org);
   }
 }

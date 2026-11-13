@@ -2,32 +2,35 @@ package undecided.association.relationshipMgmt.spi.party.contact;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.value.StringValue;
 
 /**
  * 連絡先アドレス（メールアドレスなど）を表す値オブジェクトです。
  *
- * <p>このクラスは {@link StringValue} インターフェースを実装し、連絡先アドレスを不変の値として保持します。
+ * <p>このクラスは {@link ContactBase} を継承し、連絡先アドレスを不変の値として保持します。
+ * 後方互換性のために残されており、{@link EmailAddress} をラップします。
+ *
+ * @deprecated {@link EmailAddress} を使用してください。
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode
-public class Contact implements StringValue {
+@Deprecated
+@EqualsAndHashCode(callSuper = true)
+public class Contact extends ContactBase {
 
   /** 連絡先アドレスの最大文字数。 */
   public static final int MAX_LENGTH = 200;
 
-  /** 連絡先アドレスの最小文字数。 */
-  public static final int MIN_LENGTH = 1;
-
-  private final String value;
+  private final ContactType type;
 
   /** null の値を持つインスタンスを作成します。 */
   public Contact() {
-    value = null;
+    super();
+    this.type = ContactType.EMAIL;
+  }
+
+  private Contact(String value) {
+    super(value);
+    this.type = ContactType.EMAIL;
   }
 
   /**
@@ -56,23 +59,9 @@ public class Contact implements StringValue {
     return new Contact();
   }
 
-  /**
-   * 値が空かどうかを返します。
-   *
-   * @return 値が {@code null} または空の場合に {@code true}
-   */
-  public boolean isEmpty() {
-    return value == null || value.isBlank();
-  }
-
-  /**
-   * 保持している文字列を返します。
-   *
-   * @return 連絡先アドレス。{@code null} の可能性があります。
-   */
   @Override
-  public String value() {
-    return value;
+  public ContactType type() {
+    return type;
   }
 
   @Override
@@ -80,21 +69,41 @@ public class Contact implements StringValue {
     return value != null ? value : "null";
   }
 
-  /** Contactとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
+  /**
+   * Contactとデータベースの文字列を相互に変換するためのJPAコンバーターです。
+   *
+   * <p>データベースから読み込んだ不正なデータに対しては、{@code empty()}を返して安全にフォールバックします。
+   */
   @Converter(autoApply = true)
   public static class ContactConverter implements AttributeConverter<Contact, String> {
 
+    /**
+     * エンティティ属性をデータベースカラムに変換します。
+     *
+     * @param attribute 変換対象の {@code Contact} 属性
+     * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}
+     */
     @Override
     public String convertToDatabaseColumn(Contact attribute) {
       return attribute != null ? attribute.value() : null;
     }
 
+    /**
+     * データベースカラムをエンティティ属性に変換します。
+     *
+     * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
+     * @return 変換された {@code Contact} インスタンス。データベースデータが {@code null} または不正な場合は空のインスタンス
+     */
     @Override
     public Contact convertToEntityAttribute(@Nullable String dbData) {
       if (dbData == null) {
         return Contact.empty();
       }
-      return new Contact(dbData);
+      try {
+        return Contact.of(dbData);
+      } catch (IllegalArgumentException e) {
+        return Contact.empty();
+      }
     }
   }
 }

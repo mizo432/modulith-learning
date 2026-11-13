@@ -2,29 +2,31 @@ package undecided.association.relationshipMgmt.spi.party.contact;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
-import com.github.mizo432.shared.value.StringValue;
 
 /**
  * 電話番号を表す値オブジェクトです。
  *
- * <p>このクラスは {@link StringValue} インターフェースを実装し、電話番号を不変の値として保持します。
+ * <p>このクラスは {@link ContactBase} を継承し、電話番号を不変の値として保持します。
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode
-public class PhoneNo implements StringValue {
+@EqualsAndHashCode(callSuper = true)
+public class PhoneNo extends ContactBase {
 
   /** 電話番号の最大文字数。 */
   public static final int MAX_LENGTH = 20;
 
-  private final String value;
+  private final ContactType type;
 
   /** null の値を持つインスタンスを作成します。 */
   public PhoneNo() {
-    value = null;
+    super();
+    this.type = ContactType.PHONE;
+  }
+
+  private PhoneNo(String value) {
+    super(value);
+    this.type = ContactType.PHONE;
   }
 
   /**
@@ -53,23 +55,9 @@ public class PhoneNo implements StringValue {
     return new PhoneNo();
   }
 
-  /**
-   * 値が空かどうかを返します。
-   *
-   * @return 値が {@code null} または空の場合に {@code true}
-   */
-  public boolean isEmpty() {
-    return value == null || value.isBlank();
-  }
-
-  /**
-   * 保持している文字列を返します。
-   *
-   * @return 電話番号。{@code null} の可能性があります。
-   */
   @Override
-  public String value() {
-    return value;
+  public ContactType type() {
+    return type;
   }
 
   @Override

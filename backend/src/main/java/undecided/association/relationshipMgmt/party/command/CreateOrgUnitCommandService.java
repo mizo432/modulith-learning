@@ -6,12 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import undecided.association.relationshipMgmt.party.repository.OrgRepository;
 import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
 import undecided.association.relationshipMgmt.spi.party.CreateOrgUnitCommand;
-import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
 import undecided.association.relationshipMgmt.spi.party.org.Org;
 import undecided.association.relationshipMgmt.spi.party.orgUnit.OrgUnit;
 import undecided.association.relationshipMgmt.spi.party.orgUnit.dto.OrgUnitDto;
 import java.time.LocalDateTime;
-import com.github.mizo432.shared.value.datetime.ValidInterval;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 import org.jspecify.annotations.Nullable;
@@ -63,14 +61,6 @@ public class CreateOrgUnitCommandService implements CreateOrgUnitCommand {
         () -> new IllegalArgumentException("指定されたOrgが存在しません: " + orgUnitDto.getOrgId())
     );
 
-    OrgUnit orgUnit = OrgUnit.createNew();
-    orgUnit.setPartyId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
-    orgUnit.setPartyTypeCode(PartyTypeCode.ORG_UNIT);
-    orgUnit.setCode(orgUnitDto.getOrgUnitCode().value());
-    orgUnit.setValidFrom(LocalDateTime.now());
-    orgUnit.setValidTo(null);
-    orgUnit.setGovtAssignedId(null);
-    orgUnit.setSearchName(null);
     // 親組織単位IDがnullでない場合は、親組織単位の存在を確認する
     @Nullable SnowflakeId parentOrgUnitId = orgUnitDto.getParentOrgUnitId();
     if (parentOrgUnitId != null) {
@@ -79,13 +69,17 @@ public class CreateOrgUnitCommandService implements CreateOrgUnitCommand {
       );
     }
 
-    orgUnit.setOrgUnitName(orgUnitDto.getOrgUnitName());
-    orgUnit.setValidInterval(ValidInterval.empty());
-    orgUnit.setOrgUnitCode(orgUnitDto.getOrgUnitCode());
-    orgUnit.setOrgUnitTypeCode(orgUnitDto.getOrgUnitTypeCode());
-    orgUnit.setParentOrgUnitId(parentOrgUnitId);
-    orgUnit.setStatus(orgUnitDto.getStatus());
-    orgUnit.setOrg(org);
+    OrgUnit orgUnit = OrgUnit.create(
+        SnowflakeId.of(snowflakeIdGenerator.nextId()),
+        orgUnitDto.getOrgUnitCode().value(),
+        LocalDateTime.now(),
+        orgUnitDto.getOrgUnitName(),
+        orgUnitDto.getOrgUnitCode(),
+        orgUnitDto.getOrgUnitTypeCode(),
+        parentOrgUnitId,
+        orgUnitDto.getStatus(),
+        org
+    );
     orgUnitRepository.save(orgUnit);
   }
 }

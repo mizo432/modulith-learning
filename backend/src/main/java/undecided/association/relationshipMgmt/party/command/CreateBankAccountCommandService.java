@@ -46,7 +46,7 @@ public class CreateBankAccountCommandService implements CreateBankAccountCommand
       throw new IllegalArgumentException("holdersNameは必須です");
     }
     BankAccount bankAccount =
-        new BankAccount(
+        BankAccount.create(
             undecided.supporting.snowflake.SnowflakeId.EMPTY,
             bankAccountDto.getBankId(),
             bankAccountDto.getBankBranchId(),
