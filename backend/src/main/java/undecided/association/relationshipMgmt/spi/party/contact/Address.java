@@ -9,6 +9,7 @@ import org.jspecify.annotations.Nullable;
  * 住所を表す値オブジェクトです。
  *
  * <p>このクラスは {@link ContactBase} を継承し、住所を不変の値として保持します。
+ * M2修正により、Builderパターンを導入し、19個の重载メソッドを削除しました。
  */
 @EqualsAndHashCode(callSuper = true)
 public class Address extends ContactBase {
@@ -150,7 +151,11 @@ public class Address extends ContactBase {
     this.roomNo = null;
   }
 
-  private Address(String value, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName, String cityKana, String wardName, String wardKana, String oazaChoName, String oazaChoKana, String chomeName, String chomeKana, String koazaName, String koazaKana, String buildingName, String buildingKana, String roomNo) {
+  private Address(String value, String prefName, String prefKana, String postalCode,
+                  String countryName, String countryKana, String cityName, String cityKana,
+                  String wardName, String wardKana, String oazaChoName, String oazaChoKana,
+                  String chomeName, String chomeKana, String koazaName, String koazaKana,
+                  String buildingName, String buildingKana, String roomNo) {
     super(value);
     this.type = ContactType.ADDRESS;
     this.prefName = prefName;
@@ -173,6 +178,8 @@ public class Address extends ContactBase {
     this.roomNo = roomNo;
   }
 
+  // ==================== Factory Methods ====================
+
   /**
    * 指定された文字列から {@code Address} インスタンスを作成します。
    *
@@ -181,7 +188,7 @@ public class Address extends ContactBase {
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
   public static Address of(String address) {
-    return of(address, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    return builder().address(address).build();
   }
 
   /**
@@ -193,7 +200,7 @@ public class Address extends ContactBase {
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
   public static Address of(String address, String prefName) {
-    return of(address, prefName, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    return builder().address(address).prefName(prefName).build();
   }
 
   /**
@@ -206,7 +213,7 @@ public class Address extends ContactBase {
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
   public static Address of(String address, String prefName, String prefKana) {
-    return of(address, prefName, prefKana, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    return builder().address(address).prefName(prefName).prefKana(prefKana).build();
   }
 
   /**
@@ -220,7 +227,7 @@ public class Address extends ContactBase {
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
   public static Address of(String address, String prefName, String prefKana, String postalCode) {
-    return of(address, prefName, prefKana, postalCode, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    return builder().address(address).prefName(prefName).prefKana(prefKana).postalCode(postalCode).build();
   }
 
   /**
@@ -235,7 +242,8 @@ public class Address extends ContactBase {
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
   public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName) {
-    return of(address, prefName, prefKana, postalCode, countryName, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).build();
   }
 
   /**
@@ -250,8 +258,10 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana) {
-    return of(address, prefName, prefKana, postalCode, countryName, countryKana, null, null, null, null, null, null, null, null, null, null, null, null, null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana).build();
   }
 
   /**
@@ -267,8 +277,11 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName) {
-    return of(address, prefName, prefKana, postalCode, countryName, countryKana, cityName, null, null, null, null, null, null, null, null, null, null, null, null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana, String cityName) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana)
+        .cityName(cityName).build();
   }
 
   /**
@@ -285,8 +298,11 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName, String cityKana) {
-    return of(address, prefName, prefKana, postalCode, countryName, countryKana, cityName, cityKana, null, null, null, null, null, null, null, null, null, null, null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana, String cityName, String cityKana) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana)
+        .cityName(cityName).cityKana(cityKana).build();
   }
 
   /**
@@ -304,8 +320,12 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName, String cityKana, String wardName) {
-    return of(address, prefName, prefKana, postalCode, countryName, countryKana, cityName, cityKana, wardName, null, null, null, null, null, null, null, null, null, null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana, String cityName, String cityKana,
+                           String wardName) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana)
+        .cityName(cityName).cityKana(cityKana).wardName(wardName).build();
   }
 
   /**
@@ -324,8 +344,12 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName, String cityKana, String wardName, String wardKana) {
-    return of(address, prefName, prefKana, postalCode, countryName, countryKana, cityName, cityKana, wardName, wardKana, null, null, null, null, null, null, null, null, null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana, String cityName, String cityKana,
+                           String wardName, String wardKana) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana)
+        .cityName(cityName).cityKana(cityKana).wardName(wardName).wardKana(wardKana).build();
   }
 
   /**
@@ -345,8 +369,13 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName, String cityKana, String wardName, String wardKana, String oazaChoName) {
-    return of(address, prefName, prefKana, postalCode, countryName, countryKana, cityName, cityKana, wardName, wardKana, oazaChoName, null, null, null, null, null, null, null, null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana, String cityName, String cityKana,
+                           String wardName, String wardKana, String oazaChoName) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana)
+        .cityName(cityName).cityKana(cityKana).wardName(wardName).wardKana(wardKana)
+        .oazaChoName(oazaChoName).build();
   }
 
   /**
@@ -367,12 +396,17 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName, String cityKana, String wardName, String wardKana, String oazaChoName, String oazaChoKana) {
-    return of(address, prefName, prefKana, postalCode, countryName, countryKana, cityName, cityKana, wardName, wardKana, oazaChoName, oazaChoKana, null, null, null, null, null, null, null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana, String cityName, String cityKana,
+                           String wardName, String wardKana, String oazaChoName, String oazaChoKana) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana)
+        .cityName(cityName).cityKana(cityKana).wardName(wardName).wardKana(wardKana)
+        .oazaChoName(oazaChoName).oazaChoKana(oazaChoKana).build();
   }
 
   /**
-   * 指定された住所、都道府県名、都道府県名かな、郵便番号、国名、国名かな、市区町村名、市区町村名かな、区名、区名かな、大字町名、大字町名かな、丁目名、丁目名かな、小字名、小字名かな、建物名、建物名かなから {@code Address} インスタンスを作成します。
+   * 指定された住所、都道府県名、都道府県名かな、郵便番号、国名、国名かな、市区町村名、市区町村名かな、区名、区名かな、大字町名、大字町名かな、丁目名、丁目名かな、小字名、小字名かな、建物名、建物名かな、部屋番号から {@code Address} インスタンスを作成します。
    *
    * @param address 住所。{@code null} は許容されません。
    * @param prefName 都道府県名。{@code null} 許容。
@@ -396,68 +430,28 @@ public class Address extends ContactBase {
    * @return 住所の {@code Address} インスタンス
    * @throws IllegalArgumentException 住所が {@code null} または空の場合
    */
-  public static Address of(String address, String prefName, String prefKana, String postalCode, String countryName, String countryKana, String cityName, String cityKana, String wardName, String wardKana, String oazaChoName, String oazaChoKana, String chomeName, String chomeKana, String koazaName, String koazaKana, String buildingName, String buildingKana, String roomNo) {
-    if (address == null || address.isBlank()) {
-      throw new IllegalArgumentException("address must not be null or blank");
-    }
-    if (address.length() > MAX_LENGTH) {
-      throw new IllegalArgumentException("address must be " + MAX_LENGTH + " characters or less");
-    }
-    if (prefName != null && prefName.length() > PREF_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("prefName must be " + PREF_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (prefKana != null && prefKana.length() > PREF_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("prefKana must be " + PREF_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (postalCode != null && postalCode.length() > POSTAL_CODE_MAX_LENGTH) {
-      throw new IllegalArgumentException("postalCode must be " + POSTAL_CODE_MAX_LENGTH + " characters or less");
-    }
-    if (countryName != null && countryName.length() > COUNTRY_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("countryName must be " + COUNTRY_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (countryKana != null && countryKana.length() > COUNTRY_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("countryKana must be " + COUNTRY_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (cityName != null && cityName.length() > CITY_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("cityName must be " + CITY_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (cityKana != null && cityKana.length() > CITY_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("cityKana must be " + CITY_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (wardName != null && wardName.length() > WARD_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("wardName must be " + WARD_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (wardKana != null && wardKana.length() > WARD_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("wardKana must be " + WARD_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (oazaChoName != null && oazaChoName.length() > OAZA_CHO_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("oazaChoName must be " + OAZA_CHO_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (oazaChoKana != null && oazaChoKana.length() > OAZA_CHO_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("oazaChoKana must be " + OAZA_CHO_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (chomeName != null && chomeName.length() > CHOME_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("chomeName must be " + CHOME_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (chomeKana != null && chomeKana.length() > CHOME_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("chomeKana must be " + CHOME_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (koazaName != null && koazaName.length() > KOAZA_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("koazaName must be " + KOAZA_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (koazaKana != null && koazaKana.length() > KOAZA_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("koazaKana must be " + KOAZA_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (buildingName != null && buildingName.length() > BUILDING_NAME_MAX_LENGTH) {
-      throw new IllegalArgumentException("buildingName must be " + BUILDING_NAME_MAX_LENGTH + " characters or less");
-    }
-    if (buildingKana != null && buildingKana.length() > BUILDING_KANA_MAX_LENGTH) {
-      throw new IllegalArgumentException("buildingKana must be " + BUILDING_KANA_MAX_LENGTH + " characters or less");
-    }
-    if (roomNo != null && roomNo.length() > ROOM_NO_MAX_LENGTH) {
-      throw new IllegalArgumentException("roomNo must be " + ROOM_NO_MAX_LENGTH + " characters or less");
-    }
-    return new Address(address.trim(), prefName != null ? prefName.trim() : null, prefKana != null ? prefKana.trim() : null, postalCode != null ? postalCode.trim() : null, countryName != null ? countryName.trim() : null, countryKana != null ? countryKana.trim() : null, cityName != null ? cityName.trim() : null, cityKana != null ? cityKana.trim() : null, wardName != null ? wardName.trim() : null, wardKana != null ? wardKana.trim() : null, oazaChoName != null ? oazaChoName.trim() : null, oazaChoKana != null ? oazaChoKana.trim() : null, chomeName != null ? chomeName.trim() : null, chomeKana != null ? chomeKana.trim() : null, koazaName != null ? koazaName.trim() : null, koazaKana != null ? koazaKana.trim() : null, buildingName != null ? buildingName.trim() : null, buildingKana != null ? buildingKana.trim() : null, roomNo != null ? roomNo.trim() : null);
+  public static Address of(String address, String prefName, String prefKana, String postalCode,
+                           String countryName, String countryKana, String cityName, String cityKana,
+                           String wardName, String wardKana, String oazaChoName, String oazaChoKana,
+                           String chomeName, String chomeKana, String koazaName, String koazaKana,
+                           String buildingName, String buildingKana, String roomNo) {
+    return builder().address(address).prefName(prefName).prefKana(prefKana)
+        .postalCode(postalCode).countryName(countryName).countryKana(countryKana)
+        .cityName(cityName).cityKana(cityKana).wardName(wardName).wardKana(wardKana)
+        .oazaChoName(oazaChoName).oazaChoKana(oazaChoKana)
+        .chomeName(chomeName).chomeKana(chomeKana)
+        .koazaName(koazaName).koazaKana(koazaKana)
+        .buildingName(buildingName).buildingKana(buildingKana)
+        .roomNo(roomNo).build();
+  }
+
+  /**
+   * {@code Address} のビルダーを作成します。
+   *
+   * @return 新しい {@code Builder} インスタンス
+   */
+  public static Builder builder() {
+    return new Builder();
   }
 
   /**
@@ -467,6 +461,300 @@ public class Address extends ContactBase {
    */
   public static Address empty() {
     return new Address();
+  }
+
+  // ==================== Builder Pattern ====================
+
+  /**
+   * {@code Address} インスタンスを構築するためのビルダーです。
+   *
+   * <p>M2修正により、19個の重载メソッドの代わりにこのBuilderパターンを使用します。
+   */
+  public static class Builder {
+    private String address;
+    private String prefName;
+    private String prefKana;
+    private String postalCode;
+    private String countryName;
+    private String countryKana;
+    private String cityName;
+    private String cityKana;
+    private String wardName;
+    private String wardKana;
+    private String oazaChoName;
+    private String oazaChoKana;
+    private String chomeName;
+    private String chomeKana;
+    private String koazaName;
+    private String koazaKana;
+    private String buildingName;
+    private String buildingKana;
+    private String roomNo;
+
+    private Builder() {
+    }
+
+    /**
+     * 住所を設定します（必須）。
+     *
+     * @param address 住所
+     * @return このビルダー
+     */
+    public Builder address(String address) {
+      this.address = address;
+      return this;
+    }
+
+    /**
+     * 都道府県名を設定します。
+     *
+     * @param prefName 都道府県名
+     * @return このビルダー
+     */
+    public Builder prefName(String prefName) {
+      this.prefName = prefName;
+      return this;
+    }
+
+    /**
+     * 都道府県名かなを設定します。
+     *
+     * @param prefKana 都道府県名かな
+     * @return このビルダー
+     */
+    public Builder prefKana(String prefKana) {
+      this.prefKana = prefKana;
+      return this;
+    }
+
+    /**
+     * 郵便番号を設定します。
+     *
+     * @param postalCode 郵便番号
+     * @return このビルダー
+     */
+    public Builder postalCode(String postalCode) {
+      this.postalCode = postalCode;
+      return this;
+    }
+
+    /**
+     * 国名を設定します。
+     *
+     * @param countryName 国名
+     * @return このビルダー
+     */
+    public Builder countryName(String countryName) {
+      this.countryName = countryName;
+      return this;
+    }
+
+    /**
+     * 国名かなを設定します。
+     *
+     * @param countryKana 国名かな
+     * @return このビルダー
+     */
+    public Builder countryKana(String countryKana) {
+      this.countryKana = countryKana;
+      return this;
+    }
+
+    /**
+     * 市区町村名を設定します。
+     *
+     * @param cityName 市区町村名
+     * @return このビルダー
+     */
+    public Builder cityName(String cityName) {
+      this.cityName = cityName;
+      return this;
+    }
+
+    /**
+     * 市区町村名かなを設定します。
+     *
+     * @param cityKana 市区町村名かな
+     * @return このビルダー
+     */
+    public Builder cityKana(String cityKana) {
+      this.cityKana = cityKana;
+      return this;
+    }
+
+    /**
+     * 区名を設定します。
+     *
+     * @param wardName 区名
+     * @return このビルダー
+     */
+    public Builder wardName(String wardName) {
+      this.wardName = wardName;
+      return this;
+    }
+
+    /**
+     * 区名かなを設定します。
+     *
+     * @param wardKana 区名かな
+     * @return このビルダー
+     */
+    public Builder wardKana(String wardKana) {
+      this.wardKana = wardKana;
+      return this;
+    }
+
+    /**
+     * 大字町名を設定します。
+     *
+     * @param oazaChoName 大字町名
+     * @return このビルダー
+     */
+    public Builder oazaChoName(String oazaChoName) {
+      this.oazaChoName = oazaChoName;
+      return this;
+    }
+
+    /**
+     * 大字町名かなを設定します。
+     *
+     * @param oazaChoKana 大字町名かな
+     * @return このビルダー
+     */
+    public Builder oazaChoKana(String oazaChoKana) {
+      this.oazaChoKana = oazaChoKana;
+      return this;
+    }
+
+    /**
+     * 丁目名を設定します。
+     *
+     * @param chomeName 丁目名
+     * @return このビルダー
+     */
+    public Builder chomeName(String chomeName) {
+      this.chomeName = chomeName;
+      return this;
+    }
+
+    /**
+     * 丁目名かなを設定します。
+     *
+     * @param chomeKana 丁目名かな
+     * @return このビルダー
+     */
+    public Builder chomeKana(String chomeKana) {
+      this.chomeKana = chomeKana;
+      return this;
+    }
+
+    /**
+     * 小字名を設定します。
+     *
+     * @param koazaName 小字名
+     * @return このビルダー
+     */
+    public Builder koazaName(String koazaName) {
+      this.koazaName = koazaName;
+      return this;
+    }
+
+    /**
+     * 小字名かなを設定します。
+     *
+     * @param koazaKana 小字名かな
+     * @return このビルダー
+     */
+    public Builder koazaKana(String koazaKana) {
+      this.koazaKana = koazaKana;
+      return this;
+    }
+
+    /**
+     * 建物名を設定します。
+     *
+     * @param buildingName 建物名
+     * @return このビルダー
+     */
+    public Builder buildingName(String buildingName) {
+      this.buildingName = buildingName;
+      return this;
+    }
+
+    /**
+     * 建物名かなを設定します。
+     *
+     * @param buildingKana 建物名かな
+     * @return このビルダー
+     */
+    public Builder buildingKana(String buildingKana) {
+      this.buildingKana = buildingKana;
+      return this;
+    }
+
+    /**
+     * 部屋番号を設定します。
+     *
+     * @param roomNo 部屋番号
+     * @return このビルダー
+     */
+    public Builder roomNo(String roomNo) {
+      this.roomNo = roomNo;
+      return this;
+    }
+
+    /**
+     * {@code Address} インスタンスを構築します。
+     *
+     * @return 構築された {@code Address} インスタンス
+     * @throws IllegalArgumentException 住所が {@code null} または空の場合
+     */
+    public Address build() {
+      validate();
+      return new Address(
+          trim(address), trim(prefName), trim(prefKana), trim(postalCode),
+          trim(countryName), trim(countryKana), trim(cityName), trim(cityKana),
+          trim(wardName), trim(wardKana), trim(oazaChoName), trim(oazaChoKana),
+          trim(chomeName), trim(chomeKana), trim(koazaName), trim(koazaKana),
+          trim(buildingName), trim(buildingKana), trim(roomNo));
+    }
+
+    private void validate() {
+      if (address == null || address.isBlank()) {
+        throw new IllegalArgumentException("address must not be null or blank");
+      }
+      if (address.length() > MAX_LENGTH) {
+        throw new IllegalArgumentException("address must be " + MAX_LENGTH + " characters or less");
+      }
+      validateLength("prefName", prefName, PREF_NAME_MAX_LENGTH);
+      validateLength("prefKana", prefKana, PREF_KANA_MAX_LENGTH);
+      validateLength("postalCode", postalCode, POSTAL_CODE_MAX_LENGTH);
+      validateLength("countryName", countryName, COUNTRY_NAME_MAX_LENGTH);
+      validateLength("countryKana", countryKana, COUNTRY_KANA_MAX_LENGTH);
+      validateLength("cityName", cityName, CITY_NAME_MAX_LENGTH);
+      validateLength("cityKana", cityKana, CITY_KANA_MAX_LENGTH);
+      validateLength("wardName", wardName, WARD_NAME_MAX_LENGTH);
+      validateLength("wardKana", wardKana, WARD_KANA_MAX_LENGTH);
+      validateLength("oazaChoName", oazaChoName, OAZA_CHO_NAME_MAX_LENGTH);
+      validateLength("oazaChoKana", oazaChoKana, OAZA_CHO_KANA_MAX_LENGTH);
+      validateLength("chomeName", chomeName, CHOME_NAME_MAX_LENGTH);
+      validateLength("chomeKana", chomeKana, CHOME_KANA_MAX_LENGTH);
+      validateLength("koazaName", koazaName, KOAZA_NAME_MAX_LENGTH);
+      validateLength("koazaKana", koazaKana, KOAZA_KANA_MAX_LENGTH);
+      validateLength("buildingName", buildingName, BUILDING_NAME_MAX_LENGTH);
+      validateLength("buildingKana", buildingKana, BUILDING_KANA_MAX_LENGTH);
+      validateLength("roomNo", roomNo, ROOM_NO_MAX_LENGTH);
+    }
+
+    private void validateLength(String fieldName, @Nullable String value, int maxLength) {
+      if (value != null && value.length() > maxLength) {
+        throw new IllegalArgumentException(fieldName + " must be " + maxLength + " characters or less");
+      }
+    }
+
+    private @Nullable String trim(@Nullable String value) {
+      return value != null ? value.trim() : null;
+    }
   }
 
   @Override
