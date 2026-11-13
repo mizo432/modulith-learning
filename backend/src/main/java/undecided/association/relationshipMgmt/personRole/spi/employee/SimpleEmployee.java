@@ -76,4 +76,17 @@ public class SimpleEmployee {
     employee.fullName = fullName;
     return employee;
   }
+
+  /**
+   * 従業員情報を更新します。
+   *
+   * @param employeeNo 従業員番号
+   * @param searchName 検索用名称
+   * @param fullName 氏名
+   */
+  public void update(EmployeeNo employeeNo, SearchName searchName, FullName fullName) {
+    this.employeeNo = employeeNo;
+    this.searchName = searchName;
+    this.fullName = fullName;
+  }
 }

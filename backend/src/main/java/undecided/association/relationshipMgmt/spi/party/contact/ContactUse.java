@@ -85,4 +85,22 @@ public class ContactUse {
     contactUse.whenOccured = whenOccured != null ? whenOccured : WhenOccured.empty();
     return contactUse;
   }
+
+  /**
+   * メールアドレスを更新します。
+   *
+   * @param emailAddress 更新後のメールアドレス
+   */
+  public void updateEmailAddress(EmailAddress emailAddress) {
+    this.emailAddress = emailAddress;
+  }
+
+  /**
+   * 電話番号を更新します。
+   *
+   * @param phoneNo 更新後の電話番号
+   */
+  public void updatePhoneNo(PhoneNo phoneNo) {
+    this.phoneNo = phoneNo;
+  }
 }
