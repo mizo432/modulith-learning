@@ -43,10 +43,12 @@ public class ContactUse {
   @Column(name = "party_id")
   private SnowflakeId partyId = SnowflakeId.EMPTY;
 
-  /** メールアドレス。 */
+  /** メールアドレス。既存スキーマのcontact列を使用します。 */
+  @Column(name = "contact", length = 200)
   private EmailAddress emailAddress = EmailAddress.empty();
 
   /** 電話番号。 */
+  @Column(name = "phone_no", length = 20)
   private PhoneNo phoneNo = PhoneNo.empty();
 
   /** 住所の値オブジェクト。完全な住所情報を保持します。 */

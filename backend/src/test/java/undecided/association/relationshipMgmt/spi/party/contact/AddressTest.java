@@ -2201,16 +2201,42 @@ class AddressTest {
     class ConvertToDatabaseColumnTest {
 
       @Test
-      @DisplayName("Addressをデータベース用の文字列に変換すること")
-      void shouldConvertAddressToDatabaseString() {
+      @DisplayName("Addressをデータベース用のJSON文字列に変換すること")
+      void shouldConvertAddressToJsonString() {
         // Arrange
-        Address address = Address.of("東京都渋谷区神宮前1-2-3", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        Address address = Address.builder()
+            .address("東京都渋谷区神宮前1-2-3")
+            .prefName("東京都")
+            .prefKana("トウキョウト")
+            .postalCode("150-0001")
+            .countryName("日本")
+            .countryKana("ニホン")
+            .cityName("渋谷区")
+            .cityKana("シブヤク")
+            .wardName("神宮前")
+            .wardKana("ジンミウマエ")
+            .oazaChoName("大字神宮前")
+            .oazaChoKana("オオアジジンミウマエ")
+            .chomeName("一丁目")
+            .chomeKana("イッチョウメ")
+            .koazaName("小字神宮前")
+            .koazaKana("コウアジジンミウマエ")
+            .buildingName("神宮ビル")
+            .buildingKana("ジンミウビル")
+            .roomNo("101号室")
+            .build();
 
         // Act
         String dbData = converter.convertToDatabaseColumn(address);
 
         // Assert
-        assertThat(dbData).as("データベース用の文字列に変換されること").isEqualTo("東京都渋谷区神宮前1-2-3");
+        assertThat(dbData).as("JSON形式でシリアライズされること").isNotNull();
+        assertThat(dbData).as("JSON形式であること").startsWith("{");
+        assertThat(dbData).as("valueフィールドが含まれること").contains("\"value\":\"東京都渋谷区神宮前1-2-3\"");
+        assertThat(dbData).as("prefNameフィールドが含まれること").contains("\"prefName\":\"東京都\"");
+        assertThat(dbData).as("postalCodeフィールドが含まれること").contains("\"postalCode\":\"150-0001\"");
+        assertThat(dbData).as("roomNoフィールドが含まれること").contains("\"roomNo\":\"101号室\"");
+        assertThat(dbData).as("buildingNameフィールドが含まれること").contains("\"buildingName\":\"神宮ビル\"");
       }
 
       @Test
@@ -2229,9 +2255,62 @@ class AddressTest {
     class ConvertToEntityAttributeTest {
 
       @Test
-      @DisplayName("データベース用の文字列をAddressに変換すること")
-      void shouldConvertDatabaseStringToAddress() {
+      @DisplayName("JSON形式のデータベースデータを全フィールド復元してAddressに変換すること")
+      void shouldConvertJsonToAddressWithAllFields() {
         // Arrange
+        Address original = Address.builder()
+            .address("東京都渋谷区神宮前1-2-3")
+            .prefName("東京都")
+            .prefKana("トウキョウト")
+            .postalCode("150-0001")
+            .countryName("日本")
+            .countryKana("ニホン")
+            .cityName("渋谷区")
+            .cityKana("シブヤク")
+            .wardName("神宮前")
+            .wardKana("ジンミウマエ")
+            .oazaChoName("大字神宮前")
+            .oazaChoKana("オオアジジンミウマエ")
+            .chomeName("一丁目")
+            .chomeKana("イッチョウメ")
+            .koazaName("小字神宮前")
+            .koazaKana("コウアジジンミウマエ")
+            .buildingName("神宮ビル")
+            .buildingKana("ジンミウビル")
+            .roomNo("101号室")
+            .build();
+
+        // Act: 一度JSONにシリアライズしてから復元
+        String dbData = converter.convertToDatabaseColumn(original);
+        Address restored = converter.convertToEntityAttribute(dbData);
+
+        // Assert: 全フィールドが復元されること
+        assertThat(restored).as("Addressに変換されること").isNotNull();
+        assertThat(restored.value()).as("valueが復元されること").isEqualTo("東京都渋谷区神宮前1-2-3");
+        assertThat(restored.getPrefName()).as("prefNameが復元されること").isEqualTo("東京都");
+        assertThat(restored.getPrefKana()).as("prefKanaが復元されること").isEqualTo("トウキョウト");
+        assertThat(restored.getPostalCode()).as("postalCodeが復元されること").isEqualTo("150-0001");
+        assertThat(restored.getCountryName()).as("countryNameが復元されること").isEqualTo("日本");
+        assertThat(restored.getCountryKana()).as("countryKanaが復元されること").isEqualTo("ニホン");
+        assertThat(restored.getCityName()).as("cityNameが復元されること").isEqualTo("渋谷区");
+        assertThat(restored.getCityKana()).as("cityKanaが復元されること").isEqualTo("シブヤク");
+        assertThat(restored.getWardName()).as("wardNameが復元されること").isEqualTo("神宮前");
+        assertThat(restored.getWardKana()).as("wardKanaが復元されること").isEqualTo("ジンミウマエ");
+        assertThat(restored.getOazaChoName()).as("oazaChoNameが復元されること").isEqualTo("大字神宮前");
+        assertThat(restored.getOazaChoKana()).as("oazaChoKanaが復元されること").isEqualTo("オオアジジンミウマエ");
+        assertThat(restored.getChomeName()).as("chomeNameが復元されること").isEqualTo("一丁目");
+        assertThat(restored.getChomeKana()).as("chomeKanaが復元されること").isEqualTo("イッチョウメ");
+        assertThat(restored.getKoazaName()).as("koazaNameが復元されること").isEqualTo("小字神宮前");
+        assertThat(restored.getKoazaKana()).as("koazaKanaが復元されること").isEqualTo("コウアジジンミウマエ");
+        assertThat(restored.getBuildingName()).as("buildingNameが復元されること").isEqualTo("神宮ビル");
+        assertThat(restored.getBuildingKana()).as("buildingKanaが復元されること").isEqualTo("ジンミウビル");
+        assertThat(restored.getRoomNo()).as("roomNoが復元されること").isEqualTo("101号室");
+      }
+
+      @Test
+      @DisplayName("旧形式のプレーン文字列データは互換性のためにAddress.of()で復元すること")
+      void shouldConvertLegacyPlainStringToAddress() {
+        // Arrange: 旧形式のプレーン文字列データ
         String dbData = "東京都渋谷区神宮前1-2-3";
 
         // Act
@@ -2247,6 +2326,28 @@ class AddressTest {
       void shouldConvertNullToEmptyAddress() {
         // Act
         Address address = converter.convertToEntityAttribute(null);
+
+        // Assert
+        assertThat(address).as("Addressインスタンスが作成されること").isNotNull();
+        assertThat(address.isEmpty()).as("空のAddressであること").isTrue();
+      }
+
+      @Test
+      @DisplayName("不正なJSONデータはフォールバックしてAddressに変換すること")
+      void shouldConvertInvalidJsonToFallbackAddress() {
+        // Act: 不正なJSONは旧形式として扱われ、Address.of()で復元される
+        Address address = converter.convertToEntityAttribute("{{{invalid json}}");
+
+        // Assert: 不正なJSONだが文字列として有効なので、valueが設定されたAddressが返される
+        assertThat(address).as("Addressインスタンスが作成されること").isNotNull();
+        assertThat(address.value()).as("値が保持されること").isEqualTo("{{{invalid json}}");
+      }
+
+      @Test
+      @DisplayName("空文字列は空のAddressに変換すること")
+      void shouldConvertBlankToEmptyAddress() {
+        // Act
+        Address address = converter.convertToEntityAttribute("   ");
 
         // Assert
         assertThat(address).as("Addressインスタンスが作成されること").isNotNull();

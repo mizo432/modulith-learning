@@ -317,42 +317,38 @@ class OrgCodeTest {
       }
 
       @Test
-      @DisplayName("不正なデータベースデータは空のOrgCodeに変換すること")
-      void shouldConvertInvalidDataToEmptyOrgCode() {
+      @DisplayName("不正なデータベースデータはIllegalArgumentExceptionをスローすること")
+      void shouldThrowExceptionForInvalidData() {
         // Arrange
         String invalidData = "ORG@001"; // 特殊文字を含む不正なデータ
 
-        // Act
-        OrgCode orgCode = converter.convertToEntityAttribute(invalidData);
-
-        // Assert
-        assertThat(orgCode).as("OrgCodeインスタンスが作成されること").isNotNull();
-        assertThat(orgCode.isEmpty()).as("空のOrgCodeであること").isTrue();
+        // Act & Assert
+        assertThatThrownBy(() -> converter.convertToEntityAttribute(invalidData))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Invalid OrgCode value")
+            .hasMessageContaining(invalidData);
       }
 
       @Test
-      @DisplayName("空文字列のデータベースデータは空のOrgCodeに変換すること")
-      void shouldConvertEmptyStringToEmptyOrgCode() {
-        // Act
-        OrgCode orgCode = converter.convertToEntityAttribute("");
-
-        // Assert
-        assertThat(orgCode).as("OrgCodeインスタンスが作成されること").isNotNull();
-        assertThat(orgCode.isEmpty()).as("空のOrgCodeであること").isTrue();
+      @DisplayName("空文字列のデータベースデータはIllegalArgumentExceptionをスローすること")
+      void shouldThrowExceptionForEmptyString() {
+        // Act & Assert
+        assertThatThrownBy(() -> converter.convertToEntityAttribute(""))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Invalid OrgCode value");
       }
 
       @Test
-      @DisplayName("文字数超過のデータベースデータは空のOrgCodeに変換すること")
-      void shouldConvertTooLongDataToEmptyOrgCode() {
+      @DisplayName("文字数超過のデータベースデータはIllegalArgumentExceptionをスローすること")
+      void shouldThrowExceptionForTooLongData() {
         // Arrange
         String tooLongData = "1234567890123456789012345678901"; // 31文字
 
-        // Act
-        OrgCode orgCode = converter.convertToEntityAttribute(tooLongData);
-
-        // Assert
-        assertThat(orgCode).as("OrgCodeインスタンスが作成されること").isNotNull();
-        assertThat(orgCode.isEmpty()).as("空のOrgCodeであること").isTrue();
+        // Act & Assert
+        assertThatThrownBy(() -> converter.convertToEntityAttribute(tooLongData))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Invalid OrgCode value")
+            .hasMessageContaining(tooLongData);
       }
     }
   }

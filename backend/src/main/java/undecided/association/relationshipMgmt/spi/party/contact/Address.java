@@ -1,5 +1,9 @@
 package undecided.association.relationshipMgmt.spi.party.contact;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.EqualsAndHashCode;
@@ -71,6 +75,7 @@ public class Address extends ContactBase {
   /** 部屋番号の最大文字数。 */
   public static final int ROOM_NO_MAX_LENGTH = 20;
 
+  @JsonIgnore
   private final ContactType type;
 
   /** 都道府県名。 */
@@ -997,13 +1002,19 @@ public class Address extends ContactBase {
   /**
    * Addressとデータベースの文字列を相互に変換するためのJPAコンバーターです。
    *
-   * <p>データベースから読み込んだ不正なデータに対しては、{@code empty()}を返して安全にフォールバックします。
+   * <p>全フィールドをJSON形式でシリアライズし、往復可能な保存・復元を実現します。
+   * 既存のプレーン文字列データとの互換性を維持するため、JSONでないデータは旧形式として扱います。
+   * データベースから読み込んだ不正なデータに対しては、{@code empty()}を返して安全にフォールバックします。
    */
   @Converter(autoApply = true)
   public static class AddressConverter implements AttributeConverter<Address, String> {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * エンティティ属性をデータベースカラムに変換します。
+     *
+     * <p>全フィールドをJSON形式でシリアライズし、保存値に含めます。
      *
      * @param attribute 変換対象の {@code Address} 属性
      * @return データベースに保存する {@code String}。属性が {@code null} の場合は {@code null}
@@ -1013,11 +1024,19 @@ public class Address extends ContactBase {
       if (attribute == null) {
         return null;
       }
-      return attribute.value();
+      try {
+        return objectMapper.writeValueAsString(attribute);
+      } catch (JsonProcessingException e) {
+        throw new IllegalStateException("Address serialization failed", e);
+      }
     }
 
     /**
      * データベースカラムをエンティティ属性に変換します。
+     *
+     * <p>JSON形式のデータから全フィールドを復元します。
+     * 既存のプレーン文字列データとの互換性を維持するため、JSONでないデータは旧形式として
+     * {@code Address.of()} で復元します。
      *
      * @param dbData データベースから読み込んだ {@code String}。{@code null} の可能性があります。
      * @return 変換された {@code Address} インスタンス。データベースデータが {@code null} または不正な場合は空のインスタンス
@@ -1028,10 +1047,58 @@ public class Address extends ContactBase {
         return Address.empty();
       }
       try {
+        // JSON形式（{ で始まる）の場合は全フィールドを復元
+        if (dbData.trim().startsWith("{")) {
+          JsonNode node = objectMapper.readTree(dbData);
+          Address.Builder builder = Address.builder();
+          builder.address(readString(node, "value"));
+          builder.prefName(readString(node, "prefName"));
+          builder.prefKana(readString(node, "prefKana"));
+          builder.postalCode(readString(node, "postalCode"));
+          builder.countryName(readString(node, "countryName"));
+          builder.countryKana(readString(node, "countryKana"));
+          builder.cityName(readString(node, "cityName"));
+          builder.cityKana(readString(node, "cityKana"));
+          builder.wardName(readString(node, "wardName"));
+          builder.wardKana(readString(node, "wardKana"));
+          builder.oazaChoName(readString(node, "oazaChoName"));
+          builder.oazaChoKana(readString(node, "oazaChoKana"));
+          builder.chomeName(readString(node, "chomeName"));
+          builder.chomeKana(readString(node, "chomeKana"));
+          builder.koazaName(readString(node, "koazaName"));
+          builder.koazaKana(readString(node, "koazaKana"));
+          builder.buildingName(readString(node, "buildingName"));
+          builder.buildingKana(readString(node, "buildingKana"));
+          builder.roomNo(readString(node, "roomNo"));
+          return builder.build();
+        }
+        // 旧形式のプレーン文字列データは互換性のために Address.of() で復元
         return Address.of(dbData);
+      } catch (JsonProcessingException e) {
+        // JSONパース失敗時は旧形式として扱う
+        try {
+          return Address.of(dbData);
+        } catch (IllegalArgumentException ex) {
+          return Address.empty();
+        }
       } catch (IllegalArgumentException e) {
         return Address.empty();
       }
+    }
+
+    /**
+     * JSONノードから文字列値を読み取ります。
+     *
+     * @param node 親ノード
+     * @param fieldName フィールド名
+     * @return 文字列値。フィールドが存在しないまたはnullの場合はnull
+     */
+    private @Nullable String readString(JsonNode node, String fieldName) {
+      JsonNode field = node.get(fieldName);
+      if (field == null || field.isNull()) {
+        return null;
+      }
+      return field.asText();
     }
   }
 }

@@ -79,7 +79,11 @@ public class EmailAddress extends ContactBase {
       if (dbData == null) {
         return EmailAddress.empty();
       }
-      return new EmailAddress(dbData);
+      try {
+        return EmailAddress.of(dbData);
+      } catch (IllegalArgumentException e) {
+        return EmailAddress.empty();
+      }
     }
   }
 }

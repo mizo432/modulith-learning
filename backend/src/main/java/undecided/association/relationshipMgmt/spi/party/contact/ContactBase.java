@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.spi.party.contact;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public abstract class ContactBase implements StringValue {
    * @return 連絡先アドレス。{@code null} の可能性があります。
    */
   @Override
+  @JsonProperty("value")
   public String value() {
     return value;
   }
