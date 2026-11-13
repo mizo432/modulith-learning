@@ -6,15 +6,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.jspecify.annotations.Nullable;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.Party;
+import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
 import undecided.association.relationshipMgmt.spi.party.org.Org;
 import undecided.supporting.snowflake.SnowflakeId;
 import com.github.mizo432.shared.value.datetime.ValidInterval;
@@ -28,9 +29,7 @@ import com.github.mizo432.shared.value.datetime.ValidInterval;
 @Table(name = "OrgUnit", schema = SchemaRelationshipMgmt.NAME)
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class OrgUnit extends Party {
 
   /** 組織単位の名称。 */
@@ -66,20 +65,50 @@ public class OrgUnit extends Party {
   private OrgUnit largers;
 
   /** 下位組織（子組織単位の一覧）。 */
-  @Setter
   @OneToMany
   @JoinColumn(name = "parent_org_unit_id")
   private List<OrgUnit> smallers = new ArrayList<>();
 
   /**
-   * 空のOrgUnitインスタンスを作成します。
+   * 組織単位を新規作成します。
    *
-   * <p>このメソッドは、protectedコンストラクタにアクセスできない外部クラスから
-   * OrgUnitインスタンスを作成するために使用されます。
-   *
-   * @return 空のOrgUnitインスタンス
+   * @param partyId パーティID
+   * @param code コード
+   * @param validFrom 有効開始日
+   * @param orgUnitName 組織単位名
+   * @param orgUnitCode 組織単位コード
+   * @param orgUnitTypeCode 組織単位種類コード
+   * @param parentOrgUnitId 親組織単位ID（null可）
+   * @param status 状態
+   * @param org 所属する組織
+   * @return 新規作成されたOrgUnitインスタンス
    */
-  public static OrgUnit createNew() {
-    return new OrgUnit();
+  public static OrgUnit create(
+      SnowflakeId partyId,
+      String code,
+      LocalDateTime validFrom,
+      OrgUnitName orgUnitName,
+      OrgUnitCode orgUnitCode,
+      OrgUnitTypeCode orgUnitTypeCode,
+      @Nullable SnowflakeId parentOrgUnitId,
+      OrgUnitStatus status,
+      Org org
+  ) {
+    OrgUnit orgUnit = new OrgUnit();
+    orgUnit.partyId = partyId;
+    orgUnit.partyTypeCode = PartyTypeCode.ORG_UNIT;
+    orgUnit.code = code;
+    orgUnit.validFrom = validFrom;
+    orgUnit.validTo = null;
+    orgUnit.govtAssignedId = null;
+    orgUnit.searchName = null;
+    orgUnit.orgUnitName = orgUnitName;
+    orgUnit.validInterval = ValidInterval.empty();
+    orgUnit.orgUnitCode = orgUnitCode;
+    orgUnit.orgUnitTypeCode = orgUnitTypeCode;
+    orgUnit.parentOrgUnitId = parentOrgUnitId;
+    orgUnit.status = status;
+    orgUnit.org = org;
+    return orgUnit;
   }
 }

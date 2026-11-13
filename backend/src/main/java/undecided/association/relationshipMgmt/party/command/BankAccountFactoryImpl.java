@@ -20,14 +20,12 @@ public class BankAccountFactoryImpl implements BankAccountFactory {
   @Override
   public BankAccount create(BankAccount bankAccount) {
     var bankAccountId = snowflakeIdGenerator.nextIdValue();
-    var result =
-        new BankAccount(
-            bankAccountId,
-            bankAccount.getBankId(),
-            bankAccount.getBankBranchId(),
-            bankAccount.getType(),
-            bankAccount.getAccountNumber(),
-            bankAccount.getHoldersName());
-    return result;
+    return BankAccount.create(
+        bankAccountId,
+        bankAccount.getBankId(),
+        bankAccount.getBankBranchId(),
+        bankAccount.getType(),
+        bankAccount.getAccountNumber(),
+        bankAccount.getHoldersName());
   }
 }

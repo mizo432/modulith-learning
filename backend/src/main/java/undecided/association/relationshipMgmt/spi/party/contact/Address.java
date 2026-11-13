@@ -723,7 +723,11 @@ public class Address extends ContactBase {
       if (dbData == null) {
         return Address.empty();
       }
-      return new Address(dbData, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+      try {
+        return Address.of(dbData);
+      } catch (IllegalArgumentException e) {
+        return Address.empty();
+      }
     }
   }
 }

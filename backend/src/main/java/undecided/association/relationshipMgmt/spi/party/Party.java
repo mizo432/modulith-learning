@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -24,33 +23,32 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Party {
   @Id
   @Column(name = "party_id")
-  private SnowflakeId partyId;
+  protected SnowflakeId partyId;
 
   /** パーティー種類コード（MASTER, PERSON, ORG）。 */
   @Column(name = "party_type_code", nullable = false, length = 20)
-  private PartyTypeCode partyTypeCode;
+  protected PartyTypeCode partyTypeCode;
 
   /** コード（一意制約）。 */
   @Column(name = "code", unique = true, length = 50)
-  private String code;
+  protected String code;
 
   /** 有効開始日。 */
   @Column(name = "valid_from", nullable = false)
-  private LocalDateTime validFrom;
+  protected LocalDateTime validFrom;
 
   /** 有効終了日。 */
   @Column(name = "valid_to")
-  private LocalDateTime validTo;
+  protected LocalDateTime validTo;
 
   /** 政府発行の識別子（例：マイナンバー、法人番号など）。 */
-  private GovtAssignedId govtAssignedId;
+  protected GovtAssignedId govtAssignedId;
 
   /** 検索用名称（全角文字）。 */
-  private SearchName searchName;
+  protected SearchName searchName;
 }

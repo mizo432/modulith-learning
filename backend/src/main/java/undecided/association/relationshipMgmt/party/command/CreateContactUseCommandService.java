@@ -66,33 +66,14 @@ public class CreateContactUseCommandService implements CreateContactUseCommand {
     // 連絡先用途を作成
     SnowflakeId contactUseId = snowflakeIdGenerator.nextIdValue();
     Address address = dto.getAddress() != null ? dto.getAddress() : Address.empty();
-    ContactUse contactUse =
-        new ContactUse(
-            contactUseId,
-            dto.getPartyId(),
-            dto.getContact(),
-            dto.getPhoneNo() != null ? dto.getPhoneNo() : PhoneNo.empty(),
-            address,
-            address.getPrefName(),
-            address.getPrefKana(),
-            address.getPostalCode(),
-            address.getCountryName(),
-            address.getCountryKana(),
-            address.getCityName(),
-            address.getCityKana(),
-            address.getWardName(),
-            address.getWardKana(),
-            address.getOazaChoName(),
-            address.getOazaChoKana(),
-            address.getChomeName(),
-            address.getChomeKana(),
-            address.getKoazaName(),
-            address.getKoazaKana(),
-            address.getBuildingName(),
-            address.getBuildingKana(),
-            address.getRoomNo(),
-            dto.getType() != null ? dto.getType() : ContactUseType.UNKNOWN,
-            WhenOccured.current());
+    ContactUse contactUse = ContactUse.create(
+        contactUseId,
+        dto.getPartyId(),
+        dto.getContact(),
+        dto.getPhoneNo() != null ? dto.getPhoneNo() : PhoneNo.empty(),
+        address,
+        dto.getType() != null ? dto.getType() : ContactUseType.UNKNOWN,
+        WhenOccured.current());
     contactUseRepository.save(contactUse);
   }
 }

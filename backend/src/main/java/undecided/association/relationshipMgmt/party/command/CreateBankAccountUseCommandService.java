@@ -61,7 +61,7 @@ public class CreateBankAccountUseCommandService implements CreateBankAccountUseC
     // 銀行口座を作成
     SnowflakeId bankAccountId = snowflakeIdGenerator.nextIdValue();
     BankAccount bankAccount =
-        new BankAccount(
+        BankAccount.create(
             bankAccountId,
             dto.getBankId(),
             dto.getBankBranchId(),

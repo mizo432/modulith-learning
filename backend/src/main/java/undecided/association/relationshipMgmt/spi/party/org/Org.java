@@ -4,14 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.jspecify.annotations.Nullable;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.Party;
+import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
 import undecided.supporting.snowflake.SnowflakeId;
 import com.github.mizo432.shared.value.datetime.ValidInterval;
+import java.time.LocalDateTime;
 
 /**
  * 組織（法人、団体など）を表すJPAエンティティクラス。
@@ -22,9 +23,7 @@ import com.github.mizo432.shared.value.datetime.ValidInterval;
 @Table(name = "Org", schema = SchemaRelationshipMgmt.NAME)
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Org extends Party {
 
   /** 組織の正式名称。 */
@@ -50,14 +49,42 @@ public class Org extends Party {
   private OrgStatus status;
 
   /**
-   * 空のOrgインスタンスを作成します。
+   * 組織を新規作成します。
    *
-   * <p>このメソッドは、protectedコンストラクタにアクセスできない外部クラスから
-   * Orgインスタンスを作成するために使用されます。
-   *
-   * @return 空のOrgインスタンス
+   * @param partyId パーティID
+   * @param code コード
+   * @param validFrom 有効開始日
+   * @param orgName 組織名
+   * @param orgCode 組織コード
+   * @param orgTypeCode 組織種類コード
+   * @param parentOrgId 親組織ID（null可）
+   * @param status 状態
+   * @return 新規作成されたOrgインスタンス
    */
-  public static Org createNew() {
-    return new Org();
+  public static Org create(
+      SnowflakeId partyId,
+      String code,
+      LocalDateTime validFrom,
+      OrgName orgName,
+      OrgCode orgCode,
+      OrgTypeCode orgTypeCode,
+      @Nullable SnowflakeId parentOrgId,
+      OrgStatus status
+  ) {
+    Org org = new Org();
+    org.partyId = partyId;
+    org.partyTypeCode = PartyTypeCode.ORG;
+    org.code = code;
+    org.validFrom = validFrom;
+    org.validTo = null;
+    org.govtAssignedId = null;
+    org.searchName = null;
+    org.orgName = orgName;
+    org.validInterval = ValidInterval.empty();
+    org.orgCode = orgCode;
+    org.orgTypeCode = orgTypeCode;
+    org.parentOrgId = parentOrgId;
+    org.status = status;
+    return org;
   }
 }

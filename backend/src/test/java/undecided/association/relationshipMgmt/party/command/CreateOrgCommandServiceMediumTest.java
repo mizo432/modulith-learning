@@ -81,15 +81,16 @@ class CreateOrgCommandServiceMediumTest {
     @DisplayName("親組織を持つOrgが保存されること")
     void shouldSaveOrgWithParentOrg() {
       // Arrange - 親組織を作成
-      Org parentOrg = Org.createNew();
-      parentOrg.setPartyId(SnowflakeId.of(1111111111L));
-      parentOrg.setPartyTypeCode(PartyTypeCode.ORG);
-      parentOrg.setCode("PARENT001");
-      parentOrg.setValidFrom(java.time.LocalDateTime.now());
-      parentOrg.setOrgName(OrgName.of("親組織"));
-      parentOrg.setOrgCode(OrgCode.of("PARENT001"));
-      parentOrg.setOrgTypeCode(OrgTypeCode.COMPANY);
-      parentOrg.setStatus(OrgStatus.ACTIVE);
+      Org parentOrg = Org.create(
+          SnowflakeId.of(1111111111L),
+          "PARENT001",
+          java.time.LocalDateTime.now(),
+          OrgName.of("親組織"),
+          OrgCode.of("PARENT001"),
+          OrgTypeCode.COMPANY,
+          null,
+          OrgStatus.ACTIVE
+      );
       parentOrg = repository.save(parentOrg);
 
       // 子組織のDTOを作成

@@ -6,9 +6,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import com.github.mizo432.shared.value.datetime.WhenOccured;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -20,9 +21,8 @@ import undecided.supporting.snowflake.SnowflakeId;
  */
 @Table(schema = SchemaRelationshipMgmt.NAME, name = "ContactUses")
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ContactUse {
   @Id private SnowflakeId contactUseId = SnowflakeId.EMPTY;
   @Column(name = "party_id")
@@ -70,4 +70,54 @@ public class ContactUse {
   @Enumerated(EnumType.STRING)
   private ContactUseType type = ContactUseType.UNKNOWN;
   private WhenOccured whenOccured = WhenOccured.empty();
+
+  /**
+   * 連絡先の使用履歴を新規作成します。
+   *
+   * @param contactUseId 連絡先使用ID
+   * @param partyId パーティID
+   * @param contact 連絡先
+   * @param phoneNo 電話番号
+   * @param address 住所
+   * @param type 種類
+   * @param whenOccured 発生時刻
+   * @return 新規作成されたContactUseインスタンス
+   */
+  public static ContactUse create(
+      SnowflakeId contactUseId,
+      SnowflakeId partyId,
+      Contact contact,
+      PhoneNo phoneNo,
+      Address address,
+      ContactUseType type,
+      @Nullable WhenOccured whenOccured
+  ) {
+    ContactUse contactUse = new ContactUse();
+    contactUse.contactUseId = contactUseId;
+    contactUse.partyId = partyId;
+    contactUse.contact = contact;
+    contactUse.phoneNo = phoneNo;
+    contactUse.address = address;
+    contactUse.prefName = address.getPrefName();
+    contactUse.prefKana = address.getPrefKana();
+    contactUse.postalCode = address.getPostalCode();
+    contactUse.countryName = address.getCountryName();
+    contactUse.countryKana = address.getCountryKana();
+    contactUse.cityName = address.getCityName();
+    contactUse.cityKana = address.getCityKana();
+    contactUse.wardName = address.getWardName();
+    contactUse.wardKana = address.getWardKana();
+    contactUse.oazaChoName = address.getOazaChoName();
+    contactUse.oazaChoKana = address.getOazaChoKana();
+    contactUse.chomeName = address.getChomeName();
+    contactUse.chomeKana = address.getChomeKana();
+    contactUse.koazaName = address.getKoazaName();
+    contactUse.koazaKana = address.getKoazaKana();
+    contactUse.buildingName = address.getBuildingName();
+    contactUse.buildingKana = address.getBuildingKana();
+    contactUse.roomNo = address.getRoomNo();
+    contactUse.type = type;
+    contactUse.whenOccured = whenOccured != null ? whenOccured : WhenOccured.empty();
+    return contactUse;
+  }
 }

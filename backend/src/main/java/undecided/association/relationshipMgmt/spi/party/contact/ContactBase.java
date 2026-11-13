@@ -67,7 +67,7 @@ public abstract class ContactBase implements StringValue {
   }
 
   /** ContactBaseとデータベースの文字列を相互に変換するためのJPAコンバーターです。 */
-  @Converter(autoApply = true)
+  @Converter
   public static class ContactBaseConverter implements AttributeConverter<ContactBase, String> {
 
     @Override

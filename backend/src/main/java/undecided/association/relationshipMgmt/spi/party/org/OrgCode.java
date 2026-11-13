@@ -137,7 +137,11 @@ public class OrgCode implements StringCode<OrgCode> {
       if (dbData == null) {
         return OrgCode.empty();
       }
-      return new OrgCode(dbData);
+      try {
+        return OrgCode.of(dbData);
+      } catch (IllegalArgumentException e) {
+        return OrgCode.empty();
+      }
     }
   }
 }

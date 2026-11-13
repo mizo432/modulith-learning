@@ -5,11 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.association.relationshipMgmt.party.repository.OrgRepository;
 import undecided.association.relationshipMgmt.spi.party.CreateOrgCommand;
-import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
 import undecided.association.relationshipMgmt.spi.party.org.Org;
 import undecided.association.relationshipMgmt.spi.party.org.dto.OrgDto;
 import java.time.LocalDateTime;
-import com.github.mizo432.shared.value.datetime.ValidInterval;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 import org.jspecify.annotations.Nullable;
@@ -53,14 +51,6 @@ public class CreateOrgCommandService implements CreateOrgCommand {
       throw new IllegalArgumentException("statusは必須です");
     }
 
-    Org org = Org.createNew();
-    org.setPartyId(SnowflakeId.of(snowflakeIdGenerator.nextId()));
-    org.setPartyTypeCode(PartyTypeCode.ORG);
-    org.setCode(orgDto.getOrgCode().value());
-    org.setValidFrom(LocalDateTime.now());
-    org.setValidTo(null);
-    org.setGovtAssignedId(null);
-    org.setSearchName(null);
     // 親組織IDがnullでない場合は、親組織の存在を確認する
     @Nullable SnowflakeId parentOrgId = orgDto.getParentOrgId();
     if (parentOrgId != null) {
@@ -69,12 +59,16 @@ public class CreateOrgCommandService implements CreateOrgCommand {
       );
     }
 
-    org.setOrgName(orgDto.getOrgName());
-    org.setValidInterval(ValidInterval.empty());
-    org.setOrgCode(orgDto.getOrgCode());
-    org.setOrgTypeCode(orgDto.getOrgTypeCode());
-    org.setParentOrgId(parentOrgId);
-    org.setStatus(orgDto.getStatus());
+    Org org = Org.create(
+        SnowflakeId.of(snowflakeIdGenerator.nextId()),
+        orgDto.getOrgCode().value(),
+        LocalDateTime.now(),
+        orgDto.getOrgName(),
+        orgDto.getOrgCode(),
+        orgDto.getOrgTypeCode(),
+        parentOrgId,
+        orgDto.getStatus()
+    );
     orgRepository.save(org);
   }
 }

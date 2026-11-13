@@ -43,7 +43,7 @@ public class CreatePhoneNumberCommandService implements CreatePhoneNumberCommand
 
     SnowflakeId phoneNumberId = snowflakeIdGenerator.nextIdValue();
     PhoneNumberEntity phoneNumberEntity =
-        new PhoneNumberEntity(
+        PhoneNumberEntity.create(
             phoneNumberId,
             phoneNumberDto.getNumber(),
             phoneNumberDto.getType() != null ? phoneNumberDto.getType() : PhoneNumberType.UNKNOWN);

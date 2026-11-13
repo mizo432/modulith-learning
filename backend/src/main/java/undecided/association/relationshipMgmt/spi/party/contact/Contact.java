@@ -83,7 +83,11 @@ public class Contact extends ContactBase {
       if (dbData == null) {
         return Contact.empty();
       }
-      return new Contact(dbData);
+      try {
+        return Contact.of(dbData);
+      } catch (IllegalArgumentException e) {
+        return Contact.empty();
+      }
     }
   }
 }

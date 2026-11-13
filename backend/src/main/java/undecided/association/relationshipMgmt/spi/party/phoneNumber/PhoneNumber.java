@@ -92,7 +92,11 @@ public class PhoneNumber implements StringValue {
       if (dbData == null) {
         return PhoneNumber.empty();
       }
-      return new PhoneNumber(dbData);
+      try {
+        return PhoneNumber.of(dbData);
+      } catch (IllegalArgumentException e) {
+        return PhoneNumber.empty();
+      }
     }
   }
 }
