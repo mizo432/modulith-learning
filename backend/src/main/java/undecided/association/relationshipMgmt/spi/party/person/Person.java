@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.Party;
 import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import undecided.supporting.snowflake.SnowflakeId;
 import java.time.LocalDateTime;
 
@@ -65,5 +66,21 @@ public class Person extends Party {
     person.dateOfBirth = dateOfBirth;
     person.dateOfDie = dateOfDie;
     return person;
+  }
+
+  /**
+   * 個人の情報を更新します。
+   *
+   * @param legalName 法的名前
+   * @param dateOfBirth 生年月日
+   * @param dateOfDie 死亡日
+   */
+  public void update(LegalName legalName, DateOfBirth dateOfBirth, DateOfDie dateOfDie) {
+    ObjectPrecondition.checkNotNull(legalName, () -> new IllegalArgumentException("legalName must not be null"));
+    ObjectPrecondition.checkNotNull(dateOfBirth, () -> new IllegalArgumentException("dateOfBirth must not be null"));
+    ObjectPrecondition.checkNotNull(dateOfDie, () -> new IllegalArgumentException("dateOfDie must not be null"));
+    this.legalName = legalName;
+    this.dateOfBirth = dateOfBirth;
+    this.dateOfDie = dateOfDie;
   }
 }
