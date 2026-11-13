@@ -1,11 +1,14 @@
 package undecided.association.relationshipMgmt.spi.party;
 
-import com.github.mizo432.shared.common.primitive.Lists2;
+import static com.github.mizo432.shared.common.primitive.Lists2.newArrayList;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
+import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -57,5 +61,11 @@ public abstract class Party {
   /** 検索用名称（全角文字）。 */
   private SearchName searchName;
 
-  private List<ContactUse> contactUses = Lists2.newArrayList();
+  @OneToMany
+  @JoinColumn(name = "party_id")
+  private List<ContactUse> contactUses = newArrayList();
+
+  @OneToMany
+  @JoinColumn(name = "party_id")
+  private List<BankAccountUse> bankAccountUses = newArrayList();
 }

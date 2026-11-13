@@ -46,10 +46,10 @@ public class CreateBankAccountUseCommandService implements CreateBankAccountUseC
     if (dto.getBankBranchId().isEmpty()) {
       throw new IllegalArgumentException("bankBranchIdは必須です");
     }
-    if (dto.getAccountNumber() == null) {
+    if (dto.getAccountNumber() == null || dto.getAccountNumber().isEmpty()) {
       throw new IllegalArgumentException("accountNumberは必須です");
     }
-    if (dto.getHoldersName() == null) {
+    if (dto.getHoldersName() == null || dto.getHoldersName().isEmpty()) {
       throw new IllegalArgumentException("holdersNameは必須です");
     }
     if (dto.getPartyId().isEmpty()) {

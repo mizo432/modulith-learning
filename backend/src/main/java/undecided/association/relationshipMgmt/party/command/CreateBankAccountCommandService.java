@@ -39,10 +39,10 @@ public class CreateBankAccountCommandService implements CreateBankAccountCommand
     if (bankAccountDto.getBankBranchId().isEmpty()) {
       throw new IllegalArgumentException("bankBranchIdは必須です");
     }
-    if (bankAccountDto.getAccountNumber() == null) {
+    if (bankAccountDto.getAccountNumber() == null || bankAccountDto.getAccountNumber().isEmpty()) {
       throw new IllegalArgumentException("accountNumberは必須です");
     }
-    if (bankAccountDto.getHoldersName() == null) {
+    if (bankAccountDto.getHoldersName() == null || bankAccountDto.getHoldersName().isEmpty()) {
       throw new IllegalArgumentException("holdersNameは必須です");
     }
     BankAccount bankAccount =
