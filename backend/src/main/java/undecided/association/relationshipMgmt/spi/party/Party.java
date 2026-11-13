@@ -36,10 +36,6 @@ public abstract class Party {
   @Column(name = "party_type_code", nullable = false, length = 20)
   private PartyTypeCode partyTypeCode;
 
-  /** 名称。 */
-  @Column(name = "name", nullable = false, length = 100)
-  private String name;
-
   /** コード（一意制約）。 */
   @Column(name = "code", unique = true, length = 50)
   private String code;

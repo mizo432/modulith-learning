@@ -1,5 +1,6 @@
 package undecided.association.relationshipMgmt.spi.party.bankAccount;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -50,6 +51,7 @@ public class BankAccountUse {
    *
    * <p>用途: パーティに紐づく口座用途の検索で使用されます。
    */
+  @Column(name = "party_id")
   private final SnowflakeId partyId;
 
   /**
