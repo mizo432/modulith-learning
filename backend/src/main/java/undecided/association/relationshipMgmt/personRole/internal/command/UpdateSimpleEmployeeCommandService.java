@@ -12,6 +12,7 @@ import undecided.association.relationshipMgmt.personRole.spi.employee.UpdateSimp
 import undecided.association.relationshipMgmt.personRole.spi.employee.dto.EmployeeDto;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
+import undecided.association.relationshipMgmt.spi.party.person.Person;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /** 従業員更新コマンドサービスです。 EmployeeDtoからPerson、ContactUse（メールアドレス・電話番号）、SimpleEmployeeエンティティを更新し、データベースに保存します。 */
@@ -38,8 +39,12 @@ public class UpdateSimpleEmployeeCommandService implements UpdateSimpleEmployeeC
     SimpleEmployee simpleEmployee = employeeRepository.findById(employeeDto.employeeId())
         .orElseThrow(() -> new IllegalArgumentException("Employee not found: " + employeeDto.employeeId()));
 
-    // Personを更新
-    personRepository.save(employeeDto.person());
+    // Personを検索して更新
+    SnowflakeId partyId = employeeDto.person().getPartyId();
+    Person person = personRepository.findById(partyId)
+        .orElseThrow(() -> new IllegalArgumentException("Person not found: " + partyId));
+    person.update(employeeDto.person().getLegalName(), employeeDto.person().getDateOfBirth(), employeeDto.person().getDateOfDie());
+    personRepository.save(person);
 
     // メールアドレスのContactUseを更新
     ContactUse emailContactUse = contactUseRepository.findByPartyIdAndType(employeeDto.person().getPartyId(), ContactUseType.EMAIL)

@@ -89,7 +89,17 @@ class UpdateSimpleEmployeeCommandServiceTest {
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), PhoneNo.of("0000000000"), ContactUseType.PHONE, null);
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("旧", "氏名"),
+          DateOfBirth.of(LocalDate.of(1980, 1, 1)),
+          DateOfDie.empty());
+
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -97,7 +107,7 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
@@ -108,6 +118,9 @@ class UpdateSimpleEmployeeCommandServiceTest {
       assertThat(existingEmployee.getFullName()).isEqualTo(fullName);
       assertThat(emailContactUse.getEmailAddress()).isEqualTo(emailAddress);
       assertThat(phoneContactUse.getPhoneNo()).isEqualTo(phoneNo);
+      assertThat(existingPerson.getLegalName()).isEqualTo(person.getLegalName());
+      assertThat(existingPerson.getDateOfBirth()).isEqualTo(person.getDateOfBirth());
+      assertThat(existingPerson.getDateOfDie()).isEqualTo(person.getDateOfDie());
     }
 
     @Test
@@ -147,6 +160,41 @@ class UpdateSimpleEmployeeCommandServiceTest {
     }
 
     @Test
+    @DisplayName("Personが見つからない場合IllegalArgumentExceptionをスローすること")
+    void shouldThrowIllegalArgumentExceptionWhenPersonNotFound() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(1234567890L);
+      SnowflakeId partyId = SnowflakeId.of(5000000001L);
+      Person person = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
+      EmployeeDto dto = new EmployeeDto(
+          employeeId,
+          EmployeeNo.of("1234567890"),
+          SearchName.of("田中太郎"),
+          FullName.of("田中太郎"),
+          person,
+          EmailAddress.of("taro@example.com"),
+          PhoneNo.of("09012345678"));
+
+      SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, EmployeeNo.of("1234567890"), SearchName.of("田中太郎"), FullName.of("田中太郎"));
+
+      when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.empty());
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.update(dto))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("Person not found: " + partyId);
+    }
+
+    @Test
     @DisplayName("メールアドレスのContactUseが見つからない場合IllegalArgumentExceptionをスローすること")
     void shouldThrowIllegalArgumentExceptionWhenEmailContactUseNotFound() {
       // Arrange
@@ -172,7 +220,17 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, EmployeeNo.of("1234567890"), SearchName.of("田中太郎"), FullName.of("田中太郎"));
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.empty());
 
       // Act & Assert
@@ -207,10 +265,20 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, EmployeeNo.of("1234567890"), SearchName.of("田中太郎"), FullName.of("田中太郎"));
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, EmailAddress.of("old@example.com"), PhoneNo.empty(), ContactUseType.EMAIL, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.empty());
 
@@ -245,12 +313,22 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, emailAddress, PhoneNo.empty(), ContactUseType.EMAIL, null);
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), phoneNo, ContactUseType.PHONE, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -258,7 +336,7 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
@@ -289,12 +367,22 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, emailAddress, PhoneNo.empty(), ContactUseType.EMAIL, null);
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), PhoneNo.of("09012345678"), ContactUseType.PHONE, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -302,7 +390,7 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
@@ -335,12 +423,22 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, EmailAddress.of("old.taro.tanaka@example.com"), PhoneNo.empty(), ContactUseType.EMAIL, null);
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), phoneNo, ContactUseType.PHONE, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -348,7 +446,7 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
@@ -381,12 +479,22 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, EmailAddress.of("old.taro.tanaka@example.com"), PhoneNo.empty(), ContactUseType.EMAIL, null);
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), PhoneNo.of("09012345678"), ContactUseType.PHONE, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -394,7 +502,7 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
@@ -428,12 +536,22 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, employeeNo, SearchName.of("田中太郎"), FullName.of("田中太郎"));
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, emailAddress, PhoneNo.empty(), ContactUseType.EMAIL, null);
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), phoneNo, ContactUseType.PHONE, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -441,14 +559,14 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
 
       assertThat(existingEmployee.getSearchName()).isEqualTo(newSearchName);
       assertThat(existingEmployee.getFullName()).isEqualTo(newFullName);
-      assertThat(person.getLegalName()).isEqualTo(LegalName.of("山田", "太郎"));
+      assertThat(existingPerson.getLegalName()).isEqualTo(LegalName.of("山田", "太郎"));
     }
 
     @Test
@@ -477,12 +595,22 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1980, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, emailAddress, PhoneNo.empty(), ContactUseType.EMAIL, null);
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), phoneNo, ContactUseType.PHONE, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -490,12 +618,12 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
 
-      assertThat(person.getDateOfBirth()).isEqualTo(DateOfBirth.of(newDateOfBirth));
+      assertThat(existingPerson.getDateOfBirth()).isEqualTo(DateOfBirth.of(newDateOfBirth));
     }
 
     @Test
@@ -524,12 +652,22 @@ class UpdateSimpleEmployeeCommandServiceTest {
 
       SimpleEmployee existingEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
 
+      Person existingPerson = Person.create(
+          partyId,
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
       ContactUse emailContactUse = ContactUse.create(
           SnowflakeId.of(9000000001L), partyId, emailAddress, PhoneNo.empty(), ContactUseType.EMAIL, null);
       ContactUse phoneContactUse = ContactUse.create(
           SnowflakeId.of(9000000002L), partyId, EmailAddress.empty(), phoneNo, ContactUseType.PHONE, null);
 
       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+      when(personRepository.findById(partyId)).thenReturn(Optional.of(existingPerson));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.EMAIL)).thenReturn(Optional.of(emailContactUse));
       when(contactUseRepository.findByPartyIdAndType(partyId, ContactUseType.PHONE)).thenReturn(Optional.of(phoneContactUse));
 
@@ -537,12 +675,12 @@ class UpdateSimpleEmployeeCommandServiceTest {
       service.update(dto);
 
       // Assert
-      verify(personRepository).save(person);
+      verify(personRepository).save(existingPerson);
       verify(contactUseRepository).save(emailContactUse);
       verify(contactUseRepository).save(phoneContactUse);
       verify(employeeRepository).save(existingEmployee);
 
-      assertThat(person.getDateOfDie()).isEqualTo(DateOfDie.of(newDateOfDie));
+      assertThat(existingPerson.getDateOfDie()).isEqualTo(DateOfDie.of(newDateOfDie));
     }
   }
 }

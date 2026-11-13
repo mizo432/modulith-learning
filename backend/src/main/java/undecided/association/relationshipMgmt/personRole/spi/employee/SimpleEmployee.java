@@ -7,6 +7,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
@@ -85,6 +86,9 @@ public class SimpleEmployee {
    * @param fullName 氏名
    */
   public void update(EmployeeNo employeeNo, SearchName searchName, FullName fullName) {
+    ObjectPrecondition.checkNotNull(employeeNo, () -> new IllegalArgumentException("employeeNo must not be null"));
+    ObjectPrecondition.checkNotNull(searchName, () -> new IllegalArgumentException("searchName must not be null"));
+    ObjectPrecondition.checkNotNull(fullName, () -> new IllegalArgumentException("fullName must not be null"));
     this.employeeNo = employeeNo;
     this.searchName = searchName;
     this.fullName = fullName;
