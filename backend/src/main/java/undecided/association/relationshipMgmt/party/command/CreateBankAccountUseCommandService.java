@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.association.relationshipMgmt.party.repository.BankAccountRepository;
 import undecided.association.relationshipMgmt.party.repository.BankAccountUseRepository;
+import undecided.association.relationshipMgmt.spi.party.bankAccount.AccountType;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccount;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUse;
+import undecided.association.relationshipMgmt.spi.party.bankAccount.BankAccountUseType;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.CreateBankAccountUseCommand;
 import undecided.association.relationshipMgmt.spi.party.bankAccount.dto.CreateBankAccountUseDto;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -63,7 +65,7 @@ public class CreateBankAccountUseCommandService implements CreateBankAccountUseC
             bankAccountId,
             dto.getBankId(),
             dto.getBankBranchId(),
-            dto.getAccountType(),
+            dto.getAccountType() != null ? dto.getAccountType() : AccountType.UNKNOWN,
             dto.getAccountNumber(),
             dto.getHoldersName());
     bankAccountRepository.save(bankAccount);
@@ -75,7 +77,7 @@ public class CreateBankAccountUseCommandService implements CreateBankAccountUseC
             bankAccountUseId,
             bankAccountId,
             dto.getPartyId(),
-            dto.getUseType(),
+            dto.getUseType() != null ? dto.getUseType() : BankAccountUseType.UNKNOWN,
             WhenOccured.current());
     bankAccountUseRepository.save(bankAccountUse);
   }

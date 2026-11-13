@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.association.relationshipMgmt.party.repository.ContactUseRepository;
+import undecided.association.relationshipMgmt.party.repository.OrgRepository;
+import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
+import undecided.association.relationshipMgmt.party.repository.PersonRepository;
 import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
@@ -25,6 +28,9 @@ public class CreateContactUseCommandService implements CreateContactUseCommand {
 
   private final SnowflakeIdGenerator snowflakeIdGenerator;
   private final ContactUseRepository contactUseRepository;
+  private final PersonRepository personRepository;
+  private final OrgRepository orgRepository;
+  private final OrgUnitRepository orgUnitRepository;
 
   /**
    * 連絡先情報とその用途情報を新規登録します。
@@ -40,11 +46,20 @@ public class CreateContactUseCommandService implements CreateContactUseCommand {
     if (dto == null) {
       throw new IllegalArgumentException("CreateContactUseDtoはnullであってはいけません");
     }
-    if (dto.getPartyId().isEmpty()) {
+    if (dto.getPartyId() == null || dto.getPartyId().isEmpty()) {
       throw new IllegalArgumentException("partyIdは必須です");
     }
     if (dto.getContact() == null || dto.getContact().isEmpty()) {
       throw new IllegalArgumentException("contactは必須です");
+    }
+
+    // パーティの存在を確認
+    boolean exists =
+        personRepository.existsById(dto.getPartyId())
+            || orgRepository.existsById(dto.getPartyId())
+            || orgUnitRepository.existsById(dto.getPartyId());
+    if (!exists) {
+      throw new IllegalArgumentException("指定されたpartyIdを持つパーティが存在しません");
     }
 
     // 連絡先用途を作成

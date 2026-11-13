@@ -2,6 +2,8 @@ package undecided.association.relationshipMgmt.spi.party.contact;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ public class ContactUse {
   private SnowflakeId partyId = SnowflakeId.EMPTY;
   private Contact contact = Contact.empty();
   private PhoneNo phoneNo = PhoneNo.empty();
+  @Enumerated(EnumType.STRING)
   private ContactUseType type = ContactUseType.UNKNOWN;
   private WhenOccured whenOccured = WhenOccured.empty();
 }

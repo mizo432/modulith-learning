@@ -16,6 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.association.relationshipMgmt.party.repository.ContactUseRepository;
+import undecided.association.relationshipMgmt.party.repository.OrgRepository;
+import undecided.association.relationshipMgmt.party.repository.OrgUnitRepository;
+import undecided.association.relationshipMgmt.party.repository.PersonRepository;
 import undecided.association.relationshipMgmt.spi.party.contact.Contact;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUse;
 import undecided.association.relationshipMgmt.spi.party.contact.ContactUseType;
@@ -31,12 +34,21 @@ class CreateContactUseCommandServiceTest {
 
   private final SnowflakeIdGenerator snowflakeIdGenerator = mock(SnowflakeIdGenerator.class);
   @Mock private ContactUseRepository contactUseRepository;
+  @Mock private PersonRepository personRepository;
+  @Mock private OrgRepository orgRepository;
+  @Mock private OrgUnitRepository orgUnitRepository;
 
   private CreateContactUseCommandService service;
 
   @org.junit.jupiter.api.BeforeEach
   void setUp() {
-    service = new CreateContactUseCommandService(snowflakeIdGenerator, contactUseRepository);
+    service =
+        new CreateContactUseCommandService(
+            snowflakeIdGenerator,
+            contactUseRepository,
+            personRepository,
+            orgRepository,
+            orgUnitRepository);
   }
 
   @Nested
@@ -123,6 +135,7 @@ class CreateContactUseCommandServiceTest {
       // Arrange
       SnowflakeId generatedId = SnowflakeId.of(1234567890L);
       when(snowflakeIdGenerator.nextIdValue()).thenReturn(generatedId);
+      when(personRepository.existsById(any())).thenReturn(true);
 
       CreateContactUseDto dto =
           new CreateContactUseDto(
@@ -152,6 +165,7 @@ class CreateContactUseCommandServiceTest {
       // Arrange
       SnowflakeId generatedId = SnowflakeId.of(1234567890L);
       when(snowflakeIdGenerator.nextIdValue()).thenReturn(generatedId);
+      when(personRepository.existsById(any())).thenReturn(true);
 
       CreateContactUseDto dto =
           new CreateContactUseDto(
