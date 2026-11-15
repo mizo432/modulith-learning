@@ -10,6 +10,9 @@ import UserList from './pages/users/UserList';
 import UserCreate from './pages/users/UserCreate';
 import UserEdit from './pages/users/UserEdit';
 import ProductSelection from './pages/ProductSelection';
+import ProductList from './pages/products/ProductList';
+import ProductCreate from './pages/products/ProductCreate';
+import ProductEdit from './pages/products/ProductEdit';
 import ProjectList from './pages/projects/ProjectList';
 import ProjectDetail from './pages/projects/ProjectDetail';
 import ProjectCreate from './pages/projects/ProjectCreate';
@@ -98,11 +101,27 @@ const AppContent = () => {
                                   <Dashboard/>
                                 </ProtectedRoute>
                               }/>
+              {/* Product management routes */}
               <Route path="/products" element={
                                          <ProtectedRoute>
                                           <ProductSelection/>
                                         </ProtectedRoute>
                                       }/>
+              <Route path="/products/all" element={
+                                          <ProtectedRoute>
+                                           <ProductList/>
+                                         </ProtectedRoute>
+                                       }/>
+              <Route path="/products/add" element={
+                                           <ProtectedRoute>
+                                            <ProductCreate/>
+                                          </ProtectedRoute>
+                                        }/>
+              <Route path="/products/edit/:id" element={
+                                                 <ProtectedRoute>
+                                                  <ProductEdit/>
+                                                </ProtectedRoute>
+                                              }/>
               {/* User management routes - admin only */}
               <Route path="/users/all" element={
                                           <AdminRoute>
