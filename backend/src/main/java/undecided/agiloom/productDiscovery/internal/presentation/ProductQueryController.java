@@ -7,9 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.productDiscovery.internal.query.ProductQueryService;
-import undecided.agiloom.productDiscovery.internal.query.ScrumTeamQueryService;
 import undecided.agiloom.productDiscovery.spi.Product;
-import undecided.agiloom.productDiscovery.spi.ScrumTeam;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
@@ -17,23 +15,22 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class ProductQueryController {
 
   private final ProductQueryService productQueryService;
-  private final ScrumTeamQueryService scrumTeamQueryService;
-  private final ScrumTeamQueryController scrumTeamQueryController;
+  private final ProductResponseConverter productResponseConverter;
 
   public ProductQueryController(
       ProductQueryService productQueryService,
-      ScrumTeamQueryService scrumTeamQueryService,
-      ScrumTeamQueryController scrumTeamQueryController) {
+      ProductResponseConverter productResponseConverter) {
     this.productQueryService = productQueryService;
-    this.scrumTeamQueryService = scrumTeamQueryService;
-    this.scrumTeamQueryController = scrumTeamQueryController;
+    this.productResponseConverter = productResponseConverter;
   }
 
   @GetMapping
   public List<ProductResponse> getProducts(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
     Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-    return productQueryService.findAll(pageable).stream().map(this::toResponse).toList();
+    return productQueryService.findAll(pageable).stream()
+        .map(productResponseConverter::toProductResponse)
+        .toList();
   }
 
   @GetMapping("/{id}")
@@ -43,24 +40,6 @@ public class ProductQueryController {
         productQueryService
             .findById(snowflakeId)
             .orElseThrow(() -> new IllegalArgumentException("Product not found: " + id));
-    return toResponse(product);
-  }
-
-  ProductResponse toResponse(Product product) {
-    List<ScrumTeamResponse> scrumTeamResponses =
-        product.getScrumTeams().stream()
-            .map(scrumTeamQueryController::toResponse)
-            .toList();
-
-    return ProductResponse.builder()
-        .id(product.getId())
-        .name(product.getName())
-        .description(product.getDescription())
-        .managerId(product.getManagerId())
-        .status(product.getStatus())
-        .createdAt(product.getCreatedAt())
-        .updatedAt(product.getUpdatedAt())
-        .scrumTeams(scrumTeamResponses)
-        .build();
+    return productResponseConverter.toProductResponse(product);
   }
 }

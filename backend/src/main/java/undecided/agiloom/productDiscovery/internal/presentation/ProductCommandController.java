@@ -18,17 +18,17 @@ public class ProductCommandController {
   private final CreateProductCommandService createProductCommandService;
   private final UpdateProductCommandService updateProductCommandService;
   private final ProductQueryService productQueryService;
-  private final ProductQueryController productQueryController;
+  private final ProductResponseConverter productResponseConverter;
 
   public ProductCommandController(
       CreateProductCommandService createProductCommandService,
       UpdateProductCommandService updateProductCommandService,
       ProductQueryService productQueryService,
-      ProductQueryController productQueryController) {
+      ProductResponseConverter productResponseConverter) {
     this.createProductCommandService = createProductCommandService;
     this.updateProductCommandService = updateProductCommandService;
     this.productQueryService = productQueryService;
-    this.productQueryController = productQueryController;
+    this.productResponseConverter = productResponseConverter;
   }
 
   @PostMapping
@@ -43,7 +43,7 @@ public class ProductCommandController {
 
     SnowflakeId id = createProductCommandService.execute(command);
     Product product = productQueryService.findById(id).orElseThrow();
-    return ResponseEntity.ok(productQueryController.toResponse(product));
+    return ResponseEntity.ok(productResponseConverter.toProductResponse(product));
   }
 
   @PatchMapping("/{id}")
@@ -58,7 +58,7 @@ public class ProductCommandController {
             .managerId(request.getManagerId())
             .build());
     Product product = productQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(productQueryController.toResponse(product));
+    return ResponseEntity.ok(productResponseConverter.toProductResponse(product));
   }
 
   @PatchMapping("/{id}/archive")
@@ -66,7 +66,7 @@ public class ProductCommandController {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
     updateProductCommandService.archive(snowflakeId);
     Product product = productQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(productQueryController.toResponse(product));
+    return ResponseEntity.ok(productResponseConverter.toProductResponse(product));
   }
 
   @DeleteMapping("/{id}")

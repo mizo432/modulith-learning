@@ -15,9 +15,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class ScrumTeamQueryController {
 
   private final ScrumTeamQueryService scrumTeamQueryService;
+  private final ProductResponseConverter productResponseConverter;
 
-  public ScrumTeamQueryController(ScrumTeamQueryService scrumTeamQueryService) {
+  public ScrumTeamQueryController(
+      ScrumTeamQueryService scrumTeamQueryService,
+      ProductResponseConverter productResponseConverter) {
     this.scrumTeamQueryService = scrumTeamQueryService;
+    this.productResponseConverter = productResponseConverter;
   }
 
   @GetMapping
@@ -30,7 +34,7 @@ public class ScrumTeamQueryController {
     return scrumTeamQueryService
         .findByProductId(productSnowflakeId)
         .stream()
-        .map(this::toResponse)
+        .map(productResponseConverter::toScrumTeamResponse)
         .toList();
   }
 
@@ -43,20 +47,6 @@ public class ScrumTeamQueryController {
             .findById(snowflakeId)
             .orElseThrow(
                 () -> new IllegalArgumentException("ScrumTeam not found: " + scrumTeamId));
-    return toResponse(scrumTeam);
-  }
-
-  ScrumTeamResponse toResponse(ScrumTeam scrumTeam) {
-    return ScrumTeamResponse.builder()
-        .id(scrumTeam.getId())
-        .name(scrumTeam.getName())
-        .businessDomain(scrumTeam.getBusinessDomain())
-        .poEmployeeId(scrumTeam.getPoEmployeeId())
-        .poName(scrumTeam.getPoName())
-        .productId(
-            scrumTeam.getProduct() != null ? String.valueOf(scrumTeam.getProduct().getId()) : null)
-        .createdAt(scrumTeam.getCreatedAt())
-        .updatedAt(scrumTeam.getUpdatedAt())
-        .build();
+    return productResponseConverter.toScrumTeamResponse(scrumTeam);
   }
 }

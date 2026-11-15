@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.productDiscovery.internal.command.CreateScrumTeamCommand;
 import undecided.agiloom.productDiscovery.internal.command.CreateScrumTeamCommandService;
+import undecided.agiloom.productDiscovery.internal.command.UpdateScrumTeamCommand;
 import undecided.agiloom.productDiscovery.internal.command.UpdateScrumTeamCommandService;
 import undecided.agiloom.productDiscovery.internal.query.ScrumTeamQueryService;
 import undecided.agiloom.productDiscovery.spi.ScrumTeam;
@@ -17,17 +18,17 @@ public class ScrumTeamCommandController {
   private final CreateScrumTeamCommandService createScrumTeamCommandService;
   private final UpdateScrumTeamCommandService updateScrumTeamCommandService;
   private final ScrumTeamQueryService scrumTeamQueryService;
-  private final ScrumTeamQueryController scrumTeamQueryController;
+  private final ProductResponseConverter productResponseConverter;
 
   public ScrumTeamCommandController(
       CreateScrumTeamCommandService createScrumTeamCommandService,
       UpdateScrumTeamCommandService updateScrumTeamCommandService,
       ScrumTeamQueryService scrumTeamQueryService,
-      ScrumTeamQueryController scrumTeamQueryController) {
+      ProductResponseConverter productResponseConverter) {
     this.createScrumTeamCommandService = createScrumTeamCommandService;
     this.updateScrumTeamCommandService = updateScrumTeamCommandService;
     this.scrumTeamQueryService = scrumTeamQueryService;
-    this.scrumTeamQueryController = scrumTeamQueryController;
+    this.productResponseConverter = productResponseConverter;
   }
 
   @PostMapping
@@ -45,7 +46,7 @@ public class ScrumTeamCommandController {
 
     SnowflakeId id = createScrumTeamCommandService.execute(command);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(id).orElseThrow();
-    return ResponseEntity.ok(scrumTeamQueryController.toResponse(scrumTeam));
+    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
   @PatchMapping("/{scrumTeamId}")
@@ -55,12 +56,7 @@ public class ScrumTeamCommandController {
       @Valid @RequestBody UpdateScrumTeamRequest request) {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.execute(
-        undecided
-            .agiloom
-            .productDiscovery
-            .internal
-            .command
-            .UpdateScrumTeamCommand
+        UpdateScrumTeamCommand
             .builder()
             .id(snowflakeId)
             .name(request.getName())
@@ -69,7 +65,7 @@ public class ScrumTeamCommandController {
             .poName(request.getPoName())
             .build());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(scrumTeamQueryController.toResponse(scrumTeam));
+    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
   @DeleteMapping("/{scrumTeamId}")
@@ -89,7 +85,7 @@ public class ScrumTeamCommandController {
     updateScrumTeamCommandService.assignPo(
         snowflakeId, request.getPoEmployeeId().toString(), request.getPoName());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(scrumTeamQueryController.toResponse(scrumTeam));
+    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
   @PatchMapping("/{scrumTeamId}/po/unassign")
@@ -98,6 +94,6 @@ public class ScrumTeamCommandController {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.unassignPo(snowflakeId);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(scrumTeamQueryController.toResponse(scrumTeam));
+    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 }

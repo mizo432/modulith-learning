@@ -86,11 +86,9 @@ public class ScrumTeam {
       @Nullable UUID poEmployeeId,
       @Nullable String poName) {
     if (name != null) {
-      checkNotNull(name, () -> new IllegalArgumentException("name must not be null"));
       this.name = name;
     }
     if (businessDomain != null) {
-      checkNotNull(businessDomain, () -> new IllegalArgumentException("businessDomain must not be null"));
       this.businessDomain = businessDomain;
     }
     if (poEmployeeId != null) {

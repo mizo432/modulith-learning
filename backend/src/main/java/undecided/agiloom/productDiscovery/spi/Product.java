@@ -1,7 +1,5 @@
 package undecided.agiloom.productDiscovery.spi;
 
-import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -89,7 +87,6 @@ public class Product {
   public void update(
       @Nullable String name, @Nullable String description, @Nullable UUID managerId) {
     if (name != null) {
-      checkNotNull(name, () -> new IllegalArgumentException("name must not be null"));
       this.name = name;
     }
     if (description != null) {
