@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {useParams, useNavigate, Link as RouterLink} from 'react-router-dom';
+import {useParams, Link as RouterLink} from 'react-router-dom';
 import {
   Box,
   Button,
@@ -27,7 +27,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import sprintService, {
   EndDayOfWeek,
   END_DAY_OF_WEEK_LABELS,
-  SprintSettings as SprintSettingsType,
 } from '../../services/sprintService';
 
 // Default values
@@ -81,7 +80,6 @@ function calculateEndDate(startDate: Date, businessDays: number, endDayOfWeek: E
 
 const SprintSettings: React.FC = () => {
   const {productId} = useParams<{productId: string}>();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [fetching, setFetching] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -117,7 +115,7 @@ const SprintSettings: React.FC = () => {
         // Check if Sprint 0 is in PLANNED status
         try {
           const sprints = await sprintService.getAllSprints();
-          const sprint0 = sprints.find(s => s.product?.productId === productId && s.name === 'Sprint 0');
+          const sprint0 = sprints.find(s => s.productId === productId && s.title === 'Sprint 0');
           setIsSprint0Planned(sprint0?.status === 'PLANNED' || false);
         } catch {
           // If we can't check, allow editing by default
