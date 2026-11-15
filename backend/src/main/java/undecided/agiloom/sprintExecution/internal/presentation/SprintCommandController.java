@@ -5,11 +5,15 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintSettings;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommand;
 import undecided.agiloom.sprintExecution.internal.command.CreateSprintCommandService;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintCommandService;
+import undecided.agiloom.sprintExecution.internal.command.UpdateSprintSettingsCommand;
+import undecided.agiloom.sprintExecution.internal.command.UpdateSprintSettingsCommandService;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryService;
+import undecided.agiloom.sprintExecution.internal.query.SprintSettingsQueryService;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
@@ -18,16 +22,22 @@ public class SprintCommandController {
 
     private final CreateSprintCommandService createSprintCommandService;
     private final UpdateSprintCommandService updateSprintCommandService;
+    private final UpdateSprintSettingsCommandService updateSprintSettingsCommandService;
     private final SprintQueryService sprintQueryService;
+    private final SprintSettingsQueryService sprintSettingsQueryService;
     private final SprintQueryController sprintQueryController;
 
     public SprintCommandController(CreateSprintCommandService createSprintCommandService,
                             UpdateSprintCommandService updateSprintCommandService,
+                            UpdateSprintSettingsCommandService updateSprintSettingsCommandService,
                             SprintQueryService sprintQueryService,
+                            SprintSettingsQueryService sprintSettingsQueryService,
                             SprintQueryController sprintQueryController) {
         this.createSprintCommandService = createSprintCommandService;
         this.updateSprintCommandService = updateSprintCommandService;
+        this.updateSprintSettingsCommandService = updateSprintSettingsCommandService;
         this.sprintQueryService = sprintQueryService;
+        this.sprintSettingsQueryService = sprintSettingsQueryService;
         this.sprintQueryController = sprintQueryController;
     }
 
@@ -56,5 +66,31 @@ public class SprintCommandController {
         updateSprintCommandService.changeStatus(snowflakeId, status);
         Sprint sprint = sprintQueryService.findById(snowflakeId).orElseThrow();
         return ResponseEntity.ok(sprintQueryController.toResponse(sprint));
+    }
+
+    /**
+     * スプリント設定を更新します。
+     * スプリント0中にのみ設定を変更できます。
+     */
+    @PutMapping("/settings")
+    public ResponseEntity<SprintSettingsResponse> updateSprintSettings(
+            @Valid @RequestBody UpdateSprintSettingsRequest request) {
+        UpdateSprintSettingsCommand command = UpdateSprintSettingsCommand.builder()
+                .productId(request.getProductId())
+                .businessDays(request.getBusinessDays())
+                .endDayOfWeek(request.getEndDayOfWeek())
+                .build();
+
+        updateSprintSettingsCommandService.execute(command);
+        SprintSettings settings = sprintSettingsQueryService.findByProductId(request.getProductId()).orElseThrow();
+        return ResponseEntity.ok(toSprintSettingsResponse(settings));
+    }
+
+    private SprintSettingsResponse toSprintSettingsResponse(SprintSettings settings) {
+        return SprintSettingsResponse.builder()
+                .productId(settings.getProductId())
+                .businessDays(settings.getBusinessDays())
+                .endDayOfWeek(settings.getEndDayOfWeek())
+                .build();
     }
 }

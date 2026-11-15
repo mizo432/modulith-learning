@@ -1,13 +1,16 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import java.util.List;
+import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintSettings;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryService;
+import undecided.agiloom.sprintExecution.internal.query.SprintSettingsQueryService;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
@@ -15,9 +18,12 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class SprintQueryController {
 
     private final SprintQueryService sprintQueryService;
+    private final SprintSettingsQueryService sprintSettingsQueryService;
 
-    public SprintQueryController(SprintQueryService sprintQueryService) {
+    public SprintQueryController(SprintQueryService sprintQueryService,
+                                 SprintSettingsQueryService sprintSettingsQueryService) {
         this.sprintQueryService = sprintQueryService;
+        this.sprintSettingsQueryService = sprintSettingsQueryService;
     }
 
     @GetMapping
@@ -38,6 +44,18 @@ public class SprintQueryController {
         return toResponse(sprint);
     }
 
+    /**
+     * プロダクトのスプリント設定を取得します。
+     */
+    @GetMapping("/settings")
+    public SprintSettingsResponse getSprintSettings(
+            @RequestParam @NotNull UUID productId) {
+        SprintSettings settings = sprintSettingsQueryService.findByProductId(productId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Sprint settings not found for product: " + productId));
+        return toSprintSettingsResponse(settings);
+    }
+
     SprintResponse toResponse(Sprint sprint) {
         return SprintResponse.builder()
                 .id(sprint.getId())
@@ -54,6 +72,14 @@ public class SprintQueryController {
                 .notes(sprint.getNotes())
                 .createdAt(sprint.getCreatedAt())
                 .updatedAt(sprint.getUpdatedAt())
+                .build();
+    }
+
+    private SprintSettingsResponse toSprintSettingsResponse(SprintSettings settings) {
+        return SprintSettingsResponse.builder()
+                .productId(settings.getProductId())
+                .businessDays(settings.getBusinessDays())
+                .endDayOfWeek(settings.getEndDayOfWeek())
                 .build();
     }
 }
