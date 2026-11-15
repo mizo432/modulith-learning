@@ -81,5 +81,22 @@ class CreateProductCommandServiceTest {
       assertThat(result).isEqualTo(productId);
       verify(productRepository).save(any(Product.class));
     }
+
+    @Test
+    @DisplayName("空文字列の名前の場合、例外がスローされること")
+    void shouldThrowExceptionWhenNameIsEmpty() {
+      // Arrange
+      CreateProductCommand command =
+          CreateProductCommand.builder()
+              .name("")
+              .description("Test Description")
+              .build();
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.execute(command))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be empty");
+    }
+
   }
 }

@@ -95,5 +95,39 @@ class CreateScrumTeamCommandServiceTest {
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("Product not found");
     }
+
+    @Test
+    @DisplayName("空文字列のチーム名の場合、例外がスローされること")
+    void shouldThrowExceptionWhenNameIsEmpty() {
+      // Arrange
+      CreateScrumTeamCommand command =
+          CreateScrumTeamCommand.builder()
+              .productId(SnowflakeId.of(1L))
+              .name("")
+              .businessDomain("Test Domain")
+              .build();
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.execute(command))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be empty");
+    }
+
+    @Test
+    @DisplayName("空文字列の事業領域の場合、例外がスローされること")
+    void shouldThrowExceptionWhenBusinessDomainIsEmpty() {
+      // Arrange
+      CreateScrumTeamCommand command =
+          CreateScrumTeamCommand.builder()
+              .productId(SnowflakeId.of(1L))
+              .name("Test Team")
+              .businessDomain("")
+              .build();
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.execute(command))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be empty");
+    }
   }
 }

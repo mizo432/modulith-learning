@@ -1,5 +1,7 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
+import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
+
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,9 @@ public class CreateScrumTeamCommandService {
   }
 
   public SnowflakeId execute(@NonNull CreateScrumTeamCommand command) {
+    checkNonEmpty(command.getName(), () -> new IllegalArgumentException("ScrumTeam name must not be empty"));
+    checkNonEmpty(command.getBusinessDomain(), () -> new IllegalArgumentException("Business domain must not be empty"));
+
     Product product =
         productRepository
             .findById(command.getProductId())
