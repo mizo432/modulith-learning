@@ -118,8 +118,18 @@ public class SprintSettings {
       }
     }
 
-    // 終了日が指定された終了曜日でない場合、次の終了曜日まで進める
-    while (endDate.getDayOfWeek() != endDayOfWeek.getDayOfWeek()) {
+    // 終了日が指定された終了曜日かつ営業日になるまで進める
+    while (true) {
+      int dayValue = endDate.getDayOfWeek().getValue();
+      // 土日または祝日の場合は次の日に進める
+      if (dayValue >= 6 || holidays.contains(endDate)) {
+        endDate = endDate.plusDays(1);
+        continue;
+      }
+      // 現在の終了日が指定された終了曜日なら終了
+      if (endDate.getDayOfWeek() == endDayOfWeek.getDayOfWeek()) {
+        break;
+      }
       endDate = endDate.plusDays(1);
     }
 

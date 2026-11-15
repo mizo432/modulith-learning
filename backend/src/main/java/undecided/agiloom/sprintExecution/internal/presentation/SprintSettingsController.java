@@ -1,12 +1,13 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintSettingsCommand;
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintSettingsCommandService;
@@ -36,7 +37,7 @@ public class SprintSettingsController {
    */
   @GetMapping("/{productId}/sprint-settings")
   public SprintSettingsResponse getSprintSettings(
-      @RequestParam @NotNull UUID productId) {
+      @PathVariable @NotNull UUID productId) {
     SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productId);
     return toResponse(settings);
   }
@@ -46,8 +47,8 @@ public class SprintSettingsController {
    */
   @PatchMapping("/{productId}/sprint-settings")
   public ResponseEntity<SprintSettingsResponse> updateSprintSettings(
-      @RequestParam @NotNull UUID productId,
-      @RequestBody UpdateSprintSettingsRequest request) {
+      @PathVariable @NotNull UUID productId,
+      @Valid @RequestBody UpdateSprintSettingsRequest request) {
     UpdateSprintSettingsCommand command = UpdateSprintSettingsCommand.builder()
         .productId(productId)
         .businessDays(request.getBusinessDays())

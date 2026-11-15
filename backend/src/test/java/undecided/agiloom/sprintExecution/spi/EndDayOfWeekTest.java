@@ -55,5 +55,12 @@ class EndDayOfWeekTest {
       assertThatThrownBy(() -> EndDayOfWeek.fromDayOfWeek(DayOfWeek.SUNDAY))
           .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("nullが指定された場合例外がスローされる")
+    void shouldThrowExceptionForNull() {
+      assertThatThrownBy(() -> EndDayOfWeek.fromDayOfWeek(null))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
   }
 }

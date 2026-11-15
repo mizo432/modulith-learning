@@ -70,7 +70,7 @@ class SprintSettingsCalculatorTest {
 
       // 2026-11-16(月) から開始、祝日なし
       LocalDate startDate = LocalDate.of(2026, 11, 16);
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of());
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
@@ -96,7 +96,7 @@ class SprintSettingsCalculatorTest {
       holiday.setId(20261120L);
       holiday.setHolidayDate(LocalDate.of(2026, 11, 20)); // Friday (祝日)
       holiday.setHolidayName("振替休日");
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of(holiday));
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of(holiday));
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
@@ -114,13 +114,13 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = createSettings();
       LocalDate startDate = LocalDate.of(2026, 11, 16);
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of());
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
 
       // Act
       calculator.calculateEndDate(settings, startDate);
 
       // Assert
-      verify(holidayQuery).findBetween(startDate, startDate.plusDays(60));
+      verify(holidayQuery).findBetween(startDate, startDate.plusDays(90));
     }
 
     @Test
@@ -135,7 +135,7 @@ class SprintSettingsCalculatorTest {
           .build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of());
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
@@ -166,7 +166,7 @@ class SprintSettingsCalculatorTest {
           createHoliday(2027, 1, 1, "元日"),
           createHoliday(2027, 1, 4, "振替休日")
       );
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(holidays);
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(holidays);
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
@@ -194,7 +194,7 @@ class SprintSettingsCalculatorTest {
       holiday.setId(20261121L);
       holiday.setHolidayDate(LocalDate.of(2026, 11, 21)); // Saturday
       holiday.setHolidayName("海の日");
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of(holiday));
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of(holiday));
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
@@ -223,7 +223,7 @@ class SprintSettingsCalculatorTest {
           createHoliday(2026, 11, 18, "祝日2"),
           createHoliday(2026, 11, 19, "祝日3")
       );
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(holidays);
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(holidays);
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
@@ -240,13 +240,14 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = createSettings();
       LocalDate startDate = LocalDate.of(2026, 11, 16);
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of());
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
 
       // Assert
-      assertThat(endDate).isAfter(startDate);
+      // 10営業日: 11/17(火)〜11/30(月)=10営業目 → 終了曜日が金曜日なので12/4(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 12, 4));
     }
 
     @Test
@@ -261,7 +262,7 @@ class SprintSettingsCalculatorTest {
           .build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of());
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);
@@ -284,7 +285,7 @@ class SprintSettingsCalculatorTest {
           .build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 20); // Friday
-      when(holidayQuery.findBetween(startDate, startDate.plusDays(60))).thenReturn(List.of());
+      when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
 
       // Act
       LocalDate endDate = calculator.calculateEndDate(settings, startDate);

@@ -27,7 +27,6 @@ public class CreateSprintCommand {
     @NonNull
     private LocalDate startDate;
 
-    @NonNull
     private LocalDate endDate;
 
     @NonNull

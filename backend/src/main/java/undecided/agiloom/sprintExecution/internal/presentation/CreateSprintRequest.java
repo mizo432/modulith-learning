@@ -28,7 +28,6 @@ public class CreateSprintRequest {
     @NotNull
     private LocalDate startDate;
 
-    @NotNull
     private LocalDate endDate;
 
     @NotNull
