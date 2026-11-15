@@ -22,7 +22,8 @@ import undecided.agiloom.productDiscovery.internal.ProductRepository;
 import undecided.agiloom.productDiscovery.internal.ScrumTeamRepository;
 import undecided.agiloom.productDiscovery.spi.Product;
 import undecided.agiloom.productDiscovery.spi.ScrumTeam;
-import undecided.agiloom.sprintExecution.internal.SprintRepository;
+import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintZeroFactory;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -34,13 +35,13 @@ class CreateScrumTeamCommandServiceTest {
 
   @Mock private ProductRepository productRepository;
 
-  @Mock private SprintRepository sprintRepository;
+  @Mock private SprintZeroFactory sprintZeroFactory;
 
   private CreateScrumTeamCommandService service;
 
   @BeforeEach
   void setUp() {
-    service = new CreateScrumTeamCommandService(scrumTeamRepository, productRepository, sprintRepository);
+    service = new CreateScrumTeamCommandService(scrumTeamRepository, productRepository, sprintZeroFactory);
   }
 
   @Nested
@@ -72,7 +73,7 @@ class CreateScrumTeamCommandServiceTest {
 
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
-      when(sprintRepository.findByTeamIdAndIsSprintZero(any(UUID.class), eq(true)))
+      when(sprintZeroFactory.createSprintZero(any(UUID.class), any(UUID.class), any(String.class)))
           .thenReturn(Optional.empty());
 
       // Act
@@ -81,7 +82,7 @@ class CreateScrumTeamCommandServiceTest {
       // Assert
       assertThat(result.value()).isEqualTo(2L);
       verify(scrumTeamRepository).save(any(ScrumTeam.class));
-      verify(sprintRepository).save(any());
+      verify(sprintZeroFactory).createSprintZero(any(UUID.class), any(UUID.class), any(String.class));
     }
 
     @Test
@@ -109,14 +110,14 @@ class CreateScrumTeamCommandServiceTest {
 
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
-      when(sprintRepository.findByTeamIdAndIsSprintZero(any(UUID.class), eq(true)))
+      when(sprintZeroFactory.createSprintZero(any(UUID.class), any(UUID.class), any(String.class)))
           .thenReturn(Optional.empty());
 
       // Act
       service.execute(command);
 
       // Assert
-      verify(sprintRepository).save(any());
+      verify(sprintZeroFactory).createSprintZero(any(UUID.class), any(UUID.class), any(String.class));
     }
 
     @Test
@@ -142,17 +143,18 @@ class CreateScrumTeamCommandServiceTest {
               .product(product)
               .build();
 
+      Sprint existingSprintZero = Sprint.createSprintZero(
+          UUID.randomUUID(), UUID.randomUUID(), "Test Team");
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
-      when(sprintRepository.findByTeamIdAndIsSprintZero(any(UUID.class), eq(true)))
-          .thenReturn(Optional.of(undecided.agiloom.sprintExecution.spi.Sprint.createSprintZero(
-              UUID.randomUUID(), UUID.randomUUID(), "Test Team")));
+      when(sprintZeroFactory.createSprintZero(any(UUID.class), any(UUID.class), any(String.class)))
+          .thenReturn(Optional.of(existingSprintZero));
 
       // Act
       service.execute(command);
 
       // Assert
-      verify(sprintRepository, never()).save(any());
+      verify(sprintZeroFactory).createSprintZero(any(UUID.class), any(UUID.class), any(String.class));
     }
 
     @Test
