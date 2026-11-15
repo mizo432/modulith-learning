@@ -197,4 +197,83 @@ class UpdateScrumTeamCommandServiceTest {
           .hasMessageContaining("ScrumTeam not found");
     }
   }
+
+  @Nested
+  @DisplayName("assignSm メソッドのテスト")
+  class AssignSmTest {
+
+    @Test
+    @DisplayName("SMを割り当てること")
+    void shouldAssignSm() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      UUID smEmployeeId = UUID.randomUUID();
+      String smName = "Test SM";
+      ScrumTeam existingTeam =
+          ScrumTeam.builder().id(teamId).name("Test Team").build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.assignSm(teamId, smEmployeeId, smName);
+
+      // Assert
+      assertThat(existingTeam.getSmEmployeeId()).isEqualTo(smEmployeeId);
+      assertThat(existingTeam.getSmName()).isEqualTo(smName);
+    }
+
+    @Test
+    @DisplayName("ScrumTeamが見つからない場合、例外がスローされること")
+    void shouldThrowExceptionWhenScrumTeamNotFound() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.empty());
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.assignSm(teamId, UUID.randomUUID(), "name"))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("ScrumTeam not found");
+    }
+  }
+
+  @Nested
+  @DisplayName("unassignSm メソッドのテスト")
+  class UnassignSmTest {
+
+    @Test
+    @DisplayName("SMの割り当てを解除すること")
+    void shouldUnassignSm() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .smEmployeeId(UUID.randomUUID())
+              .smName("Test SM")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.unassignSm(teamId);
+
+      // Assert
+      assertThat(existingTeam.getSmEmployeeId()).isNull();
+      assertThat(existingTeam.getSmName()).isNull();
+    }
+
+    @Test
+    @DisplayName("ScrumTeamが見つからない場合、例外がスローされること")
+    void shouldThrowExceptionWhenScrumTeamNotFound() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.empty());
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.unassignSm(teamId))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("ScrumTeam not found");
+    }
+  }
 }

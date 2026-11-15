@@ -42,6 +42,8 @@ public class ScrumTeamCommandController {
             .businessDomain(request.getBusinessDomain())
             .poEmployeeId(request.getPoEmployeeId())
             .poName(request.getPoName())
+            .smEmployeeId(request.getSmEmployeeId())
+            .smName(request.getSmName())
             .build();
 
     SnowflakeId id = createScrumTeamCommandService.execute(command);
@@ -63,6 +65,8 @@ public class ScrumTeamCommandController {
             .businessDomain(request.getBusinessDomain())
             .poEmployeeId(request.getPoEmployeeId())
             .poName(request.getPoName())
+            .smEmployeeId(request.getSmEmployeeId())
+            .smName(request.getSmName())
             .build());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
@@ -93,6 +97,27 @@ public class ScrumTeamCommandController {
       @PathVariable String productId, @PathVariable String scrumTeamId) {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.unassignPo(snowflakeId);
+    ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
+  }
+
+  @PatchMapping("/{scrumTeamId}/sm")
+  public ResponseEntity<ScrumTeamResponse> assignSm(
+      @PathVariable String productId,
+      @PathVariable String scrumTeamId,
+      @Valid @RequestBody AssignSmRequest request) {
+    SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
+    updateScrumTeamCommandService.assignSm(
+        snowflakeId, request.getSmEmployeeId(), request.getSmName());
+    ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
+  }
+
+  @PatchMapping("/{scrumTeamId}/sm/unassign")
+  public ResponseEntity<ScrumTeamResponse> unassignSm(
+      @PathVariable String productId, @PathVariable String scrumTeamId) {
+    SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
+    updateScrumTeamCommandService.unassignSm(snowflakeId);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }

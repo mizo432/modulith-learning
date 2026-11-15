@@ -58,6 +58,14 @@ public class ScrumTeam {
   @Column(name = "po_name", length = 100)
   protected String poName;
 
+  /** SM（Scrum Master）の従業員ID。 */
+  @Column(name = "sm_employee_id")
+  protected UUID smEmployeeId;
+
+  /** SMの名前（非正規化フィールド）。 */
+  @Column(name = "sm_name", length = 100)
+  protected String smName;
+
   /** 関連するProductへの参照。 */
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id", nullable = false)
@@ -80,12 +88,16 @@ public class ScrumTeam {
    * @param businessDomain 更新後の事業領域（nullの場合は変更なし）
    * @param poEmployeeId 更新後のPO従業員ID（nullの場合は変更なし）
    * @param poName 更新後のPO名前（nullの場合は変更なし）
+   * @param smEmployeeId 更新後のSM従業員ID（nullの場合は変更なし）
+   * @param smName 更新後のSM名前（nullの場合は変更なし）
    */
   public void update(
       @Nullable String name,
       @Nullable String businessDomain,
       @Nullable UUID poEmployeeId,
-      @Nullable String poName) {
+      @Nullable String poName,
+      @Nullable UUID smEmployeeId,
+      @Nullable String smName) {
     if (name != null) {
       checkNonEmpty(name, () -> new IllegalArgumentException("ScrumTeam name must not be empty"));
       this.name = name;
@@ -100,6 +112,12 @@ public class ScrumTeam {
     }
     if (poName != null) {
       this.poName = poName;
+    }
+    if (smEmployeeId != null) {
+      this.smEmployeeId = smEmployeeId;
+    }
+    if (smName != null) {
+      this.smName = smName;
     }
     this.updatedAt = LocalDateTime.now();
   }
@@ -122,6 +140,27 @@ public class ScrumTeam {
   public void unassignPo() {
     this.poEmployeeId = null;
     this.poName = null;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  /**
+   * SM（Scrum Master）を割り当てます。
+   *
+   * @param smEmployeeId SMの従業員ID
+   * @param smName SMの名前
+   */
+  public void assignSm(@NonNull UUID smEmployeeId, @NonNull String smName) {
+    checkNotNull(smEmployeeId, () -> new IllegalArgumentException("smEmployeeId must not be null"));
+    checkNotNull(smName, () -> new IllegalArgumentException("smName must not be null"));
+    this.smEmployeeId = smEmployeeId;
+    this.smName = smName;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  /** SM（Scrum Master）の割り当てを解除します。 */
+  public void unassignSm() {
+    this.smEmployeeId = null;
+    this.smName = null;
     this.updatedAt = LocalDateTime.now();
   }
 }
