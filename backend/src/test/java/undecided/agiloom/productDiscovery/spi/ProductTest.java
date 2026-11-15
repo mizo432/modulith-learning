@@ -161,4 +161,31 @@ class ProductTest {
       assertThat(product.getStatus()).isEqualTo(ProductStatus.ARCHIVED);
     }
   }
+
+  @Nested
+  @DisplayName("deleteメソッドのテスト")
+  class DeleteMethodTest {
+
+    @Test
+    @DisplayName("deleted_atが設定される")
+    void shouldSetDeletedAt() {
+      Product product = createProduct();
+      assertThat(product.getDeletedAt()).isNull();
+
+      product.delete();
+
+      assertThat(product.getDeletedAt()).isNotNull();
+      assertThat(product.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("delete後もステータスは変更されない")
+    void shouldNotChangeStatusOnDelete() {
+      Product product = createProduct();
+
+      product.delete();
+
+      assertThat(product.getStatus()).isEqualTo(ProductStatus.ACTIVE);
+    }
+  }
 }

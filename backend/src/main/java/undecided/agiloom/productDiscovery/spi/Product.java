@@ -100,4 +100,10 @@ public class Product {
     this.status = ProductStatus.ARCHIVED;
     this.updatedAt = LocalDateTime.now();
   }
+
+  /** プロダクトを論理削除します。 deleted_atに現在時刻を設定します。 */
+  public void delete() {
+    this.deletedAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+  }
 }
