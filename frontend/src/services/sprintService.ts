@@ -50,6 +50,29 @@ export function isSprint0(sprint: Sprint): boolean {
   return sprint.sprintNumber === 0;
 }
 
+// Sprint Settings type definitions matching backend API
+export type EndDayOfWeek = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY';
+
+export interface SprintSettings {
+  productId: string;
+  businessDays: number;
+  endDayOfWeek: EndDayOfWeek;
+}
+
+export interface UpdateSprintSettingsRequest {
+  productId: string;
+  businessDays: number;
+  endDayOfWeek: EndDayOfWeek;
+}
+
+// End day of week display names in Japanese
+export const END_DAY_OF_WEEK_LABELS: Record<EndDayOfWeek, string> = {
+  MONDAY: '月曜日',
+  TUESDAY: '火曜日',
+  WEDNESDAY: '水曜日',
+  THURSDAY: '木曜日',
+  FRIDAY: '金曜日',
+};
 // Sprint service functions
 const sprintService = {
   // Get all sprints
@@ -103,6 +126,20 @@ const sprintService = {
       backlogItem: Partial<SprintBacklog>
   ): Promise<SprintBacklog> => {
     const response = await api.put(`/sprint-backlogs/${backlogId}`, backlogItem);
+    return response.data;
+  },
+
+  // Get sprint settings for a product
+  getSprintSettings: async (productId: string): Promise<SprintSettings> => {
+    const response = await api.get('/v1/sprints/settings', {
+      params: { productId }
+    });
+    return response.data;
+  },
+
+  // Update sprint settings
+  updateSprintSettings: async (request: UpdateSprintSettingsRequest): Promise<SprintSettings> => {
+    const response = await api.put('/v1/sprints/settings', request);
     return response.data;
   }
 };

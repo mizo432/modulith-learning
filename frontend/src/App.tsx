@@ -21,6 +21,7 @@ import ScrumTeamList from './pages/products/ScrumTeamList';
 import ScrumTeamCreate from './pages/products/ScrumTeamCreate';
 import ScrumTeamEdit from './pages/products/ScrumTeamEdit';
 import SprintList from './pages/products/SprintList';
+import SprintSettings from './pages/products/SprintSettings';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
@@ -184,6 +185,11 @@ const AppContent = () => {
                                                                                            <SprintList/>
                                                                                          </ProtectedRoute>
                                                                                        }/>
+              <Route path="/products/:productId/sprint-settings" element={
+                                                                        <ProtectedRoute>
+                                                                         <SprintSettings/>
+                                                                       </ProtectedRoute>
+                                                                     }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </Container>

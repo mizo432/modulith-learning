@@ -17,6 +17,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import SettingsIcon from '@mui/icons-material/Settings';
 import scrumTeamService from '../../services/scrumTeamService';
 import teamService, {Member} from '../../services/teamService';
 
@@ -181,8 +182,18 @@ const ScrumTeamEdit: React.FC = () => {
                 startIcon={<ViewListIcon/>}
                 variant="outlined"
                 color="primary"
+                sx={{mr: 1}}
             >
               View Sprints
+            </Button>
+            <Button
+                component={RouterLink}
+                to={`/products/${productId}/sprint-settings`}
+                startIcon={<SettingsIcon/>}
+                variant="outlined"
+                color="primary"
+            >
+              スプリント設定
             </Button>
           </Box>
 
