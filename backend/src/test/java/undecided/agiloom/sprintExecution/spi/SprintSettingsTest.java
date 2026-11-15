@@ -125,7 +125,7 @@ class SprintSettingsTest {
 
       LocalDate endDate = settings.calculateEndDate(startDate, holidays);
 
-      // 10営業日後は2026-11-30(月)→次の金曜日に調整→2026-12-04(金)
+      // 10営業日後は2026-12-04(金)
       assertThat(endDate).isEqualTo(LocalDate.of(2026, 12, 4));
     }
 
@@ -186,6 +186,78 @@ class SprintSettingsTest {
 
       assertThatThrownBy(() -> settings.calculateEndDate(LocalDate.now(), null))
           .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("年末年始の連続祝日を跨ぐ場合の計算が正しく行われる")
+    void shouldCalculateAcrossYearEndHolidays() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(6L))
+          .productId(UUID.randomUUID())
+          .businessDays(5)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      holidays.add(LocalDate.of(2026, 12, 29)); // 火
+      holidays.add(LocalDate.of(2026, 12, 30)); // 水
+      holidays.add(LocalDate.of(2026, 12, 31)); // 木
+      holidays.add(LocalDate.of(2027, 1, 1));   // 金
+      holidays.add(LocalDate.of(2027, 1, 4));   // 月 (振替休日)
+
+      LocalDate startDate = LocalDate.of(2026, 12, 28); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 5営業日: 12/28(月)=1, 1/5(月)=2, 1/6(火)=3, 1/7(水)=4, 1/8(木)=5
+      // 終了曜日が金曜日なので、1/15(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2027, 1, 15));
+    }
+
+    @Test
+    @DisplayName("祝日が土曜日と重なる場合、影響がない")
+    void shouldHandleHolidayOnSaturday() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(7L))
+          .productId(UUID.randomUUID())
+          .businessDays(3)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      holidays.add(LocalDate.of(2026, 11, 21)); // Saturday (祝日)
+
+      LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 3営業日: 11/16(月), 11/17(火), 11/18(水) = 3営業目
+      // 終了曜日が金曜日なので、11/20(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 20));
+    }
+
+    @Test
+    @DisplayName("連続祝日(3日以上)が含まれる場合の計算が正しく行われる")
+    void shouldHandleConsecutiveHolidays() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(8L))
+          .productId(UUID.randomUUID())
+          .businessDays(5)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      holidays.add(LocalDate.of(2026, 11, 17)); // 火
+      holidays.add(LocalDate.of(2026, 11, 18)); // 水
+      holidays.add(LocalDate.of(2026, 11, 19)); // 木
+
+      LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 5営業日: 11/16(月)=1, 11/20(金)=2, 11/23(月)=3, 11/24(火)=4, 11/25(水)=5
+      // 終了曜日が金曜日なので、11/27(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 27));
     }
   }
 

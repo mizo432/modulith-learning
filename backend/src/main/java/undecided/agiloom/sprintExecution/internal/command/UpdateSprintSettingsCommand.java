@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
-import org.jspecify.annotations.NonNull;
 import undecided.agiloom.sprintExecution.spi.EndDayOfWeek;
 
 /**
