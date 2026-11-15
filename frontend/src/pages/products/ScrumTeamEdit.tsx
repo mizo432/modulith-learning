@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import scrumTeamService from '../../services/scrumTeamService';
 import teamService, {Member} from '../../services/teamService';
 
@@ -171,9 +172,18 @@ const ScrumTeamEdit: React.FC = () => {
             >
               Back to List
             </Button>
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography variant="h4" component="h1" gutterBottom sx={{mr: 'auto'}}>
               Edit Scrum Team
             </Typography>
+            <Button
+                component={RouterLink}
+                to={`/products/${productId}/scrum-teams/edit/${scrumTeamId}/sprints`}
+                startIcon={<ViewListIcon/>}
+                variant="outlined"
+                color="primary"
+            >
+              View Sprints
+            </Button>
           </Box>
 
           {error && (

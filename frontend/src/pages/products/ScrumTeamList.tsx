@@ -19,6 +19,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
 
 const ScrumTeamList: React.FC = () => {
@@ -122,6 +123,16 @@ const ScrumTeamList: React.FC = () => {
                           <TableCell>{new Date(team.createdAt).toLocaleDateString()}</TableCell>
                           <TableCell align="right">
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+                              <Tooltip title="Sprints">
+                                <IconButton
+                                    component={RouterLink}
+                                    to={`/products/${productId}/scrum-teams/edit/${team.id}/sprints`}
+                                    size="small"
+                                    sx={{mr: 1}}
+                                >
+                                  <ViewListIcon/>
+                                </IconButton>
+                              </Tooltip>
                               <Tooltip title="Edit">
                                 <IconButton
                                     component={RouterLink}
