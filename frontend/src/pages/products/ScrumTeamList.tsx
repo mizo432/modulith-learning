@@ -20,6 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import SettingsIcon from '@mui/icons-material/Settings';
 import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
 
 const ScrumTeamList: React.FC = () => {
@@ -74,6 +75,16 @@ const ScrumTeamList: React.FC = () => {
                 Scrum Teams
               </Typography>
             </Box>
+            <Button
+                component={RouterLink}
+                to={`/products/${productId}/sprint-settings`}
+                variant="outlined"
+                color="primary"
+                startIcon={<SettingsIcon/>}
+                sx={{mr: 1}}
+            >
+              スプリント設定
+            </Button>
             <Button
                 component={RouterLink}
                 to={`/products/${productId}/scrum-teams/create`}

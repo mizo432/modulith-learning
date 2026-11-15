@@ -178,4 +178,130 @@ class SprintTest {
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
     }
   }
+
+  @Nested
+  @DisplayName("スプリント0のテスト")
+  class SprintZeroTest {
+
+    @Test
+    @DisplayName("createSprintZeroファクトリメソッドでスプリント0が作成される")
+    void shouldCreateSprintZero() {
+      UUID productId = UUID.randomUUID();
+      UUID teamId = UUID.randomUUID();
+      String teamName = "Team A";
+
+      Sprint sprintZero = Sprint.createSprintZero(productId, teamId, teamName);
+
+      assertThat(sprintZero.isSprintZero()).isTrue();
+      assertThat(sprintZero.getSprintNumber()).isEqualTo(0);
+      assertThat(sprintZero.getTitle()).isEqualTo("Sprint 0");
+      assertThat(sprintZero.getGoal()).isEqualTo("チームの初期準備期間");
+      assertThat(sprintZero.getStatus()).isEqualTo(SprintStatus.PLANNED);
+      assertThat(sprintZero.getStartDate()).isNull();
+      assertThat(sprintZero.getEndDate()).isNull();
+      assertThat(sprintZero.getTeamId()).isEqualTo(teamId);
+      assertThat(sprintZero.getTeamName()).isEqualTo(teamName);
+      assertThat(sprintZero.getProductId()).isEqualTo(productId);
+    }
+
+    @Test
+    @DisplayName("スプリント0は削除できない")
+    void shouldNotDeleteSprintZero() {
+      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+
+      org.junit.jupiter.api.Assertions.assertThrows(
+          IllegalStateException.class,
+          sprintZero::delete,
+          "Sprint 0 cannot be deleted"
+      );
+    }
+
+    @Test
+    @DisplayName("スプリント0のisDeletableはfalseを返す")
+    void shouldReturnFalseForIsDeletable() {
+      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+
+      assertThat(sprintZero.isDeletable()).isFalse();
+    }
+
+    @Test
+    @DisplayName("通常のスプリントは削除できる")
+    void shouldDeleteNormalSprint() {
+      Sprint sprint = createSprint();
+
+      sprint.delete();
+
+      assertThat(sprint.getDeletedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("通常のスプリントのisDeletableはtrueを返す")
+    void shouldReturnTrueForIsDeletable() {
+      Sprint sprint = createSprint();
+
+      assertThat(sprint.isDeletable()).isTrue();
+    }
+
+    @Test
+    @DisplayName("スプリント0の名前変更は禁止される")
+    void shouldNotChangeSprintZeroTitle() {
+      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+      String originalTitle = sprintZero.getTitle();
+
+      sprintZero.update("New Title", "New Goal", null, "Notes");
+
+      assertThat(sprintZero.getTitle()).isEqualTo(originalTitle);
+    }
+
+    @Test
+    @DisplayName("スプリント0の日付更新は許可される")
+    void shouldUpdateSprintZeroDates() {
+      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+      LocalDate startDate = LocalDate.now();
+      LocalDate endDate = LocalDate.now().plusWeeks(2);
+
+      sprintZero.updateDates(startDate, endDate);
+
+      assertThat(sprintZero.getStartDate()).isEqualTo(startDate);
+      assertThat(sprintZero.getEndDate()).isEqualTo(endDate);
+    }
+
+    @Test
+    @DisplayName("markAsSprintZeroでスプリント0としてマークされる")
+    void shouldMarkAsSprintZero() {
+      Sprint sprint = createSprint();
+
+      sprint.markAsSprintZero();
+
+      assertThat(sprint.isSprintZero()).isTrue();
+      assertThat(sprint.getSprintNumber()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("createSprintZeroのproductIdがnullの場合、例外がスローされる")
+    void shouldThrowWhenProductIdIsNull() {
+      org.junit.jupiter.api.Assertions.assertThrows(
+          IllegalArgumentException.class,
+          () -> Sprint.createSprintZero(null, UUID.randomUUID(), "Team A")
+      );
+    }
+
+    @Test
+    @DisplayName("createSprintZeroのteamIdがnullの場合、例外がスローされる")
+    void shouldThrowWhenTeamIdIsNull() {
+      org.junit.jupiter.api.Assertions.assertThrows(
+          IllegalArgumentException.class,
+          () -> Sprint.createSprintZero(UUID.randomUUID(), null, "Team A")
+      );
+    }
+
+    @Test
+    @DisplayName("createSprintZeroのteamNameがnullの場合、例外がスローされる")
+    void shouldThrowWhenTeamNameIsNull() {
+      org.junit.jupiter.api.Assertions.assertThrows(
+          IllegalArgumentException.class,
+          () -> Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), null)
+      );
+    }
+  }
 }
