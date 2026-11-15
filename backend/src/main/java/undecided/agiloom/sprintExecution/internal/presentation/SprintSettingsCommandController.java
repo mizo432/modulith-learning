@@ -3,7 +3,6 @@ package undecided.agiloom.sprintExecution.internal.presentation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,30 +15,19 @@ import undecided.agiloom.sprintExecution.spi.SprintSettings;
 
 import java.util.UUID;
 
-/** スプリント設定APIコントローラー。 */
+/** スプリント設定更新APIコントローラー。 */
 @RestController
 @RequestMapping("/api/v1/products")
-public class SprintSettingsController {
+public class SprintSettingsCommandController {
 
   private final UpdateSprintSettingsCommandService updateSprintSettingsCommandService;
   private final SprintSettingsQueryService sprintSettingsQueryService;
 
-  public SprintSettingsController(
+  public SprintSettingsCommandController(
       UpdateSprintSettingsCommandService updateSprintSettingsCommandService,
       SprintSettingsQueryService sprintSettingsQueryService) {
     this.updateSprintSettingsCommandService = updateSprintSettingsCommandService;
     this.sprintSettingsQueryService = sprintSettingsQueryService;
-  }
-
-  /**
-   * プロダクトのスプリント設定を取得します。
-   * 設定が存在しない場合はデフォルト値を返します。
-   */
-  @GetMapping("/{productId}/sprint-settings")
-  public SprintSettingsResponse getSprintSettings(
-      @PathVariable @NotNull UUID productId) {
-    SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productId);
-    return toResponse(settings);
   }
 
   /**
