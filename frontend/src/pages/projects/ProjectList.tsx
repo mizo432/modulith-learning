@@ -129,8 +129,8 @@ const ProjectList: React.FC = () => {
                           <TableCell>
                             {project.product ? (
                                 <Link component={RouterLink}
-                                      to={`/products/${project.product.productId}`}>
-                                  {project.product.name}
+                                      to={`/products/edit/${project.product.id}`}>
+                                    {project.product.name}
                                 </Link>
                             ) : (
                                 'No product'

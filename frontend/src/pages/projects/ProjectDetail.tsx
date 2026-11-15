@@ -202,7 +202,7 @@ const ProjectDetail: React.FC = () => {
                   </Typography>
                   <Typography variant="body1" sx={{mt: 1}}>
                     {project.product ? (
-                        <Link component={RouterLink} to={`/products/${project.product.productId}`}>
+                        <Link component={RouterLink} to={`/products/edit/${project.product.id}`}>
                           {project.product.name}
                         </Link>
                     ) : (

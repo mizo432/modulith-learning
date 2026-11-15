@@ -3,7 +3,7 @@ import {Box, Tab, Tabs} from '@mui/material';
 import {useAuth} from '../contexts/AuthContext';
 
 // Define the tab types
-export type TabType = 'projects' | 'teams' | 'settings' | 'users';
+export type TabType = 'products' | 'projects' | 'teams' | 'settings' | 'users';
 
 interface TabNavigationProps {
   selectedTab: TabType;
@@ -26,6 +26,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({selectedTab, onTabChange})
             indicatorColor="primary"
             textColor="primary"
         >
+          <Tab label="プロダクト" value="products"/>
           <Tab label="プロジェクト" value="projects"/>
           <Tab label="チーム" value="teams"/>
           <Tab label="設定" value="settings"/>
