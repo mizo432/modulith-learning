@@ -27,6 +27,7 @@ public class SprintResponse {
     private String teamName;
     private Integer velocity;
     private String notes;
+    private Boolean isSprintZero;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

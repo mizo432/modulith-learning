@@ -66,12 +66,12 @@ public class Sprint {
   @Column(name = "goal", length = 1000)
   protected String goal;
 
-  /** Sprintの開始日。 */
-  @Column(name = "start_date", nullable = false)
+  /** Sprintの開始日。スプリント0の場合はnullです。 */
+  @Column(name = "start_date")
   protected LocalDate startDate;
 
-  /** Sprintの終了日。 */
-  @Column(name = "end_date", nullable = false)
+  /** Sprintの終了日。スプリント0の場合はnullです。 */
+  @Column(name = "end_date")
   protected LocalDate endDate;
 
   /** Sprintの状態（PLANNED, ACTIVE, COMPLETED, CANCELLEDなど）。 */
@@ -110,6 +110,28 @@ public class Sprint {
   @Column(name = "deleted_at")
   protected LocalDateTime deletedAt;
 
+  /** スプリント0かどうかを示すフラグ。スプリント0は特別な初期スプリントです。 */
+  @Column(name = "is_sprint_zero", nullable = false)
+  @Builder.Default
+  protected Boolean isSprintZero = false;
+
+  /**
+   * スプリント0かどうかを返します。
+   * スプリント0は削除・名前変更が制限される特別なスプリントです。
+   */
+  public boolean isSprintZero() {
+    return this.isSprintZero != null && this.isSprintZero;
+  }
+
+  /**
+   * スプリント0としてマークします。
+   */
+  public void markAsSprintZero() {
+    this.isSprintZero = true;
+    this.sprintNumber = 0;
+    this.updatedAt = LocalDateTime.now();
+  }
+
     public void start() {
         if (this.status != SprintStatus.PLANNED) {
             throw new IllegalStateException("Sprint can only be started from PLANNED status, current status: " + this.status);
@@ -137,12 +159,82 @@ public class Sprint {
     public void update(@NonNull String title, @NonNull String goal, @Nullable LocalDate endDate, @Nullable String notes) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
-        this.title = title;
+        // スプリント0の名前変更は禁止
+        if (!this.isSprintZero()) {
+            this.title = title;
+        }
         this.goal = goal;
         if (endDate != null) {
             this.endDate = endDate;
         }
         this.notes = notes;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * スプリントの開始日と終了日を更新します。
+     * スプリント0でも日付の更新は許可されます。
+     *
+     * @param startDate 開始日（nullの場合は変更なし）
+     * @param endDate 終了日（nullの場合は変更なし）
+     */
+    public void updateDates(@Nullable LocalDate startDate, @Nullable LocalDate endDate) {
+        if (startDate != null) {
+            this.startDate = startDate;
+        }
+        if (endDate != null) {
+            this.endDate = endDate;
+        }
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * スプリントを論理削除します。
+     * スプリント0は削除できないため、例外をスローします。
+     */
+    public void delete() {
+        if (this.isSprintZero()) {
+            throw new IllegalStateException("Sprint 0 cannot be deleted");
+        }
+        this.deletedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * このスプリントが削除可能かどうかを返します。
+     * スプリント0は削除できません。
+     */
+    public boolean isDeletable() {
+        return !this.isSprintZero();
+    }
+
+    /**
+     * スプリント0を生成するファクトリメソッドです。
+     * スプリント0はチームの初期準備期間を表す特別なスプリントであり、
+     * 削除・名前変更が制限されます。
+     *
+     * @param productId 関連する製品のID
+     * @param teamId スクラムチームのID
+     * @param teamName スクラムチームの名前
+     * @return スプリント0のインスタンス
+     */
+    public static Sprint createSprintZero(@NonNull UUID productId, @NonNull UUID teamId, @NonNull String teamName) {
+        checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
+        checkNotNull(teamId, () -> new IllegalArgumentException("teamId must not be null"));
+        checkNotNull(teamName, () -> new IllegalArgumentException("teamName must not be null"));
+
+        Sprint sprint = Sprint.builder()
+                .productId(productId)
+                .sprintNumber(0)
+                .title("Sprint 0")
+                .goal("チームの初期準備期間")
+                .startDate(null)
+                .endDate(null)
+                .status(SprintStatus.PLANNED)
+                .teamId(teamId)
+                .teamName(teamName)
+                .isSprintZero(true)
+                .build();
+        return sprint;
     }
 }

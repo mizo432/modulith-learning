@@ -93,4 +93,11 @@ public class SprintCommandController {
                 .endDayOfWeek(settings.getEndDayOfWeek())
                 .build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSprint(@PathVariable @NotNull String id) {
+        SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
+        updateSprintCommandService.delete(snowflakeId);
+        return ResponseEntity.noContent().build();
+    }
 }

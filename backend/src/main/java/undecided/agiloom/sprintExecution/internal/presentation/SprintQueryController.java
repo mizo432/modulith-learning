@@ -70,6 +70,7 @@ public class SprintQueryController {
                 .teamName(sprint.getTeamName())
                 .velocity(sprint.getVelocity())
                 .notes(sprint.getNotes())
+                .isSprintZero(sprint.isSprintZero())
                 .createdAt(sprint.getCreatedAt())
                 .updatedAt(sprint.getUpdatedAt())
                 .build();
