@@ -30,7 +30,6 @@ const ScrumTeamCreate: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [businessDomain, setBusinessDomain] = useState<string>('');
   const [poEmployeeId, setPoEmployeeId] = useState<string>('');
-  const [poName, setPoName] = useState<string>('');
 
   // Form validation
   const [nameError, setNameError] = useState<string>('');
@@ -104,8 +103,6 @@ const ScrumTeamCreate: React.FC = () => {
   const handlePoChange = (e: SelectChangeEvent<string>) => {
     const selectedId = e.target.value;
     setPoEmployeeId(selectedId);
-    const selectedMember = members.find(m => m.memberId === selectedId);
-    setPoName(selectedMember?.name || '');
   };
 
   return (

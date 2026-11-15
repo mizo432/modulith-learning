@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
-import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
+import scrumTeamService from '../../services/scrumTeamService';
 import teamService, {Member} from '../../services/teamService';
 
 const ScrumTeamEdit: React.FC = () => {
@@ -26,13 +26,11 @@ const ScrumTeamEdit: React.FC = () => {
   const [fetching, setFetching] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
-  const [team, setTeam] = useState<ScrumTeam | null>(null);
 
   // Form state
   const [name, setName] = useState<string>('');
   const [businessDomain, setBusinessDomain] = useState<string>('');
   const [poEmployeeId, setPoEmployeeId] = useState<string>('');
-  const [poName, setPoName] = useState<string>('');
 
   // Form validation
   const [nameError, setNameError] = useState<string>('');
@@ -47,12 +45,10 @@ const ScrumTeamEdit: React.FC = () => {
           scrumTeamService.getScrumTeamById(productId, scrumTeamId),
           teamService.getAllMembers()
         ]);
-        setTeam(teamData);
         setMembers(membersData);
         setName(teamData.name);
         setBusinessDomain(teamData.businessDomain);
         setPoEmployeeId(teamData.poEmployeeId || '');
-        setPoName(teamData.poName || '');
       } catch (err) {
         setError('Failed to load form data. Please try again later.');
         console.error('Error loading form data:', err);

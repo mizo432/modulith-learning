@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Link as RouterLink, useParams, useNavigate} from 'react-router-dom';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Link as RouterLink, useParams} from 'react-router-dom';
 import {
   Box,
   Button,
@@ -23,12 +23,11 @@ import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
 
 const ScrumTeamList: React.FC = () => {
   const {productId} = useParams<{productId: string}>();
-  const navigate = useNavigate();
   const [scrumTeams, setScrumTeams] = useState<ScrumTeam[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchScrumTeams = async () => {
+  const fetchScrumTeams = useCallback(async () => {
     if (!productId) return;
     try {
       setLoading(true);
@@ -41,11 +40,11 @@ const ScrumTeamList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId]);
 
   useEffect(() => {
     fetchScrumTeams();
-  }, [productId]);
+  }, [productId, fetchScrumTeams]);
 
   const handleDeleteScrumTeam = async (scrumTeamId: string) => {
     if (!productId) return;
