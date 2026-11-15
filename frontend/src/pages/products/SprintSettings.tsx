@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {useParams, Link as RouterLink} from 'react-router-dom';
 import {
   Box,
@@ -24,59 +24,20 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import InfoIcon from '@mui/icons-material/Info';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ErrorIcon from '@mui/icons-material/Error';
 import sprintService, {
   EndDayOfWeek,
   END_DAY_OF_WEEK_LABELS,
+  CalculateEndDateResponse,
 } from '../../services/sprintService';
 
 // Default values
 const DEFAULT_BUSINESS_DAYS = 10;
 const DEFAULT_END_DAY_OF_WEEK: EndDayOfWeek = 'FRIDAY';
 
-// Helper: calculate business days end date (excluding weekends)
-function calculateEndDate(startDate: Date, businessDays: number, endDayOfWeek: EndDayOfWeek): Date | null {
-  if (businessDays < 1) return null;
-
-  // Map EndDayOfWeek to JavaScript Day (0=Sun, 1=Mon, ..., 5=Fri, 6=Sat)
-  const dayOfWeekMap: Record<EndDayOfWeek, number> = {
-    MONDAY: 1,
-    TUESDAY: 2,
-    WEDNESDAY: 3,
-    THURSDAY: 4,
-    FRIDAY: 5,
-  };
-  const targetDay = dayOfWeekMap[endDayOfWeek];
-
-  const result = new Date(startDate);
-  let countedDays = 0;
-
-  // If start date is Saturday or Sunday, move to next Monday
-  if (result.getDay() === 0 || result.getDay() === 6) {
-    const daysUntilMonday = result.getDay() === 0 ? 1 : 2;
-    result.setDate(result.getDate() + daysUntilMonday);
-  }
-
-  while (true) {
-    const currentDay = result.getDay();
-    // Skip weekends
-    if (currentDay !== 0 && currentDay !== 6) {
-      countedDays++;
-      if (countedDays === businessDays) {
-        // Check if the day matches the target end day of week
-        if (currentDay === targetDay) {
-          return new Date(result);
-        }
-        // If not, continue to find the next matching day
-      }
-    }
-    result.setDate(result.getDate() + 1);
-    // Safety: prevent infinite loop (max 60 days)
-    if (countedDays > 60) break;
-  }
-
-  // Fallback: return the date after counting business days
-  return new Date(result);
-}
+// Debounce delay for API calls (ms)
+const DEBOUNCE_DELAY = 500;
 
 const SprintSettings: React.FC = () => {
   const {productId} = useParams<{productId: string}>();
@@ -94,6 +55,12 @@ const SprintSettings: React.FC = () => {
 
   // Sprint 0 status check
   const [isSprint0Planned, setIsSprint0Planned] = useState<boolean>(false);
+
+  // Backend-calculated end date state
+  const [calculatedEndDate, setCalculatedEndDate] = useState<CalculateEndDateResponse | null>(null);
+  const [endDateLoading, setEndDateLoading] = useState<boolean>(false);
+  const [endDateError, setEndDateError] = useState<string | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,12 +99,53 @@ const SprintSettings: React.FC = () => {
     fetchData();
   }, [productId]);
 
-  // Calculate preview end date
-  const previewEndDate = useMemo(() => {
-    const startDate = new Date();
-    startDate.setHours(0, 0, 0, 0);
-    return calculateEndDate(startDate, businessDays, endDayOfWeek);
-  }, [businessDays, endDayOfWeek]);
+  // Fetch calculated end date from backend with debounce
+  const fetchCalculatedEndDate = useCallback(async () => {
+    if (!productId) return;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startDateStr = today.toISOString().split('T')[0];
+
+    try {
+      setEndDateLoading(true);
+      setEndDateError(null);
+      const result = await sprintService.calculateEndDate(productId, startDateStr);
+      setCalculatedEndDate(result);
+    } catch (err: any) {
+      const message = err.response?.data?.message || '終了日の計算に失敗しました';
+      setEndDateError(message);
+      console.error('Error calculating end date:', err);
+    } finally {
+      setEndDateLoading(false);
+    }
+  }, [productId]);
+
+  // Debounced effect to fetch end date when settings change
+  useEffect(() => {
+    if (!isSprint0Planned) return;
+
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new timer
+    debounceTimerRef.current = setTimeout(() => {
+      fetchCalculatedEndDate();
+    }, DEBOUNCE_DELAY);
+
+    // Cleanup
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [businessDays, endDayOfWeek, fetchCalculatedEndDate, isSprint0Planned, productId]);
+
+  // Get day of week label from backend response
+  const getEndDayOfWeekLabel = (label: string): string => {
+    return END_DAY_OF_WEEK_LABELS[label as EndDayOfWeek] || label;
+  };
 
   const validateForm = (): boolean => {
     let isValid = true;
@@ -306,7 +314,7 @@ const SprintSettings: React.FC = () => {
                 </FormControl>
               </Grid>
 
-              {/* Preview End Date */}
+              {/* Preview End Date - Backend Calculated */}
               <Grid item xs={12}>
                 <Paper
                   variant="outlined"
@@ -317,35 +325,84 @@ const SprintSettings: React.FC = () => {
                     borderColor: 'divider',
                   }}
                 >
-                  <Box display="flex" alignItems="center" mb={1}>
+                  <Box display="flex" alignItems="center" mb={2}>
                     <CalendarTodayIcon sx={{mr: 1, color: 'primary.main'}} />
                     <Typography variant="subtitle1" fontWeight="bold">
-                      スプリント終了日（プレビュー）
+                      スプリント終了日（自動計算結果）
                     </Typography>
+                    {endDateLoading && (
+                      <Box display="flex" alignItems="center" ml={2}>
+                        <CircularProgress size={20} sx={{mr: 1}} />
+                        <Typography variant="body2" color="text.secondary">
+                          計算中...
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
-                  <Typography variant="body1" color="text.secondary" sx={{mb: 1}}>
+
+                  <Typography variant="body1" color="text.secondary" sx={{mb: 2}}>
                     今日から{businessDays}営業日後、{END_DAY_OF_WEEK_LABELS[endDayOfWeek]}に終了
                   </Typography>
-                  {previewEndDate ? (
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Chip
-                        label={`${previewEndDate.toLocaleDateString('ja-JP', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}（${END_DAY_OF_WEEK_LABELS[endDayOfWeek].replace('曜日', '')}）`}
-                        color="primary"
-                        variant="outlined"
-                      />
+
+                  {/* Error state */}
+                  {endDateError && (
+                    <Alert severity="error" icon={<ErrorIcon fontSize="inherit" />} sx={{mb: 2}}>
+                      {endDateError}
+                    </Alert>
+                  )}
+
+                  {/* Calculated end date display */}
+                  {!endDateLoading && !endDateError && calculatedEndDate && (
+                    <Box>
+                      {/* Past date warning */}
+                      {calculatedEndDate.isPastDate && (
+                        <Alert
+                          severity="warning"
+                          icon={<WarningAmberIcon fontSize="inherit" />}
+                          sx={{mb: 2}}
+                        >
+                          <Typography variant="body2">
+                            計算された終了日（
+                            {new Date(calculatedEndDate.endDate).toLocaleDateString('ja-JP', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                            ）は過去の日付になっています。営業日数または終了曜日を見直してください。
+                          </Typography>
+                        </Alert>
+                      )}
+
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Chip
+                          label={`${new Date(calculatedEndDate.endDate).toLocaleDateString('ja-JP', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}（${getEndDayOfWeekLabel(calculatedEndDate.endDayOfWeekLabel).replace('曜日', '')}）`}
+                          color={calculatedEndDate.isPastDate ? 'warning' : 'primary'}
+                          variant="outlined"
+                        />
+                      </Box>
+                      <Typography variant="caption" color="text.secondary" sx={{mt: 1, display: 'block'}}>
+                        ※ 土・日曜日および祝日が除外されています。カレンダーレジストリを利用して計算されています。
+                      </Typography>
                     </Box>
-                  ) : (
+                  )}
+
+                  {/* Loading initial state */}
+                  {!endDateLoading && !endDateError && !calculatedEndDate && isSprint0Planned && (
                     <Typography variant="body2" color="text.disabled">
-                      有効な日付を計算できません
+                      終了日を計算しています...
                     </Typography>
                   )}
-                  <Typography variant="caption" color="text.secondary" sx={{mt: 1, display: 'block'}}>
-                    ※ 土・日曜日は除外されます。正確な終了日はバックエンドで計算されます。
-                  </Typography>
+
+                  {/* Disabled state when not in Sprint 0 */}
+                  {!isSprint0Planned && (
+                    <Typography variant="body2" color="text.disabled">
+                      スプリント終了日のプレビューはスプリント0中にのみ利用できます。
+                    </Typography>
+                  )}
                 </Paper>
               </Grid>
             </Grid>

@@ -65,6 +65,14 @@ export interface UpdateSprintSettingsRequest {
   endDayOfWeek: EndDayOfWeek;
 }
 
+export interface CalculateEndDateResponse {
+  startDate: string;
+  endDate: string;
+  businessDays: number;
+  endDayOfWeekLabel: string;
+  isPastDate: boolean;
+}
+
 // End day of week display names in Japanese
 export const END_DAY_OF_WEEK_LABELS: Record<EndDayOfWeek, string> = {
   MONDAY: '月曜日',
@@ -140,6 +148,14 @@ const sprintService = {
   // Update sprint settings
   updateSprintSettings: async (request: UpdateSprintSettingsRequest): Promise<SprintSettings> => {
     const response = await api.put('/v1/sprints/settings', request);
+    return response.data;
+  },
+
+  // Calculate sprint end date using backend API
+  calculateEndDate: async (productId: string, startDate: string): Promise<CalculateEndDateResponse> => {
+    const response = await api.get(`/v1/products/${productId}/sprint-settings/calculate-end-date`, {
+      params: { startDate }
+    });
     return response.data;
   }
 };
