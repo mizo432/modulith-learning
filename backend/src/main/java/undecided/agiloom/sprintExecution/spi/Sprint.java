@@ -32,8 +32,9 @@ import undecided.supporting.snowflake.SnowflakeId;
  * チームが計画・実行・レビュー・振り返りを行う単位として機能します。
  * Sprintは状態遷移（PLANNED → ACTIVE → COMPLETED/CANCELLED）を持ち、適切なフローで管理されます。
  *
- * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられ、{@code create()}ファクトリメソッドを使用して
- * インスタンスを作成します。{@code @Builder}は既存のコードとの互換性のために維持されています。
+ * <p>C7修正により{@code @Data}は{@code @Getter}に置き換えられました。
+ * インスタンスは{@code @Builder}を使用して作成します。
+ * {@code @AllArgsConstructor}は{@code @Builder}の動作に必要な内部用コンストラクタです。
  */
 @Entity
 @Table(name = "sprints", uniqueConstraints = {
@@ -65,12 +66,12 @@ public class Sprint {
   @Column(name = "goal", length = 1000)
   protected String goal;
 
-  /** Sprintの開始日。 */
-  @Column(name = "start_date", nullable = false)
+  /** Sprintの開始日。スプリント0の場合はnullです。 */
+  @Column(name = "start_date")
   protected LocalDate startDate;
 
-  /** Sprintの終了日。 */
-  @Column(name = "end_date", nullable = false)
+  /** Sprintの終了日。スプリント0の場合はnullです。 */
+  @Column(name = "end_date")
   protected LocalDate endDate;
 
   /** Sprintの状態（PLANNED, ACTIVE, COMPLETED, CANCELLEDなど）。 */
@@ -109,60 +110,27 @@ public class Sprint {
   @Column(name = "deleted_at")
   protected LocalDateTime deletedAt;
 
-    /**
-     * Sprintを新規作成します。
-     *
-     * @param id ID
-     * @param productId 製品ID
-     * @param sprintNumber Sprint番号
-     * @param title タイトル
-     * @param goal 目標
-     * @param startDate 開始日
-     * @param endDate 終了日
-     * @param status 状態
-     * @param teamId チームID
-     * @param teamName チーム名
-     * @param velocity ベロシティ
-     * @param notes メモ
-     * @param createdAt 作成日時
-     * @param updatedAt 更新日時
-     * @param deletedAt 削除日時
-     * @return 新規作成されたSprintインスタンス
-     */
-    public static Sprint create(
-            @NonNull SnowflakeId id,
-            @NonNull UUID productId,
-            @NonNull Integer sprintNumber,
-            @NonNull String title,
-            @Nullable String goal,
-            @NonNull LocalDate startDate,
-            @NonNull LocalDate endDate,
-            @NonNull SprintStatus status,
-            @NonNull UUID teamId,
-            @Nullable String teamName,
-            @Nullable Integer velocity,
-            @Nullable String notes,
-            @NonNull LocalDateTime createdAt,
-            @NonNull LocalDateTime updatedAt,
-            @Nullable LocalDateTime deletedAt) {
-        return Sprint.builder()
-                .id(id)
-                .productId(productId)
-                .sprintNumber(sprintNumber)
-                .title(title)
-                .goal(goal)
-                .startDate(startDate)
-                .endDate(endDate)
-                .status(status)
-                .teamId(teamId)
-                .teamName(teamName)
-                .velocity(velocity)
-                .notes(notes)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .deletedAt(deletedAt)
-                .build();
-    }
+  /** スプリント0かどうかを示すフラグ。スプリント0は特別な初期スプリントです。 */
+  @Column(name = "is_sprint_zero", nullable = false)
+  @Builder.Default
+  protected Boolean isSprintZero = false;
+
+  /**
+   * スプリント0かどうかを返します。
+   * スプリント0は削除・名前変更が制限される特別なスプリントです。
+   */
+  public boolean isSprintZero() {
+    return this.isSprintZero != null && this.isSprintZero;
+  }
+
+  /**
+   * スプリント0としてマークします。
+   */
+  public void markAsSprintZero() {
+    this.isSprintZero = true;
+    this.sprintNumber = 0;
+    this.updatedAt = LocalDateTime.now();
+  }
 
     public void start() {
         if (this.status != SprintStatus.PLANNED) {
@@ -191,12 +159,82 @@ public class Sprint {
     public void update(@NonNull String title, @NonNull String goal, @Nullable LocalDate endDate, @Nullable String notes) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
-        this.title = title;
+        // スプリント0の名前変更は禁止
+        if (!this.isSprintZero()) {
+            this.title = title;
+        }
         this.goal = goal;
         if (endDate != null) {
             this.endDate = endDate;
         }
         this.notes = notes;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * スプリントの開始日と終了日を更新します。
+     * スプリント0でも日付の更新は許可されます。
+     *
+     * @param startDate 開始日（nullの場合は変更なし）
+     * @param endDate 終了日（nullの場合は変更なし）
+     */
+    public void updateDates(@Nullable LocalDate startDate, @Nullable LocalDate endDate) {
+        if (startDate != null) {
+            this.startDate = startDate;
+        }
+        if (endDate != null) {
+            this.endDate = endDate;
+        }
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * スプリントを論理削除します。
+     * スプリント0は削除できないため、例外をスローします。
+     */
+    public void delete() {
+        if (this.isSprintZero()) {
+            throw new IllegalStateException("Sprint 0 cannot be deleted");
+        }
+        this.deletedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * このスプリントが削除可能かどうかを返します。
+     * スプリント0は削除できません。
+     */
+    public boolean isDeletable() {
+        return !this.isSprintZero();
+    }
+
+    /**
+     * スプリント0を生成するファクトリメソッドです。
+     * スプリント0はチームの初期準備期間を表す特別なスプリントであり、
+     * 削除・名前変更が制限されます。
+     *
+     * @param productId 関連する製品のID
+     * @param teamId スクラムチームのID
+     * @param teamName スクラムチームの名前
+     * @return スプリント0のインスタンス
+     */
+    public static Sprint createSprintZero(@NonNull UUID productId, @NonNull UUID teamId, @NonNull String teamName) {
+        checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
+        checkNotNull(teamId, () -> new IllegalArgumentException("teamId must not be null"));
+        checkNotNull(teamName, () -> new IllegalArgumentException("teamName must not be null"));
+
+        Sprint sprint = Sprint.builder()
+                .productId(productId)
+                .sprintNumber(0)
+                .title("Sprint 0")
+                .goal("チームの初期準備期間")
+                .startDate(null)
+                .endDate(null)
+                .status(SprintStatus.PLANNED)
+                .teamId(teamId)
+                .teamName(teamName)
+                .isSprintZero(true)
+                .build();
+        return sprint;
     }
 }

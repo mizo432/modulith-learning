@@ -3,12 +3,13 @@ package undecided.association.relationshipMgmt.spi.party.person;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import undecided.association.relationshipMgmt.SchemaRelationshipMgmt;
 import undecided.association.relationshipMgmt.spi.party.Party;
 import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import undecided.supporting.snowflake.SnowflakeId;
 import java.time.LocalDateTime;
 
@@ -17,14 +18,13 @@ import java.time.LocalDateTime;
  *
  * <p>このエンティティは {@link Party} を拡張し、個人特有の属性（法的名前、生年月日など）を保持します。
  *
- * <p>C3修正により、{@code @AllArgsConstructor}は{@code AccessLevel.PROTECTED}に制限されており、
- * 外部からの直接インスタンス化を防いでいます。JPA用には{@code @NoArgsConstructor(access = AccessLevel.PROTECTED)}が設定されています。
+ * <p>C3修正により、{@code @AllArgsConstructor}は削除され、外部からの直接インスタンス化を防いでいます。
+ * JPA用には{@code @NoArgsConstructor(access = AccessLevel.PROTECTED)}が設定されています。
  */
 @Table(name = "People", schema = SchemaRelationshipMgmt.NAME)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Person extends Party {
 
   /** 個人の法的名前。公式な文書や識別に使用されます。 */
@@ -55,15 +55,27 @@ public class Person extends Party {
       LocalDateTime validFrom,
       LegalName legalName,
       DateOfBirth dateOfBirth,
-      DateOfDie dateOfDie) {
+      @Nullable DateOfDie dateOfDie) {
     Person person = new Person();
-    person.partyId = partyId;
-    person.partyTypeCode = partyTypeCode;
-    person.code = code;
-    person.validFrom = validFrom;
+    person.initParty(partyId, partyTypeCode, code, validFrom, null, null, null);
     person.legalName = legalName;
     person.dateOfBirth = dateOfBirth;
     person.dateOfDie = dateOfDie;
     return person;
+  }
+
+  /**
+   * 個人の情報を更新します。
+   *
+   * @param legalName 法的名前
+   * @param dateOfBirth 生年月日
+   * @param dateOfDie 死亡日（nullの場合は生存中とみなされます）
+   */
+  public void update(LegalName legalName, DateOfBirth dateOfBirth, @Nullable DateOfDie dateOfDie) {
+    ObjectPrecondition.checkNotNull(legalName, () -> new IllegalArgumentException("legalName must not be null"));
+    ObjectPrecondition.checkNotNull(dateOfBirth, () -> new IllegalArgumentException("dateOfBirth must not be null"));
+    this.legalName = legalName;
+    this.dateOfBirth = dateOfBirth;
+    this.dateOfDie = dateOfDie;
   }
 }

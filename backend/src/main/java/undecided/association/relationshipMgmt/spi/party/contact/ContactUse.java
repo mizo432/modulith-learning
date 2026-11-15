@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -84,5 +85,25 @@ public class ContactUse {
     contactUse.type = type;
     contactUse.whenOccured = whenOccured != null ? whenOccured : WhenOccured.empty();
     return contactUse;
+  }
+
+  /**
+   * メールアドレスを更新します。
+   *
+   * @param emailAddress 更新後のメールアドレス
+   */
+  public void updateEmailAddress(EmailAddress emailAddress) {
+    ObjectPrecondition.checkNotNull(emailAddress, () -> new IllegalArgumentException("emailAddress must not be null"));
+    this.emailAddress = emailAddress;
+  }
+
+  /**
+   * 電話番号を更新します。
+   *
+   * @param phoneNo 更新後の電話番号
+   */
+  public void updatePhoneNo(PhoneNo phoneNo) {
+    ObjectPrecondition.checkNotNull(phoneNo, () -> new IllegalArgumentException("phoneNo must not be null"));
+    this.phoneNo = phoneNo;
   }
 }

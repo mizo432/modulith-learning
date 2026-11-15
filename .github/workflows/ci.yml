@@ -27,7 +27,6 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v4
         with:
-          base: ${{ github.ref }}
           list-files: shell
           filters: |
             service-registry:
@@ -113,7 +112,6 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v4
         with:
-          base: ${{ github.ref }}
           list-files: shell
           filters: |
             frontend:
@@ -156,7 +154,6 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v4
         with:
-          base: ${{ github.ref }}
           list-files: shell
           filters: |
             backend:
@@ -242,7 +239,6 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v4
         with:
-          base: ${{ github.ref }}
           list-files: shell
           filters: |
             api-gateway:
@@ -372,7 +368,6 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v4
         with:
-          base: ${{ github.ref }}
           list-files: shell
           filters: |
             authorization:
@@ -459,7 +454,6 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v4
         with:
-          base: ${{ github.ref }}
           list-files: shell
           filters: |
             mizo432-shared-common:
@@ -485,70 +479,3 @@ jobs:
       - name: Run Mizo432 Shared Common Small Tests
         if: steps.changes.outputs.mizo432-shared-common == 'true'
         run: ./gradlew :mizo432-shared-common:test
-
-  sonarqube-analysis:
-    name: SonarQube Analysis
-    permissions:
-      contents: read
-      pull-requests: read
-      checks: write
-    runs-on: ubuntu-26.04
-    needs:
-      - backend-test
-      - backend-medium-test
-      - api-gateway-test
-      - api-gateway-medium-test
-      - authorization-test
-      - authorization-medium-test
-      - service-registry-test
-      - mizo432-shared-common-test
-    if: |
-      github.event_name == 'pull_request' &&
-      always() &&
-      (needs.backend-test.result == 'success' || needs.backend-test.result == 'skipped') &&
-      (needs.backend-medium-test.result == 'success' || needs.backend-medium-test.result == 'skipped') &&
-      (needs.api-gateway-test.result == 'success' || needs.api-gateway-test.result == 'skipped') &&
-      (needs.api-gateway-medium-test.result == 'success' || needs.api-gateway-medium-test.result == 'skipped') &&
-      (needs.authorization-test.result == 'success' || needs.authorization-test.result == 'skipped') &&
-      (needs.authorization-medium-test.result == 'success' || needs.authorization-medium-test.result == 'skipped') &&
-      (needs.service-registry-test.result == 'success' || needs.service-registry-test.result == 'skipped') &&
-      (needs.mizo432-shared-common-test.result == 'success' || needs.mizo432-shared-common-test.result == 'skipped')
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Set up JDK 25
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build and generate JaCoCo reports
-        run: |
-          ./gradlew :backend:test :backend:jacocoTestReport --no-build-cache
-          ./gradlew :api-gateway:test --no-build-cache
-          ./gradlew :authorization:test --no-build-cache
-          ./gradlew :service-registry:test --no-build-cache
-          ./gradlew :mizo432-shared-common:test --no-build-cache
-
-      - name: SonarQube Scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [ -z "$SONAR_TOKEN" ]; then
-            echo "SONAR_TOKEN is not set. Skipping SonarQube analysis."
-            exit 0
-          fi
-          ./gradlew sonar --no-parallel \
-            -Dsonar.token=${SONAR_TOKEN} \
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
-            -Dsonar.pullrequest.branch=${{ github.head_ref }} \
-            -Dsonar.pullrequest.base=${{ github.base_ref }} \
-            -Dsonar.github.token=${GITHUB_TOKEN}

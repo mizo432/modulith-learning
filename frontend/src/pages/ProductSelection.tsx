@@ -52,9 +52,9 @@ const ProductSelection: React.FC = () => {
     }
   }, [searchTerm, products]);
 
-  const handleProductSelect = (productId: string) => {
-    // Navigate to the selected product's dashboard or details page
-    navigate(`/products/${productId}`);
+  const handleProductSelect = (productId: number) => {
+    // Navigate to the selected product's projects page
+    navigate(`/projects?productId=${productId}`);
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,21 +87,21 @@ const ProductSelection: React.FC = () => {
   return (
       <Box>
         <Typography variant="h4" component="h1" gutterBottom>
-          Product Selection
+          製品選択
         </Typography>
 
         <Paper sx={{p: 3, mb: 4}}>
           <Typography variant="h6" gutterBottom>
-            Select a product to work with
+            作業する製品を選択してください
           </Typography>
           <Typography variant="body1" paragraph>
-            Choose one of the available products below to view its details, backlog, and sprints.
+            下の製品から選択して、詳細、バックログ、スプリントを確認できます。
           </Typography>
 
           <TextField
               fullWidth
               variant="outlined"
-              placeholder="Search products..."
+              placeholder="製品を検索..."
               value={searchTerm}
               onChange={handleSearchChange}
               sx={{mb: 3}}
@@ -118,31 +118,28 @@ const ProductSelection: React.FC = () => {
         {filteredProducts.length === 0 ? (
             <Paper sx={{p: 3}}>
               <Typography variant="body1">
-                No products
-                found. {searchTerm ? 'Try a different search term.' : 'Create a new product to get started.'}
+                製品が見つかりません。{searchTerm ? ' 別の検索語句を試してください。' : ' 新しい製品を作成してください。'}
               </Typography>
             </Paper>
         ) : (
             <Grid container spacing={3}>
               {filteredProducts.map((product) => (
-                  <Grid item xs={12} sm={6} md={4} key={product.productId}>
+                  <Grid item xs={12} sm={6} md={4} key={product.id}>
                     <Card>
-                      <CardActionArea onClick={() => handleProductSelect(product.productId)}>
+                      <CardActionArea onClick={() => handleProductSelect(product.id)}>
                         <CardHeader
                             title={product.name}
-                            subheader={`Owner: ${product.productOwner.name}`}
+                            subheader={product.managerId ? `マネージャーID: ${product.managerId}` : 'マネージャー未設定'}
                         />
                         <CardContent>
-                          {product.vision && (
-                              <Typography variant="body2" color="text.secondary" gutterBottom>
-                                <strong>Vision:</strong> {product.vision}
-                              </Typography>
-                          )}
                           {product.description && (
                               <Typography variant="body2" color="text.secondary" noWrap>
                                 {product.description}
                               </Typography>
                           )}
+                          <Typography variant="caption" color="text.secondary" sx={{mt: 1, display: 'block'}}>
+                            ステータス: {product.status === 'ACTIVE' ? '有効' : 'アーカイブ'}
+                          </Typography>
                         </CardContent>
                       </CardActionArea>
                     </Card>

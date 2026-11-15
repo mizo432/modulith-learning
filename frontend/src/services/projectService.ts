@@ -11,7 +11,7 @@ export interface Project {
     name: string;
   };
   product?: {
-    productId: string;
+    id: number;
     name: string;
   };
 }
