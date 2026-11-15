@@ -31,6 +31,7 @@ const ScrumTeamEdit: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [businessDomain, setBusinessDomain] = useState<string>('');
   const [poEmployeeId, setPoEmployeeId] = useState<string>('');
+  const [smEmployeeId, setSmEmployeeId] = useState<string>('');
 
   // Form validation
   const [nameError, setNameError] = useState<string>('');
@@ -49,6 +50,7 @@ const ScrumTeamEdit: React.FC = () => {
         setName(teamData.name);
         setBusinessDomain(teamData.businessDomain);
         setPoEmployeeId(teamData.poEmployeeId || '');
+        setSmEmployeeId(teamData.smEmployeeId || '');
       } catch (err) {
         setError('Failed to load form data. Please try again later.');
         console.error('Error loading form data:', err);
@@ -91,13 +93,16 @@ const ScrumTeamEdit: React.FC = () => {
     setLoading(true);
 
     try {
-      const selectedMember = poEmployeeId ? members.find(m => m.memberId === poEmployeeId) : undefined;
+      const selectedPo = poEmployeeId ? members.find(m => m.memberId === poEmployeeId) : undefined;
+      const selectedSm = smEmployeeId ? members.find(m => m.memberId === smEmployeeId) : undefined;
 
       const updateDto = {
         name,
         businessDomain,
-        poEmployeeId: selectedMember?.memberId,
-        poName: selectedMember?.name
+        poEmployeeId: selectedPo?.memberId,
+        poName: selectedPo?.name,
+        smEmployeeId: selectedSm?.memberId,
+        smName: selectedSm?.name
       };
 
       await scrumTeamService.updateScrumTeam(productId, scrumTeamId, updateDto);
@@ -115,6 +120,11 @@ const ScrumTeamEdit: React.FC = () => {
     setPoEmployeeId(selectedId);
   };
 
+  const handleSmChange = (e: SelectChangeEvent<string>) => {
+    const selectedId = e.target.value;
+    setSmEmployeeId(selectedId);
+  };
+
   const handleUnassignPo = async () => {
     if (!productId || !scrumTeamId) return;
     if (!window.confirm('Are you sure you want to unassign the Product Owner?')) return;
@@ -124,6 +134,18 @@ const ScrumTeamEdit: React.FC = () => {
     } catch (err) {
       setError('Failed to unassign PO. Please try again later.');
       console.error('Error unassigning PO:', err);
+    }
+  };
+
+  const handleUnassignSm = async () => {
+    if (!productId || !scrumTeamId) return;
+    if (!window.confirm('Are you sure you want to unassign the Scrum Master?')) return;
+    try {
+      await scrumTeamService.unassignSm(productId, scrumTeamId);
+      setSmEmployeeId('');
+    } catch (err) {
+      setError('Failed to unassign SM. Please try again later.');
+      console.error('Error unassigning SM:', err);
     }
   };
 
@@ -212,6 +234,38 @@ const ScrumTeamEdit: React.FC = () => {
                         size="small"
                     >
                       Unassign Product Owner
+                    </Button>
+                  </Box>
+              )}
+
+              <FormControl fullWidth sx={{mb: 3}}>
+                <InputLabel>Scrum Master (SM)</InputLabel>
+                <Select
+                    value={smEmployeeId}
+                    onChange={handleSmChange}
+                    label="Scrum Master (SM)"
+                >
+                  <MenuItem value="">
+                    <em>Select an employee</em>
+                  </MenuItem>
+                  {members.map((member) => (
+                      <MenuItem key={member.memberId} value={member.memberId}>
+                        {member.name} ({member.email})
+                      </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>Optional: Select a Scrum Master from employees</FormHelperText>
+              </FormControl>
+
+              {smEmployeeId && (
+                  <Box sx={{mb: 3}}>
+                    <Button
+                        onClick={handleUnassignSm}
+                        color="warning"
+                        variant="outlined"
+                        size="small"
+                    >
+                      Unassign Scrum Master
                     </Button>
                   </Box>
               )}

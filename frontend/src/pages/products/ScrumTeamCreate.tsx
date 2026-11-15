@@ -30,6 +30,7 @@ const ScrumTeamCreate: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [businessDomain, setBusinessDomain] = useState<string>('');
   const [poEmployeeId, setPoEmployeeId] = useState<string>('');
+  const [smEmployeeId, setSmEmployeeId] = useState<string>('');
 
   // Form validation
   const [nameError, setNameError] = useState<string>('');
@@ -80,14 +81,17 @@ const ScrumTeamCreate: React.FC = () => {
     setLoading(true);
 
     try {
-      const selectedMember = poEmployeeId ? members.find(m => m.memberId === poEmployeeId) : undefined;
+      const selectedPo = poEmployeeId ? members.find(m => m.memberId === poEmployeeId) : undefined;
+      const selectedSm = smEmployeeId ? members.find(m => m.memberId === smEmployeeId) : undefined;
 
       const newTeam = {
         productId,
         name,
         businessDomain,
-        poEmployeeId: selectedMember?.memberId,
-        poName: selectedMember?.name
+        poEmployeeId: selectedPo?.memberId,
+        poName: selectedPo?.name,
+        smEmployeeId: selectedSm?.memberId,
+        smName: selectedSm?.name
       };
 
       await scrumTeamService.createScrumTeam(newTeam);
@@ -103,6 +107,11 @@ const ScrumTeamCreate: React.FC = () => {
   const handlePoChange = (e: SelectChangeEvent<string>) => {
     const selectedId = e.target.value;
     setPoEmployeeId(selectedId);
+  };
+
+  const handleSmChange = (e: SelectChangeEvent<string>) => {
+    const selectedId = e.target.value;
+    setSmEmployeeId(selectedId);
   };
 
   return (
@@ -152,7 +161,7 @@ const ScrumTeamCreate: React.FC = () => {
                   required
               />
 
-              <FormControl fullWidth sx={{mb: 3}} error={!!poEmployeeId}>
+              <FormControl fullWidth sx={{mb: 3}}>
                 <InputLabel>Product Owner (PO)</InputLabel>
                 <Select
                     value={poEmployeeId}
@@ -169,6 +178,25 @@ const ScrumTeamCreate: React.FC = () => {
                   ))}
                 </Select>
                 <FormHelperText>Optional: Select a Product Owner from employees</FormHelperText>
+              </FormControl>
+
+              <FormControl fullWidth sx={{mb: 3}}>
+                <InputLabel>Scrum Master (SM)</InputLabel>
+                <Select
+                    value={smEmployeeId}
+                    onChange={handleSmChange}
+                    label="Scrum Master (SM)"
+                >
+                  <MenuItem value="">
+                    <em>Select an employee</em>
+                  </MenuItem>
+                  {members.map((member) => (
+                      <MenuItem key={member.memberId} value={member.memberId}>
+                        {member.name} ({member.email})
+                      </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>Optional: Select a Scrum Master from employees</FormHelperText>
               </FormControl>
 
               <Box display="flex" justifyContent="flex-end" gap={2}>
