@@ -125,7 +125,7 @@ class SprintSettingsTest {
 
       LocalDate endDate = settings.calculateEndDate(startDate, holidays);
 
-      // 10営業日後は2026-11-30(月)→次の金曜日に調整→2026-12-04(金)
+      // 10営業日後は2026-12-04(金)
       assertThat(endDate).isEqualTo(LocalDate.of(2026, 12, 4));
     }
 
@@ -146,8 +146,9 @@ class SprintSettingsTest {
 
       LocalDate endDate = settings.calculateEndDate(startDate, holidays);
 
-      // 祝日を除外して5営業日計算
-      assertThat(endDate).isAfter(startDate);
+      // 5営業日: 11/16(月)=1, 11/17(火)=2, 11/19(水)は祝日, 11/20(金)=3, 11/23(月)=4, 11/24(火)=5
+      // 終了曜日が金曜日なので、11/27(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 27));
     }
 
     @Test
@@ -165,8 +166,9 @@ class SprintSettingsTest {
 
       LocalDate endDate = settings.calculateEndDate(startDate, holidays);
 
-      // 3営業日後は水曜日またはその次の水曜日
-      assertThat(endDate.getDayOfWeek().getValue()).isEqualTo(3); // Wednesday = 3
+      // 3営業日: 11/17(火)=1, 11/18(水)=2, 11/19(木)=3
+      // 終了曜日が水曜日なので、11/25(水)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 25));
     }
 
     @Test
@@ -186,6 +188,180 @@ class SprintSettingsTest {
 
       assertThatThrownBy(() -> settings.calculateEndDate(LocalDate.now(), null))
           .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("年末年始の連続祝日を跨ぐ場合の計算が正しく行われる")
+    void shouldCalculateAcrossYearEndHolidays() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(6L))
+          .productId(UUID.randomUUID())
+          .businessDays(5)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      holidays.add(LocalDate.of(2026, 12, 29)); // 火
+      holidays.add(LocalDate.of(2026, 12, 30)); // 水
+      holidays.add(LocalDate.of(2026, 12, 31)); // 木
+      holidays.add(LocalDate.of(2027, 1, 1));   // 金
+      holidays.add(LocalDate.of(2027, 1, 4));   // 月 (振替休日)
+
+      LocalDate startDate = LocalDate.of(2026, 12, 28); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 5営業日: 12/28(月)=1, 1/5(月)=2, 1/6(火)=3, 1/7(水)=4, 1/8(木)=5
+      // 終了曜日が金曜日なので、1/15(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2027, 1, 15));
+    }
+
+    @Test
+    @DisplayName("祝日が土曜日と重なる場合、影響がない")
+    void shouldHandleHolidayOnSaturday() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(7L))
+          .productId(UUID.randomUUID())
+          .businessDays(3)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      holidays.add(LocalDate.of(2026, 11, 21)); // Saturday (祝日)
+
+      LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 3営業日: 11/16(月), 11/17(火), 11/18(水) = 3営業目
+      // 終了曜日が金曜日なので、11/20(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 20));
+    }
+
+    @Test
+    @DisplayName("連続祝日(3日以上)が含まれる場合の計算が正しく行われる")
+    void shouldHandleConsecutiveHolidays() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(8L))
+          .productId(UUID.randomUUID())
+          .businessDays(5)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      holidays.add(LocalDate.of(2026, 11, 17)); // 火
+      holidays.add(LocalDate.of(2026, 11, 18)); // 水
+      holidays.add(LocalDate.of(2026, 11, 19)); // 木
+
+      LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 5営業日: 11/16(月)=1, 11/20(金)=2, 11/23(月)=3, 11/24(火)=4, 11/25(水)=5
+      // 終了曜日が金曜日なので、11/27(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 27));
+    }
+
+    @Test
+    @DisplayName("businessDaysが1の場合、最小の期間が計算される")
+    void shouldCalculateWithOneBusinessDay() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(9L))
+          .productId(UUID.randomUUID())
+          .businessDays(1)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 1営業日: 11/17(火)=1
+      // 終了曜日が金曜日なので、11/20(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 20));
+    }
+
+    @Test
+    @DisplayName("businessDaysが30の場合、最大の期間が計算される")
+    void shouldCalculateWith30BusinessDays() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(10L))
+          .productId(UUID.randomUUID())
+          .businessDays(30)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 30営業日目: 2026-12-28(月) → 金曜日に調整: 2027-01-01(金)
+      assertThat(endDate).isEqualTo(LocalDate.of(2027, 1, 1));
+    }
+
+    @Test
+    @DisplayName("開始日が土曜日の場合、次の営業日から計算される")
+    void shouldCalculateWhenStartDayIsSaturday() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(11L))
+          .productId(UUID.randomUUID())
+          .businessDays(3)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      LocalDate startDate = LocalDate.of(2026, 11, 21); // Saturday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 3営業日: 11/23(月)=1, 11/24(火)=2, 11/25(水)=3
+      // 終了曜日が金曜日なので、11/27(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 27));
+    }
+
+    @Test
+    @DisplayName("開始日が日曜日の場合、次の営業日から計算される")
+    void shouldCalculateWhenStartDayIsSunday() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(12L))
+          .productId(UUID.randomUUID())
+          .businessDays(3)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      LocalDate startDate = LocalDate.of(2026, 11, 22); // Sunday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 3営業日: 11/23(月)=1, 11/24(火)=2, 11/25(水)=3
+      // 終了曜日が金曜日なので、11/27(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 27));
+    }
+
+    @Test
+    @DisplayName("終了曜日調整時に祝日を除外する")
+    void shouldExcludeHolidaysWhenAdjustingToEndDayOfWeek() {
+      SprintSettings settings = SprintSettings.builder()
+          .id(SnowflakeId.of(13L))
+          .productId(UUID.randomUUID())
+          .businessDays(3)
+          .endDayOfWeek(EndDayOfWeek.FRIDAY)
+          .build();
+
+      Set<LocalDate> holidays = new HashSet<>();
+      holidays.add(LocalDate.of(2026, 11, 20)); // 金曜日が祝日
+
+      LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
+
+      LocalDate endDate = settings.calculateEndDate(startDate, holidays);
+
+      // 3営業日: 11/16(月)=1, 11/17(火)=2, 11/18(水)=3
+      // 終了曜日が金曜日だが、11/20(金)は祝日なので除外
+      // 次の金曜日11/27(金)に調整
+      assertThat(endDate).isEqualTo(LocalDate.of(2026, 11, 27));
     }
   }
 

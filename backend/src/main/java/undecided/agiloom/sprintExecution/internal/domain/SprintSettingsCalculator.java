@@ -41,8 +41,10 @@ public class SprintSettingsCalculator {
     checkNotNull(settings, () -> new IllegalArgumentException("settings must not be null"));
     checkNotNull(startDate, () -> new IllegalArgumentException("startDate must not be null"));
 
-    // 開始日から前方に十分な範囲の祝日を取得
-    LocalDate searchEndDate = startDate.plusDays(60); // 最大30営業日 + 土日・祝日分の余裕
+    // 営業日数に基づいて祝日検索範囲を動的に計算
+    // 最大30営業日 + 土日(約14日) + 祝日(約5日) + 終了曜日調整(約6日) = 約55日
+    // 余裕を持たせて90日としておく
+    LocalDate searchEndDate = startDate.plusDays(90);
     List<Holiday> holidays = holidayQuery.findBetween(startDate, searchEndDate);
     Set<LocalDate> holidayDates = new HashSet<>();
     for (Holiday holiday : holidays) {

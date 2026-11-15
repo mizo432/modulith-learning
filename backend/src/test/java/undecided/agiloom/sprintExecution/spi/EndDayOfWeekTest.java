@@ -18,8 +18,8 @@ class EndDayOfWeekTest {
   class GetDayOfWeekTest {
 
     @Test
-    @DisplayName("対応するDayOfWeekが返される")
-    void shouldReturnCorrectDayOfWeek() {
+    @DisplayName("各曜日が正しく取得される")
+    void shouldGetCorrectDayOfWeek() {
       assertThat(EndDayOfWeek.MONDAY.getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
       assertThat(EndDayOfWeek.TUESDAY.getDayOfWeek()).isEqualTo(DayOfWeek.TUESDAY);
       assertThat(EndDayOfWeek.WEDNESDAY.getDayOfWeek()).isEqualTo(DayOfWeek.WEDNESDAY);
@@ -33,9 +33,12 @@ class EndDayOfWeekTest {
   class FromDayOfWeekTest {
 
     @Test
-    @DisplayName("営業日のDayOfWeekからEndDayOfWeekが取得される")
+    @DisplayName("営業日のDayOfWeekから正しく変換される")
     void shouldConvertFromWeekday() {
       assertThat(EndDayOfWeek.fromDayOfWeek(DayOfWeek.MONDAY)).isEqualTo(EndDayOfWeek.MONDAY);
+      assertThat(EndDayOfWeek.fromDayOfWeek(DayOfWeek.TUESDAY)).isEqualTo(EndDayOfWeek.TUESDAY);
+      assertThat(EndDayOfWeek.fromDayOfWeek(DayOfWeek.WEDNESDAY)).isEqualTo(EndDayOfWeek.WEDNESDAY);
+      assertThat(EndDayOfWeek.fromDayOfWeek(DayOfWeek.THURSDAY)).isEqualTo(EndDayOfWeek.THURSDAY);
       assertThat(EndDayOfWeek.fromDayOfWeek(DayOfWeek.FRIDAY)).isEqualTo(EndDayOfWeek.FRIDAY);
     }
 
@@ -50,6 +53,13 @@ class EndDayOfWeekTest {
     @DisplayName("日曜日が指定された場合例外がスローされる")
     void shouldThrowExceptionForSunday() {
       assertThatThrownBy(() -> EndDayOfWeek.fromDayOfWeek(DayOfWeek.SUNDAY))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("nullが指定された場合例外がスローされる")
+    void shouldThrowExceptionForNull() {
+      assertThatThrownBy(() -> EndDayOfWeek.fromDayOfWeek(null))
           .isInstanceOf(IllegalArgumentException.class);
     }
   }
