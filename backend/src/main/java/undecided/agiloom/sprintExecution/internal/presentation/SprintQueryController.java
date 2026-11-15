@@ -1,6 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
@@ -82,29 +81,6 @@ public class SprintQueryController {
                 .productId(settings.getProductId())
                 .businessDays(settings.getBusinessDays())
                 .endDayOfWeek(settings.getEndDayOfWeek())
-                .build();
-    }
-
-    /**
-     * スプリントの終了日を計算します。
-     *
-     * @param request 計算リクエスト（プロダクトID、開始日）
-     * @return 計算された終了日情報
-     */
-    @PostMapping("/settings/calculate-end-date")
-    public CalculateEndDateResponse calculateEndDate(@RequestBody CalculateEndDateRequest request) {
-        UUID productId = request.getProductId();
-        LocalDate startDate = request.getStartDate();
-
-        SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productId);
-        LocalDate endDate = sprintSettingsQueryService.calculateEndDate(productId, startDate);
-
-        return CalculateEndDateResponse.builder()
-                .startDate(startDate)
-                .endDate(endDate)
-                .businessDays(settings.getBusinessDays())
-                .endDayOfWeekLabel(settings.getEndDayOfWeek().name())
-                .isPastDate(endDate.isBefore(LocalDate.now()))
                 .build();
     }
 }

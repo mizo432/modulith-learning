@@ -109,10 +109,7 @@ const SprintSettings: React.FC = () => {
     try {
       setEndDateLoading(true);
       setEndDateError(null);
-      const result = await sprintService.calculateEndDate({
-        productId,
-        startDate: startDateStr,
-      });
+      const result = await sprintService.calculateEndDate(productId, startDateStr);
       setCalculatedEndDate(result);
     } catch (err: any) {
       const message = err.response?.data?.message || '終了日の計算に失敗しました';

@@ -1,14 +1,13 @@
 // Mock the api module before importing sprintService
-const mockPost = jest.fn();
+const mockGet = jest.fn();
 jest.mock('../../services/api', () => ({
   __esModule: true,
   default: {
-    post: (...args: any[]) => mockPost(...args),
+    get: (...args: any[]) => mockGet(...args),
   },
 }));
 
 import sprintService, {
-  CalculateEndDateRequest,
   CalculateEndDateResponse,
   END_DAY_OF_WEEK_LABELS,
 } from '../../services/sprintService';
@@ -19,11 +18,6 @@ describe('sprintService', () => {
   });
 
   describe('calculateEndDate', () => {
-    const mockRequest: CalculateEndDateRequest = {
-      productId: 'test-product-id',
-      startDate: '2026-11-16',
-    };
-
     const mockResponse: CalculateEndDateResponse = {
       startDate: '2026-11-16',
       endDate: '2026-12-04',
@@ -33,13 +27,13 @@ describe('sprintService', () => {
     };
 
     it('should return calculated end date', async () => {
-      mockPost.mockResolvedValue({ data: mockResponse });
+      mockGet.mockResolvedValue({ data: mockResponse });
 
-      const result = await sprintService.calculateEndDate(mockRequest);
+      const result = await sprintService.calculateEndDate('test-product-id', '2026-11-16');
 
-      expect(mockPost).toHaveBeenCalledWith(
-        '/v1/sprints/settings/calculate-end-date',
-        mockRequest
+      expect(mockGet).toHaveBeenCalledWith(
+        '/v1/products/test-product-id/sprint-settings/calculate-end-date',
+        { params: { startDate: '2026-11-16' } }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -53,12 +47,9 @@ describe('sprintService', () => {
         isPastDate: true,
       };
 
-      mockPost.mockResolvedValue({ data: pastDateResponse });
+      mockGet.mockResolvedValue({ data: pastDateResponse });
 
-      const result = await sprintService.calculateEndDate({
-        productId: 'test-product-id',
-        startDate: '2020-01-01',
-      });
+      const result = await sprintService.calculateEndDate('test-product-id', '2020-01-01');
 
       expect(result.isPastDate).toBe(true);
       expect(result.endDate).toBe('2020-01-10');
@@ -73,9 +64,9 @@ describe('sprintService', () => {
         isPastDate: false,
       };
 
-      mockPost.mockResolvedValue({ data: wednesdayResponse });
+      mockGet.mockResolvedValue({ data: wednesdayResponse });
 
-      const result = await sprintService.calculateEndDate(mockRequest);
+      const result = await sprintService.calculateEndDate('test-product-id', '2026-11-16');
 
       expect(result.endDayOfWeekLabel).toBe('WEDNESDAY');
       expect(result.businessDays).toBe(3);
@@ -88,9 +79,11 @@ describe('sprintService', () => {
         status: 404,
       };
 
-      mockPost.mockRejectedValue(error);
+      mockGet.mockRejectedValue(error);
 
-      await expect(sprintService.calculateEndDate(mockRequest)).rejects.toThrow('Sprint settings not found');
+      await expect(
+        sprintService.calculateEndDate('test-product-id', '2026-11-16')
+      ).rejects.toThrow('Sprint settings not found');
     });
   });
 

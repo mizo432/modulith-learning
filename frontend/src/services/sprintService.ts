@@ -65,11 +65,6 @@ export interface UpdateSprintSettingsRequest {
   endDayOfWeek: EndDayOfWeek;
 }
 
-export interface CalculateEndDateRequest {
-  productId: string;
-  startDate: string; // ISO date string (YYYY-MM-DD)
-}
-
 export interface CalculateEndDateResponse {
   startDate: string;
   endDate: string;
@@ -157,8 +152,10 @@ const sprintService = {
   },
 
   // Calculate sprint end date using backend API
-  calculateEndDate: async (request: CalculateEndDateRequest): Promise<CalculateEndDateResponse> => {
-    const response = await api.post('/v1/sprints/settings/calculate-end-date', request);
+  calculateEndDate: async (productId: string, startDate: string): Promise<CalculateEndDateResponse> => {
+    const response = await api.get(`/v1/products/${productId}/sprint-settings/calculate-end-date`, {
+      params: { startDate }
+    });
     return response.data;
   }
 };
