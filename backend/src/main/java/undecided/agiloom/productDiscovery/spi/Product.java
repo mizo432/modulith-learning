@@ -1,14 +1,18 @@
 package undecided.agiloom.productDiscovery.spi;
 
-import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -69,6 +73,12 @@ public class Product {
   @Column(name = "deleted_at")
   protected LocalDateTime deletedAt;
 
+  /** このプロダクトに属するスクラムチームのコレクション。 */
+  @OneToMany(mappedBy = "product")
+  @OrderBy("createdAt DESC")
+  @Builder.Default
+  protected List<ScrumTeam> scrumTeams = new ArrayList<>();
+
   /**
    * プロダクト情報を更新します。
    *
@@ -79,7 +89,8 @@ public class Product {
   public void update(
       @Nullable String name, @Nullable String description, @Nullable UUID managerId) {
     if (name != null) {
-      checkNotNull(name, () -> new IllegalArgumentException("name must not be null"));
+      checkNonEmpty(
+          name, () -> new IllegalArgumentException("Product name must not be empty"));
       this.name = name;
     }
     if (description != null) {

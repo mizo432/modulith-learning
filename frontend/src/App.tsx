@@ -17,6 +17,9 @@ import ProjectList from './pages/projects/ProjectList';
 import ProjectDetail from './pages/projects/ProjectDetail';
 import ProjectCreate from './pages/projects/ProjectCreate';
 import ProjectEdit from './pages/projects/ProjectEdit';
+import ScrumTeamList from './pages/products/ScrumTeamList';
+import ScrumTeamCreate from './pages/products/ScrumTeamCreate';
+import ScrumTeamEdit from './pages/products/ScrumTeamEdit';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
@@ -159,6 +162,22 @@ const AppContent = () => {
                                               <ProjectDetail/>
                                             </ProtectedRoute>
                                           }/>
+              {/* Scrum Team management routes */}
+              <Route path="/products/:productId/scrum-teams" element={
+                                                        <ProtectedRoute>
+                                                         <ScrumTeamList/>
+                                                       </ProtectedRoute>
+                                                     }/>
+              <Route path="/products/:productId/scrum-teams/create" element={
+                                                                    <ProtectedRoute>
+                                                                     <ScrumTeamCreate/>
+                                                                   </ProtectedRoute>
+                                                                 }/>
+              <Route path="/products/:productId/scrum-teams/edit/:scrumTeamId" element={
+                                                                                   <ProtectedRoute>
+                                                                                    <ScrumTeamEdit/>
+                                                                                  </ProtectedRoute>
+                                                                                }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </Container>

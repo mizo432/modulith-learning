@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Data
@@ -12,7 +13,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateProductCommand {
-  private SnowflakeId id;
+  @NonNull private SnowflakeId id;
   private String name;
   private String description;
   private UUID managerId;

@@ -1,5 +1,7 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
+import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
+
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,8 @@ public class CreateProductCommandService {
   }
 
   public SnowflakeId execute(@NonNull CreateProductCommand command) {
+    checkNonEmpty(command.getName(), () -> new IllegalArgumentException("Product name must not be empty"));
+    
     Product product =
         Product.builder()
             .name(command.getName())
