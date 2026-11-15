@@ -23,8 +23,7 @@ import {
   DialogTitle,
   TableSortLabel,
   TablePagination,
-  TableRow as MuiTableRow,
-  TableCell as MuiTableCell
+  TableRow as MuiTableRow
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -33,9 +32,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import StopCircleIcon from '@mui/icons-material/StopCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
-import sprintService, {Sprint, CreateSprintRequest, isSprint0} from '../../services/sprintService';
+import sprintService, {Sprint, isSprint0} from '../../services/sprintService';
 
 // Status chip color mapping
 const getStatusChip = (status: Sprint['status']) => {
