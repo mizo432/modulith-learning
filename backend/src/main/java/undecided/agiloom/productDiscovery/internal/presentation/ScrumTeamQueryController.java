@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.productDiscovery.internal.query.ScrumTeamQueryService;
 import undecided.agiloom.productDiscovery.spi.ScrumTeam;
@@ -25,6 +26,7 @@ public class ScrumTeamQueryController {
   }
 
   @GetMapping
+  @Transactional(readOnly = true)
   public List<ScrumTeamResponse> getScrumTeams(
       @PathVariable String productId,
       @RequestParam(defaultValue = "0") int page,
@@ -39,6 +41,7 @@ public class ScrumTeamQueryController {
   }
 
   @GetMapping("/{scrumTeamId}")
+  @Transactional(readOnly = true)
   public ScrumTeamResponse getScrumTeam(
       @PathVariable String productId, @PathVariable @NotNull String scrumTeamId) {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
