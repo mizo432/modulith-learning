@@ -15,13 +15,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class ScrumTeamQueryController {
 
   private final ScrumTeamQueryService scrumTeamQueryService;
-  private final ProductResponseConverter productResponseConverter;
+  private final ScrumTeamResponseConverter scrumTeamResponseConverter;
 
   public ScrumTeamQueryController(
       ScrumTeamQueryService scrumTeamQueryService,
-      ProductResponseConverter productResponseConverter) {
+      ScrumTeamResponseConverter scrumTeamResponseConverter) {
     this.scrumTeamQueryService = scrumTeamQueryService;
-    this.productResponseConverter = productResponseConverter;
+    this.scrumTeamResponseConverter = scrumTeamResponseConverter;
   }
 
   @GetMapping
@@ -34,7 +34,7 @@ public class ScrumTeamQueryController {
     return scrumTeamQueryService
         .findByProductId(productSnowflakeId)
         .stream()
-        .map(productResponseConverter::toScrumTeamResponse)
+        .map(scrumTeamResponseConverter::toScrumTeamResponse)
         .toList();
   }
 
@@ -47,6 +47,6 @@ public class ScrumTeamQueryController {
             .findById(snowflakeId)
             .orElseThrow(
                 () -> new IllegalArgumentException("ScrumTeam not found: " + scrumTeamId));
-    return productResponseConverter.toScrumTeamResponse(scrumTeam);
+    return scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam);
   }
 }

@@ -18,17 +18,17 @@ public class ScrumTeamCommandController {
   private final CreateScrumTeamCommandService createScrumTeamCommandService;
   private final UpdateScrumTeamCommandService updateScrumTeamCommandService;
   private final ScrumTeamQueryService scrumTeamQueryService;
-  private final ProductResponseConverter productResponseConverter;
+  private final ScrumTeamResponseConverter scrumTeamResponseConverter;
 
   public ScrumTeamCommandController(
       CreateScrumTeamCommandService createScrumTeamCommandService,
       UpdateScrumTeamCommandService updateScrumTeamCommandService,
       ScrumTeamQueryService scrumTeamQueryService,
-      ProductResponseConverter productResponseConverter) {
+      ScrumTeamResponseConverter scrumTeamResponseConverter) {
     this.createScrumTeamCommandService = createScrumTeamCommandService;
     this.updateScrumTeamCommandService = updateScrumTeamCommandService;
     this.scrumTeamQueryService = scrumTeamQueryService;
-    this.productResponseConverter = productResponseConverter;
+    this.scrumTeamResponseConverter = scrumTeamResponseConverter;
   }
 
   @PostMapping
@@ -46,7 +46,7 @@ public class ScrumTeamCommandController {
 
     SnowflakeId id = createScrumTeamCommandService.execute(command);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(id).orElseThrow();
-    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
   @PatchMapping("/{scrumTeamId}")
@@ -65,7 +65,7 @@ public class ScrumTeamCommandController {
             .poName(request.getPoName())
             .build());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
   @DeleteMapping("/{scrumTeamId}")
@@ -85,7 +85,7 @@ public class ScrumTeamCommandController {
     updateScrumTeamCommandService.assignPo(
         snowflakeId, request.getPoEmployeeId().toString(), request.getPoName());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
   @PatchMapping("/{scrumTeamId}/po/unassign")
@@ -94,6 +94,6 @@ public class ScrumTeamCommandController {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.unassignPo(snowflakeId);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
-    return ResponseEntity.ok(productResponseConverter.toScrumTeamResponse(scrumTeam));
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 }

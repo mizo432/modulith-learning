@@ -118,6 +118,27 @@ class ProductTest {
 
       assertThat(product.getUpdatedAt()).isNotEqualTo(originalUpdatedAt);
     }
+
+    @Test
+    @DisplayName("空文字列の名前の場合、例外がスローされる")
+    void shouldThrowExceptionWhenNameIsEmpty() {
+      Product product = createProduct();
+
+      assertThatThrownBy(() -> product.update("", null, null))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be empty");
+    }
+
+    @Test
+    @DisplayName("nullの名前は変更されない")
+    void shouldNotChangeNameWhenNull() {
+      Product product = createProduct();
+      String originalName = product.getName();
+
+      product.update(null, null, null);
+
+      assertThat(product.getName()).isEqualTo(originalName);
+    }
   }
 
   @Nested

@@ -1,6 +1,7 @@
 package undecided.agiloom.productDiscovery.spi;
 
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
+import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -86,9 +87,12 @@ public class ScrumTeam {
       @Nullable UUID poEmployeeId,
       @Nullable String poName) {
     if (name != null) {
+      checkNonEmpty(name, () -> new IllegalArgumentException("ScrumTeam name must not be empty"));
       this.name = name;
     }
     if (businessDomain != null) {
+      checkNonEmpty(
+          businessDomain, () -> new IllegalArgumentException("Business domain must not be empty"));
       this.businessDomain = businessDomain;
     }
     if (poEmployeeId != null) {

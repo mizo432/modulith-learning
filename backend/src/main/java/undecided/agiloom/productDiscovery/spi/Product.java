@@ -1,5 +1,7 @@
 package undecided.agiloom.productDiscovery.spi;
 
+import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -87,6 +89,8 @@ public class Product {
   public void update(
       @Nullable String name, @Nullable String description, @Nullable UUID managerId) {
     if (name != null) {
+      checkNonEmpty(
+          name, () -> new IllegalArgumentException("Product name must not be empty"));
       this.name = name;
     }
     if (description != null) {

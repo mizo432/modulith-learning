@@ -136,6 +136,26 @@ class ScrumTeamTest {
       assertThat(scrumTeam.getName()).isEqualTo(originalName);
       assertThat(scrumTeam.getBusinessDomain()).isEqualTo(originalDomain);
     }
+
+    @Test
+    @DisplayName("空文字列のチーム名の場合、例外がスローされる")
+    void shouldThrowExceptionWhenNameIsEmpty() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      assertThatThrownBy(() -> scrumTeam.update("", null, null, null))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be empty");
+    }
+
+    @Test
+    @DisplayName("空文字列の事業領域の場合、例外がスローされる")
+    void shouldThrowExceptionWhenBusinessDomainIsEmpty() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      assertThatThrownBy(() -> scrumTeam.update(null, "", null, null))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be empty");
+    }
   }
 
   @Nested

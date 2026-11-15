@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateScrumTeamRequest {
-  @NotBlank private String productId;
   @NotBlank private String name;
   @NotBlank private String businessDomain;
   private UUID poEmployeeId;
