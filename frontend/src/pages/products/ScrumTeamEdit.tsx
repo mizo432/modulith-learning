@@ -113,8 +113,6 @@ const ScrumTeamEdit: React.FC = () => {
   const handlePoChange = (e: SelectChangeEvent<string>) => {
     const selectedId = e.target.value;
     setPoEmployeeId(selectedId);
-    const selectedMember = members.find(m => m.memberId === selectedId);
-    setPoName(selectedMember?.name || '');
   };
 
   const handleUnassignPo = async () => {
@@ -123,7 +121,6 @@ const ScrumTeamEdit: React.FC = () => {
     try {
       await scrumTeamService.unassignPo(productId, scrumTeamId);
       setPoEmployeeId('');
-      setPoName('');
     } catch (err) {
       setError('Failed to unassign PO. Please try again later.');
       console.error('Error unassigning PO:', err);
