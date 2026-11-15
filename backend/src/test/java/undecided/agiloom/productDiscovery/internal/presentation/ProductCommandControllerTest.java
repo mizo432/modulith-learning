@@ -41,7 +41,7 @@ class ProductCommandControllerTest {
 
   @Mock private ProductQueryService productQueryService;
 
-  @Mock private ProductQueryController productQueryController;
+  @Mock private ProductResponseConverter productResponseConverter;
 
   @InjectMocks private ProductCommandController controller;
 
@@ -80,7 +80,7 @@ class ProductCommandControllerTest {
     void shouldCreateProduct() throws Exception {
       when(createProductCommandService.execute(any())).thenReturn(productId);
       when(productQueryService.findById(productId)).thenReturn(Optional.of(product));
-      when(productQueryController.toResponse(product)).thenReturn(productResponse);
+      when(productResponseConverter.toProductResponse(product)).thenReturn(productResponse);
 
       String requestBody =
           "{\"name\":\"New Product\",\"description\":\"New Description\"}";
@@ -103,7 +103,7 @@ class ProductCommandControllerTest {
     @DisplayName("プロダクトが正常に更新される")
     void shouldUpdateProduct() throws Exception {
       when(productQueryService.findById(any())).thenReturn(Optional.of(product));
-      when(productQueryController.toResponse(any())).thenReturn(productResponse);
+      when(productResponseConverter.toProductResponse(any())).thenReturn(productResponse);
 
       String requestBody = "{\"name\":\"Updated Product\"}";
 
@@ -125,7 +125,7 @@ class ProductCommandControllerTest {
     @DisplayName("プロダクトが正常にアーカイブされる")
     void shouldArchiveProduct() throws Exception {
       when(productQueryService.findById(any())).thenReturn(Optional.of(product));
-      when(productQueryController.toResponse(any())).thenReturn(productResponse);
+      when(productResponseConverter.toProductResponse(any())).thenReturn(productResponse);
 
       mockMvc.perform(
               MockMvcRequestBuilders.patch("/api/v1/products/1/archive"))

@@ -83,7 +83,7 @@ public class ScrumTeamCommandController {
       @Valid @RequestBody AssignPoRequest request) {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.assignPo(
-        snowflakeId, request.getPoEmployeeId().toString(), request.getPoName());
+        snowflakeId, request.getPoEmployeeId(), request.getPoName());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }

@@ -136,7 +136,7 @@ class UpdateScrumTeamCommandServiceTest {
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
       // Act
-      service.assignPo(teamId, poEmployeeId.toString(), poName);
+      service.assignPo(teamId, poEmployeeId, poName);
 
       // Assert
       assertThat(existingTeam.getPoEmployeeId()).isEqualTo(poEmployeeId);
@@ -151,7 +151,7 @@ class UpdateScrumTeamCommandServiceTest {
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.empty());
 
       // Act & Assert
-      assertThatThrownBy(() -> service.assignPo(teamId, "uuid", "name"))
+      assertThatThrownBy(() -> service.assignPo(teamId, UUID.randomUUID(), "name"))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("ScrumTeam not found");
     }

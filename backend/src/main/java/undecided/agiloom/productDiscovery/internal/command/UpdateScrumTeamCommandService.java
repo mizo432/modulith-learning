@@ -1,5 +1,6 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
+import java.util.UUID;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,13 +41,13 @@ public class UpdateScrumTeamCommandService {
     scrumTeamRepository.delete(scrumTeam);
   }
 
-  public void assignPo(@NonNull SnowflakeId id, @NonNull String poEmployeeId, @NonNull String poName) {
+  public void assignPo(@NonNull SnowflakeId id, @NonNull UUID poEmployeeId, @NonNull String poName) {
     ScrumTeam scrumTeam =
         scrumTeamRepository
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
-    scrumTeam.assignPo(java.util.UUID.fromString(poEmployeeId), poName);
+    scrumTeam.assignPo(poEmployeeId, poName);
   }
 
   public void unassignPo(@NonNull SnowflakeId id) {
