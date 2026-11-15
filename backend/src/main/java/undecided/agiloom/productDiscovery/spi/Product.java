@@ -7,8 +7,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -68,6 +72,12 @@ public class Product {
   /** プロダクトが論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
   protected LocalDateTime deletedAt;
+
+  /** このプロダクトに属するスクラムチームのコレクション。 */
+  @OneToMany(mappedBy = "product")
+  @OrderBy("createdAt DESC")
+  @Builder.Default
+  protected List<ScrumTeam> scrumTeams = new ArrayList<>();
 
   /**
    * プロダクト情報を更新します。

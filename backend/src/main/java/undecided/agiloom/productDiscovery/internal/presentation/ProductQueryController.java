@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.productDiscovery.internal.query.ProductQueryService;
+import undecided.agiloom.productDiscovery.internal.query.ScrumTeamQueryService;
 import undecided.agiloom.productDiscovery.spi.Product;
+import undecided.agiloom.productDiscovery.spi.ScrumTeam;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
@@ -15,9 +17,16 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class ProductQueryController {
 
   private final ProductQueryService productQueryService;
+  private final ScrumTeamQueryService scrumTeamQueryService;
+  private final ScrumTeamQueryController scrumTeamQueryController;
 
-  public ProductQueryController(ProductQueryService productQueryService) {
+  public ProductQueryController(
+      ProductQueryService productQueryService,
+      ScrumTeamQueryService scrumTeamQueryService,
+      ScrumTeamQueryController scrumTeamQueryController) {
     this.productQueryService = productQueryService;
+    this.scrumTeamQueryService = scrumTeamQueryService;
+    this.scrumTeamQueryController = scrumTeamQueryController;
   }
 
   @GetMapping
@@ -38,6 +47,11 @@ public class ProductQueryController {
   }
 
   ProductResponse toResponse(Product product) {
+    List<ScrumTeamResponse> scrumTeamResponses =
+        product.getScrumTeams().stream()
+            .map(scrumTeamQueryController::toResponse)
+            .toList();
+
     return ProductResponse.builder()
         .id(product.getId())
         .name(product.getName())
@@ -46,6 +60,7 @@ public class ProductQueryController {
         .status(product.getStatus())
         .createdAt(product.getCreatedAt())
         .updatedAt(product.getUpdatedAt())
+        .scrumTeams(scrumTeamResponses)
         .build();
   }
 }
