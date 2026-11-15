@@ -40,6 +40,8 @@ public class CreateScrumTeamCommandService {
             .businessDomain(command.getBusinessDomain())
             .poEmployeeId(command.getPoEmployeeId())
             .poName(command.getPoName())
+            .smEmployeeId(command.getSmEmployeeId())
+            .smName(command.getSmName())
             .product(product)
             .build();
 

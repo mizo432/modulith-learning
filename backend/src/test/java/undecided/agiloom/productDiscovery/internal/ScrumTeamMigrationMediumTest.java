@@ -91,6 +91,8 @@ class ScrumTeamMigrationMediumTest {
               "po_employee_id",
               "po_name",
               "product_id",
+              "sm_employee_id",
+              "sm_name",
               "updated_at");
     }
 
@@ -114,6 +116,8 @@ class ScrumTeamMigrationMediumTest {
       assertThat(columnTypes).contains("business_domain:character varying");
       assertThat(columnTypes).contains("po_employee_id:uuid");
       assertThat(columnTypes).contains("po_name:character varying");
+      assertThat(columnTypes).contains("sm_employee_id:uuid");
+      assertThat(columnTypes).contains("sm_name:character varying");
       assertThat(columnTypes).contains("created_at:timestamp without time zone");
       assertThat(columnTypes).contains("updated_at:timestamp without time zone");
     }
@@ -223,6 +227,8 @@ class ScrumTeamMigrationMediumTest {
           .businessDomain("テスト領域")
           .poEmployeeId(UUID.randomUUID())
           .poName("テストPO")
+          .smEmployeeId(UUID.randomUUID())
+          .smName("テストSM")
           .product(product)
           .build();
     }
@@ -246,6 +252,8 @@ class ScrumTeamMigrationMediumTest {
       assertThat(loaded.getBusinessDomain()).isEqualTo("テスト領域");
       assertThat(loaded.getPoEmployeeId()).isNotNull();
       assertThat(loaded.getPoName()).isEqualTo("テストPO");
+      assertThat(loaded.getSmEmployeeId()).isNotNull();
+      assertThat(loaded.getSmName()).isEqualTo("テストSM");
       assertThat(loaded.getCreatedAt()).isNotNull();
       assertThat(loaded.getUpdatedAt()).isNotNull();
     }
@@ -319,7 +327,8 @@ class ScrumTeamMigrationMediumTest {
 
       // Act
       UUID newPoId = UUID.randomUUID();
-      scrumTeam.update("更新後チーム名", "更新後領域", newPoId, "更新後PO");
+      UUID newSmId = UUID.randomUUID();
+      scrumTeam.update("更新後チーム名", "更新後領域", newPoId, "更新後PO", newSmId, "更新後SM");
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(200L)).orElseThrow();
@@ -329,6 +338,8 @@ class ScrumTeamMigrationMediumTest {
       assertThat(loaded.getBusinessDomain()).isEqualTo("更新後領域");
       assertThat(loaded.getPoEmployeeId()).isEqualTo(newPoId);
       assertThat(loaded.getPoName()).isEqualTo("更新後PO");
+      assertThat(loaded.getSmEmployeeId()).isEqualTo(newSmId);
+      assertThat(loaded.getSmName()).isEqualTo("更新後SM");
     }
 
     @Test
@@ -378,6 +389,55 @@ class ScrumTeamMigrationMediumTest {
       // Assert
       assertThat(loaded.getPoEmployeeId()).isNull();
       assertThat(loaded.getPoName()).isNull();
+    }
+
+    @Test
+    @DisplayName("assignSmメソッドが機能すること")
+    void shouldAssignSm() {
+      // Arrange
+      Product product = createProduct();
+      productRepository.save(product);
+
+      ScrumTeam scrumTeam =
+          ScrumTeam.builder()
+              .id(SnowflakeId.of(205L))
+              .name("テストチーム")
+              .businessDomain("テスト領域")
+              .product(product)
+              .build();
+      scrumTeamRepository.save(scrumTeam);
+
+      // Act
+      UUID smId = UUID.randomUUID();
+      scrumTeam.assignSm(smId, "新しいSM");
+      scrumTeamRepository.save(scrumTeam);
+
+      ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(205L)).orElseThrow();
+
+      // Assert
+      assertThat(loaded.getSmEmployeeId()).isEqualTo(smId);
+      assertThat(loaded.getSmName()).isEqualTo("新しいSM");
+    }
+
+    @Test
+    @DisplayName("unassignSmメソッドが機能すること")
+    void shouldUnassignSm() {
+      // Arrange
+      Product product = createProduct();
+      productRepository.save(product);
+
+      ScrumTeam scrumTeam = createScrumTeam(product);
+      scrumTeamRepository.save(scrumTeam);
+
+      // Act
+      scrumTeam.unassignSm();
+      scrumTeamRepository.save(scrumTeam);
+
+      ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(200L)).orElseThrow();
+
+      // Assert
+      assertThat(loaded.getSmEmployeeId()).isNull();
+      assertThat(loaded.getSmName()).isNull();
     }
   }
 

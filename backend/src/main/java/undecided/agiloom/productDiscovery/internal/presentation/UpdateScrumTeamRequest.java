@@ -15,4 +15,6 @@ public class UpdateScrumTeamRequest {
   private String businessDomain;
   private UUID poEmployeeId;
   private String poName;
+  private UUID smEmployeeId;
+  private String smName;
 }

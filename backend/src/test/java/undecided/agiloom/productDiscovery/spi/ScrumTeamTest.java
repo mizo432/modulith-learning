@@ -22,6 +22,8 @@ class ScrumTeamTest {
         .businessDomain("Test Domain")
         .poEmployeeId(UUID.randomUUID())
         .poName("Test PO")
+        .smEmployeeId(UUID.randomUUID())
+        .smName("Test SM")
         .build();
   }
 
@@ -62,7 +64,7 @@ class ScrumTeamTest {
     void shouldUpdateName() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.update("New Team Name", null, null, null);
+      scrumTeam.update("New Team Name", null, null, null, null, null);
 
       assertThat(scrumTeam.getName()).isEqualTo("New Team Name");
       assertThat(scrumTeam.getUpdatedAt()).isNotNull();
@@ -73,7 +75,7 @@ class ScrumTeamTest {
     void shouldUpdateBusinessDomain() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.update(null, "New Domain", null, null);
+      scrumTeam.update(null, "New Domain", null, null, null, null);
 
       assertThat(scrumTeam.getBusinessDomain()).isEqualTo("New Domain");
     }
@@ -84,7 +86,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       UUID newPoId = UUID.randomUUID();
 
-      scrumTeam.update(null, null, newPoId, null);
+      scrumTeam.update(null, null, newPoId, null, null, null);
 
       assertThat(scrumTeam.getPoEmployeeId()).isEqualTo(newPoId);
     }
@@ -94,9 +96,30 @@ class ScrumTeamTest {
     void shouldUpdatePoName() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.update(null, null, null, "New PO Name");
+      scrumTeam.update(null, null, null, "New PO Name", null, null);
 
       assertThat(scrumTeam.getPoName()).isEqualTo("New PO Name");
+    }
+
+    @Test
+    @DisplayName("SMの従業員IDが更新される")
+    void shouldUpdateSmEmployeeId() {
+      ScrumTeam scrumTeam = createScrumTeam();
+      UUID newSmId = UUID.randomUUID();
+
+      scrumTeam.update(null, null, null, null, newSmId, null);
+
+      assertThat(scrumTeam.getSmEmployeeId()).isEqualTo(newSmId);
+    }
+
+    @Test
+    @DisplayName("SMの名前が更新される")
+    void shouldUpdateSmName() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      scrumTeam.update(null, null, null, null, null, "New SM Name");
+
+      assertThat(scrumTeam.getSmName()).isEqualTo("New SM Name");
     }
 
     @Test
@@ -104,13 +127,16 @@ class ScrumTeamTest {
     void shouldUpdateMultipleFields() {
       ScrumTeam scrumTeam = createScrumTeam();
       UUID newPoId = UUID.randomUUID();
+      UUID newSmId = UUID.randomUUID();
 
-      scrumTeam.update("New Team Name", "New Domain", newPoId, "New PO Name");
+      scrumTeam.update("New Team Name", "New Domain", newPoId, "New PO Name", newSmId, "New SM Name");
 
       assertThat(scrumTeam.getName()).isEqualTo("New Team Name");
       assertThat(scrumTeam.getBusinessDomain()).isEqualTo("New Domain");
       assertThat(scrumTeam.getPoEmployeeId()).isEqualTo(newPoId);
       assertThat(scrumTeam.getPoName()).isEqualTo("New PO Name");
+      assertThat(scrumTeam.getSmEmployeeId()).isEqualTo(newSmId);
+      assertThat(scrumTeam.getSmName()).isEqualTo("New SM Name");
     }
 
     @Test
@@ -119,7 +145,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       LocalDateTime originalUpdatedAt = scrumTeam.getUpdatedAt();
 
-      scrumTeam.update("New Team Name", null, null, null);
+      scrumTeam.update("New Team Name", null, null, null, null, null);
 
       assertThat(scrumTeam.getUpdatedAt()).isNotEqualTo(originalUpdatedAt);
     }
@@ -131,7 +157,7 @@ class ScrumTeamTest {
       String originalName = scrumTeam.getName();
       String originalDomain = scrumTeam.getBusinessDomain();
 
-      scrumTeam.update(null, null, null, null);
+      scrumTeam.update(null, null, null, null, null, null);
 
       assertThat(scrumTeam.getName()).isEqualTo(originalName);
       assertThat(scrumTeam.getBusinessDomain()).isEqualTo(originalDomain);
@@ -142,7 +168,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenNameIsEmpty() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.update("", null, null, null))
+      assertThatThrownBy(() -> scrumTeam.update("", null, null, null, null, null))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be empty");
     }
@@ -152,7 +178,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenBusinessDomainIsEmpty() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.update(null, "", null, null))
+      assertThatThrownBy(() -> scrumTeam.update(null, "", null, null, null, null))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be empty");
     }
@@ -213,6 +239,64 @@ class ScrumTeamTest {
 
       assertThat(scrumTeam.getPoEmployeeId()).isNull();
       assertThat(scrumTeam.getPoName()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("assignSmメソッドのテスト")
+  class AssignSmTest {
+
+    @Test
+    @DisplayName("SMが割り当てられる")
+    void shouldAssignSm() {
+      ScrumTeam scrumTeam =
+          ScrumTeam.builder()
+              .id(SnowflakeId.of(1L))
+              .name("Test Team")
+              .businessDomain("Test Domain")
+              .build();
+
+      UUID smId = UUID.randomUUID();
+      scrumTeam.assignSm(smId, "New SM");
+
+      assertThat(scrumTeam.getSmEmployeeId()).isEqualTo(smId);
+      assertThat(scrumTeam.getSmName()).isEqualTo("New SM");
+    }
+
+    @Test
+    @DisplayName("smEmployeeIdがnullの場合、例外がスローされる")
+    void shouldThrowExceptionWhenSmEmployeeIdIsNull() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      assertThatThrownBy(() -> scrumTeam.assignSm(null, "New SM"))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("smEmployeeId must not be null");
+    }
+
+    @Test
+    @DisplayName("smNameがnullの場合、例外がスローされる")
+    void shouldThrowExceptionWhenSmNameIsNull() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      assertThatThrownBy(() -> scrumTeam.assignSm(UUID.randomUUID(), null))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("smName must not be null");
+    }
+  }
+
+  @Nested
+  @DisplayName("unassignSmメソッドのテスト")
+  class UnassignSmTest {
+
+    @Test
+    @DisplayName("SMの割り当てが解除される")
+    void shouldUnassignSm() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      scrumTeam.unassignSm();
+
+      assertThat(scrumTeam.getSmEmployeeId()).isNull();
+      assertThat(scrumTeam.getSmName()).isNull();
     }
   }
 }

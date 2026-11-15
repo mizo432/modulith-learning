@@ -16,6 +16,8 @@ public class ScrumTeamResponseConverter {
         .businessDomain(scrumTeam.getBusinessDomain())
         .poEmployeeId(scrumTeam.getPoEmployeeId())
         .poName(scrumTeam.getPoName())
+        .smEmployeeId(scrumTeam.getSmEmployeeId())
+        .smName(scrumTeam.getSmName())
         .productId(
             scrumTeam.getProduct() != null ? String.valueOf(scrumTeam.getProduct().getId()) : null)
         .createdAt(scrumTeam.getCreatedAt())

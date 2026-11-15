@@ -18,6 +18,8 @@ public class ScrumTeamResponse {
   private String businessDomain;
   private UUID poEmployeeId;
   private String poName;
+  private UUID smEmployeeId;
+  private String smName;
   private String productId;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

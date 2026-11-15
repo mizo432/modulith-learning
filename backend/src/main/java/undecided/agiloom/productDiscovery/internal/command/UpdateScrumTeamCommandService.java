@@ -29,7 +29,9 @@ public class UpdateScrumTeamCommandService {
         command.getName(),
         command.getBusinessDomain(),
         command.getPoEmployeeId(),
-        command.getPoName());
+        command.getPoName(),
+        command.getSmEmployeeId(),
+        command.getSmName());
   }
 
   public void delete(@NonNull SnowflakeId id) {
@@ -57,5 +59,23 @@ public class UpdateScrumTeamCommandService {
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
     scrumTeam.unassignPo();
+  }
+
+  public void assignSm(@NonNull SnowflakeId id, @NonNull UUID smEmployeeId, @NonNull String smName) {
+    ScrumTeam scrumTeam =
+        scrumTeamRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
+
+    scrumTeam.assignSm(smEmployeeId, smName);
+  }
+
+  public void unassignSm(@NonNull SnowflakeId id) {
+    ScrumTeam scrumTeam =
+        scrumTeamRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
+
+    scrumTeam.unassignSm();
   }
 }
