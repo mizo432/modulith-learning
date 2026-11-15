@@ -107,6 +107,7 @@ const ScrumTeamList: React.FC = () => {
                       <TableCell>Team Name</TableCell>
                       <TableCell>Business Domain</TableCell>
                       <TableCell>Product Owner (PO)</TableCell>
+                      <TableCell>Scrum Master (SM)</TableCell>
                       <TableCell>Created At</TableCell>
                       <TableCell align="right">Actions</TableCell>
                     </TableRow>
@@ -117,6 +118,7 @@ const ScrumTeamList: React.FC = () => {
                           <TableCell>{team.name}</TableCell>
                           <TableCell>{team.businessDomain}</TableCell>
                           <TableCell>{team.poName || 'Not assigned'}</TableCell>
+                          <TableCell>{team.smName || 'Not assigned'}</TableCell>
                           <TableCell>{new Date(team.createdAt).toLocaleDateString()}</TableCell>
                           <TableCell align="right">
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>

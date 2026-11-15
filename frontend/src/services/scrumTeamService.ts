@@ -7,6 +7,8 @@ export interface ScrumTeam {
   businessDomain: string;
   poEmployeeId?: string;
   poName?: string;
+  smEmployeeId?: string;
+  smName?: string;
   productId: string;
   createdAt: string;
   updatedAt: string;
@@ -18,6 +20,8 @@ export interface CreateScrumTeamDto {
   businessDomain: string;
   poEmployeeId?: string;
   poName?: string;
+  smEmployeeId?: string;
+  smName?: string;
 }
 
 export interface UpdateScrumTeamDto {
@@ -25,11 +29,18 @@ export interface UpdateScrumTeamDto {
   businessDomain?: string;
   poEmployeeId?: string;
   poName?: string;
+  smEmployeeId?: string;
+  smName?: string;
 }
 
 export interface AssignPoDto {
   poEmployeeId: string;
   poName: string;
+}
+
+export interface AssignSmDto {
+  smEmployeeId: string;
+  smName: string;
 }
 
 // ScrumTeam service functions
@@ -72,6 +83,18 @@ const scrumTeamService = {
   // Unassign PO from a scrum team
   unassignPo: async (productId: string, scrumTeamId: string): Promise<ScrumTeam> => {
     const response = await api.patch(`/products/${productId}/scrum-teams/${scrumTeamId}/po/unassign`);
+    return response.data;
+  },
+
+  // Assign SM to a scrum team
+  assignSm: async (productId: string, scrumTeamId: string, dto: AssignSmDto): Promise<ScrumTeam> => {
+    const response = await api.patch(`/products/${productId}/scrum-teams/${scrumTeamId}/sm`, dto);
+    return response.data;
+  },
+
+  // Unassign SM from a scrum team
+  unassignSm: async (productId: string, scrumTeamId: string): Promise<ScrumTeam> => {
+    const response = await api.patch(`/products/${productId}/scrum-teams/${scrumTeamId}/sm/unassign`);
     return response.data;
   }
 };
