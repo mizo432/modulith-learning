@@ -28,6 +28,7 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
+          token: ''
           list-files: shell
           filters: |
             service-registry:
@@ -114,6 +115,7 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
+          token: ''
           list-files: shell
           filters: |
             frontend:
@@ -157,6 +159,7 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
+          token: ''
           list-files: shell
           filters: |
             backend:
@@ -243,6 +246,7 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
+          token: ''
           list-files: shell
           filters: |
             api-gateway:
@@ -373,6 +377,7 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
+          token: ''
           list-files: shell
           filters: |
             authorization:
@@ -460,6 +465,7 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           base: ${{ github.ref }}
+          token: ''
           list-files: shell
           filters: |
             mizo432-shared-common:
