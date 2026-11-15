@@ -1,5 +1,4 @@
-@ApplicationModule(type = Type.OPEN)
+@NamedInterface(propagate = false, value = "productDiscovery::spi")
 package undecided.agiloom.productDiscovery.spi;
 
-import org.springframework.modulith.ApplicationModule;
-import org.springframework.modulith.ApplicationModule.Type;
+import org.springframework.modulith.NamedInterface;
