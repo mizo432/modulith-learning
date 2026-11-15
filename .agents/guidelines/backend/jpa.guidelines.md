@@ -3826,6 +3826,215 @@ CREATE TABLE undecided_as.address_use_history
 - テーブル名から履歴テーブルであることが一目で識別可能
 - `_history` サフィックス規約に従った命名
 
+#### ステータス履歴テーブルの命名パターン
+
+ロングタームステートパターンでステータス遷移の履歴を記録するテーブルを作成する場合、
+**`{エンティティ名}_status_history`** の形式で命名すること。
+
+| 項目 | 規則 |
+|---|---|
+| **命名形式** | `{エンティティ名}_status_history` |
+| **例** | `memberships` → `memberships_status_history` |
+| **例** | `orders` → `orders_status_history` |
+| **例** | `applications` → `applications_status_history` |
+
+**命名規約の理由:**
+
+1. **何のステータス履歴かが明確** — 抽象的な `state_history` よりもどのエンティティのステータスか一目で識別可能
+2. **プロジェクトの `_history` サフィックス規約と整合** — 履歴テーブルに `_history` サフィックスを付けるというプロジェクトの標準規約に従う
+3. **`status` の明示** — 単なる変更履歴（`_history`）とステータス遷移履歴（`_status_history`）を区別可能
+
+**Flyway DDL での命名例:**
+
+```sql
+-- ロングタームイベントのステータス履歴テーブル
+CREATE TABLE undecided_as.memberships_status_history
+(
+    status_history_id BIGINT      NOT NULL,
+    membership_id     BIGINT      NOT NULL,
+    status            VARCHAR(20) NOT NULL,
+    changed_at        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    changed_by        VARCHAR(50),
+    PRIMARY KEY (status_history_id)
+);
+
+COMMENT ON TABLE undecided_as.memberships_status_history IS '会員ステータス遷移の履歴を記録するテーブル';
+```
+
+#### ステータス履歴テーブルに対するクエリパターン
+
+ステータス履歴テーブル（`{エンティティ名}_status_history`）に対しては、以下の3種類のクエリパターンが必要です。
+
+##### 1. 現在のステータスで検索するクエリ
+
+最新のステータス遷移履歴を取得し、現在のステータスでフィルタリングします。
+
+**SQL例:**
+
+```sql
+-- 現在ステータスが「審査中」の会員を取得
+SELECT m.*
+FROM undecided_as.memberships m
+INNER JOIN undecided_as.memberships_status_history msh
+    ON m.membership_id = msh.membership_id
+WHERE msh.status_history_id = (
+    SELECT MAX(msh2.status_history_id)
+    FROM undecided_as.memberships_status_history msh2
+    WHERE msh2.membership_id = m.membership_id
+)
+  AND msh.status = 'REVIEWING';
+```
+
+**Spring Data JPA 実装例:**
+
+```java
+public interface MembershipsStatusHistoryRepository extends JpaRepository<MembershipsStatusHistory, Long> {
+
+    @Query("""
+        SELECT m FROM Membership m
+        WHERE m.membershipId IN (
+            SELECT msh.membershipId FROM MembershipsStatusHistory msh
+            WHERE msh.statusHistoryId = (
+                SELECT MAX(msh2.statusHistoryId) FROM MembershipsStatusHistory msh2
+                WHERE msh2.membershipId = msh.membershipId
+            )
+            AND msh.status = :status
+        )
+        """)
+    List<Membership> findByCurrentStatus(@Param("status") String status);
+}
+```
+
+**特徴:**
+- `MAX(status_history_id)` で各エンティティの最新ステータス履歴を取得
+- 頻出するユースケースであり、パフォーマンス最適化が重要
+
+##### 2. 指定日の状態で検索するクエリ
+
+指定された日時時点で有効だったステータスでフィルタリングします。
+
+**SQL例:**
+
+```sql
+-- 2024-01-15 12:00:00 時点で「審査中」だった会員を取得
+SELECT m.*
+FROM undecided_as.memberships m
+INNER JOIN undecided_as.memberships_status_history msh
+    ON m.membership_id = msh.membership_id
+WHERE msh.changed_at = (
+    SELECT MAX(msh2.changed_at)
+    FROM undecided_as.memberships_status_history msh2
+    WHERE msh2.membership_id = m.membership_id
+      AND msh2.changed_at <= TIMESTAMP '2024-01-15 12:00:00'
+)
+  AND msh.status = 'REVIEWING';
+```
+
+**Spring Data JPA 実装例:**
+
+```java
+public interface MembershipsStatusHistoryRepository extends JpaRepository<MembershipsStatusHistory, Long> {
+
+    @Query("""
+        SELECT m FROM Membership m
+        WHERE m.membershipId IN (
+            SELECT msh.membershipId FROM MembershipsStatusHistory msh
+            WHERE msh.changedAt = (
+                SELECT MAX(msh2.changedAt) FROM MembershipsStatusHistory msh2
+                WHERE msh2.membershipId = msh.membershipId
+                AND msh2.changedAt <= :asOfDate
+            )
+            AND msh.status = :status
+        )
+        """)
+    List<Membership> findByStatusAsOfDate(
+        @Param("status") String status,
+        @Param("asOfDate") LocalDateTime asOfDate
+    );
+}
+```
+
+**特徴:**
+- `changed_at <= 指定日時` で指定時点より前に発生したステータス遷移のみを対象
+- 時系列分析や監査用途で必要
+
+##### 3. Latestの状態で検索するクエリ
+
+最新のステータス履歴レコード自体を取得するクエリです。ステータス履歴の最新レコード全体（変更日時、変更者など）を取得します。
+
+**SQL例:**
+
+```sql
+-- 各会員の最新ステータス履歴情報を取得
+SELECT msh.*
+FROM undecided_as.memberships_status_history msh
+INNER JOIN (
+    SELECT membership_id, MAX(status_history_id) AS latest_id
+    FROM undecided_as.memberships_status_history
+    GROUP BY membership_id
+) latest
+    ON msh.membership_id = latest.membership_id
+    AND msh.status_history_id = latest.latest_id
+ORDER BY msh.changed_at DESC;
+```
+
+**Spring Data JPA 実装例:**
+
+```java
+public interface MembershipsStatusHistoryRepository extends JpaRepository<MembershipsStatusHistory, Long> {
+
+    @Query("""
+        SELECT msh FROM MembershipsStatusHistory msh
+        WHERE msh.statusHistoryId IN (
+            SELECT MAX(msh2.statusHistoryId) FROM MembershipsStatusHistory msh2
+            GROUP BY msh2.membershipId
+        )
+        ORDER BY msh.changedAt DESC
+        """)
+    List<MembershipsStatusHistory> findAllLatestStatuses();
+
+    @Query("""
+        SELECT msh FROM MembershipsStatusHistory msh
+        WHERE msh.statusHistoryId = (
+            SELECT MAX(msh2.statusHistoryId) FROM MembershipsStatusHistory msh2
+            WHERE msh2.membershipId = :membershipId
+        )
+        """)
+    Optional<MembershipsStatusHistory> findLatestStatusByMembershipId(@Param("membershipId") Long membershipId);
+}
+```
+
+**特徴:**
+- `GROUP BY` + `MAX()` で各エンティティの最新レコードを取得
+- ステータスだけでなく、変更日時・変更者などの履歴情報も取得可能
+- 監査証跡の確認やステータス遷移の分析に有用
+
+##### クエリパターンの比較
+
+| クエリ種別 | 用途 | フィルタ条件 | 取得対象 |
+|---|---|---|---|
+| 現在のステータス検索 | 現在状態でのフィルタリング | 最新ステータス | エンティティ本体 |
+| 指定日の状態検索 | 時系列分析・監査 | 指定時点のステータス | エンティティ本体 |
+| Latest状態検索 | 監査証跡・分析 | 最新履歴レコード | ステータス履歴全体 |
+
+##### インデックス設計の考慮点
+
+ステータス履歴テーブルに対するクエリパフォーマンスを最適化するため、以下のインデックスを推奨します。
+
+```sql
+-- 現在のステータス検索用インデックス
+CREATE INDEX idx_memberships_status_history_latest
+    ON undecided_as.memberships_status_history (membership_id, status_history_id DESC);
+
+-- 指定日の状態検索用インデックス
+CREATE INDEX idx_memberships_status_history_by_date
+    ON undecided_as.memberships_status_history (membership_id, changed_at DESC);
+
+-- ステータスでのフィルタリング用インデックス
+CREATE INDEX idx_memberships_status_history_by_status
+    ON undecided_as.memberships_status_history (status, membership_id);
+```
+
 ### 23.2 基本概念
 
 履歴テーブルには主に2つのアプローチがあります。
