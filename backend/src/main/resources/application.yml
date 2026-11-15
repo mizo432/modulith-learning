@@ -37,6 +37,7 @@ spring:
     # 事業領域ごとのマイグレーションlocations
     # data-designスキルに従い、事業領域ごとにスキーマを分離する
     locations: >
+      classpath:db/migration/ag,
       classpath:db/migration/as,
       classpath:db/migration/do,
       classpath:db/migration/ef,
