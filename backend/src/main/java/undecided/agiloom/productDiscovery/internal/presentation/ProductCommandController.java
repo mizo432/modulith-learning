@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.productDiscovery.internal.command.CreateProductCommand;
 import undecided.agiloom.productDiscovery.internal.command.CreateProductCommandService;
+import undecided.agiloom.productDiscovery.internal.command.UpdateProductCommand;
 import undecided.agiloom.productDiscovery.internal.command.UpdateProductCommandService;
 import undecided.agiloom.productDiscovery.internal.query.ProductQueryService;
 import undecided.agiloom.productDiscovery.spi.Product;
@@ -50,13 +51,7 @@ public class ProductCommandController {
       @PathVariable String id, @Valid @RequestBody UpdateProductRequest request) {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
     updateProductCommandService.execute(
-        undecided
-            .agiloom
-            .productDiscovery
-            .internal
-            .command
-            .UpdateProductCommand
-            .builder()
+        UpdateProductCommand.builder()
             .id(snowflakeId)
             .name(request.getName())
             .description(request.getDescription())
@@ -72,5 +67,12 @@ public class ProductCommandController {
     updateProductCommandService.archive(snowflakeId);
     Product product = productQueryService.findById(snowflakeId).orElseThrow();
     return ResponseEntity.ok(productQueryController.toResponse(product));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
+    SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
+    updateProductCommandService.delete(snowflakeId);
+    return ResponseEntity.noContent().build();
   }
 }

@@ -35,4 +35,13 @@ public class UpdateProductCommandService {
 
     product.archive();
   }
+
+  public void delete(@NonNull SnowflakeId id) {
+    Product product =
+        productRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Product not found: " + id));
+
+    product.delete();
+  }
 }
