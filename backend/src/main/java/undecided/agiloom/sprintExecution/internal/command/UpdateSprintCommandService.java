@@ -42,4 +42,19 @@ public class UpdateSprintCommandService {
             default -> throw new IllegalArgumentException("Invalid status: " + status);
         }
     }
+
+    /**
+     * スプリントを論理削除します。
+     * スプリント0は削除できないため、例外をスローします。
+     *
+     * @param id 削除するスプリントのID
+     */
+    public void delete(@NonNull SnowflakeId id) {
+        Sprint sprint = sprintRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
+
+        // スプリント0の削除は禁止
+        sprint.delete();
+        sprintRepository.save(sprint);
+    }
 }

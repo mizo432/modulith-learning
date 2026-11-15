@@ -57,4 +57,11 @@ public class SprintCommandController {
         Sprint sprint = sprintQueryService.findById(snowflakeId).orElseThrow();
         return ResponseEntity.ok(sprintQueryController.toResponse(sprint));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSprint(@PathVariable @NotNull String id) {
+        SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(id));
+        updateSprintCommandService.delete(snowflakeId);
+        return ResponseEntity.noContent().build();
+    }
 }

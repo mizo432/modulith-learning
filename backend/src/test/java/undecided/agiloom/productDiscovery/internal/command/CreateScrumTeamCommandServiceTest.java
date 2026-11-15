@@ -3,6 +3,8 @@ package undecided.agiloom.productDiscovery.internal.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +22,7 @@ import undecided.agiloom.productDiscovery.internal.ProductRepository;
 import undecided.agiloom.productDiscovery.internal.ScrumTeamRepository;
 import undecided.agiloom.productDiscovery.spi.Product;
 import undecided.agiloom.productDiscovery.spi.ScrumTeam;
+import undecided.agiloom.sprintExecution.internal.SprintRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -31,11 +34,13 @@ class CreateScrumTeamCommandServiceTest {
 
   @Mock private ProductRepository productRepository;
 
+  @Mock private SprintRepository sprintRepository;
+
   private CreateScrumTeamCommandService service;
 
   @BeforeEach
   void setUp() {
-    service = new CreateScrumTeamCommandService(scrumTeamRepository, productRepository);
+    service = new CreateScrumTeamCommandService(scrumTeamRepository, productRepository, sprintRepository);
   }
 
   @Nested
@@ -67,6 +72,8 @@ class CreateScrumTeamCommandServiceTest {
 
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
+      when(sprintRepository.findByTeamIdAndIsSprintZero(any(UUID.class), eq(true)))
+          .thenReturn(Optional.empty());
 
       // Act
       SnowflakeId result = service.execute(command);
@@ -74,6 +81,78 @@ class CreateScrumTeamCommandServiceTest {
       // Assert
       assertThat(result.value()).isEqualTo(2L);
       verify(scrumTeamRepository).save(any(ScrumTeam.class));
+      verify(sprintRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("ScrumTeam作成時にスプリント0が自動的に生成されること")
+    void shouldCreateSprintZeroWhenCreatingTeam() {
+      // Arrange
+      SnowflakeId productId = SnowflakeId.of(1L);
+      Product product =
+          Product.builder().id(productId).name("Test Product").build();
+
+      CreateScrumTeamCommand command =
+          CreateScrumTeamCommand.builder()
+              .productId(productId)
+              .name("Test Team")
+              .businessDomain("Test Domain")
+              .build();
+
+      ScrumTeam savedTeam =
+          ScrumTeam.builder()
+              .id(SnowflakeId.of(2L))
+              .name("Test Team")
+              .businessDomain("Test Domain")
+              .product(product)
+              .build();
+
+      when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+      when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
+      when(sprintRepository.findByTeamIdAndIsSprintZero(any(UUID.class), eq(true)))
+          .thenReturn(Optional.empty());
+
+      // Act
+      service.execute(command);
+
+      // Assert
+      verify(sprintRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("既にスプリント0が存在する場合は生成しないこと")
+    void shouldNotCreateSprintZeroWhenAlreadyExists() {
+      // Arrange
+      SnowflakeId productId = SnowflakeId.of(1L);
+      Product product =
+          Product.builder().id(productId).name("Test Product").build();
+
+      CreateScrumTeamCommand command =
+          CreateScrumTeamCommand.builder()
+              .productId(productId)
+              .name("Test Team")
+              .businessDomain("Test Domain")
+              .build();
+
+      ScrumTeam savedTeam =
+          ScrumTeam.builder()
+              .id(SnowflakeId.of(2L))
+              .name("Test Team")
+              .businessDomain("Test Domain")
+              .product(product)
+              .build();
+
+      when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+      when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
+      when(sprintRepository.findByTeamIdAndIsSprintZero(any(UUID.class), eq(true)))
+          .thenReturn(Optional.of(undecided.agiloom.sprintExecution.spi.Sprint.createSprintZero(
+              UUID.randomUUID(), UUID.randomUUID(), "Test Team")));
+
+      // Act
+      service.execute(command);
+
+      // Assert
+      verify(sprintRepository, never()).save(any());
     }
 
     @Test
