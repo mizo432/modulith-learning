@@ -24,6 +24,7 @@ class BacklogItemResponse {
   private String creatorName;
   private String sprintId;
   private String scrumTeamId;
+  private Integer value;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 }

@@ -21,6 +21,7 @@ class BacklogItemResponseConverter {
         .sprintId(backlogItem.getSprintId() != null ? String.valueOf(backlogItem.getSprintId().value()) : null)
         .scrumTeamId(
             backlogItem.getScrumTeamId() != null ? String.valueOf(backlogItem.getScrumTeamId().value()) : null)
+        .value(backlogItem.getValue())
         .createdAt(backlogItem.getCreatedAt())
         .updatedAt(backlogItem.getUpdatedAt())
         .build();

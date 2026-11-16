@@ -20,7 +20,7 @@ class UpdateBacklogItemCommandService {
   void execute(@NonNull UpdateBacklogItemCommand command) {
     BacklogItem backlogItem = findOrThrow(command.getBacklogItemId());
     backlogItem.update(
-        command.getTitle(), command.getDescription(), command.getPriority(), command.getSprintId());
+        command.getTitle(), command.getDescription(), command.getPriority(), command.getSprintId(), command.getValue());
     backlogItemRepository.save(backlogItem);
   }
 

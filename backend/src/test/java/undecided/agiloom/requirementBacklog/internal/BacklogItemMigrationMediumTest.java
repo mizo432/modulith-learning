@@ -101,7 +101,8 @@ class BacklogItemMigrationMediumTest {
               "sprint_id",
               "status",
               "title",
-              "updated_at");
+              "updated_at",
+              "value");
     }
 
     @Test
@@ -113,6 +114,16 @@ class BacklogItemMigrationMediumTest {
           readClasspathResource("db/migration/ag/V20261116150000__add_backlog_items_tables.sql");
       assertThat(script)
           .contains("CONSTRAINT ck_backlog_items_status CHECK (status IN ('SUGGESTED', 'ACCEPTED', 'REJECTED'))");
+    }
+
+    @Test
+    @DisplayName("FlywayマイグレーションスクリプトにvalueカラムとCHECK制約が定義されていること")
+    void shouldMigrationScriptDefineValueColumnAndCheckConstraint() {
+      String script =
+          readClasspathResource("db/migration/ag/V20261116160000__add_backlog_item_value.sql");
+      assertThat(script)
+          .contains("ADD COLUMN value INTEGER")
+          .contains("CONSTRAINT ck_backlog_items_value CHECK (value IS NULL OR (value >= 0 AND value <= 100))");
     }
 
     private String readClasspathResource(String path) {
