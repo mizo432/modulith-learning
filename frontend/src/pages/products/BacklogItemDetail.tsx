@@ -10,6 +10,7 @@ import {
   ListItem,
   ListItemText,
   Paper,
+  Slider,
   TextField,
   Typography,
 } from '@mui/material';
@@ -18,9 +19,7 @@ import backlogItemService, {
   BacklogItemComment,
   BacklogItemStatus,
 } from '../../services/backlogItemService';
-
-const VALUE_MIN = 0;
-const VALUE_MAX = 100;
+import {valueToColor, VALUE_MIN, VALUE_MAX} from '../../utils/valueColor';
 
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
@@ -51,10 +50,11 @@ const BacklogItemDetail: React.FC = () => {
     localStorage.getItem('user') ?? '',
   );
 
-  // Value入力
-  const [valueInput, setValueInput] = useState('');
+  // Value入力（数値型でSliderとTextFieldを双方向連動）
+  const [valueInput, setValueInput] = useState<number | null>(null);
   const [valueError, setValueError] = useState(false);
   const [valueHelperText, setValueHelperText] = useState('');
+  const [textFieldRaw, setTextFieldRaw] = useState('');
 
   const load = useCallback(async () => {
     if (!backlogItemId) return;
@@ -65,7 +65,8 @@ const BacklogItemDetail: React.FC = () => {
       ]);
       setItem(itemData);
       setComments(commentData);
-      setValueInput(itemData.value != null ? String(itemData.value) : '');
+      setValueInput(itemData.value != null ? itemData.value : null);
+      setTextFieldRaw(itemData.value != null ? String(itemData.value) : '');
     } catch (err) {
       console.error('Failed to load backlog item:', err);
       setError('バックログアイテムの読み込みに失敗しました。');
@@ -93,15 +94,31 @@ const BacklogItemDetail: React.FC = () => {
     }
   };
 
-  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSliderChange = (_event: Event, value: number | number[]) => {
+    const num = Array.isArray(value) ? value[0] : value;
+    setValueInput(num);
+    setTextFieldRaw(String(num));
+    setValueError(false);
+    setValueHelperText('');
+  };
+
+  const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
-    setValueInput(raw);
+    setTextFieldRaw(raw);
     if (raw === '') {
+      setValueInput(null);
       setValueError(false);
       setValueHelperText('');
       return;
     }
     const num = Number(raw);
+    if (Number.isNaN(num)) {
+      setValueInput(null);
+      setValueError(false);
+      setValueHelperText('');
+      return;
+    }
+    setValueInput(num);
     if (num < VALUE_MIN || num > VALUE_MAX) {
       setValueError(true);
       setValueHelperText(`${VALUE_MIN}〜${VALUE_MAX}の範囲で入力してください`);
@@ -115,14 +132,13 @@ const BacklogItemDetail: React.FC = () => {
     if (!backlogItemId) return;
     setError(null);
     setSuccessMessage(null);
-    const num = Number(valueInput);
-    if (valueInput === '' || num < VALUE_MIN || num > VALUE_MAX) {
+    if (valueInput === null || valueInput < VALUE_MIN || valueInput > VALUE_MAX) {
       setValueError(true);
       setValueHelperText(`${VALUE_MIN}〜${VALUE_MAX}の範囲で入力してください`);
       return;
     }
     try {
-      const updated = await backlogItemService.updateBacklogItem(backlogItemId, { value: num });
+      const updated = await backlogItemService.updateBacklogItem(backlogItemId, { value: valueInput });
       setItem(updated);
       setSuccessMessage('Valueを保存しました。');
     } catch (err: any) {
@@ -169,21 +185,59 @@ const BacklogItemDetail: React.FC = () => {
         <Typography variant="body1" sx={{whiteSpace: 'pre-wrap', mb: 2}}>
           {item.description || '（説明なし）'}
         </Typography>
-        <Box sx={{mt: 2, mb: 2, display: 'flex', alignItems: 'flex-end', gap: 2}}>
-          <TextField
-            label="Value *"
-            type="number"
-            fullWidth
-            inputProps={{min: VALUE_MIN, max: VALUE_MAX}}
-            value={valueInput}
-            onChange={handleValueChange}
-            error={valueError}
-            helperText={valueHelperText}
-          />
+        <Box
+          sx={{
+            mt: 2,
+            mb: 2,
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'stretch', sm: 'flex-end' },
+            gap: 2,
+          }}
+        >
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="body2" gutterBottom>
+              Value *
+            </Typography>
+            <Slider
+              value={valueInput ?? VALUE_MIN}
+              onChange={handleSliderChange}
+              min={VALUE_MIN}
+              max={VALUE_MAX}
+              marks={[
+                { value: 0, label: '0' },
+                { value: 25, label: '25' },
+                { value: 50, label: '50' },
+                { value: 75, label: '75' },
+                { value: 100, label: '100' },
+              ]}
+              getAriaValueText={(val) => String(val)}
+              valueLabelDisplay="auto"
+              sx={{
+                '& .MuiSlider-track': {
+                  backgroundColor: valueInput != null ? valueToColor(valueInput) : valueToColor(VALUE_MIN),
+                },
+              }}
+            />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <TextField
+                label="Value"
+                type="number"
+                fullWidth
+                inputProps={{ min: VALUE_MIN, max: VALUE_MAX }}
+                value={textFieldRaw}
+                onChange={handleTextFieldChange}
+                error={valueError}
+                helperText={valueError ? valueHelperText : `範囲: ${VALUE_MIN}〜${VALUE_MAX}`}
+                size="small"
+                data-testid="value-textfield"
+              />
+            </Box>
+          </Box>
           <Button
             variant="contained"
             onClick={handleSaveValue}
-            disabled={valueInput === '' || valueError}
+            disabled={valueInput === null || valueError}
           >
             Valueを保存
           </Button>
