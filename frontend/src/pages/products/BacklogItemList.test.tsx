@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
 import BacklogItemList from './BacklogItemList';
 import backlogItemService from '../../services/backlogItemService';
 import scrumTeamService from '../../services/scrumTeamService';
@@ -200,6 +201,71 @@ describe('BacklogItemList', () => {
           const button = btn.closest('button');
           expect(button).not.toBeDisabled();
         });
+      });
+    });
+  });
+
+  describe('Valueセルの色表示', () => {
+    it('Valueのあるセルのスタイルに色が適用される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithValue,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Valueありアイテム')).toBeInTheDocument();
+      });
+
+      // data-testid でValueセルを取得し、子要素(Box)のstyleを確認
+      const valueCell = screen.getByTestId(`value-cell-${mockItemWithValue.id}`);
+      expect(valueCell).toBeInTheDocument();
+      const box = valueCell.querySelector('span')!;
+      const styleAttr = box.getAttribute('style') || '';
+      // JSDOMはhsl()をrgb()に変換するため、rgb値で確認
+      // value=50 → hue=60 → hsl(60,70%,92%) → 背景色はデフォルトとは異なる
+      expect(styleAttr).toMatch(/background-color/);
+      expect(styleAttr).toMatch(/color/);
+    });
+
+    it('Value=null のセルには色が適用されない', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithoutValue,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Valueなしアイテム')).toBeInTheDocument();
+      });
+
+      // Value=null のセルの子要素(Box)のstyleに色が設定されていないことを確認
+      const valueCell = screen.getByTestId(`value-cell-${mockItemWithoutValue.id}`);
+      expect(valueCell).toBeInTheDocument();
+      const box = valueCell.querySelector('span')!;
+      const styleAttr = box.getAttribute('style') || '';
+      // 色が設定されていない（undefinedのためstyle属性に含まらない）
+      expect(styleAttr).not.toMatch(/background-color/);
+      expect(styleAttr).not.toMatch(/color/);
+    });
+  });
+
+  describe('作成フォームのValue案内文', () => {
+    it('作成フォームにValue設定の案内文が表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('アイテムを追加')).toBeInTheDocument();
+      });
+
+      const addButton = screen.getByRole('button', { name: /アイテムを追加/ });
+      await user.click(addButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Valueは作成後.*詳細ページで設定/)).toBeInTheDocument();
       });
     });
   });

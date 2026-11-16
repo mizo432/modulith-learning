@@ -31,6 +31,7 @@ import backlogItemService, {
   BacklogItemStatus,
 } from '../../services/backlogItemService';
 import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
+import {valueToColor, valueToBackgroundColor} from '../../utils/valueColor';
 
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
@@ -232,7 +233,24 @@ const BacklogItemList: React.FC = () => {
                       size="small"
                     />
                   </TableCell>
-                  <TableCell>{item.value ?? '-'}</TableCell>
+                  <TableCell
+                    data-testid={`value-cell-${item.id}`}
+                  >
+                    <Box
+                      component="span"
+                      sx={{
+                        fontWeight: 'bold',
+                        padding: '2px 4px',
+                        borderRadius: 1,
+                      }}
+                      style={{
+                        backgroundColor: item.value != null ? valueToBackgroundColor(item.value) : undefined,
+                        color: item.value != null ? valueToColor(item.value) : undefined,
+                      }}
+                    >
+                      {item.value ?? '-'}
+                    </Box>
+                  </TableCell>
                   <TableCell>{item.priority ?? '-'}</TableCell>
                   <TableCell>{item.creatorName}</TableCell>
                   <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
@@ -292,8 +310,11 @@ const BacklogItemList: React.FC = () => {
       <Dialog open={formOpen} onClose={() => setFormOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>バックログアイテムを追加</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{mb: 2}}>
+          <DialogContentText sx={{mb: 1}}>
             追加したアイテムの初期状態は「提案」になります。承認・却下は PO / SM のみが行えます。
+          </DialogContentText>
+          <DialogContentText sx={{mb: 2, color: 'warning.main'}}>
+            Valueは作成後、詳細ページで設定してください（範囲: 0〜100）。
           </DialogContentText>
           <TextField
             label="タイトル"
