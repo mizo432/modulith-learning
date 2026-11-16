@@ -14,4 +14,5 @@ class UpdateBacklogItemRequest {
   private String description;
   private Integer priority;
   private String sprintId;
+  private Integer value;
 }

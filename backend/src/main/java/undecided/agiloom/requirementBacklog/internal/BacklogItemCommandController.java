@@ -68,6 +68,7 @@ class BacklogItemCommandController {
                 request.getSprintId() != null
                     ? SnowflakeId.of(Long.parseLong(request.getSprintId()))
                     : null)
+            .value(request.getValue())
             .build());
     BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();
     return ResponseEntity.ok(backlogItemResponseConverter.toBacklogItemResponse(backlogItem));

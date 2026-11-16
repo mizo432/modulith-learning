@@ -51,6 +51,12 @@ public class BacklogItem {
   /** 作成者名の最大長。項目制約の単一の情報源（ADR-002）。 */
   public static final int CREATOR_NAME_MAX_LENGTH = 100;
 
+  /** Valueの最小値。項目制約の単一の情報源（ADR-002）。 */
+  public static final int VALUE_MIN_VALUE = 0;
+
+  /** Valueの最大値。項目制約の単一の情報源（ADR-002）。 */
+  public static final int VALUE_MAX_VALUE = 100;
+
   /** バックログアイテムの一意な識別子。 */
   @Id protected SnowflakeId id;
 
@@ -87,6 +93,10 @@ public class BacklogItem {
   @Column(name = "scrum_team_id", nullable = false)
   protected SnowflakeId scrumTeamId;
 
+  /** Value（ビジネス価値の定量的評価、0〜100）。null可。 */
+  @Column(name = "value")
+  protected Integer value;
+
   /** 作成日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
   @Builder.Default
@@ -104,12 +114,14 @@ public class BacklogItem {
    * @param description 更新後の説明（nullの場合は変更なし）
    * @param priority 更新後の優先度（nullの場合は変更なし）
    * @param sprintId 更新後の関連スプリントID（nullの場合は変更なし）
+   * @param value 更新後のValue（nullの場合は変更なし）
    */
   public void update(
       @Nullable String title,
       @Nullable String description,
       @Nullable Integer priority,
-      @Nullable SnowflakeId sprintId) {
+      @Nullable SnowflakeId sprintId,
+      @Nullable Integer value) {
     if (title != null) {
       checkNonEmpty(title, () -> new IllegalArgumentException("BacklogItem title must not be empty"));
       this.title = title;
@@ -122,6 +134,10 @@ public class BacklogItem {
     }
     if (sprintId != null) {
       this.sprintId = sprintId;
+    }
+    if (value != null) {
+      validateValue(value);
+      this.value = value;
     }
     this.updatedAt = LocalDateTime.now();
   }
@@ -144,7 +160,29 @@ public class BacklogItem {
       throw new IllegalStateException(
           "Invalid status transition: " + this.status + " -> " + target);
     }
+    if (target == BacklogItemStatus.ACCEPTED) {
+      validateValue(this.value);
+    }
     this.status = target;
     this.updatedAt = LocalDateTime.now();
+  }
+
+  /**
+   * Valueの範囲を検証します。
+   *
+   * <p>nullの場合は通過します（必須チェックは対象外）。
+   * 範囲外（0未満または100超過）の場合は {@link IllegalArgumentException} をスローします。
+   *
+   * @param value 検証対象のValue
+   * @throws IllegalArgumentException 範囲外の場合
+   */
+  private void validateValue(Integer value) {
+    if (value == null) {
+      return;
+    }
+    if (value < VALUE_MIN_VALUE || value > VALUE_MAX_VALUE) {
+      throw new IllegalArgumentException(
+          "BacklogItem value must be between " + VALUE_MIN_VALUE + " and " + VALUE_MAX_VALUE);
+    }
   }
 }

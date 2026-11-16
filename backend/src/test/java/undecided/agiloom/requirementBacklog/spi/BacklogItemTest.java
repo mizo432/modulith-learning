@@ -89,7 +89,7 @@ class BacklogItemTest {
     @DisplayName("タイトル等を更新できること（nullは変更なし）")
     void shouldUpdateFields() {
       BacklogItem backlogItem = item();
-      backlogItem.update("New Title", null, 5, null);
+      backlogItem.update("New Title", null, 5, null, null);
       assertThat(backlogItem.getTitle()).isEqualTo("New Title");
       assertThat(backlogItem.getPriority()).isEqualTo(5);
     }
@@ -98,8 +98,122 @@ class BacklogItemTest {
     @DisplayName("空タイトルへの更新は例外になること")
     void shouldThrowOnEmptyTitle() {
       BacklogItem backlogItem = item();
-      assertThatThrownBy(() -> backlogItem.update("", null, null, null))
+      assertThatThrownBy(() -> backlogItem.update("", null, null, null, null))
           .isInstanceOf(IllegalArgumentException.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("update時のValue範囲検証のテスト")
+  class ValueRangeTest {
+
+    @Test
+    @DisplayName("value=0でupdate成功すること（下限境界値）")
+    void shouldAcceptValueZero() {
+      BacklogItem backlogItem = item();
+      backlogItem.update(null, null, null, null, 0);
+      assertThat(backlogItem.getValue()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("value=100でupdate成功すること（上限境界値）")
+    void shouldAcceptValue100() {
+      BacklogItem backlogItem = item();
+      backlogItem.update(null, null, null, null, 100);
+      assertThat(backlogItem.getValue()).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("value=-1でupdate時IllegalArgumentExceptionをスローすること")
+    void shouldThrowOnValueMinusOne() {
+      BacklogItem backlogItem = item();
+      assertThatThrownBy(() -> backlogItem.update(null, null, null, null, -1))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("value=101でupdate時IllegalArgumentExceptionをスローすること")
+    void shouldThrowOnValue101() {
+      BacklogItem backlogItem = item();
+      assertThatThrownBy(() -> backlogItem.update(null, null, null, null, 101))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("value=nullでupdate成功すること（変更なし）")
+    void shouldAcceptValueNull() {
+      BacklogItem backlogItem = item();
+      backlogItem.update(null, null, null, null, null);
+      assertThat(backlogItem.getValue()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("ACCEPTED遷移時のValue範囲検証のテスト")
+  class ValueOnAcceptedTransitionTest {
+
+    @Test
+    @DisplayName("value=0でACCEPTED遷移成功すること（下限境界値）")
+    void shouldAcceptValueZeroOnAccepted() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(0)
+          .build();
+      backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
+    }
+
+    @Test
+    @DisplayName("value=100でACCEPTED遷移成功すること（上限境界値）")
+    void shouldAcceptValue100OnAccepted() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(100)
+          .build();
+      backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
+    }
+
+    @Test
+    @DisplayName("value=-1でACCEPTED遷移時IllegalArgumentExceptionをスローすること")
+    void shouldThrowOnValueMinusOneOnAccepted() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(-1)
+          .build();
+      assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.ACCEPTED))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("value=101でACCEPTED遷移時IllegalArgumentExceptionをスローすること")
+    void shouldThrowOnValue101OnAccepted() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(101)
+          .build();
+      assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.ACCEPTED))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("value=nullでACCEPTED遷移成功すること（nullは通過）")
+    void shouldAcceptValueNullOnAccepted() {
+      BacklogItem backlogItem = item();
+      backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }
   }
 }

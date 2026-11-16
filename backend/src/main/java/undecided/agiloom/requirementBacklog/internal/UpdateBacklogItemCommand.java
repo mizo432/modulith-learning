@@ -17,4 +17,5 @@ class UpdateBacklogItemCommand {
   private String description;
   private Integer priority;
   private SnowflakeId sprintId;
+  private Integer value;
 }
