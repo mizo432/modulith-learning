@@ -13,6 +13,7 @@ export interface BacklogItem {
   creatorEmployeeId?: string;
   creatorName: string;
   sprintId?: string;
+  value?: number;
   createdAt: string;
   updatedAt?: string;
 }
@@ -38,6 +39,14 @@ export interface AddBacklogItemCommentRequest {
   authorEmployeeId?: string;
   authorName: string;
   body: string;
+}
+
+export interface UpdateBacklogItemRequest {
+  title?: string;
+  description?: string;
+  priority?: number;
+  sprintId?: string;
+  value?: number;
 }
 
 const backlogItemService = {
@@ -72,11 +81,37 @@ const backlogItemService = {
     status: BacklogItemStatus,
     actorEmployeeId: string,
   ): Promise<BacklogItem> {
-    const response = await api.patch(`/v1/backlog-items/${backlogItemId}/status`, {
-      status,
-      actorEmployeeId,
-    });
-    return response.data;
+    try {
+      const response = await api.patch(`/v1/backlog-items/${backlogItemId}/status`, {
+        status,
+        actorEmployeeId,
+      });
+      return response.data;
+    } catch (err: any) {
+      if (err?.response?.data?.message) {
+        const normalizedError = new Error(err.response.data.message);
+        (normalizedError as any).response = err.response;
+        throw normalizedError;
+      }
+      throw err;
+    }
+  },
+
+  async updateBacklogItem(
+    backlogItemId: string,
+    request: UpdateBacklogItemRequest,
+  ): Promise<BacklogItem> {
+    try {
+      const response = await api.patch(`/v1/backlog-items/${backlogItemId}`, request);
+      return response.data;
+    } catch (err: any) {
+      if (err?.response?.data?.message) {
+        const normalizedError = new Error(err.response.data.message);
+        (normalizedError as any).response = err.response;
+        throw normalizedError;
+      }
+      throw err;
+    }
   },
 
   async getComments(backlogItemId: string): Promise<BacklogItemComment[]> {
