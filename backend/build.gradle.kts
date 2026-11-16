@@ -71,7 +71,6 @@ extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.5.0"
 extra["jspecifyVersion"] = "1.0.1"
 extra["assertjDbVersion"] = "3.0.2"
-extra["uuidGeneratorVersion"] = "5.1.0"
 extra["superCsvVersion"] = "2.4.0"
 extra["testcontainersVersion"] = "2.0.5"
 
@@ -115,8 +114,6 @@ dependencies {
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     testRuntimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/am.ik.yavi/yavi
-    implementation("com.fasterxml.uuid:java-uuid-generator:${property("uuidGeneratorVersion")}")
-
     implementation("am.ik.yavi:yavi:${property("yaviVersion")}")
     annotationProcessor("cc.jilt:jilt:${property("jiltVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client") {
