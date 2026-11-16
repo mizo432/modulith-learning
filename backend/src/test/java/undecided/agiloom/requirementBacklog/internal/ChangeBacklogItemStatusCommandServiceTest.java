@@ -81,10 +81,16 @@ class ChangeBacklogItemStatusCommandServiceTest {
   class ExecuteTest {
 
     @Test
-    @DisplayName("POはSUGGESTEDをACCEPTEDに変更でき、遷移イベントが発行されること")
+    @DisplayName("POはSUGGESTEDをACCEPTEDに変更でき、遷移イベントが発行されること（value設定済み）")
     void shouldAcceptByPoAndPublishEvent() {
       // Arrange
-      BacklogItem item = suggestedItem();
+      BacklogItem item = BacklogItem.builder()
+          .id(ITEM_ID)
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(TEAM_ID)
+          .value(50)
+          .build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
@@ -141,7 +147,13 @@ class ChangeBacklogItemStatusCommandServiceTest {
     @DisplayName("ACCEPTED済みのアイテムをPOが変更しようとすると状態遷移例外になること")
     void shouldThrowOnInvalidTransition() {
       // Arrange
-      BacklogItem item = suggestedItem();
+      BacklogItem item = BacklogItem.builder()
+          .id(ITEM_ID)
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(TEAM_ID)
+          .value(50)
+          .build();
       item.changeStatus(BacklogItemStatus.ACCEPTED);
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
@@ -176,6 +188,21 @@ class ChangeBacklogItemStatusCommandServiceTest {
       assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID)))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("ScrumTeam not found");
+    }
+
+    @Test
+    @DisplayName("value=nullのアイテムをACCEPTEDに変更しようとするとIllegalArgumentExceptionがスローされること")
+    void shouldThrowOnAcceptWithValueNull() {
+      // Arrange
+      BacklogItem item = suggestedItem();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID)))
+          .isInstanceOf(IllegalArgumentException.class);
+      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
+      verify(eventPublisher, never()).publishEvent(any());
     }
   }
 }
