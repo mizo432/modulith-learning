@@ -87,11 +87,11 @@ Flyway は事業領域ごとにタスクとスキーマが分かれている（b
 - `2_RDRASpec/`：画面照会.json、論理データモデル.md、物理データモデル.md、ビジネスルール.md、項目辞書.md など。現在 Spec 化が進んでいるのは AG-01（プロダクトディスカバリー）の範囲
 - `RDRA_Knowledge/`：RDRA の知識置き場
 - 物理設計の未決定事項は GitHub Issues（mizo432/modulith-learning、#560〜#568、design ラベル）で管理し、2026-11-16 にすべて決定済み・クローズした
-- アーキテクチャ上の決定は `docs/95 Architecture decision record (ADR)/` に ADR として記録する（例：002 項目制約の値オブジェクト定数化、003 区分値のコード値保持と分岐条件としての使用、004 カテゴリーの検索条件としての DB 保持、005 開発ワークフローへの takt の採用）。なお `docs/14 ADR/` は非機能要件の対応可否を決めた別系統の ADR 群
+- アーキテクチャ上の決定は `docs/95 Architecture decision record (ADR)/` に ADR として記録する（例：002 項目制約の値オブジェクト定数化、003 区分値のコード値保持と分岐条件としての使用、004 カテゴリーの検索条件としての DB 保持、005 開発ワークフローへの takt フローの移植と Junie CLI 直接派遣）。なお `docs/14 ADR/` は非機能要件の対応可否を決めた別系統の ADR 群
 
 ## 作業上の注意
 
 - 既存の命名・パッケージ構成（`undecided.<領域>`、`com.github.mizo432.shared.*`）に合わせ、独自の流儀を持ち込まない
 - 依存追加は backend/build.gradle.kts の既存のバージョン管理（extra プロパティ）に倣う
 - コミット前に `./gradlew :backend:test` が通ることを確認する
-- 開発ワークフロー（製造層）には takt を使用し、takt のモデルには Junie Lite（takt の junie-lite プロバイダ経由で Junie CLI を実行）を使用する（ADR-005）。制御面は Orca に一本化し、takt はその下の製造層として使う。ワークフロー定義や手順は試作で詰め、決まったものからこのファイルに反映する
+- 開発ワークフロー（製造層）は、takt の開発フロー（development-core）を移植した手順で回し、実行は Junie CLI の直接派遣とする（ADR-005）。ステップは plan → write_tests → implement → peer-review（必要に応じて replan）で、ステップ間の判定と統制は Muse（参謀兼オペレーター）が担い、Junie は各ステップのワーカーとして起動する。制御面は Orca に一本化する。手順の正本は共有リポジトリ agent-guidelines の workflow ガイドラインに置く
