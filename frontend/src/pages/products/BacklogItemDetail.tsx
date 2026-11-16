@@ -19,6 +19,9 @@ import backlogItemService, {
   BacklogItemStatus,
 } from '../../services/backlogItemService';
 
+const VALUE_MIN = 0;
+const VALUE_MAX = 100;
+
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
   ACCEPTED: '承認済み',
@@ -42,10 +45,16 @@ const BacklogItemDetail: React.FC = () => {
   const [item, setItem] = useState<BacklogItem | null>(null);
   const [comments, setComments] = useState<BacklogItemComment[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [commentBody, setCommentBody] = useState('');
   const [commentAuthorName, setCommentAuthorName] = useState(
     localStorage.getItem('user') ?? '',
   );
+
+  // Value入力
+  const [valueInput, setValueInput] = useState('');
+  const [valueError, setValueError] = useState(false);
+  const [valueHelperText, setValueHelperText] = useState('');
 
   const load = useCallback(async () => {
     if (!backlogItemId) return;
@@ -56,6 +65,7 @@ const BacklogItemDetail: React.FC = () => {
       ]);
       setItem(itemData);
       setComments(commentData);
+      setValueInput(itemData.value != null ? String(itemData.value) : '');
     } catch (err) {
       console.error('Failed to load backlog item:', err);
       setError('バックログアイテムの読み込みに失敗しました。');
@@ -83,6 +93,44 @@ const BacklogItemDetail: React.FC = () => {
     }
   };
 
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    setValueInput(raw);
+    if (raw === '') {
+      setValueError(false);
+      setValueHelperText('');
+      return;
+    }
+    const num = Number(raw);
+    if (num < VALUE_MIN || num > VALUE_MAX) {
+      setValueError(true);
+      setValueHelperText(`${VALUE_MIN}〜${VALUE_MAX}の範囲で入力してください`);
+    } else {
+      setValueError(false);
+      setValueHelperText('');
+    }
+  };
+
+  const handleSaveValue = async () => {
+    if (!backlogItemId) return;
+    setError(null);
+    setSuccessMessage(null);
+    const num = Number(valueInput);
+    if (valueInput === '' || num < VALUE_MIN || num > VALUE_MAX) {
+      setValueError(true);
+      setValueHelperText(`${VALUE_MIN}〜${VALUE_MAX}の範囲で入力してください`);
+      return;
+    }
+    try {
+      const updated = await backlogItemService.updateBacklogItem(backlogItemId, { value: num });
+      setItem(updated);
+      setSuccessMessage('Valueを保存しました。');
+    } catch (err: any) {
+      console.error('Failed to save value:', err);
+      setError(err?.response?.data?.message ?? err?.message ?? 'Valueの保存に失敗しました。');
+    }
+  };
+
   if (!item) {
     return <Typography>読み込み中...</Typography>;
   }
@@ -103,6 +151,11 @@ const BacklogItemDetail: React.FC = () => {
           {error}
         </Alert>
       )}
+      {successMessage && (
+        <Alert severity="success" sx={{mb: 2}} onClose={() => setSuccessMessage(null)}>
+          {successMessage}
+        </Alert>
+      )}
 
       <Paper sx={{p: 3, mb: 3}}>
         <Box sx={{display: 'flex', alignItems: 'center', gap: 2, mb: 2}}>
@@ -116,6 +169,25 @@ const BacklogItemDetail: React.FC = () => {
         <Typography variant="body1" sx={{whiteSpace: 'pre-wrap', mb: 2}}>
           {item.description || '（説明なし）'}
         </Typography>
+        <Box sx={{mt: 2, mb: 2, display: 'flex', alignItems: 'flex-end', gap: 2}}>
+          <TextField
+            label="Value *"
+            type="number"
+            fullWidth
+            inputProps={{min: VALUE_MIN, max: VALUE_MAX}}
+            value={valueInput}
+            onChange={handleValueChange}
+            error={valueError}
+            helperText={valueHelperText}
+          />
+          <Button
+            variant="contained"
+            onClick={handleSaveValue}
+            disabled={valueInput === '' || valueError}
+          >
+            Valueを保存
+          </Button>
+        </Box>
         <Typography variant="body2" color="text.secondary">
           優先度：{item.priority ?? '-'} ／ 作成者：{item.creatorName} ／ 作成日時：
           {new Date(item.createdAt).toLocaleString()}

@@ -23,6 +23,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import backlogItemService, {
@@ -211,6 +212,7 @@ const BacklogItemList: React.FC = () => {
             <TableRow>
               <TableCell>タイトル</TableCell>
               <TableCell>状態</TableCell>
+              <TableCell>Value</TableCell>
               <TableCell>優先度</TableCell>
               <TableCell>作成者</TableCell>
               <TableCell>作成日時</TableCell>
@@ -218,54 +220,66 @@ const BacklogItemList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((item) => (
-              <TableRow key={item.id} hover>
-                <TableCell>{item.title}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={item.statusLabel || STATUS_LABELS[item.status]}
-                    color={STATUS_COLORS[item.status]}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>{item.priority ?? '-'}</TableCell>
-                <TableCell>{item.creatorName}</TableCell>
-                <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
-                <TableCell align="right">
-                  <Button
-                    size="small"
-                    onClick={() =>
-                      navigate(
-                        `/products/${productId}/scrum-teams/${scrumTeamId}/backlog-items/${item.id}`,
-                      )
-                    }
-                  >
-                    詳細
-                  </Button>
-                  {canChangeStatus && item.status === 'SUGGESTED' && (
-                    <>
-                      <Button
-                        size="small"
-                        color="success"
-                        onClick={() => setConfirmTarget({item, status: 'ACCEPTED'})}
-                      >
-                        承認
-                      </Button>
-                      <Button
-                        size="small"
-                        color="error"
-                        onClick={() => setConfirmTarget({item, status: 'REJECTED'})}
-                      >
-                        却下
-                      </Button>
-                    </>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+            {items.map((item) => {
+              const acceptDisabled = item.value == null;
+              return (
+                <TableRow key={item.id} hover>
+                  <TableCell>{item.title}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={item.statusLabel || STATUS_LABELS[item.status]}
+                      color={STATUS_COLORS[item.status]}
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>{item.value ?? '-'}</TableCell>
+                  <TableCell>{item.priority ?? '-'}</TableCell>
+                  <TableCell>{item.creatorName}</TableCell>
+                  <TableCell>{new Date(item.createdAt).toLocaleString()}</TableCell>
+                  <TableCell align="right">
+                    <Button
+                      size="small"
+                      onClick={() =>
+                        navigate(
+                          `/products/${productId}/scrum-teams/${scrumTeamId}/backlog-items/${item.id}`,
+                        )
+                      }
+                    >
+                      詳細
+                    </Button>
+                    {canChangeStatus && item.status === 'SUGGESTED' && (
+                      <>
+                        <Tooltip
+                          title={acceptDisabled ? 'Valueを設定してから承認してください' : ''}
+                          arrow
+                        >
+                          <span>
+                            <Button
+                              size="small"
+                              color="success"
+                              disabled={acceptDisabled}
+                              onClick={() => setConfirmTarget({item, status: 'ACCEPTED'})}
+                            >
+                              承認
+                            </Button>
+                          </span>
+                        </Tooltip>
+                        <Button
+                          size="small"
+                          color="error"
+                          onClick={() => setConfirmTarget({item, status: 'REJECTED'})}
+                        >
+                          却下
+                        </Button>
+                      </>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
             {items.length === 0 && !loading && (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={7} align="center">
                   バックログアイテムがありません。
                 </TableCell>
               </TableRow>
