@@ -18,7 +18,6 @@ repositories {
 extra["guavaVersion"] = "33.6.0-jre"
 extra["jspecifyVersion"] = "1.0.1"
 extra["icu4jVersion"] = "77.1"
-extra["uuidGeneratorVersion"] = "5.1.0"
 extra["lombokVersion"] = "1.18.38"
 extra["commonsLang3Version"] = "3.17.0"
 extra["jakartaValidationApiVersion"] = "3.1.1"
@@ -36,7 +35,6 @@ dependencies {
     implementation("jakarta.validation:jakarta.validation-api:${property("jakartaValidationApiVersion")}")
     implementation("org.apache.commons:commons-lang3:${property("commonsLang3Version")}")
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
-    implementation("com.fasterxml.uuid:java-uuid-generator:${property("uuidGeneratorVersion")}")
     implementation("org.slf4j:slf4j-api:${property("slf4jVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junitVersion")}")
     testImplementation("org.assertj:assertj-core:${property("assertjVersion")}")
