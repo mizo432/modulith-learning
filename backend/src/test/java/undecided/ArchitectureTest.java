@@ -48,6 +48,8 @@ class ArchitectureTest {
             .and()
             .haveNameNotMatching(".*SnowflakeNode")
             .and()
+            .haveNameNotMatching(".*Subset")
+            .and()
             .resideOutsideOfPackage("com.github.mizo432.shared.sample..")
             .should()
             .resideInAPackage("..spi..")

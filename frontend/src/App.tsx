@@ -22,6 +22,8 @@ import ScrumTeamCreate from './pages/products/ScrumTeamCreate';
 import ScrumTeamEdit from './pages/products/ScrumTeamEdit';
 import SprintList from './pages/products/SprintList';
 import SprintSettings from './pages/products/SprintSettings';
+import BacklogItemList from './pages/products/BacklogItemList';
+import BacklogItemDetail from './pages/products/BacklogItemDetail';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
@@ -190,6 +192,17 @@ const AppContent = () => {
                                                                          <SprintSettings/>
                                                                        </ProtectedRoute>
                                                                      }/>
+              {/* Backlog Item management routes */}
+              <Route path="/products/:productId/scrum-teams/:scrumTeamId/backlog-items" element={
+                                                                                          <ProtectedRoute>
+                                                                                           <BacklogItemList/>
+                                                                                         </ProtectedRoute>
+                                                                                       }/>
+              <Route path="/products/:productId/scrum-teams/:scrumTeamId/backlog-items/:backlogItemId" element={
+                                                                                          <ProtectedRoute>
+                                                                                           <BacklogItemDetail/>
+                                                                                         </ProtectedRoute>
+                                                                                       }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </Container>
@@ -206,4 +219,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
