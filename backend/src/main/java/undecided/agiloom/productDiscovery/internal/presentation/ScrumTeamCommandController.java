@@ -1,6 +1,7 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
 
 import jakarta.validation.Valid;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.productDiscovery.internal.command.CreateScrumTeamCommand;
@@ -9,6 +10,7 @@ import undecided.agiloom.productDiscovery.internal.command.UpdateScrumTeamComman
 import undecided.agiloom.productDiscovery.internal.command.UpdateScrumTeamCommandService;
 import undecided.agiloom.productDiscovery.internal.query.ScrumTeamQueryService;
 import undecided.agiloom.productDiscovery.spi.ScrumTeam;
+import undecided.agiloom.productDiscovery.spi.ScrumTeamChanged;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
@@ -19,16 +21,19 @@ public class ScrumTeamCommandController {
   private final UpdateScrumTeamCommandService updateScrumTeamCommandService;
   private final ScrumTeamQueryService scrumTeamQueryService;
   private final ScrumTeamResponseConverter scrumTeamResponseConverter;
+  private final ApplicationEventPublisher eventPublisher;
 
   public ScrumTeamCommandController(
       CreateScrumTeamCommandService createScrumTeamCommandService,
       UpdateScrumTeamCommandService updateScrumTeamCommandService,
       ScrumTeamQueryService scrumTeamQueryService,
-      ScrumTeamResponseConverter scrumTeamResponseConverter) {
+      ScrumTeamResponseConverter scrumTeamResponseConverter,
+      ApplicationEventPublisher eventPublisher) {
     this.createScrumTeamCommandService = createScrumTeamCommandService;
     this.updateScrumTeamCommandService = updateScrumTeamCommandService;
     this.scrumTeamQueryService = scrumTeamQueryService;
     this.scrumTeamResponseConverter = scrumTeamResponseConverter;
+    this.eventPublisher = eventPublisher;
   }
 
   @PostMapping
@@ -48,6 +53,8 @@ public class ScrumTeamCommandController {
 
     SnowflakeId id = createScrumTeamCommandService.execute(command);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(id).orElseThrow();
+    // 他事業領域がサブセットを保持できるよう、変更イベントを発行する
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
@@ -69,6 +76,7 @@ public class ScrumTeamCommandController {
             .smName(request.getSmName())
             .build());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
@@ -76,7 +84,12 @@ public class ScrumTeamCommandController {
   public ResponseEntity<Void> deleteScrumTeam(
       @PathVariable String productId, @PathVariable String scrumTeamId) {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
+    ScrumTeam scrumTeam =
+        scrumTeamQueryService
+            .findById(snowflakeId)
+            .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + scrumTeamId));
     updateScrumTeamCommandService.delete(snowflakeId);
+    eventPublisher.publishEvent(ScrumTeamChanged.removed(scrumTeam));
     return ResponseEntity.noContent().build();
   }
 
@@ -89,6 +102,7 @@ public class ScrumTeamCommandController {
     updateScrumTeamCommandService.assignPo(
         snowflakeId, request.getPoEmployeeId(), request.getPoName());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
@@ -98,6 +112,7 @@ public class ScrumTeamCommandController {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.unassignPo(snowflakeId);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
@@ -110,6 +125,7 @@ public class ScrumTeamCommandController {
     updateScrumTeamCommandService.assignSm(
         snowflakeId, request.getSmEmployeeId(), request.getSmName());
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 
@@ -119,6 +135,7 @@ public class ScrumTeamCommandController {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.unassignSm(snowflakeId);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 }
