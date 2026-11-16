@@ -38,15 +38,21 @@ class BacklogItemTest {
   class ChangeStatusTest {
 
     @Test
-    @DisplayName("SUGGESTEDからACCEPTEDへ遷移できること")
+    @DisplayName("SUGGESTEDからACCEPTEDへ遷移できること（value設定済み）")
     void shouldAcceptFromSuggested() {
-      BacklogItem backlogItem = item();
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(50)
+          .build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
       assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }
 
     @Test
-    @DisplayName("SUGGESTEDからREJECTEDへ遷移できること")
+    @DisplayName("SUGGESTEDからREJECTEDへ遷移できること（value未設定）")
     void shouldRejectFromSuggested() {
       BacklogItem backlogItem = item();
       backlogItem.changeStatus(BacklogItemStatus.REJECTED);
@@ -54,9 +60,29 @@ class BacklogItemTest {
     }
 
     @Test
+    @DisplayName("SUGGESTEDからREJECTEDへ遷移できること（value設定済み）")
+    void shouldRejectFromSuggestedWithValue() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(50)
+          .build();
+      backlogItem.changeStatus(BacklogItemStatus.REJECTED);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.REJECTED);
+    }
+
+    @Test
     @DisplayName("ACCEPTEDからは遷移できないこと")
     void shouldNotTransitionFromAccepted() {
-      BacklogItem backlogItem = item();
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(50)
+          .build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
       assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.REJECTED))
           .isInstanceOf(IllegalStateException.class)
@@ -209,9 +235,23 @@ class BacklogItemTest {
     }
 
     @Test
-    @DisplayName("value=nullでACCEPTED遷移成功すること（nullは通過）")
-    void shouldAcceptValueNullOnAccepted() {
+    @DisplayName("value=nullでACCEPTED遷移時IllegalArgumentExceptionをスローすること")
+    void shouldThrowOnValueNullOnAccepted() {
       BacklogItem backlogItem = item();
+      assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.ACCEPTED))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("value=50でACCEPTED遷移成功すること（中間値）")
+    void shouldAcceptValue50OnAccepted() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(50)
+          .build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
       assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }

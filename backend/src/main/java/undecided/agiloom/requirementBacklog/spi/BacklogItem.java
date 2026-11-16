@@ -161,6 +161,9 @@ public class BacklogItem {
           "Invalid status transition: " + this.status + " -> " + target);
     }
     if (target == BacklogItemStatus.ACCEPTED) {
+      if (this.value == null) {
+        throw new IllegalArgumentException("BacklogItem value must be set before accepting");
+      }
       validateValue(this.value);
     }
     this.status = target;
