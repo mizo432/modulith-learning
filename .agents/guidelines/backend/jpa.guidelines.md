@@ -1,1 +1,0 @@
-../../../../agent-guidelines/guidelines/backend/jpa.guidelines.md

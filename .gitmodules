@@ -1,0 +1,4 @@
+[submodule ".agents/agent-guidelines"]
+	path = .agents/agent-guidelines
+	url = https://github.com/mizo432/agent-guidelines.git
+	branch = main

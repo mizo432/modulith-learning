@@ -94,4 +94,5 @@ Flyway は事業領域ごとにタスクとスキーマが分かれている（b
 - 既存の命名・パッケージ構成（`undecided.<領域>`、`com.github.mizo432.shared.*`）に合わせ、独自の流儀を持ち込まない
 - 依存追加は backend/build.gradle.kts の既存のバージョン管理（extra プロパティ）に倣う
 - コミット前に `./gradlew :backend:test` が通ることを確認する
-- 開発ワークフロー（製造層）は、takt の開発フロー（development-core）を移植した手順で回し、実行は Junie CLI の直接派遣とする（ADR-005）。ステップは plan → write_tests → implement → peer-review（必要に応じて replan）で、ステップ間の判定と統制は Muse（参謀兼オペレーター）が担い、Junie は各ステップのワーカーとして起動する。制御面は Orca に一本化する。手順の正本は共有リポジトリ agent-guidelines の workflow ガイドラインに置く
+- 開発ワークフロー（製造層）は、takt の開発フロー（development-core）を移植した手順で回し、実行は Junie CLI の直接派遣とする（ADR-005）。ステップは plan → write_tests → implement → peer-review（必要に応じて replan）で、ステップ間の判定と統制は Muse（参謀兼オペレーター）が担い、Junie は各ステップのワーカーとして起動する。制御面は Orca に一本化する。手順の正本は共有リポジトリ agent-guidelines の workflow ガイドライン（`.agents/agent-guidelines/guidelines/workflow/junie-dispatch-development.guidelines.md`）に置く
+- 共用ガイドラインは `.agents/agent-guidelines` の git submodule で取り込んでいる。clone 時は `--recurse-submodules` を付けるか、clone 後に `git submodule update --init` を実行すること（付け忘れると `.agents/agent-guidelines` が空になる）

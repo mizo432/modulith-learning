@@ -1,1 +1,0 @@
-../../../../agent-guidelines/guidelines/backend/spring-modulith.guidelines.md
