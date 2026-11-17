@@ -3,11 +3,11 @@ package undecided.association.relationshipMgmt.personRole.spi.employee;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
 @DisplayName("Employeeエンティティの単体テスト")
@@ -21,7 +21,7 @@ class EmployeeTest {
     @DisplayName("ファクトリメソッドで各プロパティが設定されたEmployeeが作成されること")
     void shouldCreateEmployeeWithFactoryMethod() {
       // Arrange
-      UUID employeeId = UUID.randomUUID();
+      SnowflakeId employeeId = SnowflakeId.of(1L);
       String lastName = "Tanaka";
       String firstName = "Yuki";
       LocalDateTime validFrom = LocalDateTime.of(2024, 1, 1, 0, 0);
@@ -57,7 +57,7 @@ class EmployeeTest {
     void shouldHandleNullValidTo() {
       // Arrange
       Employee employee = Employee.create(
-          UUID.randomUUID(), "Sato", "Ken", LocalDateTime.of(2024, 1, 1, 0, 0), null);
+          SnowflakeId.of(2L), "Sato", "Ken", LocalDateTime.of(2024, 1, 1, 0, 0), null);
 
       // Assert
       assertThat(employee.getValidTo()).isNull();
@@ -71,7 +71,7 @@ class EmployeeTest {
     void shouldHandleJapaneseNames() {
       // Act
       Employee employee = Employee.create(
-          UUID.randomUUID(), "田中", "由紀", LocalDateTime.of(2024, 1, 1, 0, 0), null);
+          SnowflakeId.of(3L), "田中", "由紀", LocalDateTime.of(2024, 1, 1, 0, 0), null);
 
       // Assert
       assertThat(employee.getLastName()).isEqualTo("田中");
@@ -86,7 +86,7 @@ class EmployeeTest {
 
       // Act
       Employee employee = Employee.create(
-          UUID.randomUUID(), longName, longName, LocalDateTime.of(2024, 1, 1, 0, 0), null);
+          SnowflakeId.of(4L), longName, longName, LocalDateTime.of(2024, 1, 1, 0, 0), null);
 
       // Assert
       assertThat(employee.getLastName()).isEqualTo(longName);

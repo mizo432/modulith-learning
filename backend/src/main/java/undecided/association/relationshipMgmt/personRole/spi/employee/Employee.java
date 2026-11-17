@@ -6,8 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Getter;
+import undecided.supporting.snowflake.SnowflakeId;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import com.github.mizo432.shared.converter.EncryptedStringConverter;
@@ -27,7 +27,7 @@ public class Employee {
 
   /** 従業員の一意な識別子。 */
   @Id
-  protected UUID employeeId;
+  protected SnowflakeId employeeId;
 
   /** 従業員の姓。暗号化して保存されます。 */
   @Column(nullable = false)
@@ -57,7 +57,7 @@ public class Employee {
    * @return 新規作成されたEmployeeインスタンス
    */
   public static Employee create(
-      UUID employeeId,
+      SnowflakeId employeeId,
       String lastName,
       String firstName,
       LocalDateTime validFrom,

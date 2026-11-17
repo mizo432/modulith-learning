@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,11 +36,11 @@ class OrganizationQueryImplTest {
   @InjectMocks private OrganizationQueryImpl organizationQueryImpl;
 
   private Organization testOrganization;
-  private UUID testUuid;
+  private SnowflakeId testId;
 
   @BeforeEach
   void setUp() {
-    testUuid = UUID.randomUUID();
+    testId = SnowflakeId.of(1L);
     testOrganization = createTestOrganization();
   }
 
@@ -184,23 +183,23 @@ class OrganizationQueryImplTest {
     @DisplayName("存在するIDで組織を返す")
     void shouldReturnOrganizationWhenFound() {
     // Given
-    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
+    when(organizationRepository.findById(testId)).thenReturn(Optional.of(testOrganization));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryImpl.findById(testId);
 
     // Then
     assertThat(result).isPresent();
     assertThat(result.get().getOrganizationId()).isEqualTo(testOrganization.getOrganizationId());
     assertThat(result.get().getOrganizationCode()).isEqualTo("0001010203004");
-    verify(organizationRepository, times(1)).findById(testUuid);
+    verify(organizationRepository, times(1)).findById(testId);
   }
 
     @Test
     @DisplayName("存在しないIDの場合は空のOptionalを返す")
     void shouldReturnEmptyWhenNotFound() {
     // Given
-    UUID nonExistingId = UUID.randomUUID();
+    SnowflakeId nonExistingId = SnowflakeId.of(999L);
     when(organizationRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
     // When
@@ -229,23 +228,23 @@ class OrganizationQueryImplTest {
     @DisplayName("リポジトリを1回だけ呼び出す")
     void shouldCallRepositoryOnce() {
     // Given
-    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
+    when(organizationRepository.findById(testId)).thenReturn(Optional.of(testOrganization));
 
     // When
-    organizationQueryImpl.findById(testUuid);
+    organizationQueryImpl.findById(testId);
 
     // Then
-    verify(organizationRepository, times(1)).findById(testUuid);
+    verify(organizationRepository, times(1)).findById(testId);
   }
 
     @Test
     @DisplayName("組織データの整合性を保持する")
     void shouldPreserveDataIntegrity() {
     // Given
-    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
+    when(organizationRepository.findById(testId)).thenReturn(Optional.of(testOrganization));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryImpl.findById(testId);
 
     // Then
     assertThat(result).isPresent();
@@ -261,10 +260,10 @@ class OrganizationQueryImplTest {
     void shouldReturnOrganizationWithNullValidTo() {
     // Given
     // validTo is null by default when using the constructor
-    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
+    when(organizationRepository.findById(testId)).thenReturn(Optional.of(testOrganization));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryImpl.findById(testId);
 
     // Then
     assertThat(result).isPresent();
@@ -277,10 +276,10 @@ class OrganizationQueryImplTest {
     // Given
     LocalDateTime validTo = LocalDateTime.now().plusDays(30);
     Organization orgWithValidTo = createTestOrganizationWithValidTo(validTo);
-    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(orgWithValidTo));
+    when(organizationRepository.findById(testId)).thenReturn(Optional.of(orgWithValidTo));
 
     // When
-    Optional<Organization> result = organizationQueryImpl.findById(testUuid);
+    Optional<Organization> result = organizationQueryImpl.findById(testId);
 
     // Then
     assertThat(result).isPresent();
@@ -291,23 +290,23 @@ class OrganizationQueryImplTest {
     @DisplayName("複数の呼び出しでそれぞれリポジトリに委譲する")
     void shouldDelegateToRepositoryOnMultipleCalls() {
     // Given
-    when(organizationRepository.findById(testUuid)).thenReturn(Optional.of(testOrganization));
+    when(organizationRepository.findById(testId)).thenReturn(Optional.of(testOrganization));
 
     // When
-    organizationQueryImpl.findById(testUuid);
-    organizationQueryImpl.findById(testUuid);
-    organizationQueryImpl.findById(testUuid);
+    organizationQueryImpl.findById(testId);
+    organizationQueryImpl.findById(testId);
+    organizationQueryImpl.findById(testId);
 
     // Then
-    verify(organizationRepository, times(3)).findById(testUuid);
+    verify(organizationRepository, times(3)).findById(testId);
   }
 
     @Test
     @DisplayName("異なるIDでそれぞれリポジトリを呼び出す")
     void shouldCallRepositoryForEachDifferentId() {
-      UUID id1 = UUID.randomUUID();
-      UUID id2 = UUID.randomUUID();
-      UUID id3 = UUID.randomUUID();
+      SnowflakeId id1 = SnowflakeId.of(10L);
+      SnowflakeId id2 = SnowflakeId.of(20L);
+      SnowflakeId id3 = SnowflakeId.of(30L);
       when(organizationRepository.findById(id1)).thenReturn(Optional.of(testOrganization));
       when(organizationRepository.findById(id2)).thenReturn(Optional.empty());
       when(organizationRepository.findById(id3)).thenReturn(Optional.of(createTestOrganization()));
