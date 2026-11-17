@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -20,9 +19,9 @@ class ScrumTeamTest {
         .id(SnowflakeId.of(1L))
         .name("Test Team")
         .businessDomain("Test Domain")
-        .poEmployeeId(UUID.randomUUID())
+        .poEmployeeId(SnowflakeId.of(100L))
         .poName("Test PO")
-        .smEmployeeId(UUID.randomUUID())
+        .smEmployeeId(SnowflakeId.of(200L))
         .smName("Test SM")
         .build();
   }
@@ -84,7 +83,7 @@ class ScrumTeamTest {
     @DisplayName("POの従業員IDが更新される")
     void shouldUpdatePoEmployeeId() {
       ScrumTeam scrumTeam = createScrumTeam();
-      UUID newPoId = UUID.randomUUID();
+      SnowflakeId newPoId = SnowflakeId.of(300L);
 
       scrumTeam.update(null, null, newPoId, null, null, null);
 
@@ -105,7 +104,7 @@ class ScrumTeamTest {
     @DisplayName("SMの従業員IDが更新される")
     void shouldUpdateSmEmployeeId() {
       ScrumTeam scrumTeam = createScrumTeam();
-      UUID newSmId = UUID.randomUUID();
+      SnowflakeId newSmId = SnowflakeId.of(400L);
 
       scrumTeam.update(null, null, null, null, newSmId, null);
 
@@ -126,8 +125,8 @@ class ScrumTeamTest {
     @DisplayName("複数のフィールドが一度に更新される")
     void shouldUpdateMultipleFields() {
       ScrumTeam scrumTeam = createScrumTeam();
-      UUID newPoId = UUID.randomUUID();
-      UUID newSmId = UUID.randomUUID();
+      SnowflakeId newPoId = SnowflakeId.of(300L);
+      SnowflakeId newSmId = SnowflakeId.of(400L);
 
       scrumTeam.update("New Team Name", "New Domain", newPoId, "New PO Name", newSmId, "New SM Name");
 
@@ -198,7 +197,7 @@ class ScrumTeamTest {
               .businessDomain("Test Domain")
               .build();
 
-      UUID poId = UUID.randomUUID();
+      SnowflakeId poId = SnowflakeId.of(100L);
       scrumTeam.assignPo(poId, "New PO");
 
       assertThat(scrumTeam.getPoEmployeeId()).isEqualTo(poId);
@@ -220,7 +219,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenPoNameIsNull() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.assignPo(UUID.randomUUID(), null))
+      assertThatThrownBy(() -> scrumTeam.assignPo(SnowflakeId.of(100L), null))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("poName must not be null");
     }
@@ -256,7 +255,7 @@ class ScrumTeamTest {
               .businessDomain("Test Domain")
               .build();
 
-      UUID smId = UUID.randomUUID();
+      SnowflakeId smId = SnowflakeId.of(200L);
       scrumTeam.assignSm(smId, "New SM");
 
       assertThat(scrumTeam.getSmEmployeeId()).isEqualTo(smId);
@@ -278,7 +277,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenSmNameIsNull() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.assignSm(UUID.randomUUID(), null))
+      assertThatThrownBy(() -> scrumTeam.assignSm(SnowflakeId.of(200L), null))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("smName must not be null");
     }

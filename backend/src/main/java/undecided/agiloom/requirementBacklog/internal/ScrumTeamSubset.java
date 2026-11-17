@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +40,7 @@ class ScrumTeamSubset {
 
   /** PO（Product Owner）の従業員ID。 */
   @Column(name = "po_employee_id")
-  protected UUID poEmployeeId;
+  protected SnowflakeId poEmployeeId;
 
   /** POの名前。 */
   @Column(name = "po_name", length = 100)
@@ -49,7 +48,7 @@ class ScrumTeamSubset {
 
   /** SM（Scrum Master）の従業員ID。 */
   @Column(name = "sm_employee_id")
-  protected UUID smEmployeeId;
+  protected SnowflakeId smEmployeeId;
 
   /** SMの名前。 */
   @Column(name = "sm_name", length = 100)
@@ -88,7 +87,7 @@ class ScrumTeamSubset {
    * @param actorEmployeeId 操作者の従業員ID
    * @return SMまたはPOであれば true
    */
-  boolean canChangeStatusBy(@Nullable UUID actorEmployeeId) {
+  boolean canChangeStatusBy(@Nullable SnowflakeId actorEmployeeId) {
     if (actorEmployeeId == null) {
       return false;
     }

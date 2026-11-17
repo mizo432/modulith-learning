@@ -14,6 +14,7 @@ import jakarta.persistence.Converter;
 import java.beans.Transient;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -149,6 +150,23 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
   @Override
   public Long value() {
     return value;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SnowflakeId that = (SnowflakeId) o;
+    return Objects.equals(this.value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(value);
   }
 
   /**

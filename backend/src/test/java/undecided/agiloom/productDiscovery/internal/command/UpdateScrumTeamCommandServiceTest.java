@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -128,7 +127,7 @@ class UpdateScrumTeamCommandServiceTest {
     void shouldAssignPo() {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(1L);
-      UUID poEmployeeId = UUID.randomUUID();
+      SnowflakeId poEmployeeId = SnowflakeId.of(100L);
       String poName = "Test PO";
       ScrumTeam existingTeam =
           ScrumTeam.builder().id(teamId).name("Test Team").build();
@@ -151,7 +150,7 @@ class UpdateScrumTeamCommandServiceTest {
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.empty());
 
       // Act & Assert
-      assertThatThrownBy(() -> service.assignPo(teamId, UUID.randomUUID(), "name"))
+      assertThatThrownBy(() -> service.assignPo(teamId, SnowflakeId.of(999L), "name"))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("ScrumTeam not found");
     }
@@ -170,7 +169,7 @@ class UpdateScrumTeamCommandServiceTest {
           ScrumTeam.builder()
               .id(teamId)
               .name("Test Team")
-              .poEmployeeId(UUID.randomUUID())
+              .poEmployeeId(SnowflakeId.of(100L))
               .poName("Test PO")
               .build();
 
@@ -207,7 +206,7 @@ class UpdateScrumTeamCommandServiceTest {
     void shouldAssignSm() {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(1L);
-      UUID smEmployeeId = UUID.randomUUID();
+      SnowflakeId smEmployeeId = SnowflakeId.of(200L);
       String smName = "Test SM";
       ScrumTeam existingTeam =
           ScrumTeam.builder().id(teamId).name("Test Team").build();
@@ -230,7 +229,7 @@ class UpdateScrumTeamCommandServiceTest {
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.empty());
 
       // Act & Assert
-      assertThatThrownBy(() -> service.assignSm(teamId, UUID.randomUUID(), "name"))
+      assertThatThrownBy(() -> service.assignSm(teamId, SnowflakeId.of(999L), "name"))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("ScrumTeam not found");
     }
@@ -249,7 +248,7 @@ class UpdateScrumTeamCommandServiceTest {
           ScrumTeam.builder()
               .id(teamId)
               .name("Test Team")
-              .smEmployeeId(UUID.randomUUID())
+              .smEmployeeId(SnowflakeId.of(200L))
               .smName("Test SM")
               .build();
 

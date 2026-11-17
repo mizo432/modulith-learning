@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,11 +28,14 @@ import undecided.supporting.snowflake.SnowflakeId;
 @ExtendWith(MockitoExtension.class)
 class ChangeBacklogItemStatusCommandServiceTest {
 
-  private static final UUID PO_ID = UUID.randomUUID();
-  private static final UUID SM_ID = UUID.randomUUID();
-  private static final UUID MEMBER_ID = UUID.randomUUID();
-  private static final SnowflakeId ITEM_ID = SnowflakeId.of(100L);
-  private static final SnowflakeId TEAM_ID = SnowflakeId.of(10L);
+  private static final long PO_ID_VALUE = 100L;
+  private static final long SM_ID_VALUE = 200L;
+  private static final long MEMBER_ID_VALUE = 300L;
+  private static final long ITEM_ID_VALUE = 100L;
+  private static final long TEAM_ID_VALUE = 10L;
+
+  private static final SnowflakeId ITEM_ID = SnowflakeId.of(ITEM_ID_VALUE);
+  private static final SnowflakeId TEAM_ID = SnowflakeId.of(TEAM_ID_VALUE);
 
   @Mock private BacklogItemRepository backlogItemRepository;
 
@@ -63,16 +65,16 @@ class ChangeBacklogItemStatusCommandServiceTest {
     return ScrumTeamSubset.builder()
         .id(TEAM_ID)
         .name("Test Team")
-        .poEmployeeId(PO_ID)
-        .smEmployeeId(SM_ID)
+        .poEmployeeId(SnowflakeId.of(PO_ID_VALUE))
+        .smEmployeeId(SnowflakeId.of(SM_ID_VALUE))
         .build();
   }
 
-  private ChangeBacklogItemStatusCommand command(BacklogItemStatus target, UUID actor) {
+  private ChangeBacklogItemStatusCommand command(BacklogItemStatus target, long actorIdValue) {
     return ChangeBacklogItemStatusCommand.builder()
         .backlogItemId(ITEM_ID)
         .targetStatus(target)
-        .actorEmployeeId(actor)
+        .actorEmployeeId(SnowflakeId.of(actorIdValue))
         .build();
   }
 
@@ -95,7 +97,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
       // Act
-      service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID));
+      service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID_VALUE));
 
       // Assert
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
@@ -107,7 +109,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       assertThat(event.scrumTeamId()).isEqualTo(TEAM_ID);
       assertThat(event.fromStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
       assertThat(event.toStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
-      assertThat(event.actorEmployeeId()).isEqualTo(PO_ID);
+      assertThat(event.actorEmployeeId()).isEqualTo(SnowflakeId.of(PO_ID_VALUE));
     }
 
     @Test
@@ -119,7 +121,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
       // Act
-      service.execute(command(BacklogItemStatus.REJECTED, SM_ID));
+      service.execute(command(BacklogItemStatus.REJECTED, SM_ID_VALUE));
 
       // Assert
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.REJECTED);
@@ -136,7 +138,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
       // Act & Assert
-      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, MEMBER_ID)))
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, MEMBER_ID_VALUE)))
           .isInstanceOf(BacklogItemPermissionDeniedException.class);
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
       verify(backlogItemRepository, never()).save(any());
@@ -159,7 +161,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
       // Act & Assert
-      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.REJECTED, PO_ID)))
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.REJECTED, PO_ID_VALUE)))
           .isInstanceOf(IllegalStateException.class);
       verify(eventPublisher, never()).publishEvent(any());
     }
@@ -171,7 +173,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.empty());
 
       // Act & Assert
-      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID)))
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID_VALUE)))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("BacklogItem not found");
     }
@@ -185,7 +187,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.empty());
 
       // Act & Assert
-      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID)))
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID_VALUE)))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("ScrumTeam not found");
     }
@@ -199,7 +201,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
       // Act & Assert
-      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID)))
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID_VALUE)))
           .isInstanceOf(IllegalArgumentException.class);
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
       verify(eventPublisher, never()).publishEvent(any());

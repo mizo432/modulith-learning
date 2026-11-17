@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -114,9 +113,9 @@ class ScrumTeamMigrationMediumTest {
       // SnowflakeIdはConverterによりLongとして保存される
       assertThat(columnTypes).contains("name:character varying");
       assertThat(columnTypes).contains("business_domain:character varying");
-      assertThat(columnTypes).contains("po_employee_id:uuid");
+      assertThat(columnTypes).contains("po_employee_id:bigint");
       assertThat(columnTypes).contains("po_name:character varying");
-      assertThat(columnTypes).contains("sm_employee_id:uuid");
+      assertThat(columnTypes).contains("sm_employee_id:bigint");
       assertThat(columnTypes).contains("sm_name:character varying");
       assertThat(columnTypes).contains("created_at:timestamp without time zone");
       assertThat(columnTypes).contains("updated_at:timestamp without time zone");
@@ -140,6 +139,61 @@ class ScrumTeamMigrationMediumTest {
       // Assert
       assertThat(notNullableColumns)
           .containsExactlyInAnyOrder("id", "name", "business_domain", "product_id", "created_at", "updated_at");
+    }
+
+    @Test
+    @DisplayName("productsテーブルのmanager_idカラムがbigintであること")
+    void shouldProductsManagerIdBeBigint() {
+      // Act
+      List<String> columnTypes =
+          jdbcTemplate.queryForList(
+              """
+              SELECT column_name || ':' || data_type AS col_type FROM information_schema.columns
+              WHERE table_schema = 'undecided_ag'
+              AND table_name = 'products'
+              AND column_name = 'manager_id'
+              """,
+              String.class);
+
+      // Assert
+      assertThat(columnTypes).contains("manager_id:bigint");
+    }
+
+    @Test
+    @DisplayName("scrum_team_subsetsテーブルが存在すること")
+    void shouldScrumTeamSubsetsTableExist() {
+      // Act
+      Integer tableCount =
+          jdbcTemplate.queryForObject(
+              """
+              SELECT COUNT(*) FROM information_schema.tables
+              WHERE table_schema = 'undecided_ag'
+              AND table_name = 'scrum_team_subsets'
+              """,
+              Integer.class);
+
+      // Assert
+      assertThat(tableCount).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("scrum_team_subsetsテーブルのpo_employee_id/sm_employee_idがbigintであること")
+    void shouldScrumTeamSubsetsEmployeeIdsBeBigint() {
+      // Act
+      List<String> columnTypes =
+          jdbcTemplate.queryForList(
+              """
+              SELECT column_name || ':' || data_type AS col_type FROM information_schema.columns
+              WHERE table_schema = 'undecided_ag'
+              AND table_name = 'scrum_team_subsets'
+              AND column_name IN ('po_employee_id', 'sm_employee_id')
+              ORDER BY column_name
+              """,
+              String.class);
+
+      // Assert
+      assertThat(columnTypes).contains("po_employee_id:bigint");
+      assertThat(columnTypes).contains("sm_employee_id:bigint");
     }
 
     @Test
@@ -225,9 +279,9 @@ class ScrumTeamMigrationMediumTest {
           .id(SnowflakeId.of(200L))
           .name("テストチーム")
           .businessDomain("テスト領域")
-          .poEmployeeId(UUID.randomUUID())
+          .poEmployeeId(SnowflakeId.of(100L))
           .poName("テストPO")
-          .smEmployeeId(UUID.randomUUID())
+          .smEmployeeId(SnowflakeId.of(200L))
           .smName("テストSM")
           .product(product)
           .build();
@@ -311,7 +365,7 @@ class ScrumTeamMigrationMediumTest {
       ScrumTeam saved = scrumTeamRepository.save(scrumTeam);
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(203L)).orElseThrow();
 
-      assertThat(loaded.getPoEmployeeId()).isNull();
+      assertThat(loaded.getPoEmployeeId()).isEqualTo(SnowflakeId.EMPTY);
       assertThat(loaded.getPoName()).isNull();
     }
 
@@ -326,8 +380,8 @@ class ScrumTeamMigrationMediumTest {
       scrumTeamRepository.save(scrumTeam);
 
       // Act
-      UUID newPoId = UUID.randomUUID();
-      UUID newSmId = UUID.randomUUID();
+      SnowflakeId newPoId = SnowflakeId.of(300L);
+      SnowflakeId newSmId = SnowflakeId.of(400L);
       scrumTeam.update("更新後チーム名", "更新後領域", newPoId, "更新後PO", newSmId, "更新後SM");
       scrumTeamRepository.save(scrumTeam);
 
@@ -336,9 +390,9 @@ class ScrumTeamMigrationMediumTest {
       // Assert
       assertThat(loaded.getName()).isEqualTo("更新後チーム名");
       assertThat(loaded.getBusinessDomain()).isEqualTo("更新後領域");
-      assertThat(loaded.getPoEmployeeId()).isEqualTo(newPoId);
+      assertThat(loaded.getPoEmployeeId().value()).isEqualTo(newPoId.value());
       assertThat(loaded.getPoName()).isEqualTo("更新後PO");
-      assertThat(loaded.getSmEmployeeId()).isEqualTo(newSmId);
+      assertThat(loaded.getSmEmployeeId().value()).isEqualTo(newSmId.value());
       assertThat(loaded.getSmName()).isEqualTo("更新後SM");
     }
 
@@ -359,14 +413,14 @@ class ScrumTeamMigrationMediumTest {
       scrumTeamRepository.save(scrumTeam);
 
       // Act
-      UUID poId = UUID.randomUUID();
+      SnowflakeId poId = SnowflakeId.of(500L);
       scrumTeam.assignPo(poId, "新しいPO");
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(204L)).orElseThrow();
 
       // Assert
-      assertThat(loaded.getPoEmployeeId()).isEqualTo(poId);
+      assertThat(loaded.getPoEmployeeId().value()).isEqualTo(poId.value());
       assertThat(loaded.getPoName()).isEqualTo("新しいPO");
     }
 
@@ -387,7 +441,7 @@ class ScrumTeamMigrationMediumTest {
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(200L)).orElseThrow();
 
       // Assert
-      assertThat(loaded.getPoEmployeeId()).isNull();
+      assertThat(loaded.getPoEmployeeId()).isEqualTo(SnowflakeId.EMPTY);
       assertThat(loaded.getPoName()).isNull();
     }
 
@@ -408,14 +462,14 @@ class ScrumTeamMigrationMediumTest {
       scrumTeamRepository.save(scrumTeam);
 
       // Act
-      UUID smId = UUID.randomUUID();
+      SnowflakeId smId = SnowflakeId.of(600L);
       scrumTeam.assignSm(smId, "新しいSM");
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(205L)).orElseThrow();
 
       // Assert
-      assertThat(loaded.getSmEmployeeId()).isEqualTo(smId);
+      assertThat(loaded.getSmEmployeeId().value()).isEqualTo(smId.value());
       assertThat(loaded.getSmName()).isEqualTo("新しいSM");
     }
 
@@ -436,7 +490,7 @@ class ScrumTeamMigrationMediumTest {
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(200L)).orElseThrow();
 
       // Assert
-      assertThat(loaded.getSmEmployeeId()).isNull();
+      assertThat(loaded.getSmEmployeeId()).isEqualTo(SnowflakeId.EMPTY);
       assertThat(loaded.getSmName()).isNull();
     }
   }
@@ -478,6 +532,24 @@ class ScrumTeamMigrationMediumTest {
 
       // Assert
       assertThat(tables).containsExactly("products", "scrum_teams");
+    }
+
+    @Test
+    @DisplayName("scrum_team_subsetsテーブルも存在すること")
+    void shouldScrumTeamSubsetsTableExist() {
+      // Act
+      List<String> tables =
+          jdbcTemplate.queryForList(
+              """
+              SELECT table_name FROM information_schema.tables
+              WHERE table_schema = 'undecided_ag'
+              AND table_name IN ('products', 'scrum_teams', 'scrum_team_subsets')
+              ORDER BY table_name
+              """,
+              String.class);
+
+      // Assert
+      assertThat(tables).containsExactly("products", "scrum_team_subsets", "scrum_teams");
     }
   }
 }

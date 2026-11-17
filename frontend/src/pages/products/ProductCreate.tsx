@@ -48,8 +48,8 @@ const ProductCreate: React.FC = () => {
       newErrors.name = 'プロダクト名は100文字以内で入力してください';
     }
 
-    if (formData.managerId && !/^[0-9a-fA-F-]{36}$/.test(formData.managerId)) {
-      newErrors.managerId = '有効なUUID形式で入力してください';
+    if (formData.managerId && !/^[0-9]+$/.test(formData.managerId)) {
+      newErrors.managerId = '有効な数値ID形式で入力してください';
     }
 
     setErrors(newErrors);
@@ -141,7 +141,7 @@ const ProductCreate: React.FC = () => {
                     value={formData.managerId}
                     onChange={handleChange}
                     error={!!errors.managerId}
-                    helperText={errors.managerId || 'マネージャーのUUID（任意）'}
+                    helperText={errors.managerId || 'マネージャーのID（任意）'}
                     disabled={loading}
                 />
               </Grid>

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -58,7 +57,7 @@ class ProductCommandControllerTest {
             .id(productId)
             .name("Test Product")
             .description("Test Description")
-            .managerId(UUID.randomUUID())
+            .managerId(SnowflakeId.of(100L))
             .status(ProductStatus.ACTIVE)
             .build();
     productResponse =

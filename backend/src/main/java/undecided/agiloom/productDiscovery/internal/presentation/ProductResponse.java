@@ -2,7 +2,6 @@ package undecided.agiloom.productDiscovery.internal.presentation;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,7 @@ public class ProductResponse {
   private SnowflakeId id;
   private String name;
   private String description;
-  private UUID managerId;
+  private SnowflakeId managerId;
   private ProductStatus status;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

@@ -1,7 +1,6 @@
 package undecided.agiloom.requirementBacklog.spi;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -24,5 +23,5 @@ public record BacklogItemStatusChanged(
     SnowflakeId scrumTeamId,
     BacklogItemStatus fromStatus,
     BacklogItemStatus toStatus,
-    UUID actorEmployeeId,
+    SnowflakeId actorEmployeeId,
     LocalDateTime occurredAt) {}

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -64,7 +63,7 @@ class CreateProductCommandServiceTest {
     @Test
     @DisplayName("マネージャーID付きでプロダクトが作成される")
     void shouldCreateProductWithManagerId() {
-      UUID managerId = UUID.randomUUID();
+      SnowflakeId managerId = SnowflakeId.of(100L);
       CreateProductCommand command =
           CreateProductCommand.builder()
               .name("Test Product")

@@ -1,11 +1,11 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
 
 import jakarta.validation.constraints.NotBlank;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import undecided.supporting.snowflake.SnowflakeId;
 
 @Data
 @Builder
@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class CreateScrumTeamRequest {
   @NotBlank private String name;
   @NotBlank private String businessDomain;
-  private UUID poEmployeeId;
+  private SnowflakeId poEmployeeId;
   private String poName;
-  private UUID smEmployeeId;
+  private SnowflakeId smEmployeeId;
   private String smName;
 }

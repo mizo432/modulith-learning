@@ -1,6 +1,5 @@
 package undecided.agiloom.productDiscovery.spi;
 
-import java.util.UUID;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -28,9 +27,9 @@ public record ScrumTeamChanged(
     SnowflakeId productId,
     String name,
     String businessDomain,
-    UUID poEmployeeId,
+    SnowflakeId poEmployeeId,
     String poName,
-    UUID smEmployeeId,
+    SnowflakeId smEmployeeId,
     String smName,
     boolean removed) {
 

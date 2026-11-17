@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +51,7 @@ public class ScrumTeam {
 
   /** PO（Product Owner）の従業員ID。 */
   @Column(name = "po_employee_id")
-  protected UUID poEmployeeId;
+  protected SnowflakeId poEmployeeId;
 
   /** POの名前（非正規化フィールド）。 */
   @Column(name = "po_name", length = 100)
@@ -60,7 +59,7 @@ public class ScrumTeam {
 
   /** SM（Scrum Master）の従業員ID。 */
   @Column(name = "sm_employee_id")
-  protected UUID smEmployeeId;
+  protected SnowflakeId smEmployeeId;
 
   /** SMの名前（非正規化フィールド）。 */
   @Column(name = "sm_name", length = 100)
@@ -94,9 +93,9 @@ public class ScrumTeam {
   public void update(
       @Nullable String name,
       @Nullable String businessDomain,
-      @Nullable UUID poEmployeeId,
+      @Nullable SnowflakeId poEmployeeId,
       @Nullable String poName,
-      @Nullable UUID smEmployeeId,
+      @Nullable SnowflakeId smEmployeeId,
       @Nullable String smName) {
     if (name != null) {
       checkNonEmpty(name, () -> new IllegalArgumentException("ScrumTeam name must not be empty"));
@@ -128,7 +127,7 @@ public class ScrumTeam {
    * @param poEmployeeId POの従業員ID
    * @param poName POの名前
    */
-  public void assignPo(@NonNull UUID poEmployeeId, @NonNull String poName) {
+  public void assignPo(@NonNull SnowflakeId poEmployeeId, @NonNull String poName) {
     checkNotNull(poEmployeeId, () -> new IllegalArgumentException("poEmployeeId must not be null"));
     checkNotNull(poName, () -> new IllegalArgumentException("poName must not be null"));
     this.poEmployeeId = poEmployeeId;
@@ -149,7 +148,7 @@ public class ScrumTeam {
    * @param smEmployeeId SMの従業員ID
    * @param smName SMの名前
    */
-  public void assignSm(@NonNull UUID smEmployeeId, @NonNull String smName) {
+  public void assignSm(@NonNull SnowflakeId smEmployeeId, @NonNull String smName) {
     checkNotNull(smEmployeeId, () -> new IllegalArgumentException("smEmployeeId must not be null"));
     checkNotNull(smName, () -> new IllegalArgumentException("smName must not be null"));
     this.smEmployeeId = smEmployeeId;
