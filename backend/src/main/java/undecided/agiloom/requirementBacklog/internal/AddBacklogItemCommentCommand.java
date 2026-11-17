@@ -1,6 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @AllArgsConstructor
 class AddBacklogItemCommentCommand {
   @NonNull private SnowflakeId backlogItemId;
-  private UUID authorEmployeeId;
+  private SnowflakeId authorEmployeeId;
   @NonNull private String authorName;
   @NonNull private String body;
 }

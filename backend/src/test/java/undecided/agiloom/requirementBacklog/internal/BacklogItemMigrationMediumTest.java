@@ -135,6 +135,16 @@ class BacklogItemMigrationMediumTest {
       assertThat(script).contains("ADD COLUMN quality_category VARCHAR(20)");
     }
 
+    @Test
+    @DisplayName("Flywayマイグレーションスクリプトでemployee_idカラムがBIGINTへ変更されること")
+    void shouldMigrationScriptAlterEmployeeIdsToBigint() {
+      String script =
+          readClasspathResource("db/migration/ag/V20261117180000__alter_backlog_employee_ids_to_bigint.sql");
+      assertThat(script)
+          .contains("ALTER COLUMN creator_employee_id TYPE BIGINT")
+          .contains("ALTER COLUMN author_employee_id TYPE BIGINT");
+    }
+
     private String readClasspathResource(String path) {
       try {
         return new ClassPathResource(path).getContentAsString(StandardCharsets.UTF_8);

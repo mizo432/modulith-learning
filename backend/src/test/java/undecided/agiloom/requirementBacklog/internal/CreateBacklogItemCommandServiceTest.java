@@ -78,6 +78,35 @@ class CreateBacklogItemCommandServiceTest {
     }
 
     @Test
+    @DisplayName("creatorEmployeeIdがSnowflakeIdで設定されること")
+    void shouldSetCreatorEmployeeIdAsSnowflakeId() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(10L);
+      SnowflakeId employeeId = SnowflakeId.of(999L);
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      CreateBacklogItemCommand command =
+          CreateBacklogItemCommand.builder()
+              .scrumTeamId(teamId)
+              .title("New Item")
+              .creatorName("Creator")
+              .creatorEmployeeId(employeeId)
+              .build();
+
+      when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(SnowflakeId.of(100L));
+      when(backlogItemRepository.save(any(BacklogItem.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+      // Act
+      service.execute(command);
+
+      // Assert
+      ArgumentCaptor<BacklogItem> captor = ArgumentCaptor.forClass(BacklogItem.class);
+      verify(backlogItemRepository).save(captor.capture());
+      assertThat(captor.getValue().getCreatorEmployeeId()).isEqualTo(employeeId);
+    }
+
+    @Test
     @DisplayName("チームのサブセットが存在しない場合、例外がスローされること")
     void shouldThrowWhenTeamNotFound() {
       // Arrange
