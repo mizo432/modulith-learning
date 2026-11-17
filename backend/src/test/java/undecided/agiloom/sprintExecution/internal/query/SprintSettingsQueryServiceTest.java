@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,11 +35,11 @@ class SprintSettingsQueryServiceTest {
   @InjectMocks
   private SprintSettingsQueryService service;
 
-  private UUID productId;
+  private SnowflakeId productId;
 
   @BeforeEach
   void setUp() {
-    productId = UUID.randomUUID();
+    productId = SnowflakeId.of(100L);
   }
 
   @Nested

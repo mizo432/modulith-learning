@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -73,7 +72,7 @@ class CreateScrumTeamCommandServiceTest {
 
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
-      when(sprintZeroFactory.createSprintZero(any(UUID.class), any(UUID.class), any(String.class)))
+      when(sprintZeroFactory.createSprintZero(any(SnowflakeId.class), any(SnowflakeId.class), any(String.class)))
           .thenReturn(Optional.empty());
 
       // Act
@@ -82,7 +81,7 @@ class CreateScrumTeamCommandServiceTest {
       // Assert
       assertThat(result.value()).isEqualTo(2L);
       verify(scrumTeamRepository).save(any(ScrumTeam.class));
-      verify(sprintZeroFactory).createSprintZero(any(UUID.class), any(UUID.class), any(String.class));
+      verify(sprintZeroFactory).createSprintZero(any(SnowflakeId.class), any(SnowflakeId.class), any(String.class));
     }
 
     @Test
@@ -110,14 +109,14 @@ class CreateScrumTeamCommandServiceTest {
 
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
-      when(sprintZeroFactory.createSprintZero(any(UUID.class), any(UUID.class), any(String.class)))
+      when(sprintZeroFactory.createSprintZero(any(SnowflakeId.class), any(SnowflakeId.class), any(String.class)))
           .thenReturn(Optional.empty());
 
       // Act
       service.execute(command);
 
       // Assert
-      verify(sprintZeroFactory).createSprintZero(any(UUID.class), any(UUID.class), any(String.class));
+      verify(sprintZeroFactory).createSprintZero(any(SnowflakeId.class), any(SnowflakeId.class), any(String.class));
     }
 
     @Test
@@ -144,17 +143,17 @@ class CreateScrumTeamCommandServiceTest {
               .build();
 
       Sprint existingSprintZero = Sprint.createSprintZero(
-          UUID.randomUUID(), UUID.randomUUID(), "Test Team");
+          SnowflakeId.of(1L), SnowflakeId.of(2L), "Test Team");
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
-      when(sprintZeroFactory.createSprintZero(any(UUID.class), any(UUID.class), any(String.class)))
+      when(sprintZeroFactory.createSprintZero(any(SnowflakeId.class), any(SnowflakeId.class), any(String.class)))
           .thenReturn(Optional.of(existingSprintZero));
 
       // Act
       service.execute(command);
 
       // Assert
-      verify(sprintZeroFactory).createSprintZero(any(UUID.class), any(UUID.class), any(String.class));
+      verify(sprintZeroFactory).createSprintZero(any(SnowflakeId.class), any(SnowflakeId.class), any(String.class));
     }
 
     @Test

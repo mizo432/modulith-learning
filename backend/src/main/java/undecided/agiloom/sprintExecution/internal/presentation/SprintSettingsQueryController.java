@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import undecided.agiloom.sprintExecution.internal.query.SprintSettingsQueryService;
 import undecided.agiloom.sprintExecution.spi.SprintSettings;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /** スプリント設定取得APIコントローラー。 */
 @RestController
@@ -29,14 +29,15 @@ public class SprintSettingsQueryController {
    */
   @GetMapping("/{productId}/sprint-settings")
   public SprintSettingsResponse getSprintSettings(
-      @PathVariable @NotNull UUID productId) {
-    SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productId);
+      @PathVariable @NotNull String productId) {
+    SnowflakeId productIdId = SnowflakeId.of(Long.parseLong(productId));
+    SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productIdId);
     return toResponse(settings);
   }
 
   private SprintSettingsResponse toResponse(SprintSettings settings) {
     return SprintSettingsResponse.builder()
-        .productId(settings.getProductId())
+        .productId(settings.getProductId().value().toString())
         .businessDays(settings.getBusinessDays())
         .endDayOfWeek(settings.getEndDayOfWeek())
         .build();
@@ -51,11 +52,12 @@ public class SprintSettingsQueryController {
    */
   @GetMapping("/{productId}/sprint-settings/calculate-end-date")
   public CalculateEndDateResponse calculateEndDate(
-      @PathVariable @NotNull UUID productId,
+      @PathVariable @NotNull String productId,
       @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
 
-    SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productId);
-    LocalDate endDate = sprintSettingsQueryService.calculateEndDate(productId, startDate);
+    SnowflakeId productIdId = SnowflakeId.of(Long.parseLong(productId));
+    SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productIdId);
+    LocalDate endDate = sprintSettingsQueryService.calculateEndDate(productIdId, startDate);
 
     return CalculateEndDateResponse.builder()
         .startDate(startDate)

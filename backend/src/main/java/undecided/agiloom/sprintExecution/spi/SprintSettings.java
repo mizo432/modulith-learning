@@ -12,7 +12,6 @@ import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,7 +44,7 @@ public class SprintSettings {
 
   /** 関連するプロダクトのID。 */
   @Column(name = "product_id", nullable = false)
-  protected UUID productId;
+  protected SnowflakeId productId;
 
   /** スプリント期間（営業日数）。1〜30日の範囲で設定可能です。デフォルトは10日です。 */
   @Column(name = "business_days", nullable = false)

@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +59,7 @@ public class Impediment {
 
   /** 障害事項の担当者のID。nullの場合は未割り当てです。 */
   @Column(name = "assignee_id")
-  protected UUID assigneeId;
+  protected SnowflakeId assigneeId;
 
   /** 障害事項の状態（NEW, IN_PROGRESS, RESOLVEDなど）。 */
   @Enumerated(EnumType.STRING)
@@ -108,7 +107,7 @@ public class Impediment {
             @NonNull String title,
             @NonNull String description,
             @Nullable String impact,
-            @Nullable UUID assigneeId,
+            @Nullable SnowflakeId assigneeId,
             @NonNull ImpedimentStatus status,
             @Nullable LocalDateTime resolvedAt,
             @NonNull LocalDateTime createdAt,
@@ -146,7 +145,7 @@ public class Impediment {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(@NonNull String title, @NonNull String description, @Nullable String impact, @Nullable UUID assigneeId) {
+    public void update(@NonNull String title, @NonNull String description, @Nullable String impact, @Nullable SnowflakeId assigneeId) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(description, () -> new IllegalArgumentException("description must not be null"));
         this.title = title;

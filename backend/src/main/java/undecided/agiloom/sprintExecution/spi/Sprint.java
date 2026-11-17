@@ -15,7 +15,6 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +51,7 @@ public class Sprint {
 
   /** 関連する製品のID。 */
   @Column(name = "product_id", nullable = false)
-  protected UUID productId;
+  protected SnowflakeId productId;
 
   /** Sprintの番号。製品ごとに連番で管理されます。 */
   @Column(name = "sprint_number", nullable = false)
@@ -82,7 +81,7 @@ public class Sprint {
 
   /** Sprintを担当するチームのID。 */
   @Column(name = "team_id", nullable = false)
-  protected UUID teamId;
+  protected SnowflakeId teamId;
 
   /** Sprintを担当するチームの名前。 */
   @Column(name = "team_name", length = 100)
@@ -218,7 +217,7 @@ public class Sprint {
      * @param teamName スクラムチームの名前
      * @return スプリント0のインスタンス
      */
-    public static Sprint createSprintZero(@NonNull UUID productId, @NonNull UUID teamId, @NonNull String teamName) {
+    public static Sprint createSprintZero(@NonNull SnowflakeId productId, @NonNull SnowflakeId teamId, @NonNull String teamName) {
         checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
         checkNotNull(teamId, () -> new IllegalArgumentException("teamId must not be null"));
         checkNotNull(teamName, () -> new IllegalArgumentException("teamName must not be null"));

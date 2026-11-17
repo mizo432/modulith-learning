@@ -1,12 +1,12 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import undecided.supporting.snowflake.SnowflakeId;
 
 @Data
 @Builder
@@ -14,7 +14,7 @@ import org.jspecify.annotations.NonNull;
 @AllArgsConstructor
 public class CreateSprintCommand {
     @NonNull
-    private UUID productId;
+    private SnowflakeId productId;
 
     @NonNull
     private Integer sprintNumber;
@@ -30,7 +30,7 @@ public class CreateSprintCommand {
     private LocalDate endDate;
 
     @NonNull
-    private UUID teamId;
+    private SnowflakeId teamId;
 
     private String teamName;
 }

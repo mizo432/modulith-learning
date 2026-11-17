@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -29,7 +28,7 @@ class SprintSettingsCalculatorTest {
   private SprintSettings createSettings() {
     return SprintSettings.builder()
         .id(SnowflakeId.of(1L))
-        .productId(UUID.randomUUID())
+        .productId(SnowflakeId.of(100L))
         .businessDays(10)
         .endDayOfWeek(EndDayOfWeek.FRIDAY)
         .build();
@@ -63,7 +62,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(2L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -86,7 +85,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(3L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -129,7 +128,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(4L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.WEDNESDAY)
           .build();
@@ -152,7 +151,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(5L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -183,7 +182,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(6L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -211,7 +210,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(7L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -256,7 +255,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(8L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(1)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -279,7 +278,7 @@ class SprintSettingsCalculatorTest {
       // Arrange
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(9L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();

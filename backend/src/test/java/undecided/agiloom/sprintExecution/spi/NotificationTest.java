@@ -2,7 +2,6 @@ package undecided.agiloom.sprintExecution.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -16,8 +15,8 @@ class NotificationTest {
   private Notification createNotification() {
     return Notification.builder()
         .id(SnowflakeId.of(1L))
-        .recipientId(UUID.randomUUID())
-        .productId(UUID.randomUUID())
+        .recipientId(SnowflakeId.of(300L))
+        .productId(SnowflakeId.of(100L))
         .title("Task assigned")
         .content("You have been assigned to a new task")
         .type(NotificationType.ASSIGNEE_CHANGE)

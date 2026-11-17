@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -15,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreateSprintRequest {
     @NotNull
-    private UUID productId;
+    private String productId;
 
     @NotNull
     private Integer sprintNumber;
@@ -31,7 +30,7 @@ public class CreateSprintRequest {
     private LocalDate endDate;
 
     @NotNull
-    private UUID teamId;
+    private String teamId;
 
     private String teamName;
 }

@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,7 @@ public class CreateSprintCommandService {
         
         // endDateが指定されていない場合、スプリント設定に基づいて自動計算する
         if (endDate == null) {
-            UUID productId = command.getProductId();
+            SnowflakeId productId = command.getProductId();
             SprintSettings settings = sprintSettingsRepository.findByProductId(productId)
                 .orElseGet(() -> SprintSettings.builder().productId(productId).build());
             endDate = sprintSettingsCalculator.calculateEndDate(settings, command.getStartDate());

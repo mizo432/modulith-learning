@@ -1,6 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import undecided.agiloom.sprintExecution.spi.EndDayOfWeek;
@@ -13,7 +12,7 @@ import undecided.agiloom.sprintExecution.spi.EndDayOfWeek;
 public class SprintSettingsResponse {
 
   /** プロダクトのID。 */
-  private UUID productId;
+  private String productId;
 
   /** スプリント期間（営業日数）。 */
   private Integer businessDays;

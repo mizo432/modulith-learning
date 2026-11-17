@@ -44,13 +44,13 @@ public class SprintCommandController {
     @PostMapping
     public ResponseEntity<SprintResponse> createSprint(@Valid @RequestBody CreateSprintRequest request) {
         CreateSprintCommand command = CreateSprintCommand.builder()
-                .productId(request.getProductId())
+                .productId(SnowflakeId.of(Long.parseLong(request.getProductId())))
                 .sprintNumber(request.getSprintNumber())
                 .title(request.getTitle())
                 .goal(request.getGoal())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .teamId(request.getTeamId())
+                .teamId(SnowflakeId.of(Long.parseLong(request.getTeamId())))
                 .teamName(request.getTeamName())
                 .build();
 
@@ -75,20 +75,21 @@ public class SprintCommandController {
     @PutMapping("/settings")
     public ResponseEntity<SprintSettingsResponse> updateSprintSettings(
             @Valid @RequestBody UpdateSprintSettingsRequest request) {
+        SnowflakeId productIdId = SnowflakeId.of(Long.parseLong(request.getProductId()));
         UpdateSprintSettingsCommand command = UpdateSprintSettingsCommand.builder()
-                .productId(request.getProductId())
+                .productId(productIdId)
                 .businessDays(request.getBusinessDays())
                 .endDayOfWeek(request.getEndDayOfWeek())
                 .build();
 
         updateSprintSettingsCommandService.execute(command);
-        SprintSettings settings = sprintSettingsQueryService.findByProductId(request.getProductId()).orElseThrow();
+        SprintSettings settings = sprintSettingsQueryService.findByProductId(productIdId).orElseThrow();
         return ResponseEntity.ok(toSprintSettingsResponse(settings));
     }
 
     private SprintSettingsResponse toSprintSettingsResponse(SprintSettings settings) {
         return SprintSettingsResponse.builder()
-                .productId(settings.getProductId())
+                .productId(settings.getProductId().value().toString())
                 .businessDays(settings.getBusinessDays())
                 .endDayOfWeek(settings.getEndDayOfWeek())
                 .build();

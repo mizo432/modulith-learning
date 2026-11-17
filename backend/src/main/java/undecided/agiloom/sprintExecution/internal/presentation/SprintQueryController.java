@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
 
 import java.util.List;
-import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
@@ -49,8 +48,9 @@ public class SprintQueryController {
      */
     @GetMapping("/settings")
     public SprintSettingsResponse getSprintSettings(
-            @RequestParam @NotNull UUID productId) {
-        SprintSettings settings = sprintSettingsQueryService.findByProductId(productId)
+            @RequestParam @NotNull String productId) {
+        SnowflakeId productIdId = SnowflakeId.of(Long.parseLong(productId));
+        SprintSettings settings = sprintSettingsQueryService.findByProductId(productIdId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Sprint settings not found for product: " + productId));
         return toSprintSettingsResponse(settings);
@@ -59,14 +59,14 @@ public class SprintQueryController {
     SprintResponse toResponse(Sprint sprint) {
         return SprintResponse.builder()
                 .id(sprint.getId())
-                .productId(sprint.getProductId())
+                .productId(sprint.getProductId().value().toString())
                 .sprintNumber(sprint.getSprintNumber())
                 .title(sprint.getTitle())
                 .goal(sprint.getGoal())
                 .startDate(sprint.getStartDate())
                 .endDate(sprint.getEndDate())
                 .status(sprint.getStatus())
-                .teamId(sprint.getTeamId())
+                .teamId(sprint.getTeamId().value().toString())
                 .teamName(sprint.getTeamName())
                 .velocity(sprint.getVelocity())
                 .notes(sprint.getNotes())
@@ -78,7 +78,7 @@ public class SprintQueryController {
 
     private SprintSettingsResponse toSprintSettingsResponse(SprintSettings settings) {
         return SprintSettingsResponse.builder()
-                .productId(settings.getProductId())
+                .productId(settings.getProductId().value().toString())
                 .businessDays(settings.getBusinessDays())
                 .endDayOfWeek(settings.getEndDayOfWeek())
                 .build();

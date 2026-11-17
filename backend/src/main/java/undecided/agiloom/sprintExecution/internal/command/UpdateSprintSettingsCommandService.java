@@ -3,7 +3,6 @@ package undecided.agiloom.sprintExecution.internal.command;
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +42,7 @@ public class UpdateSprintSettingsCommandService {
   public SnowflakeId execute(@NonNull UpdateSprintSettingsCommand command) {
     checkNotNull(command, () -> new IllegalArgumentException("command must not be null"));
 
-    UUID productId = command.getProductId();
+    SnowflakeId productId = command.getProductId();
 
     // スプリント0が存在するか確認
     Optional<Sprint> sprintZero = sprintRepository.findByProductIdAndSprintNumber(productId, 0);

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,11 +30,11 @@ class SprintQueryControllerTest {
   @InjectMocks
   private SprintQueryController controller;
 
-  private UUID productId;
+  private SnowflakeId productId;
 
   @BeforeEach
   void setUp() {
-    productId = UUID.randomUUID();
+    productId = SnowflakeId.of(100L);
   }
 
   @Nested
@@ -57,11 +56,11 @@ class SprintQueryControllerTest {
           .thenReturn(Optional.of(settings));
 
       // Act
-      SprintSettingsResponse response = controller.getSprintSettings(productId);
+      SprintSettingsResponse response = controller.getSprintSettings(productId.value().toString());
 
       // Assert
       assertThat(response).isNotNull();
-      assertThat(response.getProductId()).isEqualTo(productId);
+      assertThat(response.getProductId()).isEqualTo(productId.value().toString());
       assertThat(response.getBusinessDays()).isEqualTo(10);
       assertThat(response.getEndDayOfWeek()).isEqualTo(EndDayOfWeek.FRIDAY);
     }
@@ -74,7 +73,7 @@ class SprintQueryControllerTest {
           .thenReturn(Optional.empty());
 
       // Act & Assert
-      assertThatThrownBy(() -> controller.getSprintSettings(productId))
+      assertThatThrownBy(() -> controller.getSprintSettings(productId.value().toString()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("Sprint settings not found for product");
     }

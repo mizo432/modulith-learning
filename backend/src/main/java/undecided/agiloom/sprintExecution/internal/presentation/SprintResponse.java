@@ -2,7 +2,6 @@ package undecided.agiloom.sprintExecution.internal.presentation;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,14 +15,14 @@ import undecided.supporting.snowflake.SnowflakeId;
 @AllArgsConstructor
 public class SprintResponse {
     private SnowflakeId id;
-    private UUID productId;
+    private String productId;
     private Integer sprintNumber;
     private String title;
     private String goal;
     private LocalDate startDate;
     private LocalDate endDate;
     private SprintStatus status;
-    private UUID teamId;
+    private String teamId;
     private String teamName;
     private Integer velocity;
     private String notes;

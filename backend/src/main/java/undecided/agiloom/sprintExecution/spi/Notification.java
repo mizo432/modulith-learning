@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,11 +41,11 @@ public class Notification {
 
   /** 通知を受信するユーザーのID。 */
   @Column(name = "recipient_id", nullable = false)
-  protected UUID recipientId;
+  protected SnowflakeId recipientId;
 
   /** 通知に関連する製品のID。 */
   @Column(name = "product_id", nullable = false)
-  protected UUID productId;
+  protected SnowflakeId productId;
 
   /** 通知のタイトル。 */
   @Column(nullable = false, length = 200)
@@ -97,8 +96,8 @@ public class Notification {
      */
     public static Notification create(
             @NonNull SnowflakeId id,
-            @NonNull UUID recipientId,
-            @NonNull UUID productId,
+            @NonNull SnowflakeId recipientId,
+            @NonNull SnowflakeId productId,
             @NonNull String title,
             @NonNull String content,
             @NonNull NotificationType type,
