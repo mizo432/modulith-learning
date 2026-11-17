@@ -1,0 +1,14 @@
+情報属性一覧
+INF-JB-16	通知履歴	イベント	通知配信日時、宛先、配信結果
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	notificationHistoryId	Y	String	Y	通知履歴ID（一意識別子）
+2	notificationSettingId	N	String	Y	通知設定ID（外部キー）
+3	executionId	N	String	Y	実行ID（外部キー）
+4	jobCode	N	String	Y	ジョブコード
+5	executionState	N	Enum	Y	実行状態（成功/失敗/結果不明）
+6	destination	N	String	Y	通知先
+7	channel	N	Enum	Y	通知チャネル（メール/Slack/LINE等）
+8	sentAt	N	DateTime	Y	配信日時
+9	deliveryStatus	N	Enum	Y	配信ステータス（成功/失敗）
+10	errorMessage	N	String	N	エラーメッセージ

@@ -1,0 +1,3 @@
+業務一覧
+ID	業務名	概要	主なアクター	アクティビティ	UC	関連情報	関連状態
+BUC-AS-01	Party登録・管理	個人や組織を登録・管理する	ACT-01	Partyの登録;Partyの更新;Partyの参照;Partyの削除	UC-AS-001;UC-AS-002;UC-AS-003;UC-AS-004	Party	有効;無効

@@ -1,0 +1,5 @@
+ID	サブドメイン名	英語名	種類	概要	関連BUC
+SD-JB-01	ジョブ定義管理	Job Definition Management	コアドメイン	ジョブの定義、配備、スケジュールを管理	BUC-JB-01
+SD-JB-02	ジョブ実行制御	Job Execution Control	コアドメイン	ジョブの起動、実行制御、状態管理	BUC-JB-02, BUC-JB-05
+SD-JB-03	実行監視	Execution Monitoring	サポートリングドメイン	実行状況の監視、履歴確認、通知	BUC-JB-03, BUC-JB-04, BUC-JB-06
+SD-JB-04	権限管理	Permission Management	サポートリングドメイン	ユーザー権限、会社・店舗管理、監査ログ	BUC-JB-07, BUC-JB-08

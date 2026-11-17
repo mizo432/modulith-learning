@@ -6,7 +6,7 @@ import {useAuth} from '../contexts/AuthContext';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const {isAuthenticated, login} = useAuth();
+  const {isAuthenticated, login, isFirstLogin: storedFirstLogin} = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,9 +15,13 @@ const Login: React.FC = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      if (storedFirstLogin) {
+        navigate('/change-password');
+      } else {
+        navigate('/');
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, storedFirstLogin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,10 +32,16 @@ const Login: React.FC = () => {
       const response = await api.post('/auth/login', {username, password});
 
       if (response.data.success) {
-        // Use the login function from auth context
-        login(response.data.token || 'dummy-token', response.data.username, response.data.isAdmin || false);
+        // Use the login function from auth context with firstLogin flag
+        const firstLogin = response.data.firstLogin || false;
+        login(response.data.token || 'dummy-token', response.data.username, response.data.isAdmin || false, firstLogin);
 
-        // The redirect will happen automatically due to the useEffect hook
+        // Redirect based on firstLogin status
+        if (firstLogin) {
+          navigate('/change-password');
+        } else {
+          navigate('/');
+        }
       } else {
         setError(response.data.message || 'Authentication failed');
       }

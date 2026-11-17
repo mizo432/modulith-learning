@@ -1,0 +1,97 @@
+package undecided.agiloom.requirementBacklog.internal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import undecided.agiloom.productDiscovery.spi.ScrumTeamChanged;
+import undecided.supporting.snowflake.SnowflakeId;
+
+/**
+ * スクラムチーム情報のサブセット（射影）。
+ *
+ * <p>他事業領域（productDiscovery）のエンティティやテーブルを直接参照せず、
+ * {@link ScrumTeamChanged} イベントで連携された情報だけを自領域内に保持し、参照します。
+ * バックログアイテムの状態変更権限の判定（SM／PO）に必要な項目のみを持ちます。
+ * モジュール内部でのみ使用するため、パッケージプライベートとします。
+ */
+@Entity
+@Table(schema = "undecided_ag", name = "scrum_team_subsets")
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+class ScrumTeamSubset {
+
+  /** スクラムチームID（productDiscovery 側の ScrumTeam のIDと同一）。 */
+  @Id protected SnowflakeId id;
+
+  /** チーム名。 */
+  @Column(nullable = false, length = 100)
+  protected String name;
+
+  /** PO（Product Owner）の従業員ID。 */
+  @Column(name = "po_employee_id")
+  protected UUID poEmployeeId;
+
+  /** POの名前。 */
+  @Column(name = "po_name", length = 100)
+  protected String poName;
+
+  /** SM（Scrum Master）の従業員ID。 */
+  @Column(name = "sm_employee_id")
+  protected UUID smEmployeeId;
+
+  /** SMの名前。 */
+  @Column(name = "sm_name", length = 100)
+  protected String smName;
+
+  /** サブセットが最後にイベントで更新された日時。 */
+  @Column(name = "updated_at", nullable = false)
+  @Builder.Default
+  protected LocalDateTime updatedAt = LocalDateTime.now();
+
+  /** イベントのスナップショット内容でサブセットを更新します。 */
+  void apply(@NonNull ScrumTeamChanged event) {
+    this.name = event.name();
+    this.poEmployeeId = event.poEmployeeId();
+    this.poName = event.poName();
+    this.smEmployeeId = event.smEmployeeId();
+    this.smName = event.smName();
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  /** イベントから新しいサブセットを作成します。 */
+  static ScrumTeamSubset from(@NonNull ScrumTeamChanged event) {
+    return ScrumTeamSubset.builder()
+        .id(event.scrumTeamId())
+        .name(event.name())
+        .poEmployeeId(event.poEmployeeId())
+        .poName(event.poName())
+        .smEmployeeId(event.smEmployeeId())
+        .smName(event.smName())
+        .build();
+  }
+
+  /**
+   * 指定した従業員がこのチームのバックログアイテムの状態を変更できるか（SMまたはPOか）を判定します。
+   *
+   * @param actorEmployeeId 操作者の従業員ID
+   * @return SMまたはPOであれば true
+   */
+  boolean canChangeStatusBy(@Nullable UUID actorEmployeeId) {
+    if (actorEmployeeId == null) {
+      return false;
+    }
+    return actorEmployeeId.equals(this.poEmployeeId) || actorEmployeeId.equals(this.smEmployeeId);
+  }
+}

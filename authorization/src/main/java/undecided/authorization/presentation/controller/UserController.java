@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import undecided.authorization.business.service.UserService;
 import undecided.authorization.domain.model.user.User;
 import undecided.authorization.domain.model.user.UserType;
+import undecided.authorization.useCase.service.UserService;
 
 /**
  * ユーザーコントローラー
- * <p>
- * ユーザー管理に関するAPIエンドポイントを提供するコントローラークラスです。
+ *
+ * <p>ユーザー管理に関するAPIエンドポイントを提供するコントローラークラスです。
  */
 @RestController
 @RequestMapping("/api/users")
@@ -47,7 +47,8 @@ public class UserController {
    */
   @GetMapping("/{id}")
   public ResponseEntity<User> getUserById(@PathVariable Long id) {
-    return userService.findUserById(id)
+    return userService
+        .findUserById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
@@ -63,15 +64,16 @@ public class UserController {
   public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
     try {
       // リクエストからユーザーエンティティを作成
-      User user = User.builder()
-          .username(request.getUsername())
-          .password(request.getPassword())
-          .email(request.getEmail())
-          .firstName(request.getFirstName())
-          .lastName(request.getLastName())
-          .initials(request.getInitials())
-          .userType(request.getUserType() != null ? request.getUserType() : UserType.EMPLOYEE)
-          .build();
+      User user =
+          User.builder()
+              .username(request.getUsername())
+              .password(request.getPassword())
+              .email(request.getEmail())
+              .firstName(request.getFirstName())
+              .lastName(request.getLastName())
+              .initials(request.getInitials())
+              .userType(request.getUserType() != null ? request.getUserType() : UserType.EMPLOYEE)
+              .build();
 
       // ユーザーを作成
       User createdUser = userService.createUser(user);
@@ -100,60 +102,62 @@ public class UserController {
    */
   @PutMapping("/{id}")
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<User> updateUser(@PathVariable Long id,
-      @RequestBody UserAdminUpdateRequest request) {
+  public ResponseEntity<User> updateUser(
+      @PathVariable Long id, @RequestBody UserAdminUpdateRequest request) {
     try {
-      return userService.findUserById(id)
-          .map(existingUser -> {
-            // 基本情報の更新
-            if (request.getUsername() != null) {
-              existingUser.setUsername(request.getUsername());
-            }
-            if (request.getEmail() != null) {
-              existingUser.setEmail(request.getEmail());
-            }
-            if (request.getFirstName() != null) {
-              existingUser.setFirstName(request.getFirstName());
-            }
-            if (request.getLastName() != null) {
-              existingUser.setLastName(request.getLastName());
-            }
-            if (request.getInitials() != null) {
-              existingUser.setInitials(request.getInitials());
-            }
-            if (request.getUserType() != null) {
-              existingUser.setUserType(request.getUserType());
-            }
-            if (request.getEnabled() != null) {
-              existingUser.setEnabled(request.getEnabled());
-            }
+      return userService
+          .findUserById(id)
+          .map(
+              existingUser -> {
+                // 基本情報の更新
+                if (request.getUsername() != null) {
+                  existingUser.setUsername(request.getUsername());
+                }
+                if (request.getEmail() != null) {
+                  existingUser.setEmail(request.getEmail());
+                }
+                if (request.getFirstName() != null) {
+                  existingUser.setFirstName(request.getFirstName());
+                }
+                if (request.getLastName() != null) {
+                  existingUser.setLastName(request.getLastName());
+                }
+                if (request.getInitials() != null) {
+                  existingUser.setInitials(request.getInitials());
+                }
+                if (request.getUserType() != null) {
+                  existingUser.setUserType(request.getUserType());
+                }
+                if (request.getEnabled() != null) {
+                  existingUser.setEnabled(request.getEnabled());
+                }
 
-            // パスワードの更新（指定されている場合のみ）
-            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-              // パスワードの更新はUserServiceに任せる（ハッシュ化などが必要なため）
-              // 一時的に設定しておき、UserServiceでハッシュ化される
-              existingUser.setPassword(request.getPassword());
-            }
+                // パスワードの更新（指定されている場合のみ）
+                if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                  // パスワードの更新はUserServiceに任せる（ハッシュ化などが必要なため）
+                  // 一時的に設定しておき、UserServiceでハッシュ化される
+                  existingUser.setPassword(request.getPassword());
+                }
 
-            // ユーザーを更新
-            User updatedUser = userService.updateUser(existingUser);
+                // ユーザーを更新
+                User updatedUser = userService.updateUser(existingUser);
 
-            // ロールの更新（指定されている場合）
-            if (request.getRoles() != null && !request.getRoles().isEmpty()) {
-              // 既存のロールをクリア
-              updatedUser.getRoles().clear();
-              userService.updateUser(updatedUser);
+                // ロールの更新（指定されている場合）
+                if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+                  // 既存のロールをクリア
+                  updatedUser.getRoles().clear();
+                  userService.updateUser(updatedUser);
 
-              // 新しいロールを追加
-              for (String roleName : request.getRoles()) {
-                userService.addRoleToUser(updatedUser.getId(), roleName);
-              }
-              // 最新のユーザー情報を取得
-              updatedUser = userService.findUserById(updatedUser.getId()).orElse(updatedUser);
-            }
+                  // 新しいロールを追加
+                  for (String roleName : request.getRoles()) {
+                    userService.addRoleToUser(updatedUser.getId(), roleName);
+                  }
+                  // 最新のユーザー情報を取得
+                  updatedUser = userService.findUserById(updatedUser.getId()).orElse(updatedUser);
+                }
 
-            return ResponseEntity.ok(updatedUser);
-          })
+                return ResponseEntity.ok(updatedUser);
+              })
           .orElse(ResponseEntity.notFound().build());
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().build();
@@ -169,11 +173,13 @@ public class UserController {
   @DeleteMapping("/{id}")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-    return userService.findUserById(id)
-        .map(user -> {
-          userService.deleteUser(id);
-          return ResponseEntity.ok().<Void>build();
-        })
+    return userService
+        .findUserById(id)
+        .map(
+            user -> {
+              userService.deleteUser(id);
+              return ResponseEntity.ok().<Void>build();
+            })
         .orElse(ResponseEntity.notFound().build());
   }
 
@@ -187,8 +193,7 @@ public class UserController {
   @PostMapping("/{userId}/roles/{roleName}")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> addRoleToUser(
-      @PathVariable Long userId,
-      @PathVariable String roleName) {
+      @PathVariable Long userId, @PathVariable String roleName) {
     try {
       return ResponseEntity.ok(userService.addRoleToUser(userId, roleName));
     } catch (IllegalArgumentException e) {
@@ -206,8 +211,7 @@ public class UserController {
   @DeleteMapping("/{userId}/roles/{roleName}")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> removeRoleFromUser(
-      @PathVariable Long userId,
-      @PathVariable String roleName) {
+      @PathVariable Long userId, @PathVariable String roleName) {
     try {
       return ResponseEntity.ok(userService.removeRoleFromUser(userId, roleName));
     } catch (IllegalArgumentException e) {
@@ -224,16 +228,15 @@ public class UserController {
    */
   @PutMapping("/profile")
   public ResponseEntity<?> updateProfile(
-      @RequestBody UserUpdateRequest request,
-      Principal principal) {
+      @RequestBody UserUpdateRequest request, Principal principal) {
     try {
-      User updatedUser = userService.updateUserProfile(
-          principal.getName(),
-          request.getFirstName(),
-          request.getLastName(),
-          request.getInitials(),
-          request.getEmail()
-      );
+      User updatedUser =
+          userService.updateUserProfile(
+              principal.getName(),
+              request.getFirstName(),
+              request.getLastName(),
+              request.getInitials(),
+              request.getEmail());
       return ResponseEntity.ok(updatedUser);
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().body(e.getMessage());

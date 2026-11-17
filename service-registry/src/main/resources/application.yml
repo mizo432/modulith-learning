@@ -17,7 +17,9 @@ eureka:
   client:
     register-with-eureka: true # Eurekaに自身(Eureka)を登録します
     fetch-registry: false # Eureka のレジストリを取得すできるかどうかを設定します
-  environment: production # 環境名
+  environment: local # 環境名
+  #  environment: staging # 環境名
+  #  environment: production # 環境名
   datacenter: center name # データセンター名
 
 management:

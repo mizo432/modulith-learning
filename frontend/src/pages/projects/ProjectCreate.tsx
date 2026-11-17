@@ -30,7 +30,7 @@ const ProjectCreate: React.FC = () => {
   // Form state
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [productId, setProductId] = useState<string>('');
+  const [productId, setProductId] = useState<number | ''>('');
   const [managerId, setManagerId] = useState<string>('');
 
   // Form validation
@@ -88,7 +88,7 @@ const ProjectCreate: React.FC = () => {
 
     try {
       const selectedManager = members.find(m => m.memberId === managerId);
-      const selectedProduct = productId ? products.find(p => p.productId === productId) : undefined;
+      const selectedProduct = productId ? products.find(p => p.id === productId) : undefined;
 
       if (!selectedManager) {
         throw new Error('Selected manager not found');
@@ -103,7 +103,7 @@ const ProjectCreate: React.FC = () => {
           name: selectedManager.name
         },
         product: selectedProduct ? {
-          productId: selectedProduct.productId,
+          id: selectedProduct.id,
           name: selectedProduct.name
         } : undefined
       };
@@ -192,14 +192,14 @@ const ProjectCreate: React.FC = () => {
                     <Select
                         labelId="product-label"
                         value={productId}
-                        onChange={(e) => setProductId(e.target.value as string)}
+                        onChange={(e) => setProductId(e.target.value as number | '')}
                         label="Product (Optional)"
                     >
                       <MenuItem value="">
                         <em>None</em>
                       </MenuItem>
                       {products.map((product) => (
-                          <MenuItem key={product.productId} value={product.productId}>
+                          <MenuItem key={product.id} value={product.id}>
                             {product.name}
                           </MenuItem>
                       ))}

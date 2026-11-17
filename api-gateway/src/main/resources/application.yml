@@ -6,13 +6,75 @@ server:
 
 spring:
   application:
-    name: api-gateway-service # アプリケーションの名前を設定します
+    name: api-gateway # アプリケーションの名前を設定します
   threads:
     virtual:
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # REQ-00018: 認可サーバーはHTTPSで提供される
+          issuer-uri: https://localhost:8443
+          jwk-set-url: https://localhost:8443/oauth2/jwks
+          jwt-set-cache-enabled: true
+          # REQ-00028: JWKSエンドポイントのレスポンスをキャッシュする
+          # REQ-00029: JWTのキャッシュ有効期間は5分以内とする
+          # REQ-00021: JWT署名検証にRS256アルゴリズムを使用する
+          jws-algorithm: RS256
+          # REQ-00030: nbfクレーム (Not Before)が設定されている場合、その時刻以前のトークン使用を拒否する
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          # ルーティングは GatewayServerApplication.java の rateLimitedApiRoutes() で定義
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      # SSL/TLS接続を有効化（本番環境ではtrueに設定してください）
+      ssl:
+        enabled: ${REDIS_SSL_ENABLED:false}
+      # 接続タイムアウト（ミリ秒）
+      timeout: ${REDIS_TIMEOUT:5000}
 
-#  eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: http://${PROJECT_NAME:-default}-service-registry:8761/eureka
-eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: backend
+        url: /v3/api-docs
+
+# NOTE: 開発環境ではHTTP接続を使用しています。
+# 本番環境ではEurekaサービスレジストリへのHTTPS接続を有効化してください。
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+# レートリミッティング設定
+# 詳細設計書に基づく制限設定
+ratelimit:
+  # Redisベースの分散レートリミッティングを有効化
+  # falseの場合、インメモリのローカルバケットにフォールバックします
+  redis:
+    enabled: true
+  # デフォルト（GETリクエスト）: 1分あたり100回
+  capacity: 100
+  # NOTE: burst-capacityはWebMVCのBucket4jフィルタでは使用されません（@Deprecated）
+  # burst-capacity: 200
+  period-seconds: 60
+  # 認証関連エンドポイント: 1分あたり5回
+  auth-capacity: 5
+  # NOTE: auth-burst-capacityはWebMVCのBucket4jフィルタでは使用されません（@Deprecated）
+  # auth-burst-capacity: 10
+  # トークン更新エンドポイント: 1分あたり10回
+  auth-refresh-capacity: 10
+  # 書き込み操作（POST/PUT/PATCH/DELETE）: 1分あたり30回
+  write-capacity: 30
+  # NOTE: write-burst-capacityはWebMVCのBucket4jフィルタでは使用されません（@Deprecated）
+  # write-burst-capacity: 60

@@ -4,23 +4,54 @@ import {Box, Container, CssBaseline} from '@mui/material';
 import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import ChangePassword from './pages/ChangePassword';
 import NotFound from './pages/NotFound';
 import UserList from './pages/users/UserList';
 import UserCreate from './pages/users/UserCreate';
 import UserEdit from './pages/users/UserEdit';
 import ProductSelection from './pages/ProductSelection';
+import ProductList from './pages/products/ProductList';
+import ProductCreate from './pages/products/ProductCreate';
+import ProductEdit from './pages/products/ProductEdit';
 import ProjectList from './pages/projects/ProjectList';
 import ProjectDetail from './pages/projects/ProjectDetail';
 import ProjectCreate from './pages/projects/ProjectCreate';
 import ProjectEdit from './pages/projects/ProjectEdit';
+import ScrumTeamList from './pages/products/ScrumTeamList';
+import ScrumTeamCreate from './pages/products/ScrumTeamCreate';
+import ScrumTeamEdit from './pages/products/ScrumTeamEdit';
+import SprintList from './pages/products/SprintList';
+import SprintSettings from './pages/products/SprintSettings';
+import BacklogItemList from './pages/products/BacklogItemList';
+import BacklogItemDetail from './pages/products/BacklogItemDetail';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 
 // Protected route component that redirects to login if not authenticated
 const ProtectedRoute = ({children}: { children: React.ReactNode }) => {
-  const {isAuthenticated} = useAuth();
+  const {isAuthenticated, isFirstLogin} = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login"/>;
+  }
+
+  // If user needs to change password on first login, redirect to change-password
+  if (isFirstLogin) {
+    return <Navigate to="/change-password"/>;
+  }
+
+  return <>{children}</>;
+};
+
+// First login route - redirects to change-password if first login, otherwise to dashboard
+const FirstLoginRoute = ({children}: { children: React.ReactNode }) => {
+  const {isAuthenticated, isFirstLogin} = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login"/>;
+  }
+
+  if (!isFirstLogin) {
+    return <Navigate to="/"/>;
   }
 
   return <>{children}</>;
@@ -67,53 +98,111 @@ const AppContent = () => {
           <Container component="main" sx={{flexGrow: 1, py: 4}}>
             <Routes>
               <Route path="/login" element={<Login/>}/>
+              <Route path="/change-password" element={
+                                                <FirstLoginRoute>
+                                                 <ChangePassword/>
+                                               </FirstLoginRoute>
+                                             }/>
               <Route path="/" element={
-                <ProtectedRoute>
-                  <Dashboard/>
-                </ProtectedRoute>
-              }/>
+                                 <ProtectedRoute>
+                                  <Dashboard/>
+                                </ProtectedRoute>
+                              }/>
+              {/* Product management routes */}
               <Route path="/products" element={
-                <ProtectedRoute>
-                  <ProductSelection/>
-                </ProtectedRoute>
-              }/>
+                                         <ProtectedRoute>
+                                          <ProductSelection/>
+                                        </ProtectedRoute>
+                                      }/>
+              <Route path="/products/all" element={
+                                          <ProtectedRoute>
+                                           <ProductList/>
+                                         </ProtectedRoute>
+                                       }/>
+              <Route path="/products/add" element={
+                                           <ProtectedRoute>
+                                            <ProductCreate/>
+                                          </ProtectedRoute>
+                                        }/>
+              <Route path="/products/edit/:id" element={
+                                                 <ProtectedRoute>
+                                                  <ProductEdit/>
+                                                </ProtectedRoute>
+                                              }/>
               {/* User management routes - admin only */}
               <Route path="/users/all" element={
-                <AdminRoute>
-                  <UserList/>
-                </AdminRoute>
-              }/>
+                                          <AdminRoute>
+                                           <UserList/>
+                                         </AdminRoute>
+                                       }/>
               <Route path="/users/add" element={
-                <AdminRoute>
-                  <UserCreate/>
-                </AdminRoute>
-              }/>
+                                          <AdminRoute>
+                                           <UserCreate/>
+                                         </AdminRoute>
+                                       }/>
               <Route path="/users/edit/:id" element={
-                <AdminRoute>
-                  <UserEdit/>
-                </AdminRoute>
-              }/>
+                                               <AdminRoute>
+                                                <UserEdit/>
+                                              </AdminRoute>
+                                            }/>
               {/* Project management routes */}
               <Route path="/projects" element={
-                <ProtectedRoute>
-                  <ProjectList/>
-                </ProtectedRoute>
-              }/>
+                                         <ProtectedRoute>
+                                          <ProjectList/>
+                                        </ProtectedRoute>
+                                      }/>
               <Route path="/projects/create" element={
-                <ProtectedRoute>
-                  <ProjectCreate/>
-                </ProtectedRoute>
-              }/>
+                                                <ProtectedRoute>
+                                                 <ProjectCreate/>
+                                               </ProtectedRoute>
+                                             }/>
               <Route path="/projects/edit/:id" element={
-                <ProtectedRoute>
-                  <ProjectEdit/>
-                </ProtectedRoute>
-              }/>
+                                                  <ProtectedRoute>
+                                                   <ProjectEdit/>
+                                                 </ProtectedRoute>
+                                               }/>
               <Route path="/projects/:id" element={
-                <ProtectedRoute>
-                  <ProjectDetail/>
-                </ProtectedRoute>
-              }/>
+                                             <ProtectedRoute>
+                                              <ProjectDetail/>
+                                            </ProtectedRoute>
+                                          }/>
+              {/* Scrum Team management routes */}
+              <Route path="/products/:productId/scrum-teams" element={
+                                                        <ProtectedRoute>
+                                                         <ScrumTeamList/>
+                                                       </ProtectedRoute>
+                                                     }/>
+              <Route path="/products/:productId/scrum-teams/create" element={
+                                                                    <ProtectedRoute>
+                                                                     <ScrumTeamCreate/>
+                                                                   </ProtectedRoute>
+                                                                 }/>
+              <Route path="/products/:productId/scrum-teams/edit/:scrumTeamId" element={
+                                                                                   <ProtectedRoute>
+                                                                                    <ScrumTeamEdit/>
+                                                                                  </ProtectedRoute>
+                                                                                }/>
+              <Route path="/products/:productId/scrum-teams/edit/:scrumTeamId/sprints" element={
+                                                                                          <ProtectedRoute>
+                                                                                           <SprintList/>
+                                                                                         </ProtectedRoute>
+                                                                                       }/>
+              <Route path="/products/:productId/sprint-settings" element={
+                                                                        <ProtectedRoute>
+                                                                         <SprintSettings/>
+                                                                       </ProtectedRoute>
+                                                                     }/>
+              {/* Backlog Item management routes */}
+              <Route path="/products/:productId/scrum-teams/:scrumTeamId/backlog-items" element={
+                                                                                          <ProtectedRoute>
+                                                                                           <BacklogItemList/>
+                                                                                         </ProtectedRoute>
+                                                                                       }/>
+              <Route path="/products/:productId/scrum-teams/:scrumTeamId/backlog-items/:backlogItemId" element={
+                                                                                          <ProtectedRoute>
+                                                                                           <BacklogItemDetail/>
+                                                                                         </ProtectedRoute>
+                                                                                       }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </Container>
@@ -130,4 +219,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

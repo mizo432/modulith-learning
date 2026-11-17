@@ -1,0 +1,26 @@
+{
+  "businesses": [
+    {
+      "business_name": "運用・監査",
+      "BUCs": [
+        {
+          "buc_name": "監査・運用",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-05001"
+              ]
+            },
+            {
+              "actor_name": "監査担当",
+              "screen_names": [
+                "SCR-05001"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

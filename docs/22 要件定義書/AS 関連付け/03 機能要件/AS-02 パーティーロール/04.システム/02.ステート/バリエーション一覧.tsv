@@ -1,0 +1,6 @@
+バリエーション一覧
+
+バリエーション	値	説明	コンテキスト
+Roleタイプ	管理者	管理者Role	Role管理
+Roleタイプ	利用者	利用者Role	Role管理
+Roleタイプ	監査者	監査者Role	Role管理

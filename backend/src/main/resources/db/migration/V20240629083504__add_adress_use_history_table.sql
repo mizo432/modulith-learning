@@ -1,4 +1,6 @@
-create table address_use_history
+create schema if not exists undecided_as;
+
+create table undecided_as.address_use_history
 (
     address_use_id      BIGINT      not null,
     party_id            BIGINT      not null,

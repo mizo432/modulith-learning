@@ -1,6 +1,13 @@
 server:
   shutdown: graceful
-  port: 8082
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    # REQ-00019: キーストアパスワードは環境変数から読み込む
+    key-store-password: ${OAUTH2_KEYSTORE_PASSWORD:changeit}
+    key-store-type: PKCS12
+    key-alias: localhost
 spring:
   application:
     name: authorization
@@ -17,11 +24,13 @@ spring:
       connection-timeout: 60000                  # Default: 30,000 (30 seconds)
       minimum-idle: 2                            # Default: same as maximumPoolSize
       maximum-pool-size: 10
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
   jpa:
     show-sql: true
-    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties.hibernate.format_sql: true
     properties.hibernate.jdbc.lob.non_contextual_creation: true
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -33,6 +42,18 @@ spring:
       enabled: true
     restart:
       enabled: true
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: https://localhost:8443
+
+# REQ-00019: クライアントIDとクライアントシークレットは環境変数から読み込む
+oauth2:
+  client:
+    id: ${OAUTH2_CLIENT_ID:frontend}
+    secret: ${OAUTH2_CLIENT_SECRET:}
+    redirect-uris: ${OAUTH2_CLIENT_REDIRECT_URIS:https://localhost:3000/callback,https://localhost:3000/login/oauth2/code}
+    post-logout-redirect-uris: ${OAUTH2_CLIENT_POST_LOGOUT_REDIRECT_URIS:https://localhost:3000/}
 
 logging:
   level:
@@ -41,6 +62,7 @@ logging:
     org.zalando.logbook: trace
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.hibernate.SQL: DEBUG
+    org.springframework.security: DEBUG
 
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
 management:

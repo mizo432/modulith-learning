@@ -1,0 +1,14 @@
+情報属性一覧
+INF-JB-10	アップロードファイル	リソース	S3/MinIO上のファイル参照情報
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	fileId	Y	String	Y	ファイルID（一意識別子）
+2	fileName	N	String	Y	ファイル名
+3	filePath	N	String	Y	ストレージ上のパス
+4	fileSize	N	Long	Y	ファイルサイズ（バイト）
+5	contentType	N	String	N	MIMEタイプ
+6	storageProvider	N	Enum	Y	ストレージプロバイダ（S3/MinIO）
+7	bucketName	N	String	Y	バケット名
+8	uploadedAt	N	DateTime	Y	アップロード日時
+9	createdAt	N	DateTime	Y	作成日時
+10	updatedAt	N	DateTime	Y	更新日時

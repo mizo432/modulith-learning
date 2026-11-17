@@ -1,0 +1,10 @@
+情報属性一覧
+INF-JB-14	スケジュール発火記録	イベント	スケジュールに基づく発火日時・対象ジョブの記録
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	fireRecordId	Y	String	Y	発火記録ID（一意識別子）
+2	scheduleId	N	String	Y	スケジュールID（外部キー）
+3	jobCode	N	String	Y	ジョブコード
+4	firedAt	N	DateTime	Y	発火日時
+5	executionId	N	String	N	関連する実行ID
+6	status	N	Enum	Y	発火ステータス（成功/失敗）

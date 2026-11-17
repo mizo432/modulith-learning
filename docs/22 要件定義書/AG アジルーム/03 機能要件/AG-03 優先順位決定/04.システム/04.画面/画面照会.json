@@ -1,0 +1,111 @@
+{
+  "screens": [
+    {
+      "screenId": "SCR-PR-001",
+      "screenName": "優先順位一覧画面",
+      "description": "優先順位の結果を一覧で表示・検索・フィルタリングする画面",
+      "fields": [
+        {"name": "id", "type": "Long", "label": "ID", "required": true},
+        {"name": "itemId", "type": "String", "label": "項目ID", "required": true},
+        {"name": "score", "type": "Double", "label": "スコア", "required": true},
+        {"name": "status", "type": "Enum", "label": "状態", "required": true}
+      ],
+      "dummyData": [
+        {"id": 1, "itemId": "BL-001", "score": 85.5, "status": "確定"},
+        {"id": 2, "itemId": "BL-002", "score": 72.3, "status": "評価中"},
+        {"id": 3, "itemId": "BL-003", "score": 0, "status": "未評価"}
+      ],
+      "operations": ["表示", "検索", "フィルタ", "ソート"],
+      "data_access": [
+        {"entity": "EvaluationResult", "operation": "Read", "isMain": true}
+      ]
+    },
+    {
+      "screenId": "SCR-PR-002",
+      "screenName": "評価基準編集画面",
+      "description": "評価基準を作成・編集する画面",
+      "fields": [
+        {"name": "name", "type": "String", "label": "名前", "required": true},
+        {"name": "category", "type": "Enum", "label": "カテゴリ", "required": true},
+        {"name": "weight", "type": "Double", "label": "重み", "required": true},
+        {"name": "description", "type": "String", "label": "説明", "required": false}
+      ],
+      "dummyData": [
+        {"name": "ビジネス価値", "category": "価値", "weight": 0.4, "description": "ビジネスへの貢献度"},
+        {"name": "Kano分類", "category": "Kano", "weight": 0.3, "description": "ユーザー満足度への影響"},
+        {"name": "技術リスク", "category": "リスク", "weight": 0.2, "description": "実装の難易度"}
+      ],
+      "operations": ["作成", "編集", "削除"],
+      "data_access": [
+        {"entity": "EvaluationCriteria", "operation": "Create", "isMain": true},
+        {"entity": "EvaluationCriteria", "operation": "Update", "isMain": false},
+        {"entity": "EvaluationCriteria", "operation": "Delete", "isMain": false}
+      ]
+    },
+    {
+      "screenId": "SCR-PR-003",
+      "screenName": "評価結果詳細画面",
+      "description": "評価結果の詳細を表示・編集する画面",
+      "fields": [
+        {"name": "id", "type": "Long", "label": "ID", "required": true},
+        {"name": "itemId", "type": "String", "label": "項目ID", "required": true},
+        {"name": "value", "type": "Double", "label": "価値", "required": true},
+        {"name": "kanoCategory", "type": "Enum", "label": "Kanoカテゴリ", "required": false},
+        {"name": "risk", "type": "Double", "label": "リスク", "required": false},
+        {"name": "cost", "type": "Double", "label": "コスト", "required": false},
+        {"name": "score", "type": "Double", "label": "スコア", "required": true}
+      ],
+      "dummyData": [
+        {"id": 1, "itemId": "BL-001", "value": 90, "kanoCategory": "MustBe", "risk": 20, "cost": 50, "score": 85.5},
+        {"id": 2, "itemId": "BL-002", "value": 75, "kanoCategory": "ShouldBe", "risk": 30, "cost": 40, "score": 72.3},
+        {"id": 3, "itemId": "BL-003", "value": 0, "kanoCategory": "", "risk": 0, "cost": 0, "score": 0}
+      ],
+      "operations": ["表示", "編集", "更新"],
+      "data_access": [
+        {"entity": "EvaluationResult", "operation": "Read", "isMain": true},
+        {"entity": "EvaluationResult", "operation": "Update", "isMain": false}
+      ]
+    }
+  ],
+  "bucScreens": {
+    "businesses": [
+      {
+        "businessId": "AG-03",
+        "businessName": "優先順位決定",
+        "bucs": [
+          {"bucId": "BUC-PR-01", "bucName": "優先順位評価基準の定義", "screens": ["SCR-PR-002"]},
+          {"bucId": "BUC-PR-02", "bucName": "要求項目の優先順位評価", "screens": ["SCR-PR-002", "SCR-PR-003"]},
+          {"bucId": "BUC-PR-03", "bucName": "優先順位付けと投資判断", "screens": ["SCR-PR-001", "SCR-PR-003"]},
+          {"bucId": "BUC-PR-04", "bucName": "依存関係・リスクの管理", "screens": ["SCR-PR-001", "SCR-PR-003"]},
+          {"bucId": "BUC-PR-05", "bucName": "優先順位結果の可視化・追跡", "screens": ["SCR-PR-001"]}
+        ]
+      }
+    ]
+  },
+  "actorScreens": {
+    "actors": [
+      {
+        "actorGroupId": "開発チーム",
+        "actorGroupName": "開発チーム",
+        "actors": [
+          {"actorId": "ACT-02", "actorName": "プロダクトオーナー", "screens": ["SCR-PR-001", "SCR-PR-002", "SCR-PR-003"]},
+          {"actorId": "ACT-04", "actorName": "開発者", "screens": ["SCR-PR-001", "SCR-PR-003"]}
+        ]
+      },
+      {
+        "actorGroupId": "利用者",
+        "actorGroupName": "利用者",
+        "actors": [
+          {"actorId": "ACT-01", "actorName": "従業員", "screens": ["SCR-PR-001"]}
+        ]
+      },
+      {
+        "actorGroupId": "管理者",
+        "actorGroupName": "管理者",
+        "actors": [
+          {"actorId": "ACT-05", "actorName": "システム管理者", "screens": ["SCR-PR-001"]}
+        ]
+      }
+    ]
+  }
+}

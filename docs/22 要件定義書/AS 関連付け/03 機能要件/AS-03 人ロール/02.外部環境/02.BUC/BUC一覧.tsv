@@ -1,0 +1,4 @@
+BUC一覧
+ID	BUC名	概要	主なアクター	関連業務	関連ユースケース	関連モデル1	関連オブジェクト1	関連モデル2	関連オブジェクト2
+BUC-AS-03	PersonRole管理	従業員やメンバーを管理する	ACT-01		 UC-AS-009, UC-AS-010, UC-AS-011, UC-AS-012	情報	PersonRole	条件	所属の一意性
+BUC-AS-03	PersonRole管理	従業員やメンバーを管理する	ACT-01		 UC-AS-009, UC-AS-010, UC-AS-011, UC-AS-012	情報	PersonRole	-	-

@@ -1,0 +1,58 @@
+{
+  "screens": [
+    {
+      "screenId": "SCR-PR-001",
+      "screenName": "優先順位一覧画面",
+      "description": "優先順位の結果を一覧で表示・検索・フィルタリングする画面",
+      "fields": [
+        {"name": "id", "type": "Long", "label": "ID", "required": true},
+        {"name": "itemId", "type": "String", "label": "項目ID", "required": true},
+        {"name": "score", "type": "Double", "label": "スコア", "required": true},
+        {"name": "status", "type": "Enum", "label": "状態", "required": true}
+      ],
+      "dummyData": [
+        {"id": 1, "itemId": "BL-001", "score": 85.5, "status": "確定"},
+        {"id": 2, "itemId": "BL-002", "score": 72.3, "status": "評価中"},
+        {"id": 3, "itemId": "BL-003", "score": 0, "status": "未評価"}
+      ],
+      "operations": ["表示", "検索", "フィルタ", "ソート"]
+    },
+    {
+      "screenId": "SCR-PR-002",
+      "screenName": "評価基準編集画面",
+      "description": "評価基準を作成・編集する画面",
+      "fields": [
+        {"name": "name", "type": "String", "label": "名前", "required": true},
+        {"name": "category", "type": "Enum", "label": "カテゴリ", "required": true},
+        {"name": "weight", "type": "Double", "label": "重み", "required": true},
+        {"name": "description", "type": "String", "label": "説明", "required": false}
+      ],
+      "dummyData": [
+        {"name": "ビジネス価値", "category": "価値", "weight": 0.4, "description": "ビジネスへの貢献度"},
+        {"name": "Kano分類", "category": "Kano", "weight": 0.3, "description": "ユーザー満足度への影響"},
+        {"name": "技術リスク", "category": "リスク", "weight": 0.2, "description": "実装の難易度"}
+      ],
+      "operations": ["作成", "編集", "削除"]
+    },
+    {
+      "screenId": "SCR-PR-003",
+      "screenName": "評価結果詳細画面",
+      "description": "評価結果の詳細を表示・編集する画面",
+      "fields": [
+        {"name": "id", "type": "Long", "label": "ID", "required": true},
+        {"name": "itemId", "type": "String", "label": "項目ID", "required": true},
+        {"name": "value", "type": "Double", "label": "価値", "required": true},
+        {"name": "kanoCategory", "type": "Enum", "label": "Kanoカテゴリ", "required": false},
+        {"name": "risk", "type": "Double", "label": "リスク", "required": false},
+        {"name": "cost", "type": "Double", "label": "コスト", "required": false},
+        {"name": "score", "type": "Double", "label": "スコア", "required": true}
+      ],
+      "dummyData": [
+        {"id": 1, "itemId": "BL-001", "value": 90, "kanoCategory": "MustBe", "risk": 20, "cost": 50, "score": 85.5},
+        {"id": 2, "itemId": "BL-002", "value": 75, "kanoCategory": "ShouldBe", "risk": 30, "cost": 40, "score": 72.3},
+        {"id": 3, "itemId": "BL-003", "value": 0, "kanoCategory": "", "risk": 0, "cost": 0, "score": 0}
+      ],
+      "operations": ["表示", "編集", "更新"]
+    }
+  ]
+}

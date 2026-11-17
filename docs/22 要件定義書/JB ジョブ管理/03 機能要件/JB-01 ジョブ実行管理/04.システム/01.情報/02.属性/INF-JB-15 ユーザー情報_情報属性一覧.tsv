@@ -1,0 +1,10 @@
+情報属性一覧
+INF-JB-15	ユーザー情報	リソース	ユーザー名、ロール、所属会社・店舗
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	userId	Y	String	Y	ユーザーID（一意識別子）
+2	username	N	String	Y	ユーザー名
+3	role	N	Enum	Y	ロール（システム管理者/運用管理者/会社運用担当者/店舗担当者）
+4	enabled	N	Boolean	Y	有効フラグ
+5	createdAt	N	DateTime	Y	作成日時
+6	updatedAt	N	DateTime	Y	更新日時

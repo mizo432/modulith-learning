@@ -1,0 +1,4 @@
+BUC一覧
+ID	BUC名	概要	主なアクター	関連業務	関連ユースケース	関連モデル1	関連オブジェクト1	関連モデル2	関連オブジェクト2
+BUC-AS-04	OrganizationRole管理	顧客や仕入先を管理する	ACT-01		 UC-AS-013, UC-AS-014, UC-AS-015, UC-AS-016	情報	OrganizationRole	条件	組織階層の整合性
+BUC-AS-04	OrganizationRole管理	顧客や仕入先を管理する	ACT-01		 UC-AS-013, UC-AS-014, UC-AS-015, UC-AS-016	情報	OrganizationRole	-	-

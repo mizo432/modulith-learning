@@ -1,0 +1,8 @@
+序号	属性名	型	必須/任意	個体指定子	初期値	制約
+1	名称	String	必須		-	-
+2	種類	String	必須		-	-
+3	値	String	任意		-	-
+4	期間	String	任意		-	-
+5	状態	String	任意		-	-
+6	作成日	String	任意		-	-
+7	更新日	String	任意		-	-

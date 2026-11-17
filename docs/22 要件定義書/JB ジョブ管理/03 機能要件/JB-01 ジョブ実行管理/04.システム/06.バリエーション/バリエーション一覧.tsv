@@ -1,0 +1,12 @@
+バリエーションID	バリエーション名	英語名	説明	関連条件
+VAR-JB-01	ジョブタイプ	Job Type	ジョブの種類（バッチ処理、定期処理、イベント駆動など）	RL-JB-02
+VAR-JB-02	実行モード	Execution Mode	実行モード（手動、スケジュール、API経由）	RL-JB-01, RL-JB-03
+VAR-JB-03	権限レベル	Permission Level	権限レベル（システム、会社、店舗）	RL-JB-03, RL-JB-07
+VAR-JB-04	復旧タイプ	Recovery Type	復旧タイプ（再実行、途中再開）	RL-JB-04, RL-JB-05, RL-JB-06
+VAR-JB-05	通知チャネル	Notification Channel	通知チャネル（メール、Slack、Webhookなど）	-
+VAR-JB-06	会社タイプ	Company Type	会社の種類（本社、支社など）	RL-JB-07
+VAR-JB-07	店舗タイプ	Store Type	店舗の種類（直営店、フランチャイズなど）	RL-JB-07
+VAR-JB-08	ジョブ実行状態	Job Execution Status	ジョブの実行状態（待機中、実行中、成功、失敗など）	-
+VAR-JB-09	通知条件	Notification Condition	通知の条件（成功時、失敗時、結果不明時、実行開始時）	-
+VAR-JB-10	ファイル種別	File Type	ファイルの種類（CSV、JSON、XML、ZIP）	-
+VAR-JB-11	操作タイプ	Operation Type	操作の種類（手動起動、再実行、途中再開、キャンセルなど）	RL-JB-04, RL-JB-05, RL-JB-06

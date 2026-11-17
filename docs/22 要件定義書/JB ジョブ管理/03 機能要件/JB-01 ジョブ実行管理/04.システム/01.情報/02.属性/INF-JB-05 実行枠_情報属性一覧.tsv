@@ -1,0 +1,8 @@
+情報属性一覧
+INF-JB-05	実行枠	リソース	同時実行枠の管理
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	slotId	Y	String	Y	枠ID（一意識別子）
+2	maxSlots	N	Integer	Y	最大同時実行枠数
+3	usedSlots	N	Integer	Y	使用中の枠数
+4	updatedAt	N	DateTime	Y	更新日時

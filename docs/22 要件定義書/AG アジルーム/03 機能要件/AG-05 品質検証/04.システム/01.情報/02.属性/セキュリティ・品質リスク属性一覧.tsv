@@ -1,0 +1,11 @@
+属性名	型	PK	必須	説明
+risk_id	SnowflakeID	*	Y	リスクの一意な識別子
+project_id	UUID		Y	所属プロジェクトの識別子
+backlog_item_id	SnowflakeID		N	関連するバックログ項目の識別子
+owner_id	UUID		Y	担当者の識別子
+title	String		Y	リスクのタイトル
+description	Text		Y	リスクの詳細説明
+status	Enum		Y	現在の状態
+countermeasures	Text		N	対応策
+created_at	DateTime		Y	作成日時
+updated_at	DateTime		Y	最終更新日時

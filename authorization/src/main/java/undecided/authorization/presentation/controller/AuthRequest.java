@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * 認証リクエストDTO
- * <p>
- * ユーザー認証リクエストのデータを保持するDTOクラスです。
+ *
+ * <p>ユーザー認証リクエストのデータを保持するDTOクラスです。
  */
 @Data
 @NoArgsConstructor

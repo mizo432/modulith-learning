@@ -1,0 +1,13 @@
+# Kano回答属性一覧
+
+価値・要求の優先順位決定業務領域で扱う「Kano回答」の属性を定義します。
+
+| 属性名              | 型          | PK | 必須 | 説明                           |
+|---------------------|-------------|----|------|--------------------------------|
+| kano_response_id    | SnowflakeID | *  | Y    | Kano回答の一意な識別子         |
+| kano_survey_id      | SnowflakeID |    | Y    | 関連するKano質問票の識別子     |
+| respondent_id       | UUID        |    | N    | 回答者の識別子（匿名回答も可） |
+| sufficient_answer   | Enum        |    | Y    | 充足質問への回答               |
+| insufficient_answer | Enum        |    | Y    | 不充足質問への回答             |
+| created_at          | DateTime    |    | Y    | 作成日時                       |
+| updated_at          | DateTime    |    | Y    | 最終更新日時                   |

@@ -1,0 +1,5 @@
+ID	BUC名	概要	主なアクター	関連業務	関連ユースケース
+BUC-AS-PARTY-ROLE-01	ロール定義の管理	ロールの種類や属性を管理する	AC-AS-01	AS-PARTY-ROLE	
+BUC-AS-PARTY-ROLE-02	ロールの参照	ロール情報の検索・一覧取得を管理する	AC-AS-01, AC-AS-03, AC-AS-04	AS-PARTY-ROLE	
+BUC-AS-PARTY-ROLE-03	パーティーへのロール付与	パーティーにロールを付与・解除する	AC-AS-01	AS-PARTY-ROLE	
+BUC-AS-PARTY-ROLE-04	ロール変更履歴の追跡	ロールの有効期間変更履歴を追跡する	AC-AS-01, AC-AS-02	AS-PARTY-ROLE	

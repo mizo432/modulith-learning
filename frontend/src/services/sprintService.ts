@@ -1,17 +1,32 @@
 import api from './api';
 
-// Sprint type definitions
+// Sprint type definitions matching backend API
 export interface Sprint {
-  sprintId: string;
-  name: string;
+  id: string;
+  productId: string;
+  sprintNumber: number;
+  title: string;
   goal?: string;
   startDate: string; // ISO date string
   endDate: string; // ISO date string
-  status: 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  product: {
-    productId: string;
-    name: string;
-  };
+  status: 'PLANNED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+  teamId: string;
+  teamName?: string;
+  velocity?: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSprintRequest {
+  productId: string;
+  sprintNumber: number;
+  title: string;
+  goal?: string;
+  startDate: string;
+  endDate: string;
+  teamId: string;
+  teamName?: string;
 }
 
 export interface SprintBacklog {
@@ -30,54 +45,72 @@ export interface SprintBacklog {
   };
 }
 
+// Helper function to check if a sprint is Sprint 0
+export function isSprint0(sprint: Sprint): boolean {
+  return sprint.sprintNumber === 0;
+}
+
+// Sprint Settings type definitions matching backend API
+export type EndDayOfWeek = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY';
+
+export interface SprintSettings {
+  productId: string;
+  businessDays: number;
+  endDayOfWeek: EndDayOfWeek;
+}
+
+export interface UpdateSprintSettingsRequest {
+  productId: string;
+  businessDays: number;
+  endDayOfWeek: EndDayOfWeek;
+}
+
+export interface CalculateEndDateResponse {
+  startDate: string;
+  endDate: string;
+  businessDays: number;
+  endDayOfWeekLabel: string;
+  isPastDate: boolean;
+}
+
+// End day of week display names in Japanese
+export const END_DAY_OF_WEEK_LABELS: Record<EndDayOfWeek, string> = {
+  MONDAY: '月曜日',
+  TUESDAY: '火曜日',
+  WEDNESDAY: '水曜日',
+  THURSDAY: '木曜日',
+  FRIDAY: '金曜日',
+};
 // Sprint service functions
 const sprintService = {
   // Get all sprints
   getAllSprints: async (): Promise<Sprint[]> => {
-    const response = await api.get('/sprints');
+    const response = await api.get('/v1/sprints');
     return response.data;
   },
 
   // Get sprint by ID
   getSprintById: async (id: string): Promise<Sprint> => {
-    const response = await api.get(`/sprints/${id}`);
+    const response = await api.get(`/v1/sprints/${id}`);
     return response.data;
   },
 
   // Create a new sprint
-  createSprint: async (sprint: Omit<Sprint, 'sprintId'>): Promise<Sprint> => {
-    const response = await api.post('/sprints', sprint);
+  createSprint: async (request: CreateSprintRequest): Promise<Sprint> => {
+    const response = await api.post('/v1/sprints', request);
     return response.data;
   },
 
-  // Update an existing sprint
-  updateSprint: async (id: string, sprint: Partial<Sprint>): Promise<Sprint> => {
-    const response = await api.put(`/sprints/${id}`, sprint);
+  // Update sprint status
+  updateSprintStatus: async (id: string, status: Sprint['status']): Promise<Sprint> => {
+    const response = await api.patch(`/v1/sprints/${id}/status`, status);
     return response.data;
   },
 
-  // Start a sprint
-  startSprint: async (id: string): Promise<Sprint> => {
-    const response = await api.put(`/sprints/${id}/start`);
-    return response.data;
-  },
-
-  // Complete a sprint
-  completeSprint: async (id: string): Promise<Sprint> => {
-    const response = await api.put(`/sprints/${id}/complete`);
-    return response.data;
-  },
-
-  // Cancel a sprint
-  cancelSprint: async (id: string): Promise<Sprint> => {
-    const response = await api.put(`/sprints/${id}/cancel`);
-    return response.data;
-  },
-
-  // Get sprints by product ID
-  getSprintsByProductId: async (productId: string): Promise<Sprint[]> => {
-    const response = await api.get(`/products/${productId}/sprints`);
-    return response.data;
+  // Get sprints by team ID
+  getSprintsByTeamId: async (teamId: string): Promise<Sprint[]> => {
+    const allSprints = await sprintService.getAllSprints();
+    return allSprints.filter(sprint => sprint.teamId === teamId);
   },
 
   // Get sprint backlog items
@@ -101,6 +134,28 @@ const sprintService = {
       backlogItem: Partial<SprintBacklog>
   ): Promise<SprintBacklog> => {
     const response = await api.put(`/sprint-backlogs/${backlogId}`, backlogItem);
+    return response.data;
+  },
+
+  // Get sprint settings for a product
+  getSprintSettings: async (productId: string): Promise<SprintSettings> => {
+    const response = await api.get('/v1/sprints/settings', {
+      params: { productId }
+    });
+    return response.data;
+  },
+
+  // Update sprint settings
+  updateSprintSettings: async (request: UpdateSprintSettingsRequest): Promise<SprintSettings> => {
+    const response = await api.put('/v1/sprints/settings', request);
+    return response.data;
+  },
+
+  // Calculate sprint end date using backend API
+  calculateEndDate: async (productId: string, startDate: string): Promise<CalculateEndDateResponse> => {
+    const response = await api.get(`/v1/products/${productId}/sprint-settings/calculate-end-date`, {
+      params: { startDate }
+    });
     return response.data;
   }
 };

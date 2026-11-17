@@ -1,0 +1,180 @@
+{
+  "businesses": [
+    {
+      "business_name": "人ロール",
+      "BUCs": [
+        {
+          "buc_name": "PersonRole管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-03001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-03001"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "PersonRole管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-03001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-03001"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actorGroups": [
+    {
+      "group_name": "管理者",
+      "actors": [
+        {
+          "actor_name": "システム管理者",
+          "screen_names": [
+            "SCR-03001"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "利用者",
+      "actors": [
+        {
+          "actor_name": "従業員",
+          "screen_names": [
+            "SCR-03001"
+          ]
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "screen_name": "SCR-03001",
+      "fields": [
+        {
+          "field_name": "party",
+          "type": "string",
+          "tooltip": "Party"
+        },
+        {
+          "field_name": "role",
+          "type": "string",
+          "tooltip": "Role"
+        },
+        {
+          "field_name": "組織",
+          "type": "string",
+          "tooltip": "組織"
+        },
+        {
+          "field_name": "有効期間",
+          "type": "string",
+          "tooltip": "有効期間"
+        },
+        {
+          "field_name": "状態",
+          "type": "string",
+          "tooltip": "状態"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(PersonRole)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "PersonRole一覧",
+          "dummy_data": [
+            {
+              "field_name": "party",
+              "value": "PersonRoleデータ1"
+            },
+            {
+              "field_name": "role",
+              "value": "PersonRoleデータ1"
+            },
+            {
+              "field_name": "組織",
+              "value": "PersonRoleデータ1"
+            }
+          ]
+        },
+        {
+          "display_name": "PersonRole詳細",
+          "dummy_data": [
+            {
+              "field_name": "party",
+              "value": "PersonRoleデータ2"
+            },
+            {
+              "field_name": "role",
+              "value": "PersonRoleデータ2"
+            },
+            {
+              "field_name": "組織",
+              "value": "PersonRoleデータ2"
+            }
+          ]
+        },
+        {
+          "display_name": "PersonRole照会",
+          "dummy_data": [
+            {
+              "field_name": "party",
+              "value": "PersonRoleデータ3"
+            },
+            {
+              "field_name": "role",
+              "value": "PersonRoleデータ3"
+            },
+            {
+              "field_name": "組織",
+              "value": "PersonRoleデータ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録",
+      "data_access": [
+        {
+          "entity": "PERSON_ROLE",
+          "CRUD": [
+            "C",
+            "R",
+            "U",
+            "D"
+          ],
+          "isMain": true
+        }
+      ]
+    }
+  ]
+}

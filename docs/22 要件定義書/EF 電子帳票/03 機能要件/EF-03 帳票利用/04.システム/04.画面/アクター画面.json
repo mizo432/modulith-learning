@@ -1,0 +1,26 @@
+{
+  "actorGroups": [
+    {
+      "group_name": "管理者",
+      "actors": [
+        {
+          "actor_name": "システム管理者",
+          "screen_names": [
+            "SCR-03001"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "利用者",
+      "actors": [
+        {
+          "actor_name": "従業員",
+          "screen_names": [
+            "SCR-03001"
+          ]
+        }
+      ]
+    }
+  ]
+}

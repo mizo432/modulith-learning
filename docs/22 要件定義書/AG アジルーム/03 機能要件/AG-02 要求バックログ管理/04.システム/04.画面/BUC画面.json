@@ -1,0 +1,40 @@
+{
+  "businesses": [
+    {
+      "businessId": "AG-02",
+      "businessName": "要求バックログ管理",
+      "bucs": [
+        {
+          "bucId": "BUC-BL-01",
+          "bucName": "課題・要望の受付・記録",
+          "screens": ["SCR-BL-001", "SCR-BL-002"]
+        },
+        {
+          "bucId": "BUC-BL-02",
+          "bucName": "バックログ項目の作成・明確化",
+          "screens": ["SCR-BL-001", "SCR-BL-002", "SCR-BL-003"]
+        },
+        {
+          "bucId": "BUC-BL-03",
+          "bucName": "バックログリファインメント",
+          "screens": ["SCR-BL-001", "SCR-BL-002"]
+        },
+        {
+          "bucId": "BUC-BL-04",
+          "bucName": "バックログの優先順位管理",
+          "screens": ["SCR-BL-001", "SCR-BL-002"]
+        },
+        {
+          "bucId": "BUC-BL-05",
+          "bucName": "フィードバックの対応・追跡",
+          "screens": ["SCR-BL-001", "SCR-BL-002"]
+        },
+        {
+          "bucId": "BUC-BL-06",
+          "bucName": "要求の関連付け・トレーサビリティ",
+          "screens": ["SCR-BL-001", "SCR-BL-002"]
+        }
+      ]
+    }
+  ]
+}

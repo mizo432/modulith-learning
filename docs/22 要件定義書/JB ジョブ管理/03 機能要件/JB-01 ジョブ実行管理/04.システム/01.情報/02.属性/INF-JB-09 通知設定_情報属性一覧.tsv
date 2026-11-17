@@ -1,0 +1,14 @@
+情報属性一覧
+INF-JB-09	通知設定	リソース	通知情報
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	notificationSettingId	Y	String	Y	通知設定ID（一意識別子）
+2	jobCode	N	String	N	ジョブコード（null: 全ジョブ対象）
+3	onSuccess	N	Boolean	Y	成功時に通知するフラグ
+4	onFailure	N	Boolean	Y	失敗時に通知するフラグ
+5	onUnknown	N	Boolean	N	結果不明時に通知するフラグ
+6	destination	N	String	Y	通知先（メール/Slackチャンネル等）
+7	channel	N	Enum	Y	通知チャネル（メール/Slack/LINE等）
+8	enabled	N	Boolean	Y	有効フラグ
+9	createdAt	N	DateTime	Y	作成日時
+10	updatedAt	N	DateTime	Y	更新日時

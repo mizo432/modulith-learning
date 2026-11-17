@@ -1,0 +1,17 @@
+イベントID	イベント名	説明	関連ユースケース	関連情報	集約
+EVT-SP-001	スプリントが作成された	スプリント期間、状態、チームが定義されて登録された	UC-SP-001	INF-SP-01	スプリント
+EVT-SP-002	スプリントが更新された	スプリントの期間・状態・チーム情報が修正された	UC-SP-002	INF-SP-01	スプリント
+EVT-SP-003	Sprint Goalが設定された	スプリントの目的と関連項目が記録・共有された	UC-SP-004	INF-SP-02	Sprint Goal
+EVT-SP-004	Sprint Goalが更新された	スプリントの目的が修正・更新された	UC-SP-005	INF-SP-02	Sprint Goal
+EVT-SP-005	Sprint Backlogが作成された	選択項目、作業、状態、担当、依存関係が定義された	UC-SP-006	INF-SP-03	Sprint Backlog項目
+EVT-SP-006	Sprint Backlogが更新された	作業の状態・担当・依存関係が修正された	UC-SP-007	INF-SP-03	Sprint Backlog項目
+EVT-SP-007	ボードが更新された	カンバンボード上で作業の状態が移動された	UC-SP-008	INF-SP-03	Sprint Backlog項目
+EVT-SP-008	障害が登録された	阻害要因、影響、担当が記録された	UC-SP-009	INF-SP-04	障害
+EVT-SP-009	障害が更新された	障害の解消状況・担当が修正された	UC-SP-010	INF-SP-04	障害
+EVT-SP-010	依存関係が定義された	作業間の依存関係が定義された	UC-SP-012	INF-SP-05	Sprint Backlog項目
+EVT-SP-011	通知が送信された	メンション、担当変更、期限、判断待ちなどが通知された	UC-SP-013	INF-SP-06	通知
+EVT-SP-012	インクリメントが完成確認された	完成の定義を満たすインクリメントが確認・提示された	UC-SP-015	INF-SP-03	Sprint Backlog項目
+EVT-SP-013	デイリースクラムが記録された	Sprint Goalに向けた状況確認と計画調整が記録された	UC-SP-016	INF-SP-03	Sprint Backlog項目
+EVT-SP-014	ソース管理情報が関連付けられた	コミット・ブランチ・PRがスプリント作業と関連付けられた	UC-SP-018	INF-SP-03	Sprint Backlog項目
+EVT-SP-015	ビルド・デプロイ状況が更新された	CI/CDパイプラインのビルド・デプロイ状況が取得された	UC-SP-019	INF-SP-03	Sprint Backlog項目
+EVT-SP-016	アクティビティが記録された	作業状態変更、コメント追加などのアクティビティが記録された	UC-SP-008	INF-SP-07	Sprint Backlog項目

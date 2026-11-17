@@ -1,0 +1,113 @@
+{
+  "businesses": [
+    {
+      "business_name": "承認ワークフロー",
+      "BUCs": [
+        {
+          "buc_name": "承認リクエスト作成",
+          "actors": [
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "承認リクエスト作成",
+          "actors": [
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "承認実行",
+          "actors": [
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "承認実行",
+          "actors": [
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            },
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001",
+                "SCR-01002"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

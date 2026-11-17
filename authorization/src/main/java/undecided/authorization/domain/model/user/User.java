@@ -1,6 +1,7 @@
 package undecided.authorization.domain.model.user;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,27 +22,27 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import undecided.authorization.domain.model.role.Role;
+import undecided.authorization.infra.converter.EncryptedStringConverter;
 
 /**
  * ユーザーエンティティ
- * <p>
- * システムのユーザーを表すエンティティクラスです。 ユーザー名、パスワード、メールアドレスなどの基本情報と、 ユーザーに割り当てられたロールのコレクションを持ちます。
- * <p>
- * ユーザーは以下の3種類のタイプに分類されます：
+ *
+ * <p>システムのユーザーを表すエンティティクラスです。 ユーザー名、パスワード、メールアドレスなどの基本情報と、 ユーザーに割り当てられたロールのコレクションを持ちます。
+ *
+ * <p>ユーザーは以下の3種類のタイプに分類されます：
+ *
  * <ul>
- *   <li>社員（EMPLOYEE）</li>
- *   <li>ビジネスパートナー社員（BUSINESS_PARTNER_EMPLOYEE）</li>
- *   <li>ビジネスパートナー（個人）（INDIVIDUAL_BUSINESS_PARTNER）</li>
+ *   <li>社員（EMPLOYEE）
+ *   <li>ビジネスパートナー社員（BUSINESS_PARTNER_EMPLOYEE）
+ *   <li>ビジネスパートナー（個人）（INDIVIDUAL_BUSINESS_PARTNER）
  * </ul>
  */
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Builder
 @AllArgsConstructor
@@ -51,37 +52,56 @@ public class User {
   @JoinTable(
       name = "user_roles",
       joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id")
-  )
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
   private final Set<Role> roles = new HashSet<>();
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   @Column(nullable = false, unique = true)
   private String username;
+
   @Column(nullable = false)
+  @lombok.ToString.Exclude
   private String password;
+
   @Column(nullable = false, unique = true)
   private String email;
+
   @Column(name = "first_name")
+  @Convert(converter = EncryptedStringConverter.class)
+  @lombok.ToString.Exclude
   private String firstName;
+
   @Column(name = "last_name")
+  @Convert(converter = EncryptedStringConverter.class)
+  @lombok.ToString.Exclude
   private String lastName;
+
   @Column(name = "initials")
   private String initials;
+
   @Column(nullable = false)
   private boolean enabled;
+
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
+
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
+
   @Column(name = "last_login_at")
   private LocalDateTime lastLoginAt;
 
+  @Column(name = "first_login", nullable = false)
+  @Builder.Default
+  private boolean firstLogin = false;
+
   /**
    * ユーザータイプを表す変数。
-   * <p>
-   * ユーザーの種類（社員、ビジネスパートナー社員、ビジネスパートナー（個人））を示します。 データベース上の "user_type" カラムに対応し、デフォルト値は
+   *
+   * <p>ユーザーの種類（社員、ビジネスパートナー社員、ビジネスパートナー（個人））を示します。 データベース上の "user_type" カラムに対応し、デフォルト値は
    * EMPLOYEE（社員）です。
    */
   @Enumerated(EnumType.STRING)
@@ -114,8 +134,7 @@ public class User {
    * @return ロールを持っている場合はtrue、そうでない場合はfalse
    */
   public boolean hasRole(String roleName) {
-    return this.roles.stream()
-        .anyMatch(role -> role.getName().equals(roleName));
+    return this.roles.stream().anyMatch(role -> role.getName().equals(roleName));
   }
 
   /**
@@ -130,6 +149,62 @@ public class User {
         .anyMatch(permission -> permission.getName().equals(permissionName));
   }
 
+  /**
+   * 初回ログインかどうかを確認します。
+   *
+   * @return 初回ログインの場合はtrue、そうでない場合はfalse
+   */
+  public boolean isFirstLogin() {
+    return this.firstLogin;
+  }
+
+  /** 初回ログインを完了としてマークします。 */
+  public void setFirstLoginComplete() {
+    this.firstLogin = false;
+  }
+
+  /**
+   * ユーザーの文字列表現を返します。
+   * 機微な情報（氏名）はマスクされます。
+   *
+   * @return マスクされたユーザー情報
+   */
+  @Override
+  public String toString() {
+    return "User{" +
+        "id=" + id +
+        ", username='" + username + '\'' +
+        ", email='" + maskEmail(email) + '\'' +
+        ", firstName='" + maskName(firstName) + '\'' +
+        ", lastName='" + maskName(lastName) + '\'' +
+        ", initials='" + initials + '\'' +
+        ", enabled=" + enabled +
+        ", userType=" + userType +
+        ", firstLogin=" + firstLogin +
+        ", createdAt=" + createdAt +
+        ", updatedAt=" + updatedAt +
+        ", lastLoginAt=" + lastLoginAt +
+        '}';
+  }
+
+  private static String maskName(String name) {
+    if (name == null || name.length() <= 1) {
+      return name;
+    }
+    return name.charAt(0) + "*";
+  }
+
+  private static String maskEmail(String email) {
+    if (email == null || email.isEmpty()) {
+      return email;
+    }
+    int atIndex = email.indexOf('@');
+    if (atIndex <= 0) {
+      return email;
+    }
+    return email.charAt(0) + "***" + email.substring(atIndex);
+  }
+
   @Override
   public final boolean equals(Object o) {
     if (this == o) {
@@ -138,12 +213,14 @@ public class User {
     if (o == null) {
       return false;
     }
-    Class<?> oEffectiveClass = o instanceof HibernateProxy
-        ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
-        : o.getClass();
-    Class<?> thisEffectiveClass = this instanceof HibernateProxy
-        ? ((HibernateProxy) this).getHibernateLazyInitializer()
-        .getPersistentClass() : this.getClass();
+    Class<?> oEffectiveClass =
+        o instanceof HibernateProxy
+            ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
+            : o.getClass();
+    Class<?> thisEffectiveClass =
+        this instanceof HibernateProxy
+            ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass()
+            : this.getClass();
     if (thisEffectiveClass != oEffectiveClass) {
       return false;
     }
@@ -153,7 +230,8 @@ public class User {
 
   @Override
   public final int hashCode() {
-    return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer()
-        .getPersistentClass().hashCode() : getClass().hashCode();
+    return this instanceof HibernateProxy
+        ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+        : getClass().hashCode();
   }
 }

@@ -1,0 +1,15 @@
+{
+  "businesses": [
+    {
+      "businessId": "AG-04",
+      "businessName": "スプリント実行",
+      "bucs": [
+        {"bucId": "BUC-SP-01", "bucName": "スプリント計画の作成", "screens": ["SCR-SP-001", "SCR-SP-002"]},
+        {"bucId": "BUC-SP-02", "bucName": "スプリント実行・日々の適応", "screens": ["SCR-SP-002", "SCR-SP-003"]},
+        {"bucId": "BUC-SP-03", "bucName": "障害・依存関係の解消", "screens": ["SCR-SP-003"]},
+        {"bucId": "BUC-SP-04", "bucName": "スプリント進捗の共有", "screens": ["SCR-SP-001", "SCR-SP-003"]},
+        {"bucId": "BUC-SP-05", "bucName": "インクリメントの完成確認", "screens": ["SCR-SP-003"]}
+      ]
+    }
+  ]
+}

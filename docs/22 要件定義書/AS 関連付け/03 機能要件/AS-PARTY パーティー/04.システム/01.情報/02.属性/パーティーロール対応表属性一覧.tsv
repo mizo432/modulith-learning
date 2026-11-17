@@ -1,0 +1,10 @@
+属性名	型	PK	必須	説明
+mapping_id	SnowflakeID	*	Y	対応表の一意な識別子
+party_id	SnowflakeID		Y	パーティーの識別子
+role_id	SnowflakeID		Y	ロールの識別子
+valid_from	DateTime		Y	有効開始日
+valid_to	DateTime		N	有効終了日
+description	Text		N	対応表の説明
+created_at	DateTime		Y	作成日時
+updated_at	DateTime		Y	最終更新日時
+

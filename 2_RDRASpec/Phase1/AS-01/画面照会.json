@@ -1,0 +1,175 @@
+{
+  "businesses": [
+    {
+      "business_name": "パーティー",
+      "BUCs": [
+        {
+          "buc_name": "Party登録・管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "Party登録・管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-01001"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actorGroups": [
+    {
+      "group_name": "管理者",
+      "actors": [
+        {
+          "actor_name": "システム管理者",
+          "screen_names": [
+            "SCR-01001"
+          ]
+        }
+      ]
+    },
+    {
+      "group_name": "利用者",
+      "actors": [
+        {
+          "actor_name": "従業員",
+          "screen_names": [
+            "SCR-01001"
+          ]
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "screen_name": "SCR-01001",
+      "fields": [
+        {
+          "field_name": "名前",
+          "type": "string",
+          "tooltip": "名前"
+        },
+        {
+          "field_name": "タイプ",
+          "type": "string",
+          "tooltip": "タイプ"
+        },
+        {
+          "field_name": "識別子",
+          "type": "string",
+          "tooltip": "識別子"
+        },
+        {
+          "field_name": "作成日",
+          "type": "string",
+          "tooltip": "作成日"
+        },
+        {
+          "field_name": "更新日",
+          "type": "string",
+          "tooltip": "更新日"
+        },
+        {
+          "field_name": "state",
+          "type": "enum",
+          "tooltip": "状態(Party)"
+        },
+        {
+          "field_name": "created_at",
+          "type": "string",
+          "tooltip": "作成日"
+        }
+      ],
+      "screen_datas": [
+        {
+          "display_name": "Party一覧",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "Partyデータ1"
+            },
+            {
+              "field_name": "タイプ",
+              "value": "Partyデータ1"
+            },
+            {
+              "field_name": "識別子",
+              "value": "Partyデータ1"
+            }
+          ]
+        },
+        {
+          "display_name": "Party詳細",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "Partyデータ2"
+            },
+            {
+              "field_name": "タイプ",
+              "value": "Partyデータ2"
+            },
+            {
+              "field_name": "識別子",
+              "value": "Partyデータ2"
+            }
+          ]
+        },
+        {
+          "display_name": "Party照会",
+          "dummy_data": [
+            {
+              "field_name": "名前",
+              "value": "Partyデータ3"
+            },
+            {
+              "field_name": "タイプ",
+              "value": "Partyデータ3"
+            },
+            {
+              "field_name": "識別子",
+              "value": "Partyデータ3"
+            }
+          ]
+        }
+      ],
+      "operation": "登録",
+      "data_access": [
+        {
+          "entity": "PARTY",
+          "CRUD": [
+            "C",
+            "R",
+            "U",
+            "D"
+          ],
+          "isMain": true
+        }
+      ]
+    }
+  ]
+}

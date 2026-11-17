@@ -1,5 +1,0 @@
-@ApplicationModule(type = Type.OPEN)
-package undecided.erp.shared;
-
-import org.springframework.modulith.ApplicationModule;
-import org.springframework.modulith.ApplicationModule.Type;

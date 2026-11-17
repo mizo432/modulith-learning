@@ -1,0 +1,6 @@
+ステート一覧
+
+状態モデル	状態	遷移先状態	遷移UC	説明	コンテキスト
+Party	start	有効	-	Partyの初期状態	Party管理
+Party	有効	無効	UC-AS-004	Partyを無効にする	Party管理
+Party	無効	end	-	-	Party管理

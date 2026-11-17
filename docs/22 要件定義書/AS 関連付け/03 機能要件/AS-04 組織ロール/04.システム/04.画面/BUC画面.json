@@ -1,0 +1,43 @@
+{
+  "businesses": [
+    {
+      "business_name": "組織ロール",
+      "BUCs": [
+        {
+          "buc_name": "OrganizationRole管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-04001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-04001"
+              ]
+            }
+          ]
+        },
+        {
+          "buc_name": "OrganizationRole管理",
+          "actors": [
+            {
+              "actor_name": "システム管理者",
+              "screen_names": [
+                "SCR-04001"
+              ]
+            },
+            {
+              "actor_name": "従業員",
+              "screen_names": [
+                "SCR-04001"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

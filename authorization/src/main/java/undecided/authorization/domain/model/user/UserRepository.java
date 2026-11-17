@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 /**
  * ユーザーリポジトリ
- * <p>
- * ユーザーエンティティのデータアクセスを提供するリポジトリインターフェースです。
+ *
+ * <p>ユーザーエンティティのデータアクセスを提供するリポジトリインターフェースです。
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -43,4 +43,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
    * @return 存在する場合はtrue、そうでない場合はfalse
    */
   boolean existsByEmail(String email);
+
 }

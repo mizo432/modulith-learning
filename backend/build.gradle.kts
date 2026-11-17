@@ -7,21 +7,23 @@ buildscript {
     }
     dependencies {
         // Flyway（データベース移行ツール）のクラスパス追加
-        // classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
+        classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
     }
 }
 plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "4.0.7"
+    id("org.springframework.boot") version "4.1.2"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
     id("com.github.ben-manes.versions") version "0.53.0"
     // Flywayプラグイン（DBマイグレーション）
-    // id("org.flywaydb.flyway") version "11.3.4"
+    id("org.flywaydb.flyway") version "11.3.4"
     jacoco
+    // Pitest ミューテーションテストプラグイン
+    id("info.solidsoft.pitest") version "1.19.0"
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -36,6 +38,10 @@ tasks {
     withType<JavaCompile> {
         // コンパイラの警告を有効化（未チェック警告）
         options.compilerArgs.add("-Xlint:unchecked")
+    }
+    // properties ファイルを UTF-8 で処理する
+    processResources {
+        filteringCharset = "UTF-8"
     }
 }
 configurations.compileOnly {
@@ -55,18 +61,32 @@ extra["jiltVersion"] = "1.8.2"
 extra["jdbcPostgresqlVersion"] = "11.3.4"
 extra["openapiUiVersion"] = "2.8.9"
 extra["jmoleculesBomVersion"] = "2023.2.1"
-extra["archunitVersion"] = "1.3.0"
+extra["archunitVersion"] = "1.5.1"
 extra["junitVersion"] = "6.1.0"
+// Override Spring Boot BOM to align all JUnit artifacts (Jupiter, Platform, Vintage)
+extra["junit-jupiter.version"] = "6.1.0"
 extra["springCloudBomVersion"] = "2025.1.2"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.5.0"
-extra["jspecifyVersion"] = "1.0.0"
+extra["jspecifyVersion"] = "1.0.1"
 extra["assertjDbVersion"] = "3.0.2"
+extra["superCsvVersion"] = "2.4.0"
+extra["testcontainersVersion"] = "2.0.5"
+
+// Force JUnit Platform artifacts to align with JUnit 6 version
+// Spring Boot 4.1.1 manages junit-platform-launcher at 1.14.4, but JUnit 6 requires 6.x
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.junit.platform") {
+            useVersion("6.1.0")
+        }
+    }
+}
 
 dependencies {
+    implementation(project(":mizo432-shared-common"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
@@ -74,9 +94,11 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     testCompileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
+    runtimeOnly("com.julien-dubois.bootui:bootui-spring-boot-starter:1.21.0")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
@@ -86,13 +108,12 @@ dependencies {
     runtimeOnly("org.springframework.modulith:spring-modulith-starter-insight:${property("springModulithInsightVersion")}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${property("junitVersion")}")
     implementation("com.google.guava:guava:${property("guavaVersion")}")
     implementation("org.jspecify:jspecify:${property("jspecifyVersion")}")
     implementation("com.ibm.icu:icu4j:${property("icu4jVersion")}")
     testRuntimeOnly("com.h2database:h2")
     // https://mvnrepository.com/artifact/am.ik.yavi/yavi
-    implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
-
     implementation("am.ik.yavi:yavi:${property("yaviVersion")}")
     annotationProcessor("cc.jilt:jilt:${property("jiltVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client") {
@@ -102,22 +123,107 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:${property("libphonenumberVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("org.springframework.security:spring-security-crypto")
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:testcontainers:${property("testcontainersVersion")}")
+    testImplementation("org.testcontainers:testcontainers-postgresql:${property("testcontainersVersion")}")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter:${property("testcontainersVersion")}")
+    implementation("com.tngtech.archunit:archunit:${property("archunitVersion")}")
+    testImplementation("com.tngtech.archunit:archunit-junit5:${property("archunitVersion")}")
 
     // Apache POI for Excel processing
     implementation("org.apache.poi:poi:${property("poiVersion")}")
     implementation("org.apache.poi:poi-ooxml:${property("poiVersion")}")
+
+    // Spring Batch & Super CSV
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.batch:spring-batch-core")
+    implementation("org.springframework.batch:spring-batch-infrastructure")
+    implementation("net.sf.supercsv:super-csv:${property("superCsvVersion")}")
+    testImplementation("org.springframework.batch:spring-batch-test")
+
+    // Flyway PostgreSQLサポート
+    implementation("org.flywaydb:flyway-database-postgresql")
+    implementation("org.flywaydb:flyway-core")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     (options as StandardJavadocDocletOptions).addStringOption("encoding", "UTF-8")
 }
 
-// flyway {
-//    url = "jdbc:postgresql://localhost:5432/postgres"
-//    user = "postgres"
-//    password = "postgres"
-//}
+// 事業領域ごとのFlyway構成
+// data-designスキルに従い、事業領域ごとにスキーマを分離する
+flyway {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+}
+
+// 事業領域: 関連付け (AS)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateAs") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_as")
+    locations = arrayOf("classpath:db/migration/as")
+}
+
+// 事業領域: 開発運用 (DO)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateDo") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_do")
+    locations = arrayOf("classpath:db/migration/do")
+}
+
+// 事業領域: 電子帳票 (EF)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateEf") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_ef")
+    locations = arrayOf("classpath:db/migration/ef")
+}
+
+// 事業領域: 購買事業 (PC)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigratePc") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_pc")
+    locations = arrayOf("classpath:db/migration/pc")
+}
+
+// 事業領域: 承認申請 (AR)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateAr") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_ar")
+    locations = arrayOf("classpath:db/migration/ar")
+}
+
+// 事業領域: 認可 (AZ)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateAz") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_az")
+    locations = arrayOf("classpath:db/migration/az")
+}
+
+// 事業領域: 通知 (NT)
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateNt") {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    schemas = arrayOf("undecided_nt")
+    locations = arrayOf("classpath:db/migration/nt")
+}
 
 dependencyManagement {
     imports {
@@ -144,12 +250,16 @@ tasks.test {
         excludeTags("medium", "large")
         timeout.set(Duration.ofSeconds(60))
     }
+    // ArchUnitがmainクラスをスキャンできるようにclasspathに追加
+    classpath += sourceSets["main"].output
     finalizedBy(tasks.jacocoTestReport) // a report is always generated after tests run
 }
 
 val mediumTest = tasks.register("mediumTest", Test::class.java) {
     description = "medium sized test"
     group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("medium")
     }
@@ -159,6 +269,8 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
 val largeTest = tasks.register("largeTest", Test::class.java) {
     description = "large sized test"
     group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("large")
     }
@@ -185,4 +297,24 @@ fun isNonStable(version: String): Boolean {
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()
+}
+
+// Pitest ミューテーションテスト構成
+// 初回導入時はcom.github.mizo432.sharedパッケージに限定し、実行時間を抑える
+pitest {
+    targetClasses = setOf("com.github.mizo432.shared.*")
+    // JUnit 5 プラグインの自動追加
+    junit5PluginVersion = "1.2.1"
+    threads = Runtime.getRuntime().availableProcessors()
+    outputFormats = setOf("HTML", "XML")
+    timestampedReports = false
+    // 不安定なテストをスキップして、ミューテーションテストを継続する
+    skipFailingTests = true
+    excludedClasses = setOf(
+        // 生成コード・インフラストラクチャコードは除外
+        "com.github.mizo432.shared.*.package-info",
+        "com.github.mizo432.shared.*.dto.*",
+        "com.github.mizo432.shared.*.config.*"
+    )
+    jvmArgs = listOf("-Xmx1024m")
 }

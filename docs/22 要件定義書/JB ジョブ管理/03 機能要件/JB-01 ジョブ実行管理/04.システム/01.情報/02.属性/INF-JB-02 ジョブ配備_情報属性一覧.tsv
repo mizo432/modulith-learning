@@ -1,0 +1,14 @@
+情報属性一覧
+INF-JB-02	ジョブ配備	対応表	サーバーごとの配備状況・バージョン
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	deploymentId	Y	String	Y	配備ID（一意識別子）
+2	jobCode	N	String	Y	ジョブコード（外部キー）
+3	host	N	String	Y	サーバーホスト名
+4	port	N	Integer	Y	サーバーポート番号
+5	protocol	N	String	Y	プロトコル（HTTP/HTTPS等）
+6	deploymentVersion	N	String	Y	配備バージョン
+7	deployedAt	N	DateTime	Y	配備日時
+8	status	N	Enum	Y	配備ステータス（配備済み/配備中/失敗）
+9	createdAt	N	DateTime	Y	作成日時
+10	updatedAt	N	DateTime	Y	更新日時

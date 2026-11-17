@@ -1,0 +1,13 @@
+情報属性一覧
+INF-JB-11	監査ログ	イベント	手動起動・再実行・再開などの操作記録
+属性一覧
+番号	属性名	個体指定子	型	必須	説明
+1	auditLogId	Y	String	Y	監査ログID（一意識別子）
+2	operationType	N	Enum	Y	操作タイプ（手動起動/再実行/再開/キャンセル/設定変更/権限変更）
+3	userId	N	String	Y	操作者ID
+4	username	N	String	Y	操作者名
+5	operationDateTime	N	DateTime	Y	操作日時
+6	operationReason	N	String	N	操作理由
+7	targetJobCode	N	String	N	対象ジョブコード
+8	targetExecutionId	N	String	N	対象実行ID
+9	result	N	String	N	操作結果

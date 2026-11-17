@@ -1,0 +1,9 @@
+属性名	型	PK	必須	説明
+feedback_id	SnowflakeID	*	Y	要望の一意な識別子
+project_id	UUID		Y	所属プロジェクトの識別子
+submitted_by	UUID		Y	提出者の識別子
+problem_id	SnowflakeID		N	関連する課題の識別子
+content	Text		Y	要望の内容
+rating	Integer		N	評価値
+created_at	DateTime		Y	作成日時
+updated_at	DateTime		Y	最終更新日時

@@ -1,0 +1,10 @@
+属性名	型	PK	必須	説明
+hierarchy_id	SnowflakeID	*	Y	組織階層の一意な識別子
+parent_org_id	SnowflakeID		Y	親組織の識別子
+child_org_id	SnowflakeID		Y	子組織の識別子
+level	Integer		Y	階層レベル
+valid_from	DateTime		Y	有効開始日
+valid_to	DateTime		N	有効終了日
+created_at	DateTime		Y	作成日時
+updated_at	DateTime		Y	最終更新日時
+

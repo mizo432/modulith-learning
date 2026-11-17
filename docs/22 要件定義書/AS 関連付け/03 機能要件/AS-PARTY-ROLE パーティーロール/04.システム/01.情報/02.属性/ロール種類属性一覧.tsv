@@ -1,0 +1,6 @@
+属性名	型	PK	必須	説明
+role_type_code	Code	*	Y	ロール種類コード
+name	String		Y	ロール種類名
+description	Text		N	ロール種類の説明
+created_at	DateTime		Y	作成日時
+
