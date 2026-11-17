@@ -115,6 +115,64 @@ class UserTest {
   }
 
   @Nested
+  @DisplayName("employeeId関連メソッドのテスト")
+  class EmployeeIdTest {
+
+    @Test
+    @DisplayName("employeeIdのデフォルト値がnullであること")
+    void shouldHaveEmployeeIdNullByDefault() {
+      // Arrange
+      User user =
+          User.builder()
+              .username("testuser")
+              .password("password")
+              .email("test@example.com")
+              .enabled(true)
+              .build();
+
+      // Assert
+      assertThat(user.getEmployeeId()).as("デフォルトではemployeeIdがnullであること").isNull();
+      assertThat(user.getEmployeeIdAsString())
+          .as("getEmployeeIdAsStringもnullを返すこと")
+          .isNull();
+    }
+
+    @Test
+    @DisplayName("employeeIdを設定できること")
+    void shouldSetEmployeeId() {
+      // Arrange
+      User user =
+          User.builder()
+              .username("testuser")
+              .password("password")
+              .email("test@example.com")
+              .enabled(true)
+              .employeeId(12345678901234567L)
+              .build();
+
+      // Assert
+      assertThat(user.getEmployeeId()).isEqualTo(12345678901234567L);
+      assertThat(user.getEmployeeIdAsString()).isEqualTo("12345678901234567");
+    }
+
+    @Test
+    @DisplayName("employeeIdがnullの場合、getEmployeeIdAsStringがnullを返すこと")
+    void shouldReturnNullStringWhenEmployeeIdIsNull() {
+      // Arrange
+      User user =
+          User.builder()
+              .username("testuser")
+              .password("password")
+              .email("test@example.com")
+              .enabled(true)
+              .build();
+
+      // Assert
+      assertThat(user.getEmployeeIdAsString()).isNull();
+    }
+  }
+
+  @Nested
   @DisplayName("toStringメソッドのテスト")
   class ToStringTest {
 

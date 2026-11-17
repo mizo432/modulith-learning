@@ -14,6 +14,7 @@ export interface User {
   createdAt: string;
   updatedAt?: string;
   lastLoginAt?: string;
+  employeeId: string | null;
 }
 
 // Role type definition

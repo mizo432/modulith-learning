@@ -34,7 +34,8 @@ const Login: React.FC = () => {
       if (response.data.success) {
         // Use the login function from auth context with firstLogin flag
         const firstLogin = response.data.firstLogin || false;
-        login(response.data.token || 'dummy-token', response.data.username, response.data.isAdmin || false, firstLogin);
+        const employeeId = response.data.employeeId != null ? String(response.data.employeeId) : null;
+        login(response.data.token || 'dummy-token', response.data.username, response.data.isAdmin || false, firstLogin, employeeId);
 
         // Redirect based on firstLogin status
         if (firstLogin) {

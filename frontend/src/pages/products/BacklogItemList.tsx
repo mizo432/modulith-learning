@@ -34,6 +34,7 @@ import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
 import {valueToColor, valueToBackgroundColor} from '../../utils/valueColor';
 import {useIsVisible} from '../../hooks/useIsVisible';
 import {useAutoRefresh} from '../../hooks/useAutoRefresh';
+import {useAuth} from '../../contexts/AuthContext';
 
 const REFRESH_INTERVAL = 30000; // 30秒
 
@@ -66,6 +67,7 @@ const QUALITY_CATEGORY_COLORS: Record<string, 'success' | 'info' | 'warning' | '
 const BacklogItemList: React.FC = () => {
   const {productId, scrumTeamId} = useParams<{ productId: string; scrumTeamId: string }>();
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const [items, setItems] = useState<BacklogItem[]>([]);
   const [team, setTeam] = useState<ScrumTeam | null>(null);
@@ -80,7 +82,7 @@ const BacklogItemList: React.FC = () => {
   const [formDescription, setFormDescription] = useState('');
   const [formPriority, setFormPriority] = useState('');
   const [formCreatorName, setFormCreatorName] = useState(
-    localStorage.getItem('user') ?? '',
+    auth.username ?? '',
   );
 
   // 状態変更の確認ダイアログ
@@ -89,8 +91,8 @@ const BacklogItemList: React.FC = () => {
     status: BacklogItemStatus;
   } | null>(null);
 
-  // 現在の従業員ID（ロール情報の正式な取得方法は Issue #573 で検討中）
-  const currentEmployeeId = localStorage.getItem('employeeId');
+  // 現在の従業員ID（AuthContextから取得）
+  const currentEmployeeId = auth.employeeId;
   const canChangeStatus =
     !!currentEmployeeId &&
     !!team &&

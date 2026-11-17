@@ -73,6 +73,7 @@ public class UserController {
               .lastName(request.getLastName())
               .initials(request.getInitials())
               .userType(request.getUserType() != null ? request.getUserType() : UserType.EMPLOYEE)
+              .employeeId(request.getEmployeeId())
               .build();
 
       // ユーザーを作成
@@ -130,6 +131,9 @@ public class UserController {
                 }
                 if (request.getEnabled() != null) {
                   existingUser.setEnabled(request.getEnabled());
+                }
+                if (request.getEmployeeId() != null) {
+                  existingUser.setEmployeeId(request.getEmployeeId());
                 }
 
                 // パスワードの更新（指定されている場合のみ）

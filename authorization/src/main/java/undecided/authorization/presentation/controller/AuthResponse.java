@@ -18,4 +18,10 @@ public class AuthResponse {
   private String username;
   private String message;
   private boolean firstLogin;
+
+  /**
+   * 従業員ID（SnowflakeId）。JSONでは文字列として返す。
+   * null可。EMPLOYEE以外や未設定の場合はnull。
+   */
+  private String employeeId;
 }

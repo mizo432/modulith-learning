@@ -54,4 +54,9 @@ public class UserCreateRequest {
    * ロール名のリスト
    */
   private java.util.List<String> roles;
+
+  /**
+   * 従業員ID（SnowflakeId）。EMPLOYEEタイプのユーザーに設定。
+   */
+  private Long employeeId;
 }
