@@ -271,6 +271,46 @@ describe('BacklogItemList', () => {
     });
   });
 
+  describe('品質カテゴリ列の表示', () => {
+    it('qualityCategoryとqualityCategoryLabelを持つアイテムでは品質カテゴリのラベルが表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          qualityCategory: 'ATTRACTIVE',
+          qualityCategoryLabel: '魅力的品質',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('魅力的品質')).toBeInTheDocument();
+      });
+    });
+
+    it('qualityCategoryがnullのアイテムでは品質カテゴリのラベルが表示されない', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithoutValue,
+          qualityCategory: null,
+          qualityCategoryLabel: null,
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Valueなしアイテム')).toBeInTheDocument();
+      });
+
+      // 品質カテゴリのラベルが表示されていないことを確認
+      expect(screen.queryByText('魅力的品質')).not.toBeInTheDocument();
+      expect(screen.queryByText('当たり前品質')).not.toBeInTheDocument();
+      expect(screen.queryByText('一元的品質')).not.toBeInTheDocument();
+      expect(screen.queryByText('無関心品質')).not.toBeInTheDocument();
+    });
+  });
+
   describe('自動リフレッシュ', () => {
     beforeAll(() => {
       jest.useFakeTimers();

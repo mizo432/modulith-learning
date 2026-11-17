@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.agiloom.requirementBacklog.spi.QualityCategory;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
@@ -73,6 +74,7 @@ class CreateBacklogItemCommandServiceTest {
       verify(backlogItemRepository).save(captor.capture());
       assertThat(captor.getValue().getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
       assertThat(captor.getValue().getScrumTeamId()).isEqualTo(teamId);
+      assertThat(captor.getValue().getQualityCategory()).isNull();
     }
 
     @Test
