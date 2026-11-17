@@ -22,6 +22,7 @@ import backlogItemService, {
 import {valueToColor, VALUE_MIN, VALUE_MAX} from '../../utils/valueColor';
 import {useIsVisible} from '../../hooks/useIsVisible';
 import {useAutoRefresh} from '../../hooks/useAutoRefresh';
+import {useAuth} from '../../contexts/AuthContext';
 
 const REFRESH_INTERVAL = 30000; // 30秒
 
@@ -44,6 +45,7 @@ const BacklogItemDetail: React.FC = () => {
     backlogItemId: string;
   }>();
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const [item, setItem] = useState<BacklogItem | null>(null);
   const [comments, setComments] = useState<BacklogItemComment[]>([]);
@@ -51,7 +53,7 @@ const BacklogItemDetail: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [commentBody, setCommentBody] = useState('');
   const [commentAuthorName, setCommentAuthorName] = useState(
-    localStorage.getItem('user') ?? '',
+    auth.username ?? '',
   );
 
   // Value入力（数値型でSliderとTextFieldを双方向連動）
@@ -102,7 +104,7 @@ const BacklogItemDetail: React.FC = () => {
     setError(null);
     try {
       const created = await backlogItemService.addComment(backlogItemId, {
-        authorEmployeeId: localStorage.getItem('employeeId') ?? undefined,
+        authorEmployeeId: auth.employeeId ?? undefined,
         authorName: commentAuthorName,
         body: commentBody,
       });

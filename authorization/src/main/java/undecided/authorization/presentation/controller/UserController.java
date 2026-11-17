@@ -64,6 +64,9 @@ public class UserController {
   public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
     try {
       // リクエストからユーザーエンティティを作成
+      // employeeIdはuserTypeがEMPLOYEEの場合のみ保持する（#614の決定）
+      UserType userType =
+          request.getUserType() != null ? request.getUserType() : UserType.EMPLOYEE;
       User user =
           User.builder()
               .username(request.getUsername())
@@ -72,7 +75,8 @@ public class UserController {
               .firstName(request.getFirstName())
               .lastName(request.getLastName())
               .initials(request.getInitials())
-              .userType(request.getUserType() != null ? request.getUserType() : UserType.EMPLOYEE)
+              .userType(userType)
+              .employeeId(userType == UserType.EMPLOYEE ? request.getEmployeeId() : null)
               .build();
 
       // ユーザーを作成
@@ -130,6 +134,14 @@ public class UserController {
                 }
                 if (request.getEnabled() != null) {
                   existingUser.setEnabled(request.getEnabled());
+                }
+                // employeeIdが指定された場合のみ更新する（明示的なnullは関連付けの解除）
+                if (request.isEmployeeIdSpecified()) {
+                  existingUser.setEmployeeId(request.getEmployeeId());
+                }
+                // userTypeがEMPLOYEE以外の場合、employeeIdは保持しない（#614の決定）
+                if (existingUser.getUserType() != UserType.EMPLOYEE) {
+                  existingUser.setEmployeeId(null);
                 }
 
                 // パスワードの更新（指定されている場合のみ）

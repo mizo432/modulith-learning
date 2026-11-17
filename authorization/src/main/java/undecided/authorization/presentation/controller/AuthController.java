@@ -39,12 +39,16 @@ public class AuthController {
 
     if (user == null) {
       return ResponseEntity.badRequest()
-          .body(new AuthResponse(false, null, "Invalid username or password", false));
+          .body(new AuthResponse(false, null, "Invalid username or password", false, null));
     }
 
     return ResponseEntity.ok(
         new AuthResponse(
-            true, user.getUsername(), "Authentication successful", user.isFirstLogin()));
+            true,
+            user.getUsername(),
+            "Authentication successful",
+            user.isFirstLogin(),
+            user.getEmployeeIdAsString()));
   }
 
   /**
@@ -63,9 +67,14 @@ public class AuthController {
               userId, request.getCurrentPassword(), request.getNewPassword());
       return ResponseEntity.ok(
           new AuthResponse(
-              true, user.getUsername(), "Password changed successfully", user.isFirstLogin()));
+              true,
+              user.getUsername(),
+              "Password changed successfully",
+              user.isFirstLogin(),
+              user.getEmployeeIdAsString()));
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
+      return ResponseEntity.badRequest()
+          .body(new AuthResponse(false, null, e.getMessage(), false, null));
     }
   }
 
@@ -83,10 +92,10 @@ public class AuthController {
 
     if (hasRole) {
       return ResponseEntity.ok(
-          new AuthResponse(true, username, "User has the required role", false));
+          new AuthResponse(true, username, "User has the required role", false, null));
     } else {
       return ResponseEntity.ok(
-          new AuthResponse(false, username, "User does not have the required role", false));
+          new AuthResponse(false, username, "User does not have the required role", false, null));
     }
   }
 
@@ -104,10 +113,10 @@ public class AuthController {
 
     if (hasPermission) {
       return ResponseEntity.ok(
-          new AuthResponse(true, username, "User has the required permission", false));
+          new AuthResponse(true, username, "User has the required permission", false, null));
     } else {
       return ResponseEntity.ok(
-          new AuthResponse(false, username, "User does not have the required permission", false));
+          new AuthResponse(false, username, "User does not have the required permission", false, null));
     }
   }
 
@@ -126,11 +135,11 @@ public class AuthController {
 
     if (isAuthorized) {
       return ResponseEntity.ok(
-          new AuthResponse(true, username, "User is authorized for the requested action", false));
+          new AuthResponse(true, username, "User is authorized for the requested action", false, null));
     } else {
       return ResponseEntity.ok(
           new AuthResponse(
-              false, username, "User is not authorized for the requested action", false));
+              false, username, "User is not authorized for the requested action", false, null));
     }
   }
 
@@ -150,9 +159,14 @@ public class AuthController {
               principal.getName(), request.getCurrentPassword(), request.getNewPassword());
       return ResponseEntity.ok(
           new AuthResponse(
-              true, user.getUsername(), "Password changed successfully", user.isFirstLogin()));
+              true,
+              user.getUsername(),
+              "Password changed successfully",
+              user.isFirstLogin(),
+              user.getEmployeeIdAsString()));
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
+      return ResponseEntity.badRequest()
+          .body(new AuthResponse(false, null, e.getMessage(), false, null));
     }
   }
 
@@ -171,7 +185,7 @@ public class AuthController {
       if (request.getNewPassword() == null
           || !request.getNewPassword().equals(request.getConfirmPassword())) {
         return ResponseEntity.badRequest()
-            .body(new AuthResponse(false, null, "Passwords do not match", false));
+            .body(new AuthResponse(false, null, "Passwords do not match", false, null));
       }
 
       User user =
@@ -179,9 +193,14 @@ public class AuthController {
               principal.getName(), request.getNewPassword());
       return ResponseEntity.ok(
           new AuthResponse(
-              true, user.getUsername(), "Password changed successfully", user.isFirstLogin()));
+              true,
+              user.getUsername(),
+              "Password changed successfully",
+              user.isFirstLogin(),
+              user.getEmployeeIdAsString()));
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(new AuthResponse(false, null, e.getMessage(), false));
+      return ResponseEntity.badRequest()
+          .body(new AuthResponse(false, null, e.getMessage(), false, null));
     }
   }
 

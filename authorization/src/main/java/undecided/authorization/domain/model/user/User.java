@@ -1,5 +1,7 @@
 package undecided.authorization.domain.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -108,6 +110,25 @@ public class User {
   @Column(name = "user_type", nullable = false)
   @Builder.Default
   private UserType userType = UserType.EMPLOYEE;
+
+  /**
+   * 従業員ID（SnowflakeId）。EMPLOYEEタイプのユーザーに設定され、それ以外はnull。
+   * 内部保持はLong型。JSONシリアライズは行わない。
+   */
+  @Column(name = "employee_id")
+  @JsonIgnore
+  private Long employeeId;
+
+  /**
+   * 従業員IDを文字列として返す。
+   * SnowflakeIdはJavaScriptの安全整数を超える可能性があるため、JSONでは文字列としてシリアライズする。
+   *
+   * @return 従業員IDの文字列表現（nullの場合はnull）
+   */
+  @JsonProperty("employeeId")
+  public String getEmployeeIdAsString() {
+    return employeeId != null ? String.valueOf(employeeId) : null;
+  }
 
   /**
    * ユーザーにロールを追加します。

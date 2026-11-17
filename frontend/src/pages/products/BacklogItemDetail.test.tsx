@@ -16,6 +16,21 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+// Mock AuthContext
+jest.mock('../../contexts/AuthContext', () => ({
+  ...jest.requireActual('../../contexts/AuthContext'),
+  useAuth: () => ({
+    isAuthenticated: true,
+    username: 'テストユーザー',
+    isAdmin: false,
+    isFirstLogin: false,
+    employeeId: 'emp-1',
+    login: jest.fn(),
+    logout: jest.fn(),
+    setFirstLogin: jest.fn(),
+  }),
+}));
+
 // Mock backlogItemService
 jest.mock('../../services/backlogItemService', () => ({
   __esModule: true,

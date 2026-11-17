@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import BacklogItemList from './BacklogItemList';
 import backlogItemService from '../../services/backlogItemService';
 import scrumTeamService from '../../services/scrumTeamService';
+import {useAuth} from '../../contexts/AuthContext';
 
 // Mock react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -15,6 +16,21 @@ jest.mock('react-router-dom', () => ({
     scrumTeamId: 'team-1',
   }),
   useNavigate: () => jest.fn(),
+}));
+
+// Mock AuthContext - PO としてログイン
+jest.mock('../../contexts/AuthContext', () => ({
+  ...jest.requireActual('../../contexts/AuthContext'),
+  useAuth: () => ({
+    isAuthenticated: true,
+    username: 'テストユーザー',
+    isAdmin: false,
+    isFirstLogin: false,
+    employeeId: 'emp-1',
+    login: jest.fn(),
+    logout: jest.fn(),
+    setFirstLogin: jest.fn(),
+  }),
 }));
 
 // Mock backlogItemService
@@ -87,12 +103,10 @@ const renderBacklogItemList = () => {
 describe('BacklogItemList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // localStorage をモック - PO としてログイン
+    // localStorage をモック（AuthContextはモック済み）
     Object.defineProperty(window, 'localStorage', {
       value: {
         getItem: jest.fn((key) => {
-          if (key === 'employeeId') return 'emp-1';
-          if (key === 'user') return 'テストユーザー';
           if (key === 'token') return 'test-token';
           return null;
         }),
