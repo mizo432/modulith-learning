@@ -1,3 +1,4 @@
+import { act } from 'react';
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -266,6 +267,155 @@ describe('BacklogItemList', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Valueは作成後.*詳細ページで設定/)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('自動リフレッシュ', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    const REFRESH_INTERVAL = 30000; // 30秒
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+    it('自動リフレッシュで getBacklogItemsByTeam が定期的に呼び出される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
+
+      renderBacklogItemList();
+
+      // 初期読み込みで1回呼び出される
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(1);
+      });
+
+      // 30秒経過 — 2回目の呼び出し
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(2);
+      });
+
+      // さらに30秒経過 — 3回目の呼び出し
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(3);
+      });
+    });
+
+    it('formOpen=true の場合はリフレッシュがスキップされる', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
+
+      renderBacklogItemList();
+
+      // 初期読み込みで1回呼び出される
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(1);
+      });
+
+      // 追加フォームを開く
+      const addButton = await waitFor(() =>
+        screen.getByRole('button', { name: /アイテムを追加/ })
+      );
+      await user.click(addButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Valueは作成後.*詳細ページで設定/)).toBeInTheDocument();
+      });
+
+      // 30秒経過 — フォームが開いているのでリフレッシュされない
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('confirmTarget が設定されている場合はリフレッシュがスキップされる', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithValue,
+      ]);
+
+      renderBacklogItemList();
+
+      // 初期読み込みで1回呼び出される
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(1);
+      });
+
+      // 承認ダイアログを開く（confirmTarget が設定される）
+      const acceptButtons = await waitFor(() => {
+        const buttons = screen.queryAllByText('承認');
+        expect(buttons.length).toBeGreaterThan(0);
+        return buttons;
+      });
+      await user.click(acceptButtons[0]);
+
+      // 確認ダイアログが表示されることを待つ
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+      });
+
+      // 30秒経過 — 確認ダイアログが開いているのでリフレッシュされない
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('状態フィルタがリフレッシュ後も維持される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithValue,
+      ]);
+
+      renderBacklogItemList();
+
+      // 初期読み込みで1回呼び出される（フィルタなし）
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(1);
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledWith('team-1', undefined);
+      });
+
+      // 状態フィルタを変更（MUI Select はネイティブ select ではないため、クリック操作で変更する）
+      const statusSelect = await waitFor(() =>
+        screen.getByRole('combobox', { name: /状態フィルタ/i })
+      );
+      await user.click(statusSelect);
+      const acceptedOption = await waitFor(() =>
+        screen.getByRole('option', { name: /承認済み/i })
+      );
+      await user.click(acceptedOption);
+
+      // フィルタ変更で再読み込みされる
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledWith('team-1', 'ACCEPTED');
+      });
+
+      const callCountAfterFilter = (backlogItemService.getBacklogItemsByTeam as jest.Mock).mock.calls.length;
+
+      // 30秒経過 — リフレッシュされるが、フィルタは維持されたまま
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(callCountAfterFilter + 1);
+        // 最後の呼び出しでフィルタが維持されていることを確認
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenLastCalledWith('team-1', 'ACCEPTED');
       });
     });
   });
