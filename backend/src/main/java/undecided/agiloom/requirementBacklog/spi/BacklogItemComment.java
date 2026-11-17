@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,7 +43,7 @@ public class BacklogItemComment {
 
   /** 投稿者の従業員ID（チームメンバー、またはステークホルダー＝チーム外の従業員）。 */
   @Column(name = "author_employee_id")
-  protected UUID authorEmployeeId;
+  protected SnowflakeId authorEmployeeId;
 
   /** 投稿者名。 */
   @Column(name = "author_name", nullable = false, length = AUTHOR_NAME_MAX_LENGTH)

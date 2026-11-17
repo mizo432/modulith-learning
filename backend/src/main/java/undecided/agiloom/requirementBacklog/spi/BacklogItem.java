@@ -10,7 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,7 +76,7 @@ public class BacklogItem {
 
   /** 作成者の従業員ID（チームメンバー、またはステークホルダー＝チーム外の従業員）。 */
   @Column(name = "creator_employee_id")
-  protected UUID creatorEmployeeId;
+  protected SnowflakeId creatorEmployeeId;
 
   /** 作成者名。 */
   @Column(name = "creator_name", nullable = false, length = CREATOR_NAME_MAX_LENGTH)
@@ -215,7 +214,7 @@ public class BacklogItem {
       String description,
       BacklogItemStatus status,
       Integer priority,
-      UUID creatorEmployeeId,
+      SnowflakeId creatorEmployeeId,
       String creatorName,
       SnowflakeId sprintId,
       SnowflakeId scrumTeamId,

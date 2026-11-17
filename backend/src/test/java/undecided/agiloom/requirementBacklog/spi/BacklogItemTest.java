@@ -31,6 +31,20 @@ class BacklogItemTest {
     void shouldDefaultToSuggested() {
       assertThat(item().getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
     }
+
+    @Test
+    @DisplayName("creatorEmployeeIdにSnowflakeIdが設定できること")
+    void shouldSetCreatorEmployeeId() {
+      SnowflakeId employeeId = SnowflakeId.of(999L);
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .creatorEmployeeId(employeeId)
+          .build();
+      assertThat(backlogItem.getCreatorEmployeeId()).isEqualTo(employeeId);
+    }
   }
 
   @Nested

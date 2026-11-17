@@ -1,6 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +16,7 @@ class CreateBacklogItemCommand {
   @NonNull private String title;
   private String description;
   private Integer priority;
-  private UUID creatorEmployeeId;
+  private SnowflakeId creatorEmployeeId;
   @NonNull private String creatorName;
   private SnowflakeId sprintId;
 }
