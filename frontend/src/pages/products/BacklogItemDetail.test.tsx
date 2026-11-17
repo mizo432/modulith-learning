@@ -1,3 +1,4 @@
+import { act } from 'react';
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -245,6 +246,120 @@ describe('BacklogItemDetail', () => {
       // スライダー操作が数値入力フィールドに反映されることを確認
       await waitFor(() => {
         expect(input?.value).not.toBe('');
+      });
+    });
+  });
+
+  describe('自動リフレッシュ', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    const REFRESH_INTERVAL = 30000; // 30秒
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    });
+
+    it('自動リフレッシュで getBacklogItem が定期的に呼び出される', async () => {
+      renderBacklogItemDetail();
+
+      // 初期読み込みで1回呼び出される
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(1);
+      });
+
+      // 30秒経過 — 2回目の呼び出し
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(2);
+      });
+
+      // さらに30秒経過 — 3回目の呼び出し
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(3);
+      });
+    });
+
+    it('コメント入力中はリフレッシュがスキップされる', async () => {
+      renderBacklogItemDetail();
+
+      // 初期読み込みで1回呼び出される
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(1);
+      });
+
+      // コメント入力フィールドに文字を入力
+      const commentInput = await waitFor(() =>
+        screen.getByTestId('comment-textarea')
+      );
+      const textarea = commentInput.querySelector('textarea')!;
+      await user.type(textarea, 'テストコメント');
+
+      // 30秒経過 — コメント入力中なのでリフレッシュされない
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('Value入力中はリフレッシュがスキップされる', async () => {
+      renderBacklogItemDetail();
+
+      // 初期読み込みで1回呼び出される
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(1);
+      });
+
+      // Value入力フィールドに値を入力（item.value と異なる値）
+      const valueInput = await waitFor(() =>
+        screen.getByTestId('value-textfield')
+      );
+      const input = valueInput.querySelector('input')!;
+      await user.type(input, '75');
+
+      // 30秒経過 — Value入力中なのでリフレッシュされない
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('入力がない場合はリフレッシュが実行される', async () => {
+      renderBacklogItemDetail();
+
+      // 初期読み込みで1回呼び出される
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(1);
+      });
+
+      // コメントもValueも入力しない状態で30秒経過
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(2);
       });
     });
   });

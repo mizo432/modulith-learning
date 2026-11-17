@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {
   Alert,
@@ -20,6 +20,10 @@ import backlogItemService, {
   BacklogItemStatus,
 } from '../../services/backlogItemService';
 import {valueToColor, VALUE_MIN, VALUE_MAX} from '../../utils/valueColor';
+import {useIsVisible} from '../../hooks/useIsVisible';
+import {useAutoRefresh} from '../../hooks/useAutoRefresh';
+
+const REFRESH_INTERVAL = 30000; // 30秒
 
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
@@ -56,6 +60,12 @@ const BacklogItemDetail: React.FC = () => {
   const [valueHelperText, setValueHelperText] = useState('');
   const [textFieldRaw, setTextFieldRaw] = useState('');
 
+  // 入力状態の参照（load 関数内で最新値を取得するため）
+  const valueInputRef = useRef(valueInput);
+  valueInputRef.current = valueInput;
+  const itemValueRef = useRef(item?.value);
+  itemValueRef.current = item?.value;
+
   const load = useCallback(async () => {
     if (!backlogItemId) return;
     try {
@@ -65,8 +75,12 @@ const BacklogItemDetail: React.FC = () => {
       ]);
       setItem(itemData);
       setComments(commentData);
-      setValueInput(itemData.value != null ? itemData.value : null);
-      setTextFieldRaw(itemData.value != null ? String(itemData.value) : '');
+      // 入力中（commentBody が空でない、または valueInput が現在の値と異なる）場合は入力内容を上書きしない
+      const isEditingValue = valueInputRef.current !== null && itemValueRef.current !== valueInputRef.current;
+      if (!isEditingValue) {
+        setValueInput(itemData.value != null ? itemData.value : null);
+        setTextFieldRaw(itemData.value != null ? String(itemData.value) : '');
+      }
     } catch (err) {
       console.error('Failed to load backlog item:', err);
       setError('バックログアイテムの読み込みに失敗しました。');
@@ -76,6 +90,12 @@ const BacklogItemDetail: React.FC = () => {
   useEffect(() => {
     load();
   }, [load]);
+
+  // 自動リフレッシュ
+  const {isVisible} = useIsVisible();
+  // コメント入力中（commentBody が空でない）または Value 編集中（valueInput が item.value と異なる）はスキップ
+  const shouldSkipRefresh = commentBody !== '' || (valueInput !== null && item?.value !== valueInput);
+  useAutoRefresh(load, REFRESH_INTERVAL, shouldSkipRefresh, isVisible);
 
   const handleAddComment = async () => {
     if (!backlogItemId) return;
@@ -290,6 +310,7 @@ const BacklogItemDetail: React.FC = () => {
             margin="normal"
             value={commentBody}
             onChange={(e) => setCommentBody(e.target.value)}
+            data-testid="comment-textarea"
           />
           <Button
             variant="contained"

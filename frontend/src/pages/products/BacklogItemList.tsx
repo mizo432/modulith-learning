@@ -32,6 +32,10 @@ import backlogItemService, {
 } from '../../services/backlogItemService';
 import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
 import {valueToColor, valueToBackgroundColor} from '../../utils/valueColor';
+import {useIsVisible} from '../../hooks/useIsVisible';
+import {useAutoRefresh} from '../../hooks/useAutoRefresh';
+
+const REFRESH_INTERVAL = 30000; // 30秒
 
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
@@ -98,6 +102,11 @@ const BacklogItemList: React.FC = () => {
   useEffect(() => {
     loadItems();
   }, [loadItems]);
+
+  // 自動リフレッシュ
+  const {isVisible} = useIsVisible();
+  const shouldSkipRefresh = formOpen || !!confirmTarget;
+  useAutoRefresh(loadItems, REFRESH_INTERVAL, shouldSkipRefresh, isVisible);
 
   useEffect(() => {
     const loadTeam = async () => {
