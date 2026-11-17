@@ -1,4 +1,4 @@
-# 画面属性一覧
+﻿# 画面属性一覧
 
 Epic / Release Retrospectiveの属性をリストアップします。
 

@@ -1,4 +1,4 @@
-# Sprint Board / タスクボード
+﻿# Sprint Board / タスクボード
 
 Sprint Board / タスクボード画面の詳細を定義します。
 
