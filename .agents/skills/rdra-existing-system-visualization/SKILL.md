@@ -7,7 +7,7 @@ description: >
 # RDRA 既存システムの可視化 Skill
 ---
 
-RDRA 既存システムの可視化の詳細手順については[ガイドライン](../../guidelines/rdra/rdra-existing-system-visualization.guidelines.md)を参照してください。
+RDRA 既存システムの可視化の詳細手順については[ガイドライン](../../agent-guidelines/guidelines/rdra/rdra-existing-system-visualization.guidelines.md)を参照してください。
 
 ## Purpose
 
@@ -294,6 +294,6 @@ RDRA 既存システムの可視化の詳細手順については[ガイドラ�
 ### 参考資料
 
 - [RDRA 公式サイト - 既存システムの可視化](https://www.rdra.jp/既存システムの可視化)
-- [RDRA 既存システムの可視化ガイドライン](../../guidelines/rdra/rdra-existing-system-visualization.guidelines.md)
-- [RDRA モデルガイドライン](../../guidelines/rdra/rdra-model.guidelines.md)
-- [現行システム分析ガイドライン](../../guidelines/current-system-analysis/current-system-analysis.guidelines.md)
+- [RDRA 既存システムの可視化ガイドライン](../../agent-guidelines/guidelines/rdra/rdra-existing-system-visualization.guidelines.md)
+- [RDRA モデルガイドライン](../../agent-guidelines/guidelines/rdra/rdra-model.guidelines.md)
+- [現行システム分析ガイドライン](../../agent-guidelines/guidelines/current-system-analysis/current-system-analysis.guidelines.md)

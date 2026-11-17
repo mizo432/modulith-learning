@@ -131,7 +131,7 @@ description: |
 - 全ての分析結果を一つのレポートとしてまとめる。
 - ドキュメント構成は以下の通り。
 
-> 参照: `.agents/guidelines/current-system-analysis/templates/現行システム分析ドキュメント.md`
+> 参照: `.agents/agent-guidelines/guidelines/current-system-analysis/templates/現行システム分析ドキュメント.md`
 
 ```
 現行システム分析レポート
@@ -208,7 +208,7 @@ description: |
 |:-------------|:-----|:-----|
 | 現行システム分析理由 | `docs/01 Current system analysis/index.md` | 分析の目的と背景 |
 | 現行システム分析手順 | `./02 現行システム分析手順.md` | 分析の手順ガイド |
-| 現行システム分析ドキュメント | `.agents/guidelines/current-system-analysis/templates/現行システム分析ドキュメント.md` | 分析結果のドキュメントテンプレート |
+| 現行システム分析ドキュメント | `.agents/agent-guidelines/guidelines/current-system-analysis/templates/現行システム分析ドキュメント.md` | 分析結果のドキュメントテンプレート |
 | 事業領域一覧 | `docs/11 事業領域/事業領域一覧.md` | 事業領域の分類 |
 | 業務領域一覧 | `docs/12 業務領域/業務領域一覧.md` | 業務領域の分類 |
 | 要件定義書 | `docs/22 要件定義書/` | 機能要件・非機能要件 |

@@ -56,44 +56,44 @@
 | [backend/commands.instructions.md](guidelines/backend/commands.instructions.md)                                 | ビルド・起動コマンド、テストコマンド             |
 | [backend/developers.instructions.md](guidelines/backend/developers.instructions.md)                             | 技術スタック、開発環境の要件                     |
 | [backend/environments.instructions.md](guidelines/backend/environments.instructions.md)                         | 環境構築方法、トラブルシューティング             |
-| [backend/testing.guidelines.md](guidelines/backend/testing.guidelines.md)                                       | テスト戦略、テスト作成規約                       |
-| [backend/jpa.guidelines.md](guidelines/backend/jpa.guidelines.md)                                               | Spring Data JPA 実装規則                         |
-| [backend/spring-modulith.guidelines.md](guidelines/backend/spring-modulith.guidelines.md)                       | Spring Modulith 実装規則                         |
-| [backend/flyway-migration-checklist.guidelines.md](guidelines/backend/flyway-migration-checklist.guidelines.md) | Flyway マイグレーションスクリプト チェックリスト |
+| [backend/testing.guidelines.md](agent-guidelines/guidelines/backend/testing.guidelines.md)                                       | テスト戦略、テスト作成規約                       |
+| [backend/jpa.guidelines.md](agent-guidelines/guidelines/backend/jpa.guidelines.md)                                               | Spring Data JPA 実装規則                         |
+| [backend/spring-modulith.guidelines.md](agent-guidelines/guidelines/backend/spring-modulith.guidelines.md)                       | Spring Modulith 実装規則                         |
+| [backend/flyway-migration-checklist.guidelines.md](agent-guidelines/guidelines/backend/flyway-migration-checklist.guidelines.md) | Flyway マイグレーションスクリプト チェックリスト |
 
 ### Java 関連
 
 | ファイル                                                                              | 説明                                                   |
 |---------------------------------------------------------------------------------------|--------------------------------------------------------|
-| [java/coding-standards.guidelines.md](guidelines/java/coding-standards.guidelines.md) | コーディング規約、レイヤードアーキテクチャ、バッチ処理 |
-| [java/review.guidelines.md](guidelines/java/review.guidelines.md)                     | コードレビュー手順とチェックポイント                   |
+| [java/coding-standards.guidelines.md](agent-guidelines/guidelines/java/coding-standards.guidelines.md) | コーディング規約、レイヤードアーキテクチャ、バッチ処理 |
+| [java/review.guidelines.md](agent-guidelines/guidelines/java/review.guidelines.md)                     | コードレビュー手順とチェックポイント                   |
 
 ### DDD 関連
 
 | ファイル                                                                                    | 説明                               |
 |---------------------------------------------------------------------------------------------|------------------------------------|
-| [ddd/ddd.guideline.md](guidelines/ddd/ddd.guideline.md)                                     | ドメイン駆動設計の基本原則         |
-| [ddd/immutable-data-model.guidelines.md](guidelines/ddd/immutable-data-model.guidelines.md) | イミュータブルデータモデル設計指針 |
-| [ddd/rdra-model.guidelines.md](guidelines/rdra/rdra-model.guidelines.md)                    | RDRAモデルによる要件定義           |
+| [ddd/ddd.guideline.md](agent-guidelines/guidelines/ddd/ddd.guideline.md)                                     | ドメイン駆動設計の基本原則         |
+| [ddd/immutable-data-model.guidelines.md](agent-guidelines/guidelines/ddd/immutable-data-model.guidelines.md) | イミュータブルデータモデル設計指針 |
+| [ddd/rdra-model.guidelines.md](agent-guidelines/guidelines/rdra/rdra-model.guidelines.md)                    | RDRAモデルによる要件定義           |
 
 ### ドキュメント関連
 
 | ファイル                                                                          | 説明                                   |
 |-----------------------------------------------------------------------------------|----------------------------------------|
-| [docs/directory-name.guidelines.md](guidelines/docs/directory-name.guidelines.md) | ドキュメント格納先ディレクトリ命名規則 |
+| [docs/directory-name.guidelines.md](agent-guidelines/guidelines/docs/directory-name.guidelines.md) | ドキュメント格納先ディレクトリ命名規則 |
 
 ### TypeScript 関連
 
 | ファイル                                                                                          | 説明                          |
 |---------------------------------------------------------------------------------------------------|-------------------------------|
-| [typescript/coding-standards.guidelines.md](guidelines/typescript/coding-standards.guidelines.md) | TypeScript コーディング規約   |
-| [typescript/review.guidelines.md](guidelines/typescript/review.guidelines.md)                     | TypeScript コードレビュー手順 |
+| [typescript/coding-standards.guidelines.md](agent-guidelines/guidelines/typescript/coding-standards.guidelines.md) | TypeScript コーディング規約   |
+| [typescript/review.guidelines.md](agent-guidelines/guidelines/typescript/review.guidelines.md)                     | TypeScript コードレビュー手順 |
 
 ### ワークフロー関連
 
 | ファイル                                                                                                      | 説明                         |
 |---------------------------------------------------------------------------------------------------------------|------------------------------|
-| [workflow/issue-driven-development.guidelines.md](guidelines/workflow/issue-driven-development.guidelines.md) | GitHub Issueベースの開発手順 |
+| [workflow/issue-driven-development.guidelines.md](agent-guidelines/guidelines/workflow/issue-driven-development.guidelines.md) | GitHub Issueベースの開発手順 |
 
 ### フロントエンド関連
 

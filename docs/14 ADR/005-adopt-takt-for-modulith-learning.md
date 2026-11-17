@@ -74,7 +74,7 @@ Muse・Orca・takt の階層構成による開発環境を MacBook Air で試作
 ## 関連
 
 - `AGENTS.md`（作業上の注意に本方式を明記）
-- 共有リポジトリ `agent-guidelines`：`guidelines/workflow/`（手順の正本）
+- 共有リポジトリ `agent-guidelines`：`agent-guidelines/guidelines/workflow/`（手順の正本）
 - Issue #493（移植フローの初回実行の記録）
 - Muse・Orca・takt 階層ダイアグラム（2026-11-16 にオーナーが共有した構成図）
 
