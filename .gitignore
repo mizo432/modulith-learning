@@ -337,3 +337,8 @@ modules.xml
 !*.p12.example
 secrets/
 credentials/
+
+# Junie
+# MCP設定（ローカル環境固有）とPR本文テンプレートは無視
+.junie/mcp/
+.junie/pr-body*.md
