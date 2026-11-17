@@ -97,6 +97,7 @@ class BacklogItemMigrationMediumTest {
               "description",
               "id",
               "priority",
+              "quality_category",
               "scrum_team_id",
               "sprint_id",
               "status",
@@ -124,6 +125,14 @@ class BacklogItemMigrationMediumTest {
       assertThat(script)
           .contains("ADD COLUMN value INTEGER")
           .contains("CONSTRAINT ck_backlog_items_value CHECK (value IS NULL OR (value >= 0 AND value <= 100))");
+    }
+
+    @Test
+    @DisplayName("Flywayマイグレーションスクリプトにquality_categoryカラムが定義されていること")
+    void shouldMigrationScriptDefineQualityCategoryColumn() {
+      String script =
+          readClasspathResource("db/migration/ag/V20261117160000__add_quality_category_to_backlog_items.sql");
+      assertThat(script).contains("ADD COLUMN quality_category VARCHAR(20)");
     }
 
     private String readClasspathResource(String path) {
