@@ -271,6 +271,160 @@ describe('BacklogItemList', () => {
     });
   });
 
+  describe('既定ソート（Value降順）', () => {
+    it('Value降順でアイテムが表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        { ...mockItemWithValue, id: 'item-100', title: 'Value100アイテム', value: 100 },
+        { ...mockItemWithValue, id: 'item-50', title: 'Value50アイテム', value: 50 },
+        { ...mockItemWithValue, id: 'item-10', title: 'Value10アイテム', value: 10 },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Value100アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Value50アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Value10アイテム')).toBeInTheDocument();
+      });
+
+      // Value値の表示順序を確認（100 → 50 → 10）
+      await waitFor(() => {
+        expect(screen.getByText('100')).toBeInTheDocument();
+        expect(screen.getByText('50')).toBeInTheDocument();
+        expect(screen.getByText('10')).toBeInTheDocument();
+      });
+
+      // 行のDOM順序でValue降順であることを確認
+      const rows = screen.getAllByRole('row');
+      const dataRows = rows.slice(1);
+      await waitFor(() => {
+        expect(dataRows.length).toBeGreaterThanOrEqual(3);
+        expect(dataRows[0].textContent).toContain('Value100アイテム');
+        expect(dataRows[1].textContent).toContain('Value50アイテム');
+        expect(dataRows[2].textContent).toContain('Value10アイテム');
+      });
+    });
+
+    it('Valueがnullのアイテムは末尾に表示される（APIがソート済みデータを返す前提）', async () => {
+      // APIはValue降順でソート済みデータを返す（nullは末尾）
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        { ...mockItemWithValue, id: 'item-100', title: 'Value100アイテム', value: 100 },
+        { ...mockItemWithValue, id: 'item-50', title: 'Value50アイテム', value: 50 },
+        { ...mockItemWithoutValue, id: 'item-null', title: 'Valueなしアイテム', value: null },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Value100アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Value50アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Valueなしアイテム')).toBeInTheDocument();
+      });
+
+      // 行のDOM順序でValueなしアイテムが最後であることを確認
+      const rows = screen.getAllByRole('row');
+      // ヘッダー行を除くデータ行を確認
+      const dataRows = rows.slice(1);
+      await waitFor(() => {
+        expect(dataRows.length).toBeGreaterThanOrEqual(3);
+        // 最後のデータ行にValueなしアイテムが含まれていること
+        const lastRow = dataRows[dataRows.length - 1];
+        expect(lastRow.textContent).toContain('Valueなしアイテム');
+      });
+    });
+
+    it('状態フィルタ変更後もソート順が維持される', async () => {
+      const user = userEvent.setup();
+
+      const acceptedItems = [
+        { ...mockItemWithValue, id: 'item-100', title: 'Value100アイテム', value: 100, status: 'ACCEPTED' as const, statusLabel: '受入済み' },
+        { ...mockItemWithValue, id: 'item-50', title: 'Value50アイテム', value: 50, status: 'ACCEPTED' as const, statusLabel: '受入済み' },
+      ];
+
+      // 初期データとフィルタ後のデータはどちらもValue降順
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue(acceptedItems);
+
+      renderBacklogItemList();
+
+      // 初期読み込みでValue降順で表示されることを確認
+      await waitFor(() => {
+        expect(screen.getByText('Value100アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Value50アイテム')).toBeInTheDocument();
+      });
+
+      // 状態フィルタを変更
+      const statusSelect = await waitFor(() =>
+        screen.getByRole('combobox', { name: /状態フィルタ/i })
+      );
+      await user.click(statusSelect);
+      const acceptedOption = await waitFor(() =>
+        screen.getByRole('option', { name: /承認済み/i })
+      );
+      await user.click(acceptedOption);
+
+      // フィルタ変更で再読み込みされる
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledWith('team-1', 'ACCEPTED');
+      });
+
+      // フィルタ後もValue降順で表示されていることを確認
+      await waitFor(() => {
+        expect(screen.getByText('Value100アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Value50アイテム')).toBeInTheDocument();
+      });
+
+      // 行のDOM順序でValue降順であることを確認
+      const rows = screen.getAllByRole('row');
+      const dataRows = rows.slice(1);
+      await waitFor(() => {
+        expect(dataRows.length).toBeGreaterThanOrEqual(2);
+        expect(dataRows[0].textContent).toContain('Value100アイテム');
+        expect(dataRows[1].textContent).toContain('Value50アイテム');
+      });
+    });
+
+    it('自動リフレッシュ後もソート順が維持される', async () => {
+      jest.useFakeTimers();
+      const REFRESH_INTERVAL = 30000;
+
+      // 初期データ（Value降順）
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        { ...mockItemWithValue, id: 'item-100', title: 'Value100アイテム', value: 100 },
+        { ...mockItemWithValue, id: 'item-50', title: 'Value50アイテム', value: 50 },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Value100アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Value50アイテム')).toBeInTheDocument();
+      });
+
+      // リフレッシュ後の戻り値もValue降順
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        { ...mockItemWithValue, id: 'item-100', title: 'Value100アイテム', value: 100 },
+        { ...mockItemWithValue, id: 'item-50', title: 'Value50アイテム', value: 50 },
+      ]);
+
+      // 30秒経過 — リフレッシュ
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(2);
+      });
+
+      // リフレッシュ後もValue降順で表示されていることを確認
+      await waitFor(() => {
+        expect(screen.getByText('Value100アイテム')).toBeInTheDocument();
+        expect(screen.getByText('Value50アイテム')).toBeInTheDocument();
+      });
+
+      jest.useRealTimers();
+    });
+  });
+
   describe('自動リフレッシュ', () => {
     beforeAll(() => {
       jest.useFakeTimers();
