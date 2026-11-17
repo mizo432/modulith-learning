@@ -13,7 +13,6 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,7 +50,7 @@ public class Product {
 
   /** プロダクトマネージャーのID。 */
   @Column(name = "manager_id")
-  protected UUID managerId;
+  protected SnowflakeId managerId;
 
   /** プロダクトのステータス（ACTIVE, ARCHIVED）。 */
   @Enumerated(EnumType.STRING)
@@ -87,7 +86,7 @@ public class Product {
    * @param managerId 更新後のマネージャーID（nullの場合は変更なし）
    */
   public void update(
-      @Nullable String name, @Nullable String description, @Nullable UUID managerId) {
+      @Nullable String name, @Nullable String description, @Nullable SnowflakeId managerId) {
     if (name != null) {
       checkNonEmpty(
           name, () -> new IllegalArgumentException("Product name must not be empty"));

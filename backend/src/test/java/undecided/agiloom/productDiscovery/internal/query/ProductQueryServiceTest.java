@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,7 +42,7 @@ class ProductQueryServiceTest {
             .id(productId)
             .name("Test Product")
             .description("Test Description")
-            .managerId(UUID.randomUUID())
+            .managerId(SnowflakeId.of(100L))
             .build();
   }
 

@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,7 +42,7 @@ class UpdateProductCommandServiceTest {
             .id(productId)
             .name("Test Product")
             .description("Test Description")
-            .managerId(UUID.randomUUID())
+            .managerId(SnowflakeId.of(100L))
             .build();
   }
 
@@ -78,7 +77,7 @@ class UpdateProductCommandServiceTest {
     @Test
     @DisplayName("マネージャーIDが更新される")
     void shouldUpdateManagerId() {
-      UUID newManagerId = UUID.randomUUID();
+      SnowflakeId newManagerId = SnowflakeId.of(200L);
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
       UpdateProductCommand command =

@@ -1,6 +1,5 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +15,8 @@ public class UpdateScrumTeamCommand {
   @NonNull private SnowflakeId id;
   private String name;
   private String businessDomain;
-  private UUID poEmployeeId;
+  private SnowflakeId poEmployeeId;
   private String poName;
-  private UUID smEmployeeId;
+  private SnowflakeId smEmployeeId;
   private String smName;
 }

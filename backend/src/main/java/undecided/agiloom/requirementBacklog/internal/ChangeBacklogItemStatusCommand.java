@@ -1,6 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +15,5 @@ import undecided.supporting.snowflake.SnowflakeId;
 class ChangeBacklogItemStatusCommand {
   @NonNull private SnowflakeId backlogItemId;
   @NonNull private BacklogItemStatus targetStatus;
-  @NonNull private UUID actorEmployeeId;
+  @NonNull private SnowflakeId actorEmployeeId;
 }

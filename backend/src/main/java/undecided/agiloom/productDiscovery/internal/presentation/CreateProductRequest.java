@@ -1,11 +1,11 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
 
 import jakarta.validation.constraints.NotBlank;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import undecided.supporting.snowflake.SnowflakeId;
 
 @Data
 @Builder
@@ -16,5 +16,5 @@ public class CreateProductRequest {
 
   private String description;
 
-  private UUID managerId;
+  private SnowflakeId managerId;
 }
