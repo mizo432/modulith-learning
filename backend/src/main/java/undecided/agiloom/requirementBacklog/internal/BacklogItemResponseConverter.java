@@ -22,6 +22,11 @@ class BacklogItemResponseConverter {
         .scrumTeamId(
             backlogItem.getScrumTeamId() != null ? String.valueOf(backlogItem.getScrumTeamId().value()) : null)
         .value(backlogItem.getValue())
+        .qualityCategory(backlogItem.getQualityCategory())
+        .qualityCategoryLabel(
+            backlogItem.getQualityCategory() != null
+                ? backlogItem.getQualityCategory().label()
+                : null)
         .createdAt(backlogItem.getCreatedAt())
         .updatedAt(backlogItem.getUpdatedAt())
         .build();

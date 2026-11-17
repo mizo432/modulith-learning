@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.agiloom.requirementBacklog.spi.QualityCategory;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Data
@@ -25,6 +26,8 @@ class BacklogItemResponse {
   private String sprintId;
   private String scrumTeamId;
   private Integer value;
+  private QualityCategory qualityCategory;
+  private String qualityCategoryLabel;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 }

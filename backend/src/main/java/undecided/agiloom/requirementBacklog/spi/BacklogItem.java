@@ -40,7 +40,6 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Entity
 @Table(schema = "undecided_ag", name = "backlog_items")
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BacklogItem {
@@ -71,8 +70,7 @@ public class BacklogItem {
   /** 状態（区分値）。DBにはコード値のみを保持する（ADR-003）。 */
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  @Builder.Default
-  protected BacklogItemStatus status = BacklogItemStatus.SUGGESTED;
+  protected BacklogItemStatus status;
 
   /** 優先度（並び順の確定は未決定事項 Issue #571）。 */
   @Column protected Integer priority;
@@ -97,15 +95,18 @@ public class BacklogItem {
   @Column(name = "value")
   protected Integer value;
 
+  /** 品質カテゴリ（狩野式品質モデル）。Valueから自動計算される（ADR-003）。 */
+  @Enumerated(EnumType.STRING)
+  @Column(name = "quality_category", length = 20)
+  protected QualityCategory qualityCategory;
+
   /** 作成日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** 最終更新日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /**
    * バックログアイテムの内容を更新します。
@@ -139,6 +140,7 @@ public class BacklogItem {
       validateValue(value);
       this.value = value;
     }
+    this.qualityCategory = calculateQualityCategory(this.value);
     this.updatedAt = LocalDateTime.now();
   }
 
@@ -187,5 +189,53 @@ public class BacklogItem {
       throw new IllegalArgumentException(
           "BacklogItem value must be between " + VALUE_MIN_VALUE + " and " + VALUE_MAX_VALUE);
     }
+  }
+
+  /**
+   * Value から品質カテゴリを計算します。
+   *
+   * @param value バックログアイテムの Value
+   * @return 対応する品質カテゴリ。Value が null の場合は null
+   */
+  private static QualityCategory calculateQualityCategory(Integer value) {
+    return QualityCategory.fromValue(value);
+  }
+
+  /**
+   * バックログアイテムをビルダーパターンで構築します。
+   *
+   * <p>ビルダーの {@code build()} 時に {@code value} から {@code qualityCategory} を自動計算し、
+   * {@code status} が未設定の場合は {@link BacklogItemStatus#SUGGESTED} を、
+   * {@code createdAt}・{@code updatedAt} が未設定の場合は現在時刻をそれぞれ設定します。
+   */
+  @Builder(builderMethodName = "builder")
+  private static BacklogItem build(
+      SnowflakeId id,
+      String title,
+      String description,
+      BacklogItemStatus status,
+      Integer priority,
+      UUID creatorEmployeeId,
+      String creatorName,
+      SnowflakeId sprintId,
+      SnowflakeId scrumTeamId,
+      Integer value,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt) {
+    BacklogItem item = new BacklogItem();
+    item.id = id;
+    item.title = title;
+    item.description = description;
+    item.status = status != null ? status : BacklogItemStatus.SUGGESTED;
+    item.priority = priority;
+    item.creatorEmployeeId = creatorEmployeeId;
+    item.creatorName = creatorName;
+    item.sprintId = sprintId;
+    item.scrumTeamId = scrumTeamId;
+    item.value = value;
+    item.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+    item.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+    item.qualityCategory = calculateQualityCategory(value);
+    return item;
   }
 }

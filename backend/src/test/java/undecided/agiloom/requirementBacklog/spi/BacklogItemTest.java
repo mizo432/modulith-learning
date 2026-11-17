@@ -175,6 +175,53 @@ class BacklogItemTest {
   }
 
   @Nested
+  @DisplayName("qualityCategoryのテスト")
+  class QualityCategoryTest {
+
+    @Test
+    @DisplayName("Builderでvalue=80を指定して作成するとqualityCategoryがATTRACTIVEになること")
+    void shouldSetQualityCategoryToAttractiveWhenValue80() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(80)
+          .build();
+      assertThat(backlogItem.getQualityCategory()).isEqualTo(QualityCategory.ATTRACTIVE);
+    }
+
+    @Test
+    @DisplayName("Builderでvalue未指定ならqualityCategoryはnullであること")
+    void shouldHaveNullQualityCategoryWhenValueNotSet() {
+      BacklogItem backlogItem = item();
+      assertThat(backlogItem.getQualityCategory()).isNull();
+    }
+
+    @Test
+    @DisplayName("updateでvalueを30に設定するとqualityCategoryがONE_DIMENSIONALになること")
+    void shouldSetQualityCategoryToOneDimensionalWhenValue30() {
+      BacklogItem backlogItem = item();
+      backlogItem.update(null, null, null, null, 30);
+      assertThat(backlogItem.getQualityCategory()).isEqualTo(QualityCategory.ONE_DIMENSIONAL);
+    }
+
+    @Test
+    @DisplayName("updateでvalueを90に変更するとqualityCategoryがATTRACTIVEになること")
+    void shouldUpdateQualityCategoryToAttractiveWhenValue90() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(30)
+          .build();
+      backlogItem.update(null, null, null, null, 90);
+      assertThat(backlogItem.getQualityCategory()).isEqualTo(QualityCategory.ATTRACTIVE);
+    }
+  }
+
+  @Nested
   @DisplayName("ACCEPTED遷移時のValue範囲検証のテスト")
   class ValueOnAcceptedTransitionTest {
 

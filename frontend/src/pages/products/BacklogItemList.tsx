@@ -49,6 +49,20 @@ const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'error'> 
   REJECTED: 'error',
 };
 
+const QUALITY_CATEGORY_LABELS: Record<string, string> = {
+  ATTRACTIVE: '魅力的品質',
+  MUST_BE: '当たり前品質',
+  ONE_DIMENSIONAL: '一元的品質',
+  INDIFFERENT: '無関心品質',
+};
+
+const QUALITY_CATEGORY_COLORS: Record<string, 'success' | 'info' | 'warning' | 'error'> = {
+  ATTRACTIVE: 'success',
+  MUST_BE: 'info',
+  ONE_DIMENSIONAL: 'warning',
+  INDIFFERENT: 'error',
+};
+
 const BacklogItemList: React.FC = () => {
   const {productId, scrumTeamId} = useParams<{ productId: string; scrumTeamId: string }>();
   const navigate = useNavigate();
@@ -223,6 +237,7 @@ const BacklogItemList: React.FC = () => {
               <TableCell>タイトル</TableCell>
               <TableCell>状態</TableCell>
               <TableCell>Value</TableCell>
+              <TableCell>品質カテゴリ</TableCell>
               <TableCell>優先度</TableCell>
               <TableCell>作成者</TableCell>
               <TableCell>作成日時</TableCell>
@@ -259,6 +274,15 @@ const BacklogItemList: React.FC = () => {
                     >
                       {item.value ?? '-'}
                     </Box>
+                  </TableCell>
+                  <TableCell>
+                    {item.qualityCategory ? (
+                      <Chip
+                        label={item.qualityCategoryLabel || QUALITY_CATEGORY_LABELS[item.qualityCategory]}
+                        color={QUALITY_CATEGORY_COLORS[item.qualityCategory]}
+                        size="small"
+                      />
+                    ) : null}
                   </TableCell>
                   <TableCell>{item.priority ?? '-'}</TableCell>
                   <TableCell>{item.creatorName}</TableCell>
@@ -306,7 +330,7 @@ const BacklogItemList: React.FC = () => {
             })}
             {items.length === 0 && !loading && (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={8} align="center">
                   バックログアイテムがありません。
                 </TableCell>
               </TableRow>

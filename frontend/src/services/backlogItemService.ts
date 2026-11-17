@@ -2,6 +2,8 @@ import api from './api';
 
 export type BacklogItemStatus = 'SUGGESTED' | 'ACCEPTED' | 'REJECTED';
 
+export type QualityCategory = 'ATTRACTIVE' | 'MUST_BE' | 'ONE_DIMENSIONAL' | 'INDIFFERENT';
+
 export interface BacklogItem {
   id: string;
   scrumTeamId: string;
@@ -14,6 +16,8 @@ export interface BacklogItem {
   creatorName: string;
   sprintId?: string;
   value?: number;
+  qualityCategory?: QualityCategory;
+  qualityCategoryLabel?: string;
   createdAt: string;
   updatedAt?: string;
 }
