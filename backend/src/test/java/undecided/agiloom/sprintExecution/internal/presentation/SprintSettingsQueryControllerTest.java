@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,11 +30,11 @@ class SprintSettingsQueryControllerTest {
   @InjectMocks
   private SprintSettingsQueryController controller;
 
-  private UUID productId;
+  private SnowflakeId productId;
 
   @BeforeEach
   void setUp() {
-    productId = UUID.randomUUID();
+    productId = SnowflakeId.of(100L);
   }
 
   @Nested
@@ -61,7 +60,7 @@ class SprintSettingsQueryControllerTest {
           .thenReturn(expectedEndDate);
 
       // Act
-      CalculateEndDateResponse response = controller.calculateEndDate(productId, startDate);
+      CalculateEndDateResponse response = controller.calculateEndDate(productId.value().toString(), startDate);
 
       // Assert
       assertThat(response).isNotNull();
@@ -91,7 +90,7 @@ class SprintSettingsQueryControllerTest {
           .thenReturn(expectedEndDate);
 
       // Act
-      CalculateEndDateResponse response = controller.calculateEndDate(productId, startDate);
+      CalculateEndDateResponse response = controller.calculateEndDate(productId.value().toString(), startDate);
 
       // Assert
       assertThat(response.getIsPastDate()).isTrue();
@@ -116,7 +115,7 @@ class SprintSettingsQueryControllerTest {
           .thenReturn(expectedEndDate);
 
       // Act
-      CalculateEndDateResponse response = controller.calculateEndDate(productId, startDate);
+      CalculateEndDateResponse response = controller.calculateEndDate(productId.value().toString(), startDate);
 
       // Assert
       assertThat(response.getEndDayOfWeekLabel()).isEqualTo("WEDNESDAY");
@@ -142,7 +141,7 @@ class SprintSettingsQueryControllerTest {
           .thenReturn(expectedEndDate);
 
       // Act
-      CalculateEndDateResponse response = controller.calculateEndDate(productId, startDate);
+      CalculateEndDateResponse response = controller.calculateEndDate(productId.value().toString(), startDate);
 
       // Assert
       assertThat(response.getEndDate()).isEqualTo(expectedEndDate);
@@ -168,7 +167,7 @@ class SprintSettingsQueryControllerTest {
           .thenReturn(expectedEndDate);
 
       // Act
-      CalculateEndDateResponse response = controller.calculateEndDate(productId, startDate);
+      CalculateEndDateResponse response = controller.calculateEndDate(productId.value().toString(), startDate);
 
       // Assert
       assertThat(response.getEndDate()).isEqualTo(expectedEndDate);
@@ -185,7 +184,7 @@ class SprintSettingsQueryControllerTest {
           .thenThrow(new IllegalArgumentException("Sprint settings not found"));
 
       // Act & Assert
-      assertThatThrownBy(() -> controller.calculateEndDate(productId, startDate))
+      assertThatThrownBy(() -> controller.calculateEndDate(productId.value().toString(), startDate))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessage("Sprint settings not found");
     }
@@ -209,11 +208,11 @@ class SprintSettingsQueryControllerTest {
       when(sprintSettingsQueryService.getSettingsOrDefault(productId)).thenReturn(settings);
 
       // Act
-      SprintSettingsResponse response = controller.getSprintSettings(productId);
+      SprintSettingsResponse response = controller.getSprintSettings(productId.value().toString());
 
       // Assert
       assertThat(response).isNotNull();
-      assertThat(response.getProductId()).isEqualTo(productId);
+      assertThat(response.getProductId()).isEqualTo(productId.value().toString());
       assertThat(response.getBusinessDays()).isEqualTo(10);
       assertThat(response.getEndDayOfWeek()).isEqualTo(EndDayOfWeek.FRIDAY);
     }

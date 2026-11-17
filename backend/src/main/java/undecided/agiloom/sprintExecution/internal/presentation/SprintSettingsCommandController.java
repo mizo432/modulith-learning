@@ -12,8 +12,7 @@ import undecided.agiloom.sprintExecution.internal.command.UpdateSprintSettingsCo
 import undecided.agiloom.sprintExecution.internal.command.UpdateSprintSettingsCommandService;
 import undecided.agiloom.sprintExecution.internal.query.SprintSettingsQueryService;
 import undecided.agiloom.sprintExecution.spi.SprintSettings;
-
-import java.util.UUID;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /** スプリント設定更新APIコントローラー。 */
 @RestController
@@ -35,22 +34,23 @@ public class SprintSettingsCommandController {
    */
   @PatchMapping("/{productId}/sprint-settings")
   public ResponseEntity<SprintSettingsResponse> updateSprintSettings(
-      @PathVariable @NotNull UUID productId,
+      @PathVariable @NotNull String productId,
       @Valid @RequestBody UpdateSprintSettingsRequest request) {
+    SnowflakeId productIdId = SnowflakeId.of(Long.parseLong(productId));
     UpdateSprintSettingsCommand command = UpdateSprintSettingsCommand.builder()
-        .productId(productId)
+        .productId(productIdId)
         .businessDays(request.getBusinessDays())
         .endDayOfWeek(request.getEndDayOfWeek())
         .build();
 
     updateSprintSettingsCommandService.execute(command);
-    SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productId);
+    SprintSettings settings = sprintSettingsQueryService.getSettingsOrDefault(productIdId);
     return ResponseEntity.ok(toResponse(settings));
   }
 
   private SprintSettingsResponse toResponse(SprintSettings settings) {
     return SprintSettingsResponse.builder()
-        .productId(settings.getProductId())
+        .productId(settings.getProductId().value().toString())
         .businessDays(settings.getBusinessDays())
         .endDayOfWeek(settings.getEndDayOfWeek())
         .build();

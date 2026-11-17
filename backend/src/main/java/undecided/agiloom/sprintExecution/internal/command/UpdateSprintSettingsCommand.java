@@ -3,10 +3,10 @@ package undecided.agiloom.sprintExecution.internal.command;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import undecided.agiloom.sprintExecution.spi.EndDayOfWeek;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * スプリント設定更新コマンド。
@@ -17,7 +17,7 @@ public class UpdateSprintSettingsCommand {
 
   /** プロダクトのID。 */
   @NotNull
-  private UUID productId;
+  private SnowflakeId productId;
 
   /** スプリント期間（営業日数）。1〜30日の範囲。 */
   @NotNull

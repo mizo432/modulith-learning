@@ -4,7 +4,6 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.UUID;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +11,7 @@ import undecided.agiloom.sprintExecution.internal.SprintSettingsRepository;
 import undecided.agiloom.sprintExecution.internal.domain.SprintSettingsCalculator;
 import undecided.agiloom.sprintExecution.spi.EndDayOfWeek;
 import undecided.agiloom.sprintExecution.spi.SprintSettings;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * スプリント設定クエリサービス。
@@ -36,7 +36,7 @@ public class SprintSettingsQueryService {
    * @param productId プロダクトのID
    * @return 該当するスプリント設定のOptional
    */
-  public Optional<SprintSettings> findByProductId(@NonNull UUID productId) {
+  public Optional<SprintSettings> findByProductId(@NonNull SnowflakeId productId) {
     checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
     return sprintSettingsRepository.findByProductId(productId);
   }
@@ -50,7 +50,7 @@ public class SprintSettingsQueryService {
    * @throws IllegalArgumentException 設定が見つからない場合
    */
   @NonNull
-  public LocalDate calculateEndDate(@NonNull UUID productId, @NonNull LocalDate startDate) {
+  public LocalDate calculateEndDate(@NonNull SnowflakeId productId, @NonNull LocalDate startDate) {
     SprintSettings settings = sprintSettingsRepository
         .findByProductId(productId)
         .orElseThrow(() -> new IllegalArgumentException(
@@ -66,7 +66,7 @@ public class SprintSettingsQueryService {
    * @return スプリント設定（存在しない場合はデフォルト値）
    */
   @NonNull
-  public SprintSettings getSettingsOrDefault(@NonNull UUID productId) {
+  public SprintSettings getSettingsOrDefault(@NonNull SnowflakeId productId) {
     checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
 
     return sprintSettingsRepository.findByProductId(productId).orElseGet(() ->

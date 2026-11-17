@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +46,7 @@ public class Activity {
 
   /** アクティビティを実行したユーザーのID。 */
   @Column(name = "actor_id", nullable = false)
-  protected UUID actorId;
+  protected SnowflakeId actorId;
 
   /** アクティビティの種類（TASK_CREATED, TASK_UPDATED, COMMENT_ADDEDなど）。 */
   @Enumerated(EnumType.STRING)
@@ -77,7 +76,7 @@ public class Activity {
     public static Activity create(
             @NonNull SnowflakeId id,
             @NonNull SnowflakeId sprintId,
-            @NonNull UUID actorId,
+            @NonNull SnowflakeId actorId,
             @NonNull ActivityType activityType,
             @Nullable String description,
             @NonNull LocalDateTime createdAt) {

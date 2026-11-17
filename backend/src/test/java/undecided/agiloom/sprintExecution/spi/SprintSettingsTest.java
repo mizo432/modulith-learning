@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -20,7 +19,7 @@ class SprintSettingsTest {
   private SprintSettings createSettings() {
     return SprintSettings.builder()
         .id(SnowflakeId.of(1L))
-        .productId(UUID.randomUUID())
+        .productId(SnowflakeId.of(100L))
         .businessDays(10)
         .endDayOfWeek(EndDayOfWeek.FRIDAY)
         .build();
@@ -45,7 +44,7 @@ class SprintSettingsTest {
     void shouldHaveDefaultValues() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(2L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .build();
 
       assertThat(settings.getBusinessDays()).isEqualTo(10);
@@ -115,7 +114,7 @@ class SprintSettingsTest {
       // 2026-11-16 (月) から開始
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(3L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -134,7 +133,7 @@ class SprintSettingsTest {
     void shouldExcludeHolidaysFromCalculation() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(4L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -156,7 +155,7 @@ class SprintSettingsTest {
     void shouldAdjustToEndDayOfWeek() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(5L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.WEDNESDAY)
           .build();
@@ -195,7 +194,7 @@ class SprintSettingsTest {
     void shouldCalculateAcrossYearEndHolidays() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(6L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -221,7 +220,7 @@ class SprintSettingsTest {
     void shouldHandleHolidayOnSaturday() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(7L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -243,7 +242,7 @@ class SprintSettingsTest {
     void shouldHandleConsecutiveHolidays() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(8L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -267,7 +266,7 @@ class SprintSettingsTest {
     void shouldCalculateWithOneBusinessDay() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(9L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(1)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -287,7 +286,7 @@ class SprintSettingsTest {
     void shouldCalculateWith30BusinessDays() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(10L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(30)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -306,7 +305,7 @@ class SprintSettingsTest {
     void shouldCalculateWhenStartDayIsSaturday() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(11L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -326,7 +325,7 @@ class SprintSettingsTest {
     void shouldCalculateWhenStartDayIsSunday() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(12L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();
@@ -346,7 +345,7 @@ class SprintSettingsTest {
     void shouldExcludeHolidaysWhenAdjustingToEndDayOfWeek() {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(13L))
-          .productId(UUID.randomUUID())
+          .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
           .build();

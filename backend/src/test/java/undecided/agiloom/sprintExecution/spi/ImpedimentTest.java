@@ -2,7 +2,6 @@ package undecided.agiloom.sprintExecution.spi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -88,7 +87,7 @@ class ImpedimentTest {
     @DisplayName("全プロパティが更新される")
     void shouldUpdateAllProperties() {
       Impediment impediment = createImpediment();
-      UUID assigneeId = UUID.randomUUID();
+      SnowflakeId assigneeId = SnowflakeId.of(300L);
 
       impediment.update("New title", "New description", "New impact", assigneeId);
 

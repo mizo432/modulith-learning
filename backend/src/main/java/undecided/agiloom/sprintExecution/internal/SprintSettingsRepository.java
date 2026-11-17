@@ -1,7 +1,6 @@
 package undecided.agiloom.sprintExecution.internal;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 import undecided.agiloom.sprintExecution.spi.SprintSettings;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -15,5 +14,5 @@ public interface SprintSettingsRepository extends CrudRepository<SprintSettings,
    * @param productId プロダクトのID
    * @return 該当するスプリント設定のOptional
    */
-  Optional<SprintSettings> findByProductId(UUID productId);
+  Optional<SprintSettings> findByProductId(SnowflakeId productId);
 }

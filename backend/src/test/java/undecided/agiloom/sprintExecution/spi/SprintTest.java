@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -18,13 +17,13 @@ class SprintTest {
   private Sprint createSprint() {
     return Sprint.builder()
         .id(SnowflakeId.of(1L))
-        .productId(UUID.randomUUID())
+        .productId(SnowflakeId.of(100L))
         .sprintNumber(1)
         .title("Sprint 1")
         .goal("Complete user authentication")
         .startDate(LocalDate.now())
         .endDate(LocalDate.now().plusWeeks(2))
-        .teamId(UUID.randomUUID())
+        .teamId(SnowflakeId.of(200L))
         .teamName("Team A")
         .velocity(30)
         .build();
@@ -186,8 +185,8 @@ class SprintTest {
     @Test
     @DisplayName("createSprintZeroファクトリメソッドでスプリント0が作成される")
     void shouldCreateSprintZero() {
-      UUID productId = UUID.randomUUID();
-      UUID teamId = UUID.randomUUID();
+      SnowflakeId productId = SnowflakeId.of(100L);
+      SnowflakeId teamId = SnowflakeId.of(200L);
       String teamName = "Team A";
 
       Sprint sprintZero = Sprint.createSprintZero(productId, teamId, teamName);
@@ -207,7 +206,7 @@ class SprintTest {
     @Test
     @DisplayName("スプリント0は削除できない")
     void shouldNotDeleteSprintZero() {
-      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
 
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalStateException.class,
@@ -219,7 +218,7 @@ class SprintTest {
     @Test
     @DisplayName("スプリント0のisDeletableはfalseを返す")
     void shouldReturnFalseForIsDeletable() {
-      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
 
       assertThat(sprintZero.isDeletable()).isFalse();
     }
@@ -245,7 +244,7 @@ class SprintTest {
     @Test
     @DisplayName("スプリント0の名前変更は禁止される")
     void shouldNotChangeSprintZeroTitle() {
-      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
       String originalTitle = sprintZero.getTitle();
 
       sprintZero.update("New Title", "New Goal", null, "Notes");
@@ -256,7 +255,7 @@ class SprintTest {
     @Test
     @DisplayName("スプリント0の日付更新は許可される")
     void shouldUpdateSprintZeroDates() {
-      Sprint sprintZero = Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
       LocalDate startDate = LocalDate.now();
       LocalDate endDate = LocalDate.now().plusWeeks(2);
 
@@ -282,7 +281,7 @@ class SprintTest {
     void shouldThrowWhenProductIdIsNull() {
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalArgumentException.class,
-          () -> Sprint.createSprintZero(null, UUID.randomUUID(), "Team A")
+          () -> Sprint.createSprintZero(null, SnowflakeId.of(200L), "Team A")
       );
     }
 
@@ -291,7 +290,7 @@ class SprintTest {
     void shouldThrowWhenTeamIdIsNull() {
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalArgumentException.class,
-          () -> Sprint.createSprintZero(UUID.randomUUID(), null, "Team A")
+          () -> Sprint.createSprintZero(SnowflakeId.of(100L), null, "Team A")
       );
     }
 
@@ -300,7 +299,7 @@ class SprintTest {
     void shouldThrowWhenTeamNameIsNull() {
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalArgumentException.class,
-          () -> Sprint.createSprintZero(UUID.randomUUID(), UUID.randomUUID(), null)
+          () -> Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), null)
       );
     }
   }

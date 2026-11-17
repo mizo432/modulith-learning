@@ -1,8 +1,8 @@
 package undecided.agiloom.sprintExecution.spi;
 
 import java.util.Optional;
-import java.util.UUID;
 import org.jspecify.annotations.NonNull;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * スプリント0を作成するためのファクトリインターフェースです。
@@ -19,5 +19,5 @@ public interface SprintZeroFactory {
      * @param teamName スクラムチームの名前
      * @return 作成されたスプリント0（既に存在する場合は既存のスプリント0）
      */
-    Optional<Sprint> createSprintZero(@NonNull UUID productId, @NonNull UUID teamId, @NonNull String teamName);
+    Optional<Sprint> createSprintZero(@NonNull SnowflakeId productId, @NonNull SnowflakeId teamId, @NonNull String teamName);
 }

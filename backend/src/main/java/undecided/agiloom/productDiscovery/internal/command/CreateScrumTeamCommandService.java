@@ -2,7 +2,6 @@ package undecided.agiloom.productDiscovery.internal.command;
 
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
-import java.util.UUID;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,20 +54,10 @@ public class CreateScrumTeamCommandService {
 
     // スクラムチーム作成時にスプリント0を自動的に生成する
     sprintZeroFactory.createSprintZero(
-        snowflakeIdToUuid(product.getId()),
-        snowflakeIdToUuid(saved.getId()),
+        product.getId(),
+        saved.getId(),
         saved.getName());
 
     return saved.getId();
-  }
-
-  /**
-   * SnowflakeIdをUUIDに変換します。
-   *
-   * @param snowflakeId 変換するSnowflakeId
-   * @return 変換されたUUID
-   */
-  private UUID snowflakeIdToUuid(SnowflakeId snowflakeId) {
-    return UUID.nameUUIDFromBytes(("sf:" + snowflakeId.value()).getBytes(java.nio.charset.StandardCharsets.UTF_8));
   }
 }

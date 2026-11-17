@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,7 +60,7 @@ public class SprintBacklogItem {
 
   /** 担当者のID。nullの場合は未割り当てです。 */
   @Column(name = "assignee_id")
-  protected UUID assigneeId;
+  protected SnowflakeId assigneeId;
 
   /** バックログ項目が作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
@@ -97,7 +96,7 @@ public class SprintBacklogItem {
             @NonNull SnowflakeId backlogItemId,
             @Nullable String workDescription,
             @NonNull TaskStatus status,
-            @Nullable UUID assigneeId,
+            @Nullable SnowflakeId assigneeId,
             @NonNull LocalDateTime createdAt,
             @NonNull LocalDateTime updatedAt,
             @Nullable LocalDateTime deletedAt) {
@@ -119,12 +118,12 @@ public class SprintBacklogItem {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void assignTo(UUID assigneeId) {
+    public void assignTo(SnowflakeId assigneeId) {
         this.assigneeId = assigneeId;
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(@NonNull String workDescription, TaskStatus status, UUID assigneeId) {
+    public void update(@NonNull String workDescription, TaskStatus status, SnowflakeId assigneeId) {
         this.workDescription = workDescription;
         this.status = status;
         this.assigneeId = assigneeId;

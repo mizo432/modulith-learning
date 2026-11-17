@@ -3,7 +3,6 @@ package undecided.agiloom.sprintExecution.spi;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -85,7 +84,7 @@ class SprintBacklogItemTest {
     @DisplayName("担当者設定が更新される")
     void shouldUpdateAssignee() {
       SprintBacklogItem item = createBacklogItem();
-      UUID assigneeId = UUID.randomUUID();
+      SnowflakeId assigneeId = SnowflakeId.of(300L);
 
       item.assignTo(assigneeId);
 
@@ -102,7 +101,7 @@ class SprintBacklogItemTest {
     @DisplayName("全プロパティが更新される")
     void shouldUpdateAllProperties() {
       SprintBacklogItem item = createBacklogItem();
-      UUID assigneeId = UUID.randomUUID();
+      SnowflakeId assigneeId = SnowflakeId.of(300L);
 
       item.update("New description", TaskStatus.IN_PROGRESS, assigneeId);
 

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,13 +38,13 @@ class SprintCalculateEndDateMediumTest {
   @Autowired
   private SprintSettingsQueryService sprintSettingsQueryService;
 
-  private UUID productId;
+  private SnowflakeId productId;
 
   @BeforeEach
   void setUp() {
     sprintSettingsRepository.deleteAll();
     holidayRepository.deleteAll();
-    productId = UUID.randomUUID();
+    productId = SnowflakeId.of(100L);
   }
 
   @Nested

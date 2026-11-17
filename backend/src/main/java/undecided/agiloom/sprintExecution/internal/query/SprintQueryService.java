@@ -2,7 +2,6 @@ package undecided.agiloom.sprintExecution.internal.query;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class SprintQueryService {
      * @param teamId チームのID
      * @return スプリント番号順のスプリント一覧
      */
-    public List<Sprint> findByTeamIdOrderBySprintNumberAsc(@NonNull UUID teamId) {
+    public List<Sprint> findByTeamIdOrderBySprintNumberAsc(@NonNull SnowflakeId teamId) {
         return sprintRepository.findByTeamIdOrderBySprintNumberAsc(teamId);
     }
 
@@ -51,7 +50,7 @@ public class SprintQueryService {
      * @param teamId チームのID
      * @return スプリント0（存在する場合）
      */
-    public Optional<Sprint> findSprintZeroByTeamId(@NonNull UUID teamId) {
+    public Optional<Sprint> findSprintZeroByTeamId(@NonNull SnowflakeId teamId) {
         return sprintRepository.findByTeamIdAndIsSprintZero(teamId, true);
     }
 }
