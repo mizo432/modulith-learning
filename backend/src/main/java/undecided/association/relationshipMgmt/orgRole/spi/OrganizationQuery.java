@@ -2,7 +2,7 @@ package undecided.association.relationshipMgmt.orgRole.spi;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /** 組織情報を取得するためのクエリインターフェースです。 このインターフェースを実装することで、組織のデータにアクセスするための 機能を提供します。 */
 public interface OrganizationQuery {
@@ -15,10 +15,10 @@ public interface OrganizationQuery {
   List<Organization> findAll();
 
   /**
-   * 指定された UUID に対応する組織情報を検索します。
+   * 指定された SnowflakeId に対応する組織情報を検索します。
    *
-   * @param id 検索対象の組織を一意に識別するための UUID
-   * @return 指定された UUID に対応する組織の情報を含む Optional 存在しない場合は Optional.empty() を返します
+   * @param id 検索対象の組織を一意に識別するための SnowflakeId
+   * @return 指定された SnowflakeId に対応する組織の情報を含む Optional 存在しない場合は Optional.empty() を返します
    */
-  Optional<Organization> findById(UUID id);
+  Optional<Organization> findById(SnowflakeId id);
 }

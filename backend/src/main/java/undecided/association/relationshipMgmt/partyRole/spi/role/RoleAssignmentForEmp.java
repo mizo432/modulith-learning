@@ -5,10 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * 従業員へのロール割り当てを表すエンティティクラス。
@@ -31,15 +31,15 @@ public class RoleAssignmentForEmp {
 
   /** ロール割り当ての一意な識別子。 */
   @Id
-  protected UUID roleAssignmentForEmpId;
+  protected SnowflakeId roleAssignmentForEmpId;
 
   /** 割り当てられるロールのID。 */
   @Column(name = "role_id")
-  protected UUID roleId;
+  protected SnowflakeId roleId;
 
   /** ロールが割り当てられる従業員のID。 */
   @Column(name = "employee_id")
-  protected UUID employeeId;
+  protected SnowflakeId employeeId;
 
   /**
    * 従業員のロール割り当てを新規作成します。
@@ -49,7 +49,7 @@ public class RoleAssignmentForEmp {
    * @param employeeId 従業員ID
    * @return 新規作成されたRoleAssignmentForEmpインスタンス
    */
-  public static RoleAssignmentForEmp create(UUID roleAssignmentForEmpId, UUID roleId, UUID employeeId) {
+  public static RoleAssignmentForEmp create(SnowflakeId roleAssignmentForEmpId, SnowflakeId roleId, SnowflakeId employeeId) {
     RoleAssignmentForEmp entity = new RoleAssignmentForEmp();
     entity.roleAssignmentForEmpId = roleAssignmentForEmpId;
     entity.roleId = roleId;

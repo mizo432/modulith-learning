@@ -7,11 +7,11 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import undecided.association.relationshipMgmt.spi.party.org.Org;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * 組織へのロール割り当てを表すエンティティクラス。
@@ -34,11 +34,11 @@ public class RoleAssignmentForOrg {
 
   /** ロール割り当ての一意な識別子。 */
   @Id
-  protected UUID roleAssignmentForOrgId;
+  protected SnowflakeId roleAssignmentForOrgId;
 
   /** 割り当てられるロールのID。 */
   @Column(name = "role_id")
-  protected UUID roleId;
+  protected SnowflakeId roleId;
 
   /** ロールが割り当てられる組織。 */
   @ManyToOne
@@ -53,7 +53,7 @@ public class RoleAssignmentForOrg {
    * @param org 組織エンティティ
    * @return 新規作成されたRoleAssignmentForOrgインスタンス
    */
-  public static RoleAssignmentForOrg create(UUID roleAssignmentForOrgId, UUID roleId, Org org) {
+  public static RoleAssignmentForOrg create(SnowflakeId roleAssignmentForOrgId, SnowflakeId roleId, Org org) {
     RoleAssignmentForOrg entity = new RoleAssignmentForOrg();
     entity.roleAssignmentForOrgId = roleAssignmentForOrgId;
     entity.roleId = roleId;

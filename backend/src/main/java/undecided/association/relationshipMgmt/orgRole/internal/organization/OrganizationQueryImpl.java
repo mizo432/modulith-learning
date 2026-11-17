@@ -2,11 +2,11 @@ package undecided.association.relationshipMgmt.orgRole.internal.organization;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import undecided.association.relationshipMgmt.orgRole.spi.Organization;
 import undecided.association.relationshipMgmt.orgRole.spi.OrganizationQuery;
+import undecided.supporting.snowflake.SnowflakeId;
 import com.github.mizo432.shared.common.primitive.Lists2;
 
 @Service
@@ -20,7 +20,7 @@ public class OrganizationQueryImpl implements OrganizationQuery {
   }
 
   @Override
-  public Optional<Organization> findById(UUID id) {
+  public Optional<Organization> findById(SnowflakeId id) {
     return organizationRepository.findById(id);
   }
 }

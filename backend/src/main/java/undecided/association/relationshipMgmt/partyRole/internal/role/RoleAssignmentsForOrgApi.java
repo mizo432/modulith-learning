@@ -23,6 +23,9 @@ import undecided.association.relationshipMgmt.partyRole.spi.role.RoleAssignmentF
 public class RoleAssignmentsForOrgApi {
   @GetMapping
   RoleAssignmentForOrg get() {
-    return RoleAssignmentForOrg.create(java.util.UUID.randomUUID(), java.util.UUID.randomUUID(), null);
+    return RoleAssignmentForOrg.create(
+        undecided.supporting.snowflake.SnowflakeId.of(1L),
+        undecided.supporting.snowflake.SnowflakeId.of(2L),
+        null);
   }
 }

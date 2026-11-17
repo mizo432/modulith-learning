@@ -11,7 +11,7 @@ public class EmployeeApi {
   @GetMapping
   Employee get() {
     return Employee.create(
-        java.util.UUID.randomUUID(),
+        undecided.supporting.snowflake.SnowflakeId.of(1L),
         "",
         "",
         java.time.LocalDateTime.now(),
