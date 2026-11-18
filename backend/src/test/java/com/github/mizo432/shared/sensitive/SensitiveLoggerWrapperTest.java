@@ -669,25 +669,31 @@ class SensitiveLoggerWrapperTest {
 
     @Test
     @DisplayName("builderのSupplierメッセージがマスクされる")
+    @SuppressWarnings("unchecked")
+    // setMessage(Supplier<String>)とsetMessage(String)のオーバーロードを区別するため、
+    // any()をSupplier<String>にキャストする。モックの呼び出し先がSupplier版であることはテストの意図から保証される。
     void shouldMaskSupplierMessage() {
       when(mockLogger.atInfo()).thenReturn(mockBuilder);
-      when(mockBuilder.setMessage(any(Supplier.class))).thenReturn(mockBuilder);
+      when(mockBuilder.setMessage((Supplier<String>) any())).thenReturn(mockBuilder);
 
       SensitiveLoggerWrapper wrapper = new SensitiveLoggerWrapper(mockLogger);
       wrapper.atInfo().setMessage(() -> "Supplier msg: supplier@example.com").log();
 
-      verify(mockBuilder).setMessage(any(Supplier.class));
+      verify(mockBuilder).setMessage((Supplier<String>) any());
     }
 
     @Test
     @DisplayName("builderのlog(Supplier)でメッセージがマスクされる")
+    @SuppressWarnings("unchecked")
+    // log(Supplier<String>)とlog(String)のオーバーロードを区別するため、
+    // any()をSupplier<String>にキャストする。モックの呼び出し先がSupplier版であることはテストの意図から保証される。
     void shouldMaskSupplierInLog() {
       when(mockLogger.atInfo()).thenReturn(mockBuilder);
 
       SensitiveLoggerWrapper wrapper = new SensitiveLoggerWrapper(mockLogger);
       wrapper.atInfo().log(() -> "Supplier log: supplier@example.com");
 
-      verify(mockBuilder).log(any(Supplier.class));
+      verify(mockBuilder).log((Supplier<String>) any());
     }
   }
 
