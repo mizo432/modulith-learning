@@ -113,18 +113,18 @@ class ChangeBacklogItemStatusCommandServiceTest {
     }
 
     @Test
-    @DisplayName("SMはSUGGESTEDをREJECTEDに変更できること")
-    void shouldRejectBySm() {
+    @DisplayName("SMはSUGGESTEDをFROZENに変更できること")
+    void shouldFreezeBySm() {
       // Arrange
       BacklogItem item = suggestedItem();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
       // Act
-      service.execute(command(BacklogItemStatus.REJECTED, SM_ID_VALUE));
+      service.execute(command(BacklogItemStatus.FROZEN, SM_ID_VALUE));
 
       // Assert
-      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.REJECTED);
+      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
       verify(backlogItemRepository).save(item);
       verify(eventPublisher).publishEvent(any(BacklogItemStatusChanged.class));
     }
@@ -161,7 +161,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
       // Act & Assert
-      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.REJECTED, PO_ID_VALUE)))
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.FROZEN, PO_ID_VALUE)))
           .isInstanceOf(IllegalStateException.class);
       verify(eventPublisher, never()).publishEvent(any());
     }
@@ -204,6 +204,89 @@ class ChangeBacklogItemStatusCommandServiceTest {
       assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.ACCEPTED, PO_ID_VALUE)))
           .isInstanceOf(IllegalArgumentException.class);
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
+      verify(eventPublisher, never()).publishEvent(any());
+    }
+
+    @Test
+    @DisplayName("SUGGESTEDからFROZENへの凍結はPOが行えること")
+    void shouldFreezeByPo() {
+      // Arrange
+      BacklogItem item = suggestedItem();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
+
+      // Act
+      service.execute(command(BacklogItemStatus.FROZEN, PO_ID_VALUE));
+
+      // Assert
+      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
+      verify(backlogItemRepository).save(item);
+      verify(eventPublisher).publishEvent(any(BacklogItemStatusChanged.class));
+    }
+
+
+    @Test
+    @DisplayName("FROZENからSUGGESTEDへの復帰はPOのみ可能でSMは不可なこと")
+    void shouldUnfreezeByPoOnly() {
+      // Arrange
+      BacklogItem item = BacklogItem.builder()
+          .id(ITEM_ID)
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(TEAM_ID)
+          .build();
+      item.changeStatus(BacklogItemStatus.FROZEN);
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
+
+      // Act & Assert: POは許可される
+      service.execute(command(BacklogItemStatus.SUGGESTED, PO_ID_VALUE));
+      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
+      verify(backlogItemRepository).save(item);
+      verify(eventPublisher).publishEvent(any(BacklogItemStatusChanged.class));
+    }
+
+    @Test
+    @DisplayName("FROZENからSUGGESTEDへの復帰はSMが行えないこと")
+    void shouldDenyUnfreezeBySm() {
+      // Arrange
+      BacklogItem item = BacklogItem.builder()
+          .id(ITEM_ID)
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(TEAM_ID)
+          .build();
+      item.changeStatus(BacklogItemStatus.FROZEN);
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
+
+      // Act & Assert: SMは拒否される
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.SUGGESTED, SM_ID_VALUE)))
+          .isInstanceOf(BacklogItemPermissionDeniedException.class);
+      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
+      verify(backlogItemRepository, never()).save(any());
+      verify(eventPublisher, never()).publishEvent(any());
+    }
+
+    @Test
+    @DisplayName("FROZENからSUGGESTEDへの復帰は一般メンバーが行えないこと")
+    void shouldDenyUnfreezeByMember() {
+      // Arrange
+      BacklogItem item = BacklogItem.builder()
+          .id(ITEM_ID)
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(TEAM_ID)
+          .build();
+      item.changeStatus(BacklogItemStatus.FROZEN);
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
+
+      // Act & Assert: 一般メンバーは拒否される
+      assertThatThrownBy(() -> service.execute(command(BacklogItemStatus.SUGGESTED, MEMBER_ID_VALUE)))
+          .isInstanceOf(BacklogItemPermissionDeniedException.class);
+      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
+      verify(backlogItemRepository, never()).save(any());
       verify(eventPublisher, never()).publishEvent(any());
     }
   }

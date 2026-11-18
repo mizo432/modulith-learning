@@ -1,6 +1,6 @@
 import api from './api';
 
-export type BacklogItemStatus = 'SUGGESTED' | 'ACCEPTED' | 'REJECTED';
+export type BacklogItemStatus = 'SUGGESTED' | 'ACCEPTED' | 'FROZEN';
 
 export type QualityCategory = 'ATTRACTIVE' | 'MUST_BE' | 'ONE_DIMENSIONAL' | 'INDIFFERENT';
 

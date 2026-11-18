@@ -43,7 +43,7 @@ jest.mock('../../services/backlogItemService', () => ({
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
     ACCEPTED: 'ACCEPTED',
-    REJECTED: 'REJECTED',
+    FROZEN: 'FROZEN',
   },
 }));
 

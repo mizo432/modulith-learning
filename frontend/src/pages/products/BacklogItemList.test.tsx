@@ -44,7 +44,7 @@ jest.mock('../../services/backlogItemService', () => ({
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
     ACCEPTED: 'ACCEPTED',
-    REJECTED: 'REJECTED',
+    FROZEN: 'FROZEN',
   },
 }));
 
@@ -154,6 +154,49 @@ describe('BacklogItemList', () => {
     });
   });
 
+  describe('凍結ボタンの表示', () => {
+    it('SUGGESTED状態のアイテムに凍結ボタンが表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithValue,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Valueありアイテム')).toBeInTheDocument();
+      });
+
+      // 凍結ボタンが表示されていることを確認
+      await waitFor(() => {
+        expect(screen.getByText('凍結')).toBeInTheDocument();
+      });
+    });
+
+    it('FROZEN状態でPOのみ復帰ボタン（SUGGESTEDへ戻す）が表示される', async () => {
+      // AuthContextはPOとしてモックされている（emp-1 = poEmployeeId）
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          id: 'item-frozen',
+          title: '凍結済みアイテム',
+          status: 'FROZEN' as any,
+          statusLabel: '凍結',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('凍結済みアイテム')).toBeInTheDocument();
+      });
+
+      // POは復帰ボタン（SUGGESTEDへ戻す）が見えること
+      await waitFor(() => {
+        expect(screen.getByText('SUGGESTEDへ戻す')).toBeInTheDocument();
+      });
+    });
+  });
+
   describe('承認ボタンの有効・無効', () => {
     it('value=null のアイテムで承認ボタンが disabled になる', async () => {
       (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
@@ -195,7 +238,7 @@ describe('BacklogItemList', () => {
       });
     });
 
-    it('却下ボタンは value の有無に影響されない', async () => {
+    it('凍結ボタンは value の有無に影響されない', async () => {
       (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
         mockItemWithValue,
         mockItemWithoutValue,
@@ -208,11 +251,11 @@ describe('BacklogItemList', () => {
         expect(screen.getByText('Valueなしアイテム')).toBeInTheDocument();
       });
 
-      // 却下ボタンがすべてenabledであることを確認
-      const rejectButtons = screen.queryAllByText('却下');
+      // 凍結ボタンがすべてenabledであることを確認
+      const freezeButtons = screen.queryAllByText('凍結');
       await waitFor(() => {
-        expect(rejectButtons.length).toBeGreaterThan(0);
-        rejectButtons.forEach((btn) => {
+        expect(freezeButtons.length).toBeGreaterThan(0);
+        freezeButtons.forEach((btn) => {
           const button = btn.closest('button');
           expect(button).not.toBeDisabled();
         });
