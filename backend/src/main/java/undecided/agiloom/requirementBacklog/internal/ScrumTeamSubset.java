@@ -1,6 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -57,7 +58,8 @@ class ScrumTeamSubset {
   protected String smName;
 
   /** チームメンバーの従業員IDリスト（PO/SMを含む）。 */
-  @Column(name = "member_employee_ids", columnDefinition = "TEXT[]")
+  @Column(name = "member_employee_ids", columnDefinition = "BIGINT[]")
+  @Convert(converter = SnowflakeId.SnowflakeIdListConverter.class)
   @Builder.Default
   protected List<SnowflakeId> memberEmployeeIds = new ArrayList<>();
 
