@@ -366,6 +366,123 @@ describe('BacklogItemList', () => {
       expect(screen.queryByText('一元的品質')).not.toBeInTheDocument();
       expect(screen.queryByText('無関心品質')).not.toBeInTheDocument();
     });
+
+    it('魅力的品質のChipが緑色（success）である', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          qualityCategory: 'ATTRACTIVE',
+          qualityCategoryLabel: '魅力的品質',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        const chip = screen.getByText('魅力的品質').closest('span');
+        // MUI Chip の success カラーは緑系（MuiChip-colorSuccess クラスが付く）
+        expect(chip).toHaveClass(/MuiChip-colorSuccess/);
+      });
+    });
+
+    it('一元的品質のChipが青色（info）である', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          qualityCategory: 'ONE_DIMENSIONAL',
+          qualityCategoryLabel: '一元的品質',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        const chip = screen.getByText('一元的品質').closest('span');
+        // MUI Chip の info カラーは青系（MuiChip-colorInfo クラスが付く）
+        expect(chip).toHaveClass(/MuiChip-colorInfo/);
+      });
+    });
+
+    it('当たり前品質のChipが黄色（warning）である', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          qualityCategory: 'MUST_BE',
+          qualityCategoryLabel: '当たり前品質',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        const chip = screen.getByText('当たり前品質').closest('span');
+        // MUI Chip の warning カラーは黄系（MuiChip-colorWarning クラスが付く）
+        expect(chip).toHaveClass(/MuiChip-colorWarning/);
+      });
+    });
+
+    it('無関心品質のChipがグレー（default）である', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          qualityCategory: 'INDIFFERENT',
+          qualityCategoryLabel: '無関心品質',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        const chip = screen.getByText('無関心品質').closest('span');
+        // MUI Chip の default カラー（MuiChip-colorDefault クラスが付く、またはcolor属性なし）
+        expect(chip).toHaveClass(/MuiChip-colorDefault/);
+      });
+    });
+
+    it('品質カテゴリChipにツールチップが表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          qualityCategory: 'ATTRACTIVE',
+          qualityCategoryLabel: '魅力的品質',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        const chip = screen.getByText('魅力的品質');
+        // ツールチップが設定されていることを確認（title属性またはdata-mui-test="tooltip"）
+        const tooltipTrigger = chip.closest('[data-mui-test="tooltip"]') || chip.closest('[title]');
+        expect(tooltipTrigger).not.toBeNull();
+      });
+    });
+
+    it('Valueがnullのアイテムでは品質カテゴリ列に「―」が表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithoutValue,
+          qualityCategory: null,
+          qualityCategoryLabel: null,
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('Valueなしアイテム')).toBeInTheDocument();
+      });
+
+      // 品質カテゴリ列に「―」が表示されること
+      // 行のセルを確認
+      const rows = screen.getAllByRole('row');
+      const dataRows = rows.slice(1);
+      await waitFor(() => {
+        expect(dataRows.length).toBeGreaterThanOrEqual(1);
+        // 品質カテゴリ列（4列目）に「―」が含まれること
+        expect(dataRows[0].textContent).toContain('―');
+      });
+    });
   });
 
   describe('既定ソート（Value降順）', () => {

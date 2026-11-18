@@ -25,3 +25,30 @@ export function valueToBackgroundColor(value: number): string {
 }
 
 export { VALUE_MIN, VALUE_MAX };
+
+/**
+ * 品質カテゴリの型定義。
+ */
+export type QualityCategory = 'ATTRACTIVE' | 'MUST_BE' | 'ONE_DIMENSIONAL' | 'INDIFFERENT';
+
+/**
+ * Value（0〜100）から品質カテゴリを返す。
+ * 76以上=ATTRACTIVE、51以上=MUST_BE、26以上=ONE_DIMENSIONAL、0以上=INDIFFERENT、null=null
+ */
+export function valueToQualityCategory(value: number | null): QualityCategory | null {
+  throw new Error('Not implemented');
+}
+
+/**
+ * 品質カテゴリから日本語ラベルを返す。
+ */
+export function qualityCategoryToLabel(category: QualityCategory): string {
+  throw new Error('Not implemented');
+}
+
+/**
+ * 品質カテゴリからツールチップテキスト（境界値）を返す。
+ */
+export function qualityCategoryToTooltip(category: QualityCategory): string {
+  throw new Error('Not implemented');
+}
