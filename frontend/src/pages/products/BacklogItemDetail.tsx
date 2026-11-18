@@ -6,6 +6,7 @@ import {
   Button,
   Chip,
   Divider,
+  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -14,6 +15,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import ReplyIcon from '@mui/icons-material/Reply';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 import backlogItemService, {
   BacklogItem,
   BacklogItemComment,
@@ -56,6 +62,14 @@ const BacklogItemDetail: React.FC = () => {
     auth.username ?? '',
   );
 
+  // 返信入力状態
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyBody, setReplyBody] = useState('');
+
+  // 編集状態
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editBody, setEditBody] = useState('');
+
   // Value入力（数値型でSliderとTextFieldを双方向連動）
   const [valueInput, setValueInput] = useState<number | null>(null);
   const [valueError, setValueError] = useState(false);
@@ -95,24 +109,69 @@ const BacklogItemDetail: React.FC = () => {
 
   // 自動リフレッシュ
   const {isVisible} = useIsVisible();
-  // コメント入力中（commentBody が空でない）または Value 編集中（valueInput が item.value と異なる）はスキップ
-  const shouldSkipRefresh = commentBody !== '' || (valueInput !== null && item?.value !== valueInput);
+  // コメント入力中または編集中、または Value 編集中はスキップ
+  const isCommentInputActive = commentBody !== '' || replyingTo !== null || editingCommentId !== null || replyBody !== '';
+  const shouldSkipRefresh = isCommentInputActive || (valueInput !== null && item?.value !== valueInput);
   useAutoRefresh(load, REFRESH_INTERVAL, shouldSkipRefresh, isVisible);
 
-  const handleAddComment = async () => {
+  const handleAddComment = async (parentCommentId?: string) => {
     if (!backlogItemId) return;
     setError(null);
     try {
-      const created = await backlogItemService.addComment(backlogItemId, {
-        authorEmployeeId: auth.employeeId ?? undefined,
+      const body = parentCommentId ? replyBody : commentBody;
+      const request: { authorName: string; body: string; parentCommentId?: string; authorEmployeeId?: string } = {
         authorName: commentAuthorName,
-        body: commentBody,
-      });
+        body,
+      };
+      if (parentCommentId) {
+        request.parentCommentId = parentCommentId;
+      } else {
+        request.authorEmployeeId = auth.employeeId ?? undefined;
+      }
+      const created = await backlogItemService.addComment(backlogItemId, request);
       setComments((prev) => [...prev, created]);
-      setCommentBody('');
+      if (parentCommentId) {
+        setReplyBody('');
+        setReplyingTo(null);
+      } else {
+        setCommentBody('');
+      }
     } catch (err: any) {
       console.error('Failed to add comment:', err);
       setError(err?.response?.data?.message ?? 'コメントの追加に失敗しました。');
+    }
+  };
+
+  const handleUpdateComment = async (commentId: string) => {
+    if (!backlogItemId) return;
+    setError(null);
+    try {
+      const updated = await backlogItemService.updateComment(backlogItemId, commentId, {
+        authorEmployeeId: auth.employeeId ?? undefined,
+        body: editBody,
+      });
+      setComments((prev) =>
+        prev.map((c) => (c.id === commentId ? updated : c)),
+      );
+      setEditingCommentId(null);
+      setEditBody('');
+    } catch (err: any) {
+      console.error('Failed to update comment:', err);
+      setError(err?.response?.data?.message ?? 'コメントの更新に失敗しました。');
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!backlogItemId) return;
+    setError(null);
+    try {
+      await backlogItemService.deleteComment(backlogItemId, commentId, {
+        authorEmployeeId: auth.employeeId ?? undefined,
+      });
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    } catch (err: any) {
+      console.error('Failed to delete comment:', err);
+      setError(err?.response?.data?.message ?? 'コメントの削除に失敗しました。');
     }
   };
 
@@ -260,6 +319,7 @@ const BacklogItemDetail: React.FC = () => {
             variant="contained"
             onClick={handleSaveValue}
             disabled={valueInput === null || valueError}
+            sx={{display: editingCommentId ? 'none' : 'inline-flex'}}
           >
             Valueを保存
           </Button>
@@ -276,22 +336,66 @@ const BacklogItemDetail: React.FC = () => {
           コメント
         </Typography>
         <List>
-          {comments.map((comment) => (
-            <React.Fragment key={comment.id}>
-              <ListItem alignItems="flex-start">
-                <ListItemText
-                  primary={`${comment.authorName}（${new Date(comment.createdAt).toLocaleString()}）`}
-                  secondary={comment.body}
-                />
-              </ListItem>
-              <Divider component="li" />
-            </React.Fragment>
-          ))}
           {comments.length === 0 && (
             <ListItem>
               <ListItemText secondary="コメントはまだありません。" />
             </ListItem>
           )}
+          {/* ルートコメント（parentIdがnull）のみをトップレベルで表示 */}
+          {comments
+            .filter((c) => c.parentId == null)
+            .map((rootComment) => (
+              <React.Fragment key={rootComment.id}>
+                <CommentItem
+                  comment={rootComment}
+                  allComments={comments}
+                  replyingTo={replyingTo}
+                  replyBody={replyBody}
+                  editingCommentId={editingCommentId}
+                  editBody={editBody}
+                  onReplyToggle={() =>
+                    setReplyingTo(replyingTo === rootComment.id ? null : rootComment.id)
+                  }
+                  onReplyBodyChange={setReplyBody}
+                  onReplySubmit={() => handleAddComment(rootComment.id)}
+                  onEditToggle={() => {
+                    if (editingCommentId === rootComment.id) {
+                      setEditingCommentId(null);
+                    } else {
+                      setEditingCommentId(rootComment.id);
+                      setEditBody(rootComment.body);
+                    }
+                  }}
+                  onEditBodyChange={setEditBody}
+                  onEditSave={() => handleUpdateComment(rootComment.id)}
+                  onDelete={() => handleDeleteComment(rootComment.id)}
+                />
+                {/* 子コメント（返信）を再帰的に表示 */}
+                <RepliesList
+                  parentId={rootComment.id}
+                  allComments={comments}
+                  replyingTo={replyingTo}
+                  replyBody={replyBody}
+                  editingCommentId={editingCommentId}
+                  editBody={editBody}
+                  onReplyToggle={(id) => setReplyingTo(replyingTo === id ? null : id)}
+                  onReplyBodyChange={setReplyBody}
+                  onReplySubmit={(id) => handleAddComment(id)}
+                  onEditToggle={(id) => {
+                    if (editingCommentId === id) {
+                      setEditingCommentId(null);
+                    } else {
+                      setEditingCommentId(id);
+                      const comment = comments.find((c) => c.id === id);
+                      setEditBody(comment?.body ?? '');
+                    }
+                  }}
+                  onEditBodyChange={setEditBody}
+                  onEditSave={(id) => handleUpdateComment(id)}
+                  onDelete={(id) => handleDeleteComment(id)}
+                />
+              </React.Fragment>
+            ))}
         </List>
 
         <Box sx={{mt: 2}}>
@@ -316,7 +420,7 @@ const BacklogItemDetail: React.FC = () => {
           />
           <Button
             variant="contained"
-            onClick={handleAddComment}
+            onClick={() => handleAddComment()}
             disabled={!commentBody || !commentAuthorName}
           >
             コメントを追加
@@ -324,6 +428,270 @@ const BacklogItemDetail: React.FC = () => {
         </Box>
       </Paper>
     </Box>
+  );
+};
+
+/* --- コメント関連のサブコンポーネント --- */
+
+interface CommentItemProps {
+  comment: BacklogItemComment;
+  allComments: BacklogItemComment[];
+  replyingTo: string | null;
+  replyBody: string;
+  editingCommentId: string | null;
+  editBody: string;
+  onReplyToggle: () => void;
+  onReplyBodyChange: (body: string) => void;
+  onReplySubmit: () => void;
+  onEditToggle: () => void;
+  onEditBodyChange: (body: string) => void;
+  onEditSave: () => void;
+  onDelete: () => void;
+}
+
+const CommentItem: React.FC<CommentItemProps> = ({
+  comment,
+  replyingTo,
+  replyBody,
+  editingCommentId,
+  editBody,
+  onReplyToggle,
+  onReplyBodyChange,
+  onReplySubmit,
+  onEditToggle,
+  onEditBodyChange,
+  onEditSave,
+  onDelete,
+}) => {
+  const isEditing = editingCommentId === comment.id;
+  const isReplying = replyingTo === comment.id;
+  const hasReplies = comment.hasReplies ?? false;
+
+  return (
+    <React.Fragment>
+      <ListItem alignItems="flex-start">
+        <ListItemText
+          primary={`${comment.authorName}（${new Date(comment.createdAt).toLocaleString()}）`}
+          secondary={
+            isEditing ? (
+              <Box sx={{mt: 1}}>
+                <TextField
+                  multiline
+                  rows={3}
+                  fullWidth
+                  value={editBody}
+                  onChange={(e) => onEditBodyChange(e.target.value)}
+                  data-testid="edit-comment-textarea"
+                  size="small"
+                />
+                <Box sx={{mt: 1, display: 'flex', gap: 1}}>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={onEditSave}
+                    data-testid="edit-save-button"
+                    aria-label="コメント保存"
+                  >
+                    保存
+                  </Button>
+                  <Button size="small" onClick={onEditToggle}>
+                    キャンセル
+                  </Button>
+                </Box>
+              </Box>
+            ) : (
+              comment.body
+            )
+          }
+        />
+        <Box sx={{display: 'flex', gap: 0.5}}>
+          <IconButton size="small" onClick={onReplyToggle} aria-label="返信">
+            <ReplyIcon fontSize="small" />
+          </IconButton>
+          {!hasReplies && !isEditing && (
+            <>
+              <IconButton size="small" onClick={onEditToggle} aria-label="編集">
+                <EditIcon fontSize="small" />
+              </IconButton>
+              <IconButton size="small" onClick={onDelete} aria-label="削除">
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </>
+          )}
+        </Box>
+      </ListItem>
+      {isReplying && (
+        <ListItem sx={{pl: 4}}>
+          <Box sx={{width: '100%'}}>
+            <TextField
+              label="返信"
+              multiline
+              rows={2}
+              fullWidth
+              value={replyBody}
+              onChange={(e) => onReplyBodyChange(e.target.value)}
+              data-testid="reply-textarea"
+              size="small"
+            />
+            <Box sx={{mt: 1, display: 'flex', gap: 1}}>
+              <Button
+                size="small"
+                variant="contained"
+                onClick={onReplySubmit}
+                disabled={!replyBody.trim()}
+              >
+                送信
+              </Button>
+              <Button size="small" onClick={onReplyToggle}>
+                キャンセル
+              </Button>
+            </Box>
+          </Box>
+        </ListItem>
+      )}
+      <Divider component="li" />
+    </React.Fragment>
+  );
+};
+
+interface RepliesListProps {
+  parentId: string;
+  allComments: BacklogItemComment[];
+  replyingTo: string | null;
+  replyBody: string;
+  editingCommentId: string | null;
+  editBody: string;
+  onReplyToggle: (id: string) => void;
+  onReplyBodyChange: (body: string) => void;
+  onReplySubmit: (id: string) => void;
+  onEditToggle: (id: string) => void;
+  onEditBodyChange: (body: string) => void;
+  onEditSave: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
+const RepliesList: React.FC<RepliesListProps> = ({
+  parentId,
+  allComments,
+  replyingTo,
+  replyBody,
+  editingCommentId,
+  editBody,
+  onReplyToggle,
+  onReplyBodyChange,
+  onReplySubmit,
+  onEditToggle,
+  onEditBodyChange,
+  onEditSave,
+  onDelete,
+}) => {
+  const replies = allComments.filter((c) => c.parentId === parentId);
+  if (replies.length === 0) return null;
+
+  return (
+    <>
+      {replies.map((reply) => (
+        <React.Fragment key={reply.id}>
+          <ListItem alignItems="flex-start" sx={{pl: 4}}>
+            <ListItemText
+              primary={`${reply.authorName}（${new Date(reply.createdAt).toLocaleString()}）`}
+              secondary={
+                editingCommentId === reply.id ? (
+                  <Box sx={{mt: 1}}>
+                    <TextField
+                      multiline
+                      rows={2}
+                      fullWidth
+                      value={editBody}
+                      onChange={(e) => onEditBodyChange(e.target.value)}
+                      data-testid="edit-comment-textarea"
+                      size="small"
+                    />
+                    <Box sx={{mt: 1, display: 'flex', gap: 1}}>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => onEditSave(reply.id)}
+                        data-testid="edit-save-button"
+                      >
+                        保存
+                      </Button>
+                      <Button size="small" onClick={() => onEditToggle(reply.id)}>
+                        キャンセル
+                      </Button>
+                    </Box>
+                  </Box>
+                ) : (
+                  reply.body
+                )
+              }
+            />
+            <Box sx={{display: 'flex', gap: 0.5}}>
+              <IconButton size="small" onClick={() => onReplyToggle(reply.id)} aria-label="返信">
+                <ReplyIcon fontSize="small" />
+              </IconButton>
+              {!(reply.hasReplies ?? false) && editingCommentId !== reply.id && (
+                <>
+                  <IconButton size="small" onClick={() => onEditToggle(reply.id)} aria-label="編集">
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton size="small" onClick={() => onDelete(reply.id)} aria-label="削除">
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </>
+              )}
+            </Box>
+          </ListItem>
+          {replyingTo === reply.id && (
+            <ListItem sx={{pl: 8}}>
+              <Box sx={{width: '100%'}}>
+                <TextField
+                  label="返信"
+                  multiline
+                  rows={2}
+                  fullWidth
+                  value={replyBody}
+                  onChange={(e) => onReplyBodyChange(e.target.value)}
+                  data-testid="reply-textarea"
+                  size="small"
+                />
+                <Box sx={{mt: 1, display: 'flex', gap: 1}}>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={() => onReplySubmit(reply.id)}
+                    disabled={!replyBody.trim()}
+                    aria-label="送信"
+                  >
+                    送信
+                  </Button>
+                  <Button size="small" onClick={() => onReplyToggle(reply.id)}>
+                    キャンセル
+                  </Button>
+                </Box>
+              </Box>
+            </ListItem>
+          )}
+          <Divider component="li" />
+          {/* 再帰的に深いネストを表示 */}
+          <RepliesList
+            parentId={reply.id}
+            allComments={allComments}
+            replyingTo={replyingTo}
+            replyBody={replyBody}
+            editingCommentId={editingCommentId}
+            editBody={editBody}
+            onReplyToggle={onReplyToggle}
+            onReplyBodyChange={onReplyBodyChange}
+            onReplySubmit={onReplySubmit}
+            onEditToggle={onEditToggle}
+            onEditBodyChange={onEditBodyChange}
+            onEditSave={onEditSave}
+            onDelete={onDelete}
+          />
+        </React.Fragment>
+      ))}
+    </>
   );
 };
 

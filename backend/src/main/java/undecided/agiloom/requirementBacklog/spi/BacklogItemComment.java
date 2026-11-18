@@ -65,8 +65,18 @@ public class BacklogItemComment {
   @Nullable
   protected BacklogItemComment parentComment;
 
+  /** 子返信があるかどうか（クエリサービスで計算して設定）。DBカラムではない。 */
+  @jakarta.persistence.Transient
+  @Builder.Default
+  protected boolean hasReplies = false;
+
   /** コメント本文を更新します。 */
   public void updateBody(String body) {
     this.body = body;
+  }
+
+  /** 子返信有無を設定します（クエリサービス用）。 */
+  public void setHasReplies(boolean hasReplies) {
+    this.hasReplies = hasReplies;
   }
 }

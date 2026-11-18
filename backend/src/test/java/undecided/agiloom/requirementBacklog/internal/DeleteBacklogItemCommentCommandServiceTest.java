@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -180,11 +181,11 @@ class DeleteBacklogItemCommentCommandServiceTest {
           .authorName("Replier")
           .body("Reply comment")
           .build();
-      when(backlogItemCommentRepository.findByParentCommentId(COMMENT_ID)).thenReturn(java.util.List.of(reply));
+      when(backlogItemCommentRepository.findByParentCommentId(COMMENT_ID)).thenReturn(List.of(reply));
 
       // Act & Assert
       assertThatThrownBy(() -> service.execute(command(AUTHOR_ID_VALUE)))
-          .isInstanceOf(IllegalArgumentException.class);
+          .isInstanceOf(IllegalStateException.class);
       verify(backlogItemCommentRepository, never()).delete(any());
     }
   }

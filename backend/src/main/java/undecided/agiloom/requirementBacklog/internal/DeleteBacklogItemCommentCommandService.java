@@ -1,5 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +57,13 @@ class DeleteBacklogItemCommentCommandService {
     if (!isAuthor && !isAdmin) {
       throw new BacklogItemPermissionDeniedException(
           "コメントを削除する権限がありません。削除できるのはコメントした本人またはシステム管理者のみです");
+    }
+
+    // 子返信があるかチェック
+    List<BacklogItemComment> replies =
+        backlogItemCommentRepository.findByParentCommentId(command.getCommentId());
+    if (!replies.isEmpty()) {
+      throw new IllegalStateException("子返信があるコメントは削除できません");
     }
 
     backlogItemCommentRepository.delete(comment);

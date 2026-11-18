@@ -3,9 +3,11 @@ package undecided.agiloom.requirementBacklog.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -24,7 +24,6 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Tag("small")
 @DisplayName("UpdateBacklogItemCommentCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class UpdateBacklogItemCommentCommandServiceTest {
 
   private static final long AUTHOR_ID_VALUE = 100L;
@@ -117,19 +116,38 @@ class UpdateBacklogItemCommentCommandServiceTest {
     @Test
     @DisplayName("第三者がコメントを編集しようとすると権限例外になること")
     void shouldDenyByOther() {
-      // Arrange & Act & Assert
+      // Arrange
+      BacklogItemComment comment = comment();
+      when(backlogItemCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
+      when(adminEmployeeSubsetRepository.existsByEmployeeId(OTHER_ID)).thenReturn(false);
+
+      // Act & Assert
       // 第三者がコメントを編集しようとすると BacklogItemPermissionDeniedException がスローされる
       assertThatThrownBy(() -> service.execute(command(OTHER_ID_VALUE, "Hacked body")))
           .isInstanceOf(BacklogItemPermissionDeniedException.class);
+      verify(backlogItemCommentRepository, never()).save(any());
     }
 
     @Test
     @DisplayName("子返信があるコメントを編集しようとすると例外がスローされること")
     void shouldDenyWhenHasReplies() {
-      // Arrange & Act & Assert
-      // 子返信があるコメントを編集しようとすると IllegalArgumentException がスローされる
+      // Arrange
+      BacklogItemComment comment = comment();
+      when(backlogItemCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
+      BacklogItemComment reply = BacklogItemComment.builder()
+          .id(SnowflakeId.of(2000L))
+          .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").build())
+          .authorEmployeeId(SnowflakeId.of(400L))
+          .authorName("Replier")
+          .body("Reply comment")
+          .build();
+      when(backlogItemCommentRepository.findByParentCommentId(COMMENT_ID)).thenReturn(List.of(reply));
+
+      // Act & Assert
+      // 子返信があるコメントを編集しようとすると IllegalStateException がスローされる
       assertThatThrownBy(() -> service.execute(command(AUTHOR_ID_VALUE, "Updated body")))
-          .isInstanceOf(IllegalArgumentException.class);
+          .isInstanceOf(IllegalStateException.class);
+      verify(backlogItemCommentRepository, never()).save(any());
     }
 
     @Test

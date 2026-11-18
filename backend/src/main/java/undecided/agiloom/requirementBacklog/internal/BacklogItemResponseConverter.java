@@ -41,8 +41,8 @@ class BacklogItemResponseConverter {
         .authorName(comment.getAuthorName())
         .body(comment.getBody())
         .createdAt(comment.getCreatedAt())
-        .parentId(null)
-        .hasReplies(false)
+        .parentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null)
+        .hasReplies(comment.isHasReplies())
         .build();
   }
 }

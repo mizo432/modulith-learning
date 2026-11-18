@@ -227,5 +227,23 @@ class AddBacklogItemCommentCommandServiceTest {
           .hasMessageContaining("BacklogItem not found");
       verify(backlogItemCommentRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("自身を親としたとき、IllegalArgumentExceptionがスローされる")
+    void shouldThrowWhenSelfAsParent() {
+      // Arrange
+      BacklogItem item = backlogItem();
+      BacklogItemComment parent = parentComment();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(backlogItemCommentRepository.findById(PARENT_COMMENT_ID)).thenReturn(Optional.of(parent));
+      // 採番されたIDが親コメントのIDと一致するケース
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(PARENT_COMMENT_ID);
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.execute(commandWithParent()))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("自身");
+      verify(backlogItemCommentRepository, never()).save(any());
+    }
   }
 }

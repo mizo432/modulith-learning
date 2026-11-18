@@ -314,7 +314,7 @@ class BacklogItemQueryServiceTest {
     }
 
     @Test
-    @DisplayName("子返信があるコメントを取得したとき、子返信の存在が確認できる")
+    @DisplayName("子返信があるコメントを取得したとき、hasRepliesがtrueになる")
     void shouldDetectHasRepliesForCommentWithReplies() {
       // Arrange
       BacklogItem item = createBacklogItem(ITEM_ID, "Item", 50, BacklogItemStatus.SUGGESTED,
@@ -339,20 +339,52 @@ class BacklogItemQueryServiceTest {
 
       when(backlogItemCommentRepository.findByBacklogItemIdOrderByCreatedAtAsc(ITEM_ID))
           .thenReturn(Arrays.asList(parentComment, replyComment));
-      when(backlogItemCommentRepository.findByParentCommentId(COMMENT_1_ID))
-          .thenReturn(Arrays.asList(replyComment));
-      when(backlogItemCommentRepository.findByParentCommentId(REPLY_ID))
-          .thenReturn(Collections.emptyList());
 
       // Act
       List<BacklogItemComment> result = service.findComments(ITEM_ID);
 
       // Assert
       assertThat(result).hasSize(2);
-      // 親コメントには子返信がある
-      assertThat(backlogItemCommentRepository.findByParentCommentId(COMMENT_1_ID)).isNotEmpty();
-      // 返信コメントには子返信がない
-      assertThat(backlogItemCommentRepository.findByParentCommentId(REPLY_ID)).isEmpty();
+      // 親コメントには子返信がある → hasReplies=true
+      assertThat(result.get(0).isHasReplies()).isTrue();
+      // 返信コメントには子返信がない → hasReplies=false
+      assertThat(result.get(1).isHasReplies()).isFalse();
+    }
+
+    @Test
+    @DisplayName("子返信がないコメントを取得したとき、hasRepliesがfalseになる")
+    void shouldSetHasRepliesFalseWhenNoReplies() {
+      // Arrange
+      BacklogItem item = createBacklogItem(ITEM_ID, "Item", 50, BacklogItemStatus.SUGGESTED,
+          LocalDateTime.of(2026, 1, 1, 0, 0));
+      BacklogItemComment comment1 = BacklogItemComment.builder()
+          .id(COMMENT_1_ID)
+          .backlogItem(item)
+          .authorEmployeeId(SnowflakeId.of(1L))
+          .authorName("Author1")
+          .body("Comment 1")
+          .createdAt(LocalDateTime.of(2026, 1, 1, 0, 0))
+          .build();
+      BacklogItemComment comment2 = BacklogItemComment.builder()
+          .id(COMMENT_2_ID)
+          .backlogItem(item)
+          .authorEmployeeId(SnowflakeId.of(2L))
+          .authorName("Author2")
+          .body("Comment 2")
+          .createdAt(LocalDateTime.of(2026, 1, 2, 0, 0))
+          .build();
+
+      when(backlogItemCommentRepository.findByBacklogItemIdOrderByCreatedAtAsc(ITEM_ID))
+          .thenReturn(Arrays.asList(comment1, comment2));
+
+      // Act
+      List<BacklogItemComment> result = service.findComments(ITEM_ID);
+
+      // Assert
+      assertThat(result).hasSize(2);
+      // 子返信がないコメントはhasReplies=false
+      assertThat(result.get(0).isHasReplies()).isFalse();
+      assertThat(result.get(1).isHasReplies()).isFalse();
     }
   }
 }
