@@ -1,5 +1,6 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
+import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,5 +77,16 @@ public class UpdateScrumTeamCommandService {
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
     scrumTeam.unassignSm();
+  }
+
+  /**
+   * チームメンバーの従業員IDリストを更新します。
+   *
+   * @param id スクラムチームID
+   * @param memberEmployeeIds メンバーの従業員IDリスト
+   */
+  public void updateMembers(@NonNull SnowflakeId id, @NonNull List<SnowflakeId> memberEmployeeIds) {
+    // TODO: 本実装は implement フェーズで行う
+    throw new UnsupportedOperationException("Not yet implemented");
   }
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -304,6 +305,64 @@ class ScrumTeamTest {
   @Nested
   @DisplayName("setMemberEmployeeIdsメソッドのテスト")
   class SetMemberEmployeeIdsTest {
+
+    @Test
+    @DisplayName("有効なIDリストを渡したとき、memberEmployeeIdsが設定される")
+    void shouldSetMemberEmployeeIds() {
+      ScrumTeam scrumTeam = createScrumTeam();
+      SnowflakeId member1 = SnowflakeId.of(300L);
+      SnowflakeId member2 = SnowflakeId.of(400L);
+      List<SnowflakeId> memberIds = List.of(member1, member2);
+
+      scrumTeam.setMemberEmployeeIds(memberIds);
+
+      assertThat(scrumTeam.getMemberEmployeeIds()).containsExactly(member1, member2);
+    }
+
+    @Test
+    @DisplayName("nullを渡したとき、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenNull() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(null))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be null");
+    }
+
+    @Test
+    @DisplayName("空リストを渡したとき、memberEmployeeIdsが空リストになる")
+    void shouldSetEmptyList() {
+      ScrumTeam scrumTeam = createScrumTeam();
+      scrumTeam.setMemberEmployeeIds(List.of(SnowflakeId.of(300L)));
+
+      scrumTeam.setMemberEmployeeIds(List.of());
+
+      assertThat(scrumTeam.getMemberEmployeeIds()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("呼び出したとき、updatedAtが更新される")
+    void shouldUpdateUpdatedAt() {
+      ScrumTeam scrumTeam = createScrumTeam();
+      LocalDateTime originalUpdatedAt = scrumTeam.getUpdatedAt();
+
+      scrumTeam.setMemberEmployeeIds(List.of(SnowflakeId.of(300L)));
+
+      assertThat(scrumTeam.getUpdatedAt()).isNotEqualTo(originalUpdatedAt);
+    }
+
+    @Test
+    @DisplayName("渡したリストを変更しても、内部リストに影響しない（防御的コピー）")
+    void shouldNotBeAffectedByExternalModification() {
+      ScrumTeam scrumTeam = createScrumTeam();
+      List<SnowflakeId> memberIds = new ArrayList<>(List.of(SnowflakeId.of(300L)));
+
+      scrumTeam.setMemberEmployeeIds(memberIds);
+
+      memberIds.add(SnowflakeId.of(400L));
+
+      assertThat(scrumTeam.getMemberEmployeeIds()).hasSize(1);
+    }
 
     @Test
     @DisplayName("リストにnull要素が含まれる場合、IllegalArgumentExceptionがスローされる")

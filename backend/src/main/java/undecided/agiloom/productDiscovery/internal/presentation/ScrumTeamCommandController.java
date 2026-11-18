@@ -138,4 +138,13 @@ public class ScrumTeamCommandController {
     eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
+
+  @PatchMapping("/{scrumTeamId}/members")
+  public ResponseEntity<ScrumTeamResponse> updateMembers(
+      @PathVariable String productId,
+      @PathVariable String scrumTeamId,
+      @Valid @RequestBody UpdateScrumTeamMembersRequest request) {
+    // TODO: 本実装は implement フェーズで行う
+    throw new UnsupportedOperationException("Not yet implemented");
+  }
 }
