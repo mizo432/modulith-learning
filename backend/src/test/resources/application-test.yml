@@ -18,6 +18,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         hbm2ddl:
           create_namespaces: true
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: true
 eureka:
   client:
     enabled: false

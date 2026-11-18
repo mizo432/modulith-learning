@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -271,6 +272,191 @@ class UpdateScrumTeamCommandServiceTest {
 
       // Act & Assert
       assertThatThrownBy(() -> service.unassignSm(teamId))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("ScrumTeam not found");
+    }
+  }
+
+  @Nested
+  @DisplayName("updateMembers メソッドのテスト")
+  class UpdateMembersTest {
+
+    private static final SnowflakeId PO_ID = SnowflakeId.of(100L);
+    private static final SnowflakeId SM_ID = SnowflakeId.of(200L);
+    private static final SnowflakeId MEMBER_ID = SnowflakeId.of(300L);
+
+    @Test
+    @DisplayName("有効なIDリストを渡したとき、ScrumTeamのmemberEmployeeIdsが設定される")
+    void shouldSetMemberEmployeeIds() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .poEmployeeId(PO_ID)
+              .poName("PO")
+              .smEmployeeId(SM_ID)
+              .smName("SM")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.updateMembers(teamId, List.of(MEMBER_ID));
+
+      // Assert
+      assertThat(existingTeam.getMemberEmployeeIds()).contains(MEMBER_ID);
+    }
+
+    @Test
+    @DisplayName("IDリストにPOの従業員IDが含まれていないとき、POの従業員IDが自動的に含まれる")
+    void shouldIncludePoWhenNotInList() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .poEmployeeId(PO_ID)
+              .poName("PO")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.updateMembers(teamId, List.of(MEMBER_ID));
+
+      // Assert
+      assertThat(existingTeam.getMemberEmployeeIds()).contains(PO_ID, MEMBER_ID);
+    }
+
+    @Test
+    @DisplayName("IDリストにSMの従業員IDが含まれていないとき、SMの従業員IDが自動的に含まれる")
+    void shouldIncludeSmWhenNotInList() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .smEmployeeId(SM_ID)
+              .smName("SM")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.updateMembers(teamId, List.of(MEMBER_ID));
+
+      // Assert
+      assertThat(existingTeam.getMemberEmployeeIds()).contains(SM_ID, MEMBER_ID);
+    }
+
+    @Test
+    @DisplayName("IDリストにPOとSMの両方が含まれていないとき、両方が自動的に含まれる")
+    void shouldIncludeBothPoAndSmWhenNotInList() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .poEmployeeId(PO_ID)
+              .poName("PO")
+              .smEmployeeId(SM_ID)
+              .smName("SM")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.updateMembers(teamId, List.of(MEMBER_ID));
+
+      // Assert
+      assertThat(existingTeam.getMemberEmployeeIds())
+          .containsExactlyInAnyOrder(PO_ID, SM_ID, MEMBER_ID);
+    }
+
+    @Test
+    @DisplayName("IDリストにPOとSMが既に含まれているとき、重複せずに1回ずつ含まれる")
+    void shouldNotDuplicateWhenPoAndSmAlreadyInList() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .poEmployeeId(PO_ID)
+              .poName("PO")
+              .smEmployeeId(SM_ID)
+              .smName("SM")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.updateMembers(teamId, List.of(PO_ID, SM_ID, MEMBER_ID));
+
+      // Assert
+      assertThat(existingTeam.getMemberEmployeeIds())
+          .containsExactlyInAnyOrder(PO_ID, SM_ID, MEMBER_ID);
+    }
+
+    @Test
+    @DisplayName("空リストを渡してPO/SMが設定されているとき、POとSMのみが含まれる")
+    void shouldContainOnlyPoAndSmWhenEmptyList() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .poEmployeeId(PO_ID)
+              .poName("PO")
+              .smEmployeeId(SM_ID)
+              .smName("SM")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.updateMembers(teamId, List.of());
+
+      // Assert
+      assertThat(existingTeam.getMemberEmployeeIds())
+          .containsExactlyInAnyOrder(PO_ID, SM_ID);
+    }
+
+    @Test
+    @DisplayName("空リストを渡してPO/SMがどちらも未設定のとき、memberEmployeeIdsが空リストになる")
+    void shouldBeEmptyWhenEmptyListAndNoPoOrSm() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      ScrumTeam existingTeam =
+          ScrumTeam.builder()
+              .id(teamId)
+              .name("Test Team")
+              .build();
+
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
+
+      // Act
+      service.updateMembers(teamId, List.of());
+
+      // Assert
+      assertThat(existingTeam.getMemberEmployeeIds()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ScrumTeamが見つからないとき、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenScrumTeamNotFound() {
+      // Arrange
+      SnowflakeId teamId = SnowflakeId.of(1L);
+      when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.empty());
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.updateMembers(teamId, List.of(MEMBER_ID)))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("ScrumTeam not found");
     }

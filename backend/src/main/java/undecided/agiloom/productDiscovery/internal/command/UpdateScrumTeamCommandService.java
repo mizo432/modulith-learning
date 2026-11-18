@@ -1,5 +1,9 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,5 +80,33 @@ public class UpdateScrumTeamCommandService {
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
     scrumTeam.unassignSm();
+  }
+
+  /**
+   * チームメンバーの従業員IDリストを更新します。
+   *
+   * <p>リクエストの memberEmployeeIds に現在の PO／SM の従業員IDを union して結合し、
+   * 保存時に必ず含めるようにします。
+   *
+   * @param id スクラムチームID
+   * @param memberEmployeeIds メンバーの従業員IDリスト
+   */
+  public void updateMembers(@NonNull SnowflakeId id, @NonNull List<SnowflakeId> memberEmployeeIds) {
+    ScrumTeam scrumTeam =
+        scrumTeamRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
+
+    // リクエストの memberEmployeeIds に PO/SM を union して重複を除去
+    Set<SnowflakeId> unionSet = new HashSet<>(memberEmployeeIds);
+    if (scrumTeam.getPoEmployeeId() != null) {
+      unionSet.add(scrumTeam.getPoEmployeeId());
+    }
+    if (scrumTeam.getSmEmployeeId() != null) {
+      unionSet.add(scrumTeam.getSmEmployeeId());
+    }
+    List<SnowflakeId> unionedList = new ArrayList<>(unionSet);
+
+    scrumTeam.setMemberEmployeeIds(unionedList);
   }
 }

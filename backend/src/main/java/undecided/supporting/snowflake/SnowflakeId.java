@@ -7,6 +7,7 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ComparisonChain;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Convert;
@@ -151,6 +152,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
     return new SnowflakeId(DECODE_FROM_BASE62.apply(base62String));
   }
 
+  @JsonValue
   @Override
   public Long value() {
     return value;
@@ -195,7 +197,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
      * データベースのLong型の値をSnowflakeIdオブジェクトに変換します。
      *
      * @param dbData データベースから取得されたLong型の値。この値がnullの場合はSnowflakeId.EMPTYが返されます。
-     * @return 変換されたSnowflakeIdオブジェクト。dbDataがnullの場合はSnowflakeId.EMPTYを返します。
+     * @return 変換されたSnowflakeIdオブジェクト。dbDataがnullの場合はSnowflakeId.EMPTYが返されます。
      */
     @Override
     public SnowflakeId convertToEntityAttribute(@Nullable Long dbData) {

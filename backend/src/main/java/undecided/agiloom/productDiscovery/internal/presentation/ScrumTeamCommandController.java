@@ -1,6 +1,7 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -134,6 +135,20 @@ public class ScrumTeamCommandController {
       @PathVariable String productId, @PathVariable String scrumTeamId) {
     SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
     updateScrumTeamCommandService.unassignSm(snowflakeId);
+    ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
+  }
+
+  @PatchMapping("/{scrumTeamId}/members")
+  public ResponseEntity<ScrumTeamResponse> updateMembers(
+      @PathVariable String productId,
+      @PathVariable String scrumTeamId,
+      @Valid @RequestBody UpdateScrumTeamMembersRequest request) {
+    SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
+    List<SnowflakeId> memberEmployeeIds =
+        request.getMemberEmployeeIds() != null ? request.getMemberEmployeeIds() : List.of();
+    updateScrumTeamCommandService.updateMembers(snowflakeId, memberEmployeeIds);
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
     eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));

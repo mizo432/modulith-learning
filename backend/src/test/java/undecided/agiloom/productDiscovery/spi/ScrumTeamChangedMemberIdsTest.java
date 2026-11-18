@@ -88,4 +88,21 @@ class ScrumTeamChangedMemberIdsTest {
       assertThat(event.memberEmployeeIds()).containsExactlyInAnyOrder(PO_ID, SM_ID, MEMBER_ID);
     }
   }
+
+  @Nested
+  @DisplayName("union処理後の状態をカバーするテスト")
+  class UnionAfterUpdateTest {
+
+    @Test
+    @DisplayName("ScrumTeamChanged.of()でmemberEmployeeIdsにPO/SMが含まれるScrumTeamを渡したとき、イベントのmemberEmployeeIdsにPO/SMが含まれる")
+    void shouldIncludePoAndSmInEventAfterUnion() {
+      ScrumTeam team = scrumTeam();
+      // union処理後、memberEmployeeIdsにPO/SMと他のメンバーが含まれる状態
+      team.setMemberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID));
+
+      ScrumTeamChanged event = ScrumTeamChanged.of(team);
+
+      assertThat(event.memberEmployeeIds()).containsExactlyInAnyOrder(PO_ID, SM_ID, MEMBER_ID);
+    }
+  }
 }
