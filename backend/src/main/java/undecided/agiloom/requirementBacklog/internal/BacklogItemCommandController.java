@@ -13,6 +13,7 @@ class BacklogItemCommandController {
   private final CreateBacklogItemCommandService createBacklogItemCommandService;
   private final UpdateBacklogItemCommandService updateBacklogItemCommandService;
   private final ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService;
+  private final EstimateBacklogItemCommandService estimateBacklogItemCommandService;
   private final AddBacklogItemCommentCommandService addBacklogItemCommentCommandService;
   private final DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService;
   private final UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService;
@@ -23,6 +24,7 @@ class BacklogItemCommandController {
       CreateBacklogItemCommandService createBacklogItemCommandService,
       UpdateBacklogItemCommandService updateBacklogItemCommandService,
       ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService,
+      EstimateBacklogItemCommandService estimateBacklogItemCommandService,
       AddBacklogItemCommentCommandService addBacklogItemCommentCommandService,
       DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService,
       UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService,
@@ -31,6 +33,7 @@ class BacklogItemCommandController {
     this.createBacklogItemCommandService = createBacklogItemCommandService;
     this.updateBacklogItemCommandService = updateBacklogItemCommandService;
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
+    this.estimateBacklogItemCommandService = estimateBacklogItemCommandService;
     this.addBacklogItemCommentCommandService = addBacklogItemCommentCommandService;
     this.deleteBacklogItemCommentCommandService = deleteBacklogItemCommentCommandService;
     this.updateBacklogItemCommentCommandService = updateBacklogItemCommentCommandService;
@@ -95,6 +98,21 @@ class BacklogItemCommandController {
         ChangeBacklogItemStatusCommand.builder()
             .backlogItemId(id)
             .targetStatus(request.getStatus())
+            .actorEmployeeId(request.getActorEmployeeId())
+            .build());
+    BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();
+    return ResponseEntity.ok(backlogItemResponseConverter.toBacklogItemResponse(backlogItem));
+  }
+
+  @PatchMapping("/api/v1/backlog-items/{backlogItemId}/estimate")
+  ResponseEntity<BacklogItemResponse> estimateBacklogItem(
+      @PathVariable String backlogItemId,
+      @Valid @RequestBody EstimateBacklogItemRequest request) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    estimateBacklogItemCommandService.execute(
+        EstimateBacklogItemCommand.builder()
+            .backlogItemId(id)
+            .storyPoint(request.getStoryPoint())
             .actorEmployeeId(request.getActorEmployeeId())
             .build());
     BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();

@@ -107,6 +107,7 @@ class BacklogItemMigrationMediumTest {
               "scrum_team_id",
               "sprint_id",
               "status",
+              "story_point",
               "title",
               "updated_at",
               "value",

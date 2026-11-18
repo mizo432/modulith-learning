@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemEstimated;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatusChanged;
 
@@ -72,6 +73,18 @@ class ChangeBacklogItemStatusCommandService {
         throw new BacklogItemPermissionDeniedException(
             "Only team members can revert a backlog item from ready to suggested");
       }
+    } else if (currentStatus == BacklogItemStatus.READY && targetStatus == BacklogItemStatus.ESTIMATED) {
+      // READY → ESTIMATED はチームメンバー全員が許可
+      if (!scrumTeam.isTeamMember(command.getActorEmployeeId())) {
+        throw new BacklogItemPermissionDeniedException(
+            "Only team members can estimate a backlog item");
+      }
+    } else if (currentStatus == BacklogItemStatus.ESTIMATED && targetStatus == BacklogItemStatus.READY) {
+      // ESTIMATED → READY はチームメンバー全員が許可
+      if (!scrumTeam.isTeamMember(command.getActorEmployeeId())) {
+        throw new BacklogItemPermissionDeniedException(
+            "Only team members can revert a backlog item from estimated to ready");
+      }
     } else {
       // SUGGESTED → ACCEPTED, SUGGESTED → FROZEN は PO / SM のみが許可
       if (!scrumTeam.canChangeStatusBy(command.getActorEmployeeId())) {
@@ -84,6 +97,7 @@ class ChangeBacklogItemStatusCommandService {
     backlogItem.changeStatus(command.getTargetStatus());
     backlogItemRepository.save(backlogItem);
 
+    LocalDateTime now = LocalDateTime.now();
     eventPublisher.publishEvent(
         new BacklogItemStatusChanged(
             backlogItem.getId(),
@@ -91,6 +105,17 @@ class ChangeBacklogItemStatusCommandService {
             fromStatus,
             command.getTargetStatus(),
             command.getActorEmployeeId(),
-            LocalDateTime.now()));
+            now));
+
+    // READY → ESTIMATED 遷移時に BacklogItemEstimated イベントを発行
+    if (fromStatus == BacklogItemStatus.READY && command.getTargetStatus() == BacklogItemStatus.ESTIMATED) {
+      eventPublisher.publishEvent(
+          new BacklogItemEstimated(
+              backlogItem.getId(),
+              backlogItem.getScrumTeamId(),
+              backlogItem.getStoryPoint(),
+              command.getActorEmployeeId(),
+              now));
+    }
   }
 }

@@ -27,6 +27,7 @@ class BacklogItemResponseConverter {
             backlogItem.getQualityCategory() != null
                 ? backlogItem.getQualityCategory().label()
                 : null)
+        .storyPoint(backlogItem.getStoryPoint())
         .createdAt(backlogItem.getCreatedAt())
         .updatedAt(backlogItem.getUpdatedAt())
         .build();
