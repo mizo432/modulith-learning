@@ -176,9 +176,19 @@ public class ScrumTeam {
    * チームメンバーの従業員IDリストを設定します。
    *
    * @param memberEmployeeIds メンバーの従業員IDリスト（PO/SMを含む）
+   * @throws IllegalArgumentException リストにnull要素または空のSnowflakeIdが含まれる場合
    */
   public void setMemberEmployeeIds(@NonNull List<SnowflakeId> memberEmployeeIds) {
     checkNotNull(memberEmployeeIds, () -> new IllegalArgumentException("memberEmployeeIds must not be null"));
+    for (int i = 0; i < memberEmployeeIds.size(); i++) {
+      SnowflakeId id = memberEmployeeIds.get(i);
+      if (id == null) {
+        throw new IllegalArgumentException("memberEmployeeIds[" + i + "] must not be null");
+      }
+      if (id.isEmpty()) {
+        throw new IllegalArgumentException("memberEmployeeIds[" + i + "] must not be empty");
+      }
+    }
     this.memberEmployeeIds = new ArrayList<>(memberEmployeeIds);
     this.updatedAt = LocalDateTime.now();
   }

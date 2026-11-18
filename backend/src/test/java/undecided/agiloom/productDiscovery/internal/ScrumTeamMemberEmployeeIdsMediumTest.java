@@ -2,7 +2,11 @@ package undecided.agiloom.productDiscovery.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -332,6 +336,142 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
       // Assert - 両方のマイグレーションに DEFAULT '{}' が含まれる
       assertThat(content22).contains("DEFAULT '{}'");
       assertThat(content23).contains("DEFAULT '{}'");
+    }
+  }
+
+  @Nested
+  @DisplayName("V20261120100000 マイグレーション実行検証")
+  class MigrationExecutionVerification {
+
+    private String scratchSchema;
+
+    @BeforeEach
+    void createScratchSchema() {
+      scratchSchema = "scratch_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+      jdbcTemplate.execute("CREATE SCHEMA " + scratchSchema);
+    }
+
+    @AfterEach
+    void dropScratchSchema() {
+      jdbcTemplate.execute("DROP SCHEMA " + scratchSchema + " CASCADE");
+    }
+
+    @Test
+    @DisplayName("マイグレーションSQLを実行してTEXT[]からBIGINT[]へ変換されること")
+    void shouldMigrationConvertTextArrayToBigintArray() throws Exception {
+      // Arrange - scrum_teams と scrum_team_subsets をスクラッチスキーマに作成
+      jdbcTemplate.execute(
+          "CREATE TABLE " + scratchSchema + ".scrum_teams (" +
+          "id BIGINT PRIMARY KEY, " +
+          "name VARCHAR(100) NOT NULL, " +
+          "member_employee_ids TEXT[] DEFAULT '{}'::text[])");
+
+      jdbcTemplate.execute(
+          "CREATE TABLE " + scratchSchema + ".scrum_team_subsets (" +
+          "id BIGINT PRIMARY KEY, " +
+          "name VARCHAR(100) NOT NULL, " +
+          "member_employee_ids TEXT[] DEFAULT '{}'::text[])");
+
+      // 数値文字列の配列の行と空配列の行を投入
+      jdbcTemplate.update(
+          "INSERT INTO " + scratchSchema + ".scrum_teams (id, name, member_employee_ids) VALUES " +
+          "(1, 'team-with-values', ARRAY['1001', '1002', '1003']::text[]), " +
+          "(2, 'team-empty', '{}'::text[])");
+
+      jdbcTemplate.update(
+          "INSERT INTO " + scratchSchema + ".scrum_team_subsets (id, name, member_employee_ids) VALUES " +
+          "(1, 'subset-with-values', ARRAY['2001', '2002']::text[]), " +
+          "(2, 'subset-empty', '{}'::text[])");
+
+      // Act - classpathからV20261120100000のSQLを読み込み、スキーマ名を置換して実行
+      java.net.URL migrationUrl = getClass().getClassLoader()
+          .getResource("db/migration/ag/V20261120100000__alter_member_employee_ids_to_bigint.sql");
+      assertThat(migrationUrl).isNotNull();
+
+      String migrationSql = new String(
+          java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(migrationUrl.toURI())),
+          StandardCharsets.UTF_8);
+      String replacedSql = migrationSql.replace("undecided_ag", scratchSchema);
+
+      // コメント行を除去してからセミコロンで分割（マルチライン文を保持）
+      String withoutComments = java.util.Arrays.stream(replacedSql.split("\n"))
+          .filter(line -> !line.trim().startsWith("--"))
+          .reduce("", (a, b) -> a + b + "\n");
+
+      String[] statements = withoutComments.split(";");
+      for (String stmt : statements) {
+        String trimmed = stmt.trim();
+        if (!trimmed.isEmpty()) {
+          jdbcTemplate.execute(trimmed);
+        }
+      }
+
+      // Assert - 両テーブルの列型がbigint[]であること
+      String scrumTeamsType = jdbcTemplate.queryForObject(
+          "SELECT pg_catalog.format_type(e.oid, a.atttypmod) " +
+          "FROM pg_catalog.pg_attribute a " +
+          "JOIN pg_catalog.pg_type e ON a.atttypid = e.oid " +
+          "WHERE a.attrelid = '" + scratchSchema + ".scrum_teams'::regclass " +
+          "AND a.attname = 'member_employee_ids'",
+          String.class);
+      assertThat(scrumTeamsType).isEqualTo("bigint[]");
+
+      String subsetsType = jdbcTemplate.queryForObject(
+          "SELECT pg_catalog.format_type(e.oid, a.atttypmod) " +
+          "FROM pg_catalog.pg_attribute a " +
+          "JOIN pg_catalog.pg_type e ON a.atttypid = e.oid " +
+          "WHERE a.attrelid = '" + scratchSchema + ".scrum_team_subsets'::regclass " +
+          "AND a.attname = 'member_employee_ids'",
+          String.class);
+      assertThat(subsetsType).isEqualTo("bigint[]");
+
+      // Assert - 既存行の値が保持されること（PgArrayとして読み込み）
+      List<Map<String, Object>> scrumTeamsRows = jdbcTemplate.queryForList(
+          "SELECT id, member_employee_ids FROM " + scratchSchema + ".scrum_teams ORDER BY id");
+      assertThat(scrumTeamsRows).hasSize(2);
+
+      // 値がある行の配列要素を確認
+      Map<String, Object> firstRow = scrumTeamsRows.get(0);
+      java.sql.Array firstArray = (java.sql.Array) firstRow.get("member_employee_ids");
+      Long[] firstValues = (Long[]) firstArray.getArray();
+      assertThat(firstValues).containsExactly(1001L, 1002L, 1003L);
+
+      // 空配列の行を確認
+      Map<String, Object> secondRow = scrumTeamsRows.get(1);
+      java.sql.Array secondArray = (java.sql.Array) secondRow.get("member_employee_ids");
+      Object[] secondValues = (Object[]) secondArray.getArray();
+      assertThat(secondValues).isEmpty();
+
+      List<Map<String, Object>> subsetsRows = jdbcTemplate.queryForList(
+          "SELECT id, member_employee_ids FROM " + scratchSchema + ".scrum_team_subsets ORDER BY id");
+      assertThat(subsetsRows).hasSize(2);
+
+      Map<String, Object> firstSubsetRow = subsetsRows.get(0);
+      java.sql.Array firstSubsetArray = (java.sql.Array) firstSubsetRow.get("member_employee_ids");
+      Long[] firstSubsetValues = (Long[]) firstSubsetArray.getArray();
+      assertThat(firstSubsetValues).containsExactly(2001L, 2002L);
+
+      // Assert - member_employee_idsを省略してINSERTした行がNULLではなく空のbigint[]であること
+      // INSERT ... RETURNING で直接確認
+      jdbcTemplate.update(
+          "INSERT INTO " + scratchSchema + ".scrum_teams (id, name) VALUES (999, 'default-check')");
+      Map<String, Object> defaultRow = jdbcTemplate.queryForMap(
+          "SELECT member_employee_ids FROM " + scratchSchema + ".scrum_teams WHERE id = 999");
+      Object insertedDefault = defaultRow.get("member_employee_ids");
+      assertThat(insertedDefault).isNotNull();
+      java.sql.Array defaultArray = (java.sql.Array) insertedDefault;
+      Object[] defaultValues = (Object[]) defaultArray.getArray();
+      assertThat(defaultValues).isEmpty();
+
+      jdbcTemplate.update(
+          "INSERT INTO " + scratchSchema + ".scrum_team_subsets (id, name) VALUES (999, 'default-check')");
+      Map<String, Object> defaultSubsetRow = jdbcTemplate.queryForMap(
+          "SELECT member_employee_ids FROM " + scratchSchema + ".scrum_team_subsets WHERE id = 999");
+      Object insertedDefaultSubset = defaultSubsetRow.get("member_employee_ids");
+      assertThat(insertedDefaultSubset).isNotNull();
+      java.sql.Array defaultSubsetArray = (java.sql.Array) insertedDefaultSubset;
+      Object[] defaultSubsetValues = (Object[]) defaultSubsetArray.getArray();
+      assertThat(defaultSubsetValues).isEmpty();
     }
   }
 }

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -296,6 +298,49 @@ class ScrumTeamTest {
 
       assertThat(scrumTeam.getSmEmployeeId()).isNull();
       assertThat(scrumTeam.getSmName()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("setMemberEmployeeIdsメソッドのテスト")
+  class SetMemberEmployeeIdsTest {
+
+    @Test
+    @DisplayName("リストにnull要素が含まれる場合、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenListContainsNullElement() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      @SuppressWarnings("unchecked")
+      List<SnowflakeId> idsWithNull = Arrays.asList(SnowflakeId.of(1001L), null, SnowflakeId.of(1003L));
+
+      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(idsWithNull))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be null");
+    }
+
+    @Test
+    @DisplayName("リストにEMPTY要素が含まれる場合、IllegalArgumentExceptionがスローされる")
+    void shouldThrowExceptionWhenListContainsEmptyElement() {
+      ScrumTeam scrumTeam = createScrumTeam();
+
+      List<SnowflakeId> idsWithEmpty = List.of(SnowflakeId.of(1001L), SnowflakeId.EMPTY, SnowflakeId.of(1003L));
+
+      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(idsWithEmpty))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("must not be empty");
+    }
+
+    @Test
+    @DisplayName("正常なSnowflakeIdリストが受け付けられる")
+    void shouldAcceptValidMemberEmployeeIds() {
+      ScrumTeam scrumTeam = createScrumTeam();
+      List<SnowflakeId> validIds = List.of(SnowflakeId.of(1001L), SnowflakeId.of(1002L), SnowflakeId.of(1003L));
+
+      scrumTeam.setMemberEmployeeIds(validIds);
+
+      assertThat(scrumTeam.getMemberEmployeeIds()).hasSize(3);
+      assertThat(scrumTeam.getMemberEmployeeIds())
+          .containsExactly(SnowflakeId.of(1001L), SnowflakeId.of(1002L), SnowflakeId.of(1003L));
     }
   }
 }
