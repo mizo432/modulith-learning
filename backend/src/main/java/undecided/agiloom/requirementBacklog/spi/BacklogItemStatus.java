@@ -10,15 +10,18 @@ package undecided.agiloom.requirementBacklog.spi;
  *   <li>{@link #SUGGESTED}: 提案済み（初期状態）。チームメンバーやステークホルダーが作成した直後の状態
  *   <li>{@link #ACCEPTED}: 受入済み。SMまたはPOがチームのバックログとして受け入れた状態
  *   <li>{@link #FROZEN}: 凍結。SMまたはPOが一時的に保留とした状態
+ *   <li>{@link #READY}: 準備完了。ACCEPTEDから遷移し、スプリント実行の準備が整った状態
  * </ul>
  *
- * <p>遷移ルールは SUGGESTED → ACCEPTED、SUGGESTED → FROZEN、FROZEN → SUGGESTED のみ許可する。
+ * <p>遷移ルールは SUGGESTED → ACCEPTED、SUGGESTED → FROZEN、FROZEN → SUGGESTED、
+ * ACCEPTED → READY、READY → SUGGESTED のみ許可する。
  * FROZEN → SUGGESTED（復帰）は PO のみが実行できる。
  */
 public enum BacklogItemStatus {
   SUGGESTED("提案済み"),
   ACCEPTED("受入済み"),
-  FROZEN("凍結");
+  FROZEN("凍結"),
+  READY("準備完了");
 
   private final String label;
 

@@ -50,14 +50,30 @@ class ChangeBacklogItemStatusCommandService {
             .orElseThrow(
                 () -> new IllegalArgumentException("ScrumTeam not found: " + backlogItem.getScrumTeamId()));
 
-    // FROZEN → SUGGESTED（復帰）は PO のみ許可。それ以外は PO / SM の両方が許可。
-    if (command.getTargetStatus() == BacklogItemStatus.SUGGESTED
-        && backlogItem.getStatus() == BacklogItemStatus.FROZEN) {
+    // 権限判定：遷移種別ごとに異なる権限を適用
+    BacklogItemStatus currentStatus = backlogItem.getStatus();
+    BacklogItemStatus targetStatus = command.getTargetStatus();
+
+    if (currentStatus == BacklogItemStatus.FROZEN && targetStatus == BacklogItemStatus.SUGGESTED) {
+      // FROZEN → SUGGESTED（復帰）は PO のみ許可
       if (!scrumTeam.isPo(command.getActorEmployeeId())) {
         throw new BacklogItemPermissionDeniedException(
             "Only the Product Owner can unfreeze a backlog item");
       }
+    } else if (currentStatus == BacklogItemStatus.ACCEPTED && targetStatus == BacklogItemStatus.READY) {
+      // ACCEPTED → READY はチームメンバー全員が許可
+      if (!scrumTeam.isTeamMember(command.getActorEmployeeId())) {
+        throw new BacklogItemPermissionDeniedException(
+            "Only team members can mark a backlog item as ready");
+      }
+    } else if (currentStatus == BacklogItemStatus.READY && targetStatus == BacklogItemStatus.SUGGESTED) {
+      // READY → SUGGESTED はチームメンバー全員が許可
+      if (!scrumTeam.isTeamMember(command.getActorEmployeeId())) {
+        throw new BacklogItemPermissionDeniedException(
+            "Only team members can revert a backlog item from ready to suggested");
+      }
     } else {
+      // SUGGESTED → ACCEPTED, SUGGESTED → FROZEN は PO / SM のみが許可
       if (!scrumTeam.canChangeStatusBy(command.getActorEmployeeId())) {
         throw new BacklogItemPermissionDeniedException(
             "Only the Scrum Master or Product Owner of the team can change the status of a backlog item");
