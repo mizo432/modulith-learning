@@ -917,4 +917,172 @@ describe('BacklogItemDetail', () => {
       expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument();
     });
   });
+
+  describe('品質カテゴリ表示', () => {
+    it('詳細ページのタイトル横に品質カテゴリバッジが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemWithValue,
+        qualityCategory: 'ATTRACTIVE',
+        qualityCategoryLabel: '魅力的品質',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // タイトル横に品質カテゴリバッジが表示されること
+      await waitFor(() => {
+        expect(screen.getByText('魅力的品質')).toBeInTheDocument();
+      });
+    });
+
+    it('品質カテゴリバッジにツールチップが表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemWithValue,
+        qualityCategory: 'ATTRACTIVE',
+        qualityCategoryLabel: '魅力的品質',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // バッジにホバーしてツールチップ（role="tooltip"）が境界値テキストを表示することを確認
+      const badge = screen.getByText('魅力的品質');
+      await user.hover(badge);
+      await waitFor(() => {
+        const tooltip = document.querySelector('[role="tooltip"]');
+        expect(tooltip).not.toBeNull();
+        expect(tooltip?.textContent).toMatch(/Value 76〜100/);
+      });
+    });
+
+    it('品質カテゴリバッジにキーボードでフォーカスするとツールチップが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemWithValue,
+        qualityCategory: 'ATTRACTIVE',
+        qualityCategoryLabel: '魅力的品質',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // キーボードでフォーカスしてツールチップ（role="tooltip"）が境界値テキストを表示することを確認
+      // ChipのtabIndex=0を持つ要素にフォーカス
+      const chipElement = screen.getByText('魅力的品質').closest('.MuiChip-root') as HTMLElement;
+      chipElement.focus();
+      await waitFor(() => {
+        const tooltip = document.querySelector('[role="tooltip"]');
+        expect(tooltip).not.toBeNull();
+        expect(tooltip?.textContent).toMatch(/Value 76〜100/);
+      });
+    });
+
+    it('Valueスライダーの横にリアルタイム品質カテゴリが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemWithValue);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByRole('slider')).toBeInTheDocument();
+      });
+
+      // Value=50 → ONE_DIMENSIONAL（一元的品質）のリアルタイム表示があること
+      await waitFor(() => {
+        expect(screen.getByText('一元的品質')).toBeInTheDocument();
+      });
+    });
+
+    it('Valueを76に変更したとき、リアルタイム表示が「魅力的品質」に切り替わる', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemWithValue);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByRole('slider')).toBeInTheDocument();
+      });
+
+      // Value入力フィールドに76を入力
+      const valueInput = await waitFor(() =>
+        screen.getByTestId('value-textfield')
+      );
+      const input = valueInput.querySelector('input')!;
+      await user.clear(input);
+      await user.type(input, '76');
+
+      // リアルタイム表示が「魅力的品質」に切り替わる
+      await waitFor(() => {
+        expect(screen.getByText('魅力的品質')).toBeInTheDocument();
+      });
+    });
+
+    it('Valueを50に変更したとき、リアルタイム表示が「一元的品質」に切り替わる', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemWithValue,
+        value: 100,
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByRole('slider')).toBeInTheDocument();
+      });
+
+      // Value入力フィールドに50を入力
+      const valueInput = await waitFor(() =>
+        screen.getByTestId('value-textfield')
+      );
+      const input = valueInput.querySelector('input')!;
+      await user.clear(input);
+      await user.type(input, '50');
+
+      // リアルタイム表示が「一元的品質」に切り替わる
+      await waitFor(() => {
+        expect(screen.getByText('一元的品質')).toBeInTheDocument();
+      });
+    });
+
+    it('Valueがnullのとき、リアルタイム表示が「―」である', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByRole('slider')).toBeInTheDocument();
+      });
+
+      // Valueがnullのとき、data-testid="value-textfield"を含む祖先要素のtextContentに「―」が含まれること
+      await waitFor(() => {
+        const valueTextField = screen.getByTestId('value-textfield');
+        const ancestorBox = valueTextField.closest('div[flex]') || valueTextField.parentElement;
+        expect(ancestorBox?.textContent).toContain('―');
+      });
+    });
+
+    it('Valueをスライダーで操作したとき、リアルタイム表示が追従する', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+
+      renderBacklogItemDetail();
+
+      const slider = await waitFor(() => screen.getByRole('slider'));
+
+      // スライダーを操作してValue=76に変更（ATTRACTIVEの境界値）
+      fireEvent.change(slider, { target: { value: '76' } });
+
+      // リアルタイム表示が「魅力的品質」に切り替わる
+      await waitFor(() => {
+        expect(screen.getByText('魅力的品質')).toBeInTheDocument();
+      });
+    });
+  });
 });

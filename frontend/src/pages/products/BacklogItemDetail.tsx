@@ -13,6 +13,7 @@ import {
   Paper,
   Slider,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import ReplyIcon from '@mui/icons-material/Reply';
@@ -23,7 +24,7 @@ import backlogItemService, {
   BacklogItemComment,
   BacklogItemStatus,
 } from '../../services/backlogItemService';
-import {valueToColor, VALUE_MIN, VALUE_MAX} from '../../utils/valueColor';
+import {valueToColor, VALUE_MIN, VALUE_MAX, valueToQualityCategory, qualityCategoryToLabel, qualityCategoryToTooltip, QUALITY_CATEGORY_STYLES} from '../../utils/valueColor';
 import {useIsVisible} from '../../hooks/useIsVisible';
 import {useAutoRefresh} from '../../hooks/useAutoRefresh';
 import {useAuth} from '../../contexts/AuthContext';
@@ -260,6 +261,24 @@ const BacklogItemDetail: React.FC = () => {
             color={STATUS_COLORS[item.status]}
             size="small"
           />
+          {item.qualityCategory && (
+            <Tooltip
+              title={qualityCategoryToTooltip(item.qualityCategory)}
+              arrow
+              enterDelay={300}
+            >
+              <Chip
+                label={item.qualityCategoryLabel || qualityCategoryToLabel(item.qualityCategory)}
+                size="small"
+                tabIndex={0}
+                sx={{
+                  backgroundColor: QUALITY_CATEGORY_STYLES[item.qualityCategory]?.backgroundColor,
+                  color: QUALITY_CATEGORY_STYLES[item.qualityCategory]?.color,
+                  fontWeight: 'medium',
+                }}
+              />
+            </Tooltip>
+          )}
         </Box>
         <Typography variant="body1" sx={{whiteSpace: 'pre-wrap', mb: 2}}>
           {item.description || '（説明なし）'}
@@ -311,6 +330,28 @@ const BacklogItemDetail: React.FC = () => {
                 size="small"
                 data-testid="value-textfield"
               />
+              {(() => {
+                const cat = valueToQualityCategory(valueInput);
+                if (cat === null) return '―';
+                return (
+                  <Tooltip
+                    title={qualityCategoryToTooltip(cat)}
+                    arrow
+                    enterDelay={300}
+                  >
+                    <Chip
+                      label={qualityCategoryToLabel(cat)}
+                      size="small"
+                      tabIndex={0}
+                      sx={{
+                        backgroundColor: QUALITY_CATEGORY_STYLES[cat]?.backgroundColor,
+                        color: QUALITY_CATEGORY_STYLES[cat]?.color,
+                        fontWeight: 'medium',
+                      }}
+                    />
+                  </Tooltip>
+                );
+              })()}
             </Box>
           </Box>
           <Button

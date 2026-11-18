@@ -31,7 +31,7 @@ import backlogItemService, {
   BacklogItemStatus,
 } from '../../services/backlogItemService';
 import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
-import {valueToColor, valueToBackgroundColor} from '../../utils/valueColor';
+import {valueToColor, valueToBackgroundColor, qualityCategoryToLabel, qualityCategoryToTooltip, QualityCategory} from '../../utils/valueColor';
 import {useIsVisible} from '../../hooks/useIsVisible';
 import {useAutoRefresh} from '../../hooks/useAutoRefresh';
 import {useAuth} from '../../contexts/AuthContext';
@@ -50,19 +50,13 @@ const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'info'> =
   FROZEN: 'info',
 };
 
-const QUALITY_CATEGORY_LABELS: Record<string, string> = {
-  ATTRACTIVE: '魅力的品質',
-  MUST_BE: '当たり前品質',
-  ONE_DIMENSIONAL: '一元的品質',
-  INDIFFERENT: '無関心品質',
+const QUALITY_CATEGORY_COLOR_MAP: Record<QualityCategory, 'success' | 'info' | 'warning' | 'default'> = {
+  ATTRACTIVE: 'success',
+  ONE_DIMENSIONAL: 'info',
+  MUST_BE: 'warning',
+  INDIFFERENT: 'default',
 };
 
-const QUALITY_CATEGORY_COLORS: Record<string, 'success' | 'info' | 'warning' | 'error'> = {
-  ATTRACTIVE: 'success',
-  MUST_BE: 'info',
-  ONE_DIMENSIONAL: 'warning',
-  INDIFFERENT: 'error',
-};
 
 const BacklogItemList: React.FC = () => {
   const {productId, scrumTeamId} = useParams<{ productId: string; scrumTeamId: string }>();
@@ -281,12 +275,21 @@ const BacklogItemList: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     {item.qualityCategory ? (
-                      <Chip
-                        label={item.qualityCategoryLabel || QUALITY_CATEGORY_LABELS[item.qualityCategory]}
-                        color={QUALITY_CATEGORY_COLORS[item.qualityCategory]}
-                        size="small"
-                      />
-                    ) : null}
+                      <Tooltip
+                        title={qualityCategoryToTooltip(item.qualityCategory)}
+                        arrow
+                        enterDelay={300}
+                      >
+                        <Chip
+                          label={item.qualityCategoryLabel || qualityCategoryToLabel(item.qualityCategory)}
+                          color={QUALITY_CATEGORY_COLOR_MAP[item.qualityCategory]}
+                          size="small"
+                          tabIndex={0}
+                        />
+                      </Tooltip>
+                    ) : (
+                      '―'
+                    )}
                   </TableCell>
                   <TableCell>{item.priority ?? '-'}</TableCell>
                   <TableCell>{item.creatorName}</TableCell>
