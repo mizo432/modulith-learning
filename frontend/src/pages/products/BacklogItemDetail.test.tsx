@@ -563,7 +563,7 @@ describe('BacklogItemDetail', () => {
       await waitFor(() => {
         expect(backlogItemService.updateComment).toHaveBeenCalledWith('item-100', 'comment-1', {
           body: '更新されたコメント',
-          authorEmployeeId: expect.any(String),
+          actorEmployeeId: expect.any(String),
         });
       });
     });
@@ -589,7 +589,7 @@ describe('BacklogItemDetail', () => {
 
       await waitFor(() => {
         expect(backlogItemService.deleteComment).toHaveBeenCalledWith('item-100', 'comment-1', {
-          authorEmployeeId: expect.any(String),
+          actorEmployeeId: expect.any(String),
         });
       });
     });

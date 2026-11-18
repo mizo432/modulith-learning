@@ -18,8 +18,6 @@ import {
 import ReplyIcon from '@mui/icons-material/Reply';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
 import backlogItemService, {
   BacklogItem,
   BacklogItemComment,
@@ -147,7 +145,7 @@ const BacklogItemDetail: React.FC = () => {
     setError(null);
     try {
       const updated = await backlogItemService.updateComment(backlogItemId, commentId, {
-        authorEmployeeId: auth.employeeId ?? undefined,
+        actorEmployeeId: auth.employeeId ?? undefined,
         body: editBody,
       });
       setComments((prev) =>
@@ -166,7 +164,7 @@ const BacklogItemDetail: React.FC = () => {
     setError(null);
     try {
       await backlogItemService.deleteComment(backlogItemId, commentId, {
-        authorEmployeeId: auth.employeeId ?? undefined,
+        actorEmployeeId: auth.employeeId ?? undefined,
       });
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     } catch (err: any) {
