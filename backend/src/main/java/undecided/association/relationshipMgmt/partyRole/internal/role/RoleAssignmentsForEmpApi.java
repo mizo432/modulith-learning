@@ -1,9 +1,12 @@
 package undecided.association.relationshipMgmt.partyRole.internal.role;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import undecided.supporting.event.AdminEmployeeChanged;
 import undecided.association.relationshipMgmt.partyRole.spi.role.RoleAssignmentForEmp;
+import undecided.supporting.snowflake.SnowflakeId;
 
 /**
  * RoleAssignmentsForEmpApiは、従業員に関連付けられたロールの情報を取得するためのREST APIコントローラーです。
@@ -21,11 +24,25 @@ import undecided.association.relationshipMgmt.partyRole.spi.role.RoleAssignmentF
 @RestController
 @RequestMapping("/api/roleAssignmentsFor")
 public class RoleAssignmentsForEmpApi {
+
+  private final ApplicationEventPublisher eventPublisher;
+
+  RoleAssignmentsForEmpApi(ApplicationEventPublisher eventPublisher) {
+    this.eventPublisher = eventPublisher;
+  }
+
   @GetMapping
   RoleAssignmentForEmp get() {
-    return RoleAssignmentForEmp.create(
-        undecided.supporting.snowflake.SnowflakeId.of(1L),
-        undecided.supporting.snowflake.SnowflakeId.of(2L),
-        undecided.supporting.snowflake.SnowflakeId.of(3L));
+    SnowflakeId employeeId = SnowflakeId.of(1L);
+    RoleAssignmentForEmp roleAssignment =
+        RoleAssignmentForEmp.create(
+            employeeId,
+            SnowflakeId.of(2L),
+            SnowflakeId.of(3L));
+
+    // ADMINロールの付与を他事業領域に通知する
+    eventPublisher.publishEvent(new AdminEmployeeChanged(employeeId, true));
+
+    return roleAssignment;
   }
 }
