@@ -35,7 +35,11 @@ public final class StoryPoint {
    * @throws IllegalArgumentException 値がフィボナッチ数列にない場合
    */
   public static StoryPoint of(@NonNull Integer value) {
-    throw new UnsupportedOperationException("StoryPoint validation is not yet implemented");
+    if (!ALLOWED_VALUES.contains(value)) {
+      throw new IllegalArgumentException(
+          "Invalid StoryPoint value: " + value + ". Allowed values: " + ALLOWED_VALUES);
+    }
+    return new StoryPoint(value);
   }
 
   /** ストーリーポイントの値を返します。 */

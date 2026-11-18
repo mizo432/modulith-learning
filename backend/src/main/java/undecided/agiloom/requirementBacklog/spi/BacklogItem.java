@@ -212,7 +212,12 @@ public class BacklogItem {
           this.status = target;
           this.updatedAt = LocalDateTime.now();
         } else if (target == BacklogItemStatus.ESTIMATED) {
-          throw new UnsupportedOperationException("READY to ESTIMATED transition is not yet implemented");
+          if (this.storyPoint == null) {
+            throw new IllegalArgumentException("StoryPoint must be set before estimating");
+          }
+          StoryPoint.of(this.storyPoint);
+          this.status = target;
+          this.updatedAt = LocalDateTime.now();
         } else {
           throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -220,7 +225,8 @@ public class BacklogItem {
       }
       case ESTIMATED -> {
         if (target == BacklogItemStatus.READY) {
-          throw new UnsupportedOperationException("ESTIMATED to READY transition is not yet implemented");
+          this.status = target;
+          this.updatedAt = LocalDateTime.now();
         } else {
           throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -252,7 +258,11 @@ public class BacklogItem {
    * @throws IllegalArgumentException 値がフィボナッチ数列にない場合
    */
   public void setStoryPoint(@Nullable Integer storyPoint) {
-    throw new UnsupportedOperationException("setStoryPoint is not yet implemented");
+    if (storyPoint != null) {
+      StoryPoint.of(storyPoint);
+    }
+    this.storyPoint = storyPoint;
+    this.updatedAt = LocalDateTime.now();
   }
 
   /**

@@ -27,6 +27,7 @@ class BacklogItemResponse {
   private Integer value;
   private QualityCategory qualityCategory;
   private String qualityCategoryLabel;
+  private Integer storyPoint;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 }
