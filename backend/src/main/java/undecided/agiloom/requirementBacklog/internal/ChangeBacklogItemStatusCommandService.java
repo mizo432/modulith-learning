@@ -72,6 +72,12 @@ class ChangeBacklogItemStatusCommandService {
         throw new BacklogItemPermissionDeniedException(
             "Only team members can revert a backlog item from ready to suggested");
       }
+    } else if (currentStatus == BacklogItemStatus.READY && targetStatus == BacklogItemStatus.ESTIMATED) {
+      // READY → ESTIMATED は未実装
+      throw new UnsupportedOperationException("READY to ESTIMATED transition is not yet implemented");
+    } else if (currentStatus == BacklogItemStatus.ESTIMATED && targetStatus == BacklogItemStatus.READY) {
+      // ESTIMATED → READY は未実装
+      throw new UnsupportedOperationException("ESTIMATED to READY transition is not yet implemented");
     } else {
       // SUGGESTED → ACCEPTED, SUGGESTED → FROZEN は PO / SM のみが許可
       if (!scrumTeam.canChangeStatusBy(command.getActorEmployeeId())) {

@@ -101,6 +101,10 @@ public class BacklogItem {
   @Column(name = "quality_category", length = 20)
   protected QualityCategory qualityCategory;
 
+  /** ストーリーポイント（見積もり値）。フィボナッチ数列の値のみ許容。null可。 */
+  @Column(name = "story_point")
+  protected Integer storyPoint;
+
   /** 作成日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
   protected LocalDateTime createdAt;
@@ -159,6 +163,8 @@ public class BacklogItem {
    *   <li>SUGGESTED → FROZEN
    *   <li>ACCEPTED → READY（スクラムチームメンバー全員が実行可能）
    *   <li>READY → SUGGESTED（スクラムチームメンバー全員が実行可能）
+   *   <li>READY → ESTIMATED（StoryPoint が設定されていること。スクラムチームメンバー全員が実行可能）
+   *   <li>ESTIMATED → READY（StoryPoint は保持。スクラムチームメンバー全員が実行可能）
    *   <li>FROZEN → SUGGESTED（PO のみが実行可能。権限判定はコマンドサービス側で行う）
    * </ul>
    * 変更できる主体の判定は呼び出し側（コマンドサービス）がサブセットの保持する
@@ -168,7 +174,8 @@ public class BacklogItem {
    *
    * @param target 遷移先の状態
    * @throws IllegalStateException 許可されていない遷移の場合
-   * @throws IllegalArgumentException ACCEPTED 遷移時に Value が未設定の場合
+   * @throws IllegalArgumentException ACCEPTED 遷移時に Value が未設定の場合、
+   *                                  ESTIMATED 遷移時に StoryPoint が未設定の場合
    */
   public void changeStatus(@NonNull BacklogItemStatus target) {
     checkNotNull(target, () -> new IllegalArgumentException("target status must not be null"));
@@ -204,6 +211,16 @@ public class BacklogItem {
         if (target == BacklogItemStatus.SUGGESTED) {
           this.status = target;
           this.updatedAt = LocalDateTime.now();
+        } else if (target == BacklogItemStatus.ESTIMATED) {
+          throw new UnsupportedOperationException("READY to ESTIMATED transition is not yet implemented");
+        } else {
+          throw new IllegalStateException(
+              "Invalid status transition: " + this.status + " -> " + target);
+        }
+      }
+      case ESTIMATED -> {
+        if (target == BacklogItemStatus.READY) {
+          throw new UnsupportedOperationException("ESTIMATED to READY transition is not yet implemented");
         } else {
           throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -218,7 +235,33 @@ public class BacklogItem {
               "Invalid status transition: " + this.status + " -> " + target);
         }
       }
+      default -> {
+        throw new IllegalStateException(
+            "Invalid status transition: " + this.status + " -> " + target);
+      }
     }
+  }
+
+  /**
+   * ストーリーポイント（見積もり値）を設定します。
+   *
+   * <p>ESTIMATED 状態での再評価（値の変更）も許可します（#642で決定）。
+   * 設定された値はフィボナッチ数列の値である必要があります。
+   *
+   * @param storyPoint 設定するストーリーポイント値（null可。nullの場合は変更なし）
+   * @throws IllegalArgumentException 値がフィボナッチ数列にない場合
+   */
+  public void setStoryPoint(@Nullable Integer storyPoint) {
+    throw new UnsupportedOperationException("setStoryPoint is not yet implemented");
+  }
+
+  /**
+   * 現在のストーリーポイントを返します。
+   *
+   * @return ストーリーポイント値。未設定の場合は null
+   */
+  public @Nullable Integer getStoryPoint() {
+    return storyPoint;
   }
 
   /**
@@ -269,6 +312,7 @@ public class BacklogItem {
       SnowflakeId sprintId,
       SnowflakeId scrumTeamId,
       Integer value,
+      Integer storyPoint,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
     BacklogItem item = new BacklogItem();
@@ -282,6 +326,7 @@ public class BacklogItem {
     item.sprintId = sprintId;
     item.scrumTeamId = scrumTeamId;
     item.value = value;
+    item.storyPoint = storyPoint;
     item.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
     item.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     item.qualityCategory = calculateQualityCategory(value);
