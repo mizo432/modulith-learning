@@ -3,6 +3,7 @@ package undecided.supporting.snowflake.internal;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +15,15 @@ public class SnowflakeNodeLeaseManager {
   private final SnowflakeNodeAllocator allocator;
 
   @Value("${spring.application.name}")
-  private String applicationName;
+  private @Nullable String applicationName;
 
-  private SnowflakeNode lease;
+  @Nullable private SnowflakeNode lease;
 
   @PostConstruct
   public void start() {
+    if (applicationName == null) {
+      throw new IllegalStateException("spring.application.name is not set");
+    }
     lease = allocator.allocate(applicationName);
     log.info("Allocated snowflake node with id {}", lease.getNodeId());
   }

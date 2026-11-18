@@ -8,7 +8,6 @@ import static com.github.mizo432.shared.common.primitive.Objects2.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.google.common.collect.ComparisonChain;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Converter;
@@ -51,7 +50,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
    */
   @Serial private static final long serialVersionUID = 1L;
 
-  private final Long value;
+  @Nullable private final Long value;
 
   /**
    * 指定された正の値からSnowflakeIdオブジェクトを生成します。
@@ -73,7 +72,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
    * @param value SnowflakeIdオブジェクトを再構築するために使用する値。
    * @return 再構築されたSnowflakeIdオブジェクト、または値がnullの場合はSnowflakeId.EMPTY。
    */
-  public static SnowflakeId reconstruct(Long value) {
+  public static SnowflakeId reconstruct(@Nullable Long value) {
     if (isNull(value)) {
       return EMPTY;
     }
@@ -119,13 +118,18 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
    */
   @Override
   public int compareTo(@Nullable SnowflakeId other) {
-    if (isNull(other)) {
+    if (other == null) {
       return -1;
     }
-    if (isNull(this.value)) {
+    Long thisValue = this.value;
+    if (thisValue == null) {
       return 1;
     }
-    return ComparisonChain.start().compare(this.value(), other.value()).result();
+    Long otherValue = other.value;
+    if (otherValue == null) {
+      return 1;
+    }
+    return Long.compare(thisValue, otherValue);
   }
 
   /**
@@ -138,7 +142,11 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
    */
   public String toBase62String() {
     LongValues.checkNotEmpty(this, () -> new IllegalStateException("value is empty"));
-    return ENCODE_TO_BASE62.apply(value);
+    Long v = value;
+    if (v == null) {
+      throw new IllegalStateException("value is empty");
+    }
+    return ENCODE_TO_BASE62.apply(v);
   }
 
   /**
@@ -154,8 +162,8 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
 
   @JsonValue
   @Override
-  public Long value() {
-    return value;
+  public @Nullable Long value() {
+    return this.value;
   }
 
   @Override
@@ -189,7 +197,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
      * @return 変換されたLong型の値。attributeがnullの場合はnullを返します。
      */
     @Override
-    public Long convertToDatabaseColumn(SnowflakeId attribute) {
+    public @Nullable Long convertToDatabaseColumn(@Nullable SnowflakeId attribute) {
       return attribute != null ? attribute.value() : null;
     }
 
@@ -201,7 +209,7 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
      */
     @Override
     public SnowflakeId convertToEntityAttribute(@Nullable Long dbData) {
-      return SnowflakeId.reconstruct(dbData);
+      return reconstruct(dbData);
     }
   }
 

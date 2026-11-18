@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Table(schema = "idMgmt", name = "snowflakeNodes")
 @Entity
 @AllArgsConstructor
+// JPAの無引数コンストラクタではフィールドがnullになるため、NullAway.Initを除外する
+@SuppressWarnings("NullAway.Init")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SnowflakeNode {
 

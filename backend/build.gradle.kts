@@ -1,5 +1,6 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.time.Duration
+import net.ltgt.gradle.errorprone.errorprone
 
 buildscript {
     repositories {
@@ -24,6 +25,9 @@ plugins {
     jacoco
     // Pitest ミューテーションテストプラグイン
     id("info.solidsoft.pitest") version "1.19.0"
+    // Error Prone プラグイン（NullAway 用）
+    id("net.ltgt.errorprone") version "4.1.0"
+    id("net.ltgt.nullaway") version "3.3.0"
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -32,17 +36,33 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(25))
     }
-
 }
+
 tasks {
     withType<JavaCompile> {
         // コンパイラの警告を有効化（未チェック警告）
         options.compilerArgs.add("-Xlint:unchecked")
+        // Error Prone / NullAway 設定
+        options.errorprone {
+            // 他の Error Prone チェックを全て無効化し、NullAway のみを有効にする
+            disableAllChecks.set(true)
+            error("NullAway")
+            errorproneArgs.addAll(
+                listOf(
+                    "-XepExcludedPaths:.*/src/test/.*",
+                )
+            )
+        }
     }
     // properties ファイルを UTF-8 で処理する
     processResources {
         filteringCharset = "UTF-8"
     }
+}
+
+nullaway {
+    onlyNullMarked = true
+    jspecifyMode = true
 }
 configurations.compileOnly {
     extendsFrom(configurations.annotationProcessor.get())
@@ -73,6 +93,8 @@ extra["jspecifyVersion"] = "1.0.1"
 extra["assertjDbVersion"] = "3.0.2"
 extra["superCsvVersion"] = "2.4.0"
 extra["testcontainersVersion"] = "2.0.5"
+extra["nullawayVersion"] = "0.12.13"
+extra["errorproneVersion"] = "2.43.0"
 
 // Force JUnit Platform artifacts to align with JUnit 6 version
 // Spring Boot 4.1.1 manages junit-platform-launcher at 1.14.4, but JUnit 6 requires 6.x
@@ -86,6 +108,9 @@ configurations.all {
 
 dependencies {
     implementation(project(":mizo432-shared-common"))
+    // Error Prone / NullAway
+    errorprone("com.google.errorprone:error_prone_core:${property("errorproneVersion")}")
+    errorprone("com.uber.nullaway:nullaway:${property("nullawayVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
