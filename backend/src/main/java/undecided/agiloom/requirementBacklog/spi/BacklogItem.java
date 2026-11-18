@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -107,6 +108,11 @@ public class BacklogItem {
   /** 最終更新日時。 */
   @Column(name = "updated_at", nullable = false)
   protected LocalDateTime updatedAt;
+
+  /** 楽観ロック用のバージョン番号。JPAが管理するフィールドであり、ビルダーでは設定しない。 */
+  @Version
+  @Column(name = "version")
+  protected Integer version;
 
   /**
    * バックログアイテムの内容を更新します。
