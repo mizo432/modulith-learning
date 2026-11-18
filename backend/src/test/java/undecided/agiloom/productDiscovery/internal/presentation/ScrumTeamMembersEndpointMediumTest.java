@@ -49,8 +49,9 @@ class ScrumTeamMembersEndpointMediumTest {
 
   @Autowired private ProductRepository productRepository;
 
+  @Autowired private ObjectMapper objectMapper;
+
   private MockMvc mockMvc;
-  private ObjectMapper objectMapper = new ObjectMapper();
 
   private SnowflakeId productId;
   private SnowflakeId scrumTeamId;

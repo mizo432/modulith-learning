@@ -1,5 +1,6 @@
 package undecided;
 
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
  * これにより、テスト実行時のコンテナ起動オーバーヘッドが大幅に削減されます。
  */
 @TestConfiguration(proxyBeanMethods = false)
+@EntityScan(basePackages = {"org.springframework.modulith.events.jpa"})
 public class TestcontainersConfiguration {
 
   private static PostgreSQLContainer<?> postgresContainer;
