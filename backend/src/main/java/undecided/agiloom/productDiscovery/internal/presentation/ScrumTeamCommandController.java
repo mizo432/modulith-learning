@@ -1,6 +1,7 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -144,7 +145,12 @@ public class ScrumTeamCommandController {
       @PathVariable String productId,
       @PathVariable String scrumTeamId,
       @Valid @RequestBody UpdateScrumTeamMembersRequest request) {
-    // TODO: 本実装は implement フェーズで行う
-    throw new UnsupportedOperationException("Not yet implemented");
+    SnowflakeId snowflakeId = SnowflakeId.of(Long.parseLong(scrumTeamId));
+    List<SnowflakeId> memberEmployeeIds =
+        request.getMemberEmployeeIds() != null ? request.getMemberEmployeeIds() : List.of();
+    updateScrumTeamCommandService.updateMembers(snowflakeId, memberEmployeeIds);
+    ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
+    eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
+    return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));
   }
 }
