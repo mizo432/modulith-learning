@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -163,6 +164,28 @@ class DeleteBacklogItemCommentCommandServiceTest {
       // Act & Assert
       assertThatThrownBy(() -> service.execute(commandWithDifferentBacklogId(AUTHOR_ID_VALUE)))
           .isInstanceOf(IllegalArgumentException.class);
+      verify(backlogItemCommentRepository, never()).delete(any());
+    }
+
+    @Test
+    @DisplayName("子返信があるコメントを削除しようとすると、例外がスローされる")
+    void shouldDenyDeleteWhenHasReplies() {
+      // Arrange
+      BacklogItemComment comment = comment();
+      when(backlogItemCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
+      // 子返信が存在する
+      BacklogItemComment reply = BacklogItemComment.builder()
+          .id(SnowflakeId.of(2000L))
+          .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").build())
+          .authorEmployeeId(SnowflakeId.of(400L))
+          .authorName("Replier")
+          .body("Reply comment")
+          .build();
+      when(backlogItemCommentRepository.findByParentCommentId(COMMENT_ID)).thenReturn(List.of(reply));
+
+      // Act & Assert
+      assertThatThrownBy(() -> service.execute(command(AUTHOR_ID_VALUE)))
+          .isInstanceOf(IllegalStateException.class);
       verify(backlogItemCommentRepository, never()).delete(any());
     }
   }

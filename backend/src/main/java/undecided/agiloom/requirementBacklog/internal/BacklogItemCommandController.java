@@ -15,6 +15,7 @@ class BacklogItemCommandController {
   private final ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService;
   private final AddBacklogItemCommentCommandService addBacklogItemCommentCommandService;
   private final DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService;
+  private final UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService;
   private final BacklogItemQueryService backlogItemQueryService;
   private final BacklogItemResponseConverter backlogItemResponseConverter;
 
@@ -24,6 +25,7 @@ class BacklogItemCommandController {
       ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService,
       AddBacklogItemCommentCommandService addBacklogItemCommentCommandService,
       DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService,
+      UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService,
       BacklogItemQueryService backlogItemQueryService,
       BacklogItemResponseConverter backlogItemResponseConverter) {
     this.createBacklogItemCommandService = createBacklogItemCommandService;
@@ -31,6 +33,7 @@ class BacklogItemCommandController {
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
     this.addBacklogItemCommentCommandService = addBacklogItemCommentCommandService;
     this.deleteBacklogItemCommentCommandService = deleteBacklogItemCommentCommandService;
+    this.updateBacklogItemCommentCommandService = updateBacklogItemCommentCommandService;
     this.backlogItemQueryService = backlogItemQueryService;
     this.backlogItemResponseConverter = backlogItemResponseConverter;
   }
@@ -108,6 +111,7 @@ class BacklogItemCommandController {
                 .authorEmployeeId(request.getAuthorEmployeeId())
                 .authorName(request.getAuthorName())
                 .body(request.getBody())
+                .parentCommentId(request.getParentCommentId())
                 .build());
     BacklogItemComment comment =
         backlogItemQueryService
@@ -131,5 +135,26 @@ class BacklogItemCommandController {
             .actorEmployeeId(request.getActorEmployeeId())
             .build());
     return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/api/v1/backlog-items/{backlogItemId}/comments/{commentId}")
+  ResponseEntity<BacklogItemCommentResponse> updateComment(
+      @PathVariable String backlogItemId,
+      @PathVariable String commentId,
+      @Valid @RequestBody UpdateBacklogItemCommentRequest request) {
+    updateBacklogItemCommentCommandService.execute(
+        UpdateBacklogItemCommentCommand.builder()
+            .commentId(SnowflakeId.of(Long.parseLong(commentId)))
+            .body(request.getBody())
+            .actorEmployeeId(request.getActorEmployeeId())
+            .build());
+    BacklogItemComment comment =
+        backlogItemQueryService
+            .findComments(SnowflakeId.of(Long.parseLong(backlogItemId)))
+            .stream()
+            .filter(c -> SnowflakeId.of(Long.parseLong(commentId)).equals(c.getId()))
+            .findFirst()
+            .orElseThrow();
+    return ResponseEntity.ok(backlogItemResponseConverter.toCommentResponse(comment));
   }
 }

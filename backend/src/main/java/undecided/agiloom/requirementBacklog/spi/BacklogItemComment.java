@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -57,4 +58,25 @@ public class BacklogItemComment {
   @Column(name = "created_at", nullable = false, updatable = false)
   @Builder.Default
   protected LocalDateTime createdAt = LocalDateTime.now();
+
+  /** 親コメントへの自己参照（返信がある場合）。ルートコメントの場合はnull。 */
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "parent_comment_id")
+  @Nullable
+  protected BacklogItemComment parentComment;
+
+  /** 子返信があるかどうか（クエリサービスで計算して設定）。DBカラムではない。 */
+  @jakarta.persistence.Transient
+  @Builder.Default
+  protected boolean hasReplies = false;
+
+  /** コメント本文を更新します。 */
+  public void updateBody(String body) {
+    this.body = body;
+  }
+
+  /** 子返信有無を設定します（クエリサービス用）。 */
+  public void setHasReplies(boolean hasReplies) {
+    this.hasReplies = hasReplies;
+  }
 }

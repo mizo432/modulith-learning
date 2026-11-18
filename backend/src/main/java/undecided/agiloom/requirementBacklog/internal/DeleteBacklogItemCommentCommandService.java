@@ -1,5 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +27,6 @@ class DeleteBacklogItemCommentCommandService {
    *
    * <p>削除できるのはコメントした本人またはADMINロール保持者のみです。
    *
-   * <p>返信チェックは本実装では行いません。スレッド返信機能（#510）は未実装であり、
-   * 子返信があるコメントを削除できないルールは、将来親参照（parent_comment_id）が導入された際に
-   *有効化する前提です。
-   *
    * @param command 削除コマンド
    * @throws IllegalArgumentException コメントが存在しない場合、またはactorEmployeeIdがnullの場合
    * @throws BacklogItemPermissionDeniedException 削除権限がない場合
@@ -53,9 +50,6 @@ class DeleteBacklogItemCommentCommandService {
               + ")はバックログアイテム(" + command.getBacklogItemId() + ")に属していません");
     }
 
-    // 返信チェックは実装しない（スレッド返信未実装のため）。
-    // 将来 parent_comment_id 列が導入された時点で、子コメントが存在する場合は削除不可とする。
-
     boolean isAuthor = comment.getAuthorEmployeeId() != null
         && comment.getAuthorEmployeeId().equals(actorEmployeeId);
     boolean isAdmin = adminEmployeeSubsetRepository.existsByEmployeeId(actorEmployeeId);
@@ -63,6 +57,13 @@ class DeleteBacklogItemCommentCommandService {
     if (!isAuthor && !isAdmin) {
       throw new BacklogItemPermissionDeniedException(
           "コメントを削除する権限がありません。削除できるのはコメントした本人またはシステム管理者のみです");
+    }
+
+    // 子返信があるかチェック
+    List<BacklogItemComment> replies =
+        backlogItemCommentRepository.findByParentCommentId(command.getCommentId());
+    if (!replies.isEmpty()) {
+      throw new IllegalStateException("子返信があるコメントは削除できません");
     }
 
     backlogItemCommentRepository.delete(comment);

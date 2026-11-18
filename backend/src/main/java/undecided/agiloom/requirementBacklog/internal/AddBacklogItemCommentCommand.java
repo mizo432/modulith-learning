@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Data
@@ -16,4 +17,6 @@ class AddBacklogItemCommentCommand {
   private SnowflakeId authorEmployeeId;
   @NonNull private String authorName;
   @NonNull private String body;
+  /** 親コメントのID（返信の場合）。ルートコメントの場合はnull。 */
+  @Nullable private SnowflakeId parentCommentId;
 }

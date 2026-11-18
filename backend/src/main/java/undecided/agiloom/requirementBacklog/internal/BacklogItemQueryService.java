@@ -1,8 +1,10 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
@@ -60,6 +62,19 @@ class BacklogItemQueryService {
   }
 
   List<BacklogItemComment> findComments(@NonNull SnowflakeId backlogItemId) {
-    return backlogItemCommentRepository.findByBacklogItemIdOrderByCreatedAtAsc(backlogItemId);
+    List<BacklogItemComment> comments =
+        backlogItemCommentRepository.findByBacklogItemIdOrderByCreatedAtAsc(backlogItemId);
+    // 子返信を持つ親コメントのID集合を計算する
+    Set<SnowflakeId> parentsWithReplies = new HashSet<>();
+    for (BacklogItemComment comment : comments) {
+      if (comment.getParentComment() != null) {
+        parentsWithReplies.add(comment.getParentComment().getId());
+      }
+    }
+    // 各コメントに子返信有無を反映する
+    for (BacklogItemComment comment : comments) {
+      comment.setHasReplies(parentsWithReplies.contains(comment.getId()));
+    }
+    return comments;
   }
 }
