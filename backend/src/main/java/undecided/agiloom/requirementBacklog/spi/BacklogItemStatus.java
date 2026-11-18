@@ -18,7 +18,8 @@ package undecided.agiloom.requirementBacklog.spi;
 public enum BacklogItemStatus {
   SUGGESTED("提案済み"),
   ACCEPTED("受入済み"),
-  FROZEN("凍結");
+  FROZEN("凍結"),
+  READY("準備完了");
 
   private final String label;
 
