@@ -50,11 +50,14 @@ jest.mock('../../services/backlogItemService', () => ({
     updateBacklogItem: jest.fn(),
     updateComment: jest.fn(),
     deleteComment: jest.fn(),
+    estimateBacklogItem: jest.fn(),
   },
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
     ACCEPTED: 'ACCEPTED',
     FROZEN: 'FROZEN',
+    READY: 'READY',
+    ESTIMATED: 'ESTIMATED',
   },
 }));
 
@@ -1082,6 +1085,464 @@ describe('BacklogItemDetail', () => {
       // リアルタイム表示が「魅力的品質」に切り替わる
       await waitFor(() => {
         expect(screen.getByText('魅力的品質')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('StoryPoint選択UI（詳細画面）', () => {
+    const mockBacklogItemReady = {
+      ...mockBacklogItem,
+      status: 'READY',
+      statusLabel: '準備完了',
+      storyPoint: null,
+    };
+
+    const mockBacklogItemEstimated = {
+      ...mockBacklogItem,
+      status: 'ESTIMATED',
+      statusLabel: '見積もり済み',
+      storyPoint: 5,
+    };
+
+    const mockBacklogItemSuggested = {
+      ...mockBacklogItem,
+      status: 'SUGGESTED',
+      statusLabel: '提案',
+      storyPoint: null,
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      setAuthMock();
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    });
+
+    // テスト1: 詳細画面を表示したとき、StoryPointラジオボタングループが表示となる
+    it('ステータスがREADYのとき、StoryPointラジオボタングループが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPointセクションのラジオボタングループが表示されること
+      await waitFor(() => {
+        const radioGroup = screen.getByRole('radiogroup');
+        expect(radioGroup).toBeInTheDocument();
+      });
+    });
+
+    // テスト2: すべての許容値（0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89）が選択肢として表示となる
+    it('すべての許容StoryPoint値がラジオボタンとして表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // 各許容値がラジオボタンとして表示される
+      await waitFor(() => {
+        [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89].forEach((sp) => {
+          const radio = screen.getByRole('radio', { name: new RegExp(String(sp), 'i') });
+          expect(radio).toBeInTheDocument();
+        });
+      });
+    });
+
+    // テスト3: 各StoryPoint値に説明テキストが付随して表示となる
+    it('各StoryPoint値に説明テキストが付随して表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // 説明テキストが表示されること
+      await waitFor(() => {
+        expect(screen.getByText('見積もり不要')).toBeInTheDocument();
+        expect(screen.getByText('最大規模（分割を検討）')).toBeInTheDocument();
+      });
+    });
+
+    // テスト4: StoryPoint値が設定済みのアイテムを表示したとき、該当値が選択された状態となる
+    it('StoryPoint値が設定済みのアイテムを表示したとき、該当値が選択された状態となる', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemEstimated);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // storyPoint=5 のラジオボタンが選択されている
+      await waitFor(() => {
+        const radio5 = screen.getByRole('radio', { name: /5/i });
+        expect(radio5).toBeChecked();
+      });
+    });
+
+    // テスト5: StoryPoint値が未設定のアイテムを表示したとき、どのラジオボタンも選択されていない状態となる
+    it('StoryPoint値が未設定のアイテムを表示したとき、どのラジオボタンも選択されていない', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // すべてのラジオボタンが未選択
+      await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        radios.forEach((radio) => {
+          expect(radio).not.toBeChecked();
+        });
+      });
+    });
+
+    // テスト6: StoryPoint値を選択して保存ボタンをクリックしたとき、estimateBacklogItem APIが呼び出される
+    it('StoryPoint値を選択して保存ボタンをクリックしたとき、estimateBacklogItem APIが呼び出される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (backlogItemService.estimateBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemReady,
+        storyPoint: 8,
+        status: 'ESTIMATED',
+        statusLabel: '見積もり済み',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPoint 8 のラジオボタンを選択
+      const radio8 = await waitFor(() => screen.getByRole('radio', { name: /8/i }));
+      await user.click(radio8);
+
+      // 保存ボタンをクリック
+      const saveButton = await waitFor(() =>
+        screen.getByRole('button', { name: /StoryPoint.*保存/i })
+      );
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.estimateBacklogItem).toHaveBeenCalledWith('item-100', {
+          storyPoint: 8,
+          actorEmployeeId: 'emp-1',
+        });
+      });
+    });
+
+    // テスト7: 保存成功后、成功メッセージが表示となる
+    it('保存成功后、成功メッセージが表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (backlogItemService.estimateBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemReady,
+        storyPoint: 3,
+        status: 'ESTIMATED',
+        statusLabel: '見積もり済み',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const radio3 = await waitFor(() => screen.getByRole('radio', { name: /3/i }));
+      await user.click(radio3);
+
+      const saveButton = await waitFor(() =>
+        screen.getByRole('button', { name: /StoryPoint.*保存/i })
+      );
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/StoryPoint.*保存/i)).toBeInTheDocument();
+      });
+    });
+
+    // テスト8: 保存成功后、アイテムが再取得され、選択されたStoryPoint値が反映される
+    it('保存成功后、アイテムが再取得され、選択されたStoryPoint値が反映される', async () => {
+      const user = userEvent.setup();
+      const estimatedItem = {
+        ...mockBacklogItemReady,
+        storyPoint: 13,
+        status: 'ESTIMATED',
+        statusLabel: '見積もり済み',
+      };
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (backlogItemService.estimateBacklogItem as jest.Mock).mockResolvedValue(estimatedItem);
+      // 再取得後も同じデータを返す
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(estimatedItem);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const radio13 = await waitFor(() => screen.getByRole('radio', { name: /13/i }));
+      await user.click(radio13);
+
+      const saveButton = await waitFor(() =>
+        screen.getByRole('button', { name: /StoryPoint.*保存/i })
+      );
+      await user.click(saveButton);
+
+      // 再取得后被選択された値が反映される
+      await waitFor(() => {
+        const radio13After = screen.getByRole('radio', { name: /13/i });
+        expect(radio13After).toBeChecked();
+      });
+    });
+
+    // テスト9: 保存成功后、READY から ESTIMATED への状態変化がステータス表示に反映される
+    it('保存成功后、READY から ESTIMATED への状態変化がステータス表示に反映される', async () => {
+      const user = userEvent.setup();
+      const estimatedItem = {
+        ...mockBacklogItemReady,
+        storyPoint: 5,
+        status: 'ESTIMATED',
+        statusLabel: '見積もり済み',
+      };
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (backlogItemService.estimateBacklogItem as jest.Mock).mockResolvedValue(estimatedItem);
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(estimatedItem);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('準備完了')).toBeInTheDocument();
+      });
+
+      const radio5 = await waitFor(() => screen.getByRole('radio', { name: /5/i }));
+      await user.click(radio5);
+
+      const saveButton = await waitFor(() =>
+        screen.getByRole('button', { name: /StoryPoint.*保存/i })
+      );
+      await user.click(saveButton);
+
+      // ステータスがESTIMATEDに変更される
+      await waitFor(() => {
+        expect(screen.getByText('見積もり済み')).toBeInTheDocument();
+      });
+    });
+
+    // テスト10: APIエラーが返されたとき、エラーメッセージが表示となる
+    it('APIエラーが返されたとき、エラーメッセージが表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (backlogItemService.estimateBacklogItem as jest.Mock).mockRejectedValue({
+        response: {
+          status: 400,
+          data: { message: 'StoryPointの見積もりに失敗しました。' },
+        },
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const radio5 = await waitFor(() => screen.getByRole('radio', { name: /5/i }));
+      await user.click(radio5);
+
+      const saveButton = await waitFor(() =>
+        screen.getByRole('button', { name: /StoryPoint.*保存/i })
+      );
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointの見積もりに失敗しました。')).toBeInTheDocument();
+      });
+    });
+
+    // テスト11: StoryPoint 0を選択したとき、「見積もり不要」の説明テキストが表示となる
+    it('StoryPoint 0を選択したとき、「見積もり不要」の説明テキストが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPoint 0 のラジオボタンとその説明テキストが表示される
+      await waitFor(() => {
+        const radio0 = screen.getByRole('radio', { name: /0/i });
+        expect(radio0).toBeInTheDocument();
+        expect(screen.getByText('見積もり不要')).toBeInTheDocument();
+      });
+    });
+
+    // テスト12: StoryPoint 89を選択したとき、「最大規模（分割を検討）」の説明テキストが表示となる
+    it('StoryPoint 89を選択したとき、「最大規模（分割を検討）」の説明テキストが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const radio89 = screen.getByRole('radio', { name: /89/i });
+        expect(radio89).toBeInTheDocument();
+        expect(screen.getByText('最大規模（分割を検討）')).toBeInTheDocument();
+      });
+    });
+
+    // テスト13: ステータスが READY または ESTIMATED のときのみ、見積もりセクションが表示される
+    it('ステータスがREADYのとき、見積もりセクションが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const radioGroup = screen.getByRole('radiogroup');
+        expect(radioGroup).toBeInTheDocument();
+      });
+    });
+
+    it('ステータスがESTIMATEDのとき、見積もりセクションが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemEstimated);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const radioGroup = screen.getByRole('radiogroup');
+        expect(radioGroup).toBeInTheDocument();
+      });
+    });
+
+    // テスト14: ステータスが READY 以外（SUGGESTED、ACCEPTED、FROZENなど）のとき、見積もりセクションは非表示となる
+    it('ステータスがSUGGESTEDのとき、見積もりセクションは非表示となる', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemSuggested);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPointのラジオボタングループが表示されないこと
+      await waitFor(() => {
+        const radioGroup = screen.queryByRole('radiogroup');
+        expect(radioGroup).not.toBeInTheDocument();
+      });
+    });
+
+    it('ステータスがACCEPTEDのとき、見積もりセクションは非表示となる', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItem,
+        status: 'ACCEPTED',
+        statusLabel: '承認済み',
+        storyPoint: null,
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const radioGroup = screen.queryByRole('radiogroup');
+        expect(radioGroup).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト15: ESTIMATED 状態ではStoryPoint値を変更して保存できる（状態遷移なし、値の更新のみ）
+    it('ESTIMATED 状態ではStoryPoint値を変更して保存できる', async () => {
+      const user = userEvent.setup();
+      const updatedEstimatedItem = {
+        ...mockBacklogItemEstimated,
+        storyPoint: 13,
+      };
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemEstimated);
+      (backlogItemService.estimateBacklogItem as jest.Mock).mockResolvedValue(updatedEstimatedItem);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // 現在の値(5)から別の値(13)に変更
+      const radio13 = await waitFor(() => screen.getByRole('radio', { name: /13/i }));
+      await user.click(radio13);
+
+      const saveButton = await waitFor(() =>
+        screen.getByRole('button', { name: /StoryPoint.*保存/i })
+      );
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.estimateBacklogItem).toHaveBeenCalledWith('item-100', {
+          storyPoint: 13,
+          actorEmployeeId: 'emp-1',
+        });
+      });
+    });
+
+    // テスト16: 既存のValue入力セクション（スライダー+TextField）はStoryPointセクションとは別に維持される
+    it('既存のValue入力セクションはStoryPointセクションとは別に維持される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // Value入力セクションが存在すること
+      await waitFor(() => {
+        const valueTextField = screen.getByTestId('value-textfield');
+        expect(valueTextField).toBeInTheDocument();
+      });
+
+      // スライダーが存在すること
+      await waitFor(() => {
+        const slider = screen.getByRole('slider');
+        expect(slider).toBeInTheDocument();
+      });
+    });
+
+    // テスト17: 見積もり操作はチームメンバーのみが実行可能
+    it('チームメンバーの場合、StoryPoint保存ボタンが表示される', async () => {
+      setAuthMock({ employeeId: 'emp-1' });
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // 保存ボタンが表示されること
+      await waitFor(() => {
+        const saveButton = screen.getByRole('button', { name: /StoryPoint.*保存/i });
+        expect(saveButton).toBeInTheDocument();
       });
     });
   });

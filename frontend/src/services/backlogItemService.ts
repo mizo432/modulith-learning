@@ -1,6 +1,6 @@
 import api from './api';
 
-export type BacklogItemStatus = 'SUGGESTED' | 'ACCEPTED' | 'FROZEN';
+export type BacklogItemStatus = 'SUGGESTED' | 'ACCEPTED' | 'FROZEN' | 'READY' | 'ESTIMATED';
 
 export type QualityCategory = 'ATTRACTIVE' | 'MUST_BE' | 'ONE_DIMENSIONAL' | 'INDIFFERENT';
 
@@ -16,6 +16,8 @@ export interface BacklogItem {
   creatorName: string;
   sprintId?: string;
   value?: number;
+  /** StoryPoint（見積もり規模）。未設定の場合は null。 */
+  storyPoint?: number | null;
   qualityCategory?: QualityCategory;
   qualityCategoryLabel?: string;
   createdAt: string;
@@ -65,6 +67,12 @@ export interface UpdateBacklogItemCommentRequest {
 }
 
 export interface DeleteBacklogItemCommentRequest {
+  actorEmployeeId?: string;
+}
+
+/** StoryPoint 見積もりリクエスト（Issue #516 実装予定） */
+export interface EstimateBacklogItemRequest {
+  storyPoint: number;
   actorEmployeeId?: string;
 }
 
@@ -169,6 +177,15 @@ const backlogItemService = {
     await api.delete(`/v1/backlog-items/${backlogItemId}/comments/${commentId}`, {
       data: request,
     });
+  },
+
+  /** StoryPoint を見積もる（Issue #516 実装予定 — 現在はスタブ） */
+  async estimateBacklogItem(
+    backlogItemId: string,
+    request: EstimateBacklogItemRequest,
+  ): Promise<BacklogItem> {
+    const response = await api.patch(`/v1/backlog-items/${backlogItemId}/estimate`, request);
+    return response.data;
   },
 };
 
