@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * バックログアイテムAPIの例外をHTTPステータスへ変換するハンドラー。
  *
  * <ul>
- *   <li>権限なし（SM／PO以外による状態変更）: 403
- *   <li>不正な状態遷移: 409
+ *   <li>権限なし（SM／PO以外による状態変更、コメントした本人・ADMIN以外によるコメント削除）: 403
+ *   <li>不正な状態遷移・返信ありコメントの削除: 409
  *   <li>入力不正・対象が存在しない: 400
  * </ul>
  */

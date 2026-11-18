@@ -87,6 +87,12 @@ class BacklogItemMigrationMediumTest {
     }
 
     @Test
+    @DisplayName("admin_employee_subsetsテーブルが作成されていること")
+    void shouldCreateAdminEmployeeSubsetsTable() {
+      assertThat(tableCount("admin_employee_subsets")).isEqualTo(1);
+    }
+
+    @Test
     @DisplayName("backlog_itemsテーブルに期待されるカラムが存在すること")
     void shouldBacklogItemsHaveExpectedColumns() {
       assertThat(columns("backlog_items"))
@@ -154,6 +160,17 @@ class BacklogItemMigrationMediumTest {
           .contains("DROP CONSTRAINT ck_backlog_items_status")
           .contains("SET status = 'FROZEN' WHERE status = 'REJECTED'")
           .contains("ADD CONSTRAINT ck_backlog_items_status CHECK (status IN ('SUGGESTED', 'ACCEPTED', 'FROZEN'))");
+    }
+
+    @Test
+    @DisplayName("Flywayマイグレーションスクリプトでadmin_employee_subsetsテーブルが作成されること")
+    void shouldMigrationScriptCreateAdminEmployeeSubsets() {
+      String script =
+          readClasspathResource("db/migration/ag/V20261118200000__add_admin_employee_subsets.sql");
+      assertThat(script)
+          .contains("CREATE TABLE undecided_ag.admin_employee_subsets")
+          .contains("employee_id BIGINT       NOT NULL PRIMARY KEY")
+          .contains("updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP");
     }
 
     private String readClasspathResource(String path) {

@@ -14,6 +14,7 @@ class BacklogItemCommandController {
   private final UpdateBacklogItemCommandService updateBacklogItemCommandService;
   private final ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService;
   private final AddBacklogItemCommentCommandService addBacklogItemCommentCommandService;
+  private final DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService;
   private final BacklogItemQueryService backlogItemQueryService;
   private final BacklogItemResponseConverter backlogItemResponseConverter;
 
@@ -22,12 +23,14 @@ class BacklogItemCommandController {
       UpdateBacklogItemCommandService updateBacklogItemCommandService,
       ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService,
       AddBacklogItemCommentCommandService addBacklogItemCommentCommandService,
+      DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService,
       BacklogItemQueryService backlogItemQueryService,
       BacklogItemResponseConverter backlogItemResponseConverter) {
     this.createBacklogItemCommandService = createBacklogItemCommandService;
     this.updateBacklogItemCommandService = updateBacklogItemCommandService;
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
     this.addBacklogItemCommentCommandService = addBacklogItemCommentCommandService;
+    this.deleteBacklogItemCommentCommandService = deleteBacklogItemCommentCommandService;
     this.backlogItemQueryService = backlogItemQueryService;
     this.backlogItemResponseConverter = backlogItemResponseConverter;
   }
@@ -114,5 +117,19 @@ class BacklogItemCommandController {
             .findFirst()
             .orElseThrow();
     return ResponseEntity.ok(backlogItemResponseConverter.toCommentResponse(comment));
+  }
+
+  @DeleteMapping("/api/v1/backlog-items/{backlogItemId}/comments/{commentId}")
+  ResponseEntity<Void> deleteComment(
+      @PathVariable String backlogItemId,
+      @PathVariable String commentId,
+      @RequestBody DeleteBacklogItemCommentRequest request) {
+    deleteBacklogItemCommentCommandService.execute(
+        DeleteBacklogItemCommentCommand.builder()
+            .backlogItemId(SnowflakeId.of(Long.parseLong(backlogItemId)))
+            .commentId(SnowflakeId.of(Long.parseLong(commentId)))
+            .actorEmployeeId(request.getActorEmployeeId())
+            .build());
+    return ResponseEntity.noContent().build();
   }
 }
