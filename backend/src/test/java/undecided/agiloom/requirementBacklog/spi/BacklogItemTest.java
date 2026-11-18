@@ -45,6 +45,12 @@ class BacklogItemTest {
           .build();
       assertThat(backlogItem.getCreatorEmployeeId()).isEqualTo(employeeId);
     }
+
+    @Test
+    @DisplayName("新規作成時のversionはnullであること")
+    void shouldHaveNullVersion() {
+      assertThat(item().getVersion()).isNull();
+    }
   }
 
   @Nested

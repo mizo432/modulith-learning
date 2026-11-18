@@ -109,7 +109,8 @@ class BacklogItemMigrationMediumTest {
               "status",
               "title",
               "updated_at",
-              "value");
+              "value",
+              "version");
     }
 
     @Test
@@ -171,6 +172,16 @@ class BacklogItemMigrationMediumTest {
           .contains("CREATE TABLE undecided_ag.admin_employee_subsets")
           .contains("employee_id BIGINT       NOT NULL PRIMARY KEY")
           .contains("updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP");
+    }
+
+    @Test
+    @DisplayName("Flywayマイグレーションスクリプトでversionカラムが追加されること")
+    void shouldMigrationScriptAddVersionColumn() {
+      String script =
+          readClasspathResource("db/migration/ag/V20261118210000__add_version_to_backlog_items.sql");
+      assertThat(script)
+          .contains("ADD COLUMN version INTEGER")
+          .contains("DEFAULT 0");
     }
 
     private String readClasspathResource(String path) {
