@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,6 +56,11 @@ class ScrumTeamSubset {
   @Column(name = "sm_name", length = 100)
   protected String smName;
 
+  /** チームメンバーの従業員IDリスト（PO/SMを含む）。 */
+  @Column(name = "member_employee_ids", columnDefinition = "TEXT[]")
+  @Builder.Default
+  protected List<SnowflakeId> memberEmployeeIds = new ArrayList<>();
+
   /** サブセットが最後にイベントで更新された日時。 */
   @Column(name = "updated_at", nullable = false)
   @Builder.Default
@@ -66,6 +73,8 @@ class ScrumTeamSubset {
     this.poName = event.poName();
     this.smEmployeeId = event.smEmployeeId();
     this.smName = event.smName();
+    this.memberEmployeeIds = event.memberEmployeeIds() != null
+        ? new ArrayList<>(event.memberEmployeeIds()) : new ArrayList<>();
     this.updatedAt = LocalDateTime.now();
   }
 
@@ -78,6 +87,8 @@ class ScrumTeamSubset {
         .poName(event.poName())
         .smEmployeeId(event.smEmployeeId())
         .smName(event.smName())
+        .memberEmployeeIds(event.memberEmployeeIds() != null
+            ? new ArrayList<>(event.memberEmployeeIds()) : new ArrayList<>())
         .build();
   }
 
@@ -108,5 +119,26 @@ class ScrumTeamSubset {
       return false;
     }
     return actorEmployeeId.equals(this.poEmployeeId);
+  }
+
+  /**
+   * 指定した従業員がこのスクラムチームのメンバーかを判定します。
+   *
+   * <p>PO/SM を含むチームメンバー全員が ACCEPTED→READY および READY→SUGGESTED の
+   * 状態遷移を実行できるため、権限判定に使用します。
+   *
+   * @param actorEmployeeId 操作者の従業員ID
+   * @return チームメンバーであれば true
+   */
+  boolean isTeamMember(@Nullable SnowflakeId actorEmployeeId) {
+    if (actorEmployeeId == null) {
+      return false;
+    }
+    // PO/SM は常にメンバーとして扱う
+    if (actorEmployeeId.equals(this.poEmployeeId) || actorEmployeeId.equals(this.smEmployeeId)) {
+      return true;
+    }
+    // memberEmployeeIds リストに含まれるか確認
+    return this.memberEmployeeIds.contains(actorEmployeeId);
   }
 }

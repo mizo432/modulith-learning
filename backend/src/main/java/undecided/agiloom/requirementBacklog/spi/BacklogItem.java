@@ -157,10 +157,12 @@ public class BacklogItem {
    * <ul>
    *   <li>SUGGESTED → ACCEPTED（Value が設定されていること）
    *   <li>SUGGESTED → FROZEN
+   *   <li>ACCEPTED → READY（スクラムチームメンバー全員が実行可能）
+   *   <li>READY → SUGGESTED（スクラムチームメンバー全員が実行可能）
    *   <li>FROZEN → SUGGESTED（PO のみが実行可能。権限判定はコマンドサービス側で行う）
    * </ul>
-   * 変更できる主体（SM／PO）の判定は呼び出し側（コマンドサービス）がサブセットの保持する
-   * PO／SM と照合して事前に行います。
+   * 変更できる主体の判定は呼び出し側（コマンドサービス）がサブセットの保持する
+   * PO／SM／メンバー情報と照合して事前に行います。
    * 状態遷移の履歴はロングタームイベントパターン（{@link BacklogItemStatusChanged} イベント）で
    * 担保するため、専用の監査ログは持ちません（Issue #572 の決定）。
    *
@@ -189,6 +191,24 @@ public class BacklogItem {
               "Invalid status transition: " + this.status + " -> " + target);
         }
       }
+      case ACCEPTED -> {
+        if (target == BacklogItemStatus.READY) {
+          this.status = target;
+          this.updatedAt = LocalDateTime.now();
+        } else {
+          throw new IllegalStateException(
+              "Invalid status transition: " + this.status + " -> " + target);
+        }
+      }
+      case READY -> {
+        if (target == BacklogItemStatus.SUGGESTED) {
+          this.status = target;
+          this.updatedAt = LocalDateTime.now();
+        } else {
+          throw new IllegalStateException(
+              "Invalid status transition: " + this.status + " -> " + target);
+        }
+      }
       case FROZEN -> {
         if (target == BacklogItemStatus.SUGGESTED) {
           this.status = target;
@@ -198,8 +218,6 @@ public class BacklogItem {
               "Invalid status transition: " + this.status + " -> " + target);
         }
       }
-      default -> throw new IllegalStateException(
-          "Invalid status transition: " + this.status + " -> " + target);
     }
   }
 

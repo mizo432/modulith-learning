@@ -1,5 +1,6 @@
 package undecided.agiloom.productDiscovery.spi;
 
+import java.util.List;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -20,6 +21,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  * @param poName POの名前
  * @param smEmployeeId SMの従業員ID
  * @param smName SMの名前
+ * @param memberEmployeeIds チームメンバーの従業員IDリスト（PO/SMを含む）
  * @param removed 削除された場合は true
  */
 public record ScrumTeamChanged(
@@ -31,6 +33,7 @@ public record ScrumTeamChanged(
     String poName,
     SnowflakeId smEmployeeId,
     String smName,
+    List<SnowflakeId> memberEmployeeIds,
     boolean removed) {
 
   /** 現在の ScrumTeam の状態からイベントを生成します。 */
@@ -44,6 +47,7 @@ public record ScrumTeamChanged(
         scrumTeam.getPoName(),
         scrumTeam.getSmEmployeeId(),
         scrumTeam.getSmName(),
+        scrumTeam.getMemberEmployeeIds(),
         false);
   }
 
@@ -59,6 +63,7 @@ public record ScrumTeamChanged(
         snapshot.poName(),
         snapshot.smEmployeeId(),
         snapshot.smName(),
+        snapshot.memberEmployeeIds(),
         true);
   }
 }

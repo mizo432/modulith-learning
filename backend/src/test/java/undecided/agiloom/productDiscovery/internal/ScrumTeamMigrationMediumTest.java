@@ -86,6 +86,7 @@ class ScrumTeamMigrationMediumTest {
               "business_domain",
               "created_at",
               "id",
+              "member_employee_ids",
               "name",
               "po_employee_id",
               "po_name",

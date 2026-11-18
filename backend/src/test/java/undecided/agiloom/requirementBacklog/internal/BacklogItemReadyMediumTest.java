@@ -9,12 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import undecided.ModulithDemoApplication;
 import undecided.TestcontainersConfiguration;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
@@ -31,10 +33,13 @@ import undecided.supporting.snowflake.SnowflakeId;
 @SpringBootTest(classes = ModulithDemoApplication.class)
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
+@Transactional
 @DisplayName("READY状態の統合テスト")
 class BacklogItemReadyMediumTest {
 
   @Autowired private BacklogItemRepository backlogItemRepository;
+
+  @Autowired private EntityManager entityManager;
 
   @Autowired private JdbcTemplate jdbcTemplate;
 
@@ -81,11 +86,17 @@ class BacklogItemReadyMediumTest {
           .build();
       item.changeStatus(BacklogItemStatus.ACCEPTED);
       backlogItemRepository.save(item);
+      entityManager.flush();
+
+      item = backlogItemRepository.findById(item.getId()).orElseThrow();
       item.changeStatus(BacklogItemStatus.READY);
       backlogItemRepository.save(item);
+      entityManager.flush();
 
+      item = backlogItemRepository.findById(item.getId()).orElseThrow();
       item.changeStatus(BacklogItemStatus.SUGGESTED);
       backlogItemRepository.save(item);
+      entityManager.flush();
 
       BacklogItem saved = backlogItemRepository.findById(item.getId()).orElseThrow();
       assertThat(saved.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);

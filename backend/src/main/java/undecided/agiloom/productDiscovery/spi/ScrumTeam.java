@@ -11,6 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,6 +66,11 @@ public class ScrumTeam {
   /** SMの名前（非正規化フィールド）。 */
   @Column(name = "sm_name", length = 100)
   protected String smName;
+
+  /** チームメンバーの従業員IDリスト（PO/SMを含む）。 */
+  @Column(name = "member_employee_ids", columnDefinition = "TEXT[]")
+  @Builder.Default
+  protected List<SnowflakeId> memberEmployeeIds = new ArrayList<>();
 
   /** 関連するProductへの参照。 */
   @ManyToOne(fetch = FetchType.LAZY)
@@ -160,6 +167,17 @@ public class ScrumTeam {
   public void unassignSm() {
     this.smEmployeeId = null;
     this.smName = null;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  /**
+   * チームメンバーの従業員IDリストを設定します。
+   *
+   * @param memberEmployeeIds メンバーの従業員IDリスト（PO/SMを含む）
+   */
+  public void setMemberEmployeeIds(@NonNull List<SnowflakeId> memberEmployeeIds) {
+    checkNotNull(memberEmployeeIds, () -> new IllegalArgumentException("memberEmployeeIds must not be null"));
+    this.memberEmployeeIds = new ArrayList<>(memberEmployeeIds);
     this.updatedAt = LocalDateTime.now();
   }
 }

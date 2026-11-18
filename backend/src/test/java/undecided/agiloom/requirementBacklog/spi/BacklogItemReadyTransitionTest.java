@@ -224,7 +224,11 @@ class BacklogItemReadyTransitionTest {
           .build();
       item.changeStatus(BacklogItemStatus.ACCEPTED);
 
-      Thread.sleep(10); // updatedAtの更新が検出できるように待機
+      try {
+        Thread.sleep(10); // updatedAtの更新が検出できるように待機
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
       item.changeStatus(BacklogItemStatus.READY);
 
       assertThat(item.getUpdatedAt()).isAfter(before);
