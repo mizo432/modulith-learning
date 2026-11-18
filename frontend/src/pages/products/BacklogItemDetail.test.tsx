@@ -939,6 +939,7 @@ describe('BacklogItemDetail', () => {
     });
 
     it('品質カテゴリバッジにツールチップが表示される', async () => {
+      const user = userEvent.setup();
       (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
         ...mockBacklogItemWithValue,
         qualityCategory: 'ATTRACTIVE',
@@ -951,11 +952,37 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      // 品質カテゴリバッジにツールチップが設定されていること
+      // バッジにホバーしてツールチップ（role="tooltip"）が境界値テキストを表示することを確認
+      const badge = screen.getByText('魅力的品質');
+      await user.hover(badge);
       await waitFor(() => {
-        const badge = screen.getByText('魅力的品質');
-        const tooltipTrigger = badge.closest('[data-mui-test="tooltip"]') || badge.closest('[title]');
-        expect(tooltipTrigger).not.toBeNull();
+        const tooltip = document.querySelector('[role="tooltip"]');
+        expect(tooltip).not.toBeNull();
+        expect(tooltip?.textContent).toMatch(/Value 76〜100/);
+      });
+    });
+
+    it('品質カテゴリバッジにキーボードでフォーカスするとツールチップが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemWithValue,
+        qualityCategory: 'ATTRACTIVE',
+        qualityCategoryLabel: '魅力的品質',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // キーボードでフォーカスしてツールチップ（role="tooltip"）が境界値テキストを表示することを確認
+      // ChipのtabIndex=0を持つ要素にフォーカス
+      const chipElement = screen.getByText('魅力的品質').closest('.MuiChip-root') as HTMLElement;
+      chipElement.focus();
+      await waitFor(() => {
+        const tooltip = document.querySelector('[role="tooltip"]');
+        expect(tooltip).not.toBeNull();
+        expect(tooltip?.textContent).toMatch(/Value 76〜100/);
       });
     });
 
@@ -1034,11 +1061,11 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByRole('slider')).toBeInTheDocument();
       });
 
-      // Valueがnullのとき、リアルタイム表示に「―」が表示される
+      // Valueがnullのとき、data-testid="value-textfield"を含む祖先要素のtextContentに「―」が含まれること
       await waitFor(() => {
-        // リアルタイム表示領域に「―」が含まれること
-        const sliderBox = screen.getByRole('slider').closest('div[flex]') || screen.getByRole('slider').parentElement;
-        expect(sliderBox?.textContent).toContain('―');
+        const valueTextField = screen.getByTestId('value-textfield');
+        const ancestorBox = valueTextField.closest('div[flex]') || valueTextField.parentElement;
+        expect(ancestorBox?.textContent).toContain('―');
       });
     });
 

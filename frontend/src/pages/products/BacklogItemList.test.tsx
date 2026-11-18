@@ -379,7 +379,7 @@ describe('BacklogItemList', () => {
       renderBacklogItemList();
 
       await waitFor(() => {
-        const chip = screen.getByText('魅力的品質').closest('span');
+        const chip = screen.getByText('魅力的品質').closest('.MuiChip-root');
         // MUI Chip の success カラーは緑系（MuiChip-colorSuccess クラスが付く）
         expect(chip).toHaveClass(/MuiChip-colorSuccess/);
       });
@@ -397,7 +397,7 @@ describe('BacklogItemList', () => {
       renderBacklogItemList();
 
       await waitFor(() => {
-        const chip = screen.getByText('一元的品質').closest('span');
+        const chip = screen.getByText('一元的品質').closest('.MuiChip-root');
         // MUI Chip の info カラーは青系（MuiChip-colorInfo クラスが付く）
         expect(chip).toHaveClass(/MuiChip-colorInfo/);
       });
@@ -415,7 +415,7 @@ describe('BacklogItemList', () => {
       renderBacklogItemList();
 
       await waitFor(() => {
-        const chip = screen.getByText('当たり前品質').closest('span');
+        const chip = screen.getByText('当たり前品質').closest('.MuiChip-root');
         // MUI Chip の warning カラーは黄系（MuiChip-colorWarning クラスが付く）
         expect(chip).toHaveClass(/MuiChip-colorWarning/);
       });
@@ -433,13 +433,14 @@ describe('BacklogItemList', () => {
       renderBacklogItemList();
 
       await waitFor(() => {
-        const chip = screen.getByText('無関心品質').closest('span');
+        const chip = screen.getByText('無関心品質').closest('.MuiChip-root');
         // MUI Chip の default カラー（MuiChip-colorDefault クラスが付く、またはcolor属性なし）
         expect(chip).toHaveClass(/MuiChip-colorDefault/);
       });
     });
 
     it('品質カテゴリChipにツールチップが表示される', async () => {
+      const user = userEvent.setup();
       (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
         {
           ...mockItemWithValue,
@@ -452,9 +453,43 @@ describe('BacklogItemList', () => {
 
       await waitFor(() => {
         const chip = screen.getByText('魅力的品質');
-        // ツールチップが設定されていることを確認（title属性またはdata-mui-test="tooltip"）
-        const tooltipTrigger = chip.closest('[data-mui-test="tooltip"]') || chip.closest('[title]');
-        expect(tooltipTrigger).not.toBeNull();
+        expect(chip).toBeInTheDocument();
+      });
+
+      // バッジにホバーしてツールチップ（role="tooltip"）が境界値テキストを表示することを確認
+      const chipElement = screen.getByText('魅力的品質');
+      await user.hover(chipElement);
+      await waitFor(() => {
+        const tooltip = document.querySelector('[role="tooltip"]');
+        expect(tooltip).not.toBeNull();
+        expect(tooltip?.textContent).toMatch(/Value 76〜100/);
+      });
+    });
+
+    it('品質カテゴリChipにキーボードでフォーカスするとツールチップが表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        {
+          ...mockItemWithValue,
+          qualityCategory: 'ATTRACTIVE',
+          qualityCategoryLabel: '魅力的品質',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        const chip = screen.getByText('魅力的品質');
+        expect(chip).toBeInTheDocument();
+      });
+
+      // キーボードでフォーカスしてツールチップ（role="tooltip"）が境界値テキストを表示することを確認
+      // ChipのtabIndex=0を持つ要素にフォーカス
+      const chipElement = screen.getByText('魅力的品質').closest('.MuiChip-root') as HTMLElement;
+      chipElement.focus();
+      await waitFor(() => {
+        const tooltip = document.querySelector('[role="tooltip"]');
+        expect(tooltip).not.toBeNull();
+        expect(tooltip?.textContent).toMatch(/Value 76〜100/);
       });
     });
 
