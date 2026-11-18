@@ -351,6 +351,7 @@ const BacklogItemDetail: React.FC = () => {
                   replyBody={replyBody}
                   editingCommentId={editingCommentId}
                   editBody={editBody}
+                  canDelete={auth.employeeId === rootComment.authorEmployeeId || auth.isAdmin}
                   onReplyToggle={() =>
                     setReplyingTo(replyingTo === rootComment.id ? null : rootComment.id)
                   }
@@ -376,6 +377,8 @@ const BacklogItemDetail: React.FC = () => {
                   replyBody={replyBody}
                   editingCommentId={editingCommentId}
                   editBody={editBody}
+                  employeeId={auth.employeeId}
+                  isAdmin={auth.isAdmin}
                   onReplyToggle={(id) => setReplyingTo(replyingTo === id ? null : id)}
                   onReplyBodyChange={setReplyBody}
                   onReplySubmit={(id) => handleAddComment(id)}
@@ -438,6 +441,7 @@ interface CommentItemProps {
   replyBody: string;
   editingCommentId: string | null;
   editBody: string;
+  canDelete: boolean;
   onReplyToggle: () => void;
   onReplyBodyChange: (body: string) => void;
   onReplySubmit: () => void;
@@ -453,6 +457,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   replyBody,
   editingCommentId,
   editBody,
+  canDelete,
   onReplyToggle,
   onReplyBodyChange,
   onReplySubmit,
@@ -506,7 +511,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <IconButton size="small" onClick={onReplyToggle} aria-label="返信">
             <ReplyIcon fontSize="small" />
           </IconButton>
-          {!hasReplies && !isEditing && (
+          {canDelete && !hasReplies && !isEditing && (
             <>
               <IconButton size="small" onClick={onEditToggle} aria-label="編集">
                 <EditIcon fontSize="small" />
@@ -559,6 +564,8 @@ interface RepliesListProps {
   replyBody: string;
   editingCommentId: string | null;
   editBody: string;
+  employeeId: string | null;
+  isAdmin: boolean;
   onReplyToggle: (id: string) => void;
   onReplyBodyChange: (body: string) => void;
   onReplySubmit: (id: string) => void;
@@ -575,6 +582,8 @@ const RepliesList: React.FC<RepliesListProps> = ({
   replyBody,
   editingCommentId,
   editBody,
+  employeeId,
+  isAdmin,
   onReplyToggle,
   onReplyBodyChange,
   onReplySubmit,
@@ -628,7 +637,7 @@ const RepliesList: React.FC<RepliesListProps> = ({
               <IconButton size="small" onClick={() => onReplyToggle(reply.id)} aria-label="返信">
                 <ReplyIcon fontSize="small" />
               </IconButton>
-              {!(reply.hasReplies ?? false) && editingCommentId !== reply.id && (
+              {(employeeId === reply.authorEmployeeId || isAdmin) && !(reply.hasReplies ?? false) && editingCommentId !== reply.id && (
                 <>
                   <IconButton size="small" onClick={() => onEditToggle(reply.id)} aria-label="編集">
                     <EditIcon fontSize="small" />
@@ -679,6 +688,8 @@ const RepliesList: React.FC<RepliesListProps> = ({
             replyBody={replyBody}
             editingCommentId={editingCommentId}
             editBody={editBody}
+            employeeId={employeeId}
+            isAdmin={isAdmin}
             onReplyToggle={onReplyToggle}
             onReplyBodyChange={onReplyBodyChange}
             onReplySubmit={onReplySubmit}

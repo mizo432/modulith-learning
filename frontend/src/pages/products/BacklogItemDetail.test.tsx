@@ -16,20 +16,29 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-// Mock AuthContext
+// Mock AuthContext — パラメータ化（テストごとに値を切り替え可能）
+const mockUseAuth = jest.fn();
 jest.mock('../../contexts/AuthContext', () => ({
   ...jest.requireActual('../../contexts/AuthContext'),
-  useAuth: () => ({
-    isAuthenticated: true,
-    username: 'テストユーザー',
-    isAdmin: false,
-    isFirstLogin: false,
-    employeeId: 'emp-1',
-    login: jest.fn(),
-    logout: jest.fn(),
-    setFirstLogin: jest.fn(),
-  }),
+  useAuth: () => mockUseAuth(),
 }));
+
+// AuthContext のデフォルトモック値
+const defaultAuthMock = {
+  isAuthenticated: true,
+  username: 'テストユーザー',
+  isAdmin: false,
+  isFirstLogin: false,
+  employeeId: 'emp-1',
+  login: jest.fn(),
+  logout: jest.fn(),
+  setFirstLogin: jest.fn(),
+};
+
+// AuthContext モックのセットヘルパー
+function setAuthMock(overrides = {}) {
+  mockUseAuth.mockReturnValue({ ...defaultAuthMock, ...overrides });
+}
 
 // Mock backlogItemService
 jest.mock('../../services/backlogItemService', () => ({
@@ -81,6 +90,7 @@ const renderBacklogItemDetail = () => {
 describe('BacklogItemDetail', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    setAuthMock();
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
   });
@@ -405,6 +415,7 @@ describe('BacklogItemDetail', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
+      setAuthMock();
       (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
     });
 
@@ -616,6 +627,294 @@ describe('BacklogItemDetail', () => {
       await waitFor(() => {
         expect(screen.getByText('コメントはまだありません。')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('コメント削除・編集の表示制御（#674）', () => {
+    const mockOwnComment = {
+      id: 'comment-own',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-1',
+      authorName: '本人',
+      body: '自分のコメント',
+      createdAt: '2026-01-01T00:00:00Z',
+      parentId: null,
+      hasReplies: false,
+    };
+
+    const mockOtherComment = {
+      id: 'comment-other',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-other',
+      authorName: '他人',
+      body: '他人のコメント',
+      createdAt: '2026-01-01T01:00:00Z',
+      parentId: null,
+      hasReplies: false,
+    };
+
+    const mockOwnReply = {
+      id: 'reply-own',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-1',
+      authorName: '本人',
+      body: '自分の返信',
+      createdAt: '2026-01-01T02:00:00Z',
+      parentId: 'comment-parent',
+      hasReplies: false,
+    };
+
+    const mockOtherReply = {
+      id: 'reply-other',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-other',
+      authorName: '他人',
+      body: '他人の返信',
+      createdAt: '2026-01-01T03:00:00Z',
+      parentId: 'comment-parent',
+      hasReplies: false,
+    };
+
+    const mockParentComment = {
+      id: 'comment-parent',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-other',
+      authorName: '親投稿者',
+      body: '親コメント',
+      createdAt: '2026-01-01T00:00:00Z',
+      parentId: null,
+      hasReplies: true,
+    };
+
+    // テストケース1: 投稿者本人（非ADMIN）が自分のコメントを表示したとき、削除ボタンが表示される
+    it('投稿者本人（非ADMIN）が自分のコメントを表示したとき、削除ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOwnComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('自分のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /削除/i })).toBeInTheDocument();
+    });
+
+    // テストケース2: 投稿者本人（非ADMIN）が他人のコメントを表示したとき、削除ボタンが表示されない
+    it('投稿者本人（非ADMIN）が他人のコメントを表示したとき、削除ボタンが表示されない', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOtherComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('他人のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+    });
+
+    // テストケース3: ADMINユーザーが他人のコメントを表示したとき、削除ボタンが表示される
+    it('ADMINユーザーが他人のコメントを表示したとき、削除ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: true, employeeId: 'emp-admin' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOtherComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('他人のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /削除/i })).toBeInTheDocument();
+    });
+
+    // テストケース4: 投稿者本人（非ADMIN）が自分の返信コメントを表示したとき、削除ボタンが表示される
+    it('投稿者本人（非ADMIN）が自分の返信コメントを表示したとき、削除ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockParentComment, mockOwnReply]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('自分の返信')).toBeInTheDocument();
+      });
+
+      // 返信コメントの削除ボタンが表示されることを確認
+      expect(screen.getByRole('button', { name: /削除/i })).toBeInTheDocument();
+    });
+
+    // テストケース5: 他人（非ADMIN）が他人の返信コメントを表示したとき、削除ボタンが表示されない
+    it('他人（非ADMIN）が他人の返信コメントを表示したとき、削除ボタンが表示されない', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockParentComment, mockOtherReply]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('他人の返信')).toBeInTheDocument();
+      });
+
+      expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+    });
+
+    // テストケース6: 子返信があるコメントを表示したとき、投稿者本人であっても削除ボタンが表示されない（既存の振る舞いの回帰）
+    it('子返信があるコメントを表示したとき、投稿者本人であっても削除ボタンが表示されない（既存の振る舞いの回帰）', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      const mockCommentWithReplies = {
+        ...mockOwnComment,
+        hasReplies: true,
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentWithReplies]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('自分のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+    });
+
+    // テストケース7: 権限がないユーザーが削除ボタンをクリックして403エラーが返されたとき、エラーメッセージがAlertとして表示される
+    it('権限がないユーザーが削除ボタンをクリックして403エラーが返されたとき、エラーメッセージがAlertとして表示される', async () => {
+      const user = userEvent.setup();
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      const mockCommentNoReplies = {
+        ...mockOwnComment,
+        hasReplies: false,
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoReplies]);
+      (backlogItemService.deleteComment as jest.Mock).mockRejectedValue({
+        response: {
+          status: 403,
+          data: { message: 'コメントの削除権限がありません。' },
+        },
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('自分のコメント')).toBeInTheDocument();
+      });
+
+      const deleteButton = screen.getByRole('button', { name: /削除/i });
+      await user.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('コメントの削除権限がありません。')).toBeInTheDocument();
+      });
+    });
+
+    // テストケース8: 投稿者本人が削除ボタンをクリックしたとき、コメントが正常に削除され、リストから消える（既存の削除成功フローが壊れていないことを確認）
+    it('投稿者本人が削除ボタンをクリックしたとき、コメントが正常に削除され、リストから消える（既存の削除成功フローが壊れていないことを確認）', async () => {
+      const user = userEvent.setup();
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      const mockCommentNoReplies = {
+        ...mockOwnComment,
+        hasReplies: false,
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoReplies]);
+      (backlogItemService.deleteComment as jest.Mock).mockResolvedValue(undefined);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('自分のコメント')).toBeInTheDocument();
+      });
+
+      const deleteButton = screen.getByRole('button', { name: /削除/i });
+      await user.click(deleteButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.deleteComment).toHaveBeenCalledWith('item-100', 'comment-own', {
+          actorEmployeeId: expect.any(String),
+        });
+      });
+    });
+
+    // テストケース9: 子返信がないコメントを表示したとき、編集ボタンが削除ボタンと同様の権限条件で表示・非表示となる
+    it('子返信がないコメントを表示したとき、編集ボタンが削除ボタンと同様の権限条件で表示・非表示となる（削除ボタンと編集ボタンは同じ条件で表示されるため）', async () => {
+      // 他人のコメント（非ADMIN）→ 編集ボタンも非表示
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOtherComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('他人のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.queryByRole('button', { name: /編集/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+    });
+
+    // テストケース9-1: 本人のコメントで編集ボタンが表示される
+    it('投稿者本人（非ADMIN）が自分のコメントを表示したとき、編集ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOwnComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('自分のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument();
+    });
+
+    // テストケース9-2: ADMINが他人のコメントを表示したとき、編集ボタンが表示される
+    it('ADMINユーザーが他人のコメントを表示したとき、編集ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: true, employeeId: 'emp-admin' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOtherComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('他人のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument();
+    });
+
+    // テストケース10: authorEmployeeIdが未設定のコメントのテスト
+    const mockCommentNoAuthor = {
+      id: 'comment-no-author',
+      backlogItemId: 'item-100',
+      authorName: '匿名',
+      body: 'authorEmployeeId未設定のコメント',
+      createdAt: '2026-01-01T04:00:00Z',
+      parentId: null,
+      hasReplies: false,
+    };
+
+    // テストケース10-1: 非ADMINでは削除・編集ボタンが表示されない
+    it('authorEmployeeIdが未設定のコメントを非ADMINが閲覧したとき、削除・編集ボタンが表示されない', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoAuthor]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('authorEmployeeId未設定のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /編集/i })).not.toBeInTheDocument();
+    });
+
+    // テストケース10-2: ADMINでは削除・編集ボタンが表示される
+    it('authorEmployeeIdが未設定のコメントをADMINが閲覧したとき、削除・編集ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: true, employeeId: 'emp-admin' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoAuthor]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('authorEmployeeId未設定のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /削除/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument();
     });
   });
 });
