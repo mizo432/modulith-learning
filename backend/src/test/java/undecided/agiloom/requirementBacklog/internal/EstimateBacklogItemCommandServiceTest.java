@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemEstimated;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemStatusChanged;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -70,6 +71,16 @@ class EstimateBacklogItemCommandServiceTest {
     item.changeStatus(BacklogItemStatus.ACCEPTED);
     item.changeStatus(BacklogItemStatus.READY);
     return item;
+  }
+
+  private BacklogItem suggestedItem() {
+    return BacklogItem.builder()
+        .id(ITEM_ID)
+        .title("Test Item")
+        .creatorName("Creator")
+        .scrumTeamId(TEAM_ID)
+        .value(50)
+        .build();
   }
 
   private BacklogItem estimatedItem() {
@@ -200,6 +211,47 @@ class EstimateBacklogItemCommandServiceTest {
       verify(eventPublisher).publishEvent(eventCaptor.capture());
       BacklogItemEstimated event = eventCaptor.getValue();
       assertThat(event.storyPoint()).isEqualTo(21);
+    }
+  }
+
+  @Nested
+  @DisplayName("状態遷移テスト")
+  class StatusTransitionTest {
+
+    @Test
+    @DisplayName("READY状態のアイテムに見積もりを設定したとき、状態がESTIMATEDになりBacklogItemStatusChangedイベントも発行されること")
+    void shouldTransitionReadyToEstimated() {
+      BacklogItem item = readyItem();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
+
+      service.execute(command(8, PO_ID));
+
+      assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ESTIMATED);
+      ArgumentCaptor<BacklogItemStatusChanged> statusCaptor =
+          ArgumentCaptor.forClass(BacklogItemStatusChanged.class);
+      ArgumentCaptor<BacklogItemEstimated> estimatedCaptor =
+          ArgumentCaptor.forClass(BacklogItemEstimated.class);
+      verify(eventPublisher).publishEvent(statusCaptor.capture());
+      verify(eventPublisher).publishEvent(estimatedCaptor.capture());
+      BacklogItemStatusChanged statusEvent = statusCaptor.getValue();
+      assertThat(statusEvent.backlogItemId()).isEqualTo(ITEM_ID);
+      assertThat(statusEvent.fromStatus()).isEqualTo(BacklogItemStatus.READY);
+      assertThat(statusEvent.toStatus()).isEqualTo(BacklogItemStatus.ESTIMATED);
+      assertThat(statusEvent.actorEmployeeId()).isEqualTo(PO_ID);
+    }
+
+    @Test
+    @DisplayName("SUGGESTED状態のアイテムに見積もりを設定しようとしたとき、IllegalStateExceptionがスローされ、保存もイベント発行もされないこと")
+    void shouldRejectEstimateOnSuggestedItem() {
+      BacklogItem item = suggestedItem();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
+
+      assertThatThrownBy(() -> service.execute(command(8, PO_ID)))
+          .isInstanceOf(IllegalStateException.class);
+      verify(backlogItemRepository, never()).save(any());
+      verify(eventPublisher, never()).publishEvent(any());
     }
   }
 
