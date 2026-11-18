@@ -66,16 +66,16 @@ class BacklogItemTest {
     }
 
     @Test
-    @DisplayName("SUGGESTEDからREJECTEDへ遷移できること（value未設定）")
-    void shouldRejectFromSuggested() {
+    @DisplayName("SUGGESTEDからFROZENへ遷移できること（value未設定）")
+    void shouldFreezeFromSuggestedWithoutValue() {
       BacklogItem backlogItem = item();
-      backlogItem.changeStatus(BacklogItemStatus.REJECTED);
-      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.REJECTED);
+      backlogItem.changeStatus(BacklogItemStatus.FROZEN);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
     }
 
     @Test
-    @DisplayName("SUGGESTEDからREJECTEDへ遷移できること（value設定済み）")
-    void shouldRejectFromSuggestedWithValue() {
+    @DisplayName("SUGGESTEDからFROZENへ遷移できること（value設定済み）")
+    void shouldFreezeFromSuggestedWithValue() {
       BacklogItem backlogItem = BacklogItem.builder()
           .id(SnowflakeId.of(100L))
           .title("Test Item")
@@ -83,8 +83,8 @@ class BacklogItemTest {
           .scrumTeamId(SnowflakeId.of(10L))
           .value(50)
           .build();
-      backlogItem.changeStatus(BacklogItemStatus.REJECTED);
-      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.REJECTED);
+      backlogItem.changeStatus(BacklogItemStatus.FROZEN);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
     }
 
     @Test
@@ -98,16 +98,16 @@ class BacklogItemTest {
           .value(50)
           .build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
-      assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.REJECTED))
+      assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.FROZEN))
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("Invalid status transition");
     }
 
     @Test
-    @DisplayName("REJECTEDからは遷移できないこと")
-    void shouldNotTransitionFromRejected() {
+    @DisplayName("FROZENからはSUGGESTED以外へ遷移できないこと")
+    void shouldNotTransitionFromFrozenToAccepted() {
       BacklogItem backlogItem = item();
-      backlogItem.changeStatus(BacklogItemStatus.REJECTED);
+      backlogItem.changeStatus(BacklogItemStatus.FROZEN);
       assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.ACCEPTED))
           .isInstanceOf(IllegalStateException.class);
     }
@@ -117,6 +117,48 @@ class BacklogItemTest {
     void shouldNotTransitionToSuggested() {
       BacklogItem backlogItem = item();
       assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.SUGGESTED))
+          .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("SUGGESTEDからFROZENへ遷移できること（基本）")
+    void shouldFreezeFromSuggested() {
+      BacklogItem backlogItem = item();
+      backlogItem.changeStatus(BacklogItemStatus.FROZEN);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
+    }
+
+    @Test
+    @DisplayName("FROZENからSUGGESTEDへ遷移できること")
+    void shouldUnfreezeFromFrozen() {
+      BacklogItem backlogItem = item();
+      backlogItem.changeStatus(BacklogItemStatus.FROZEN);
+      backlogItem.changeStatus(BacklogItemStatus.SUGGESTED);
+      assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
+    }
+
+    @Test
+    @DisplayName("ACCEPTEDからFROZENへ遷移できないこと")
+    void shouldNotFreezeFromAccepted() {
+      BacklogItem backlogItem = BacklogItem.builder()
+          .id(SnowflakeId.of(100L))
+          .title("Test Item")
+          .creatorName("Creator")
+          .scrumTeamId(SnowflakeId.of(10L))
+          .value(50)
+          .build();
+      backlogItem.changeStatus(BacklogItemStatus.ACCEPTED);
+      assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.FROZEN))
+          .isInstanceOf(IllegalStateException.class)
+          .hasMessageContaining("Invalid status transition");
+    }
+
+    @Test
+    @DisplayName("FROZENからACCEPTEDへ遷移できないこと")
+    void shouldNotAcceptFromFrozen() {
+      BacklogItem backlogItem = item();
+      backlogItem.changeStatus(BacklogItemStatus.FROZEN);
+      assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.ACCEPTED))
           .isInstanceOf(IllegalStateException.class);
     }
   }

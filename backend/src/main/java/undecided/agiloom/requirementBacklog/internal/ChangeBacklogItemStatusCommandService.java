@@ -50,9 +50,18 @@ class ChangeBacklogItemStatusCommandService {
             .orElseThrow(
                 () -> new IllegalArgumentException("ScrumTeam not found: " + backlogItem.getScrumTeamId()));
 
-    if (!scrumTeam.canChangeStatusBy(command.getActorEmployeeId())) {
-      throw new BacklogItemPermissionDeniedException(
-          "Only the Scrum Master or Product Owner of the team can change the status of a backlog item");
+    // FROZEN → SUGGESTED（復帰）は PO のみ許可。それ以外は PO / SM の両方が許可。
+    if (command.getTargetStatus() == BacklogItemStatus.SUGGESTED
+        && backlogItem.getStatus() == BacklogItemStatus.FROZEN) {
+      if (!scrumTeam.isPo(command.getActorEmployeeId())) {
+        throw new BacklogItemPermissionDeniedException(
+            "Only the Product Owner can unfreeze a backlog item");
+      }
+    } else {
+      if (!scrumTeam.canChangeStatusBy(command.getActorEmployeeId())) {
+        throw new BacklogItemPermissionDeniedException(
+            "Only the Scrum Master or Product Owner of the team can change the status of a backlog item");
+      }
     }
 
     BacklogItemStatus fromStatus = backlogItem.getStatus();

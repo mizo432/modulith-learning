@@ -25,8 +25,9 @@ import undecided.supporting.snowflake.SnowflakeId;
  * <p>スクラムチームのバックログに登録されるアイテムを管理します。
  * チームメンバーとステークホルダー（チーム外の従業員。Issue #570 の決定）が提案でき、
  * 初期状態は {@link BacklogItemStatus#SUGGESTED} です。
- * 状態を {@link BacklogItemStatus#ACCEPTED} や {@link BacklogItemStatus#REJECTED} へ変更できるのは、
+ * 状態を {@link BacklogItemStatus#ACCEPTED} や {@link BacklogItemStatus#FROZEN} へ変更できるのは、
  * そのチームのSM（Scrum Master）とPO（Product Owner）のみです。
+ * {@link BacklogItemStatus#FROZEN} から {@link BacklogItemStatus#SUGGESTED} への復帰は PO のみです。
  *
  * <p>所属チームについては、productDiscovery のエンティティを直接参照せず、チームIDのみを保持します。
  * 状態変更の可否は、イベントで連携された自領域のサブセット（internal の ScrumTeamSubset）が
@@ -146,7 +147,12 @@ public class BacklogItem {
   /**
    * 状態を変更します。
    *
-   * <p>許可される遷移は SUGGESTED → ACCEPTED と SUGGESTED → REJECTED のみです。
+   * <p>許可される遷移は以下の通りです：
+   * <ul>
+   *   <li>SUGGESTED → ACCEPTED（Value が設定されていること）
+   *   <li>SUGGESTED → FROZEN
+   *   <li>FROZEN → SUGGESTED（PO のみが実行可能。権限判定はコマンドサービス側で行う）
+   * </ul>
    * 変更できる主体（SM／PO）の判定は呼び出し側（コマンドサービス）がサブセットの保持する
    * PO／SM と照合して事前に行います。
    * 状態遷移の履歴はロングタームイベントパターン（{@link BacklogItemStatusChanged} イベント）で
@@ -154,21 +160,41 @@ public class BacklogItem {
    *
    * @param target 遷移先の状態
    * @throws IllegalStateException 許可されていない遷移の場合
+   * @throws IllegalArgumentException ACCEPTED 遷移時に Value が未設定の場合
    */
   public void changeStatus(@NonNull BacklogItemStatus target) {
     checkNotNull(target, () -> new IllegalArgumentException("target status must not be null"));
-    if (this.status != BacklogItemStatus.SUGGESTED || target == BacklogItemStatus.SUGGESTED) {
-      throw new IllegalStateException(
+    switch (this.status) {
+      case SUGGESTED -> {
+        switch (target) {
+          case ACCEPTED -> {
+            if (this.value == null) {
+              throw new IllegalArgumentException("BacklogItem value must be set before accepting");
+            }
+            validateValue(this.value);
+            this.status = target;
+            this.updatedAt = LocalDateTime.now();
+          }
+          case FROZEN -> {
+            this.status = target;
+            this.updatedAt = LocalDateTime.now();
+          }
+          default -> throw new IllegalStateException(
+              "Invalid status transition: " + this.status + " -> " + target);
+        }
+      }
+      case FROZEN -> {
+        if (target == BacklogItemStatus.SUGGESTED) {
+          this.status = target;
+          this.updatedAt = LocalDateTime.now();
+        } else {
+          throw new IllegalStateException(
+              "Invalid status transition: " + this.status + " -> " + target);
+        }
+      }
+      default -> throw new IllegalStateException(
           "Invalid status transition: " + this.status + " -> " + target);
     }
-    if (target == BacklogItemStatus.ACCEPTED) {
-      if (this.value == null) {
-        throw new IllegalArgumentException("BacklogItem value must be set before accepting");
-      }
-      validateValue(this.value);
-    }
-    this.status = target;
-    this.updatedAt = LocalDateTime.now();
   }
 
   /**

@@ -41,13 +41,13 @@ const REFRESH_INTERVAL = 30000; // 30秒
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
   ACCEPTED: '承認済み',
-  REJECTED: '却下',
+  FROZEN: '凍結',
 };
 
-const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'error'> = {
+const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'info'> = {
   SUGGESTED: 'warning',
   ACCEPTED: 'success',
-  REJECTED: 'error',
+  FROZEN: 'info',
 };
 
 const QUALITY_CATEGORY_LABELS: Record<string, string> = {
@@ -97,6 +97,8 @@ const BacklogItemList: React.FC = () => {
     !!currentEmployeeId &&
     !!team &&
     (team.poEmployeeId === currentEmployeeId || team.smEmployeeId === currentEmployeeId);
+  const isPo =
+    !!currentEmployeeId && !!team && team.poEmployeeId === currentEmployeeId;
 
   const loadItems = useCallback(async () => {
     if (!scrumTeamId) return;
@@ -228,7 +230,7 @@ const BacklogItemList: React.FC = () => {
           <MenuItem value="">すべて</MenuItem>
           <MenuItem value="SUGGESTED">提案</MenuItem>
           <MenuItem value="ACCEPTED">承認済み</MenuItem>
-          <MenuItem value="REJECTED">却下</MenuItem>
+          <MenuItem value="FROZEN">凍結</MenuItem>
         </Select>
       </FormControl>
 
@@ -319,12 +321,21 @@ const BacklogItemList: React.FC = () => {
                         </Tooltip>
                         <Button
                           size="small"
-                          color="error"
-                          onClick={() => setConfirmTarget({item, status: 'REJECTED'})}
+                          color="info"
+                          onClick={() => setConfirmTarget({item, status: 'FROZEN'})}
                         >
-                          却下
+                          凍結
                         </Button>
                       </>
+                    )}
+                    {isPo && item.status === 'FROZEN' && (
+                      <Button
+                        size="small"
+                        color="warning"
+                        onClick={() => setConfirmTarget({item, status: 'SUGGESTED'})}
+                      >
+                        SUGGESTEDへ戻す
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>

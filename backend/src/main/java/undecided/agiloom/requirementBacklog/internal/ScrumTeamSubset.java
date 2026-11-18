@@ -93,4 +93,20 @@ class ScrumTeamSubset {
     }
     return actorEmployeeId.equals(this.poEmployeeId) || actorEmployeeId.equals(this.smEmployeeId);
   }
+
+  /**
+   * 指定した従業員がこのチームのPO（Product Owner）かを判定します。
+   *
+   * <p>FROZEN → SUGGESTED（復帰）は PO のみが実行できるため、
+   * 遷移先に応じた権限判定に使用します。
+   *
+   * @param actorEmployeeId 操作者の従業員ID
+   * @return PO であれば true
+   */
+  boolean isPo(@Nullable SnowflakeId actorEmployeeId) {
+    if (actorEmployeeId == null) {
+      return false;
+    }
+    return actorEmployeeId.equals(this.poEmployeeId);
+  }
 }

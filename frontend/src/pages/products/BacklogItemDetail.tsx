@@ -29,13 +29,13 @@ const REFRESH_INTERVAL = 30000; // 30秒
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
   ACCEPTED: '承認済み',
-  REJECTED: '却下',
+  FROZEN: '凍結',
 };
 
-const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'error'> = {
+const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'info'> = {
   SUGGESTED: 'warning',
   ACCEPTED: 'success',
-  REJECTED: 'error',
+  FROZEN: 'info',
 };
 
 const BacklogItemDetail: React.FC = () => {
