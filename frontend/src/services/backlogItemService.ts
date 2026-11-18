@@ -29,6 +29,10 @@ export interface BacklogItemComment {
   authorName: string;
   body: string;
   createdAt: string;
+  /** 親コメントのID（返信の場合）。ルートコメントの場合はnull。 */
+  parentId?: string | null;
+  /** 子返信があるかどうか。 */
+  hasReplies?: boolean;
 }
 
 export interface CreateBacklogItemRequest {
@@ -43,6 +47,8 @@ export interface AddBacklogItemCommentRequest {
   authorEmployeeId?: string;
   authorName: string;
   body: string;
+  /** 親コメントのID（返信の場合）。 */
+  parentCommentId?: string;
 }
 
 export interface UpdateBacklogItemRequest {
@@ -51,6 +57,15 @@ export interface UpdateBacklogItemRequest {
   priority?: number;
   sprintId?: string;
   value?: number;
+}
+
+export interface UpdateBacklogItemCommentRequest {
+  actorEmployeeId?: string;
+  body: string;
+}
+
+export interface DeleteBacklogItemCommentRequest {
+  actorEmployeeId?: string;
 }
 
 const backlogItemService = {
@@ -132,6 +147,28 @@ const backlogItemService = {
       request,
     );
     return response.data;
+  },
+
+  async updateComment(
+    backlogItemId: string,
+    commentId: string,
+    request: UpdateBacklogItemCommentRequest,
+  ): Promise<BacklogItemComment> {
+    const response = await api.patch(
+      `/v1/backlog-items/${backlogItemId}/comments/${commentId}`,
+      request,
+    );
+    return response.data;
+  },
+
+  async deleteComment(
+    backlogItemId: string,
+    commentId: string,
+    request: DeleteBacklogItemCommentRequest,
+  ): Promise<void> {
+    await api.delete(`/v1/backlog-items/${backlogItemId}/comments/${commentId}`, {
+      data: request,
+    });
   },
 };
 

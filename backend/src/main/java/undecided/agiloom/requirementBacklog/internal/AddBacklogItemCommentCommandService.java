@@ -32,6 +32,11 @@ class AddBacklogItemCommentCommandService {
     checkNonEmpty(command.getAuthorName(), () -> new IllegalArgumentException("Author name must not be empty"));
     checkNonEmpty(command.getBody(), () -> new IllegalArgumentException("Comment body must not be empty"));
 
+    // 親コメントIDが指定された場合は未実装
+    if (command.getParentCommentId() != null) {
+      throw new UnsupportedOperationException("親コメントへの返信はまだ実装されていません");
+    }
+
     BacklogItem backlogItem =
         backlogItemRepository
             .findById(command.getBacklogItemId())

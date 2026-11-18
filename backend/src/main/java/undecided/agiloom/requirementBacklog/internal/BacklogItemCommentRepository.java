@@ -8,4 +8,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 interface BacklogItemCommentRepository extends CrudRepository<BacklogItemComment, SnowflakeId> {
 
   List<BacklogItemComment> findByBacklogItemIdOrderByCreatedAtAsc(SnowflakeId backlogItemId);
+
+  /** 親コメントIDで子コメントを検索します。 */
+  List<BacklogItemComment> findByParentCommentId(SnowflakeId parentCommentId);
 }

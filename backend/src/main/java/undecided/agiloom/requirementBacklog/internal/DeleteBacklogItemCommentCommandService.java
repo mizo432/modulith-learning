@@ -26,10 +26,6 @@ class DeleteBacklogItemCommentCommandService {
    *
    * <p>削除できるのはコメントした本人またはADMINロール保持者のみです。
    *
-   * <p>返信チェックは本実装では行いません。スレッド返信機能（#510）は未実装であり、
-   * 子返信があるコメントを削除できないルールは、将来親参照（parent_comment_id）が導入された際に
-   *有効化する前提です。
-   *
    * @param command 削除コマンド
    * @throws IllegalArgumentException コメントが存在しない場合、またはactorEmployeeIdがnullの場合
    * @throws BacklogItemPermissionDeniedException 削除権限がない場合
@@ -52,9 +48,6 @@ class DeleteBacklogItemCommentCommandService {
           "コメント(" + command.getCommentId()
               + ")はバックログアイテム(" + command.getBacklogItemId() + ")に属していません");
     }
-
-    // 返信チェックは実装しない（スレッド返信未実装のため）。
-    // 将来 parent_comment_id 列が導入された時点で、子コメントが存在する場合は削除不可とする。
 
     boolean isAuthor = comment.getAuthorEmployeeId() != null
         && comment.getAuthorEmployeeId().equals(actorEmployeeId);

@@ -39,6 +39,8 @@ jest.mock('../../services/backlogItemService', () => ({
     getComments: jest.fn(),
     addComment: jest.fn(),
     updateBacklogItem: jest.fn(),
+    updateComment: jest.fn(),
+    deleteComment: jest.fn(),
   },
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
@@ -375,6 +377,244 @@ describe('BacklogItemDetail', () => {
 
       await waitFor(() => {
         expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
+  describe('コメントスレッド表示', () => {
+    const mockRootComment = {
+      id: 'comment-1',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-1',
+      authorName: '親投稿者',
+      body: '親コメント',
+      createdAt: '2026-01-01T00:00:00Z',
+      parentId: null,
+      hasReplies: true,
+    };
+    const mockReplyComment = {
+      id: 'comment-2',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-2',
+      authorName: '返信者',
+      body: '子コメント（返信）',
+      createdAt: '2026-01-01T01:00:00Z',
+      parentId: 'comment-1',
+      hasReplies: false,
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+    });
+
+    it('コメント一覧を表示したとき、コメントがリスト表示される', async () => {
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockRootComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+      });
+    });
+
+    it('親コメントと子コメントがあるとき、子コメントがインデント表示される', async () => {
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockRootComment, mockReplyComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+        expect(screen.getByText('子コメント（返信）')).toBeInTheDocument();
+      });
+
+      // 子コメントは親コメントより右にインデントされていることを確認
+      const parentElement = screen.getByText('親コメント').closest('li');
+      const replyElement = screen.getByText('子コメント（返信）').closest('li');
+      expect(replyElement).toHaveStyle({ paddingLeft: '>=16px' });
+    });
+
+    it('3段以上のネストがあるとき、すべての段がインデント表示される', async () => {
+      const mockReply2 = {
+        ...mockReplyComment,
+        id: 'comment-3',
+        body: '3段目の返信',
+        parentId: 'comment-2',
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockRootComment, mockReplyComment, mockReply2]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('3段目の返信')).toBeInTheDocument();
+      });
+    });
+
+    it('返信ボタンをクリックしたとき、返信入力フィールドが表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockRootComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+      });
+
+      // 返信ボタンをクリック
+      const replyButton = screen.getByRole('button', { name: /返信/i });
+      await user.click(replyButton);
+
+      // 返信入力フィールドが表示される
+      await waitFor(() => {
+        expect(screen.getByTestId('reply-textarea')).toBeInTheDocument();
+      });
+    });
+
+    it('返信を入力して送信したとき、親コメントに子コメントとして追加される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockRootComment]);
+      (backlogItemService.addComment as jest.Mock).mockResolvedValue({
+        ...mockReplyComment,
+        body: '新しい返信',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+      });
+
+      // 返信ボタンをクリック
+      const replyButton = screen.getByRole('button', { name: /返信/i });
+      await user.click(replyButton);
+
+      const replyTextarea = await waitFor(() => screen.getByTestId('reply-textarea'));
+      const textarea = replyTextarea.querySelector('textarea')!;
+      await user.type(textarea, '新しい返信');
+
+      // 返信送信ボタンをクリック
+      const sendButton = screen.getByRole('button', { name: /送信/i });
+      await user.click(sendButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.addComment).toHaveBeenCalledWith('item-100', {
+          body: '新しい返信',
+          parentCommentId: 'comment-1',
+          authorName: expect.any(String),
+        });
+      });
+    });
+
+    it('子返信がないコメントの編集ボタンをクリックしたとき、編集モードになる', async () => {
+      const user = userEvent.setup();
+      const mockCommentNoReplies = {
+        ...mockRootComment,
+        hasReplies: false,
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoReplies]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+      });
+
+      // 編集ボタンをクリック
+      const editButton = screen.getByRole('button', { name: /編集/i });
+      await user.click(editButton);
+
+      // 編集モードで入力フィールドが表示される
+      await waitFor(() => {
+        expect(screen.getByTestId('edit-comment-textarea')).toBeInTheDocument();
+      });
+    });
+
+    it('編集モードで本文を変更して保存したとき、コメントが更新される', async () => {
+      const user = userEvent.setup();
+      const mockCommentNoReplies = {
+        ...mockRootComment,
+        hasReplies: false,
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoReplies]);
+      (backlogItemService.updateComment as jest.Mock).mockResolvedValue({
+        ...mockCommentNoReplies,
+        body: '更新されたコメント',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+      });
+
+      // 編集ボタンをクリック
+      const editButton = screen.getByRole('button', { name: /編集/i });
+      await user.click(editButton);
+
+      const editTextarea = await waitFor(() => screen.getByTestId('edit-comment-textarea'));
+      const textarea = editTextarea.querySelector('textarea')!;
+      await user.clear(textarea);
+      await user.type(textarea, '更新されたコメント');
+
+      // 保存ボタンをクリック
+      const saveButton = screen.getByRole('button', { name: /保存/i });
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.updateComment).toHaveBeenCalledWith('item-100', 'comment-1', {
+          body: '更新されたコメント',
+          authorEmployeeId: expect.any(String),
+        });
+      });
+    });
+
+    it('子返信がないコメントの削除ボタンをクリックしたとき、コメントが削除される', async () => {
+      const user = userEvent.setup();
+      const mockCommentNoReplies = {
+        ...mockRootComment,
+        hasReplies: false,
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoReplies]);
+      (backlogItemService.deleteComment as jest.Mock).mockResolvedValue(undefined);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+      });
+
+      // 削除ボタンをクリック
+      const deleteButton = screen.getByRole('button', { name: /削除/i });
+      await user.click(deleteButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.deleteComment).toHaveBeenCalledWith('item-100', 'comment-1', {
+          authorEmployeeId: expect.any(String),
+        });
+      });
+    });
+
+    it('子返信があるコメントを表示したとき、編集・削除ボタンが表示されない', async () => {
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockRootComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('親コメント')).toBeInTheDocument();
+      });
+
+      // 編集ボタンと削除ボタンが表示されていないことを確認
+      expect(screen.queryByRole('button', { name: /編集/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+    });
+
+    it('コメントがないとき、「コメントはまだありません」が表示される', async () => {
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('コメントはまだありません。')).toBeInTheDocument();
       });
     });
   });
