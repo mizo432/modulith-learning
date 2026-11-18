@@ -415,6 +415,7 @@ describe('BacklogItemDetail', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
+      setAuthMock();
       (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
     });
 
@@ -845,6 +846,75 @@ describe('BacklogItemDetail', () => {
 
       expect(screen.queryByRole('button', { name: /編集/i })).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+    });
+
+    // テストケース9-1: 本人のコメントで編集ボタンが表示される
+    it('投稿者本人（非ADMIN）が自分のコメントを表示したとき、編集ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOwnComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('自分のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument();
+    });
+
+    // テストケース9-2: ADMINが他人のコメントを表示したとき、編集ボタンが表示される
+    it('ADMINユーザーが他人のコメントを表示したとき、編集ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: true, employeeId: 'emp-admin' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockOtherComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('他人のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument();
+    });
+
+    // テストケース10: authorEmployeeIdが未設定のコメントのテスト
+    const mockCommentNoAuthor = {
+      id: 'comment-no-author',
+      backlogItemId: 'item-100',
+      authorName: '匿名',
+      body: 'authorEmployeeId未設定のコメント',
+      createdAt: '2026-01-01T04:00:00Z',
+      parentId: null,
+      hasReplies: false,
+    };
+
+    // テストケース10-1: 非ADMINでは削除・編集ボタンが表示されない
+    it('authorEmployeeIdが未設定のコメントを非ADMINが閲覧したとき、削除・編集ボタンが表示されない', async () => {
+      setAuthMock({ isAdmin: false, employeeId: 'emp-1' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoAuthor]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('authorEmployeeId未設定のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.queryByRole('button', { name: /削除/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /編集/i })).not.toBeInTheDocument();
+    });
+
+    // テストケース10-2: ADMINでは削除・編集ボタンが表示される
+    it('authorEmployeeIdが未設定のコメントをADMINが閲覧したとき、削除・編集ボタンが表示される', async () => {
+      setAuthMock({ isAdmin: true, employeeId: 'emp-admin' });
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentNoAuthor]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('authorEmployeeId未設定のコメント')).toBeInTheDocument();
+      });
+
+      expect(screen.getByRole('button', { name: /削除/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument();
     });
   });
 });
