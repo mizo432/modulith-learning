@@ -14,7 +14,11 @@ import jakarta.persistence.Converter;
 import java.beans.Transient;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -196,6 +200,34 @@ public class SnowflakeId implements LongValue<SnowflakeId>, Comparable<Snowflake
     @Override
     public SnowflakeId convertToEntityAttribute(@Nullable Long dbData) {
       return SnowflakeId.reconstruct(dbData);
+    }
+  }
+
+  /**
+   * List&lt;SnowflakeId&gt;とPostgreSQL BIGINT[]配列を相互に変換するためのコンバーターです。
+   */
+  @Converter
+  public static class SnowflakeIdListConverter implements AttributeConverter<List<SnowflakeId>, Long[]> {
+
+    @Override
+    public Long[] convertToDatabaseColumn(@Nullable List<SnowflakeId> attribute) {
+      if (attribute == null || attribute.isEmpty()) {
+        return new Long[0];
+      }
+      return attribute.stream()
+          .map(id -> id != null ? id.value() : null)
+          .toArray(Long[]::new);
+    }
+
+    @Override
+    public List<SnowflakeId> convertToEntityAttribute(@Nullable Long[] dbData) {
+      if (dbData == null || dbData.length == 0) {
+        return new ArrayList<>();
+      }
+      return Arrays.stream(dbData)
+          .filter(Objects::nonNull)
+          .map(SnowflakeId::reconstruct)
+          .collect(Collectors.toList());
     }
   }
 }

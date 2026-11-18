@@ -4,6 +4,7 @@ import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.c
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -68,7 +69,8 @@ public class ScrumTeam {
   protected String smName;
 
   /** チームメンバーの従業員IDリスト（PO/SMを含む）。 */
-  @Column(name = "member_employee_ids", columnDefinition = "TEXT[]")
+  @Column(name = "member_employee_ids", columnDefinition = "BIGINT[]")
+  @Convert(converter = SnowflakeId.SnowflakeIdListConverter.class)
   @Builder.Default
   protected List<SnowflakeId> memberEmployeeIds = new ArrayList<>();
 
