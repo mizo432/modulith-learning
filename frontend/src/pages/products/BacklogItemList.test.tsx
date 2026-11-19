@@ -878,9 +878,11 @@ describe('BacklogItemList', () => {
         expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
       });
 
-      // StoryPoint値「5」が表示される
+      // StoryPoint値「5」がデータ行内に表示される（合計表示と区別するため行内限定）
       await waitFor(() => {
-        expect(screen.getByText('5')).toBeInTheDocument();
+        const row = screen.getByText('StoryPointありアイテム').closest('tr');
+        expect(row).toBeInTheDocument();
+        expect(row?.textContent).toContain('5');
       });
     });
 
@@ -946,11 +948,20 @@ describe('BacklogItemList', () => {
     it('状態フィルタを変更したとき、合計がフィルタ後のアイテムで再計算される', async () => {
       const user = userEvent.setup();
 
-      // 初期データ（StoryPoint合計 = 5 + 13 = 18）
-      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
-        mockItemWithStoryPoint,
-        mockItemWithStoryPoint13,
-      ]);
+      // 初期データ（StoryPoint合計 = 5 + 13 = 18）とフィルタ後データ（StoryPoint合計 = 8）をチェーンで設定
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock)
+        .mockResolvedValueOnce([
+          mockItemWithStoryPoint,
+          mockItemWithStoryPoint13,
+        ])
+        .mockResolvedValueOnce([
+          {
+            ...mockItemWithStoryPoint,
+            status: 'ACCEPTED',
+            statusLabel: '承認済み',
+            storyPoint: 8,
+          },
+        ]);
 
       renderBacklogItemList();
 
@@ -973,23 +984,15 @@ describe('BacklogItemList', () => {
       );
       await user.click(acceptedOption);
 
-      // フィルタ後のデータ（StoryPoint合計 = 8 のみ）
-      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
-        {
-          ...mockItemWithStoryPoint,
-          status: 'ACCEPTED',
-          statusLabel: '承認済み',
-          storyPoint: 8,
-        },
-      ]);
-
       await waitFor(() => {
         expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledWith('team-1', 'ACCEPTED');
       });
 
-      // 合計が「8」に更新される
+      // 合計が「8」に更新される（合計表示のBox内を検索）
       await waitFor(() => {
-        expect(screen.getByText('8')).toBeInTheDocument();
+        const totalBox = screen.getByText(/StoryPoint.*合計/i).closest('div');
+        expect(totalBox).toBeInTheDocument();
+        expect(totalBox?.textContent).toMatch(/\b8\b/);
       });
     });
 
@@ -1046,10 +1049,17 @@ describe('BacklogItemList', () => {
         expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
       });
 
-      // ヘッダー行でStoryPoint列が存在すること
+      // ヘッダー行（thead内）でStoryPoint列が存在すること
       await waitFor(() => {
-        const headerRow = screen.getByRole('row', { name: /StoryPoint/i });
-        expect(headerRow).toBeInTheDocument();
+        const thead = document.querySelector('thead');
+        expect(thead).toBeInTheDocument();
+        const headerCells = thead?.querySelectorAll('th');
+        expect(headerCells).toBeDefined();
+        // StoryPointがヘッダーに含まれること
+        const storyPointHeader = Array.from(headerCells!).find(
+          (cell) => cell.textContent?.trim() === 'StoryPoint'
+        );
+        expect(storyPointHeader).toBeDefined();
       });
     });
 

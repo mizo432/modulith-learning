@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import BacklogItemDetail from './BacklogItemDetail';
 import backlogItemService from '../../services/backlogItemService';
+import scrumTeamService from '../../services/scrumTeamService';
 
 // Mock react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -61,6 +62,14 @@ jest.mock('../../services/backlogItemService', () => ({
   },
 }));
 
+// Mock scrumTeamService
+jest.mock('../../services/scrumTeamService', () => ({
+  __esModule: true,
+  default: {
+    getScrumTeamById: jest.fn(),
+  },
+}));
+
 const mockBacklogItem = {
   id: 'item-100',
   scrumTeamId: 'team-1',
@@ -96,6 +105,15 @@ describe('BacklogItemDetail', () => {
     setAuthMock();
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    // デフォルトではemp-1をチームメンバーとして設定
+    (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+      id: 'team-1',
+      productId: 'product-1',
+      name: 'テストチーム',
+      poEmployeeId: 'emp-1',
+      smEmployeeId: 'emp-2',
+      memberEmployeeIds: ['emp-1', 'emp-2'],
+    });
   });
 
   describe('Value入力フィールド', () => {
@@ -1144,11 +1162,12 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      // 各許容値がラジオボタンとして表示される
+      // 各許容値がラジオボタンとして表示される（getAllByRoleでvalue属性を確認）
       await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        const values = radios.map((r) => r.getAttribute('value'));
         [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89].forEach((sp) => {
-          const radio = screen.getByRole('radio', { name: new RegExp(String(sp), 'i') });
-          expect(radio).toBeInTheDocument();
+          expect(values).toContain(String(sp));
         });
       });
     });
@@ -1180,9 +1199,10 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      // storyPoint=5 のラジオボタンが選択されている
+      // storyPoint=5 のラジオボタンが選択されている（value属性で特定）
       await waitFor(() => {
-        const radio5 = screen.getByRole('radio', { name: /5/i });
+        const radios = screen.getAllByRole('radio');
+        const radio5 = radios.find((r) => r.getAttribute('value') === '5');
         expect(radio5).toBeChecked();
       });
     });
@@ -1223,8 +1243,11 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      // StoryPoint 8 のラジオボタンを選択
-      const radio8 = await waitFor(() => screen.getByRole('radio', { name: /8/i }));
+      // StoryPoint 8 のラジオボタンを選択（value属性で特定）
+      const radio8 = await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        return radios.find((r) => r.getAttribute('value') === '8')!;
+      });
       await user.click(radio8);
 
       // 保存ボタンをクリック
@@ -1258,7 +1281,10 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      const radio3 = await waitFor(() => screen.getByRole('radio', { name: /3/i }));
+      const radio3 = await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        return radios.find((r) => r.getAttribute('value') === '3')!;
+      });
       await user.click(radio3);
 
       const saveButton = await waitFor(() =>
@@ -1267,7 +1293,7 @@ describe('BacklogItemDetail', () => {
       await user.click(saveButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/StoryPoint.*保存/i)).toBeInTheDocument();
+        expect(screen.getByText('StoryPointを保存しました。')).toBeInTheDocument();
       });
     });
 
@@ -1291,7 +1317,10 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      const radio13 = await waitFor(() => screen.getByRole('radio', { name: /13/i }));
+      const radio13 = await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        return radios.find((r) => r.getAttribute('value') === '13')!;
+      });
       await user.click(radio13);
 
       const saveButton = await waitFor(() =>
@@ -1301,7 +1330,8 @@ describe('BacklogItemDetail', () => {
 
       // 再取得后被選択された値が反映される
       await waitFor(() => {
-        const radio13After = screen.getByRole('radio', { name: /13/i });
+        const radios = screen.getAllByRole('radio');
+        const radio13After = radios.find((r) => r.getAttribute('value') === '13');
         expect(radio13After).toBeChecked();
       });
     });
@@ -1315,9 +1345,10 @@ describe('BacklogItemDetail', () => {
         status: 'ESTIMATED',
         statusLabel: '見積もり済み',
       };
-      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (backlogItemService.getBacklogItem as jest.Mock)
+        .mockResolvedValueOnce(mockBacklogItemReady)
+        .mockResolvedValueOnce(estimatedItem);
       (backlogItemService.estimateBacklogItem as jest.Mock).mockResolvedValue(estimatedItem);
-      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(estimatedItem);
 
       renderBacklogItemDetail();
 
@@ -1325,7 +1356,10 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('準備完了')).toBeInTheDocument();
       });
 
-      const radio5 = await waitFor(() => screen.getByRole('radio', { name: /5/i }));
+      const radio5 = await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        return radios.find((r) => r.getAttribute('value') === '5')!;
+      });
       await user.click(radio5);
 
       const saveButton = await waitFor(() =>
@@ -1356,7 +1390,10 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      const radio5 = await waitFor(() => screen.getByRole('radio', { name: /5/i }));
+      const radio5 = await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        return radios.find((r) => r.getAttribute('value') === '5')!;
+      });
       await user.click(radio5);
 
       const saveButton = await waitFor(() =>
@@ -1379,9 +1416,10 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      // StoryPoint 0 のラジオボタンとその説明テキストが表示される
+      // StoryPoint 0 のラジオボタンとその説明テキストが表示される（value属性で特定）
       await waitFor(() => {
-        const radio0 = screen.getByRole('radio', { name: /0/i });
+        const radios = screen.getAllByRole('radio');
+        const radio0 = radios.find((r) => r.getAttribute('value') === '0');
         expect(radio0).toBeInTheDocument();
         expect(screen.getByText('見積もり不要')).toBeInTheDocument();
       });
@@ -1398,7 +1436,8 @@ describe('BacklogItemDetail', () => {
       });
 
       await waitFor(() => {
-        const radio89 = screen.getByRole('radio', { name: /89/i });
+        const radios = screen.getAllByRole('radio');
+        const radio89 = radios.find((r) => r.getAttribute('value') === '89');
         expect(radio89).toBeInTheDocument();
         expect(screen.getByText('最大規模（分割を検討）')).toBeInTheDocument();
       });
@@ -1488,8 +1527,11 @@ describe('BacklogItemDetail', () => {
         expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
       });
 
-      // 現在の値(5)から別の値(13)に変更
-      const radio13 = await waitFor(() => screen.getByRole('radio', { name: /13/i }));
+      // 現在の値(5)から別の値(13)に変更（value属性で特定）
+      const radio13 = await waitFor(() => {
+        const radios = screen.getAllByRole('radio');
+        return radios.find((r) => r.getAttribute('value') === '13')!;
+      });
       await user.click(radio13);
 
       const saveButton = await waitFor(() =>
@@ -1532,6 +1574,14 @@ describe('BacklogItemDetail', () => {
     it('チームメンバーの場合、StoryPoint保存ボタンが表示される', async () => {
       setAuthMock({ employeeId: 'emp-1' });
       (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+        id: 'team-1',
+        productId: 'product-1',
+        name: 'テストチーム',
+        poEmployeeId: 'emp-1',
+        smEmployeeId: 'emp-2',
+        memberEmployeeIds: ['emp-1', 'emp-2'],
+      });
 
       renderBacklogItemDetail();
 
@@ -1543,6 +1593,36 @@ describe('BacklogItemDetail', () => {
       await waitFor(() => {
         const saveButton = screen.getByRole('button', { name: /StoryPoint.*保存/i });
         expect(saveButton).toBeInTheDocument();
+      });
+    });
+
+    // テスト18: チームメンバーではない場合、StoryPoint保存ボタンが表示されない
+    it('チームメンバーではない場合、StoryPoint保存ボタンが表示されない', async () => {
+      setAuthMock({ employeeId: 'emp-not-member' });
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemReady);
+      (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+        id: 'team-1',
+        productId: 'product-1',
+        name: 'テストチーム',
+        poEmployeeId: 'emp-1',
+        smEmployeeId: 'emp-2',
+        memberEmployeeIds: ['emp-1', 'emp-2'],
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPointセクションは表示されるが、保存ボタンは表示されないこと
+      await waitFor(() => {
+        const radioGroup = screen.getByRole('radiogroup');
+        expect(radioGroup).toBeInTheDocument();
+      });
+      await waitFor(() => {
+        const saveButton = screen.queryByRole('button', { name: /StoryPoint.*保存/i });
+        expect(saveButton).not.toBeInTheDocument();
       });
     });
   });
