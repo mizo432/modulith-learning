@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Snackbar, Alert, AlertColor } from '@mui/material';
 import { useNotifications } from '../hooks/useNotifications';
 
@@ -21,15 +21,17 @@ const AUTO_HIDE_DURATION = 6000;
 
 export const NotificationSnackbar: React.FC<NotificationSnackbarProps> = ({ employeeId }) => {
   const { notifications, handleMarkAsRead } = useNotifications(employeeId);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(notifications.length > 0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [queue, setQueue] = useState(notifications.slice(0, MAX_VISIBLE));
+  const openRef = useRef(open);
+  openRef.current = open;
 
   // 通知が更新されたらキューを更新
   useEffect(() => {
     const newQueue = notifications.slice(0, MAX_VISIBLE);
     setQueue(newQueue);
-    if (newQueue.length > 0 && !open) {
+    if (newQueue.length > 0 && !openRef.current) {
       setCurrentIndex(0);
       setOpen(true);
     }
