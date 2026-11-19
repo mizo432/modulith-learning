@@ -2,6 +2,7 @@ package undecided.notification.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,8 +20,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentDeleted;
+import undecided.notification.spi.NotificationEntity;
 import undecided.notification.spi.NotificationType;
 import undecided.supporting.snowflake.SnowflakeId;
+import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 /**
  * テストリスト項目3〜6, 12〜13: イベント受信時の通知レコード作成
@@ -60,6 +63,9 @@ class BacklogItemCommentEventListenerTest {
   @Mock
   private EmailNotificationService emailNotificationService;
 
+  @Mock
+  private SnowflakeIdGenerator snowflakeIdGenerator;
+
   private BacklogItemCommentEventListener listener;
 
   @BeforeEach
@@ -68,7 +74,8 @@ class BacklogItemCommentEventListenerTest {
         new BacklogItemCommentEventListener(
             notificationRepository,
             commentParticipantSubsetRepository,
-            emailNotificationService);
+            emailNotificationService,
+            snowflakeIdGenerator);
   }
 
   @Nested
@@ -79,9 +86,10 @@ class BacklogItemCommentEventListenerTest {
     @DisplayName("イベントを受信したとき、コメント参加者（操作者除く）に通知レコードが作成される")
     void shouldCreateNotificationForParticipantsExcludingActor() {
       // Arrange: テストリスト項目3
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(NOTIFICATION_ID);
       BacklogItemCommentAdded event =
           new BacklogItemCommentAdded(
-              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", LocalDateTime.now());
+              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
       Set<CommentParticipantSubset> participants = new HashSet<>();
       participants.add(
@@ -90,6 +98,7 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
+              .employeeEmail("participant1@example.com")
               .build());
       participants.add(
           CommentParticipantSubset.builder()
@@ -97,19 +106,21 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_2_ID)
               .employeeName("Participant2")
+              .employeeEmail("participant2@example.com")
               .build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
       // Act
       listener.onCommentAdded(event);
 
-      // Assert
+      // Assert: 2人の参加者に通知が作成される
       ArgumentCaptor<NotificationEntity> captor = ArgumentCaptor.forClass(NotificationEntity.class);
-      verify(notificationRepository).save(captor.capture());
-      NotificationEntity saved = captor.getValue();
-      assertThat(saved.getRecipientId()).isIn(PARTICIPANT_1_ID, PARTICIPANT_2_ID);
-      assertThat(saved.getIsRead()).isFalse();
-      assertThat(saved.getType()).isEqualTo(NotificationType.COMMENT_ADDED);
+      verify(notificationRepository, org.mockito.Mockito.times(2)).save(captor.capture());
+      assertThat(captor.getAllValues())
+          .extracting(NotificationEntity::getRecipientId)
+          .containsExactlyInAnyOrder(PARTICIPANT_1_ID, PARTICIPANT_2_ID);
+      assertThat(captor.getAllValues().get(0).getIsRead()).isFalse();
+      assertThat(captor.getAllValues().get(0).getType()).isEqualTo(NotificationType.COMMENT_ADDED);
     }
 
     @Test
@@ -118,7 +129,7 @@ class BacklogItemCommentEventListenerTest {
       // Arrange: テストリスト項目4
       BacklogItemCommentAdded event =
           new BacklogItemCommentAdded(
-              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", LocalDateTime.now());
+              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
       // 参加者は操作者のみ
       Set<CommentParticipantSubset> participants = new HashSet<>();
@@ -128,6 +139,7 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(ACTOR_ID)
               .employeeName("Actor")
+              .employeeEmail("actor@example.com")
               .build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
@@ -135,16 +147,17 @@ class BacklogItemCommentEventListenerTest {
       listener.onCommentAdded(event);
 
       // Assert: 通知は作成されない
-      verify(notificationRepository).save(any(NotificationEntity.class));
+      verify(notificationRepository, never()).save(any(NotificationEntity.class));
     }
 
     @Test
     @DisplayName("複数の参加者がいるとき、操作者以外の全参加者に通知レコードが作成される")
     void shouldCreateNotificationsForAllParticipantsExceptActor() {
       // Arrange: テストリスト項目5
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(NOTIFICATION_ID);
       BacklogItemCommentAdded event =
           new BacklogItemCommentAdded(
-              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", LocalDateTime.now());
+              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
       Set<CommentParticipantSubset> participants = new HashSet<>();
       participants.add(
@@ -153,6 +166,7 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(ACTOR_ID)
               .employeeName("Actor")
+              .employeeEmail("actor@example.com")
               .build());
       participants.add(
           CommentParticipantSubset.builder()
@@ -160,6 +174,7 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
+              .employeeEmail("participant1@example.com")
               .build());
       participants.add(
           CommentParticipantSubset.builder()
@@ -167,6 +182,7 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_2_ID)
               .employeeName("Participant2")
+              .employeeEmail("participant2@example.com")
               .build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
@@ -175,7 +191,7 @@ class BacklogItemCommentEventListenerTest {
 
       // Assert: 操作者以外の2人に通知が作成される
       ArgumentCaptor<NotificationEntity> captor = ArgumentCaptor.forClass(NotificationEntity.class);
-      verify(notificationRepository).save(captor.capture());
+      verify(notificationRepository, org.mockito.Mockito.times(2)).save(captor.capture());
       assertThat(captor.getAllValues())
           .extracting(NotificationEntity::getRecipientId)
           .containsExactlyInAnyOrder(PARTICIPANT_1_ID, PARTICIPANT_2_ID);
@@ -185,9 +201,10 @@ class BacklogItemCommentEventListenerTest {
     @DisplayName("通知レコード作成時、isReadはfalseである")
     void shouldHaveIsReadFalseOnCreation() {
       // Arrange: テストリスト項目6
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(NOTIFICATION_ID);
       BacklogItemCommentAdded event =
           new BacklogItemCommentAdded(
-              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", LocalDateTime.now());
+              ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
       Set<CommentParticipantSubset> participants = new HashSet<>();
       participants.add(
@@ -196,6 +213,7 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
+              .employeeEmail("participant1@example.com")
               .build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
@@ -231,6 +249,7 @@ class BacklogItemCommentEventListenerTest {
     @DisplayName("コメント削除イベントを受信したとき、参加者（操作者除く）に通知レコードが作成される")
     void shouldCreateNotificationOnCommentDeleted() {
       // Arrange
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(NOTIFICATION_ID);
       BacklogItemCommentDeleted event =
           new BacklogItemCommentDeleted(ITEM_ID, COMMENT_ID, ACTOR_ID, LocalDateTime.now());
 
@@ -241,6 +260,7 @@ class BacklogItemCommentEventListenerTest {
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
+              .employeeEmail("participant1@example.com")
               .build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 

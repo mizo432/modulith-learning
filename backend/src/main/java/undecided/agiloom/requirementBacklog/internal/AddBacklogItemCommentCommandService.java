@@ -2,11 +2,14 @@ package undecided.agiloom.requirementBacklog.internal;
 
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
@@ -17,15 +20,21 @@ class AddBacklogItemCommentCommandService {
 
   private final BacklogItemRepository backlogItemRepository;
   private final BacklogItemCommentRepository backlogItemCommentRepository;
+  private final CommentParticipantSubsetRepository commentParticipantSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final ApplicationEventPublisher eventPublisher;
 
   AddBacklogItemCommentCommandService(
       BacklogItemRepository backlogItemRepository,
       BacklogItemCommentRepository backlogItemCommentRepository,
-      SnowflakeIdGenerator snowflakeIdGenerator) {
+      CommentParticipantSubsetRepository commentParticipantSubsetRepository,
+      SnowflakeIdGenerator snowflakeIdGenerator,
+      ApplicationEventPublisher eventPublisher) {
     this.backlogItemRepository = backlogItemRepository;
     this.backlogItemCommentRepository = backlogItemCommentRepository;
+    this.commentParticipantSubsetRepository = commentParticipantSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
+    this.eventPublisher = eventPublisher;
   }
 
   SnowflakeId execute(@NonNull AddBacklogItemCommentCommand command) {
@@ -72,6 +81,31 @@ class AddBacklogItemCommentCommandService {
             .parentComment(parentComment)
             .build();
 
-    return backlogItemCommentRepository.save(comment).getId();
+    BacklogItemComment saved = backlogItemCommentRepository.save(comment);
+
+    // コメント参加者として記録（重複防止）
+    if (command.getAuthorEmployeeId() != null
+        && !commentParticipantSubsetRepository.existsByBacklogItemIdAndEmployeeId(
+            command.getBacklogItemId(), command.getAuthorEmployeeId())) {
+      commentParticipantSubsetRepository.save(
+          CommentParticipantSubset.of(
+              snowflakeIdGenerator.nextIdValue(),
+              command.getBacklogItemId(),
+              command.getAuthorEmployeeId(),
+              command.getAuthorName(),
+              command.getAuthorEmail() != null ? command.getAuthorEmail() : ""));
+    }
+
+    // コメント追加イベントを発行
+    eventPublisher.publishEvent(
+        new BacklogItemCommentAdded(
+            command.getBacklogItemId(),
+            saved.getId(),
+            command.getAuthorEmployeeId(),
+            command.getAuthorName(),
+            command.getAuthorEmail() != null ? command.getAuthorEmail() : "",
+            LocalDateTime.now()));
+
+    return saved.getId();
   }
 }

@@ -1,4 +1,4 @@
-package undecided.notification.internal;
+package undecided.notification.spi;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,6 +65,7 @@ public class NotificationEntity {
   @Builder.Default
   protected LocalDateTime updatedAt = LocalDateTime.now();
 
+  @jakarta.persistence.Version
   @Column(name = "version", nullable = false)
   @Builder.Default
   protected Long version = 0L;

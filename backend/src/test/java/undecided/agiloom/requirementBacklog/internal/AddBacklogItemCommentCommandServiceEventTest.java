@@ -2,6 +2,7 @@ package undecided.agiloom.requirementBacklog.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -13,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
@@ -22,7 +25,6 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
  * テストリスト項目1: コメントを追加したとき、BacklogItemCommentAddedイベントが発行される
  *
  * <p>AddBacklogItemCommentCommandService がコメント追加時にイベントを発行することを検証する。
- * 現在の実装にはイベント発行のコードがないため、このテストは失敗する（Red）。
  */
 @Tag("small")
 @DisplayName("AddBacklogItemCommentCommandServiceのイベント発行テスト")
@@ -44,7 +46,13 @@ class AddBacklogItemCommentCommandServiceEventTest {
   private BacklogItemRepository backlogItemRepository;
 
   @Mock
+  private CommentParticipantSubsetRepository commentParticipantSubsetRepository;
+
+  @Mock
   private SnowflakeIdGenerator snowflakeIdGenerator;
+
+  @Mock
+  private ApplicationEventPublisher eventPublisher;
 
   private AddBacklogItemCommentCommandService service;
 
@@ -54,7 +62,9 @@ class AddBacklogItemCommentCommandServiceEventTest {
         new AddBacklogItemCommentCommandService(
             backlogItemRepository,
             backlogItemCommentRepository,
-            snowflakeIdGenerator);
+            commentParticipantSubsetRepository,
+            snowflakeIdGenerator,
+            eventPublisher);
   }
 
   @Nested
@@ -65,9 +75,6 @@ class AddBacklogItemCommentCommandServiceEventTest {
     @DisplayName("コメントを追加したとき、BacklogItemCommentAddedイベントが発行される")
     void shouldPublishCommentAddedEvent() {
       // Arrange: テストリスト項目1
-      // 現在の実装ではイベント発行がないため、このテストは失敗する（Red）。
-      // 実装後は ApplicationEventPublisher を経由して BacklogItemCommentAdded イベントが発行されるべき。
-      // ここでは、サービスが正常に動作することを確認し、イベント発行の欠如を検証する。
       BacklogItem item =
           BacklogItem.builder().id(ITEM_ID).title("Test Item").creatorName("Creator").build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
@@ -88,16 +95,16 @@ class AddBacklogItemCommentCommandServiceEventTest {
               .backlogItemId(ITEM_ID)
               .authorEmployeeId(AUTHOR_ID)
               .authorName("Author")
+              .authorEmail("author@example.com")
               .body("Test comment")
               .build();
 
       // Act
       SnowflakeId resultId = service.execute(command);
 
-      // Assert: コメントが保存されることは確認できるが、イベント発行は未実装
+      // Assert: コメントが保存され、イベントが発行される
       assertThat(resultId).isEqualTo(COMMENT_ID);
-      // Red: イベント発行の検証は、ApplicationEventPublisher が注入された後に有効になる
-      // verify(eventPublisher).publishEvent(any(BacklogItemCommentAdded.class));
+      verify(eventPublisher).publishEvent(any(BacklogItemCommentAdded.class));
     }
   }
 }

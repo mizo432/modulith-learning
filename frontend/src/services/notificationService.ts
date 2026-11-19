@@ -1,7 +1,7 @@
 import { NotificationResponse } from '../types/notification';
 
 /**
- * 通知サービス（スタブ）。
+ * 通知サービス。
  */
 
 /**
@@ -10,7 +10,11 @@ import { NotificationResponse } from '../types/notification';
  * @return 未読通知のリスト
  */
 export async function getUnreadNotifications(employeeId: string): Promise<NotificationResponse[]> {
-  throw new Error('Not implemented');
+  const response = await fetch(`/api/notifications/unread/${employeeId}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch notifications: ${response.status}`);
+  }
+  return response.json();
 }
 
 /**
@@ -18,5 +22,10 @@ export async function getUnreadNotifications(employeeId: string): Promise<Notifi
  * @param notificationId 通知ID
  */
 export async function markAsRead(notificationId: string): Promise<void> {
-  throw new Error('Not implemented');
+  const response = await fetch(`/api/notifications/${notificationId}/read`, {
+    method: 'PUT',
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to mark as read: ${response.status}`);
+  }
 }

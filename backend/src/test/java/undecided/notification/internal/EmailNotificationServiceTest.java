@@ -1,6 +1,7 @@
 package undecided.notification.internal;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,9 +13,6 @@ import org.junit.jupiter.api.Test;
  *
  * <p>- 項目7: メール送信サービスが起動したとき、JavaMailSenderが呼び出される
  * <p>- 項目8: メール送信で例外が発生したとき、通知レコード作成は失敗しない（ログ出力のみ）
- *
- * <p>spring-boot-starter-mail が依存関係に追加されるまで、JavaMailSenderは利用できない。
- * このテストはメール送信基盤の新設が必要であることを示す（Red）。
  */
 @Tag("small")
 @DisplayName("EmailNotificationServiceの単体テスト")
@@ -32,34 +30,43 @@ class EmailNotificationServiceTest {
     @DisplayName("メール送信サービスが起動したとき、JavaMailSenderが呼び出される")
     void shouldCallMailSender() {
       // テストリスト項目7
-      // EmailNotificationService の send() が JavaMailSender を呼び出すことを検証する。
-      // 現在の実装では UnsupportedOperationException がスローされる（Red）。
-      // 実装後は mailSender.send() が呼び出されることを確認する。
+      int[] callCount = {0};
+      String[] capturedTo = {null};
+      String[] capturedFrom = {null};
+      String[] capturedSubject = {null};
+      String[] capturedText = {null};
       EmailNotificationService service =
           new EmailNotificationService(
               (to, from, subject, text) -> {
-                // no-op
+                callCount[0]++;
+                capturedTo[0] = to;
+                capturedFrom[0] = from;
+                capturedSubject[0] = subject;
+                capturedText[0] = text;
               });
-      assertThatThrownBy(() -> service.send(TO_EMAIL, TITLE, CONTENT))
-          .isInstanceOf(UnsupportedOperationException.class);
+
+      service.send(TO_EMAIL, TITLE, CONTENT);
+
+      // MailSenderが1回呼び出され、正しい引数が渡されることを検証
+      assertThat(callCount[0]).isEqualTo(1);
+      assertThat(capturedTo[0]).isEqualTo(TO_EMAIL);
+      assertThat(capturedFrom[0]).isEqualTo("noreply@modulith-learning.local");
+      assertThat(capturedSubject[0]).isEqualTo(TITLE);
+      assertThat(capturedText[0]).isEqualTo(CONTENT);
     }
 
     @Test
     @DisplayName("メール送信で例外が発生したとき、通知レコード作成は失敗しない（ログ出力のみ）")
     void shouldNotFailNotificationCreationWhenMailFails() {
       // テストリスト項目8
-      // メール送信の失敗が通知レコード作成に影響しないことを検証
-      // 現在 spring-boot-starter-mail が依存関係にないため、
-      // EmailNotificationService の send() は UnsupportedOperationException をスローする
-      // 実装後は try-catch で例外をキャッチし、ログ出力のみとする
       EmailNotificationService service =
           new EmailNotificationService(
               (to, from, subject, text) -> {
                 throw new RuntimeException("Mail send failed");
               });
-      // Red: 現在の実装では例外がスローされる
-      assertThatThrownBy(() -> service.send(TO_EMAIL, TITLE, CONTENT))
-          .isInstanceOf(UnsupportedOperationException.class);
+
+      // 例外がスローされないこと（try-catchでキャッチされる）
+      assertThatCode(() -> service.send(TO_EMAIL, TITLE, CONTENT)).doesNotThrowAnyException();
     }
   }
 }

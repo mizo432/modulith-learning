@@ -151,6 +151,7 @@ dependencies {
     implementation("org.springframework.security:spring-security-crypto")
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
     testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers:${property("testcontainersVersion")}")

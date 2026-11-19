@@ -24,7 +24,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CommentParticipantSubset {
+class CommentParticipantSubset {
 
   @Id
   @Column(nullable = false)
@@ -38,6 +38,9 @@ public class CommentParticipantSubset {
 
   @Column(name = "employee_name", nullable = false, length = 100)
   protected String employeeName;
+
+  @Column(name = "employee_email", nullable = false, length = 200)
+  protected String employeeEmail;
 
   @Column(name = "created_at", nullable = false, updatable = false)
   @Builder.Default

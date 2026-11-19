@@ -1,6 +1,9 @@
 package undecided.notification.internal;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import undecided.notification.spi.NotificationEntity;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -8,7 +11,8 @@ import undecided.supporting.snowflake.SnowflakeId;
  *
  * <p>指定されたユーザーの未読通知を取得し、既読更新を行います。
  */
-public class NotificationQueryService {
+@Service
+class NotificationQueryService {
 
   private final NotificationRepository notificationRepository;
 
@@ -22,9 +26,9 @@ public class NotificationQueryService {
    * @param recipientId 受信者ID
    * @return 未読通知のリスト
    */
+  @Transactional(readOnly = true)
   public List<NotificationEntity> getUnreadNotifications(SnowflakeId recipientId) {
-    // TODO: 実装
-    throw new UnsupportedOperationException("Not yet implemented");
+    return notificationRepository.findByRecipientIdAndIsReadFalseOrderByCreatedAtDesc(recipientId);
   }
 
   /**
@@ -32,8 +36,13 @@ public class NotificationQueryService {
    *
    * @param notificationId 通知ID
    */
+  @Transactional
   public void markAsRead(SnowflakeId notificationId) {
-    // TODO: 実装
-    throw new UnsupportedOperationException("Not yet implemented");
+    notificationRepository
+        .findById(notificationId)
+        .ifPresent(notification -> {
+          notification.markAsRead();
+          notificationRepository.save(notification);
+        });
   }
 }

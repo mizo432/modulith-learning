@@ -2,6 +2,7 @@ package undecided.notification.internal;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
+import undecided.notification.spi.NotificationEntity;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /** 通知レコードのリポジトリ（NTスキーマ）。 */

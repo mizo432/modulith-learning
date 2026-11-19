@@ -12,6 +12,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  * @param commentId 追加されたコメントID
  * @param authorEmployeeId コメントを投稿した従業員ID（操作者）
  * @param authorName コメントを投稿した従業員名
+ * @param authorEmail コメントを投稿した従業員のメールアドレス
  * @param occurredAt 発生日時
  */
 public record BacklogItemCommentAdded(
@@ -19,4 +20,5 @@ public record BacklogItemCommentAdded(
     SnowflakeId commentId,
     SnowflakeId authorEmployeeId,
     String authorName,
+    String authorEmail,
     LocalDateTime occurredAt) {}

@@ -16,6 +16,7 @@ class AddBacklogItemCommentCommand {
   @NonNull private SnowflakeId backlogItemId;
   private SnowflakeId authorEmployeeId;
   @NonNull private String authorName;
+  private String authorEmail;
   @NonNull private String body;
   /** 親コメントのID（返信の場合）。ルートコメントの場合はnull。 */
   @Nullable private SnowflakeId parentCommentId;
