@@ -6,7 +6,7 @@ import undecided.notification.spi.NotificationEntity;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /** 通知レコードのリポジトリ（NTスキーマ）。 */
-interface NotificationRepository extends CrudRepository<NotificationEntity, SnowflakeId> {
+interface NotificationEntityRepository extends CrudRepository<NotificationEntity, SnowflakeId> {
 
   /** 指定された受信者の未読通知を、作成日時の降順で取得する。 */
   List<NotificationEntity> findByRecipientIdAndIsReadFalseOrderByCreatedAtDesc(SnowflakeId recipientId);

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -47,13 +48,21 @@ class AddBacklogItemCommentCommandServiceTest {
 
   @Mock private SnowflakeIdGenerator snowflakeIdGenerator;
 
+  @Mock private CommentParticipantSubsetRepository commentParticipantSubsetRepository;
+
+  @Mock private ApplicationEventPublisher eventPublisher;
+
   private AddBacklogItemCommentCommandService service;
 
   @BeforeEach
   void setUp() {
     service =
         new AddBacklogItemCommentCommandService(
-            backlogItemRepository, backlogItemCommentRepository, snowflakeIdGenerator);
+            backlogItemRepository,
+            backlogItemCommentRepository,
+            commentParticipantSubsetRepository,
+            snowflakeIdGenerator,
+            eventPublisher);
   }
 
   private BacklogItem backlogItem() {

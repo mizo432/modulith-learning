@@ -14,9 +14,9 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Service
 class NotificationQueryService {
 
-  private final NotificationRepository notificationRepository;
+  private final NotificationEntityRepository notificationRepository;
 
-  public NotificationQueryService(NotificationRepository notificationRepository) {
+  public NotificationQueryService(NotificationEntityRepository notificationRepository) {
     this.notificationRepository = notificationRepository;
   }
 

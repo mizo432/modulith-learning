@@ -12,11 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+import undecided.ModulithDemoApplication;
+import undecided.TestcontainersConfiguration;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentDeleted;
 import undecided.notification.spi.NotificationEntity;
@@ -38,35 +39,25 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
  */
 @Tag("medium")
 @DisplayName("通知モジュールの統合テスト")
-@SpringBootTest
-@Testcontainers
+@SpringBootTest(classes = ModulithDemoApplication.class)
+@ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 class NotificationIntegrationMediumTest {
 
-  @Container
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17-alpine")
-      .withDatabaseName("test_nt")
-      .withUsername("test")
-      .withPassword("test");
-
-  @DynamicPropertySource
-  static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.datasource.url", postgres::getJdbcUrl);
-    registry.add("spring.datasource.username", postgres::getUsername);
-    registry.add("spring.datasource.password", postgres::getPassword);
-    registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
-  }
+  @Autowired
+  private NotificationEntityRepository notificationRepository;
 
   @Autowired
-  private NotificationRepository notificationRepository;
-
-  @Autowired
-  private CommentParticipantSubsetRepository commentParticipantSubsetRepository;
+  private NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository;
 
   @Autowired
   private ApplicationEventPublisher eventPublisher;
 
   @Autowired
   private SnowflakeIdGenerator snowflakeIdGenerator;
+
+  @Autowired
+  private PlatformTransactionManager transactionManager;
 
   private SnowflakeId backlogItemId;
   private SnowflakeId authorEmployeeId;
@@ -83,7 +74,7 @@ class NotificationIntegrationMediumTest {
 
     // 既存の参加者（通知対象）をNTスキーマに事前に投入
     commentParticipantSubsetRepository.save(
-        CommentParticipantSubset.builder()
+        NotificationCommentParticipantSubset.builder()
             .id(snowflakeIdGenerator.nextIdValue())
             .backlogItemId(backlogItemId)
             .employeeId(participant1EmployeeId)
@@ -91,7 +82,7 @@ class NotificationIntegrationMediumTest {
             .employeeEmail("participant1@example.com")
             .build());
     commentParticipantSubsetRepository.save(
-        CommentParticipantSubset.builder()
+        NotificationCommentParticipantSubset.builder()
             .id(snowflakeIdGenerator.nextIdValue())
             .backlogItemId(backlogItemId)
             .employeeId(participant2EmployeeId)
@@ -100,9 +91,32 @@ class NotificationIntegrationMediumTest {
             .build());
   }
 
+  /**
+   * 非同期のモジュールリスナーによる通知作成を待ち、対象アイテムの通知一覧を返す。
+   *
+   * <p>@ApplicationModuleListener はトランザクションコミット後に非同期で実行されるため、
+   * 期待件数に達するまでポーリングする（最大15秒）。
+   */
+  private List<NotificationEntity> awaitNotifications(int expectedSize)
+      throws InterruptedException {
+    long deadline = System.currentTimeMillis() + 15000;
+    List<NotificationEntity> notifications = List.of();
+    while (System.currentTimeMillis() < deadline) {
+      notifications =
+          StreamSupport.stream(notificationRepository.findAll().spliterator(), false)
+              .filter(n -> n.getBacklogItemId().equals(backlogItemId))
+              .toList();
+      if (notifications.size() >= expectedSize) {
+        return notifications;
+      }
+      Thread.sleep(200);
+    }
+    return notifications;
+  }
+
   @Test
   @DisplayName("コメントを追加したとき、イベント経由で通知レコードがDBに保存される")
-  void shouldPersistNotificationOnCommentAdded() {
+  void shouldPersistNotificationOnCommentAdded() throws InterruptedException {
     // テストリスト項目14
     // Arrange: 既存参加者が2人いる状態で、BacklogItemCommentAddedイベントを発行
 
@@ -111,19 +125,20 @@ class NotificationIntegrationMediumTest {
     // Act: BacklogItemCommentAddedイベントを発行 →
     //   CommentParticipantSyncListenerが投稿者を参加者に記録 →
     //   BacklogItemCommentEventListenerが既存参加者（投稿者除く）に通知を作成
-    eventPublisher.publishEvent(
-        new BacklogItemCommentAdded(
-            backlogItemId,
-            commentId,
-            authorEmployeeId,
-            "投稿者",
-            "",
-            LocalDateTime.now()));
+    new TransactionTemplate(transactionManager)
+        .executeWithoutResult(
+            status ->
+                eventPublisher.publishEvent(
+                    new BacklogItemCommentAdded(
+                        backlogItemId,
+                        commentId,
+                        authorEmployeeId,
+                        "投稿者",
+                        "",
+                        LocalDateTime.now())));
 
     // Assert: 既存参加者2人に通知レコードがDBに保存される
-    List<NotificationEntity> notifications = StreamSupport.stream(notificationRepository.findAll().spliterator(), false)
-        .filter(n -> n.getBacklogItemId().equals(backlogItemId))
-        .toList();
+    List<NotificationEntity> notifications = awaitNotifications(2);
 
     assertThat(notifications).hasSize(2);
     assertThat(notifications)
@@ -145,7 +160,7 @@ class NotificationIntegrationMediumTest {
 
   @Test
   @DisplayName("コメントを削除したとき、イベント経由で通知レコードがDBに保存される")
-  void shouldPersistNotificationOnCommentDeleted() {
+  void shouldPersistNotificationOnCommentDeleted() throws InterruptedException {
     // テストリスト項目15
     // Arrange: 既存参加者が2人いる状態で、操作者（participant1）がコメントを削除
     // BacklogItemCommentDeletedイベントを発行し、
@@ -155,17 +170,18 @@ class NotificationIntegrationMediumTest {
 
     // Act: BacklogItemCommentDeletedイベントを発行 →
     //   BacklogItemCommentEventListenerが操作者（participant1）以外の参加者（participant2）に通知を作成
-    eventPublisher.publishEvent(
-        new BacklogItemCommentDeleted(
-            backlogItemId,
-            commentId,
-            participant1EmployeeId,
-            LocalDateTime.now()));
+    new TransactionTemplate(transactionManager)
+        .executeWithoutResult(
+            status ->
+                eventPublisher.publishEvent(
+                    new BacklogItemCommentDeleted(
+                        backlogItemId,
+                        commentId,
+                        participant1EmployeeId,
+                        LocalDateTime.now())));
 
     // Assert: 操作者（participant1）以外の参加者（participant2）に通知レコードが保存される
-    List<NotificationEntity> notifications = StreamSupport.stream(notificationRepository.findAll().spliterator(), false)
-        .filter(n -> n.getBacklogItemId().equals(backlogItemId))
-        .toList();
+    List<NotificationEntity> notifications = awaitNotifications(1);
 
     assertThat(notifications).hasSize(1);
     assertThat(notifications.get(0).getRecipientId()).isEqualTo(participant2EmployeeId);

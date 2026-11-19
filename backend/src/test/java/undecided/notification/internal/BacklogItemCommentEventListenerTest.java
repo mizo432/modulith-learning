@@ -55,10 +55,10 @@ class BacklogItemCommentEventListenerTest {
   private static final SnowflakeId NOTIFICATION_ID = SnowflakeId.of(NOTIFICATION_ID_VALUE);
 
   @Mock
-  private NotificationRepository notificationRepository;
+  private NotificationEntityRepository notificationRepository;
 
   @Mock
-  private CommentParticipantSubsetRepository commentParticipantSubsetRepository;
+  private NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository;
 
   @Mock
   private EmailNotificationService emailNotificationService;
@@ -91,9 +91,9 @@ class BacklogItemCommentEventListenerTest {
           new BacklogItemCommentAdded(
               ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
-      Set<CommentParticipantSubset> participants = new HashSet<>();
+      Set<NotificationCommentParticipantSubset> participants = new HashSet<>();
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(1L))
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)
@@ -101,7 +101,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeEmail("participant1@example.com")
               .build());
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(2L))
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_2_ID)
@@ -132,9 +132,9 @@ class BacklogItemCommentEventListenerTest {
               ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
       // 参加者は操作者のみ
-      Set<CommentParticipantSubset> participants = new HashSet<>();
+      Set<NotificationCommentParticipantSubset> participants = new HashSet<>();
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(1L))
               .backlogItemId(ITEM_ID)
               .employeeId(ACTOR_ID)
@@ -159,9 +159,9 @@ class BacklogItemCommentEventListenerTest {
           new BacklogItemCommentAdded(
               ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
-      Set<CommentParticipantSubset> participants = new HashSet<>();
+      Set<NotificationCommentParticipantSubset> participants = new HashSet<>();
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(1L))
               .backlogItemId(ITEM_ID)
               .employeeId(ACTOR_ID)
@@ -169,7 +169,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeEmail("actor@example.com")
               .build());
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(2L))
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)
@@ -177,7 +177,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeEmail("participant1@example.com")
               .build());
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(3L))
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_2_ID)
@@ -206,9 +206,9 @@ class BacklogItemCommentEventListenerTest {
           new BacklogItemCommentAdded(
               ITEM_ID, COMMENT_ID, ACTOR_ID, "Actor", "actor@example.com", LocalDateTime.now());
 
-      Set<CommentParticipantSubset> participants = new HashSet<>();
+      Set<NotificationCommentParticipantSubset> participants = new HashSet<>();
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(1L))
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)
@@ -253,9 +253,9 @@ class BacklogItemCommentEventListenerTest {
       BacklogItemCommentDeleted event =
           new BacklogItemCommentDeleted(ITEM_ID, COMMENT_ID, ACTOR_ID, LocalDateTime.now());
 
-      Set<CommentParticipantSubset> participants = new HashSet<>();
+      Set<NotificationCommentParticipantSubset> participants = new HashSet<>();
       participants.add(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(1L))
               .backlogItemId(ITEM_ID)
               .employeeId(PARTICIPANT_1_ID)

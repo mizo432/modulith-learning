@@ -19,11 +19,11 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class CommentParticipantSyncListener {
 
-  private final CommentParticipantSubsetRepository commentParticipantSubsetRepository;
+  private final NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
 
   CommentParticipantSyncListener(
-      CommentParticipantSubsetRepository commentParticipantSubsetRepository,
+      NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository,
       SnowflakeIdGenerator snowflakeIdGenerator) {
     this.commentParticipantSubsetRepository = commentParticipantSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
@@ -40,7 +40,7 @@ class CommentParticipantSyncListener {
     if (event.authorEmployeeId() != null) {
       String employeeEmail = event.authorEmail() != null ? event.authorEmail() : "";
       commentParticipantSubsetRepository.save(
-          CommentParticipantSubset.builder()
+          NotificationCommentParticipantSubset.builder()
               .id(snowflakeIdGenerator.nextIdValue())
               .backlogItemId(event.backlogItemId())
               .employeeId(event.authorEmployeeId())

@@ -5,8 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /** コメント参加者のサブセットリポジトリ（NTスキーマ）。 */
-interface CommentParticipantSubsetRepository extends CrudRepository<CommentParticipantSubset, SnowflakeId> {
+interface NotificationCommentParticipantSubsetRepository extends CrudRepository<NotificationCommentParticipantSubset, SnowflakeId> {
 
   /** 指定されたバックログアイテムの全参加者レコードを取得する。 */
-  Set<CommentParticipantSubset> findByBacklogItemId(SnowflakeId backlogItemId);
+  Set<NotificationCommentParticipantSubset> findByBacklogItemId(SnowflakeId backlogItemId);
 }

@@ -20,14 +20,14 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 @Component
 public class BacklogItemCommentEventListener {
 
-  private final NotificationRepository notificationRepository;
-  private final CommentParticipantSubsetRepository commentParticipantSubsetRepository;
+  private final NotificationEntityRepository notificationRepository;
+  private final NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository;
   private final EmailNotificationService emailNotificationService;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
 
   public BacklogItemCommentEventListener(
-      NotificationRepository notificationRepository,
-      CommentParticipantSubsetRepository commentParticipantSubsetRepository,
+      NotificationEntityRepository notificationRepository,
+      NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository,
       EmailNotificationService emailNotificationService,
       SnowflakeIdGenerator snowflakeIdGenerator) {
     this.notificationRepository = notificationRepository;
@@ -94,10 +94,10 @@ public class BacklogItemCommentEventListener {
       String authorName,
       NotificationType type) {
 
-    Set<CommentParticipantSubset> participants =
+    Set<NotificationCommentParticipantSubset> participants =
         commentParticipantSubsetRepository.findByBacklogItemId(backlogItemId);
 
-    for (CommentParticipantSubset participant : participants) {
+    for (NotificationCommentParticipantSubset participant : participants) {
       // 操作者自身には通知しない
       if (participant.getEmployeeId().equals(actorEmployeeId)) {
         continue;

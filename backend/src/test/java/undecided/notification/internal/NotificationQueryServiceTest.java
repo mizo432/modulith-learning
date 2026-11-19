@@ -44,7 +44,7 @@ class NotificationQueryServiceTest {
   private static final SnowflakeId ITEM_ID = SnowflakeId.of(ITEM_ID_VALUE);
 
   @Mock
-  private NotificationRepository notificationRepository;
+  private NotificationEntityRepository notificationRepository;
 
   private NotificationQueryService service;
 
