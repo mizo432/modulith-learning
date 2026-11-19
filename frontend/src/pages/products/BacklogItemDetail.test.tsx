@@ -1626,4 +1626,238 @@ describe('BacklogItemDetail', () => {
       });
     });
   });
+
+  describe('Markdownコメント表示（#672）', () => {
+    const mockCommentWithMarkdown = {
+      id: 'comment-md-1',
+      backlogItemId: 'item-100',
+      authorEmployeeId: 'emp-1',
+      authorName: 'Markdown投稿者',
+      body: '**太字**と*斜体*のテスト',
+      createdAt: '2026-01-01T00:00:00Z',
+      parentId: null,
+      hasReplies: false,
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      setAuthMock();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+    });
+
+    it('Markdownコメントの表示 - Markdownを含むコメントが正しくレンダリングされる', async () => {
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentWithMarkdown]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('太字')).toBeInTheDocument();
+      });
+      // 太字が<strong>タグでレンダリングされること
+      const boldElement = screen.getByText('太字');
+      expect(boldElement.tagName).toBe('STRONG');
+    });
+
+    it('複数コメントのMarkdown表示 - 複数のコメントがそれぞれ独立してMarkdownレンダリングされる', async () => {
+      const mockComment2 = {
+        ...mockCommentWithMarkdown,
+        id: 'comment-md-2',
+        body: '- リスト1\n- リスト2',
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentWithMarkdown, mockComment2]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('太字')).toBeInTheDocument();
+        expect(screen.getByText('リスト1')).toBeInTheDocument();
+        expect(screen.getByText('リスト2')).toBeInTheDocument();
+      });
+      // リストが<ul>でレンダリングされること
+      const list = screen.getByText('リスト1').closest('ul');
+      expect(list).toBeInTheDocument();
+    });
+
+    it('生HTMLを含むコメントの安全性 - <script>タグを含むコメントが安全にレンダリングされる', async () => {
+      const mockCommentWithScript = {
+        ...mockCommentWithMarkdown,
+        body: '<script>alert("xss")</script>正常なテキスト',
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentWithScript]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        // scriptタグが実行されないこと
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      });
+    });
+
+    it('自動リフレッシュでコメントが更新される - ポーリングで新しいコメントが取得され、Markdownとして表示される', async () => {
+      jest.useFakeTimers();
+      const REFRESH_INTERVAL = 30000;
+
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(1);
+      });
+
+      // 2回目のポーリングでMarkdownコメントを返す
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockCommentWithMarkdown]);
+
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('太字')).toBeInTheDocument();
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('コメント追加後のMarkdown表示 - 新規追加されたコメントもMarkdownとして表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+      (backlogItemService.addComment as jest.Mock).mockResolvedValue({
+        id: 'comment-new',
+        backlogItemId: 'item-100',
+        authorEmployeeId: 'emp-1',
+        authorName: 'テストユーザー',
+        body: '**新規コメント**',
+        createdAt: '2026-01-01T02:00:00Z',
+        parentId: null,
+        hasReplies: false,
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // コメント入力フィールドにMarkdownを入力
+      const commentTextarea = screen.getByTestId('comment-textarea');
+      const textarea = commentTextarea.querySelector('textarea')!;
+      await user.type(textarea, '**新規コメント**');
+
+      // 送信ボタンをクリック
+      const submitButton = screen.getByRole('button', { name: /コメントを送信/i });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('新規コメント')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Markdown統合テスト（#672）', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      setAuthMock();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+    });
+
+    it('画面全体のレンダリング - MarkdownCommentがBacklogItemDetailに正しく統合される', async () => {
+      const mockComment = {
+        id: 'comment-int-1',
+        backlogItemId: 'item-100',
+        authorEmployeeId: 'emp-1',
+        authorName: '統合テスト投稿者',
+        body: '### ヘッダー\n- アイテム1\n- アイテム2',
+        createdAt: '2026-01-01T00:00:00Z',
+        parentId: null,
+        hasReplies: false,
+      };
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([mockComment]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+        expect(screen.getByText('ヘッダー')).toBeInTheDocument();
+        expect(screen.getByText('アイテム1')).toBeInTheDocument();
+      });
+    });
+
+    it('コメント追加→表示のフロー - コメント追加後、ポーリングで更新されたコメントがMarkdownとして表示される', async () => {
+      const user = userEvent.setup();
+      jest.useFakeTimers();
+      const REFRESH_INTERVAL = 30000;
+
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+      (backlogItemService.addComment as jest.Mock).mockResolvedValue({
+        id: 'comment-flow-1',
+        backlogItemId: 'item-100',
+        authorEmployeeId: 'emp-1',
+        authorName: 'テストユーザー',
+        body: '**フローテスト**',
+        createdAt: '2026-01-01T03:00:00Z',
+        parentId: null,
+        hasReplies: false,
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      // コメントを入力して送信
+      const commentTextarea = screen.getByTestId('comment-textarea');
+      const textarea = commentTextarea.querySelector('textarea')!;
+      await user.type(textarea, '**フローテスト**');
+
+      const submitButton = screen.getByRole('button', { name: /コメントを送信/i });
+      await user.click(submitButton);
+
+      // ポーリングで更新されたコメントが表示される
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([
+        {
+          id: 'comment-flow-1',
+          backlogItemId: 'item-100',
+          authorEmployeeId: 'emp-1',
+          authorName: 'テストユーザー',
+          body: '**フローテスト**',
+          createdAt: '2026-01-01T03:00:00Z',
+          parentId: null,
+          hasReplies: false,
+        },
+      ]);
+
+      act(() => {
+        jest.advanceTimersByTime(REFRESH_INTERVAL);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('フローテスト')).toBeInTheDocument();
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('大量のMarkdownコメント - 多数のコメントがある場合のレンダリングパフォーマンス', async () => {
+      const manyComments = Array.from({ length: 50 }, (_, i) => ({
+        id: `comment-many-${i}`,
+        backlogItemId: 'item-100',
+        authorEmployeeId: 'emp-1',
+        authorName: `投稿者${i}`,
+        body: `**コメント${i}** - リスト${i}`,
+        createdAt: `2026-01-01T${String(Math.floor(i / 60)).padStart(2, '0')}:${String(i % 60).padStart(2, '0')}:00Z`,
+        parentId: null,
+        hasReplies: false,
+      }));
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue(manyComments);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('コメント0')).toBeInTheDocument();
+        expect(screen.getByText('コメント49')).toBeInTheDocument();
+      });
+    });
+  });
 });
