@@ -40,11 +40,14 @@ jest.mock('../../services/backlogItemService', () => ({
     getBacklogItemsByTeam: jest.fn(),
     createBacklogItem: jest.fn(),
     changeStatus: jest.fn(),
+    estimateBacklogItem: jest.fn(),
   },
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
     ACCEPTED: 'ACCEPTED',
     FROZEN: 'FROZEN',
+    READY: 'READY',
+    ESTIMATED: 'ESTIMATED',
   },
 }));
 
@@ -819,6 +822,271 @@ describe('BacklogItemList', () => {
         expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledTimes(callCountAfterFilter + 1);
         // 最後の呼び出しでフィルタが維持されていることを確認
         expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenLastCalledWith('team-1', 'ACCEPTED');
+      });
+    });
+  });
+
+  describe('StoryPoint列と合計表示（一覧画面）', () => {
+    const mockItemWithStoryPoint = {
+      ...mockItemWithValue,
+      id: 'item-sp-5',
+      title: 'StoryPointありアイテム',
+      storyPoint: 5,
+    };
+
+    const mockItemWithoutStoryPoint = {
+      ...mockItemWithoutValue,
+      id: 'item-sp-null',
+      title: 'StoryPointなしアイテム',
+      storyPoint: null,
+    };
+
+    const mockItemWithStoryPoint13 = {
+      ...mockItemWithValue,
+      id: 'item-sp-13',
+      title: 'StoryPoint13アイテム',
+      storyPoint: 13,
+    };
+
+    // テスト12: 一覧画面を表示したとき、StoryPoint列のヘッダーが表示となる
+    it('一覧画面を表示したとき、StoryPoint列のヘッダーが表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithStoryPoint,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPoint列のヘッダーが表示される
+      await waitFor(() => {
+        expect(screen.getByText('StoryPoint')).toBeInTheDocument();
+      });
+    });
+
+    // テスト13: StoryPoint値があるアイテムでは値がCellに表示される
+    it('StoryPoint値があるアイテムでは値がCellに表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithStoryPoint,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPoint値「5」がデータ行内に表示される（合計表示と区別するため行内限定）
+      await waitFor(() => {
+        const row = screen.getByText('StoryPointありアイテム').closest('tr');
+        expect(row).toBeInTheDocument();
+        expect(row?.textContent).toContain('5');
+      });
+    });
+
+    // テスト14: StoryPoint値がnullのアイテムでは「-」が表示される
+    it('StoryPoint値がnullのアイテムでは「-」が表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithoutStoryPoint,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointなしアイテム')).toBeInTheDocument();
+      });
+
+      // StoryPoint列に「-」が表示される（行内に存在することを確認）
+      await waitFor(() => {
+        const row = screen.getByText('StoryPointなしアイテム').closest('tr');
+        expect(row).toBeInTheDocument();
+      });
+    });
+
+    // テスト15: StoryPoint合計がテーブル上部に表示される
+    it('StoryPoint合計がテーブル上部に表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithStoryPoint,
+        mockItemWithStoryPoint13,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
+        expect(screen.getByText('StoryPoint13アイテム')).toBeInTheDocument();
+      });
+
+      // 合計（5 + 13 = 18）が表示される
+      await waitFor(() => {
+        expect(screen.getByText(/StoryPoint.*合計/i)).toBeInTheDocument();
+      });
+    });
+
+    // テスト16: 表示中アイテムのStoryPoint合計が正しい値となる
+    it('表示中アイテムのStoryPoint合計が正しい値となる', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithStoryPoint,
+        mockItemWithStoryPoint13,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
+      });
+
+      // 合計値「18」が表示される
+      await waitFor(() => {
+        expect(screen.getByText('18')).toBeInTheDocument();
+      });
+    });
+
+    // テスト17: 状態フィルタを変更したとき、合計がフィルタ後のアイテムで再計算される
+    it('状態フィルタを変更したとき、合計がフィルタ後のアイテムで再計算される', async () => {
+      const user = userEvent.setup();
+
+      // 初期データ（StoryPoint合計 = 5 + 13 = 18）とフィルタ後データ（StoryPoint合計 = 8）をチェーンで設定
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock)
+        .mockResolvedValueOnce([
+          mockItemWithStoryPoint,
+          mockItemWithStoryPoint13,
+        ])
+        .mockResolvedValueOnce([
+          {
+            ...mockItemWithStoryPoint,
+            status: 'ACCEPTED',
+            statusLabel: '承認済み',
+            storyPoint: 8,
+          },
+        ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
+      });
+
+      // 合計「18」が表示される
+      await waitFor(() => {
+        expect(screen.getByText('18')).toBeInTheDocument();
+      });
+
+      // 状態フィルタを変更（ACCEPTED）
+      const statusSelect = await waitFor(() =>
+        screen.getByRole('combobox', { name: /状態フィルタ/i })
+      );
+      await user.click(statusSelect);
+      const acceptedOption = await waitFor(() =>
+        screen.getByRole('option', { name: /承認済み/i })
+      );
+      await user.click(acceptedOption);
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItemsByTeam).toHaveBeenCalledWith('team-1', 'ACCEPTED');
+      });
+
+      // 合計が「8」に更新される（合計表示のBox内を検索）
+      await waitFor(() => {
+        const totalBox = screen.getByText(/StoryPoint.*合計/i).closest('div');
+        expect(totalBox).toBeInTheDocument();
+        expect(totalBox?.textContent).toMatch(/\b8\b/);
+      });
+    });
+
+    // テスト18: 表示中アイテムが0件のとき、合計は0または非表示となる
+    it('表示中アイテムが0件のとき、合計は0または非表示となる', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('バックログアイテムがありません')).toBeInTheDocument();
+      });
+
+      // 合計が0または非表示
+      await waitFor(() => {
+        const totalText = screen.queryByText('18');
+        expect(totalText).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト19: すべてのアイテムがStoryPoint未設定のとき、合計は0または「-」となる
+    it('すべてのアイテムがStoryPoint未設定のとき、合計は0または「-」となる', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithoutStoryPoint,
+        {
+          ...mockItemWithoutStoryPoint,
+          id: 'item-sp-null-2',
+          title: 'StoryPointなしアイテム2',
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointなしアイテム')).toBeInTheDocument();
+      });
+
+      // 合計が0または「-」
+      await waitFor(() => {
+        const totalChip = screen.queryByText('18');
+        expect(totalChip).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト20: StoryPoint列はValue列の隣に表示される
+    it('StoryPoint列はValue列の隣に表示される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithStoryPoint,
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
+      });
+
+      // ヘッダー行（thead内）でStoryPoint列が存在すること
+      await waitFor(() => {
+        const thead = document.querySelector('thead');
+        expect(thead).toBeInTheDocument();
+        const headerCells = thead?.querySelectorAll('th');
+        expect(headerCells).toBeDefined();
+        // StoryPointがヘッダーに含まれること
+        const storyPointHeader = Array.from(headerCells!).find(
+          (cell) => cell.textContent?.trim() === 'StoryPoint'
+        );
+        expect(storyPointHeader).toBeDefined();
+      });
+    });
+
+    // テスト21: 複数のStoryPoint値を持つアイテムの合計が正しく計算される
+    it('複数のStoryPoint値を持つアイテムの合計が正しく計算される', async () => {
+      (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([
+        mockItemWithStoryPoint, // 5
+        mockItemWithStoryPoint13, // 13
+        {
+          ...mockItemWithValue,
+          id: 'item-sp-21',
+          title: 'StoryPoint21アイテム',
+          storyPoint: 21,
+        },
+      ]);
+
+      renderBacklogItemList();
+
+      await waitFor(() => {
+        expect(screen.getByText('StoryPointありアイテム')).toBeInTheDocument();
+        expect(screen.getByText('StoryPoint13アイテム')).toBeInTheDocument();
+        expect(screen.getByText('StoryPoint21アイテム')).toBeInTheDocument();
+      });
+
+      // 合計（5 + 13 + 21 = 39）が表示される
+      await waitFor(() => {
+        expect(screen.getByText('39')).toBeInTheDocument();
       });
     });
   });

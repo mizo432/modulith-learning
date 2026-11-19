@@ -86,4 +86,50 @@ describe('backlogItemService', () => {
       ).rejects.toThrow('BacklogItem value must be between 0 and 100');
     });
   });
+
+  describe('estimateBacklogItem', () => {
+    const mockResponse: BacklogItem = {
+      id: '100',
+      scrumTeamId: 'team-1',
+      title: 'テストアイテム',
+      description: '説明',
+      status: 'ESTIMATED',
+      statusLabel: '見積もり済み',
+      priority: 1,
+      creatorName: 'テストユーザー',
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T01:00:00Z',
+      storyPoint: 5,
+    };
+
+    it('should call PATCH /v1/backlog-items/{id}/estimate with correct request body', async () => {
+      mockPatch.mockResolvedValue({ data: mockResponse });
+
+      const result = await backlogItemService.estimateBacklogItem('100', {
+        storyPoint: 5,
+        actorEmployeeId: 'emp-1',
+      });
+
+      expect(mockPatch).toHaveBeenCalledWith('/v1/backlog-items/100/estimate', {
+        storyPoint: 5,
+        actorEmployeeId: 'emp-1',
+      });
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('should return BacklogItem type with storyPoint field', async () => {
+      const mockResponseWithSp13: BacklogItem = {
+        ...mockResponse,
+        storyPoint: 13,
+      };
+      mockPatch.mockResolvedValue({ data: mockResponseWithSp13 });
+
+      const result = await backlogItemService.estimateBacklogItem('100', {
+        storyPoint: 13,
+      });
+
+      expect(result.storyPoint).toBe(13);
+      expect(result.status).toBe('ESTIMATED');
+    });
+  });
 });
