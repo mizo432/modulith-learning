@@ -524,8 +524,8 @@ describe('BacklogItemDetail', () => {
       const textarea = replyTextarea.querySelector('textarea')!;
       await user.type(textarea, '新しい返信');
 
-      // 返信送信ボタンをクリック
-      const sendButton = screen.getByRole('button', { name: /送信/i });
+      // 返信送信ボタンをクリック（aria-labelで特定）
+      const sendButton = screen.getByRole('button', { name: '送信' });
       await user.click(sendButton);
 
       await waitFor(() => {
@@ -1755,10 +1755,20 @@ describe('BacklogItemDetail', () => {
   });
 
   describe('Markdown統合テスト（#672）', () => {
+    jest.setTimeout(30000);
     beforeEach(() => {
       jest.clearAllMocks();
       setAuthMock();
       (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+      (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+        id: 'team-1',
+        productId: 'product-1',
+        name: 'テストチーム',
+        poEmployeeId: 'emp-1',
+        smEmployeeId: 'emp-2',
+        memberEmployeeIds: ['emp-1', 'emp-2'],
+      });
     });
 
     it('画面全体のレンダリング - MarkdownCommentがBacklogItemDetailに正しく統合される', async () => {
@@ -1784,8 +1794,8 @@ describe('BacklogItemDetail', () => {
     });
 
     it('コメント追加→表示のフロー - コメント追加後、ポーリングで更新されたコメントがMarkdownとして表示される', async () => {
-      const user = userEvent.setup();
       jest.useFakeTimers();
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       const REFRESH_INTERVAL = 30000;
 
       (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);

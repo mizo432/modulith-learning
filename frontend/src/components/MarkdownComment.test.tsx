@@ -25,7 +25,7 @@ describe('MarkdownComment', () => {
     });
 
     it('コードブロックのレンダリング - ```code```が<pre><code>としてレンダリングされる', () => {
-      render(<MarkdownComment content="```console.log('hello')```" />);
+      render(<MarkdownComment content={`\n\`\`\`\nconsole.log('hello')\n\`\`\`\n`} />);
       expect(screen.getByText("console.log('hello')")).toBeInTheDocument();
       const codeElement = screen.getByText("console.log('hello')");
       expect(codeElement.closest('pre')).toBeInTheDocument();
@@ -39,7 +39,8 @@ describe('MarkdownComment', () => {
     });
 
     it('リストのレンダリング - - itemが<ul><li>としてレンダリングされる', () => {
-      render(<MarkdownComment content="- item1\n- item2" />);
+      render(<MarkdownComment content={`- item1
+- item2`} />);
       expect(screen.getByText('item1')).toBeInTheDocument();
       expect(screen.getByText('item2')).toBeInTheDocument();
       const list = screen.getByText('item1').closest('ul');
@@ -48,7 +49,9 @@ describe('MarkdownComment', () => {
 
     it('GFMテーブルのレンダリング - | a | b |が<table>としてレンダリングされる', () => {
       render(
-        <MarkdownComment content="| Col1 | Col2 |\n|------|------|\n| A | B |" />
+        <MarkdownComment content={`| Col1 | Col2 |
+|------|------|
+| A | B |`}/>
       );
       expect(screen.getByText('Col1')).toBeInTheDocument();
       expect(screen.getByText('A')).toBeInTheDocument();
@@ -81,8 +84,9 @@ describe('MarkdownComment', () => {
 
     it('危険な属性の除去 - <a href="javascript:alert(1)">のhrefが除去される', () => {
       render(<MarkdownComment content="[link](javascript:alert(1))" />);
-      const anchor = screen.getByRole('link');
-      expect(anchor.getAttribute('href')).not.toContain('javascript:');
+      const anchor = screen.getByText('link').closest('a');
+      expect(anchor).not.toBeNull();
+      expect(anchor!.getAttribute('href')).toBeNull();
     });
   });
 
@@ -105,7 +109,9 @@ describe('MarkdownComment', () => {
 
   describe('改行', () => {
     it('改行のレンダリング - 2行以上の改行が<p>タグで区切られる', () => {
-      render(<MarkdownComment content="Line1\n\nLine2" />);
+      render(<MarkdownComment content={`Line1
+
+Line2`} />);
       expect(screen.getByText('Line1')).toBeInTheDocument();
       expect(screen.getByText('Line2')).toBeInTheDocument();
       const p1 = screen.getByText('Line1').closest('p');
