@@ -33,6 +33,7 @@ import {STORY_POINT_VALUES, getStoryPointDescription} from '../../utils/storyPoi
 import {useIsVisible} from '../../hooks/useIsVisible';
 import {useAutoRefresh} from '../../hooks/useAutoRefresh';
 import {useAuth} from '../../contexts/AuthContext';
+import {MarkdownComment} from '../../components/MarkdownComment';
 
 const REFRESH_INTERVAL = 30000; // 30秒
 
@@ -573,7 +574,7 @@ const BacklogItemDetail: React.FC = () => {
             onClick={() => handleAddComment()}
             disabled={!commentBody || !commentAuthorName}
           >
-            コメントを追加
+            コメントを送信
           </Button>
         </Box>
       </Paper>
@@ -652,7 +653,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 </Box>
               </Box>
             ) : (
-              comment.body
+              <MarkdownComment content={comment.body} />
             )
           }
         />
@@ -778,7 +779,7 @@ const RepliesList: React.FC<RepliesListProps> = ({
                     </Box>
                   </Box>
                 ) : (
-                  reply.body
+                  <MarkdownComment content={reply.body} />
                 )
               }
             />
