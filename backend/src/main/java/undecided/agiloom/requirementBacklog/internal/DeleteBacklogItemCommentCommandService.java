@@ -1,10 +1,13 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentDeleted;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /** バックログアイテムのコメントを削除するコマンドサービス。 */
@@ -14,12 +17,15 @@ class DeleteBacklogItemCommentCommandService {
 
   private final BacklogItemCommentRepository backlogItemCommentRepository;
   private final AdminEmployeeSubsetRepository adminEmployeeSubsetRepository;
+  private final ApplicationEventPublisher eventPublisher;
 
   DeleteBacklogItemCommentCommandService(
       BacklogItemCommentRepository backlogItemCommentRepository,
-      AdminEmployeeSubsetRepository adminEmployeeSubsetRepository) {
+      AdminEmployeeSubsetRepository adminEmployeeSubsetRepository,
+      ApplicationEventPublisher eventPublisher) {
     this.backlogItemCommentRepository = backlogItemCommentRepository;
     this.adminEmployeeSubsetRepository = adminEmployeeSubsetRepository;
+    this.eventPublisher = eventPublisher;
   }
 
   /**
@@ -67,5 +73,13 @@ class DeleteBacklogItemCommentCommandService {
     }
 
     backlogItemCommentRepository.delete(comment);
+
+    // コメント削除イベントを発行
+    eventPublisher.publishEvent(
+        new BacklogItemCommentDeleted(
+            command.getBacklogItemId(),
+            command.getCommentId(),
+            actorEmployeeId,
+            LocalDateTime.now()));
   }
 }

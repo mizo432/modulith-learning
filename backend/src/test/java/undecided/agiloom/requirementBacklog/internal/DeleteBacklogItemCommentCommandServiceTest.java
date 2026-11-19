@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -44,13 +45,15 @@ class DeleteBacklogItemCommentCommandServiceTest {
 
   @Mock private AdminEmployeeSubsetRepository adminEmployeeSubsetRepository;
 
+  @Mock private ApplicationEventPublisher eventPublisher;
+
   private DeleteBacklogItemCommentCommandService service;
 
   @BeforeEach
   void setUp() {
     service =
         new DeleteBacklogItemCommentCommandService(
-            backlogItemCommentRepository, adminEmployeeSubsetRepository);
+            backlogItemCommentRepository, adminEmployeeSubsetRepository, eventPublisher);
   }
 
   private BacklogItemComment comment() {

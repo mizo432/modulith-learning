@@ -1,0 +1,12 @@
+package undecided.notification.internal;
+
+import java.util.Set;
+import org.springframework.data.repository.CrudRepository;
+import undecided.supporting.snowflake.SnowflakeId;
+
+/** コメント参加者のサブセットリポジトリ（NTスキーマ）。 */
+interface NotificationCommentParticipantSubsetRepository extends CrudRepository<NotificationCommentParticipantSubset, SnowflakeId> {
+
+  /** 指定されたバックログアイテムの全参加者レコードを取得する。 */
+  Set<NotificationCommentParticipantSubset> findByBacklogItemId(SnowflakeId backlogItemId);
+}

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import {Box, Container, CssBaseline} from '@mui/material';
 import Header from './components/Header';
+import NotificationSnackbar from './components/NotificationSnackbar';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import ChangePassword from './pages/ChangePassword';
@@ -75,6 +76,7 @@ const AdminRoute = ({children}: { children: React.ReactNode }) => {
 // App content component (inside Router)
 const AppContent = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const {employeeId} = useAuth();
 
   useEffect(() => {
     // Check authentication status when the app loads
@@ -206,6 +208,8 @@ const AppContent = () => {
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </Container>
+          {/* 通知スナックバー（全画面で表示） */}
+          {employeeId && <NotificationSnackbar employeeId={employeeId}/>}
         </Box>
       </AuthProvider>
   );
