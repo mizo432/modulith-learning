@@ -6,11 +6,14 @@ import {
   Button,
   Chip,
   Divider,
+  FormControlLabel,
   IconButton,
   List,
   ListItem,
   ListItemText,
   Paper,
+  Radio,
+  RadioGroup,
   Slider,
   TextField,
   Tooltip,
@@ -24,7 +27,9 @@ import backlogItemService, {
   BacklogItemComment,
   BacklogItemStatus,
 } from '../../services/backlogItemService';
+import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
 import {valueToColor, VALUE_MIN, VALUE_MAX, valueToQualityCategory, qualityCategoryToLabel, qualityCategoryToTooltip, QUALITY_CATEGORY_STYLES} from '../../utils/valueColor';
+import {STORY_POINT_VALUES, getStoryPointDescription} from '../../utils/storyPoints';
 import {useIsVisible} from '../../hooks/useIsVisible';
 import {useAutoRefresh} from '../../hooks/useAutoRefresh';
 import {useAuth} from '../../contexts/AuthContext';
@@ -35,12 +40,16 @@ const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
   ACCEPTED: '承認済み',
   FROZEN: '凍結',
+  READY: '準備完了',
+  ESTIMATED: '見積もり済み',
 };
 
-const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'info'> = {
+const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'info' | 'primary' | 'default'> = {
   SUGGESTED: 'warning',
   ACCEPTED: 'success',
   FROZEN: 'info',
+  READY: 'primary',
+  ESTIMATED: 'default',
 };
 
 const BacklogItemDetail: React.FC = () => {
@@ -53,6 +62,7 @@ const BacklogItemDetail: React.FC = () => {
   const auth = useAuth();
 
   const [item, setItem] = useState<BacklogItem | null>(null);
+  const [team, setTeam] = useState<ScrumTeam | null>(null);
   const [comments, setComments] = useState<BacklogItemComment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -75,11 +85,18 @@ const BacklogItemDetail: React.FC = () => {
   const [valueHelperText, setValueHelperText] = useState('');
   const [textFieldRaw, setTextFieldRaw] = useState('');
 
+  // StoryPoint選択（Issue #516）
+  const [selectedStoryPoint, setSelectedStoryPoint] = useState<number | null>(null);
+
   // 入力状態の参照（load 関数内で最新値を取得するため）
   const valueInputRef = useRef(valueInput);
   valueInputRef.current = valueInput;
   const itemValueRef = useRef(item?.value);
   itemValueRef.current = item?.value;
+  const selectedStoryPointRef = useRef(selectedStoryPoint);
+  selectedStoryPointRef.current = selectedStoryPoint;
+  const itemStoryPointRef = useRef(item?.storyPoint);
+  itemStoryPointRef.current = item?.storyPoint;
 
   const load = useCallback(async () => {
     if (!backlogItemId) return;
@@ -96,6 +113,11 @@ const BacklogItemDetail: React.FC = () => {
         setValueInput(itemData.value != null ? itemData.value : null);
         setTextFieldRaw(itemData.value != null ? String(itemData.value) : '');
       }
+      // StoryPoint入力中は上書きしない
+      const isEditingStoryPoint = selectedStoryPointRef.current !== null && itemStoryPointRef.current !== selectedStoryPointRef.current;
+      if (!isEditingStoryPoint) {
+        setSelectedStoryPoint(itemData.storyPoint != null ? itemData.storyPoint : null);
+      }
     } catch (err) {
       console.error('Failed to load backlog item:', err);
       setError('バックログアイテムの読み込みに失敗しました。');
@@ -106,11 +128,32 @@ const BacklogItemDetail: React.FC = () => {
     load();
   }, [load]);
 
+  // チーム情報を取得してメンバー判定（Issue #516）
+  useEffect(() => {
+    const loadTeam = async () => {
+      if (!productId || !scrumTeamId) return;
+      try {
+        const data = await scrumTeamService.getScrumTeamById(productId, scrumTeamId);
+        setTeam(data);
+      } catch (err) {
+        console.error('Failed to load scrum team:', err);
+      }
+    };
+    loadTeam();
+  }, [productId, scrumTeamId]);
+
+  // チームメンバーかどうかを判定（memberEmployeeIds に auth.employeeId が含まれる）
+  const isTeamMember =
+    !!auth.employeeId &&
+    !!team?.memberEmployeeIds &&
+    team.memberEmployeeIds.includes(auth.employeeId);
+
   // 自動リフレッシュ
   const {isVisible} = useIsVisible();
-  // コメント入力中または編集中、または Value 編集中はスキップ
+  // コメント入力中または編集中、または Value 編集中、または StoryPoint 編集中はスキップ
   const isCommentInputActive = commentBody !== '' || replyingTo !== null || editingCommentId !== null || replyBody !== '';
-  const shouldSkipRefresh = isCommentInputActive || (valueInput !== null && item?.value !== valueInput);
+  const isEditingStoryPoint = selectedStoryPoint !== null && item?.storyPoint !== selectedStoryPoint;
+  const shouldSkipRefresh = isCommentInputActive || (valueInput !== null && item?.value !== valueInput) || isEditingStoryPoint;
   useAutoRefresh(load, REFRESH_INTERVAL, shouldSkipRefresh, isVisible);
 
   const handleAddComment = async (parentCommentId?: string) => {
@@ -226,6 +269,28 @@ const BacklogItemDetail: React.FC = () => {
       setError(err?.response?.data?.message ?? err?.message ?? 'Valueの保存に失敗しました。');
     }
   };
+
+  // StoryPoint見積もり保存（Issue #516）
+  const handleSaveStoryPoint = async () => {
+    if (!backlogItemId || selectedStoryPoint === null) return;
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await backlogItemService.estimateBacklogItem(backlogItemId, {
+        storyPoint: selectedStoryPoint,
+        actorEmployeeId: auth.employeeId ?? undefined,
+      });
+      setSuccessMessage('StoryPointを保存しました。');
+      // 再取得して状態変化を反映
+      await load();
+    } catch (err: any) {
+      console.error('Failed to save story point:', err);
+      setError(err?.response?.data?.message ?? err?.message ?? 'StoryPointの保存に失敗しました。');
+    }
+  };
+
+  // StoryPoint見積もりセクションの表示条件（READY または ESTIMATED のみ）
+  const showStoryPointSection = item?.status === 'READY' || item?.status === 'ESTIMATED';
 
   if (!item) {
     return <Typography>読み込み中...</Typography>;
@@ -363,6 +428,49 @@ const BacklogItemDetail: React.FC = () => {
             Valueを保存
           </Button>
         </Box>
+
+        {/* StoryPoint見積もりセクション（Issue #516） */}
+        {showStoryPointSection && (
+          <Box sx={{mt: 3, pt: 2, borderTop: '1px solid #e0e0e0'}}>
+            <Typography variant="subtitle1" gutterBottom>
+              StoryPoint（見積もり）
+            </Typography>
+            <RadioGroup
+              aria-label="StoryPoint選択"
+              value={selectedStoryPoint != null ? String(selectedStoryPoint) : ''}
+              onChange={(e) => setSelectedStoryPoint(Number(e.target.value))}
+            >
+              {STORY_POINT_VALUES.map((sp) => (
+                <FormControlLabel
+                  key={sp}
+                  value={String(sp)}
+                  control={<Radio size="small" />}
+                  label={
+                    <Box component="span" sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                      <Typography component="span" variant="body2">{sp}</Typography>
+                      <Typography component="span" variant="body2" color="text.secondary">
+                        {getStoryPointDescription(sp)}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              ))}
+            </RadioGroup>
+            {/* チームメンバーのみ保存ボタンを表示（Issue #516） */}
+            {isTeamMember && (
+              <Box sx={{mt: 2}}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveStoryPoint}
+                  disabled={selectedStoryPoint === null}
+                >
+                  StoryPointを保存
+                </Button>
+              </Box>
+            )}
+          </Box>
+        )}
+
         <Typography variant="body2" color="text.secondary">
           優先度：{item.priority ?? '-'} ／ 作成者：{item.creatorName} ／ 作成日時：
           {new Date(item.createdAt).toLocaleString()}

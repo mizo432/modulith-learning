@@ -42,12 +42,16 @@ const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
   ACCEPTED: '承認済み',
   FROZEN: '凍結',
+  READY: '準備完了',
+  ESTIMATED: '見積もり済み',
 };
 
-const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'info'> = {
+const STATUS_COLORS: Record<BacklogItemStatus, 'warning' | 'success' | 'info' | 'primary' | 'default'> = {
   SUGGESTED: 'warning',
   ACCEPTED: 'success',
   FROZEN: 'info',
+  READY: 'primary',
+  ESTIMATED: 'default',
 };
 
 const QUALITY_CATEGORY_COLOR_MAP: Record<QualityCategory, 'success' | 'info' | 'warning' | 'default'> = {
@@ -228,6 +232,32 @@ const BacklogItemList: React.FC = () => {
         </Select>
       </FormControl>
 
+      {/* StoryPoint合計表示（Issue #516） */}
+      {items.length > 0 && (() => {
+        const total = items.reduce((sum, item) => sum + (item.storyPoint ?? 0), 0);
+        return (
+          <Box sx={{mb: 1, display: 'flex', alignItems: 'center', gap: 1}}>
+            <Typography variant="body2" color="text.secondary">
+              StoryPoint合計
+            </Typography>
+            <Box
+              component="span"
+              sx={{
+                fontWeight: 'bold',
+                px: 1,
+                py: 0.5,
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'primary.light',
+                color: 'primary.main',
+              }}
+            >
+              {total}
+            </Box>
+          </Box>
+        );
+      })()}
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -235,6 +265,7 @@ const BacklogItemList: React.FC = () => {
               <TableCell>タイトル</TableCell>
               <TableCell>状態</TableCell>
               <TableCell>Value</TableCell>
+              <TableCell>StoryPoint</TableCell>
               <TableCell>品質カテゴリ</TableCell>
               <TableCell>優先度</TableCell>
               <TableCell>作成者</TableCell>
@@ -272,6 +303,9 @@ const BacklogItemList: React.FC = () => {
                     >
                       {item.value ?? '-'}
                     </Box>
+                  </TableCell>
+                  <TableCell>
+                    {item.storyPoint != null ? item.storyPoint : '-'}
                   </TableCell>
                   <TableCell>
                     {item.qualityCategory ? (
@@ -346,8 +380,8 @@ const BacklogItemList: React.FC = () => {
             })}
             {items.length === 0 && !loading && (
               <TableRow>
-                <TableCell colSpan={8} align="center">
-                  バックログアイテムがありません。
+                <TableCell colSpan={9} align="center">
+                  バックログアイテムがありません
                 </TableCell>
               </TableRow>
             )}

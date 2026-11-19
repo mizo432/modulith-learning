@@ -9,6 +9,7 @@ export interface ScrumTeam {
   poName?: string;
   smEmployeeId?: string;
   smName?: string;
+  memberEmployeeIds?: string[];
   productId: string;
   createdAt: string;
   updatedAt: string;
