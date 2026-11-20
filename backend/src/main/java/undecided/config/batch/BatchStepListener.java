@@ -2,6 +2,7 @@ package undecided.config.batch;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.jspecify.annotations.Nullable;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.step.StepExecution;
 import org.springframework.batch.core.listener.StepExecutionListener;
@@ -28,7 +29,7 @@ public class BatchStepListener implements StepExecutionListener {
   }
 
   @Override
-  public ExitStatus afterStep(StepExecution stepExecution) {
+  public @Nullable ExitStatus afterStep(StepExecution stepExecution) {
     String stepName = stepExecution.getStepName();
     String jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
     String endTime = LocalDateTime.now().format(FORMATTER);
