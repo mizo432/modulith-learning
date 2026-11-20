@@ -290,6 +290,7 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
         includeTags("medium")
     }
     timeout.set(Duration.ofMinutes(5))
+    dependsOn("test")
     shouldRunAfter("test")
 }
 val largeTest = tasks.register("largeTest", Test::class.java) {

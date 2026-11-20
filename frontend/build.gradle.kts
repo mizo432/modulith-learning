@@ -12,6 +12,7 @@ tasks.register<com.github.gradle.node.npm.task.NpmTask>("npmBuild") {
     description = "Build the frontend application for production"
     args.set(listOf("run", "build:production"))
     dependsOn("npmInstall")
+    dependsOn("npmTest")
 }
 
 tasks.register<com.github.gradle.node.npm.task.NpmTask>("npmBuildStaging") {
