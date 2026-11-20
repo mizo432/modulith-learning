@@ -77,7 +77,6 @@ class ServiceRegistryWorkflowTest {
   }
 
   enum RegistryJob {
-    SMALL("service-registry-test", "./gradlew :service-registry:test"),
     MEDIUM("service-registry-medium-test", "./gradlew :service-registry:mediumTest");
 
     private final String id;
@@ -94,9 +93,9 @@ class ServiceRegistryWorkflowTest {
   class JobEligibilityTest {
 
     @Test
-    @DisplayName("小規模テストはプッシュ時にも実行対象になること")
-    void shouldAllowSmallTestsOnPushAndPullRequest() {
-      assertThat(job(RegistryJob.SMALL).get("if")).isNull();
+    @DisplayName("スモールテスト専用のジョブは存在せずmediumTestの実行に含まれること")
+    void shouldNotHaveASmallOnlyJob() {
+      assertThat(jobs.get("service-registry-test")).isNull();
     }
 
     @Test
@@ -140,18 +139,6 @@ class ServiceRegistryWorkflowTest {
     void shouldDetectChangesBeforeReadingItsOutput(RegistryJob registryJob) {
       assertThat(action(registryJob, "actions/checkout").get("if")).isNull();
       assertThat(action(registryJob, "dorny/paths-filter").get("if")).isNull();
-    }
-
-    @Test
-    @DisplayName("プッシュ時の比較に必要な直前のコミットを取得すること")
-    void shouldFetchThePreviousCommitForSmallTests() {
-      Object depth =
-          mapping(action(RegistryJob.SMALL, "actions/checkout").get("with")).get("fetch-depth");
-      assertThat(depth).isInstanceOf(Number.class);
-      assertThat(((Number) depth).intValue())
-          .satisfiesAnyOf(
-              value -> assertThat(value).isZero(),
-              value -> assertThat(value).isGreaterThanOrEqualTo(2));
     }
 
     @Test
