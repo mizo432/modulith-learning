@@ -167,37 +167,30 @@ describe('useNotifications', () => {
       },
     ];
 
-    // 1回目のリクエストは遅延させる
+    // 初回取得（マウント時の useEffect による1回目のリクエスト）は遅延させる
     let resolveFirst: () => void;
     const firstPromise = new Promise<NotificationResponse[]>((resolve) => {
       resolveFirst = () => resolve(firstNotifications);
     });
 
-    // 2回目のリクエストは即座に完了
+    // 2回目以降のリクエストは即座に完了する
     (notificationService.getUnreadNotifications as jest.Mock)
       .mockReturnValueOnce(firstPromise)
-      .mockReturnValueOnce(Promise.resolve(secondNotifications))
-      .mockResolvedValue([]);
+      .mockResolvedValue(secondNotifications);
 
     const { result } = renderHook(() => useNotifications('1'));
 
-    // 1回目のfetchを開始（遅延中）
-    const fetch1 = act(async () => {
-      await result.current.fetchNotifications();
-    });
-
-    // 2回目のfetchを即座に実行
+    // 2回目のfetchを即座に実行し、新しい状態になる
     await act(async () => {
       await result.current.fetchNotifications();
     });
+    expect(result.current.notifications).toEqual(secondNotifications);
 
-    // 1回目のリクエストを完了させる（古い結果）
+    // 遅延していた初回取得が古い結果で完了しても、新しい状態が上書きされない
     await act(async () => {
       resolveFirst!();
-      await fetch1;
     });
 
-    // 新しい状態が上書きされていないことを確認
     expect(result.current.notifications).toEqual(secondNotifications);
   });
 });

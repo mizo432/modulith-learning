@@ -78,7 +78,7 @@ describe('NotificationSnackbar', () => {
     });
   });
 
-  it('3件以上の通知があるとき、最大3件まで表示される', () => {
+  it('3件以上の通知があるとき、先頭の1件だけが表示される', () => {
     // テストリスト項目20
     const manyNotifications: NotificationResponse[] = [
       ...mockNotifications,
@@ -97,7 +97,7 @@ describe('NotificationSnackbar', () => {
 
     render(<NotificationSnackbar employeeId="1" />);
 
-    // 最初の1件が表示される（キューには最大3件）
+    // 先頭の1件だけが表示される
     expect(screen.getByText('コメントが追加されました')).toBeInTheDocument();
   });
 
