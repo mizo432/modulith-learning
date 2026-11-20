@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Snackbar, Alert, AlertColor } from '@mui/material';
 import { useNotifications } from '../hooks/useNotifications';
+import { NotificationResponse } from '../types/notification';
 
 /**
  * 通知スナックバーコンポーネント。
@@ -8,7 +9,7 @@ import { useNotifications } from '../hooks/useNotifications';
  * <p>#658トースト仕様に準拠：
  * - 表示位置: 右下
  * - 自動消去: 6秒
- * - 同時表示: 最大3件
+ * - 一度に1件表示
  * - アニメーション: フェードイン/フェードアウト
  */
 
@@ -16,40 +17,35 @@ interface NotificationSnackbarProps {
   employeeId: string;
 }
 
-const MAX_VISIBLE = 3;
 const AUTO_HIDE_DURATION = 6000;
 
 export const NotificationSnackbar: React.FC<NotificationSnackbarProps> = ({ employeeId }) => {
   const { notifications, handleMarkAsRead } = useNotifications(employeeId);
-  const [open, setOpen] = useState(notifications.length > 0);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [queue, setQueue] = useState(notifications.slice(0, MAX_VISIBLE));
-  const openRef = useRef(open);
-  openRef.current = open;
+  // ローカルキューで通知を管理（propsのnotificationsがまだ変わっていない状態でも、
+  // 閉じたら次の通知が表示されるようにする）
+  const [queue, setQueue] = useState<NotificationResponse[]>([]);
 
-  // 通知が更新されたらキューを更新
+  // 通知が更新されたらローカルキューを更新
   useEffect(() => {
-    const newQueue = notifications.slice(0, MAX_VISIBLE);
-    setQueue(newQueue);
-    if (newQueue.length > 0 && !openRef.current) {
-      setCurrentIndex(0);
-      setOpen(true);
-    }
+    setQueue(notifications);
   }, [notifications]);
 
-  const currentNotification = queue[currentIndex];
+  const currentNotification = queue[0];
 
-  const handleClose = useCallback(() => {
-    if (currentNotification) {
-      handleMarkAsRead(currentNotification.id);
-    }
-    if (currentIndex + 1 < queue.length) {
-      setCurrentIndex(prev => prev + 1);
-    } else {
-      setOpen(false);
-      setCurrentIndex(0);
-    }
-  }, [currentNotification, currentIndex, queue.length, handleMarkAsRead]);
+  const handleClose = useCallback(
+    (event?: any) => {
+      // 閉じる操作が詳細遷移へ伝播しないようにする
+      if (event) {
+        event.stopPropagation();
+      }
+      if (currentNotification) {
+        handleMarkAsRead(currentNotification.id);
+      }
+      // 先頭を取り除いて次の通知を表示
+      setQueue(prev => prev.slice(1));
+    },
+    [currentNotification, handleMarkAsRead]
+  );
 
   const handleClick = useCallback(() => {
     if (currentNotification) {
@@ -74,7 +70,8 @@ export const NotificationSnackbar: React.FC<NotificationSnackbarProps> = ({ empl
 
   return (
     <Snackbar
-      open={open}
+      key={currentNotification.id}
+      open={queue.length > 0}
       autoHideDuration={AUTO_HIDE_DURATION}
       onClose={handleClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}

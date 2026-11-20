@@ -38,6 +38,11 @@ class CommentParticipantSyncListener {
   public void onCommentAdded(BacklogItemCommentAdded event) {
     // 操作者（コメント投稿者）の参加者情報を記録
     if (event.authorEmployeeId() != null) {
+      // 既に登録済みなら保存しない（UNIQUE制約違反を防止）
+      if (commentParticipantSubsetRepository.existsByBacklogItemIdAndEmployeeId(
+          event.backlogItemId(), event.authorEmployeeId())) {
+        return;
+      }
       String employeeEmail = event.authorEmail() != null ? event.authorEmail() : "";
       commentParticipantSubsetRepository.save(
           NotificationCommentParticipantSubset.builder()
