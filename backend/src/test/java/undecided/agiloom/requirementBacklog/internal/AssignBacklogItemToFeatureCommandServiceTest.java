@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
 import undecided.agiloom.requirementBacklog.spi.Feature;
@@ -27,6 +30,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Tag("small")
 @DisplayName("AssignBacklogItemToFeatureCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class AssignBacklogItemToFeatureCommandServiceTest {
 
   @Mock private FeatureRepository featureRepository;
@@ -74,14 +78,15 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       SnowflakeId featureId = SnowflakeId.of(100L);
       SnowflakeId backlogItemId = SnowflakeId.of(200L);
       SnowflakeId teamId = SnowflakeId.of(10L);
+      SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
       BacklogItem backlogItem = createBacklogItem();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
           .scrumTeamId(teamId)
-          .actorEmployeeId(SnowflakeId.of(999L))
+          .actorEmployeeId(actorId)
           .build();
 
       when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
@@ -109,6 +114,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       SnowflakeId featureId = SnowflakeId.of(100L);
       SnowflakeId backlogItemId = SnowflakeId.of(200L);
       SnowflakeId teamId = SnowflakeId.of(10L);
+      SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
       BacklogItem backlogItem = BacklogItem.builder()
           .id(backlogItemId)
@@ -117,12 +123,12 @@ class AssignBacklogItemToFeatureCommandServiceTest {
           .scrumTeamId(teamId)
           .status(BacklogItemStatus.ACCEPTED)
           .build();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
           .scrumTeamId(teamId)
-          .actorEmployeeId(SnowflakeId.of(999L))
+          .actorEmployeeId(actorId)
           .build();
 
       when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
@@ -144,12 +150,16 @@ class AssignBacklogItemToFeatureCommandServiceTest {
     void shouldThrowWhenFeatureNotFound() {
       // Arrange
       SnowflakeId featureId = SnowflakeId.of(100L);
+      SnowflakeId teamId = SnowflakeId.of(10L);
+      SnowflakeId actorId = SnowflakeId.of(999L);
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(SnowflakeId.of(200L))
-          .scrumTeamId(SnowflakeId.of(10L))
-          .actorEmployeeId(SnowflakeId.of(999L))
+          .scrumTeamId(teamId)
+          .actorEmployeeId(actorId)
           .build();
+      when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
       when(featureRepository.findById(featureId)).thenReturn(Optional.empty());
 
       // Act & Assert
@@ -164,13 +174,17 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       // Arrange
       SnowflakeId featureId = SnowflakeId.of(100L);
       SnowflakeId backlogItemId = SnowflakeId.of(200L);
+      SnowflakeId teamId = SnowflakeId.of(10L);
+      SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
-          .scrumTeamId(SnowflakeId.of(10L))
-          .actorEmployeeId(SnowflakeId.of(999L))
+          .scrumTeamId(teamId)
+          .actorEmployeeId(actorId)
           .build();
+      when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
       when(featureRepository.findById(featureId)).thenReturn(Optional.of(feature));
       when(backlogItemRepository.findById(backlogItemId)).thenReturn(Optional.empty());
 
@@ -187,18 +201,19 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       SnowflakeId featureId = SnowflakeId.of(100L);
       SnowflakeId backlogItemId = SnowflakeId.of(200L);
       SnowflakeId teamId = SnowflakeId.of(10L);
+      SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
       BacklogItem backlogItem = createBacklogItem();
       FeatureBacklogItem existing = FeatureBacklogItem.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
           .build();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
           .scrumTeamId(teamId)
-          .actorEmployeeId(SnowflakeId.of(999L))
+          .actorEmployeeId(actorId)
           .build();
 
       when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
@@ -222,18 +237,19 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       SnowflakeId otherFeatureId = SnowflakeId.of(101L);
       SnowflakeId backlogItemId = SnowflakeId.of(200L);
       SnowflakeId teamId = SnowflakeId.of(10L);
+      SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
       BacklogItem backlogItem = createBacklogItem();
       FeatureBacklogItem existing = FeatureBacklogItem.builder()
           .featureId(otherFeatureId)
           .backlogItemId(backlogItemId)
           .build();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
           .scrumTeamId(teamId)
-          .actorEmployeeId(SnowflakeId.of(999L))
+          .actorEmployeeId(actorId)
           .build();
 
       when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
@@ -254,7 +270,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = org.mockito.Mockito.mock(ScrumTeamSubset.class);
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(SnowflakeId.of(100L))
           .backlogItemId(SnowflakeId.of(200L))

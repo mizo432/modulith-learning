@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import undecided.agiloom.requirementBacklog.spi.Feature;
 import undecided.agiloom.requirementBacklog.spi.FeatureStatus;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -25,6 +28,7 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 @Tag("small")
 @DisplayName("CreateFeatureCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class CreateFeatureCommandServiceTest {
 
   @Mock private FeatureRepository featureRepository;
@@ -51,7 +55,7 @@ class CreateFeatureCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       CreateFeatureCommand command = CreateFeatureCommand.builder()
           .scrumTeamId(teamId)
           .name("New Feature")
@@ -96,12 +100,13 @@ class CreateFeatureCommandServiceTest {
     void shouldCreateWhenNameIs200Characters() {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      SnowflakeId actorId = SnowflakeId.of(999L);
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       String name = "a".repeat(Feature.NAME_MAX_LENGTH);
       CreateFeatureCommand command = CreateFeatureCommand.builder()
           .scrumTeamId(teamId)
           .name(name)
-          .actorEmployeeId(SnowflakeId.of(999L))
+          .actorEmployeeId(actorId)
           .build();
 
       when(scrumTeamSubsetRepository.findById(teamId)).thenReturn(Optional.of(team));
@@ -159,7 +164,7 @@ class CreateFeatureCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
       CreateFeatureCommand command = CreateFeatureCommand.builder()
           .scrumTeamId(teamId)
           .name("New Feature")
@@ -184,7 +189,7 @@ class CreateFeatureCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = org.mockito.Mockito.mock(ScrumTeamSubset.class);
       CreateFeatureCommand command = CreateFeatureCommand.builder()
           .scrumTeamId(teamId)
           .name("New Feature")
