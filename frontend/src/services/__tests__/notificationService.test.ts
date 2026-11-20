@@ -1,14 +1,22 @@
 import { getUnreadNotifications, markAsRead } from '../notificationService';
 import { NotificationResponse } from '../../types/notification';
 
+// api.ts のモック
+jest.mock('../api', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(),
+    put: jest.fn(),
+  },
+}));
+
+import api from '../api';
+
 describe('notificationService', () => {
+  const mockApi = api as jest.Mocked<typeof api>;
+
   beforeEach(() => {
     jest.clearAllMocks();
-    global.fetch = jest.fn();
-  });
-
-  afterEach(() => {
-    delete (global as any).fetch;
   });
 
   describe('getUnreadNotifications', () => {
@@ -25,49 +33,62 @@ describe('notificationService', () => {
         },
       ];
 
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(mockNotifications),
-      });
+      mockApi.get.mockResolvedValue({ data: mockNotifications });
 
       const result = await getUnreadNotifications('1');
 
       expect(result).toEqual(mockNotifications);
-      expect(global.fetch).toHaveBeenCalledWith('/api/notifications/unread/1');
+      expect(mockApi.get).toHaveBeenCalledWith('/notifications/unread/1');
     });
 
     it('APIエラーのとき、例外をスローする', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: false,
-        status: 500,
-      });
+      mockApi.get.mockRejectedValue(new Error('API error'));
 
-      await expect(getUnreadNotifications('1')).rejects.toThrow(
-        'Failed to fetch notifications: 500'
-      );
+      await expect(getUnreadNotifications('1')).rejects.toThrow();
     });
   });
 
   describe('markAsRead', () => {
     it('通知を既読にできる', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-      });
+      mockApi.put.mockResolvedValue({ data: {} });
 
       await markAsRead('1');
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/notifications/1/read', {
-        method: 'PUT',
-      });
+      expect(mockApi.put).toHaveBeenCalledWith('/notifications/1/read');
     });
 
     it('APIエラーのとき、例外をスローする', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: false,
-        status: 404,
-      });
+      mockApi.put.mockRejectedValue(new Error('API error'));
 
-      await expect(markAsRead('1')).rejects.toThrow('Failed to mark as read: 404');
+      await expect(markAsRead('1')).rejects.toThrow();
     });
+  });
+
+  // === Issue #706 対応テスト ===
+
+  it('未読通知を取得したとき、共有 API クライアントが呼ばれる', async () => {
+    // テストリスト項目15
+    mockApi.get.mockResolvedValue({ data: [] });
+
+    await getUnreadNotifications('1');
+
+    expect(mockApi.get).toHaveBeenCalledWith('/notifications/unread/1');
+  });
+
+  it('通知を既読にしたとき、共有 API クライアントが呼ばれる', async () => {
+    // テストリスト項目16
+    mockApi.put.mockResolvedValue({ data: {} });
+
+    await markAsRead('1');
+
+    expect(mockApi.put).toHaveBeenCalledWith('/notifications/1/read');
+  });
+
+  it.skip('API が401を返したとき、ログイン画面へ遷移する', async () => {
+    // テストリスト項目17
+    // 共有 api クライアントの response interceptor が 401 を処理するため、
+    // notificationService のテストではモックに置き換わってしまう。
+    // このテストはスキップし、理由を報告する。
+    // （共有 api クライアントの振る舞いは api.ts のテストで検証する）
   });
 });

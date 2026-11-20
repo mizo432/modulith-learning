@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -156,6 +157,57 @@ class NotificationIntegrationMediumTest {
     // 投稿者自身には通知されないことを確認
     assertThat(notifications)
         .noneSatisfy(n -> assertThat(n.getRecipientId()).isEqualTo(authorEmployeeId));
+  }
+
+  @Test
+  @DisplayName("同じ投稿者が同じアイテムに2回目のコメントを追加したとき、参加者レコードが重複しない")
+  void shouldNotDuplicateParticipantOnSecondComment() throws InterruptedException {
+    // テストリスト項目5
+    // Arrange: 投稿者の参加者レコードが既に存在する状態（1回目のコメントで登録済み）
+
+    // 1回目のコメントイベントを発行（投稿者が参加者に記録される）
+    SnowflakeId commentId1 = snowflakeIdGenerator.nextIdValue();
+    new TransactionTemplate(transactionManager)
+        .executeWithoutResult(
+            status ->
+                eventPublisher.publishEvent(
+                    new BacklogItemCommentAdded(
+                        backlogItemId,
+                        commentId1,
+                        authorEmployeeId,
+                        "投稿者",
+                        "",
+                        LocalDateTime.now())));
+
+    // 1回目のイベント処理を待つ
+    Thread.sleep(2000);
+
+    // Act: 2回目のコメントイベントを発行（同じ投稿者、同じアイテム）
+    SnowflakeId commentId2 = snowflakeIdGenerator.nextIdValue();
+    new TransactionTemplate(transactionManager)
+        .executeWithoutResult(
+            status ->
+                eventPublisher.publishEvent(
+                    new BacklogItemCommentAdded(
+                        backlogItemId,
+                        commentId2,
+                        authorEmployeeId,
+                        "投稿者",
+                        "",
+                        LocalDateTime.now())));
+
+    // 2回目のイベント処理を待つ
+    Thread.sleep(2000);
+
+    // Assert: 投稿者の参加者レコードは1件のみ（重複しない）
+    Set<NotificationCommentParticipantSubset> participants =
+        commentParticipantSubsetRepository.findByBacklogItemId(backlogItemId);
+
+    long authorCount =
+        participants.stream()
+            .filter(p -> p.getEmployeeId().equals(authorEmployeeId))
+            .count();
+    assertThat(authorCount).isEqualTo(1);
   }
 
   @Test

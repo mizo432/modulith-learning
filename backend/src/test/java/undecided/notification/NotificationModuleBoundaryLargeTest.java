@@ -20,13 +20,16 @@ class NotificationModuleBoundaryLargeTest {
   @Test
   @DisplayName("モジュール境界が保たれていること")
   void shouldVerifyModuleBoundaries() {
-    // テストリスト項目16
+    // テストリスト項目7
     ApplicationModules modules = ApplicationModules.of(ModulithDemoApplication.class);
-    
+
     // モジュール構成を確認
     String moduleInfo = modules.toString();
     assertThat(moduleInfo).isNotBlank();
     // notification モジュールが存在することを確認
     assertThat(moduleInfo).contains("notification");
+
+    // モジュール境界の厳密な検証
+    modules.verify();
   }
 }
