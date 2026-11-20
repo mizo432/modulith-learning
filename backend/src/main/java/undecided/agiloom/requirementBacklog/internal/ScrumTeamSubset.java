@@ -141,6 +141,6 @@ class ScrumTeamSubset {
       return true;
     }
     // memberEmployeeIds リストに含まれるか確認
-    return this.memberEmployeeIds.contains(actorEmployeeId);
+    return this.memberEmployeeIds != null && this.memberEmployeeIds.contains(actorEmployeeId);
   }
 }
