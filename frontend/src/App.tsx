@@ -93,7 +93,7 @@ const AppContent = () => {
   }
 
   return (
-      <AuthProvider>
+      <>
         <CssBaseline/>
         <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
           <Header/>
@@ -211,14 +211,16 @@ const AppContent = () => {
           {/* 通知スナックバー（全画面で表示） */}
           {employeeId && <NotificationSnackbar employeeId={employeeId}/>}
         </Box>
-      </AuthProvider>
+      </>
   );
 };
 
 function App() {
   return (
       <Router>
-        <AppContent/>
+        <AuthProvider>
+          <AppContent/>
+        </AuthProvider>
       </Router>
   );
 }
