@@ -1,6 +1,8 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import org.jspecify.annotations.NonNull;
+import undecided.agiloom.requirementBacklog.spi.Feature;
+import undecided.agiloom.requirementBacklog.spi.FeatureBacklogItem;
 
 /**
  * バックログアイテムをフィーチャーから外すサービス。
@@ -26,5 +28,23 @@ class RemoveBacklogItemFromFeatureCommandService {
    * @param command 外しコマンド
    */
   public void execute(@NonNull RemoveBacklogItemFromFeatureCommand command) {
+    // Check team exists and permission
+    ScrumTeamSubset team = scrumTeamSubsetRepository.findById(command.scrumTeamId())
+        .orElseThrow(() -> new IllegalArgumentException("Scrum team not found: " + command.scrumTeamId()));
+
+    if (!team.isTeamMember(command.actorEmployeeId())) {
+      throw new BacklogItemPermissionDeniedException("Not a team member");
+    }
+
+    // Find feature
+    Feature feature = featureRepository.findById(command.featureId())
+        .orElseThrow(() -> new IllegalArgumentException("Feature not found: " + command.featureId()));
+
+    // Find and delete association
+    FeatureBacklogItem association = featureBacklogItemRepository.findByBacklogItemId(command.backlogItemId())
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Association not found for backlog item: " + command.backlogItemId()));
+
+    featureBacklogItemRepository.delete(association);
   }
 }

@@ -75,7 +75,20 @@ public class Feature {
    * @param description 更新後の説明（nullの場合は変更なし）
    */
   public void update(@Nullable String name, @Nullable String description) {
-    // TODO: 実装未実装
+    if (name != null) {
+      if (name.isEmpty()) {
+        throw new IllegalArgumentException("Feature name must not be empty");
+      }
+      if (name.length() > NAME_MAX_LENGTH) {
+        throw new IllegalArgumentException(
+            "Feature name must not exceed " + NAME_MAX_LENGTH + " characters");
+      }
+      this.name = name;
+    }
+    if (description != null) {
+      this.description = description;
+    }
+    this.updatedAt = LocalDateTime.now();
   }
 
   /**
@@ -92,7 +105,17 @@ public class Feature {
    * @throws IllegalStateException 許可されていない遷移の場合
    */
   public void changeStatus(@NonNull FeatureStatus target) {
-    // TODO: 実装未実装
+    boolean allowed = switch (this.status) {
+      case PLANNED -> target == FeatureStatus.IN_PROGRESS;
+      case IN_PROGRESS -> target == FeatureStatus.DONE || target == FeatureStatus.PLANNED;
+      case DONE -> target == FeatureStatus.IN_PROGRESS;
+    };
+    if (!allowed) {
+      throw new IllegalStateException(
+          "Invalid status transition: " + this.status + " -> " + target);
+    }
+    this.status = target;
+    this.updatedAt = LocalDateTime.now();
   }
 
   /**
@@ -114,10 +137,10 @@ public class Feature {
     feature.id = id;
     feature.name = name;
     feature.description = description;
-    feature.status = status;
+    feature.status = status != null ? status : FeatureStatus.PLANNED;
     feature.scrumTeamId = scrumTeamId;
-    feature.createdAt = createdAt;
-    feature.updatedAt = updatedAt;
+    feature.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+    feature.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     return feature;
   }
 }

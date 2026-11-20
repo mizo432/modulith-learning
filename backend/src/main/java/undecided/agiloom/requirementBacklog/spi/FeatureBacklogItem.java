@@ -1,6 +1,7 @@
 package undecided.agiloom.requirementBacklog.spi;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -32,11 +33,13 @@ public class FeatureBacklogItem {
   /** フィーチャーID（複合主キー）。 */
   @Id
   @Column(name = "feature_id")
+  @Convert(disableConversion = true)
   protected SnowflakeId featureId;
 
   /** バックログアイテムID（複合主キー）。 */
   @Id
   @Column(name = "backlog_item_id")
+  @Convert(disableConversion = true)
   protected SnowflakeId backlogItemId;
 
   /** 紐付け日時。 */
