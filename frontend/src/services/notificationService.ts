@@ -1,7 +1,9 @@
 import { NotificationResponse } from '../types/notification';
+import api from './api';
 
 /**
  * 通知サービス。
+ * 共有 API クライアント（axios）を利用し、認証ヘッダー付与と401処理を一元化する。
  */
 
 /**
@@ -10,11 +12,8 @@ import { NotificationResponse } from '../types/notification';
  * @return 未読通知のリスト
  */
 export async function getUnreadNotifications(employeeId: string): Promise<NotificationResponse[]> {
-  const response = await fetch(`/api/notifications/unread/${employeeId}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch notifications: ${response.status}`);
-  }
-  return response.json();
+  const response = await api.get(`/notifications/unread/${employeeId}`);
+  return response.data;
 }
 
 /**
@@ -22,10 +21,5 @@ export async function getUnreadNotifications(employeeId: string): Promise<Notifi
  * @param notificationId 通知ID
  */
 export async function markAsRead(notificationId: string): Promise<void> {
-  const response = await fetch(`/api/notifications/${notificationId}/read`, {
-    method: 'PUT',
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to mark as read: ${response.status}`);
-  }
+  await api.put(`/notifications/${notificationId}/read`);
 }
