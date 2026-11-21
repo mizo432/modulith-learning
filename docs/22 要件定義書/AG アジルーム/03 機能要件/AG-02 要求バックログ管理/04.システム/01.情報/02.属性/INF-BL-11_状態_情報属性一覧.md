@@ -4,6 +4,18 @@
 
 | 属性名              | 型          | PK | 必須 | 説明                                           |
 |---------------------|-------------|----|------|------------------------------------------------|
-| status_code         | String      | *  | Y    | 状態コード                                     |
-| status_name         | String      |    | Y    | 状態名                                         |
+| status_code         | String      | *  | Y    | 状態コード（SUGGESTED, ACCEPTED, FROZEN, READY, ESTIMATED, IN_PROGRESS, DONE） |
+| status_name         | String      |    | Y    | 状態名（提案済み, 受入済み, 凍結, 準備完了, 見積もり済み, 進行中, 完了） |
 | description         | Text        |    | N    | 説明                                           |
+
+## 状態値一覧
+
+| 状態コード | 状態名 | 説明 |
+|-----------|--------|------|
+| SUGGESTED | 提案済み | チームメンバーやステークホルダーが作成した直後の状態（初期状態） |
+| ACCEPTED | 受入済み | SMまたはPOがチームのバックログとして受け入れた状態 |
+| FROZEN | 凍結 | SMまたはPOが一時的に保留とした状態 |
+| READY | 準備完了 | ACCEPTEDから遷移し、スプリント実行の準備が整った状態 |
+| ESTIMATED | 見積もり済み | READYから遷移し、ストーリーポイントが設定された状態 |
+| IN_PROGRESS | 進行中 | 通常遷移は未定義 |
+| DONE | 完了 | 通常遷移は未定義 |
