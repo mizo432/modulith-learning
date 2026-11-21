@@ -59,8 +59,8 @@ public class UpdateSimpleEmployeeCommandService implements UpdateSimpleEmployeeC
     phoneContactUse.updatePhoneNo(employeeDto.phoneNo());
     contactUseRepository.save(phoneContactUse);
 
-    // SimpleEmployeeを更新
-    simpleEmployee.update(employeeDto.employeeNo(), employeeDto.searchName(), employeeDto.fullName());
+    // SimpleEmployeeを更新（既存のpartyIdをそのまま保持）
+    simpleEmployee.update(employeeDto.employeeNo(), employeeDto.searchName(), employeeDto.fullName(), simpleEmployee.getPartyId());
     employeeRepository.save(simpleEmployee);
   }
 }

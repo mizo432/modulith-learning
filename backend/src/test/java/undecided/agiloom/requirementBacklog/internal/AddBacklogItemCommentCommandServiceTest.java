@@ -20,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
+import undecided.association.relationshipMgmt.personRole.spi.employee.EmployeeEmailQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
@@ -52,6 +54,8 @@ class AddBacklogItemCommentCommandServiceTest {
 
   @Mock private ApplicationEventPublisher eventPublisher;
 
+  @Mock private EmployeeEmailQuery employeeEmailQuery;
+
   private AddBacklogItemCommentCommandService service;
 
   @BeforeEach
@@ -62,7 +66,8 @@ class AddBacklogItemCommentCommandServiceTest {
             backlogItemCommentRepository,
             commentParticipantSubsetRepository,
             snowflakeIdGenerator,
-            eventPublisher);
+            eventPublisher,
+            employeeEmailQuery);
   }
 
   private BacklogItem backlogItem() {
@@ -253,6 +258,94 @@ class AddBacklogItemCommentCommandServiceTest {
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("自身");
       verify(backlogItemCommentRepository, never()).save(any());
+    }
+
+    // Issue #685: テスト項目17
+    @Test
+    @DisplayName("投稿者IDがありメールが解決できる場合でコメントを投稿したとき、authorEmailが解決された値で保存される")
+    void shouldSaveResolvedEmailWhenAuthorIdPresentAndEmailResolvable() {
+      // Arrange
+      BacklogItem item = backlogItem();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(NEW_COMMENT_ID);
+      when(backlogItemCommentRepository.save(any(BacklogItemComment.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+      when(employeeEmailQuery.resolveEmailByEmployeeId(AUTHOR_ID))
+          .thenReturn(Optional.of("taro@example.com"));
+
+      AddBacklogItemCommentCommand cmd = AddBacklogItemCommentCommand.builder()
+          .backlogItemId(ITEM_ID)
+          .authorEmployeeId(AUTHOR_ID)
+          .authorName("Author")
+          .body("Test comment")
+          .build();
+
+      // Act
+      service.execute(cmd);
+
+      // Assert
+      ArgumentCaptor<CommentParticipantSubset> captor = ArgumentCaptor.forClass(CommentParticipantSubset.class);
+      verify(commentParticipantSubsetRepository).save(captor.capture());
+      assertThat(captor.getValue().getEmployeeEmail()).isEqualTo("taro@example.com");
+    }
+
+    // Issue #685: テスト項目18
+    @Test
+    @DisplayName("投稿者IDがありメールが解決できない場合でコメントを投稿したとき、authorEmailが空文字で保存される")
+    void shouldSaveEmptyEmailWhenAuthorIdPresentButEmailNotResolvable() {
+      // Arrange
+      BacklogItem item = backlogItem();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(NEW_COMMENT_ID);
+      when(backlogItemCommentRepository.save(any(BacklogItemComment.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+      when(employeeEmailQuery.resolveEmailByEmployeeId(AUTHOR_ID))
+          .thenReturn(Optional.empty());
+
+      AddBacklogItemCommentCommand cmd = AddBacklogItemCommentCommand.builder()
+          .backlogItemId(ITEM_ID)
+          .authorEmployeeId(AUTHOR_ID)
+          .authorName("Author")
+          .body("Test comment")
+          .build();
+
+      // Act
+      service.execute(cmd);
+
+      // Assert
+      ArgumentCaptor<CommentParticipantSubset> captor = ArgumentCaptor.forClass(CommentParticipantSubset.class);
+      verify(commentParticipantSubsetRepository).save(captor.capture());
+      assertThat(captor.getValue().getEmployeeEmail()).isEqualTo("");
+    }
+
+    // Issue #685: テスト項目19
+    @Test
+    @DisplayName("投稿者IDがnullでコメントを投稿したとき、authorEmailが空文字でイベントに含められる")
+    void shouldIncludeEmptyEmailInEventWhenAuthorIdIsNull() {
+      // Arrange
+      BacklogItem item = backlogItem();
+      when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
+      when(snowflakeIdGenerator.nextIdValue()).thenReturn(NEW_COMMENT_ID);
+      when(backlogItemCommentRepository.save(any(BacklogItemComment.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+      AddBacklogItemCommentCommand cmd = AddBacklogItemCommentCommand.builder()
+          .backlogItemId(ITEM_ID)
+          .authorEmployeeId(null)
+          .authorName("Author")
+          .body("Test comment")
+          .build();
+
+      // Act
+      service.execute(cmd);
+
+      // Assert: 投稿者IDがnullの場合はCommentParticipantSubsetは保存されないが、
+      // イベントには空文字のauthorEmailが含まれる
+      verify(commentParticipantSubsetRepository, never()).save(any(CommentParticipantSubset.class));
+      ArgumentCaptor<BacklogItemCommentAdded> eventCaptor =
+          ArgumentCaptor.forClass(BacklogItemCommentAdded.class);
+      verify(eventPublisher).publishEvent(eventCaptor.capture());
+      assertThat(eventCaptor.getValue().authorEmail()).isEqualTo("");
     }
   }
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
+import undecided.association.relationshipMgmt.personRole.spi.employee.EmployeeEmailQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
@@ -23,18 +24,21 @@ class AddBacklogItemCommentCommandService {
   private final CommentParticipantSubsetRepository commentParticipantSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
   private final ApplicationEventPublisher eventPublisher;
+  private final EmployeeEmailQuery employeeEmailQuery;
 
   AddBacklogItemCommentCommandService(
       BacklogItemRepository backlogItemRepository,
       BacklogItemCommentRepository backlogItemCommentRepository,
       CommentParticipantSubsetRepository commentParticipantSubsetRepository,
       SnowflakeIdGenerator snowflakeIdGenerator,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      EmployeeEmailQuery employeeEmailQuery) {
     this.backlogItemRepository = backlogItemRepository;
     this.backlogItemCommentRepository = backlogItemCommentRepository;
     this.commentParticipantSubsetRepository = commentParticipantSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
     this.eventPublisher = eventPublisher;
+    this.employeeEmailQuery = employeeEmailQuery;
   }
 
   SnowflakeId execute(@NonNull AddBacklogItemCommentCommand command) {
@@ -93,7 +97,7 @@ class AddBacklogItemCommentCommandService {
               command.getBacklogItemId(),
               command.getAuthorEmployeeId(),
               command.getAuthorName(),
-              command.getAuthorEmail() != null ? command.getAuthorEmail() : ""));
+              ""));
     }
 
     // コメント追加イベントを発行
@@ -103,7 +107,7 @@ class AddBacklogItemCommentCommandService {
             saved.getId(),
             command.getAuthorEmployeeId(),
             command.getAuthorName(),
-            command.getAuthorEmail() != null ? command.getAuthorEmail() : "",
+            "",
             LocalDateTime.now()));
 
     return saved.getId();

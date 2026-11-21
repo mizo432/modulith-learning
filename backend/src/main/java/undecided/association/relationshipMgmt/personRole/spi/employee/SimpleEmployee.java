@@ -8,9 +8,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import com.github.mizo432.shared.common.precondition.ObjectPrecondition;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
+import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -55,6 +56,10 @@ public class SimpleEmployee {
           column = @Column(name = "full_name", nullable = false, length = 255)))
   protected FullName fullName;
 
+  /** 関連するPersonのパーティID。メールアドレス解決のために使用されます。 */
+  @Column(name = "party_id")
+  protected @Nullable SnowflakeId partyId;
+
   /**
    * 従業員を新規作成します。
    *
@@ -62,19 +67,22 @@ public class SimpleEmployee {
    * @param employeeNo 従業員番号
    * @param searchName 検索用名称
    * @param fullName 氏名
+   * @param partyId 関連するPersonのパーティID（null可）
    * @return 新規作成されたSimpleEmployeeインスタンス
    */
   public static SimpleEmployee create(
       SnowflakeId employeeId,
       EmployeeNo employeeNo,
       SearchName searchName,
-      FullName fullName
+      FullName fullName,
+      @Nullable SnowflakeId partyId
   ) {
     SimpleEmployee employee = new SimpleEmployee();
     employee.employeeId = employeeId;
     employee.employeeNo = employeeNo;
     employee.searchName = searchName;
     employee.fullName = fullName;
+    employee.partyId = partyId;
     return employee;
   }
 
@@ -84,13 +92,15 @@ public class SimpleEmployee {
    * @param employeeNo 従業員番号
    * @param searchName 検索用名称
    * @param fullName 氏名
+   * @param partyId 関連するPersonのパーティID（null可）
    */
-  public void update(EmployeeNo employeeNo, SearchName searchName, FullName fullName) {
+  public void update(EmployeeNo employeeNo, SearchName searchName, FullName fullName, @Nullable SnowflakeId partyId) {
     ObjectPrecondition.checkNotNull(employeeNo, () -> new IllegalArgumentException("employeeNo must not be null"));
     ObjectPrecondition.checkNotNull(searchName, () -> new IllegalArgumentException("searchName must not be null"));
     ObjectPrecondition.checkNotNull(fullName, () -> new IllegalArgumentException("fullName must not be null"));
     this.employeeNo = employeeNo;
     this.searchName = searchName;
     this.fullName = fullName;
+    this.partyId = partyId;
   }
 }
