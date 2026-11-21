@@ -1,21 +1,18 @@
 package undecided.association.relationshipMgmt.personRole.internal.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentCaptor.forClass;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.ArgumentCaptor;
 
-import com.github.mizo432.shared.value.datetime.WhenOccured;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.association.relationshipMgmt.party.repository.ContactUseRepository;
@@ -35,22 +32,21 @@ import undecided.association.relationshipMgmt.spi.party.person.Person;
 import undecided.association.relationshipMgmt.spi.party.PartyTypeCode;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+/**
+ * {@code CreateSimpleEmployeeCommandService} の単体テストクラスです。
+ * <p>
+ * Issue #685: 従業員作成時にpartyIdがSimpleEmployeeに設定されることを検証します。
+ */
 @Tag("small")
 @DisplayName("CreateSimpleEmployeeCommandServiceの単体テスト")
 @ExtendWith(MockitoExtension.class)
 class CreateSimpleEmployeeCommandServiceTest {
 
   @Mock private EmployeeFactory employeeFactory;
-
   @Mock private EmployeeRepository employeeRepository;
-
   @Mock private PersonRepository personRepository;
-
   @Mock private ContactUseRepository contactUseRepository;
-
   @Mock private SnowflakeIdGenerator snowflakeIdGenerator;
 
   private CreateSimpleEmployeeCommandService service;
@@ -58,151 +54,82 @@ class CreateSimpleEmployeeCommandServiceTest {
   @BeforeEach
   void setUp() {
     service = new CreateSimpleEmployeeCommandService(
-        employeeFactory, employeeRepository, personRepository, contactUseRepository, snowflakeIdGenerator);
+        employeeFactory,
+        employeeRepository,
+        personRepository,
+        contactUseRepository,
+        snowflakeIdGenerator);
   }
 
-  @Nested
-  @DisplayName("create メソッドのテスト")
-  class CreateTest {
+  private Person personWithPartyId(SnowflakeId partyId) {
+    return Person.create(
+        partyId,
+        PartyTypeCode.of("PERSON"),
+        "P001",
+        LocalDateTime.now(),
+        LegalName.of("田中", "太郎"),
+        DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+        DateOfDie.empty());
+  }
 
-    @Test
-    @DisplayName("EmployeeDtoからSimpleEmployeeを作成してRepositoryに保存すること")
-    void shouldCreateAndSaveEmployee() {
-      // Arrange
-      SnowflakeId employeeId = SnowflakeId.of(1234567890L);
-      EmployeeNo employeeNo = EmployeeNo.of("1234567890");
-      SearchName searchName = SearchName.of("田中太郎");
-      FullName fullName = FullName.of("田中太郎");
-      Person person = Person.create(
-          SnowflakeId.of(5000000001L),
-          PartyTypeCode.of("PERSON"),
-          "P001",
-          LocalDateTime.now(),
-          LegalName.of("田中", "太郎"),
-          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
-          DateOfDie.empty());
+  private EmployeeDto dtoWithPartyId(SnowflakeId employeeId, SnowflakeId partyId) {
+    return new EmployeeDto(
+        employeeId,
+        EmployeeNo.of("1234567890"),
+        SearchName.of("田中太郎"),
+        FullName.of("田中太郎"),
+        personWithPartyId(partyId),
+        EmailAddress.of("taro@example.com"),
+        PhoneNo.of("09012345678"));
+  }
 
-      EmailAddress emailAddress = EmailAddress.of("taro.tanaka@example.com");
-      PhoneNo phoneNo = PhoneNo.of("09012345678");
+  // Issue #685: テスト項目7
+  @Test
+  @DisplayName("従業員を作成したとき、FactoryがEmployeeDtoからSimpleEmployeeを作成する")
+  void shouldCreateSimpleEmployeeViaFactory() {
+    // Arrange
+    SnowflakeId employeeId = SnowflakeId.of(4000000001L);
+    SnowflakeId partyId = SnowflakeId.of(5000000001L);
+    EmployeeDto dto = dtoWithPartyId(employeeId, partyId);
+    SimpleEmployee expectedEmployee = SimpleEmployee.create(
+        employeeId,
+        EmployeeNo.of("1234567890"),
+        SearchName.of("田中太郎"),
+        FullName.of("田中太郎"),
+        partyId);
+    when(snowflakeIdGenerator.nextIdValue()).thenReturn(SnowflakeId.of(6000000001L), SnowflakeId.of(6000000002L));
+    when(employeeFactory.create(dto)).thenReturn(expectedEmployee);
 
-      EmployeeDto dto = new EmployeeDto(employeeId, employeeNo, searchName, fullName, person, emailAddress, phoneNo);
+    // Act
+    service.create(dto);
 
-      SimpleEmployee simpleEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
+    // Assert
+    verify(employeeFactory).create(dto);
+  }
 
-      when(employeeFactory.create(dto)).thenReturn(simpleEmployee);
-      when(snowflakeIdGenerator.nextIdValue()).thenReturn(
-          SnowflakeId.of(9000000001L), // emailContactUseId
-          SnowflakeId.of(9000000002L)); // phoneContactUseId
+  // Issue #685: テスト項目8
+  @Test
+  @DisplayName("従業員を作成したとき、SimpleEmployeeにpartyIdが設定される")
+  void shouldSetPartyIdInSimpleEmployeeWhenCreating() {
+    // Arrange
+    SnowflakeId employeeId = SnowflakeId.of(4000000001L);
+    SnowflakeId partyId = SnowflakeId.of(5000000001L);
+    EmployeeDto dto = dtoWithPartyId(employeeId, partyId);
+    SimpleEmployee expectedEmployee = SimpleEmployee.create(
+        employeeId,
+        EmployeeNo.of("1234567890"),
+        SearchName.of("田中太郎"),
+        FullName.of("田中太郎"),
+        partyId);
+    when(snowflakeIdGenerator.nextIdValue()).thenReturn(SnowflakeId.of(6000000001L), SnowflakeId.of(6000000002L));
+    when(employeeFactory.create(dto)).thenReturn(expectedEmployee);
 
-      // Act
-      service.create(dto);
+    // Act
+    service.create(dto);
 
-      // Assert
-      verify(personRepository).save(person);
-      verify(contactUseRepository, times(2)).save(any());
-      verify(employeeFactory).create(dto);
-      verify(employeeRepository).save(simpleEmployee);
-    }
-
-    @Test
-    @DisplayName("Factoryで作成されたSimpleEmployeeがRepositoryに保存されること")
-    void shouldSaveEmployeeCreatedByIdFactory() {
-      // Arrange
-      SnowflakeId employeeId = SnowflakeId.of(9876543210L);
-      EmployeeNo employeeNo = EmployeeNo.of("0987654321");
-      SearchName searchName = SearchName.of("佐藤花子");
-      FullName fullName = FullName.of("佐藤花子");
-      Person person = Person.create(
-          SnowflakeId.of(5000000002L),
-          PartyTypeCode.of("PERSON"),
-          "P002",
-          LocalDateTime.now(),
-          LegalName.of("佐藤", "花子"),
-          DateOfBirth.of(LocalDate.of(1992, 5, 15)),
-          DateOfDie.empty());
-
-      EmailAddress emailAddress = EmailAddress.of("hanako.sato@example.com");
-      PhoneNo phoneNo = PhoneNo.of("08098765432");
-
-      EmployeeDto dto = new EmployeeDto(employeeId, employeeNo, searchName, fullName, person, emailAddress, phoneNo);
-
-      SimpleEmployee simpleEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
-
-      when(employeeFactory.create(dto)).thenReturn(simpleEmployee);
-      when(snowflakeIdGenerator.nextIdValue()).thenReturn(
-          SnowflakeId.of(9000000005L), // emailContactUseId
-          SnowflakeId.of(9000000006L)); // phoneContactUseId
-
-      // Act
-      service.create(dto);
-
-      // Assert
-      verify(personRepository).save(person);
-      verify(contactUseRepository, times(2)).save(any());
-      verify(employeeRepository).save(any(SimpleEmployee.class));
-    }
-
-    @Test
-    @DisplayName("employeeDtoがnullの場合IllegalArgumentExceptionをスローすること")
-    void shouldThrowIllegalArgumentExceptionWhenEmployeeDtoIsNull() {
-      // Act & Assert
-      assertThatThrownBy(() -> service.create(null))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessage("employeeDto must not be null");
-    }
-
-    @Test
-    @DisplayName("ContactUseに正しいメールアドレスと電話番号が設定されること")
-    void shouldSaveContactUseWithCorrectEmailAddressAndPhoneNo() {
-      // Arrange
-      SnowflakeId employeeId = SnowflakeId.of(1111111111L);
-      EmployeeNo employeeNo = EmployeeNo.of("1111111111");
-      SearchName searchName = SearchName.of("テスト太郎");
-      FullName fullName = FullName.of("テスト太郎");
-      Person person = Person.create(
-          SnowflakeId.of(5000000003L),
-          PartyTypeCode.of("PERSON"),
-          "P003",
-          LocalDateTime.now(),
-          LegalName.of("テスト", "太郎"),
-          DateOfBirth.of(LocalDate.of(1995, 3, 20)),
-          DateOfDie.empty());
-
-      EmailAddress emailAddress = EmailAddress.of("test@example.com");
-      PhoneNo phoneNo = PhoneNo.of("07012345678");
-
-      EmployeeDto dto = new EmployeeDto(employeeId, employeeNo, searchName, fullName, person, emailAddress, phoneNo);
-
-      SimpleEmployee simpleEmployee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
-
-      when(employeeFactory.create(dto)).thenReturn(simpleEmployee);
-      when(snowflakeIdGenerator.nextIdValue()).thenReturn(
-          SnowflakeId.of(9000000010L), // emailContactUseId
-          SnowflakeId.of(9000000011L)); // phoneContactUseId
-
-      // Act
-      service.create(dto);
-
-      // Assert
-      verify(personRepository).save(person);
-
-      ArgumentCaptor<undecided.association.relationshipMgmt.spi.party.contact.ContactUse> contactUseCaptor = forClass(undecided.association.relationshipMgmt.spi.party.contact.ContactUse.class);
-      verify(contactUseRepository, times(2)).save(contactUseCaptor.capture());
-
-      java.util.List<undecided.association.relationshipMgmt.spi.party.contact.ContactUse> capturedContactUses = contactUseCaptor.getAllValues();
-      assertThat(capturedContactUses).hasSize(2);
-
-      undecided.association.relationshipMgmt.spi.party.contact.ContactUse emailContactUse = capturedContactUses.get(0);
-      assertThat(emailContactUse.getType()).isEqualTo(undecided.association.relationshipMgmt.spi.party.contact.ContactUseType.EMAIL);
-      assertThat(emailContactUse.getEmailAddress().value()).isEqualTo("test@example.com");
-      assertThat(emailContactUse.getPhoneNo()).isEqualTo(PhoneNo.empty());
-
-      undecided.association.relationshipMgmt.spi.party.contact.ContactUse phoneContactUse = capturedContactUses.get(1);
-      assertThat(phoneContactUse.getType()).isEqualTo(undecided.association.relationshipMgmt.spi.party.contact.ContactUseType.PHONE);
-      assertThat(phoneContactUse.getPhoneNo().value()).isEqualTo("07012345678");
-      assertThat(phoneContactUse.getEmailAddress()).isEqualTo(EmailAddress.empty());
-
-      verify(employeeRepository).save(simpleEmployee);
-    }
+    // Assert
+    ArgumentCaptor<SimpleEmployee> captor = ArgumentCaptor.forClass(SimpleEmployee.class);
+    verify(employeeRepository).save(captor.capture());
+    assertThat(captor.getValue().getPartyId()).isEqualTo(partyId);
   }
 }

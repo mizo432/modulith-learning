@@ -189,4 +189,85 @@ class CreateSimpleEmployeeCommandServiceMediumTest {
       assertThat(contactUses2).hasSize(2);
     }
   }
+
+  @Nested
+  @DisplayName("Issue #685: party_id保存のテスト")
+  class PartyIdPersistenceTest {
+
+    // Issue #685: テスト項目21
+    @Test
+    @DisplayName("従業員を作成したとき、DBのemployeesテーブルにparty_idが保存される")
+    void shouldSavePartyIdToDatabase() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(1234567890L);
+      EmployeeNo employeeNo = EmployeeNo.of("1234567890");
+      SearchName searchName = SearchName.of("田中太郎");
+      FullName fullName = FullName.of("田中太郎");
+      Person person = Person.create(
+          SnowflakeId.of(5000000001L),
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
+      EmailAddress emailAddress = EmailAddress.of("taro.tanaka@example.com");
+      PhoneNo phoneNo = PhoneNo.of("09012345678");
+
+      EmployeeDto dto = new EmployeeDto(
+          employeeId,
+          employeeNo,
+          searchName,
+          fullName,
+          person,
+          emailAddress,
+          phoneNo);
+
+      // Act
+      service.create(dto);
+
+      // Assert
+      SimpleEmployee saved = employeeRepository.findById(employeeId).orElseThrow();
+      assertThat(saved.getPartyId()).isNotNull();
+    }
+
+    // Issue #685: テスト項目22
+    @Test
+    @DisplayName("従業員を作成したとき、DBのemployeesテーブルのparty_idはPersonのpartyIdと一致する")
+    void shouldSavePartyIdMatchingPersonPartyId() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(1234567890L);
+      EmployeeNo employeeNo = EmployeeNo.of("1234567890");
+      SearchName searchName = SearchName.of("田中太郎");
+      FullName fullName = FullName.of("田中太郎");
+      Person person = Person.create(
+          SnowflakeId.of(5000000001L),
+          PartyTypeCode.of("PERSON"),
+          "P001",
+          LocalDateTime.now(),
+          LegalName.of("田中", "太郎"),
+          DateOfBirth.of(LocalDate.of(1990, 1, 1)),
+          DateOfDie.empty());
+
+      EmailAddress emailAddress = EmailAddress.of("taro.tanaka@example.com");
+      PhoneNo phoneNo = PhoneNo.of("09012345678");
+
+      EmployeeDto dto = new EmployeeDto(
+          employeeId,
+          employeeNo,
+          searchName,
+          fullName,
+          person,
+          emailAddress,
+          phoneNo);
+
+      // Act
+      service.create(dto);
+
+      // Assert
+      SimpleEmployee saved = employeeRepository.findById(employeeId).orElseThrow();
+      assertThat(saved.getPartyId()).isEqualTo(person.getPartyId());
+    }
+  }
 }

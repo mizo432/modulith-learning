@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
+import undecided.association.relationshipMgmt.personRole.spi.employee.EmployeeEmailQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
@@ -23,18 +24,21 @@ class AddBacklogItemCommentCommandService {
   private final CommentParticipantSubsetRepository commentParticipantSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
   private final ApplicationEventPublisher eventPublisher;
+  private final EmployeeEmailQuery employeeEmailQuery;
 
   AddBacklogItemCommentCommandService(
       BacklogItemRepository backlogItemRepository,
       BacklogItemCommentRepository backlogItemCommentRepository,
       CommentParticipantSubsetRepository commentParticipantSubsetRepository,
       SnowflakeIdGenerator snowflakeIdGenerator,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      EmployeeEmailQuery employeeEmailQuery) {
     this.backlogItemRepository = backlogItemRepository;
     this.backlogItemCommentRepository = backlogItemCommentRepository;
     this.commentParticipantSubsetRepository = commentParticipantSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
     this.eventPublisher = eventPublisher;
+    this.employeeEmailQuery = employeeEmailQuery;
   }
 
   SnowflakeId execute(@NonNull AddBacklogItemCommentCommand command) {
@@ -71,6 +75,12 @@ class AddBacklogItemCommentCommandService {
       throw new IllegalArgumentException("コメントを自身の子返信として追加することはできません");
     }
 
+    // 投稿者IDからメールアドレスを解決（解決できない場合は空文字）
+    String authorEmail = "";
+    if (command.getAuthorEmployeeId() != null) {
+      authorEmail = employeeEmailQuery.resolveEmailByEmployeeId(command.getAuthorEmployeeId()).orElse("");
+    }
+
     BacklogItemComment comment =
         BacklogItemComment.builder()
             .id(newId)
@@ -93,7 +103,7 @@ class AddBacklogItemCommentCommandService {
               command.getBacklogItemId(),
               command.getAuthorEmployeeId(),
               command.getAuthorName(),
-              command.getAuthorEmail() != null ? command.getAuthorEmail() : ""));
+              authorEmail));
     }
 
     // コメント追加イベントを発行
@@ -103,7 +113,7 @@ class AddBacklogItemCommentCommandService {
             saved.getId(),
             command.getAuthorEmployeeId(),
             command.getAuthorName(),
-            command.getAuthorEmail() != null ? command.getAuthorEmail() : "",
+            authorEmail,
             LocalDateTime.now()));
 
     return saved.getId();

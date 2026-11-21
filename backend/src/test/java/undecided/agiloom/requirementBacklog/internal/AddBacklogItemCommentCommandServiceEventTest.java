@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemCommentAdded;
+import undecided.association.relationshipMgmt.personRole.spi.employee.EmployeeEmailQuery;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
@@ -54,6 +55,9 @@ class AddBacklogItemCommentCommandServiceEventTest {
   @Mock
   private ApplicationEventPublisher eventPublisher;
 
+  @Mock
+  private EmployeeEmailQuery employeeEmailQuery;
+
   private AddBacklogItemCommentCommandService service;
 
   @BeforeEach
@@ -64,7 +68,8 @@ class AddBacklogItemCommentCommandServiceEventTest {
             backlogItemCommentRepository,
             commentParticipantSubsetRepository,
             snowflakeIdGenerator,
-            eventPublisher);
+            eventPublisher,
+            employeeEmailQuery);
   }
 
   @Nested

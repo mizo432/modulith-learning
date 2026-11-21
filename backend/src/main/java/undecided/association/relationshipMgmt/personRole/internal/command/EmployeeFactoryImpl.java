@@ -20,6 +20,7 @@ public class EmployeeFactoryImpl implements EmployeeFactory {
         employeeDto.employeeId(),
         employeeDto.employeeNo(),
         employeeDto.searchName(),
-        employeeDto.fullName());
+        employeeDto.fullName(),
+        employeeDto.person().getPartyId());
   }
 }
