@@ -52,6 +52,7 @@ jest.mock('../../services/backlogItemService', () => ({
     updateComment: jest.fn(),
     deleteComment: jest.fn(),
     estimateBacklogItem: jest.fn(),
+    changeStatus: jest.fn(),
   },
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
@@ -86,6 +87,13 @@ const mockBacklogItem = {
 
 const mockBacklogItemWithValue = {
   ...mockBacklogItem,
+  value: 50,
+};
+
+const mockBacklogItemAccepted = {
+  ...mockBacklogItem,
+  status: 'ACCEPTED',
+  statusLabel: '承認済み',
   value: 50,
 };
 
@@ -1867,6 +1875,359 @@ describe('BacklogItemDetail', () => {
       await waitFor(() => {
         expect(screen.getByText('コメント0')).toBeInTheDocument();
         expect(screen.getByText('コメント49')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Readyボタン（#714）', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      setAuthMock();
+      (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+      (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+        id: 'team-1',
+        productId: 'product-1',
+        name: 'テストチーム',
+        poEmployeeId: 'emp-1',
+        smEmployeeId: 'emp-2',
+        memberEmployeeIds: ['emp-1', 'emp-2'],
+      });
+    });
+
+    // ── Readyボタン表示制御 ──
+
+    // テスト1: ステータスがACCEPTEDでチームメンバーの場合、Readyボタンが表示される
+    it('ステータスがACCEPTEDでチームメンバーの場合、Readyボタンが表示される', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const readyButton = screen.getByRole('button', { name: /Ready/i });
+        expect(readyButton).toBeInTheDocument();
+      });
+    });
+
+    // テスト2: ステータスがACCEPTEDでチームメンバーではない場合、Readyボタンが表示されない
+    it('ステータスがACCEPTEDでチームメンバーではない場合、Readyボタンが表示されない', async () => {
+      setAuthMock({ employeeId: 'emp-not-member' });
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+      (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+        id: 'team-1',
+        productId: 'product-1',
+        name: 'テストチーム',
+        poEmployeeId: 'emp-1',
+        smEmployeeId: 'emp-2',
+        memberEmployeeIds: ['emp-1', 'emp-2'],
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const readyButton = screen.queryByRole('button', { name: /Ready/i });
+        expect(readyButton).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト3: ステータスがACCEPTED以外（SUGGESTED）でチームメンバーの場合、Readyボタンが表示されない
+    it('ステータスがSUGGESTEDでチームメンバーの場合、Readyボタンが表示されない', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const readyButton = screen.queryByRole('button', { name: /Ready/i });
+        expect(readyButton).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト4: ステータスがACCEPTED以外（FROZEN）でチームメンバーの場合、Readyボタンが表示されない
+    it('ステータスがFROZENでチームメンバーの場合、Readyボタンが表示されない', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItem,
+        status: 'FROZEN',
+        statusLabel: '凍結',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const readyButton = screen.queryByRole('button', { name: /Ready/i });
+        expect(readyButton).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト5: ステータスがACCEPTED以外（READY）でチームメンバーの場合、Readyボタンが表示されない
+    it('ステータスがREADYでチームメンバーの場合、Readyボタンが表示されない', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItem,
+        status: 'READY',
+        statusLabel: '準備完了',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const readyButton = screen.queryByRole('button', { name: /Ready/i });
+        expect(readyButton).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト6: ステータスがACCEPTED以外（ESTIMATED）でチームメンバーの場合、Readyボタンが表示されない
+    it('ステータスがESTIMATEDでチームメンバーの場合、Readyボタンが表示されない', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItem,
+        status: 'ESTIMATED',
+        statusLabel: '見積もり済み',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const readyButton = screen.queryByRole('button', { name: /Ready/i });
+        expect(readyButton).not.toBeInTheDocument();
+      });
+    });
+
+    // テスト7: employeeIdが設定されていない場合、Readyボタンが表示されない
+    it('employeeIdが設定されていない場合、Readyボタンが表示されない', async () => {
+      setAuthMock({ employeeId: undefined });
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const readyButton = screen.queryByRole('button', { name: /Ready/i });
+        expect(readyButton).not.toBeInTheDocument();
+      });
+    });
+
+    // ── Readyボタン操作 ──
+
+    // テスト8: Readyボタンをクリックしたとき、changeStatus APIがREADYとactorEmployeeIdで呼び出される
+    it('Readyボタンをクリックしたとき、changeStatus APIがREADYとactorEmployeeIdで呼び出される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+      (backlogItemService.changeStatus as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemAccepted,
+        status: 'READY',
+        statusLabel: '準備完了',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const readyButton = await waitFor(() =>
+        screen.getByRole('button', { name: /Ready/i })
+      );
+      await user.click(readyButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.changeStatus).toHaveBeenCalledWith('item-100', 'READY', 'emp-1');
+      });
+    });
+
+    // テスト9: 状態遷移成功后、成功メッセージが表示される
+    it('状態遷移成功后、成功メッセージが表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+      (backlogItemService.changeStatus as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemAccepted,
+        status: 'READY',
+        statusLabel: '準備完了',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const readyButton = await waitFor(() =>
+        screen.getByRole('button', { name: /Ready/i })
+      );
+      await user.click(readyButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('準備完了状態に遷移しました。')).toBeInTheDocument();
+      });
+    });
+
+    // テスト10: 状態遷移成功后、アイテムが再取得され、ステータスがREADYに更新される
+    it('状態遷移成功后、アイテムが再取得され、ステータスがREADYに更新される', async () => {
+      const user = userEvent.setup();
+      const readyItem = {
+        ...mockBacklogItemAccepted,
+        status: 'READY',
+        statusLabel: '準備完了',
+      };
+      (backlogItemService.getBacklogItem as jest.Mock)
+        .mockResolvedValueOnce(mockBacklogItemAccepted)
+        .mockResolvedValueOnce(readyItem);
+      (backlogItemService.changeStatus as jest.Mock).mockResolvedValue(readyItem);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const readyButton = await waitFor(() =>
+        screen.getByRole('button', { name: /Ready/i })
+      );
+      await user.click(readyButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.getBacklogItem).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    // テスト11: APIエラーが返されたとき、エラーメッセージが表示される
+    it('APIエラーが返されたとき、エラーメッセージが表示される', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+      (backlogItemService.changeStatus as jest.Mock).mockRejectedValue({
+        response: {
+          status: 400,
+          data: { message: '状態遷移に失敗しました' },
+        },
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const readyButton = await waitFor(() =>
+        screen.getByRole('button', { name: /Ready/i })
+      );
+      await user.click(readyButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/失敗/i)).toBeInTheDocument();
+      });
+    });
+
+    // ── 回帰テスト ──
+
+    // テスト12: 既存のValue入力機能が引き続き動作すること
+    it('既存のValue入力機能が引き続き動作すること', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+      (backlogItemService.updateBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItemAccepted,
+        value: 75,
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const valueInput = await waitFor(() =>
+        screen.getByTestId('value-textfield')
+      );
+      const input = valueInput.querySelector('input')!;
+      await user.clear(input);
+      await user.type(input, '75');
+
+      const saveButton = await waitFor(() =>
+        screen.getByRole('button', { name: /Value.*保存/i })
+      );
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.updateBacklogItem).toHaveBeenCalledWith('item-100', {
+          value: 75,
+        });
+      });
+    });
+
+    // テスト13: 既存のStoryPoint選択UIが引き続き動作すること
+    it('既存のStoryPoint選択UIが引き続き動作すること', async () => {
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+        ...mockBacklogItem,
+        status: 'READY',
+        statusLabel: '準備完了',
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        const radioGroup = screen.getByRole('radiogroup');
+        expect(radioGroup).toBeInTheDocument();
+      });
+    });
+
+    // テスト14: 既存のコメント機能が引き続き動作すること
+    it('既存のコメント機能が引き続き動作すること', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItemAccepted);
+      (backlogItemService.addComment as jest.Mock).mockResolvedValue({
+        id: 'comment-1',
+        backlogItemId: 'item-100',
+        authorEmployeeId: 'emp-1',
+        authorName: 'テストユーザー',
+        body: 'テストコメント',
+        createdAt: '2026-01-01T00:00:00Z',
+        parentId: null,
+        hasReplies: false,
+      });
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('テストバックログアイテム')).toBeInTheDocument();
+      });
+
+      const commentTextarea = screen.getByTestId('comment-textarea');
+      const textarea = commentTextarea.querySelector('textarea')!;
+      await user.type(textarea, 'テストコメント');
+
+      const submitButton = screen.getByRole('button', { name: /コメントを送信/i });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(backlogItemService.addComment).toHaveBeenCalledWith('item-100', expect.objectContaining({
+          body: 'テストコメント',
+        }));
       });
     });
   });
