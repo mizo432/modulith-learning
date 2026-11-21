@@ -2080,7 +2080,7 @@ describe('BacklogItemDetail', () => {
       await user.click(readyButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/Ready/i)).toBeInTheDocument();
+        expect(screen.getByText('準備完了状態に遷移しました。')).toBeInTheDocument();
       });
     });
 
