@@ -42,7 +42,7 @@
 ### 4b. 権限がない場合
 - SUGGESTED→ACCEPTED/FROZEN を試みたがPO/SMでない場合
 - FROZEN→SUGGESTED を試みたがPOでない場合
-- ACCEPTED→READY、READY→SUGGESTED/ESTIMATED、ESTIMATED→READY を試みたがチームメンバーでない場合
+- ACCEPTED→READY、READY→SUGGESTED/ESTIMATED、ESTIMATED→READY、ESTIMATED→IN_PROGRESS、IN_PROGRESS→DONE を試みたがチームメンバーでない場合
 - システムが権限エラーメッセージを表示する
 - 状態は変更されない
 - ユースケースは終了する
@@ -50,6 +50,7 @@
 ### 4c. 前提条件が満たされていない場合
 - SUGGESTED→ACCEPTED 時にValueが未設定の場合
 - READY→ESTIMATED 時にStoryPointが未設定の場合
+- ESTIMATED→IN_PROGRESS 時にスプリントに割り当てられていない場合
 - システムが前提条件エラーメッセージを表示する
 - 状態は変更されない
 - ユースケースは終了する
@@ -65,6 +66,8 @@
 | READY → SUGGESTED | チームメンバー全員 | - |
 | READY → ESTIMATED | チームメンバー全員 | StoryPointが設定されていること |
 | ESTIMATED → READY | チームメンバー全員 | - |
+| ESTIMATED → IN_PROGRESS | チームメンバー全員 | スプリントに割り当てられていること |
+| IN_PROGRESS → DONE | チームメンバー全員 | - |
 
 ## 関連情報
 
@@ -87,7 +90,9 @@
 
 ## 補足
 
-- IN_PROGRESS と DONE への通常遷移は未定義
+- IN_PROGRESS と DONE への通常遷移は定義済み（ESTIMATED→IN_PROGRESS→DONE）
+- スプリント割当の操作では状態は変更しない（ESTIMATED→IN_PROGRESS の前提条件のみ）
+- DONE は終端状態であり、戻す遷移は設けない
 - 分割操作（UC-BL-010）で元項目が DONE になる遷移は別ユースケースで扱う
 - 状態遷移の履歴はロングタームイベントパターン（BacklogItemStatusChangedイベント）で担保
 - UC-BL-008（バックログ項目を更新する）は内容更新を担当し、状態変更は本UCが担当
