@@ -1,5 +1,7 @@
 # AGENTS.md — modulith-learning
 
+> 入口：運用規約の正本は `_harness` リポジトリの `AGENTS.master.md`、開発手順と共通ガイドラインの正本は agent-guidelines リポジトリ（`.agents/agent-guidelines/`）。このファイルにはプロジェクト固有の事項のみを置く。
+
 AI エージェントおよび開発者向けのプロジェクト案内。実物のコードと設定に基づく。推測で書かれた記述に従う前に、必ず対象ファイルで裏を取ること。
 
 ## プロジェクト概要
