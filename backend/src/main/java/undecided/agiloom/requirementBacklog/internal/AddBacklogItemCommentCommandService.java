@@ -75,6 +75,12 @@ class AddBacklogItemCommentCommandService {
       throw new IllegalArgumentException("コメントを自身の子返信として追加することはできません");
     }
 
+    // 投稿者IDからメールアドレスを解決（解決できない場合は空文字）
+    String authorEmail = "";
+    if (command.getAuthorEmployeeId() != null) {
+      authorEmail = employeeEmailQuery.resolveEmailByEmployeeId(command.getAuthorEmployeeId()).orElse("");
+    }
+
     BacklogItemComment comment =
         BacklogItemComment.builder()
             .id(newId)
@@ -97,7 +103,7 @@ class AddBacklogItemCommentCommandService {
               command.getBacklogItemId(),
               command.getAuthorEmployeeId(),
               command.getAuthorName(),
-              ""));
+              authorEmail));
     }
 
     // コメント追加イベントを発行
@@ -107,7 +113,7 @@ class AddBacklogItemCommentCommandService {
             saved.getId(),
             command.getAuthorEmployeeId(),
             command.getAuthorName(),
-            "",
+            authorEmail,
             LocalDateTime.now()));
 
     return saved.getId();
