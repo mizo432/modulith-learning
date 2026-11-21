@@ -192,4 +192,42 @@ class EmployeeEmailQueryServiceTest {
     // Assert
     assertThat(result).isEmpty();
   }
+
+  // Issue #685 レビュー対応(A): NPE回帰テスト
+  @Test
+  @DisplayName("EMAIL型ContactUseが2件あり一方のwhenOccuredがemptyのとき、例外なく日時ありの方のメールアドレスが返される")
+  void shouldReturnEmailWithDateWhenOneContactUseHasEmptyWhenOccured() throws Exception {
+    // Arrange
+    SnowflakeId employeeId = SnowflakeId.of(4000000001L);
+    SnowflakeId partyId = SnowflakeId.of(5000000001L);
+    SimpleEmployee employee = employeeWithPartyId(employeeId, partyId);
+
+    // whenOccuredがempty（値null）のContactUse
+    ContactUse emailWithEmptyWhen = ContactUse.create(
+        SnowflakeId.of(6000000004L),
+        partyId,
+        EmailAddress.of("old@example.com"),
+        PhoneNo.empty(),
+        ContactUseType.EMAIL,
+        WhenOccured.empty());
+
+    // whenOccuredに日時があるContactUse
+    ContactUse emailWithDate = ContactUse.create(
+        SnowflakeId.of(6000000005L),
+        partyId,
+        EmailAddress.of("new@example.com"),
+        PhoneNo.empty(),
+        ContactUseType.EMAIL,
+        whenOccuredOf(LocalDateTime.of(2025, 6, 1, 10, 0)));
+
+    when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+    when(contactUseQuery.findByPartyId(partyId)).thenReturn(List.of(emailWithEmptyWhen, emailWithDate));
+
+    // Act
+    Optional<String> result = service.resolveEmailByEmployeeId(employeeId);
+
+    // Assert
+    assertThat(result).isPresent();
+    assertThat(result.get()).isEqualTo("new@example.com");
+  }
 }

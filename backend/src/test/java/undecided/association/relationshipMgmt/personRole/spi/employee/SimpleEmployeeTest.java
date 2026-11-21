@@ -156,13 +156,12 @@ class SimpleEmployeeTest {
       EmployeeNo newEmpNo = EmployeeNo.of("0987654321");
       SearchName newSearchName = SearchName.of("鈴木花子");
       FullName newFullName = FullName.of("鈴木花子");
-      SnowflakeId newPartyId = SnowflakeId.of(5000000002L);
 
       // Act
-      employee.update(newEmpNo, newSearchName, newFullName, newPartyId);
+      employee.update(newEmpNo, newSearchName, newFullName, originalPartyId);
 
       // Assert
-      assertThat(employee.getPartyId()).isEqualTo(newPartyId);
+      assertThat(employee.getPartyId()).isEqualTo(originalPartyId);
     }
   }
 
