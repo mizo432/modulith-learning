@@ -69,7 +69,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | カテゴリ                 | 技術                                               |
 |--------------------------|----------------------------------------------------|
 | **ランタイム**           | Java 25                                            |
-| **フレームワーク**       | Spring Boot 4.1.2, Spring Modulith 2.1.0           |
+| **フレームワーク**       | Spring Boot 4.2.0, Spring Modulith 2.2.0           |
 | **アーキテクチャ**       | jMolecules オンイオンアーキテクチャ, DDD           |
 | **データベース**         | PostgreSQL                                         |
 | **ORM**                  | Spring Data JPA (Hibernate)                        |
@@ -77,7 +77,7 @@ Spring Cloud を基盤としたマイクロサービスアーキテクチャで�
 | **キャッシュ**           | Redis + Caffeine                                   |
 | **バッチ処理**           | Spring Batch + Super CSV                           |
 | **APIドキュメント**      | SpringDoc OpenAPI                                  |
-| **サービスディスカバリ** | Netflix Eureka (Spring Cloud)                      |
+| **サービスディスカバリ** | Netflix Eureka (Spring Cloud 2026.0.0)             |
 | **認証・認可**           | Spring Authorization Server, OAuth2                |
 | **テスト**               | JUnit 6, AssertJ, Testcontainers, ArchUnit, Pitest |
 | **コード品質**           | JaCoCo, Lombok, JSpecify, SonarQube                |
@@ -114,6 +114,7 @@ modulith-learning/
 │   │   │   ├── jobdefinition/      # ジョブ定義
 │   │   │   ├── jobexecution/       # ジョブ実行
 │   │   │   └── permissionmanagement/# 権限管理
+│   │   ├── notification/       # 通知 (NT)
 │   │   ├── generic/          # 汎用サブドメイン
 │   │   │   ├── accountMgmt/  # アカウント管理
 │   │   │   ├── greeting/     # サンプル機能
@@ -165,7 +166,7 @@ modulith-learning/
 - **PostgreSQL** (ローカルまたは Docker)
 - **Redis** (ローカルまたは Docker)
 - **Node.js 22** (フロントエンド用)
-- **Gradle 9.9.0** (ラッパー同梱)
+- **Gradle 9.9.2** (ラッパー同梱)
 
 ### Docker Compose での依存サービス起動
 
@@ -217,7 +218,7 @@ cd frontend && npm install && npm start
 # ユニットテスト (small)
 ./gradlew :backend:test
 
-# ミディアムサイズ統合テスト
+# ミディアムサイズ統合テスト（依存関係によりユニットテストも実行されます）
 ./gradlew :backend:mediumTest
 
 # 大規模システムテスト
