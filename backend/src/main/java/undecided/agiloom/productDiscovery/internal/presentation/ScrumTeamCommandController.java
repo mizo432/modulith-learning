@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.productDiscovery.internal.command.CreateScrumTeamCommand;
 import undecided.agiloom.productDiscovery.internal.command.CreateScrumTeamCommandService;
@@ -16,6 +17,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 @RestController
 @RequestMapping("/api/v1/products/{productId}/scrum-teams")
+@Transactional
 public class ScrumTeamCommandController {
 
   private final CreateScrumTeamCommandService createScrumTeamCommandService;

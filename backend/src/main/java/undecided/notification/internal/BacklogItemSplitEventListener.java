@@ -1,11 +1,18 @@
 package undecided.notification.internal;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.stereotype.Component;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemSplit;
+import undecided.notification.spi.NotificationEntity;
+import undecided.notification.spi.NotificationType;
+import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 /** バックログアイテム分割イベントの通知リスナー。 */
+@Component
 @RequiredArgsConstructor
 class BacklogItemSplitEventListener {
 
@@ -16,6 +23,35 @@ class BacklogItemSplitEventListener {
 
   @ApplicationModuleListener
   public void onBacklogItemSplit(BacklogItemSplit event) {
-    throw new UnsupportedOperationException();
+    Map<SnowflakeId, NotificationScrumTeamMember> recipients = new LinkedHashMap<>();
+    for (NotificationScrumTeamMember member :
+        scrumTeamMemberRepository.findByScrumTeamId(event.scrumTeamId())) {
+      if (!member.employeeId().equals(event.actorEmployeeId())) {
+        recipients.merge(
+            member.employeeId(),
+            member,
+            (existing, candidate) ->
+                existing.email() == null || existing.email().isEmpty() ? candidate : existing);
+      }
+    }
+
+    String title = "バックログアイテムが分割されました";
+    String content = "バックログアイテムが分割されました";
+    for (NotificationScrumTeamMember recipient : recipients.values()) {
+      NotificationEntity notification =
+          NotificationEntity.builder()
+              .id(snowflakeIdGenerator.nextIdValue())
+              .recipientId(recipient.employeeId())
+              .backlogItemId(event.backlogItemId())
+              .title(title)
+              .content(content)
+              .type(NotificationType.BACKLOG_ITEM_SPLIT)
+              .build();
+      notificationRepository.save(notification);
+
+      if (recipient.email() != null && !recipient.email().isEmpty()) {
+        emailNotificationService.sendAsync(recipient.email(), title, content);
+      }
+    }
   }
 }
