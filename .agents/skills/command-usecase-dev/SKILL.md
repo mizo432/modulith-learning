@@ -1,3 +1,8 @@
+---
+name: command-usecase-dev
+description: modulith-learning で Command ユースケース（状態変更処理）を開発・修正・テストするときに使うガイドライン。*Command / *CommandImpl / *CommandApi の作成、書き込み操作のバリデーションや例外処理、単体・統合テストの作成に適用する。
+---
+
 # Command Usecase Development Guide (`command-usecase-dev`)
 
 このスキルは、 **modulith-learning**リポジトリにおいて、 **Commandユースケース**

@@ -1,3 +1,8 @@
+---
+name: query-usecase-dev
+description: modulith-learning で Query ユースケース（データ読み取り処理）を開発・修正・テストするときに使うガイドライン。*Query / *QueryImpl / *QueryApi の作成、検索条件やフィルタリング、データ取得と変換ロジックの実装に適用する。
+---
+
 # Query Usecase Development Guide (`query-usecase-dev`)
 
 このスキルは、 **modulith-learning**リポジトリにおいて、 **Queryユースケース**
