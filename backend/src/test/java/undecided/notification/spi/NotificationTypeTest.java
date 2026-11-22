@@ -31,9 +31,13 @@ class NotificationTypeTest {
   }
 
   @Test
-  @DisplayName("列挙値の数が2つであること")
-  void shouldHaveTwoValues() {
-    assertThat(NotificationType.values()).hasSize(2);
+  @DisplayName("分割通知を含む列挙値が存在すること")
+  void shouldHaveSplitNotificationType() {
+    assertThat(NotificationType.values())
+        .containsExactlyInAnyOrder(
+            NotificationType.COMMENT_ADDED,
+            NotificationType.COMMENT_DELETED,
+            NotificationType.BACKLOG_ITEM_SPLIT);
   }
 
   @Test
@@ -41,5 +45,7 @@ class NotificationTypeTest {
   void shouldParseFromString() {
     assertThat(NotificationType.valueOf("COMMENT_ADDED")).isEqualTo(NotificationType.COMMENT_ADDED);
     assertThat(NotificationType.valueOf("COMMENT_DELETED")).isEqualTo(NotificationType.COMMENT_DELETED);
+    assertThat(NotificationType.valueOf("BACKLOG_ITEM_SPLIT"))
+        .isEqualTo(NotificationType.BACKLOG_ITEM_SPLIT);
   }
 }

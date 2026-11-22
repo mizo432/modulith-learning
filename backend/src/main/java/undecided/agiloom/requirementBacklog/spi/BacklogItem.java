@@ -248,6 +248,14 @@ public class BacklogItem {
     }
   }
 
+  public void completeForSplit() {
+    throw new UnsupportedOperationException("Not implemented");
+  }
+
+  public SnowflakeId getParentItemId() {
+    throw new UnsupportedOperationException("Not implemented");
+  }
+
   /**
    * ストーリーポイント（見積もり値）を設定します。
    *
