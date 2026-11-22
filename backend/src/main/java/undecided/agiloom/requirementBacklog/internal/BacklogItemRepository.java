@@ -14,7 +14,5 @@ interface BacklogItemRepository
 
   List<BacklogItem> findByScrumTeamIdAndStatus(SnowflakeId scrumTeamId, BacklogItemStatus status);
 
-  default List<BacklogItem> findByParentItemId(SnowflakeId parentItemId) {
-    throw new UnsupportedOperationException("Not implemented");
-  }
+  List<BacklogItem> findByParentItemId(SnowflakeId parentItemId);
 }

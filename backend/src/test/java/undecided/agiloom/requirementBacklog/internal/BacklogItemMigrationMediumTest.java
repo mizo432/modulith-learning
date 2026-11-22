@@ -102,6 +102,7 @@ class BacklogItemMigrationMediumTest {
               "creator_name",
               "description",
               "id",
+              "parent_item_id",
               "priority",
               "quality_category",
               "scrum_team_id",
