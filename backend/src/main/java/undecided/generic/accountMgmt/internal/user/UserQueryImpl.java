@@ -4,7 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 import undecided.generic.accountMgmt.UserQuery;
 import undecided.generic.accountMgmt.spi.User;
 
@@ -19,7 +19,7 @@ public class UserQueryImpl implements UserQuery {
 
   private static final String AUTHORIZATION_SERVICE_URL = "http://localhost:8082";
   private final UserRepository userRepository;
-  private final RestTemplate restTemplate;
+  private final RestClient accountManagementRestClient;
 
   @Override
   public Optional<User> findByUsername(String username) {
@@ -35,7 +35,13 @@ public class UserQueryImpl implements UserQuery {
   public boolean needsPasswordChange(String username) {
     try {
       String url = AUTHORIZATION_SERVICE_URL + "/api/auth/users/" + username + "/first-login";
-      ResponseEntity<UserStatusDto> response = restTemplate.getForEntity(url, UserStatusDto.class);
+      ResponseEntity<UserStatusDto> response =
+          accountManagementRestClient
+              .get()
+              .uri(url)
+              .retrieve()
+              .onStatus(status -> status.isError(), (req, res) -> {})
+              .toEntity(UserStatusDto.class);
 
       if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
         return response.getBody().isFirstLogin();
