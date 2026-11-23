@@ -24,6 +24,8 @@ public class DocumentPhysicalDeleteProcessor implements ItemProcessor<Document, 
 
   @Override
   public @Nullable Document process(@NonNull Document document) {
-    throw new UnsupportedOperationException("not implemented");
+    documentStorageService.delete(document.getS3Key());
+    log.debug("帳票をストレージから物理削除しました: documentId={}", document.getId());
+    return document;
   }
 }

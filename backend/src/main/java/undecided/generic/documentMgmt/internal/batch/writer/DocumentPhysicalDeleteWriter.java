@@ -19,6 +19,7 @@ public class DocumentPhysicalDeleteWriter implements ItemWriter<Document> {
 
   @Override
   public void write(@NonNull Chunk<? extends Document> chunk) {
-    throw new UnsupportedOperationException("not implemented");
+    documentRepository.deleteAll(chunk.getItems());
+    log.debug("帳票レコードをDBから物理削除しました: count={}", chunk.size());
   }
 }
