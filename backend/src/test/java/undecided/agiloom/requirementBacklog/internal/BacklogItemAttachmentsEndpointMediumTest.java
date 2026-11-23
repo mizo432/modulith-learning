@@ -429,4 +429,119 @@ class BacklogItemAttachmentsEndpointMediumTest {
           .andExpect(status().isForbidden());
     }
   }
+
+  @Nested
+  @DisplayName("項目42・43: バージョン管理")
+  class Versions {
+
+    private JsonNode attach(String fileName, byte[] content, Long seriesId) throws Exception {
+      MockMultipartFile file = new MockMultipartFile("file", fileName, "application/pdf", content);
+      var request =
+          multipart("/api/v1/backlog-items/" + ITEM_ID.value() + "/attachments")
+              .file(file)
+              .param("uploaderEmployeeId", String.valueOf(MEMBER_ID.value()))
+              .param("uploaderName", "メンバー");
+      if (seriesId != null) {
+        request.param("seriesId", String.valueOf(seriesId));
+      }
+      String body =
+          mockMvc
+              .perform(request)
+              .andExpect(status().isOk())
+              .andReturn()
+              .getResponse()
+              .getContentAsString();
+      return objectMapper.readTree(body);
+    }
+
+    @Test
+    @DisplayName("項目42: バージョン一覧を取得したとき、その系列の全バージョンが返される")
+    void shouldListAllVersions() throws Exception {
+      JsonNode v1 = attach("design.pdf", CONTENT, null);
+      long seriesId = v1.get("seriesId").asLong();
+      JsonNode v2 = attach("design.pdf", "改訂版の内容".getBytes(StandardCharsets.UTF_8), seriesId);
+
+      String body =
+          mockMvc
+              .perform(
+                  get(
+                          "/api/v1/backlog-items/"
+                              + ITEM_ID.value()
+                              + "/attachments/"
+                              + v1.get("documentId").asLong()
+                              + "/versions")
+                      .param("actorEmployeeId", String.valueOf(MEMBER_ID.value())))
+              .andExpect(status().isOk())
+              .andReturn()
+              .getResponse()
+              .getContentAsString();
+
+      JsonNode versions = objectMapper.readTree(body);
+      assertThat(versions.size()).isEqualTo(2);
+      assertThat(versions.get(0).get("version").asInt()).isEqualTo(1);
+      assertThat(versions.get(1).get("version").asInt()).isEqualTo(2);
+      assertThat(versions.get(0).get("documentId").asLong())
+          .isEqualTo(v1.get("documentId").asLong());
+      assertThat(versions.get(1).get("documentId").asLong())
+          .isEqualTo(v2.get("documentId").asLong());
+    }
+
+    @Test
+    @DisplayName("項目43: 特定のバージョンをダウンロードしたとき、そのバージョンのファイルが返される")
+    void shouldDownloadSpecificVersion() throws Exception {
+      byte[] v2Content = "改訂版の内容".getBytes(StandardCharsets.UTF_8);
+      JsonNode v1 = attach("design.pdf", CONTENT, null);
+      long seriesId = v1.get("seriesId").asLong();
+      JsonNode v2 = attach("design.pdf", v2Content, seriesId);
+
+      byte[] downloadedV1 =
+          mockMvc
+              .perform(
+                  get(
+                          "/api/v1/backlog-items/"
+                              + ITEM_ID.value()
+                              + "/attachments/"
+                              + v1.get("documentId").asLong()
+                              + "/download")
+                      .param("actorEmployeeId", String.valueOf(MEMBER_ID.value())))
+              .andExpect(status().isOk())
+              .andReturn()
+              .getResponse()
+              .getContentAsByteArray();
+      assertThat(downloadedV1).isEqualTo(CONTENT);
+
+      byte[] downloadedV2 =
+          mockMvc
+              .perform(
+                  get(
+                          "/api/v1/backlog-items/"
+                              + ITEM_ID.value()
+                              + "/attachments/"
+                              + v2.get("documentId").asLong()
+                              + "/download")
+                      .param("actorEmployeeId", String.valueOf(MEMBER_ID.value())))
+              .andExpect(status().isOk())
+              .andReturn()
+              .getResponse()
+              .getContentAsByteArray();
+      assertThat(downloadedV2).isEqualTo(v2Content);
+    }
+
+    @Test
+    @DisplayName("チーム外の従業員がバージョン一覧を取得したとき、403となる")
+    void shouldForbidVersionsForOutsider() throws Exception {
+      JsonNode v1 = attach("design.pdf", CONTENT, null);
+
+      mockMvc
+          .perform(
+              get(
+                      "/api/v1/backlog-items/"
+                          + ITEM_ID.value()
+                          + "/attachments/"
+                          + v1.get("documentId").asLong()
+                          + "/versions")
+                  .param("actorEmployeeId", String.valueOf(OUTSIDER_ID.value())))
+          .andExpect(status().isForbidden());
+    }
+  }
 }
