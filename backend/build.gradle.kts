@@ -8,20 +8,20 @@ buildscript {
     }
     dependencies {
         // Flyway（データベース移行ツール）のクラスパス追加
-        classpath("org.flywaydb:flyway-database-postgresql:11.3.4")
+        classpath("org.flywaydb:flyway-database-postgresql:12.11.0")
     }
 }
 plugins {
     // Javaプラグインを適用（Javaプロジェクトのサポート）
     java
     // Spring Bootプラグイン
-    id("org.springframework.boot") version "4.1.2"
+    id("org.springframework.boot") version "4.2.0"
     // Spring関連の依存関係の管理用プラグイン
     id("io.spring.dependency-management") version "1.1.7"
     id("se.patrikerdes.use-latest-versions") version "0.2.19"
     id("com.github.ben-manes.versions") version "0.53.0"
     // Flywayプラグイン（DBマイグレーション）
-    id("org.flywaydb.flyway") version "11.3.4"
+    id("org.flywaydb.flyway") version "12.11.0"
     jacoco
     // Pitest ミューテーションテストプラグイン
     id("info.solidsoft.pitest") version "1.19.0"
@@ -72,8 +72,8 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "2.1.0"
-extra["springModulithInsightVersion"] = "2.1.0"
+extra["springModulithVersion"] = "2.2.0"
+extra["springModulithInsightVersion"] = "2.2.0"
 extra["guavaVersion"] = "33.6.0-jre"
 extra["icu4jVersion"] = "77.1"
 extra["yaviVersion"] = "0.16.0"
@@ -85,7 +85,7 @@ extra["archunitVersion"] = "1.5.1"
 extra["junitVersion"] = "6.1.0"
 // Override Spring Boot BOM to align all JUnit artifacts (Jupiter, Platform, Vintage)
 extra["junit-jupiter.version"] = "6.1.0"
-extra["springCloudBomVersion"] = "2025.1.2"
+extra["springCloudBomVersion"] = "2026.0.0"
 extra["spotbugsAnnotationVersion"] = "4.9.3"
 extra["libphonenumberVersion"] = "9.0.9"
 extra["poiVersion"] = "5.5.0"
@@ -124,7 +124,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
-    runtimeOnly("com.julien-dubois.bootui:bootui-spring-boot-starter:1.21.0")
+    runtimeOnly("com.julien-dubois.bootui:bootui-spring-boot-starter:2.5.0")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
@@ -150,7 +150,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.security:spring-security-crypto")
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+    implementation("org.jasypt:jasypt:1.9.3")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     testImplementation("org.assertj:assertj-db:${property("assertjDbVersion")}")

@@ -10,5 +10,8 @@ public enum NotificationType {
   COMMENT_ADDED,
 
   /** コメントが削除された通知 */
-  COMMENT_DELETED
+  COMMENT_DELETED,
+
+  /** バックログアイテムが分割された通知 */
+  BACKLOG_ITEM_SPLIT
 }

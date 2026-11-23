@@ -57,6 +57,10 @@ package "BUC-BL-06 要求の関連付け・トレーサビリティ" {
   usecase "ソース管理情報を関連付ける" as UC025
 }
 
+package "BUC-BL-08 バックログ項目の状態管理" {
+  usecase "バックログ項目の状態を変更する" as UC032
+}
+
 PO --> UC001
 PO --> UC002
 PO --> UC007
@@ -65,6 +69,7 @@ PO --> UC012
 PO --> UC013
 PO --> UC004
 PO --> UC005
+PO --> UC032
 
 Dev --> UC007
 Dev --> UC008
@@ -76,6 +81,7 @@ Dev --> UC024
 Dev --> UC020
 Dev --> UC021
 Dev --> UC025
+Dev --> UC032
 
 Emp --> UC001
 Emp --> UC003
@@ -124,7 +130,7 @@ end note
 | COND-BL-02 | 優先順位の一意性 | UC-BL-012, UC-BL-013 |
 | COND-BL-03 | ストーリーポイントの範囲 | UC-BL-024 |
 | COND-BL-04 | ラベルの重複禁止 | UC-BL-008 |
-| COND-BL-05 | 状態遷移の制約 | UC-BL-007, UC-BL-008, UC-BL-010, UC-BL-018 |
+| COND-BL-05 | 状態遷移の制約 | UC-BL-032 |
 
 ### 画面
 

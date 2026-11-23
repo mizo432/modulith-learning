@@ -26,3 +26,4 @@ EVT-BL-024	Story Map Taskが追加された	ActivityにTaskが追加された	UC
 EVT-BL-025	Storyがマップに配置された	User StoryがStory Mapに配置された	UC-BL-023	INF-BL-16	Story Map
 EVT-BL-026	Release Sliceが作成された	Story MapにRelease Sliceが作成された	UC-BL-023	INF-BL-17	Story Map
 EVT-BL-027	Story Mapのバージョンが作成された	Story Mapのバージョンが保存された	UC-BL-023	INF-BL-13	Story Map
+EVT-BL-028	バックログ項目の状態が変更された	バックログ項目の状態が遷移した	UC-BL-032	INF-BL-11	バックログ項目

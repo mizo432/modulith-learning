@@ -8,7 +8,7 @@ buildscript {
 
 plugins {
     java
-    id("org.springframework.boot") version "4.1.2"
+    id("org.springframework.boot") version "4.2.0"
     id("io.spring.dependency-management") version "1.1.7"
     jacoco
 }
@@ -43,7 +43,7 @@ extra["openapiUiVersion"] = "2.8.5"
 extra["jmoleculesBomVersion"] = "2023.2.1"
 extra["archunitVersion"] = "1.3.0"
 extra["junitVersion"] = "6.1.3"
-extra["springCloudBomVersion"] = "2025.1.2"
+extra["springCloudBomVersion"] = "2026.0.0"
 extra["spotbugsAnnotationVersion"] = "4.10.4"
 extra["libphonenumberVersion"] = "9.0.0"
 extra["testcontainersVersion"] = "2.0.5"
@@ -73,8 +73,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.security:spring-security-crypto")
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server:7.1.1")
+    implementation("org.jasypt:jasypt:1.9.3")
+    implementation("org.springframework.security:spring-security-oauth2-authorization-server:7.2.0")
 }
 
 tasks.withType<Javadoc> {

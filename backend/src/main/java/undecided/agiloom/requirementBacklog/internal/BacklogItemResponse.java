@@ -25,6 +25,7 @@ class BacklogItemResponse {
   private String creatorName;
   private String sprintId;
   private String scrumTeamId;
+  private String parentItemId;
   private Integer value;
   private QualityCategory qualityCategory;
   private String qualityCategoryLabel;

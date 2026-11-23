@@ -92,6 +92,10 @@ public class BacklogItem {
   @Column(name = "scrum_team_id", nullable = false)
   protected SnowflakeId scrumTeamId;
 
+  /** 分割元のバックログアイテムID。 */
+  @Column(name = "parent_item_id")
+  protected SnowflakeId parentItemId;
+
   /** Value（ビジネス価値の定量的評価、0〜100）。null可。 */
   @Column(name = "value")
   protected Integer value;
@@ -248,6 +252,18 @@ public class BacklogItem {
     }
   }
 
+  public void completeForSplit() {
+    if (this.status == BacklogItemStatus.DONE) {
+      throw new IllegalStateException("BacklogItem is already done");
+    }
+    this.status = BacklogItemStatus.DONE;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  public @Nullable SnowflakeId getParentItemId() {
+    return parentItemId;
+  }
+
   /**
    * ストーリーポイント（見積もり値）を設定します。
    *
@@ -321,6 +337,7 @@ public class BacklogItem {
       String creatorName,
       SnowflakeId sprintId,
       SnowflakeId scrumTeamId,
+      SnowflakeId parentItemId,
       Integer value,
       Integer storyPoint,
       LocalDateTime createdAt,
@@ -335,6 +352,7 @@ public class BacklogItem {
     item.creatorName = creatorName;
     item.sprintId = sprintId;
     item.scrumTeamId = scrumTeamId;
+    item.parentItemId = parentItemId;
     item.value = value;
     item.storyPoint = storyPoint;
     item.createdAt = createdAt != null ? createdAt : LocalDateTime.now();

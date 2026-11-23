@@ -47,6 +47,15 @@ class BacklogItemQueryService {
   }
 
   /**
+   * 指定した親アイテムから分割された子アイテムを取得します。
+   *
+   * @param parentItemId 親アイテムID
+   */
+  List<BacklogItem> findByParentItemId(@NonNull SnowflakeId parentItemId) {
+    return backlogItemRepository.findByParentItemId(parentItemId);
+  }
+
+  /**
    * チームのバックログアイテムを取得します。
    * Value降順（nullは末尾）、同値ならcreatedAt昇順、さらに同値ならid昇順でソートされます。
    *

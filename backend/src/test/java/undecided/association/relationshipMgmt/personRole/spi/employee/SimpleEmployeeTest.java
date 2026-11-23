@@ -29,9 +29,10 @@ class SimpleEmployeeTest {
       EmployeeNo employeeNo = EmployeeNo.of("1234567890");
       SearchName searchName = SearchName.of("田中太郎");
       FullName fullName = FullName.of("田中太郎");
+      SnowflakeId partyId = SnowflakeId.of(5000000001L);
 
       // Act
-      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
+      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName, partyId);
 
       // Assert
       assertThat(employee).as("SimpleEmployeeインスタンスが作成されること").isNotNull();
@@ -51,7 +52,7 @@ class SimpleEmployeeTest {
       FullName fullName = FullName.of("田中太郎");
 
       // Act
-      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName);
+      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName, null);
 
       // Assert
       assertThat(employee.getSearchName().getValue()).isEqualTo("田中太郎");
@@ -72,12 +73,95 @@ class SimpleEmployeeTest {
       FullName fullName2 = FullName.of("鈴木花子");
 
       // Act
-      SimpleEmployee emp1 = SimpleEmployee.create(id1, empNo1, searchName1, fullName1);
-      SimpleEmployee emp2 = SimpleEmployee.create(id2, empNo2, searchName2, fullName2);
+      SimpleEmployee emp1 = SimpleEmployee.create(id1, empNo1, searchName1, fullName1, null);
+      SimpleEmployee emp2 = SimpleEmployee.create(id2, empNo2, searchName2, fullName2, null);
 
       // Assert
       assertThat(emp1.getEmployeeId()).isNotEqualTo(emp2.getEmployeeId());
       assertThat(emp1.getEmployeeNo()).isNotEqualTo(emp2.getEmployeeNo());
+    }
+
+    // Issue #685: partyId関連テスト
+    @Test
+    @DisplayName("partyIdを指定して従業員を作成したとき、partyIdが設定される")
+    void shouldSetPartyIdWhenCreatingWithPartyId() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(4000000001L);
+      EmployeeNo employeeNo = EmployeeNo.of("1234567890");
+      SearchName searchName = SearchName.of("田中太郎");
+      FullName fullName = FullName.of("田中太郎");
+      SnowflakeId partyId = SnowflakeId.of(5000000001L);
+
+      // Act
+      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName, partyId);
+
+      // Assert
+      assertThat(employee.getPartyId()).isEqualTo(partyId);
+    }
+
+    @Test
+    @DisplayName("partyIdをnullで従業員を作成したとき、partyIdがnullとなる")
+    void shouldSetPartyIdToNullWhenCreatingWithNullPartyId() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(4000000001L);
+      EmployeeNo employeeNo = EmployeeNo.of("1234567890");
+      SearchName searchName = SearchName.of("田中太郎");
+      FullName fullName = FullName.of("田中太郎");
+
+      // Act
+      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName, null);
+
+      // Assert
+      assertThat(employee.getPartyId()).isNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("updateメソッドのテスト")
+  class UpdateMethodTest {
+
+    @Test
+    @DisplayName("partyIdを更新したとき、新しいpartyIdが反映される")
+    void shouldUpdatePartyId() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(4000000001L);
+      EmployeeNo employeeNo = EmployeeNo.of("1234567890");
+      SearchName searchName = SearchName.of("田中太郎");
+      FullName fullName = FullName.of("田中太郎");
+      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName, null);
+
+      SnowflakeId newPartyId = SnowflakeId.of(5000000002L);
+      EmployeeNo newEmpNo = EmployeeNo.of("0987654321");
+      SearchName newSearchName = SearchName.of("鈴木花子");
+      FullName newFullName = FullName.of("鈴木花子");
+
+      // Act
+      employee.update(newEmpNo, newSearchName, newFullName, newPartyId);
+
+      // Assert
+      assertThat(employee.getPartyId()).isEqualTo(newPartyId);
+    }
+
+    @Test
+    @DisplayName("氏名などを更新したとき、既存のpartyIdは維持される")
+    void shouldPreservePartyIdWhenUpdatingOtherFields() {
+      // Arrange
+      SnowflakeId employeeId = SnowflakeId.of(4000000001L);
+      EmployeeNo employeeNo = EmployeeNo.of("1234567890");
+      SearchName searchName = SearchName.of("田中太郎");
+      FullName fullName = FullName.of("田中太郎");
+      SnowflakeId originalPartyId = SnowflakeId.of(5000000001L);
+      SimpleEmployee employee = SimpleEmployee.create(employeeId, employeeNo, searchName, fullName, originalPartyId);
+
+      EmployeeNo newEmpNo = EmployeeNo.of("0987654321");
+      SearchName newSearchName = SearchName.of("鈴木花子");
+      FullName newFullName = FullName.of("鈴木花子");
+
+      // Act
+      employee.update(newEmpNo, newSearchName, newFullName, originalPartyId);
+
+      // Assert
+      assertThat(employee.getPartyId()).isEqualTo(originalPartyId);
     }
   }
 

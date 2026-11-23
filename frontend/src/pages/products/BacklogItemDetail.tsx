@@ -381,6 +381,22 @@ const BacklogItemDetail: React.FC = () => {
     }
   };
 
+  // Ready状態へ遷移（Issue #714）
+  const handleReady = async () => {
+    if (!backlogItemId) return;
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await backlogItemService.changeStatus(backlogItemId, 'READY', auth.employeeId ?? '');
+      setSuccessMessage('準備完了状態に遷移しました。');
+      // 再取得して状態変化を反映
+      await load();
+    } catch (err: any) {
+      console.error('Failed to change status to Ready:', err);
+      setError(err?.response?.data?.message ?? err?.message ?? '状態遷移に失敗しました。');
+    }
+  };
+
   // StoryPoint見積もりセクションの表示条件（READY または ESTIMATED のみ）
   const showStoryPointSection = item?.status === 'READY' || item?.status === 'ESTIMATED';
 
@@ -520,6 +536,18 @@ const BacklogItemDetail: React.FC = () => {
             Valueを保存
           </Button>
         </Box>
+
+        {/* Readyボタン（Issue #714）：ACCEPTED状態かつチームメンバーのみ表示 */}
+        {isTeamMember && item?.status === 'ACCEPTED' && (
+          <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
+            <Button
+              variant="contained"
+              onClick={handleReady}
+            >
+              Ready
+            </Button>
+          </Box>
+        )}
 
         {/* StoryPoint見積もりセクション（Issue #516） */}
         {showStoryPointSection && (
