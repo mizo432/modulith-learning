@@ -485,3 +485,35 @@ medium（計画書テストリスト項目44〜48）:
 2. 対象抽出はリーダーがステップ開始時に `findByDeletedTrueAndDeletedAtBefore(now - 1年)` で一括取得する（@StepScope でステップごとに新しいインスタンス）。
 3. プロセッサーはストレージ削除のみを行い、成功した帳票をライターへ渡す。ライターは DB レコードを削除する。ストレージ削除の失敗時は例外を伝播させ、チャンクのロールバックで DB 削除を行わない（項目48）。スキップ・リトライは付けない。
 4. 起動は JobOperator（手動実行メソッド＋ `@Scheduled`、デフォルト毎日3時、`batch.document-physical-delete.cron` で変更可）。bankReg の4時実行と重ならない時刻にした。
+
+---
+
+## 段階5 追記（2026-11-24、着手時に確定）
+
+### 設計判断
+
+1. バージョン一覧 API（計画項目42・43）が未実装だったため、段階5でバックエンドへ追加する。`GET /api/v1/backlog-items/{id}/attachments/{documentId}/versions`（actorEmployeeId 必須、一覧と同じくメンバー＋ステークホルダーのみ）。系列の解決はリンケージの seriesId を正とし、旧バージョンの documentId からも辿れるようにする
+2. 項目43（特定バージョンのダウンロード）は既存のダウンロード API で対応する。ただし現行実装はリンケージが指す最新バージョンしかダウンロードできないため、系列一致でも許可するよう判定を広げる（後方互換の拡張）
+3. `documentService.ts` は作らない。画面が使うのはバックログアイテム経由の添付 API のみで、帳票管理の単独画面は存在しないため（必要になった時点で作る）
+4. 詳細画面の添付一覧は一覧 API（actorEmployeeId 付き）で取得し、取得できない場合は詳細レスポンスの attachments を使う。アップロードはチームメンバーのみ表示、削除ボタンはアップロード者本人の添付のみ表示、ダウンロードは閲覧者全員に表示する（可否は API 側で判定）
+5. 新バージョンとしての再アップロード UI とバージョン履歴 UI は段階5の範囲外とする（API は用意する。UI は将来の改善候補）
+
+### テストリスト（段階5）
+
+バックエンド（medium、BacklogItemAttachmentsEndpointMediumTest へ追加）:
+- B1: バージョン一覧を取得したとき、その系列の全バージョンが返される（計画項目42）
+- B2: 特定のバージョンをダウンロードしたとき、そのバージョンのファイルが返される（計画項目43。旧バージョンと最新で内容が異なることまで確認する）
+- B3: チーム外の従業員がバージョン一覧を取得したとき、403となる
+
+フロントエンド（backlogItemService.test.ts）:
+- F1: getAttachments を呼んだとき、actorEmployeeId をクエリに付けて一覧が返される
+- F2: uploadAttachment を呼んだとき、FormData（file・uploaderEmployeeId・uploaderName）で送信される
+- F3: deleteAttachment を呼んだとき、actorEmployeeId をクエリに付けて DELETE される
+- F4: downloadAttachment を呼んだとき、blob で取得しデータが返される
+
+フロントエンド（BacklogItemDetail.test.tsx）:
+- F5: 添付ファイルがあるとき、ファイル名・サイズ・バージョン・アップロード者が表示される
+- F6: アップロード者本人の添付には削除ボタンが表示され、他人の添付には表示されない
+- F7: チームメンバーにはアップロードボタンが表示され、ファイルを選んでアップロードしたとき uploadAttachment が呼ばれる
+- F8: ダウンロードボタンを押したとき、downloadAttachment が呼ばれる
+- F9: 削除ボタンを押したとき、deleteAttachment が呼ばれ一覧から消える
