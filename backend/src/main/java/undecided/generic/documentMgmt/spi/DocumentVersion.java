@@ -16,7 +16,7 @@ public record DocumentVersion(int value) {
    * @return 値が {@link #INITIAL_VALUE} のバージョン
    */
   public static DocumentVersion initial() {
-    throw new UnsupportedOperationException("not implemented");
+    return new DocumentVersion(INITIAL_VALUE);
   }
 
   /**
@@ -25,7 +25,7 @@ public record DocumentVersion(int value) {
    * @return 値が {@link #INITIAL_VALUE} のとき true
    */
   public boolean isInitial() {
-    throw new UnsupportedOperationException("not implemented");
+    return value == INITIAL_VALUE;
   }
 
   /**
@@ -34,6 +34,6 @@ public record DocumentVersion(int value) {
    * @return 値を 1 増やしたバージョン
    */
   public DocumentVersion increment() {
-    throw new UnsupportedOperationException("not implemented");
+    return new DocumentVersion(value + 1);
   }
 }

@@ -6,4 +6,8 @@ class InvalidDocumentFileException extends RuntimeException {
   InvalidDocumentFileException(String message) {
     super(message);
   }
+
+  InvalidDocumentFileException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
