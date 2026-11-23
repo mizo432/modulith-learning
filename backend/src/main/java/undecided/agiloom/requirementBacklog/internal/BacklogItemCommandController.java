@@ -1,6 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
@@ -125,7 +126,27 @@ class BacklogItemCommandController {
   @PostMapping("/api/v1/backlog-items/{backlogItemId}/split")
   ResponseEntity<SplitBacklogItemResponse> splitBacklogItem(
       @PathVariable String backlogItemId, @Valid @RequestBody SplitBacklogItemRequest request) {
-    throw new UnsupportedOperationException();
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    List<SplitBacklogItemCommand.Child> children =
+        request.children() != null
+            ? request.children().stream()
+                .map(
+                    child ->
+                        child != null
+                            ? new SplitBacklogItemCommand.Child(child.title(), child.storyPoint())
+                            : null)
+                .toList()
+            : null;
+    splitBacklogItemCommandService.execute(
+        new SplitBacklogItemCommand(id, request.actorEmployeeId(), children));
+    BacklogItem parent = backlogItemQueryService.findById(id).orElseThrow();
+    List<BacklogItemResponse> childResponses =
+        backlogItemQueryService.findByParentItemId(id).stream()
+            .map(backlogItemResponseConverter::toBacklogItemResponse)
+            .toList();
+    return ResponseEntity.ok(
+        new SplitBacklogItemResponse(
+            backlogItemResponseConverter.toBacklogItemResponse(parent), childResponses));
   }
 
   @PostMapping("/api/v1/backlog-items/{backlogItemId}/comments")
