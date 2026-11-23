@@ -33,7 +33,7 @@ class DocumentStorageConfig {
   static final Duration API_CALL_TIMEOUT = Duration.ofSeconds(30);
 
   @Bean
-  S3Client documentStorageS3Client(DocumentStorageProperties properties) {
+  S3Client documentS3Client(DocumentStorageProperties properties) {
     return S3Client.builder()
         .endpointOverride(URI.create(properties.endpoint()))
         .region(Region.of(properties.region()))
@@ -50,9 +50,9 @@ class DocumentStorageConfig {
   }
 
   @Bean
-  DocumentStorageService documentStorageService(
-      S3Client documentStorageS3Client, DocumentStorageProperties properties) {
-    return new DocumentStorageServiceImpl(documentStorageS3Client, properties.bucket());
+  DocumentStorageService documentStorageServiceImpl(
+      S3Client documentS3Client, DocumentStorageProperties properties) {
+    return new DocumentStorageServiceImpl(documentS3Client, properties.bucket());
   }
 
   /**

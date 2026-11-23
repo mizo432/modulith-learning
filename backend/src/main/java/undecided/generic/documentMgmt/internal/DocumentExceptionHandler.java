@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  *
  * <ul>
  *   <li>帳票ファイル不正（種別・サイズ）: 400
+ *   <li>不正な引数（ID の形式不正、削除対象の帳票が存在しないなど）: 400
  *   <li>帳票が見つからない: 404
  *   <li>削除権限なし: 403
  *   <li>既に論理削除済みの再削除: 409
@@ -40,5 +41,10 @@ class DocumentExceptionHandler {
   @ExceptionHandler(IllegalStateException.class)
   ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException ex) {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", ex.getMessage()));
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+    return ResponseEntity.badRequest().body(Map.of("message", ex.getMessage()));
   }
 }

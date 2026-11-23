@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -97,7 +96,6 @@ public class Document {
   /** 論理削除日時。論理削除されていない場合は null。 */
   @Column(name = "deleted_at")
   @Nullable
-  @Setter
   private LocalDateTime deletedAt;
 
   /** 楽観ロック用バージョン列。 */

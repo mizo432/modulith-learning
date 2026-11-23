@@ -30,7 +30,7 @@ class DocumentQueryService {
    * @return 帳票
    */
   Optional<Document> findById(@NonNull SnowflakeId documentId) {
-    throw new UnsupportedOperationException("not implemented");
+    return documentRepository.findByIdAndDeletedFalse(documentId);
   }
 
   /**
@@ -40,6 +40,6 @@ class DocumentQueryService {
    * @return バージョン一覧
    */
   List<Document> findVersionsByFileName(@NonNull String fileName) {
-    throw new UnsupportedOperationException("not implemented");
+    return documentRepository.findByFileName(fileName);
   }
 }

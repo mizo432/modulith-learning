@@ -1,8 +1,10 @@
 package undecided.generic.documentMgmt.internal;
 
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.generic.documentMgmt.spi.Document;
 
 /**
  * 帳票論理削除のコマンドサービス。
@@ -29,6 +31,21 @@ class DeleteDocumentCommandService {
    * @throws IllegalStateException 既に論理削除済みの場合
    */
   void execute(@NonNull DeleteDocumentCommand command) {
-    throw new UnsupportedOperationException("not implemented");
+    Document document =
+        documentRepository
+            .findById(command.getDocumentId())
+            .orElseThrow(
+                () -> new IllegalArgumentException("帳票が存在しません: " + command.getDocumentId()));
+
+    boolean isUploader =
+        document.getUploaderEmployeeId() != null
+            && document.getUploaderEmployeeId().equals(command.getActorEmployeeId());
+    if (!isUploader) {
+      throw new DocumentPermissionDeniedException(
+          "帳票を削除する権限がありません。削除できるのはアップロードした本人のみです");
+    }
+
+    document.softDelete(LocalDateTime.now());
+    documentRepository.save(document);
   }
 }

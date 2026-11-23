@@ -14,6 +14,12 @@ spring:
   threads:
     virtual:
       enabled: true
+  servlet:
+    multipart:
+      # 帳票の1ファイル上限（10MB）を受け付ける。最終的なサイズ判定は DocumentFileValidator が行う
+      max-file-size: 10MB
+      # 10MB のファイルにフォームの他の項目を加えた分を受け付ける
+      max-request-size: 11MB
   datasource:
     url: ${SYSTEM_JDBC_URL:jdbc:postgresql://localhost:5432/postgres}
     username: ${POSTGRES_USER:postgres}

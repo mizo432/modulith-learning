@@ -1,8 +1,13 @@
 package undecided.generic.documentMgmt.internal;
 
+import java.time.LocalDateTime;
+import java.util.OptionalInt;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.generic.documentMgmt.spi.Document;
+import undecided.generic.documentMgmt.spi.DocumentFileType;
+import undecided.generic.documentMgmt.spi.DocumentVersion;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -37,9 +42,57 @@ class UploadDocumentCommandService {
    * @param command アップロードコマンド
    * @return アップロードされた帳票の ID
    * @throws InvalidDocumentFileException ファイル検証に失敗した場合
+   * @throws IllegalArgumentException アップローダー名が上限の長さを超える場合
    */
   @NonNull
   SnowflakeId execute(@NonNull UploadDocumentCommand command) {
-    throw new UnsupportedOperationException("not implemented");
+    DocumentFileType fileType =
+        documentFileValidator.validate(
+            command.getFileName(), command.getContentType(), command.getFileSize());
+
+    String uploaderName = command.getUploaderName();
+    if (uploaderName != null && uploaderName.length() > Document.UPLOADER_NAME_MAX_LENGTH) {
+      throw new IllegalArgumentException(
+          "アップローダー名は" + Document.UPLOADER_NAME_MAX_LENGTH + "文字以下にしてください: "
+              + uploaderName.length());
+    }
+
+    DocumentVersion version = nextVersionOf(command.getFileName());
+    SnowflakeId id = snowflakeIdGenerator.nextIdValue();
+    String s3Key =
+        documentStorageService.upload(
+            id,
+            version,
+            command.getFileName(),
+            command.getContentType(),
+            command.getContent(),
+            command.getFileSize());
+
+    LocalDateTime now = LocalDateTime.now();
+    documentRepository.save(
+        Document.builder()
+            .id(id)
+            .fileName(command.getFileName())
+            .contentType(command.getContentType())
+            .fileSize(command.getFileSize())
+            .fileType(fileType)
+            .version(version.value())
+            .s3Key(s3Key)
+            .uploaderEmployeeId(command.getUploaderEmployeeId())
+            .uploaderName(uploaderName)
+            .deleted(false)
+            .createdAt(now)
+            .updatedAt(now)
+            .build());
+    return id;
+  }
+
+  /** 同じファイル名の既存帳票（論理削除済みを含む）の最大バージョンの次を返す。初回は初期バージョン。 */
+  private DocumentVersion nextVersionOf(String fileName) {
+    OptionalInt latest =
+        documentRepository.findByFileName(fileName).stream().mapToInt(Document::getVersion).max();
+    return latest.isPresent()
+        ? new DocumentVersion(latest.getAsInt()).increment()
+        : DocumentVersion.initial();
   }
 }

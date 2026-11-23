@@ -3,6 +3,7 @@ package undecided.generic.documentMgmt.internal;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.generic.documentMgmt.spi.Document;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -34,6 +35,14 @@ class DocumentDownloadService {
    */
   @NonNull
   DocumentDownloadResult download(@NonNull SnowflakeId documentId) {
-    throw new UnsupportedOperationException("not implemented");
+    Document document =
+        documentRepository
+            .findByIdAndDeletedFalse(documentId)
+            .orElseThrow(() -> new DocumentNotFoundException("帳票が存在しません: " + documentId));
+    return new DocumentDownloadResult(
+        documentStorageService.download(document.getS3Key()),
+        document.getContentType(),
+        document.getFileName(),
+        document.getFileSize());
   }
 }

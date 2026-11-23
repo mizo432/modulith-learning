@@ -1,9 +1,12 @@
 package undecided.generic.documentMgmt.internal;
 
 import java.util.Locale;
+import org.springframework.stereotype.Component;
+import undecided.generic.documentMgmt.spi.Document;
 import undecided.generic.documentMgmt.spi.DocumentFileType;
 
-/** 帳票ファイルの種別（拡張子と Content-Type の両方）とサイズを検証する。 */
+/** 帳票ファイルの種別（拡張子と Content-Type の両方）、サイズ、ファイル名と Content-Type の長さを検証する。 */
+@Component
 class DocumentFileValidator {
 
   /** 1ファイルの最大サイズ（10MB = 10 × 1024 × 1024 バイト）。 */
@@ -15,18 +18,30 @@ class DocumentFileValidator {
    * @param fileName ファイル名（拡張子を含む）
    * @param contentType Content-Type
    * @param fileSize ファイルサイズ（バイト）
+   * @return 拡張子から判定したファイル種別
    * @throws InvalidDocumentFileException 検証に合格しない場合
    */
-  void validate(String fileName, String contentType, long fileSize) {
+  DocumentFileType validate(String fileName, String contentType, long fileSize) {
     if (fileSize <= 0 || fileSize > MAX_FILE_SIZE_BYTES) {
       throw new InvalidDocumentFileException(
           "ファイルサイズは1バイト以上" + MAX_FILE_SIZE_BYTES + "バイト以下にしてください: " + fileSize);
     }
-    String expectedContentType = expectedContentTypeOf(extensionOf(fileName));
+    if (fileName != null && fileName.length() > Document.FILE_NAME_MAX_LENGTH) {
+      throw new InvalidDocumentFileException(
+          "ファイル名は" + Document.FILE_NAME_MAX_LENGTH + "文字以下にしてください: " + fileName.length());
+    }
+    if (contentType != null && contentType.length() > Document.CONTENT_TYPE_MAX_LENGTH) {
+      throw new InvalidDocumentFileException(
+          "Content-Type は" + Document.CONTENT_TYPE_MAX_LENGTH + "文字以下にしてください: "
+              + contentType.length());
+    }
+    String extension = extensionOf(fileName);
+    String expectedContentType = expectedContentTypeOf(extension);
     if (contentType == null || !normalizeContentType(contentType).equals(expectedContentType)) {
       throw new InvalidDocumentFileException(
           "Content-Type が拡張子と対応していません: " + fileName + ", " + contentType);
     }
+    return DocumentFileType.fromExtension(extension);
   }
 
   /** 最後のドットより後ろを拡張子として取り出す。 */
