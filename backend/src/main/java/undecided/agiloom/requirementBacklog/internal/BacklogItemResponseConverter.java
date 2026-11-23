@@ -21,6 +21,10 @@ class BacklogItemResponseConverter {
         .sprintId(backlogItem.getSprintId() != null ? String.valueOf(backlogItem.getSprintId().value()) : null)
         .scrumTeamId(
             backlogItem.getScrumTeamId() != null ? String.valueOf(backlogItem.getScrumTeamId().value()) : null)
+        .parentItemId(
+            backlogItem.getParentItemId() != null && !backlogItem.getParentItemId().isEmpty()
+                ? String.valueOf(backlogItem.getParentItemId().value())
+                : null)
         .value(backlogItem.getValue())
         .qualityCategory(backlogItem.getQualityCategory())
         .qualityCategoryLabel(

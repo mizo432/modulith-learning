@@ -1,6 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
@@ -14,6 +15,7 @@ class BacklogItemCommandController {
   private final UpdateBacklogItemCommandService updateBacklogItemCommandService;
   private final ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService;
   private final EstimateBacklogItemCommandService estimateBacklogItemCommandService;
+  private final SplitBacklogItemCommandService splitBacklogItemCommandService;
   private final AddBacklogItemCommentCommandService addBacklogItemCommentCommandService;
   private final DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService;
   private final UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService;
@@ -25,6 +27,7 @@ class BacklogItemCommandController {
       UpdateBacklogItemCommandService updateBacklogItemCommandService,
       ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService,
       EstimateBacklogItemCommandService estimateBacklogItemCommandService,
+      SplitBacklogItemCommandService splitBacklogItemCommandService,
       AddBacklogItemCommentCommandService addBacklogItemCommentCommandService,
       DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService,
       UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService,
@@ -34,6 +37,7 @@ class BacklogItemCommandController {
     this.updateBacklogItemCommandService = updateBacklogItemCommandService;
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
     this.estimateBacklogItemCommandService = estimateBacklogItemCommandService;
+    this.splitBacklogItemCommandService = splitBacklogItemCommandService;
     this.addBacklogItemCommentCommandService = addBacklogItemCommentCommandService;
     this.deleteBacklogItemCommentCommandService = deleteBacklogItemCommentCommandService;
     this.updateBacklogItemCommentCommandService = updateBacklogItemCommentCommandService;
@@ -117,6 +121,32 @@ class BacklogItemCommandController {
             .build());
     BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();
     return ResponseEntity.ok(backlogItemResponseConverter.toBacklogItemResponse(backlogItem));
+  }
+
+  @PostMapping("/api/v1/backlog-items/{backlogItemId}/split")
+  ResponseEntity<SplitBacklogItemResponse> splitBacklogItem(
+      @PathVariable String backlogItemId, @Valid @RequestBody SplitBacklogItemRequest request) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    List<SplitBacklogItemCommand.Child> children =
+        request.children() != null
+            ? request.children().stream()
+                .map(
+                    child ->
+                        child != null
+                            ? new SplitBacklogItemCommand.Child(child.title(), child.storyPoint())
+                            : null)
+                .toList()
+            : null;
+    splitBacklogItemCommandService.execute(
+        new SplitBacklogItemCommand(id, request.actorEmployeeId(), children));
+    BacklogItem parent = backlogItemQueryService.findById(id).orElseThrow();
+    List<BacklogItemResponse> childResponses =
+        backlogItemQueryService.findByParentItemId(id).stream()
+            .map(backlogItemResponseConverter::toBacklogItemResponse)
+            .toList();
+    return ResponseEntity.ok(
+        new SplitBacklogItemResponse(
+            backlogItemResponseConverter.toBacklogItemResponse(parent), childResponses));
   }
 
   @PostMapping("/api/v1/backlog-items/{backlogItemId}/comments")
