@@ -1,37 +1,37 @@
 package undecided.generic.accountMgmt.internal.user;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withNoContent;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestClient;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
-import undecided.generic.accountMgmt.internal.user.UserCommandImpl.PasswordChangeDto;
-import undecided.generic.accountMgmt.internal.user.UserCommandImpl.UserStatusDto;
 import com.github.mizo432.shared.exception.BusinessException;
 
 @Tag("small")
 @DisplayName("UserCommandImplのテスト")
-@ExtendWith(MockitoExtension.class)
 class UserCommandImplTest {
 
-  @Mock private RestTemplate restTemplate;
-
+  private MockRestServiceServer server;
   private UserCommandImpl userCommandImpl;
 
   @BeforeEach
   void setUp() {
-    userCommandImpl = new UserCommandImpl(restTemplate);
+    RestClient.Builder builder = RestClient.builder();
+    server = MockRestServiceServer.bindTo(builder).build();
+    userCommandImpl = new UserCommandImpl(builder.build());
   }
 
   @Nested
@@ -44,18 +44,21 @@ class UserCommandImplTest {
       ChangePasswordRequest request =
           new ChangePasswordRequest(null, "newPassword123", "newPassword123");
 
-      // 初回ログイン状態をtrueにモック
-      when(restTemplate.getForEntity(anyString(), eq(UserStatusDto.class)))
-          .thenReturn(new ResponseEntity<>(new UserStatusDto("testuser", true), HttpStatus.OK));
-
-      // 初回ログインパスワード変更のレスポンスをモック
-      when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
-          .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+      server
+          .expect(requestTo("http://localhost:8082/api/auth/users/testuser/first-login"))
+          .andExpect(method(HttpMethod.GET))
+          .andRespond(
+              withSuccess(
+                  "{\"username\":\"testuser\",\"isFirstLogin\":true}",
+                  MediaType.APPLICATION_JSON));
+      server
+          .expect(requestTo("http://localhost:8082/api/auth/users/testuser/first-login-password"))
+          .andExpect(method(HttpMethod.POST))
+          .andRespond(withNoContent());
 
       userCommandImpl.changePassword("testuser", request);
 
-      // 初回ログインパスワード変更APIが呼び出されることを検証
-      verify(restTemplate).postForEntity(contains("/first-login-password"), any(), eq(Void.class));
+      server.verify();
     }
 
     @Test
@@ -64,24 +67,27 @@ class UserCommandImplTest {
       ChangePasswordRequest request =
           new ChangePasswordRequest("currentPass", "newPassword123", "newPassword123");
 
-      // 初回ログイン状態をfalseにモック
-      when(restTemplate.getForEntity(anyString(), eq(UserStatusDto.class)))
-          .thenReturn(new ResponseEntity<>(new UserStatusDto("testuser", false), HttpStatus.OK));
-
-      // パスワード変更のレスポンスをモック
-      when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
-          .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+      server
+          .expect(requestTo("http://localhost:8082/api/auth/users/testuser/first-login"))
+          .andExpect(method(HttpMethod.GET))
+          .andRespond(
+              withSuccess(
+                  "{\"username\":\"testuser\",\"isFirstLogin\":false}",
+                  MediaType.APPLICATION_JSON));
+      server
+          .expect(requestTo("http://localhost:8082/api/auth/users/testuser/password"))
+          .andExpect(method(HttpMethod.POST))
+          .andRespond(withNoContent());
 
       userCommandImpl.changePassword("testuser", request);
 
-      // 通常パスワード変更APIが呼び出されることを検証
-      verify(restTemplate).postForEntity(contains("/password"), any(), eq(Void.class));
+      server.verify();
     }
 
     @Test
     @DisplayName("新しいパスワードが短い場合は例外がスローされる")
     void shouldThrowExceptionWhenNewPasswordIsTooShort() {
-      ChangePasswordRequest request = new ChangePasswordRequest(null, "short", "short");
+      ChangePasswordRequest request = new ChangePasswordRequest(null, "abcdefg", "abcdefg");
 
       assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
           .isInstanceOf(BusinessException.class)
@@ -116,13 +122,17 @@ class UserCommandImplTest {
       ChangePasswordRequest request =
           new ChangePasswordRequest(null, "newPassword123", "newPassword123");
 
-      // 初回ログイン状態をtrueにモック
-      when(restTemplate.getForEntity(anyString(), eq(UserStatusDto.class)))
-          .thenReturn(new ResponseEntity<>(new UserStatusDto("testuser", true), HttpStatus.OK));
-
-      // パスワード変更でエラーを返す
-      when(restTemplate.postForEntity(anyString(), any(PasswordChangeDto.class), eq(Void.class)))
-          .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+      server
+          .expect(requestTo("http://localhost:8082/api/auth/users/testuser/first-login"))
+          .andExpect(method(HttpMethod.GET))
+          .andRespond(
+              withSuccess(
+                  "{\"username\":\"testuser\",\"isFirstLogin\":true}",
+                  MediaType.APPLICATION_JSON));
+      server
+          .expect(requestTo("http://localhost:8082/api/auth/users/testuser/first-login-password"))
+          .andExpect(method(HttpMethod.POST))
+          .andRespond(withStatus(HttpStatus.BAD_REQUEST));
 
       assertThatThrownBy(() -> userCommandImpl.changePassword("testuser", request))
           .isInstanceOf(BusinessException.class)
