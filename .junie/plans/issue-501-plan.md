@@ -429,3 +429,34 @@
 6. **ファイル名衝突時の処理**: 同じバックログアイテムに同じファイル名をアップロードした場合、上書き（バージョンアップ）とするか、エラーとするか、ファイル名にサフィックスを付けて共存させるかを未決定
 7. **フロントエンドのアップロードUI**: プログレスバー、ドラッグ＆ドロップ、複数ファイル同時アップロードなどのUI詳細を未決定
 8. **MinIO SDK の選択**: AWS SDK v2 S3 クライアント vs MinIO 公式 Java SDK のどちらを採用するかを未決定
+
+### 段階3 テストリスト（2026-11-24 追記）
+
+前提 #734（ステークホルダー対応）:
+
+- ScrumTeamChanged に stakeholderEmployeeIds を含めたとき、イベントに保持される（small）
+- of()／removed() で ScrumTeam のステークホルダーが反映されるとき、その一覧がイベントに入る（small）
+- ScrumTeamSubset の isStakeholder が、リストに含まれる従業員IDのとき true となる（small）
+- apply()／from() でイベントのステークホルダーが射影されるとき、サブセットに反映される（small）
+- stakeholderEmployeeIds 付きサブセットを保存したとき、BIGINT[] で読み戻せる（medium）
+- PATCH members に stakeholderEmployeeIds を送ったとき、200 でレスポンスと DB に反映される（medium）
+- stakeholderEmployeeIds を送らないとき、既存のステークホルダーは変更されない（medium）
+
+段階3本体:
+
+- 存在しないバックログアイテムに添付したとき、エラーとなる（small: IllegalArgumentException／medium 項目27: 400）
+- チームメンバーでない従業員が添付したとき、権限エラーとなる（small）。ステークホルダーも添付は不可（閲覧のみ）
+- 合計50MBを超えるとき、エラーとなる（small／medium 項目26: 400）
+- チームメンバーが添付したとき、facade 経由で保存され関連付けが作られる（small／medium 項目49）
+- 系列を指定して再アップロードしたとき、関連付けの帳票IDが更新される（small）
+- 関連付けがない帳票を削除したとき、エラーとなる（small）
+- アップロード者以外が削除したとき、権限エラーとなり関連付けが残る（small／medium: 403）
+- アップロード者が削除したとき、帳票が論理削除され関連付けが消える（small／medium: 204）
+- 項目36〜40・50（medium、BacklogItemAttachmentsEndpointMediumTest）
+
+設計判断（2026-11-24）:
+
+- アップロード権限はチームメンバーのみ。ステークホルダーは一覧・ダウンロードのみ（#501 本文「チームメンバーは…添付できる」と段階3の閲覧範囲の記述に基づく）
+- 合計50MBは「関連付け中の各系列の最新バージョンの fileSize 合計＋新規ファイル」で判定する。再アップロード時は当該系列分を新しいサイズで置き換える
+- 添付エンドポイントは既存の分割に従い、GET系は BacklogItemQueryController、POST/DELETE は BacklogItemCommandController に置く（計画書の Query 一括記載から変更）
+- #734 はエンティティ・DTO・配線の変更が本体のため、write_tests 時点で配線まで実装し、medium で永続化とエンドポイントを検証する（段階2で Document.softDelete を API 表面に含めた前例と同様）
