@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;

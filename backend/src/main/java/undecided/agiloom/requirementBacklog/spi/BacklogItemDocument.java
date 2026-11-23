@@ -1,4 +1,4 @@
-package undecided.agiloom.requirementBacklog.internal;
+package undecided.agiloom.requirementBacklog.spi;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +27,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-class BacklogItemDocument {
+public class BacklogItemDocument {
 
   /** 関連付けの一意な識別子。 */
   @Id protected SnowflakeId id;

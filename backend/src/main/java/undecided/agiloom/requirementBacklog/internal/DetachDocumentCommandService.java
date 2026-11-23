@@ -1,8 +1,11 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
+
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.generic.documentMgmt.spi.Document;
 import undecided.generic.documentMgmt.spi.DocumentFacade;
 
 /**
@@ -31,6 +34,23 @@ class DetachDocumentCommandService {
    * @param command 添付解除コマンド
    */
   void execute(@NonNull DetachDocumentCommand command) {
-    throw new UnsupportedOperationException("not implemented");
+    BacklogItemDocument linkage =
+        backlogItemDocumentRepository
+            .findByBacklogItemIdAndDocumentId(command.getBacklogItemId(), command.getDocumentId())
+            .orElseThrow(
+                () -> new IllegalArgumentException("添付が存在しません: " + command.getDocumentId()));
+    Document document =
+        documentFacade
+            .findById(command.getDocumentId())
+            .orElseThrow(
+                () -> new IllegalArgumentException("帳票が存在しません: " + command.getDocumentId()));
+    boolean isUploader =
+        document.getUploaderEmployeeId() != null
+            && document.getUploaderEmployeeId().equals(command.getActorEmployeeId());
+    if (!isUploader) {
+      throw new BacklogItemPermissionDeniedException("ファイルを削除できるのはアップロードした本人のみです");
+    }
+    documentFacade.delete(command.getDocumentId(), command.getActorEmployeeId());
+    backlogItemDocumentRepository.delete(linkage);
   }
 }

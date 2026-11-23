@@ -47,26 +47,41 @@ class DocumentFacadeImpl implements DocumentFacade {
       @Nullable SnowflakeId uploaderEmployeeId,
       @Nullable String uploaderName,
       @Nullable SnowflakeId seriesId) {
-    throw new UnsupportedOperationException("not implemented");
+    return uploadDocumentCommandService.execute(
+        UploadDocumentCommand.builder()
+            .fileName(fileName)
+            .contentType(contentType)
+            .fileSize(fileSize)
+            .content(content)
+            .uploaderEmployeeId(uploaderEmployeeId)
+            .uploaderName(uploaderName)
+            .seriesId(seriesId)
+            .build());
   }
 
   @Override
   public @NonNull Optional<Document> findById(@NonNull SnowflakeId documentId) {
-    throw new UnsupportedOperationException("not implemented");
+    return documentQueryService.findById(documentId);
   }
 
   @Override
   public @NonNull List<Document> findBySeriesId(@NonNull SnowflakeId seriesId) {
-    throw new UnsupportedOperationException("not implemented");
+    return documentRepository.findBySeriesId(seriesId);
   }
 
   @Override
   public @NonNull DocumentContent download(@NonNull SnowflakeId documentId) {
-    throw new UnsupportedOperationException("not implemented");
+    DocumentDownloadResult result = documentDownloadService.download(documentId);
+    return new DocumentContent(
+        result.content(), result.contentType(), result.fileName(), result.fileSize());
   }
 
   @Override
   public void delete(@NonNull SnowflakeId documentId, @Nullable SnowflakeId actorEmployeeId) {
-    throw new UnsupportedOperationException("not implemented");
+    deleteDocumentCommandService.execute(
+        DeleteDocumentCommand.builder()
+            .documentId(documentId)
+            .actorEmployeeId(actorEmployeeId)
+            .build());
   }
 }

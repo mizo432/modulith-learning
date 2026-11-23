@@ -242,11 +242,10 @@ class BacklogItemAttachmentsEndpointMediumTest {
     void shouldSaveViaDocumentModule() throws Exception {
       long documentId = attachAsMember("design.pdf", CONTENT);
 
+      // documents.id は bytea 型のため、ID 指定ではなく全件数で保存を確認する（setUp で全削除済み）
       Integer documentCount =
           jdbcTemplate.queryForObject(
-              "SELECT COUNT(*) FROM undecided_ef.documents WHERE id = ?",
-              Integer.class,
-              documentId);
+              "SELECT COUNT(*) FROM undecided_ef.documents", Integer.class);
       assertThat(documentCount).isEqualTo(1);
       assertThat(backlogItemDocumentRepository.findByBacklogItemId(ITEM_ID)).hasSize(1);
     }

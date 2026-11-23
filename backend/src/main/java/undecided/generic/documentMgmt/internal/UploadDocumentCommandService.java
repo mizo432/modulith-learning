@@ -57,7 +57,10 @@ class UploadDocumentCommandService {
               + uploaderName.length());
     }
 
-    DocumentVersion version = nextVersionOf(command.getFileName());
+    DocumentVersion version =
+        command.getSeriesId() != null
+            ? nextVersionOfSeries(command.getSeriesId())
+            : nextVersionOf(command.getFileName());
     SnowflakeId id = snowflakeIdGenerator.nextIdValue();
     String s3Key =
         documentStorageService.upload(
@@ -78,6 +81,7 @@ class UploadDocumentCommandService {
             .fileType(fileType)
             .version(version.value())
             .s3Key(s3Key)
+            .seriesId(command.getSeriesId())
             .uploaderEmployeeId(command.getUploaderEmployeeId())
             .uploaderName(uploaderName)
             .deleted(false)
@@ -85,6 +89,15 @@ class UploadDocumentCommandService {
             .updatedAt(now)
             .build());
     return id;
+  }
+
+  /** 同じ系列の既存帳票（論理削除済みを含む）の最大バージョンの次を返す。初回は初期バージョン。 */
+  private DocumentVersion nextVersionOfSeries(SnowflakeId seriesId) {
+    OptionalInt latest =
+        documentRepository.findBySeriesId(seriesId).stream().mapToInt(Document::getVersion).max();
+    return latest.isPresent()
+        ? new DocumentVersion(latest.getAsInt()).increment()
+        : DocumentVersion.initial();
   }
 
   /** 同じファイル名の既存帳票（論理削除済みを含む）の最大バージョンの次を返す。初回は初期バージョン。 */

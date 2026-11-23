@@ -1,8 +1,13 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
+
+import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.agiloom.requirementBacklog.spi.BacklogItem;
+import undecided.generic.documentMgmt.spi.Document;
 import undecided.generic.documentMgmt.spi.DocumentFacade;
 import undecided.supporting.snowflake.SnowflakeId;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
@@ -47,6 +52,69 @@ class AttachDocumentCommandService {
    */
   @NonNull
   SnowflakeId execute(@NonNull AttachDocumentCommand command) {
-    throw new UnsupportedOperationException("not implemented");
+    BacklogItem backlogItem =
+        backlogItemRepository
+            .findById(command.getBacklogItemId())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "BacklogItem not found: " + command.getBacklogItemId()));
+    ScrumTeamSubset scrumTeamSubset =
+        scrumTeamSubsetRepository
+            .findById(backlogItem.getScrumTeamId())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "ScrumTeam not found: " + backlogItem.getScrumTeamId()));
+    if (!scrumTeamSubset.isTeamMember(command.getUploaderEmployeeId())) {
+      throw new BacklogItemPermissionDeniedException("ファイルを添付できるのはチームメンバーのみです");
+    }
+
+    // 合計サイズ判定（再アップロード時は当該系列の旧サイズを新しいサイズで置き換える）
+    List<BacklogItemDocument> linkages =
+        backlogItemDocumentRepository.findByBacklogItemId(command.getBacklogItemId());
+    long totalSize = 0L;
+    long replacedSize = 0L;
+    for (BacklogItemDocument linkage : linkages) {
+      long size = documentFacade.findById(linkage.getDocumentId()).map(Document::getFileSize).orElse(0L);
+      totalSize += size;
+      if (command.getSeriesId() != null && linkage.getSeriesId().equals(command.getSeriesId())) {
+        replacedSize = size;
+      }
+    }
+    if (totalSize - replacedSize + command.getFileSize() > MAX_TOTAL_SIZE_PER_ITEM) {
+      throw new IllegalArgumentException("添付ファイルの合計サイズが上限（50MB）を超えています");
+    }
+
+    SnowflakeId seriesId =
+        command.getSeriesId() != null ? command.getSeriesId() : snowflakeIdGenerator.nextIdValue();
+    SnowflakeId documentId =
+        documentFacade.upload(
+            command.getFileName(),
+            command.getContentType(),
+            command.getFileSize(),
+            command.getContent(),
+            command.getUploaderEmployeeId(),
+            command.getUploaderName(),
+            seriesId);
+
+    if (command.getSeriesId() != null) {
+      BacklogItemDocument linkage =
+          backlogItemDocumentRepository
+              .findByBacklogItemIdAndSeriesId(command.getBacklogItemId(), seriesId)
+              .orElseThrow(
+                  () -> new IllegalArgumentException("添付が存在しません: seriesId=" + seriesId));
+      linkage.setDocumentId(documentId);
+      backlogItemDocumentRepository.save(linkage);
+    } else {
+      backlogItemDocumentRepository.save(
+          BacklogItemDocument.builder()
+              .id(snowflakeIdGenerator.nextIdValue())
+              .backlogItemId(command.getBacklogItemId())
+              .documentId(documentId)
+              .seriesId(seriesId)
+              .build());
+    }
+    return documentId;
   }
 }

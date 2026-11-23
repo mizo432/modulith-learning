@@ -2,6 +2,7 @@ package undecided.agiloom.requirementBacklog.internal;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -96,7 +97,17 @@ class BacklogItemQueryService {
    * @return 添付ファイル一覧
    */
   List<BacklogItemAttachmentResponse> findAttachments(@NonNull SnowflakeId backlogItemId) {
-    throw new UnsupportedOperationException("not implemented");
+    return backlogItemDocumentRepository.findByBacklogItemId(backlogItemId).stream()
+        .map(
+            linkage ->
+                documentFacade
+                    .findById(linkage.getDocumentId())
+                    .map(
+                        document ->
+                            BacklogItemAttachmentResponse.from(document, linkage.getSeriesId()))
+                    .orElse(null))
+        .filter(Objects::nonNull)
+        .toList();
   }
 
   /**
@@ -111,7 +122,24 @@ class BacklogItemQueryService {
    */
   List<BacklogItemAttachmentResponse> findAttachments(
       @NonNull SnowflakeId backlogItemId, @Nullable SnowflakeId actorEmployeeId) {
-    throw new UnsupportedOperationException("not implemented");
+    BacklogItem backlogItem =
+        backlogItemRepository
+            .findById(backlogItemId)
+            .orElseThrow(
+                () -> new IllegalArgumentException("BacklogItem not found: " + backlogItemId));
+    ScrumTeamSubset scrumTeamSubset =
+        scrumTeamSubsetRepository
+            .findById(backlogItem.getScrumTeamId())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "ScrumTeam not found: " + backlogItem.getScrumTeamId()));
+    if (!scrumTeamSubset.isTeamMember(actorEmployeeId)
+        && !scrumTeamSubset.isStakeholder(actorEmployeeId)) {
+      throw new BacklogItemPermissionDeniedException(
+          "添付ファイルを閲覧できるのはチームメンバーとステークホルダーのみです");
+    }
+    return findAttachments(backlogItemId);
   }
 
   /**
@@ -129,6 +157,10 @@ class BacklogItemQueryService {
       @NonNull SnowflakeId backlogItemId,
       @NonNull SnowflakeId documentId,
       @Nullable SnowflakeId actorEmployeeId) {
-    throw new UnsupportedOperationException("not implemented");
+    findAttachments(backlogItemId, actorEmployeeId);
+    backlogItemDocumentRepository
+        .findByBacklogItemIdAndDocumentId(backlogItemId, documentId)
+        .orElseThrow(() -> new IllegalArgumentException("添付が存在しません: " + documentId));
+    return documentFacade.download(documentId);
   }
 }

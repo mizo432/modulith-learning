@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
