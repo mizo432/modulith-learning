@@ -77,6 +77,18 @@ class BacklogItemQueryController {
     return ResponseEntity.ok().headers(headers).body(new InputStreamResource(content.content()));
   }
 
+  @GetMapping("/api/v1/backlog-items/{backlogItemId}/attachments/{documentId}/versions")
+  @Transactional(readOnly = true)
+  List<BacklogItemAttachmentResponse> getAttachmentVersions(
+      @PathVariable String backlogItemId,
+      @PathVariable String documentId,
+      @RequestParam("actorEmployeeId") String actorEmployeeId) {
+    return backlogItemQueryService.findAttachmentVersions(
+        SnowflakeId.of(Long.parseLong(backlogItemId)),
+        SnowflakeId.of(Long.parseLong(documentId)),
+        SnowflakeId.of(Long.parseLong(actorEmployeeId)));
+  }
+
   @GetMapping("/api/v1/backlog-items/{backlogItemId}/comments")
   @Transactional(readOnly = true)
   List<BacklogItemCommentResponse> getComments(@PathVariable String backlogItemId) {

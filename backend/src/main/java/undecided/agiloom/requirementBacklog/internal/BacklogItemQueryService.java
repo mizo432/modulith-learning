@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.generic.documentMgmt.spi.Document;
 import undecided.generic.documentMgmt.spi.DocumentContent;
 import undecided.generic.documentMgmt.spi.DocumentFacade;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -158,9 +160,54 @@ class BacklogItemQueryService {
       @NonNull SnowflakeId documentId,
       @Nullable SnowflakeId actorEmployeeId) {
     findAttachments(backlogItemId, actorEmployeeId);
-    backlogItemDocumentRepository
-        .findByBacklogItemIdAndDocumentId(backlogItemId, documentId)
-        .orElseThrow(() -> new IllegalArgumentException("添付が存在しません: " + documentId));
+    resolveLinkage(backlogItemId, documentId);
     return documentFacade.download(documentId);
+  }
+
+  /**
+   * 添付ファイルのバージョン一覧を取得します（バージョン昇順）。
+   *
+   * <p>閲覧できるのはチームメンバーとステークホルダーのみです。指定した帳票が属する系列の
+   * 全バージョンを返します。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @param documentId 系列に属する帳票 ID（どのバージョンでもよい）
+   * @param actorEmployeeId 操作者の従業員 ID
+   * @return バージョン一覧
+   * @throws BacklogItemPermissionDeniedException メンバーでもステークホルダーでもない場合
+   */
+  List<BacklogItemAttachmentResponse> findAttachmentVersions(
+      @NonNull SnowflakeId backlogItemId,
+      @NonNull SnowflakeId documentId,
+      @Nullable SnowflakeId actorEmployeeId) {
+    findAttachments(backlogItemId, actorEmployeeId);
+    BacklogItemDocument linkage = resolveLinkage(backlogItemId, documentId);
+    return documentFacade.findBySeriesId(linkage.getSeriesId()).stream()
+        .sorted(Comparator.comparingInt(Document::getVersion))
+        .map(document -> BacklogItemAttachmentResponse.from(document, linkage.getSeriesId()))
+        .toList();
+  }
+
+  /**
+   * 帳票 ID から添付リンケージを解決します。
+   *
+   * <p>リンケージは最新バージョンの帳票 ID を保持するため、旧バージョンの ID は帳票の系列 ID
+   * 経由で解決します。
+   */
+  private BacklogItemDocument resolveLinkage(SnowflakeId backlogItemId, SnowflakeId documentId) {
+    Optional<BacklogItemDocument> byDocument =
+        backlogItemDocumentRepository.findByBacklogItemIdAndDocumentId(backlogItemId, documentId);
+    if (byDocument.isPresent()) {
+      return byDocument.get();
+    }
+    return documentFacade
+        .findById(documentId)
+        .map(Document::getSeriesId)
+        .filter(Objects::nonNull)
+        .flatMap(
+            seriesId ->
+                backlogItemDocumentRepository.findByBacklogItemIdAndSeriesId(
+                    backlogItemId, seriesId))
+        .orElseThrow(() -> new IllegalArgumentException("添付が存在しません: " + documentId));
   }
 }
