@@ -1,8 +1,12 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -19,6 +23,8 @@ class BacklogItemCommandController {
   private final UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService;
   private final BacklogItemQueryService backlogItemQueryService;
   private final BacklogItemResponseConverter backlogItemResponseConverter;
+  private final AttachDocumentCommandService attachDocumentCommandService;
+  private final DetachDocumentCommandService detachDocumentCommandService;
 
   BacklogItemCommandController(
       CreateBacklogItemCommandService createBacklogItemCommandService,
@@ -29,7 +35,9 @@ class BacklogItemCommandController {
       DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService,
       UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService,
       BacklogItemQueryService backlogItemQueryService,
-      BacklogItemResponseConverter backlogItemResponseConverter) {
+      BacklogItemResponseConverter backlogItemResponseConverter,
+      AttachDocumentCommandService attachDocumentCommandService,
+      DetachDocumentCommandService detachDocumentCommandService) {
     this.createBacklogItemCommandService = createBacklogItemCommandService;
     this.updateBacklogItemCommandService = updateBacklogItemCommandService;
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
@@ -39,6 +47,64 @@ class BacklogItemCommandController {
     this.updateBacklogItemCommentCommandService = updateBacklogItemCommentCommandService;
     this.backlogItemQueryService = backlogItemQueryService;
     this.backlogItemResponseConverter = backlogItemResponseConverter;
+    this.attachDocumentCommandService = attachDocumentCommandService;
+    this.detachDocumentCommandService = detachDocumentCommandService;
+  }
+
+  @PostMapping("/api/v1/backlog-items/{backlogItemId}/attachments")
+  ResponseEntity<BacklogItemAttachmentResponse> attachDocument(
+      @PathVariable String backlogItemId,
+      @RequestParam("file") MultipartFile file,
+      @RequestParam(value = "uploaderEmployeeId", required = false) String uploaderEmployeeId,
+      @RequestParam(value = "uploaderName", required = false) String uploaderName,
+      @RequestParam(value = "seriesId", required = false) String seriesId) {
+    SnowflakeId itemId = SnowflakeId.of(Long.parseLong(backlogItemId));
+    SnowflakeId documentId =
+        attachDocumentCommandService.execute(
+            AttachDocumentCommand.builder()
+                .backlogItemId(itemId)
+                .fileName(file.getOriginalFilename())
+                .contentType(file.getContentType())
+                .fileSize(file.getSize())
+                .content(inputStreamOf(file))
+                .uploaderEmployeeId(
+                    uploaderEmployeeId == null || uploaderEmployeeId.isEmpty()
+                        ? null
+                        : SnowflakeId.of(Long.parseLong(uploaderEmployeeId)))
+                .uploaderName(uploaderName)
+                .seriesId(
+                    seriesId == null || seriesId.isEmpty()
+                        ? null
+                        : SnowflakeId.of(Long.parseLong(seriesId)))
+                .build());
+    BacklogItemAttachmentResponse response =
+        backlogItemQueryService.findAttachments(itemId).stream()
+            .filter(attachment -> attachment.getDocumentId().equals(documentId))
+            .findFirst()
+            .orElseThrow();
+    return ResponseEntity.ok(response);
+  }
+
+  @DeleteMapping("/api/v1/backlog-items/{backlogItemId}/attachments/{documentId}")
+  ResponseEntity<Void> detachDocument(
+      @PathVariable String backlogItemId,
+      @PathVariable String documentId,
+      @RequestParam("actorEmployeeId") String actorEmployeeId) {
+    detachDocumentCommandService.execute(
+        DetachDocumentCommand.builder()
+            .backlogItemId(SnowflakeId.of(Long.parseLong(backlogItemId)))
+            .documentId(SnowflakeId.of(Long.parseLong(documentId)))
+            .actorEmployeeId(SnowflakeId.of(Long.parseLong(actorEmployeeId)))
+            .build());
+    return ResponseEntity.noContent().build();
+  }
+
+  private static InputStream inputStreamOf(MultipartFile file) {
+    try {
+      return file.getInputStream();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @PostMapping("/api/v1/scrum-teams/{scrumTeamId}/backlog-items")

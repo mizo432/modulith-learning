@@ -74,6 +74,12 @@ public class ScrumTeam {
   @Builder.Default
   protected List<SnowflakeId> memberEmployeeIds = new ArrayList<>();
 
+  /** ステークホルダーの従業員IDリスト（組織ユニットに所属しない従業員）。 */
+  @Column(name = "stakeholder_employee_ids", columnDefinition = "BIGINT[]")
+  @Convert(converter = SnowflakeId.SnowflakeIdListConverter.class)
+  @Builder.Default
+  protected List<SnowflakeId> stakeholderEmployeeIds = new ArrayList<>();
+
   /** 関連するProductへの参照。 */
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id", nullable = false)
@@ -190,6 +196,27 @@ public class ScrumTeam {
       }
     }
     this.memberEmployeeIds = new ArrayList<>(memberEmployeeIds);
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  /**
+   * ステークホルダーの従業員IDリストを設定します。
+   *
+   * @param stakeholderEmployeeIds ステークホルダーの従業員IDリスト
+   * @throws IllegalArgumentException リストにnull要素または空のSnowflakeIdが含まれる場合
+   */
+  public void setStakeholderEmployeeIds(@NonNull List<SnowflakeId> stakeholderEmployeeIds) {
+    checkNotNull(stakeholderEmployeeIds, () -> new IllegalArgumentException("stakeholderEmployeeIds must not be null"));
+    for (int i = 0; i < stakeholderEmployeeIds.size(); i++) {
+      SnowflakeId id = stakeholderEmployeeIds.get(i);
+      if (id == null) {
+        throw new IllegalArgumentException("stakeholderEmployeeIds[" + i + "] must not be null");
+      }
+      if (id.isEmpty()) {
+        throw new IllegalArgumentException("stakeholderEmployeeIds[" + i + "] must not be empty");
+      }
+    }
+    this.stakeholderEmployeeIds = new ArrayList<>(stakeholderEmployeeIds);
     this.updatedAt = LocalDateTime.now();
   }
 }

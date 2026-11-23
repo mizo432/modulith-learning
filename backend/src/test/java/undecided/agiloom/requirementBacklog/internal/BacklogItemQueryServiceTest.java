@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.generic.documentMgmt.spi.DocumentFacade;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Tag("small")
@@ -29,13 +30,25 @@ class BacklogItemQueryServiceTest {
 
   @Mock private BacklogItemCommentRepository backlogItemCommentRepository;
 
+  @Mock private BacklogItemDocumentRepository backlogItemDocumentRepository;
+
+  @Mock private ScrumTeamSubsetRepository scrumTeamSubsetRepository;
+
+  @Mock private DocumentFacade documentFacade;
+
   private BacklogItemQueryService service;
 
   private SnowflakeId teamId;
 
   @BeforeEach
   void setUp() {
-    service = new BacklogItemQueryService(backlogItemRepository, backlogItemCommentRepository);
+    service =
+        new BacklogItemQueryService(
+            backlogItemRepository,
+            backlogItemCommentRepository,
+            backlogItemDocumentRepository,
+            scrumTeamSubsetRepository,
+            documentFacade);
     teamId = SnowflakeId.of(10L);
   }
 

@@ -22,6 +22,7 @@ import undecided.supporting.snowflake.SnowflakeId;
  * @param smEmployeeId SMの従業員ID
  * @param smName SMの名前
  * @param memberEmployeeIds チームメンバーの従業員IDリスト（PO/SMを含む）
+ * @param stakeholderEmployeeIds ステークホルダーの従業員IDリスト
  * @param removed 削除された場合は true
  */
 public record ScrumTeamChanged(
@@ -34,6 +35,7 @@ public record ScrumTeamChanged(
     SnowflakeId smEmployeeId,
     String smName,
     List<SnowflakeId> memberEmployeeIds,
+    List<SnowflakeId> stakeholderEmployeeIds,
     boolean removed) {
 
   /** 現在の ScrumTeam の状態からイベントを生成します。 */
@@ -48,6 +50,7 @@ public record ScrumTeamChanged(
         scrumTeam.getSmEmployeeId(),
         scrumTeam.getSmName(),
         scrumTeam.getMemberEmployeeIds(),
+        scrumTeam.getStakeholderEmployeeIds(),
         false);
   }
 
@@ -64,6 +67,7 @@ public record ScrumTeamChanged(
         snapshot.smEmployeeId(),
         snapshot.smName(),
         snapshot.memberEmployeeIds(),
+        snapshot.stakeholderEmployeeIds(),
         true);
   }
 }

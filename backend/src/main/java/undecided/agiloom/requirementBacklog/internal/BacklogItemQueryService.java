@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.generic.documentMgmt.spi.DocumentContent;
+import undecided.generic.documentMgmt.spi.DocumentFacade;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
@@ -20,12 +22,21 @@ class BacklogItemQueryService {
 
   private final BacklogItemRepository backlogItemRepository;
   private final BacklogItemCommentRepository backlogItemCommentRepository;
+  private final BacklogItemDocumentRepository backlogItemDocumentRepository;
+  private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
+  private final DocumentFacade documentFacade;
 
   BacklogItemQueryService(
       BacklogItemRepository backlogItemRepository,
-      BacklogItemCommentRepository backlogItemCommentRepository) {
+      BacklogItemCommentRepository backlogItemCommentRepository,
+      BacklogItemDocumentRepository backlogItemDocumentRepository,
+      ScrumTeamSubsetRepository scrumTeamSubsetRepository,
+      DocumentFacade documentFacade) {
     this.backlogItemRepository = backlogItemRepository;
     this.backlogItemCommentRepository = backlogItemCommentRepository;
+    this.backlogItemDocumentRepository = backlogItemDocumentRepository;
+    this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
+    this.documentFacade = documentFacade;
   }
 
   Optional<BacklogItem> findById(@NonNull SnowflakeId id) {
@@ -76,5 +87,48 @@ class BacklogItemQueryService {
       comment.setHasReplies(parentsWithReplies.contains(comment.getId()));
     }
     return comments;
+  }
+
+  /**
+   * バックログアイテムの添付ファイル一覧を取得します（詳細表示用、権限チェックなし）。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @return 添付ファイル一覧
+   */
+  List<BacklogItemAttachmentResponse> findAttachments(@NonNull SnowflakeId backlogItemId) {
+    throw new UnsupportedOperationException("not implemented");
+  }
+
+  /**
+   * バックログアイテムの添付ファイル一覧を取得します。
+   *
+   * <p>閲覧できるのはチームメンバーとステークホルダーのみです。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @param actorEmployeeId 操作者の従業員 ID
+   * @return 添付ファイル一覧
+   * @throws BacklogItemPermissionDeniedException メンバーでもステークホルダーでもない場合
+   */
+  List<BacklogItemAttachmentResponse> findAttachments(
+      @NonNull SnowflakeId backlogItemId, @Nullable SnowflakeId actorEmployeeId) {
+    throw new UnsupportedOperationException("not implemented");
+  }
+
+  /**
+   * 添付ファイルをダウンロードします。
+   *
+   * <p>ダウンロードできるのはチームメンバーとステークホルダーのみです。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @param documentId 帳票 ID
+   * @param actorEmployeeId 操作者の従業員 ID
+   * @return ダウンロード内容
+   * @throws BacklogItemPermissionDeniedException メンバーでもステークホルダーでもない場合
+   */
+  DocumentContent downloadAttachment(
+      @NonNull SnowflakeId backlogItemId,
+      @NonNull SnowflakeId documentId,
+      @Nullable SnowflakeId actorEmployeeId) {
+    throw new UnsupportedOperationException("not implemented");
   }
 }

@@ -18,6 +18,14 @@ interface DocumentRepository extends CrudRepository<Document, SnowflakeId> {
   List<Document> findByFileName(String fileName);
 
   /**
+   * バージョン系列 ID で帳票を検索する（全バージョン、論理削除済みを含む）。
+   *
+   * @param seriesId バージョン系列 ID
+   * @return 系列に属する帳票の一覧
+   */
+  List<Document> findBySeriesId(SnowflakeId seriesId);
+
+  /**
    * 論理削除されていない帳票を ID で検索する。
    *
    * @param id 帳票 ID

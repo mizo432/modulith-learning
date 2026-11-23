@@ -34,4 +34,8 @@ class UploadDocumentCommand {
   /** アップローダー名。 */
   @Nullable
   private final String uploaderName;
+
+  /** バージョン系列 ID（系列を指定しない場合はファイル名で系列判定する）。 */
+  @Nullable
+  private final SnowflakeId seriesId;
 }

@@ -79,6 +79,16 @@ public class Document {
   @NonNull
   private String s3Key;
 
+  /**
+   * バージョン系列 ID。
+   *
+   * <p>同じ系列内の帳票は同一ファイルのバージョンとして扱う。利用側（requirementBacklog）が
+   * 系列を採番してアップロード時に指定する。段階2までの帳票（系列なし）は null。
+   */
+  @Column(name = "series_id")
+  @Nullable
+  private SnowflakeId seriesId;
+
   /** アップローダーの従業員 ID。 */
   @Column(name = "uploader_employee_id")
   @Nullable

@@ -21,6 +21,7 @@ public class ScrumTeamResponse {
   private SnowflakeId smEmployeeId;
   private String smName;
   private List<SnowflakeId> memberEmployeeIds;
+  private List<SnowflakeId> stakeholderEmployeeIds;
   private String productId;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

@@ -49,6 +49,7 @@ class ScrumTeamSubsetEventListenerMemberIdsTest {
         SM_ID,
         "SM Name",
         List.of(PO_ID, SM_ID, MEMBER_ID),
+        List.of(),
         false);
   }
 
