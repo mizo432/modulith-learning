@@ -1,6 +1,11 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import java.util.List;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
@@ -39,7 +44,49 @@ class BacklogItemQueryController {
         backlogItemQueryService
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("BacklogItem not found: " + backlogItemId));
-    return backlogItemResponseConverter.toBacklogItemResponse(backlogItem);
+    BacklogItemResponse response = backlogItemResponseConverter.toBacklogItemResponse(backlogItem);
+    response.setAttachments(backlogItemQueryService.findAttachments(id));
+    return response;
+  }
+
+  @GetMapping("/api/v1/backlog-items/{backlogItemId}/attachments")
+  @Transactional(readOnly = true)
+  List<BacklogItemAttachmentResponse> getAttachments(
+      @PathVariable String backlogItemId, @RequestParam("actorEmployeeId") String actorEmployeeId) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    return backlogItemQueryService.findAttachments(
+        id, SnowflakeId.of(Long.parseLong(actorEmployeeId)));
+  }
+
+  @GetMapping("/api/v1/backlog-items/{backlogItemId}/attachments/{documentId}/download")
+  @Transactional(readOnly = true)
+  ResponseEntity<InputStreamResource> downloadAttachment(
+      @PathVariable String backlogItemId,
+      @PathVariable String documentId,
+      @RequestParam("actorEmployeeId") String actorEmployeeId) {
+    undecided.generic.documentMgmt.spi.DocumentContent content =
+        backlogItemQueryService.downloadAttachment(
+            SnowflakeId.of(Long.parseLong(backlogItemId)),
+            SnowflakeId.of(Long.parseLong(documentId)),
+            SnowflakeId.of(Long.parseLong(actorEmployeeId)));
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.parseMediaType(content.contentType()));
+    headers.setContentDisposition(
+        ContentDisposition.attachment().filename(content.fileName()).build());
+    headers.setContentLength(content.fileSize());
+    return ResponseEntity.ok().headers(headers).body(new InputStreamResource(content.content()));
+  }
+
+  @GetMapping("/api/v1/backlog-items/{backlogItemId}/attachments/{documentId}/versions")
+  @Transactional(readOnly = true)
+  List<BacklogItemAttachmentResponse> getAttachmentVersions(
+      @PathVariable String backlogItemId,
+      @PathVariable String documentId,
+      @RequestParam("actorEmployeeId") String actorEmployeeId) {
+    return backlogItemQueryService.findAttachmentVersions(
+        SnowflakeId.of(Long.parseLong(backlogItemId)),
+        SnowflakeId.of(Long.parseLong(documentId)),
+        SnowflakeId.of(Long.parseLong(actorEmployeeId)));
   }
 
   @GetMapping("/api/v1/backlog-items/{backlogItemId}/comments")

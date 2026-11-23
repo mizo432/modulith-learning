@@ -151,6 +151,10 @@ public class ScrumTeamCommandController {
     List<SnowflakeId> memberEmployeeIds =
         request.getMemberEmployeeIds() != null ? request.getMemberEmployeeIds() : List.of();
     updateScrumTeamCommandService.updateMembers(snowflakeId, memberEmployeeIds);
+    if (request.getStakeholderEmployeeIds() != null) {
+      updateScrumTeamCommandService.updateStakeholders(
+          snowflakeId, request.getStakeholderEmployeeIds());
+    }
     ScrumTeam scrumTeam = scrumTeamQueryService.findById(snowflakeId).orElseThrow();
     eventPublisher.publishEvent(ScrumTeamChanged.of(scrumTeam));
     return ResponseEntity.ok(scrumTeamResponseConverter.toScrumTeamResponse(scrumTeam));

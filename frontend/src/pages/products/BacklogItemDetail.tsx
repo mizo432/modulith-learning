@@ -5,6 +5,10 @@ import {
   Box,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   FormControlLabel,
   IconButton,
@@ -22,8 +26,10 @@ import {
 import ReplyIcon from '@mui/icons-material/Reply';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
 import backlogItemService, {
   BacklogItem,
+  BacklogItemAttachment,
   BacklogItemComment,
   BacklogItemStatus,
 } from '../../services/backlogItemService';
@@ -36,6 +42,12 @@ import {useAuth} from '../../contexts/AuthContext';
 import {MarkdownComment} from '../../components/MarkdownComment';
 
 const REFRESH_INTERVAL = 30000; // 30秒
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 const STATUS_LABELS: Record<BacklogItemStatus, string> = {
   SUGGESTED: '提案',
@@ -65,6 +77,9 @@ const BacklogItemDetail: React.FC = () => {
   const [item, setItem] = useState<BacklogItem | null>(null);
   const [team, setTeam] = useState<ScrumTeam | null>(null);
   const [comments, setComments] = useState<BacklogItemComment[]>([]);
+  const [attachments, setAttachments] = useState<BacklogItemAttachment[]>([]);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [commentBody, setCommentBody] = useState('');
@@ -108,6 +123,20 @@ const BacklogItemDetail: React.FC = () => {
       ]);
       setItem(itemData);
       setComments(commentData);
+      // 添付ファイル一覧（取得できない場合は詳細レスポンスに含まれる添付を使う）
+      if (auth.employeeId) {
+        try {
+          const attachmentData = await backlogItemService.getAttachments(
+            backlogItemId,
+            auth.employeeId,
+          );
+          setAttachments(attachmentData);
+        } catch {
+          setAttachments(itemData.attachments ?? []);
+        }
+      } else {
+        setAttachments(itemData.attachments ?? []);
+      }
       // 入力中（commentBody が空でない、または valueInput が現在の値と異なる）場合は入力内容を上書きしない
       const isEditingValue = valueInputRef.current !== null && itemValueRef.current !== valueInputRef.current;
       if (!isEditingValue) {
@@ -123,7 +152,7 @@ const BacklogItemDetail: React.FC = () => {
       console.error('Failed to load backlog item:', err);
       setError('バックログアイテムの読み込みに失敗しました。');
     }
-  }, [backlogItemId]);
+  }, [backlogItemId, auth.employeeId]);
 
   useEffect(() => {
     load();
@@ -215,6 +244,68 @@ const BacklogItemDetail: React.FC = () => {
     } catch (err: any) {
       console.error('Failed to delete comment:', err);
       setError(err?.response?.data?.message ?? 'コメントの削除に失敗しました。');
+    }
+  };
+
+  const handleUploadAttachment = async () => {
+    if (!backlogItemId || !selectedFile) return;
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await backlogItemService.uploadAttachment(
+        backlogItemId,
+        selectedFile,
+        auth.employeeId ?? undefined,
+        auth.username ?? undefined,
+      );
+      setUploadDialogOpen(false);
+      setSelectedFile(null);
+      setSuccessMessage('ファイルを添付しました。');
+      await load();
+    } catch (err: any) {
+      console.error('Failed to upload attachment:', err);
+      setError(err?.response?.data?.message ?? '添付ファイルのアップロードに失敗しました。');
+    }
+  };
+
+  const handleDeleteAttachment = async (attachment: BacklogItemAttachment) => {
+    if (!backlogItemId || !auth.employeeId) return;
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await backlogItemService.deleteAttachment(
+        backlogItemId,
+        attachment.documentId,
+        auth.employeeId,
+      );
+      setSuccessMessage('添付ファイルを削除しました。');
+      await load();
+    } catch (err: any) {
+      console.error('Failed to delete attachment:', err);
+      setError(err?.response?.data?.message ?? '添付ファイルの削除に失敗しました。');
+    }
+  };
+
+  const handleDownloadAttachment = async (attachment: BacklogItemAttachment) => {
+    if (!backlogItemId || !auth.employeeId) return;
+    setError(null);
+    try {
+      const blob = await backlogItemService.downloadAttachment(
+        backlogItemId,
+        attachment.documentId,
+        auth.employeeId,
+      );
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = attachment.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      console.error('Failed to download attachment:', err);
+      setError(err?.response?.data?.message ?? '添付ファイルのダウンロードに失敗しました。');
     }
   };
 
@@ -506,6 +597,73 @@ const BacklogItemDetail: React.FC = () => {
           {item.sprintId ? ` ／ 関連スプリント：${item.sprintId}` : ''}
         </Typography>
       </Paper>
+
+      <Paper sx={{p: 3, mb: 3}}>
+        <Typography variant="h6" sx={{mb: 1}}>
+          添付ファイル
+        </Typography>
+        <List>
+          {attachments.length === 0 && (
+            <ListItem>
+              <ListItemText secondary="添付ファイルはまだありません。" />
+            </ListItem>
+          )}
+          {attachments.map((attachment) => (
+            <ListItem
+              key={attachment.documentId}
+              secondaryAction={
+                <>
+                  <IconButton
+                    edge="end"
+                    aria-label={`${attachment.fileName}をダウンロード`}
+                    onClick={() => handleDownloadAttachment(attachment)}
+                  >
+                    <DownloadIcon />
+                  </IconButton>
+                  {auth.employeeId === attachment.uploaderEmployeeId && (
+                    <IconButton
+                      edge="end"
+                      aria-label={`${attachment.fileName}を削除`}
+                      onClick={() => handleDeleteAttachment(attachment)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
+                </>
+              }
+            >
+              <ListItemText
+                primary={attachment.fileName}
+                secondary={`${formatFileSize(attachment.fileSize)} ／ v${attachment.version} ／ ${attachment.uploaderName} ／ ${new Date(attachment.createdAt).toLocaleString()}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+        {isTeamMember && (
+          <Box sx={{mt: 2}}>
+            <Button variant="contained" onClick={() => setUploadDialogOpen(true)}>
+              ファイルを添付
+            </Button>
+          </Box>
+        )}
+      </Paper>
+
+      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}>
+        <DialogTitle>ファイルを添付</DialogTitle>
+        <DialogContent>
+          <input
+            type="file"
+            data-testid="attachment-file-input"
+            onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setUploadDialogOpen(false)}>キャンセル</Button>
+          <Button variant="contained" onClick={handleUploadAttachment} disabled={!selectedFile}>
+            アップロード
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Paper sx={{p: 3}}>
         <Typography variant="h6" sx={{mb: 1}}>

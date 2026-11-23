@@ -63,6 +63,12 @@ class ScrumTeamSubset {
   @Builder.Default
   protected List<SnowflakeId> memberEmployeeIds = new ArrayList<>();
 
+  /** ステークホルダーの従業員IDリスト（組織ユニットに所属しない従業員）。 */
+  @Column(name = "stakeholder_employee_ids", columnDefinition = "BIGINT[]")
+  @Convert(converter = SnowflakeId.SnowflakeIdListConverter.class)
+  @Builder.Default
+  protected List<SnowflakeId> stakeholderEmployeeIds = new ArrayList<>();
+
   /** サブセットが最後にイベントで更新された日時。 */
   @Column(name = "updated_at", nullable = false)
   @Builder.Default
@@ -77,6 +83,8 @@ class ScrumTeamSubset {
     this.smName = event.smName();
     this.memberEmployeeIds = event.memberEmployeeIds() != null
         ? new ArrayList<>(event.memberEmployeeIds()) : new ArrayList<>();
+    this.stakeholderEmployeeIds = event.stakeholderEmployeeIds() != null
+        ? new ArrayList<>(event.stakeholderEmployeeIds()) : new ArrayList<>();
     this.updatedAt = LocalDateTime.now();
   }
 
@@ -91,6 +99,8 @@ class ScrumTeamSubset {
         .smName(event.smName())
         .memberEmployeeIds(event.memberEmployeeIds() != null
             ? new ArrayList<>(event.memberEmployeeIds()) : new ArrayList<>())
+        .stakeholderEmployeeIds(event.stakeholderEmployeeIds() != null
+            ? new ArrayList<>(event.stakeholderEmployeeIds()) : new ArrayList<>())
         .build();
   }
 
@@ -142,5 +152,22 @@ class ScrumTeamSubset {
     }
     // memberEmployeeIds リストに含まれるか確認
     return this.memberEmployeeIds != null && this.memberEmployeeIds.contains(actorEmployeeId);
+  }
+
+  /**
+   * 指定した従業員がこのスクラムチームのステークホルダーかを判定します。
+   *
+   * <p>ステークホルダーは組織ユニットに所属しない従業員で、所属手続きなしに
+   * バックログアイテムの閲覧（添付ファイルの一覧・ダウンロード等）ができます。
+   *
+   * @param actorEmployeeId 操作者の従業員ID
+   * @return ステークホルダーであれば true
+   */
+  boolean isStakeholder(@Nullable SnowflakeId actorEmployeeId) {
+    if (actorEmployeeId == null) {
+      return false;
+    }
+    return this.stakeholderEmployeeIds != null
+        && this.stakeholderEmployeeIds.contains(actorEmployeeId);
   }
 }

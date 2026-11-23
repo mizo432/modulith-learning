@@ -53,6 +53,10 @@ jest.mock('../../services/backlogItemService', () => ({
     deleteComment: jest.fn(),
     estimateBacklogItem: jest.fn(),
     changeStatus: jest.fn(),
+    getAttachments: jest.fn(),
+    uploadAttachment: jest.fn(),
+    deleteAttachment: jest.fn(),
+    downloadAttachment: jest.fn(),
   },
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
@@ -113,6 +117,7 @@ describe('BacklogItemDetail', () => {
     setAuthMock();
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
     // デフォルトではemp-1をチームメンバーとして設定
     (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
       id: 'team-1',
@@ -2228,6 +2233,139 @@ describe('BacklogItemDetail', () => {
         expect(backlogItemService.addComment).toHaveBeenCalledWith('item-100', expect.objectContaining({
           body: 'テストコメント',
         }));
+      });
+    });
+  });
+
+  describe('添付ファイル', () => {
+    const attachmentMine = {
+      documentId: 'doc-1',
+      seriesId: 'series-1',
+      fileName: '設計書.pdf',
+      contentType: 'application/pdf',
+      fileSize: 2048,
+      version: 2,
+      uploaderEmployeeId: 'emp-1',
+      uploaderName: '山田太郎',
+      createdAt: '2026-01-02T10:00:00',
+    };
+    const attachmentOthers = {
+      documentId: 'doc-2',
+      seriesId: 'series-2',
+      fileName: '議事録.txt',
+      contentType: 'text/plain',
+      fileSize: 512,
+      version: 1,
+      uploaderEmployeeId: 'emp-2',
+      uploaderName: '佐藤花子',
+      createdAt: '2026-01-03T11:00:00',
+    };
+
+    beforeEach(() => {
+      (URL as any).createObjectURL = jest.fn(() => 'blob:mock-url');
+      (URL as any).revokeObjectURL = jest.fn();
+    });
+
+    it('添付ファイルがあるとき、ファイル名・サイズ・バージョン・アップロード者が表示される', async () => {
+      (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([attachmentMine]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('設計書.pdf')).toBeInTheDocument();
+      });
+      expect(screen.getByText(/2\.0 KB/)).toBeInTheDocument();
+      expect(screen.getByText(/v2/)).toBeInTheDocument();
+      expect(screen.getByText(/山田太郎/)).toBeInTheDocument();
+    });
+
+    it('アップロード者本人の添付には削除ボタンが表示され、他人の添付には表示されない', async () => {
+      (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([
+        attachmentMine,
+        attachmentOthers,
+      ]);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('設計書.pdf')).toBeInTheDocument();
+        expect(screen.getByText('議事録.txt')).toBeInTheDocument();
+      });
+      expect(screen.getByRole('button', { name: '設計書.pdfを削除' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: '議事録.txtを削除' })).not.toBeInTheDocument();
+    });
+
+    it('チームメンバーがファイルを選んでアップロードしたとき、uploadAttachment が呼ばれる', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
+      (backlogItemService.uploadAttachment as jest.Mock).mockResolvedValue(attachmentMine);
+
+      renderBacklogItemDetail();
+
+      const openButton = await screen.findByRole('button', { name: 'ファイルを添付' });
+      await user.click(openButton);
+
+      const file = new File(['content'], '設計書.pdf', { type: 'application/pdf' });
+      const input = screen.getByTestId('attachment-file-input');
+      await user.upload(input, file);
+      await user.click(screen.getByRole('button', { name: 'アップロード' }));
+
+      await waitFor(() => {
+        expect(backlogItemService.uploadAttachment).toHaveBeenCalledWith(
+          'item-100',
+          file,
+          'emp-1',
+          'テストユーザー',
+        );
+      });
+    });
+
+    it('ダウンロードボタンを押したとき、downloadAttachment が呼ばれる', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([attachmentMine]);
+      (backlogItemService.downloadAttachment as jest.Mock).mockResolvedValue(
+        new Blob(['x'], { type: 'application/pdf' }),
+      );
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('設計書.pdf')).toBeInTheDocument();
+      });
+      await user.click(screen.getByRole('button', { name: '設計書.pdfをダウンロード' }));
+
+      await waitFor(() => {
+        expect(backlogItemService.downloadAttachment).toHaveBeenCalledWith(
+          'item-100',
+          'doc-1',
+          'emp-1',
+        );
+      });
+    });
+
+    it('削除ボタンを押したとき、deleteAttachment が呼ばれ一覧から消える', async () => {
+      const user = userEvent.setup();
+      (backlogItemService.getAttachments as jest.Mock)
+        .mockResolvedValueOnce([attachmentMine])
+        .mockResolvedValue([]);
+      (backlogItemService.deleteAttachment as jest.Mock).mockResolvedValue(undefined);
+
+      renderBacklogItemDetail();
+
+      await waitFor(() => {
+        expect(screen.getByText('設計書.pdf')).toBeInTheDocument();
+      });
+      await user.click(screen.getByRole('button', { name: '設計書.pdfを削除' }));
+
+      await waitFor(() => {
+        expect(backlogItemService.deleteAttachment).toHaveBeenCalledWith(
+          'item-100',
+          'doc-1',
+          'emp-1',
+        );
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('設計書.pdf')).not.toBeInTheDocument();
       });
     });
   });

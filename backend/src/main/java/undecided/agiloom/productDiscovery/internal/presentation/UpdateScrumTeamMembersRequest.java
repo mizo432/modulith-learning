@@ -16,4 +16,5 @@ import undecided.supporting.snowflake.SnowflakeId;
 @AllArgsConstructor
 public class UpdateScrumTeamMembersRequest {
   private List<SnowflakeId> memberEmployeeIds;
+  private List<SnowflakeId> stakeholderEmployeeIds;
 }
