@@ -14,6 +14,7 @@ class BacklogItemCommandController {
   private final UpdateBacklogItemCommandService updateBacklogItemCommandService;
   private final ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService;
   private final EstimateBacklogItemCommandService estimateBacklogItemCommandService;
+  private final SplitBacklogItemCommandService splitBacklogItemCommandService;
   private final AddBacklogItemCommentCommandService addBacklogItemCommentCommandService;
   private final DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService;
   private final UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService;
@@ -25,6 +26,7 @@ class BacklogItemCommandController {
       UpdateBacklogItemCommandService updateBacklogItemCommandService,
       ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService,
       EstimateBacklogItemCommandService estimateBacklogItemCommandService,
+      SplitBacklogItemCommandService splitBacklogItemCommandService,
       AddBacklogItemCommentCommandService addBacklogItemCommentCommandService,
       DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService,
       UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService,
@@ -34,6 +36,7 @@ class BacklogItemCommandController {
     this.updateBacklogItemCommandService = updateBacklogItemCommandService;
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
     this.estimateBacklogItemCommandService = estimateBacklogItemCommandService;
+    this.splitBacklogItemCommandService = splitBacklogItemCommandService;
     this.addBacklogItemCommentCommandService = addBacklogItemCommentCommandService;
     this.deleteBacklogItemCommentCommandService = deleteBacklogItemCommentCommandService;
     this.updateBacklogItemCommentCommandService = updateBacklogItemCommentCommandService;
@@ -117,6 +120,12 @@ class BacklogItemCommandController {
             .build());
     BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();
     return ResponseEntity.ok(backlogItemResponseConverter.toBacklogItemResponse(backlogItem));
+  }
+
+  @PostMapping("/api/v1/backlog-items/{backlogItemId}/split")
+  ResponseEntity<SplitBacklogItemResponse> splitBacklogItem(
+      @PathVariable String backlogItemId, @Valid @RequestBody SplitBacklogItemRequest request) {
+    throw new UnsupportedOperationException();
   }
 
   @PostMapping("/api/v1/backlog-items/{backlogItemId}/comments")
