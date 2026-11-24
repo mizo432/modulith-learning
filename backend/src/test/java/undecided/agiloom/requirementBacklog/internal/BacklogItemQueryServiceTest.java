@@ -35,7 +35,7 @@ class BacklogItemQueryServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new BacklogItemQueryService(backlogItemRepository, backlogItemCommentRepository);
+    service = new BacklogItemQueryService(backlogItemRepository, backlogItemCommentRepository, null, null);
     teamId = SnowflakeId.of(10L);
   }
 

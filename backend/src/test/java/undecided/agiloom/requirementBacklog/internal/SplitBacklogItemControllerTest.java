@@ -56,7 +56,7 @@ class SplitBacklogItemControllerTest {
 
   @Spy private SplitBacklogItemCommandService splitService =
       new SplitBacklogItemCommandService(items, teams, ids, events);
-  @Spy private BacklogItemQueryService queryService = new BacklogItemQueryService(items, null);
+  @Spy private BacklogItemQueryService queryService = new BacklogItemQueryService(items, null, null, null);
   @Spy private BacklogItemResponseConverter converter = new BacklogItemResponseConverter();
   @InjectMocks private BacklogItemCommandController controller;
 

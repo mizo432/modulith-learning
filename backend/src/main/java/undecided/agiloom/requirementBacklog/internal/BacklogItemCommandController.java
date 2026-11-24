@@ -16,6 +16,7 @@ class BacklogItemCommandController {
   private final ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService;
   private final EstimateBacklogItemCommandService estimateBacklogItemCommandService;
   private final SplitBacklogItemCommandService splitBacklogItemCommandService;
+  private final AssignBacklogItemSprintCommandService assignBacklogItemSprintCommandService;
   private final AddBacklogItemCommentCommandService addBacklogItemCommentCommandService;
   private final DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService;
   private final UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService;
@@ -28,6 +29,7 @@ class BacklogItemCommandController {
       ChangeBacklogItemStatusCommandService changeBacklogItemStatusCommandService,
       EstimateBacklogItemCommandService estimateBacklogItemCommandService,
       SplitBacklogItemCommandService splitBacklogItemCommandService,
+      AssignBacklogItemSprintCommandService assignBacklogItemSprintCommandService,
       AddBacklogItemCommentCommandService addBacklogItemCommentCommandService,
       DeleteBacklogItemCommentCommandService deleteBacklogItemCommentCommandService,
       UpdateBacklogItemCommentCommandService updateBacklogItemCommentCommandService,
@@ -38,6 +40,7 @@ class BacklogItemCommandController {
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
     this.estimateBacklogItemCommandService = estimateBacklogItemCommandService;
     this.splitBacklogItemCommandService = splitBacklogItemCommandService;
+    this.assignBacklogItemSprintCommandService = assignBacklogItemSprintCommandService;
     this.addBacklogItemCommentCommandService = addBacklogItemCommentCommandService;
     this.deleteBacklogItemCommentCommandService = deleteBacklogItemCommentCommandService;
     this.updateBacklogItemCommentCommandService = updateBacklogItemCommentCommandService;
@@ -204,5 +207,34 @@ class BacklogItemCommandController {
             .findFirst()
             .orElseThrow();
     return ResponseEntity.ok(backlogItemResponseConverter.toCommentResponse(comment));
+  }
+
+  @PostMapping("/api/v1/backlog-items/{backlogItemId}/sprint-assignment")
+  ResponseEntity<BacklogItemResponse> assignSprint(
+      @PathVariable String backlogItemId,
+      @Valid @RequestBody AssignBacklogItemSprintRequest request) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    assignBacklogItemSprintCommandService.assign(
+        AssignBacklogItemSprintCommand.builder()
+            .backlogItemId(id)
+            .sprintId(SnowflakeId.of(Long.parseLong(request.getSprintId())))
+            .actorEmployeeId(request.getActorEmployeeId())
+            .build());
+    BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();
+    return ResponseEntity.ok(backlogItemResponseConverter.toBacklogItemResponse(backlogItem));
+  }
+
+  @DeleteMapping("/api/v1/backlog-items/{backlogItemId}/sprint-assignment")
+  ResponseEntity<BacklogItemResponse> unassignSprint(
+      @PathVariable String backlogItemId,
+      @Valid @RequestBody UnassignBacklogItemSprintRequest request) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    assignBacklogItemSprintCommandService.unassign(
+        UnassignBacklogItemSprintCommand.builder()
+            .backlogItemId(id)
+            .actorEmployeeId(request.getActorEmployeeId())
+            .build());
+    BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();
+    return ResponseEntity.ok(backlogItemResponseConverter.toBacklogItemResponse(backlogItem));
   }
 }
