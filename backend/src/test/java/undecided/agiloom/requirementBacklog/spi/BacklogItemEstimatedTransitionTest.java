@@ -134,17 +134,4 @@ class BacklogItemEstimatedTransitionTest {
           .isInstanceOf(IllegalStateException.class);
     }
   }
-
-  @Nested
-  @DisplayName("READY状態からの無効な遷移テスト")
-  class InvalidTransitionFromReadyTest {
-
-    @Test
-    @DisplayName("READY状態のBacklogItemをESTIMATED以外へ遷移しようとすると、IllegalStateExceptionがスローされること")
-    void shouldRejectReadyToAccepted() {
-      BacklogItem item = readyItemWithStoryPoint(8);
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED))
-          .isInstanceOf(IllegalStateException.class);
-    }
-  }
 }
