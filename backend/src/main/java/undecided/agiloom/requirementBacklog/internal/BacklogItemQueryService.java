@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintFacade;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
@@ -100,6 +101,45 @@ class BacklogItemQueryService {
    */
   List<AssignableSprintResponse> findAssignableSprints(
       @NonNull SnowflakeId backlogItemId, @NonNull SnowflakeId actorEmployeeId) {
-    throw new UnsupportedOperationException("not implemented");
+    BacklogItem backlogItem =
+        backlogItemRepository
+            .findById(backlogItemId)
+            .orElseThrow(
+                () -> new IllegalArgumentException("BacklogItem not found: " + backlogItemId));
+    ScrumTeamSubset scrumTeam =
+        scrumTeamSubsetRepository
+            .findById(backlogItem.getScrumTeamId())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "ScrumTeam not found: " + backlogItem.getScrumTeamId()));
+    if (!scrumTeam.isTeamMember(actorEmployeeId)) {
+      throw new BacklogItemPermissionDeniedException(
+          "Only team members can view assignable sprints for a backlog item");
+    }
+    List<Sprint> window = sprintFacade.findAssignableSprints(backlogItem.getScrumTeamId());
+    List<AssignableSprintResponse> responses = new java.util.ArrayList<>();
+    for (Sprint sprint : window) {
+      responses.add(toAssignableSprintResponse(sprint, sprint.getId().equals(backlogItem.getSprintId())));
+    }
+    SnowflakeId assignedSprintId = backlogItem.getSprintId();
+    if (assignedSprintId != null && !assignedSprintId.isEmpty()
+        && window.stream().noneMatch(sprint -> sprint.getId().equals(assignedSprintId))) {
+      sprintFacade
+          .findById(assignedSprintId)
+          .ifPresent(sprint -> responses.add(toAssignableSprintResponse(sprint, true)));
+    }
+    return responses;
+  }
+
+  private AssignableSprintResponse toAssignableSprintResponse(Sprint sprint, boolean assigned) {
+    return new AssignableSprintResponse(
+        String.valueOf(sprint.getId().value()),
+        sprint.getSprintNumber(),
+        sprint.getTitle(),
+        sprint.getStatus().name(),
+        sprint.getStartDate(),
+        sprint.getEndDate(),
+        assigned);
   }
 }

@@ -1,10 +1,14 @@
 package undecided.agiloom.requirementBacklog.internal;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import undecided.agiloom.requirementBacklog.spi.BacklogItem;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemSprintAssignmentChanged;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintFacade;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -36,17 +40,95 @@ class AssignBacklogItemSprintCommandService {
   }
 
   void assign(@NonNull AssignBacklogItemSprintCommand command) {
-    throw new UnsupportedOperationException("not implemented");
+    BacklogItem backlogItem = findBacklogItem(command.getBacklogItemId());
+    requireTeamMember(backlogItem, command.getActorEmployeeId());
+    requireEstimated(backlogItem);
+
+    Sprint sprint =
+        sprintFacade
+            .findById(command.getSprintId())
+            .orElseThrow(
+                () -> new IllegalArgumentException("Sprint not found: " + command.getSprintId()));
+    if (!backlogItem.getScrumTeamId().equals(sprint.getTeamId())) {
+      throw new IllegalArgumentException(
+          "Sprint does not belong to the backlog item's scrum team: " + command.getSprintId());
+    }
+    boolean inWindow =
+        sprintFacade.findAssignableSprints(backlogItem.getScrumTeamId()).stream()
+            .anyMatch(candidate -> candidate.getId().equals(sprint.getId()));
+    if (!inWindow) {
+      throw new IllegalArgumentException(
+          "Sprint is outside the assignable window (next 4 sprints): " + command.getSprintId());
+    }
+
+    SnowflakeId previousSprintId = normalize(backlogItem.getSprintId());
+    if (sprint.getId().equals(previousSprintId)) {
+      return;
+    }
+    backlogItem.assignToSprint(sprint.getId());
+    backlogItemRepository.save(backlogItem);
+    eventPublisher.publishEvent(
+        new BacklogItemSprintAssignmentChanged(
+            backlogItem.getId(),
+            backlogItem.getScrumTeamId(),
+            previousSprintId,
+            sprint.getId(),
+            command.getActorEmployeeId(),
+            LocalDateTime.now()));
   }
 
   void unassign(@NonNull UnassignBacklogItemSprintCommand command) {
-    throw new UnsupportedOperationException("not implemented");
+    BacklogItem backlogItem = findBacklogItem(command.getBacklogItemId());
+    requireTeamMember(backlogItem, command.getActorEmployeeId());
+    requireEstimated(backlogItem);
+
+    SnowflakeId previousSprintId = normalize(backlogItem.getSprintId());
+    if (previousSprintId == null) {
+      throw new IllegalStateException(
+          "BacklogItem is not assigned to any sprint: " + command.getBacklogItemId());
+    }
+    backlogItem.unassignFromSprint();
+    backlogItemRepository.save(backlogItem);
+    eventPublisher.publishEvent(
+        new BacklogItemSprintAssignmentChanged(
+            backlogItem.getId(),
+            backlogItem.getScrumTeamId(),
+            previousSprintId,
+            null,
+            command.getActorEmployeeId(),
+            LocalDateTime.now()));
   }
 
-  /** 割り当て可能なスプリント一覧の取得はクエリ側の責務だが、検証用に窓を公開する。 */
-  List<SnowflakeId> assignableSprintIds(@NonNull SnowflakeId teamId) {
-    return sprintFacade.findAssignableSprints(teamId).stream()
-        .map(sprint -> sprint.getId())
-        .toList();
+  /** DBから読み込んだ未設定のIDは SnowflakeId.EMPTY になるため、nullへ正規化する。 */
+  private SnowflakeId normalize(SnowflakeId id) {
+    return id == null || id.isEmpty() ? null : id;
+  }
+
+  private BacklogItem findBacklogItem(SnowflakeId backlogItemId) {
+    return backlogItemRepository
+        .findById(backlogItemId)
+        .orElseThrow(() -> new IllegalArgumentException("BacklogItem not found: " + backlogItemId));
+  }
+
+  private void requireTeamMember(BacklogItem backlogItem, SnowflakeId actorEmployeeId) {
+    ScrumTeamSubset scrumTeam =
+        scrumTeamSubsetRepository
+            .findById(backlogItem.getScrumTeamId())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "ScrumTeam not found: " + backlogItem.getScrumTeamId()));
+    if (!scrumTeam.isTeamMember(actorEmployeeId)) {
+      throw new BacklogItemPermissionDeniedException(
+          "Only team members can change the sprint assignment of a backlog item");
+    }
+  }
+
+  private void requireEstimated(BacklogItem backlogItem) {
+    if (backlogItem.getStatus() != BacklogItemStatus.ESTIMATED) {
+      throw new IllegalStateException(
+          "Only ESTIMATED backlog items can be assigned to a sprint, current status: "
+              + backlogItem.getStatus());
+    }
   }
 }

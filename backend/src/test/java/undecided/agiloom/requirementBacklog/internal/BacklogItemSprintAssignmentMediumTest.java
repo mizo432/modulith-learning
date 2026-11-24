@@ -113,6 +113,7 @@ class BacklogItemSprintAssignmentMediumTest {
     entityManager.flush();
     entityManager.clear();
 
-    assertThat(backlogItemRepository.findById(ITEM_ID).orElseThrow().getSprintId()).isNull();
+    SnowflakeId assignedSprintId = backlogItemRepository.findById(ITEM_ID).orElseThrow().getSprintId();
+    assertThat(assignedSprintId == null || assignedSprintId.isEmpty()).isTrue();
   }
 }
