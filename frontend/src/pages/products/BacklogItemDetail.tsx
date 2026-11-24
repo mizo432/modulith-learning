@@ -6,14 +6,18 @@ import {
   Button,
   Chip,
   Divider,
+  FormControl,
   FormControlLabel,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
   Paper,
   Radio,
   RadioGroup,
+  Select,
   Slider,
   TextField,
   Tooltip,
@@ -23,6 +27,7 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import backlogItemService, {
+  AssignableSprint,
   BacklogItem,
   BacklogItemComment,
   BacklogItemStatus,
@@ -88,6 +93,10 @@ const BacklogItemDetail: React.FC = () => {
 
   // StoryPoint選択（Issue #516）
   const [selectedStoryPoint, setSelectedStoryPoint] = useState<number | null>(null);
+
+  // スプリント割り当て（Issue #525）
+  const [assignableSprints, setAssignableSprints] = useState<AssignableSprint[]>([]);
+  const [selectedSprintId, setSelectedSprintId] = useState('');
 
   // 入力状態の参照（load 関数内で最新値を取得するため）
   const valueInputRef = useRef(valueInput);
@@ -306,6 +315,61 @@ const BacklogItemDetail: React.FC = () => {
     }
   };
 
+  // スプリント割り当てセクションの表示条件（ESTIMATED かつチームメンバーのみ。Issue #525）
+  const showSprintAssignmentSection = isTeamMember && item?.status === 'ESTIMATED';
+
+  // 割り当て可能なスプリント一覧の読み込み（Issue #525）
+  useEffect(() => {
+    if (!showSprintAssignmentSection || !backlogItemId || !auth.employeeId) return;
+    let cancelled = false;
+    backlogItemService
+      .getAssignableSprints(backlogItemId, auth.employeeId)
+      .then((sprints) => {
+        if (cancelled) return;
+        setAssignableSprints(sprints);
+        const assigned = sprints.find((s) => s.assigned);
+        setSelectedSprintId(assigned ? assigned.sprintId : '');
+      })
+      .catch((err) => {
+        console.error('Failed to load assignable sprints:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [showSprintAssignmentSection, backlogItemId, auth.employeeId, item?.sprintId]);
+
+  // スプリントへ割り当て／変更（Issue #525）
+  const handleAssignSprint = async () => {
+    if (!backlogItemId || !selectedSprintId) return;
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await backlogItemService.assignSprint(backlogItemId, selectedSprintId, auth.employeeId ?? '');
+      setSuccessMessage('スプリントへ割り当てました。');
+      await load();
+    } catch (err: any) {
+      console.error('Failed to assign sprint:', err);
+      setError(err?.response?.data?.message ?? err?.message ?? 'スプリント割り当てに失敗しました。');
+    }
+  };
+
+  // スプリント割り当ての解除（Issue #525）
+  const handleUnassignSprint = async () => {
+    if (!backlogItemId) return;
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await backlogItemService.unassignSprint(backlogItemId, auth.employeeId ?? '');
+      setSuccessMessage('スプリント割り当てを解除しました。');
+      await load();
+    } catch (err: any) {
+      console.error('Failed to unassign sprint:', err);
+      setError(err?.response?.data?.message ?? err?.message ?? 'スプリント割り当ての解除に失敗しました。');
+    }
+  };
+
+  const assignedSprint = assignableSprints.find((s) => s.assigned);
+
   // StoryPoint見積もりセクションの表示条件（READY または ESTIMATED のみ）
   const showStoryPointSection = item?.status === 'READY' || item?.status === 'ESTIMATED';
 
@@ -497,6 +561,50 @@ const BacklogItemDetail: React.FC = () => {
                 </Button>
               </Box>
             )}
+          </Box>
+        )}
+
+        {/* スプリント割り当てセクション（Issue #525）：ESTIMATED かつチームメンバーのみ表示 */}
+        {showSprintAssignmentSection && (
+          <Box sx={{mt: 3, pt: 2, borderTop: '1px solid #e0e0e0'}}>
+            <Typography variant="subtitle1" gutterBottom>
+              スプリント割り当て
+            </Typography>
+            {assignedSprint && (
+              <Typography variant="body2" sx={{mb: 1}}>
+                現在の割り当て：Sprint {assignedSprint.sprintNumber}：{assignedSprint.title}
+              </Typography>
+            )}
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap'}}>
+              <FormControl size="small" sx={{minWidth: 240}}>
+                <InputLabel id="sprint-select-label">スプリント</InputLabel>
+                <Select
+                  labelId="sprint-select-label"
+                  label="スプリント"
+                  data-testid="sprint-select"
+                  value={selectedSprintId}
+                  onChange={(e) => setSelectedSprintId(e.target.value)}
+                >
+                  {assignableSprints.map((sprint) => (
+                    <MenuItem key={sprint.sprintId} value={sprint.sprintId}>
+                      Sprint {sprint.sprintNumber}：{sprint.title}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                onClick={handleAssignSprint}
+                disabled={!selectedSprintId || selectedSprintId === item.sprintId}
+              >
+                スプリントに割り当て
+              </Button>
+              {item.sprintId && (
+                <Button variant="outlined" color="warning" onClick={handleUnassignSprint}>
+                  割り当てを解除
+                </Button>
+              )}
+            </Box>
           </Box>
         )}
 

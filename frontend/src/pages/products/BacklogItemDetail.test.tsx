@@ -116,6 +116,7 @@ describe('BacklogItemDetail', () => {
     setAuthMock();
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockBacklogItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getAssignableSprints as jest.Mock).mockResolvedValue([]);
     // デフォルトではemp-1をチームメンバーとして設定
     (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
       id: 'team-1',
@@ -2336,8 +2337,9 @@ describe('BacklogItemDetail スプリント割り当て（Issue #525）', () => 
     await waitFor(() => {
       expect(screen.getByText('スプリント割り当て')).toBeInTheDocument();
     });
-    fireEvent.mouseDown(screen.getByTestId('sprint-select'));
-    const option = await screen.findByText('Sprint 2：Sprint 2');
+    const select = await screen.findByRole('combobox', { name: 'スプリント' });
+    await user.click(select);
+    const option = await screen.findByRole('option', { name: 'Sprint 2：Sprint 2' });
     await user.click(option);
     await user.click(screen.getByRole('button', { name: 'スプリントに割り当て' }));
 
