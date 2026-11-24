@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintSettings;
+import undecided.agiloom.sprintExecution.internal.query.SprintCapacity;
+import undecided.agiloom.sprintExecution.internal.query.SprintCapacityQueryService;
 import undecided.agiloom.sprintExecution.internal.query.SprintQueryService;
 import undecided.agiloom.sprintExecution.internal.query.SprintSettingsQueryService;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -18,11 +20,14 @@ public class SprintQueryController {
 
     private final SprintQueryService sprintQueryService;
     private final SprintSettingsQueryService sprintSettingsQueryService;
+    private final SprintCapacityQueryService sprintCapacityQueryService;
 
     public SprintQueryController(SprintQueryService sprintQueryService,
-                                 SprintSettingsQueryService sprintSettingsQueryService) {
+                                 SprintSettingsQueryService sprintSettingsQueryService,
+                                 SprintCapacityQueryService sprintCapacityQueryService) {
         this.sprintQueryService = sprintQueryService;
         this.sprintSettingsQueryService = sprintSettingsQueryService;
+        this.sprintCapacityQueryService = sprintCapacityQueryService;
     }
 
     @GetMapping
@@ -54,6 +59,14 @@ public class SprintQueryController {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Sprint settings not found for product: " + productId));
         return toSprintSettingsResponse(settings);
+    }
+
+    /**
+     * スプリントの容量（割り当て可能ポイントと割り当て済みポイント）を取得します。
+     */
+    @GetMapping("/{id}/capacity")
+    public SprintCapacityResponse getSprintCapacity(@PathVariable @NotNull String id) {
+        throw new UnsupportedOperationException("not implemented");
     }
 
     SprintResponse toResponse(Sprint sprint) {
