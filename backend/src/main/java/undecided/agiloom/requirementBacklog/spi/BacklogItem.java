@@ -159,6 +159,23 @@ public class BacklogItem {
   }
 
   /**
+   * スプリントに割り当てます（Issue #525）。割り当ては状態を変えません。
+   *
+   * @param sprintId 割り当て先スプリントID
+   */
+  public void assignToSprint(@NonNull SnowflakeId sprintId) {
+    checkNotNull(sprintId, () -> new IllegalArgumentException("sprintId must not be null"));
+    this.sprintId = sprintId;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  /** スプリント割り当てを解除します（Issue #525）。 */
+  public void unassignFromSprint() {
+    this.sprintId = null;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  /**
    * 状態を変更します。
    *
    * <p>許可される遷移は以下の通りです：

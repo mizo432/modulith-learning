@@ -89,6 +89,15 @@ class BacklogItemQueryController {
         SnowflakeId.of(Long.parseLong(actorEmployeeId)));
   }
 
+  @GetMapping("/api/v1/backlog-items/{backlogItemId}/assignable-sprints")
+  @Transactional(readOnly = true)
+  List<AssignableSprintResponse> getAssignableSprints(
+      @PathVariable String backlogItemId, @RequestParam String actorEmployeeId) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    return backlogItemQueryService.findAssignableSprints(
+        id, SnowflakeId.of(Long.parseLong(actorEmployeeId)));
+  }
+
   @GetMapping("/api/v1/backlog-items/{backlogItemId}/comments")
   @Transactional(readOnly = true)
   List<BacklogItemCommentResponse> getComments(@PathVariable String backlogItemId) {

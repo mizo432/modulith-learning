@@ -84,6 +84,18 @@ export interface DeleteBacklogItemCommentRequest {
   actorEmployeeId?: string;
 }
 
+/** 割り当て可能なスプリント（Issue #525） */
+export interface AssignableSprint {
+  sprintId: string;
+  sprintNumber: number;
+  title: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  /** 現在このアイテムが割り当てられているスプリントかどうか */
+  assigned: boolean;
+}
+
 /** StoryPoint 見積もりリクエスト（Issue #516 実装予定） */
 export interface EstimateBacklogItemRequest {
   storyPoint: number;
@@ -191,6 +203,41 @@ const backlogItemService = {
     await api.delete(`/v1/backlog-items/${backlogItemId}/comments/${commentId}`, {
       data: request,
     });
+  },
+
+  /** 割り当て可能なスプリント一覧を取得する（Issue #525） */
+  async getAssignableSprints(
+    backlogItemId: string,
+    actorEmployeeId: string,
+  ): Promise<AssignableSprint[]> {
+    const response = await api.get(`/v1/backlog-items/${backlogItemId}/assignable-sprints`, {
+      params: { actorEmployeeId },
+    });
+    return response.data;
+  },
+
+  /** スプリントへ割り当てる／割り当て先を変更する（Issue #525） */
+  async assignSprint(
+    backlogItemId: string,
+    sprintId: string,
+    actorEmployeeId: string,
+  ): Promise<BacklogItem> {
+    const response = await api.post(`/v1/backlog-items/${backlogItemId}/sprint-assignment`, {
+      sprintId,
+      actorEmployeeId,
+    });
+    return response.data;
+  },
+
+  /** スプリント割り当てを解除する（Issue #525） */
+  async unassignSprint(
+    backlogItemId: string,
+    actorEmployeeId: string,
+  ): Promise<BacklogItem> {
+    const response = await api.delete(`/v1/backlog-items/${backlogItemId}/sprint-assignment`, {
+      data: { actorEmployeeId },
+    });
+    return response.data;
   },
 
   /** StoryPoint を見積もる（Issue #516 実装予定 — 現在はスタブ） */

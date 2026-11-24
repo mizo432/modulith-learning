@@ -48,7 +48,8 @@ class BacklogItemQueryServiceTest {
             backlogItemCommentRepository,
             backlogItemDocumentRepository,
             scrumTeamSubsetRepository,
-            documentFacade);
+            documentFacade,
+            null);
     teamId = SnowflakeId.of(10L);
   }
 

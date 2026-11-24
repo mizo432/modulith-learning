@@ -15,4 +15,6 @@ interface BacklogItemRepository
   List<BacklogItem> findByScrumTeamIdAndStatus(SnowflakeId scrumTeamId, BacklogItemStatus status);
 
   List<BacklogItem> findByParentItemId(SnowflakeId parentItemId);
+
+  List<BacklogItem> findBySprintId(SnowflakeId sprintId);
 }
