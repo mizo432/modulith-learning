@@ -53,6 +53,9 @@ jest.mock('../../services/backlogItemService', () => ({
     deleteComment: jest.fn(),
     estimateBacklogItem: jest.fn(),
     changeStatus: jest.fn(),
+    getAssignableSprints: jest.fn(),
+    assignSprint: jest.fn(),
+    unassignSprint: jest.fn(),
   },
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
@@ -2229,6 +2232,139 @@ describe('BacklogItemDetail', () => {
           body: 'テストコメント',
         }));
       });
+    });
+  });
+});
+
+describe('BacklogItemDetail スプリント割り当て（Issue #525）', () => {
+  const mockEstimatedItem = {
+    id: 'item-100',
+    scrumTeamId: 'team-1',
+    title: '見積もり済みアイテム',
+    description: 'テスト説明',
+    status: 'ESTIMATED',
+    statusLabel: '見積もり済み',
+    priority: 1,
+    creatorName: 'テストユーザー',
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T01:00:00Z',
+    value: 50,
+    storyPoint: 5,
+  };
+
+  const mockAssignableSprints = [
+    {
+      sprintId: 'sprint-1',
+      sprintNumber: 1,
+      title: 'Sprint 1',
+      status: 'ACTIVE',
+      startDate: '2026-11-16',
+      endDate: '2026-11-27',
+      assigned: false,
+    },
+    {
+      sprintId: 'sprint-2',
+      sprintNumber: 2,
+      title: 'Sprint 2',
+      status: 'PLANNED',
+      startDate: '2026-11-30',
+      endDate: '2026-12-11',
+      assigned: false,
+    },
+  ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    setAuthMock();
+    (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockEstimatedItem);
+    (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+      id: 'team-1',
+      productId: 'product-1',
+      name: 'テストチーム',
+      poEmployeeId: 'emp-1',
+      smEmployeeId: 'emp-2',
+      memberEmployeeIds: ['emp-1', 'emp-2'],
+    });
+    (backlogItemService.getAssignableSprints as jest.Mock).mockResolvedValue(mockAssignableSprints);
+    (backlogItemService.assignSprint as jest.Mock).mockResolvedValue({
+      ...mockEstimatedItem,
+      sprintId: 'sprint-2',
+    });
+    (backlogItemService.unassignSprint as jest.Mock).mockResolvedValue(mockEstimatedItem);
+  });
+
+  it('ESTIMATEDかつチームメンバーのとき、スプリント割り当てセクションが表示される', async () => {
+    renderBacklogItemDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('スプリント割り当て')).toBeInTheDocument();
+    });
+    expect(backlogItemService.getAssignableSprints).toHaveBeenCalledWith('item-100', 'emp-1');
+  });
+
+  it('ESTIMATEDでないとき、スプリント割り当てセクションは表示されない', async () => {
+    (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+      ...mockEstimatedItem,
+      status: 'READY',
+      statusLabel: '準備完了',
+    });
+    renderBacklogItemDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('見積もり済みアイテム')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('スプリント割り当て')).not.toBeInTheDocument();
+    expect(backlogItemService.getAssignableSprints).not.toHaveBeenCalled();
+  });
+
+  it('チームメンバーでないとき、スプリント割り当てセクションは表示されない', async () => {
+    setAuthMock({ employeeId: 'emp-9' });
+    renderBacklogItemDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('見積もり済みアイテム')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('スプリント割り当て')).not.toBeInTheDocument();
+    expect(backlogItemService.getAssignableSprints).not.toHaveBeenCalled();
+  });
+
+  it('スプリントを選んで割り当てボタンを押すと、assignSprintが呼ばれる', async () => {
+    const user = userEvent.setup();
+    renderBacklogItemDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('スプリント割り当て')).toBeInTheDocument();
+    });
+    fireEvent.mouseDown(screen.getByTestId('sprint-select'));
+    const option = await screen.findByText('Sprint 2：Sprint 2');
+    await user.click(option);
+    await user.click(screen.getByRole('button', { name: 'スプリントに割り当て' }));
+
+    await waitFor(() => {
+      expect(backlogItemService.assignSprint).toHaveBeenCalledWith('item-100', 'sprint-2', 'emp-1');
+    });
+  });
+
+  it('割り当て済みのとき現在の割り当てが表示され、解除ボタンでunassignSprintが呼ばれる', async () => {
+    const user = userEvent.setup();
+    (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue({
+      ...mockEstimatedItem,
+      sprintId: 'sprint-1',
+    });
+    (backlogItemService.getAssignableSprints as jest.Mock).mockResolvedValue([
+      { ...mockAssignableSprints[0], assigned: true },
+      mockAssignableSprints[1],
+    ]);
+    renderBacklogItemDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText(/現在の割り当て/)).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('button', { name: '割り当てを解除' }));
+
+    await waitFor(() => {
+      expect(backlogItemService.unassignSprint).toHaveBeenCalledWith('item-100', 'emp-1');
     });
   });
 });
