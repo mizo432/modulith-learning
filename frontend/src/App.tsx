@@ -26,6 +26,7 @@ import SprintSettings from './pages/products/SprintSettings';
 import BacklogItemList from './pages/products/BacklogItemList';
 import BacklogItemDetail from './pages/products/BacklogItemDetail';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
+import {ToastProvider} from './contexts/ToastContext';
 
 // Protected route component that redirects to login if not authenticated
 const ProtectedRoute = ({children}: { children: React.ReactNode }) => {
@@ -219,7 +220,9 @@ function App() {
   return (
       <Router>
         <AuthProvider>
-          <AppContent/>
+          <ToastProvider>
+            <AppContent/>
+          </ToastProvider>
         </AuthProvider>
       </Router>
   );
