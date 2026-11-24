@@ -10,6 +10,7 @@ jest.mock('../../services/api', () => ({
 import sprintService, {
   CalculateEndDateResponse,
   END_DAY_OF_WEEK_LABELS,
+  SprintCapacity,
 } from '../../services/sprintService';
 
 describe('sprintService', () => {
@@ -94,6 +95,26 @@ describe('sprintService', () => {
       expect(END_DAY_OF_WEEK_LABELS.WEDNESDAY).toBe('水曜日');
       expect(END_DAY_OF_WEEK_LABELS.THURSDAY).toBe('木曜日');
       expect(END_DAY_OF_WEEK_LABELS.FRIDAY).toBe('金曜日');
+    });
+  });
+
+  describe('getSprintCapacity', () => {
+    const mockCapacity: SprintCapacity = {
+      sprintId: '3001',
+      businessDays: 10,
+      velocityPerBusinessDay: 5,
+      assignablePoints: 50,
+      assignedPoints: 55,
+      overAllocated: true,
+    };
+
+    it('should return sprint capacity', async () => {
+      mockGet.mockResolvedValue({ data: mockCapacity });
+
+      const result = await sprintService.getSprintCapacity('3001');
+
+      expect(mockGet).toHaveBeenCalledWith('/v1/sprints/3001/capacity');
+      expect(result).toEqual(mockCapacity);
     });
   });
 });
