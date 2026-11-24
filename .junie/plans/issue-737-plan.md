@@ -15,11 +15,14 @@
 - 静的フィールドは停止済みコンテナを保持し続け、`start()` は null のときしか呼ばれないため、後続クラスは停止した DB に対して実行され、実行順や負荷によって失敗するクラスが変わる（干渉の正体）
 - mediumTest のタイムアウト5分（backend/build.gradle.kts）も、全件実行には不足する
 
-## 対策
-1. `TestcontainersConfiguration` を Testcontainers のシングルトンコンテナ方式に変更する
-   - コンテナは静的初期化で起動し、Spring のライフサイクル管理下に置かない（コンテキストが閉じても停止されない。終了は JVM 終了時の Ryuk に任せる）
-   - 接続情報は `@DynamicPropertySource` で spring.datasource.* と spring.data.redis.* に供給する（`@Import(TestcontainersConfiguration.class)` という利用側の契約は変えない）
-2. mediumTest のタイムアウトを5分から30分に引き上げる
+## 対策（検証を経て確定した最終形）
+1. `TestcontainersConfiguration` のコンテナを静的初期化で先に起動し、`@ServiceConnection` の Bean から返す
+   - Spring Boot の Testcontainers ライフサイクルは、すでに起動しているコンテナをコンテキストのクローズで停止しない。これにより共有コンテナの停止がなくなる（`@Import(TestcontainersConfiguration.class)` という利用側の契約は変えない）
+   - 当初試した `@DynamicPropertySource` 方式は、Redis の接続先が application.yml のプレースホルダ（localhost:6379）に負けて接続できなかったため不採用
+2. mediumTest に `forkEvery = 1` を設定し、テストクラスごとに JVM を分離する
+   - 共有 DB のスキーマは Hibernate の create-drop によりコンテキストの生成・破棄で消えるため、同一 JVM 内ではクラス間干渉を完全には防げない。JVM を分ければ干渉は構造的に起きない
+   - 単一 JVM＋ddl-auto=update 方式も試したが、実行が大幅に遅くなり干渉も解消しなかったため不採用
+3. mediumTest のタイムアウトを5分から60分に引き上げる（forkEvery で実行時間が延びるため。largeTest と同じ1時間）
 
 ## テストリスト（検証シナリオ）
 - medium全36クラスを1回で実行したとき、全件Greenとなる
