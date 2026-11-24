@@ -37,7 +37,8 @@ class NotificationTypeTest {
         .containsExactlyInAnyOrder(
             NotificationType.COMMENT_ADDED,
             NotificationType.COMMENT_DELETED,
-            NotificationType.BACKLOG_ITEM_SPLIT);
+            NotificationType.BACKLOG_ITEM_SPLIT,
+            NotificationType.BACKLOG_ITEM_SPRINT_ASSIGNMENT_CHANGED);
   }
 
   @Test
@@ -47,5 +48,7 @@ class NotificationTypeTest {
     assertThat(NotificationType.valueOf("COMMENT_DELETED")).isEqualTo(NotificationType.COMMENT_DELETED);
     assertThat(NotificationType.valueOf("BACKLOG_ITEM_SPLIT"))
         .isEqualTo(NotificationType.BACKLOG_ITEM_SPLIT);
+    assertThat(NotificationType.valueOf("BACKLOG_ITEM_SPRINT_ASSIGNMENT_CHANGED"))
+        .isEqualTo(NotificationType.BACKLOG_ITEM_SPRINT_ASSIGNMENT_CHANGED);
   }
 }
