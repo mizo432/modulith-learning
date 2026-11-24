@@ -1,12 +1,14 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
 import undecided.agiloom.sprintExecution.spi.Sprint;
+import undecided.agiloom.sprintExecution.spi.SprintCancelled;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -42,7 +44,10 @@ public class UpdateSprintCommandService {
         switch (status) {
             case ACTIVE -> sprint.start();
             case COMPLETED -> sprint.complete();
-            case CANCELLED -> sprint.cancel();
+            case CANCELLED -> {
+                sprint.cancel();
+                publishSprintCancelled(sprint);
+            }
             default -> throw new IllegalArgumentException("Invalid status: " + status);
         }
     }
@@ -60,5 +65,12 @@ public class UpdateSprintCommandService {
         // スプリント0の削除は禁止
         sprint.delete();
         sprintRepository.save(sprint);
+        publishSprintCancelled(sprint);
+    }
+
+    private void publishSprintCancelled(Sprint sprint) {
+        eventPublisher.publishEvent(
+                new SprintCancelled(
+                        sprint.getId(), sprint.getTeamId(), sprint.getSprintNumber(), LocalDateTime.now()));
     }
 }

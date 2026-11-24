@@ -21,6 +21,7 @@ import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
 import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintCancelled;
+import undecided.agiloom.sprintExecution.spi.SprintFacade;
 import undecided.agiloom.sprintExecution.spi.SprintStatus;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -36,7 +37,7 @@ class SprintCancelledSlideMediumTest {
   private static final SnowflakeId PRODUCT_ID = SnowflakeId.of(525600L);
   private static final SnowflakeId ITEM_ID = SnowflakeId.of(525701L);
 
-  @Autowired private SprintCancelledSlideListener listener;
+  @Autowired private SprintFacade sprintFacade;
   @Autowired private BacklogItemRepository backlogItemRepository;
   @Autowired private SprintRepository sprintRepository;
   @Autowired private EntityManager entityManager;
@@ -45,8 +46,12 @@ class SprintCancelledSlideMediumTest {
     return SnowflakeId.of(525600L + number);
   }
 
+  private SprintCancelledSlideListener listener;
+
   @BeforeEach
   void setUp() {
+    // @ApplicationModuleListener は非同期実行のため、検証では実リポジトリで直接生成して同期に呼ぶ
+    listener = new SprintCancelledSlideListener(backlogItemRepository, sprintFacade);
     for (int number = 1; number <= 2; number++) {
       sprintRepository.save(
           Sprint.builder()
