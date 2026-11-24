@@ -292,7 +292,9 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
     useJUnitPlatform {
         includeTags("medium")
     }
-    timeout.set(Duration.ofMinutes(5))
+    timeout.set(Duration.ofMinutes(60))
+    // Issue #737: クラスごとにJVMを分離し、共有DB・コンテナ・スキーマを介したクラス間干渉を防ぐ
+    forkEvery = 1
     dependsOn("test")
     shouldRunAfter("test")
 }
