@@ -125,6 +125,7 @@ class ScrumTeamSubsetMemberTest {
           SM_ID,
           "SM Name",
           List.of(PO_ID, SM_ID, MEMBER_ID),
+          List.of(),
           false);
 
       subset.apply(event);
@@ -150,6 +151,7 @@ class ScrumTeamSubsetMemberTest {
           SM_ID,
           "SM Name",
           List.of(PO_ID, SM_ID, MEMBER_ID),
+          List.of(),
           false);
 
       ScrumTeamSubset subset = ScrumTeamSubset.from(event);

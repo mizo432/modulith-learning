@@ -95,6 +95,7 @@ extra["superCsvVersion"] = "2.4.0"
 extra["testcontainersVersion"] = "2.0.5"
 extra["nullawayVersion"] = "0.12.13"
 extra["errorproneVersion"] = "2.43.0"
+extra["awsSdkVersion"] = "2.59.7"
 
 // Force JUnit Platform artifacts to align with JUnit 6 version
 // Spring Boot 4.1.1 manages junit-platform-launcher at 1.14.4, but JUnit 6 requires 6.x
@@ -174,6 +175,8 @@ dependencies {
     // Flyway PostgreSQLサポート
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.flywaydb:flyway-core")
+    // 帳票管理: MinIO（S3互換）へのアクセスに AWS SDK v2 の S3 クライアントを使う
+    implementation("software.amazon.awssdk:s3:${property("awsSdkVersion")}")
 }
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)

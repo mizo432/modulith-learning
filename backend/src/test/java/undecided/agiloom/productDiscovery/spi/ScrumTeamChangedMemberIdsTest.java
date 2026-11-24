@@ -50,6 +50,7 @@ class ScrumTeamChangedMemberIdsTest {
           SM_ID,
           "SM Name",
           memberIds,
+          List.of(),
           false);
 
       assertThat(event.memberEmployeeIds()).containsExactlyInAnyOrder(PO_ID, SM_ID, MEMBER_ID);

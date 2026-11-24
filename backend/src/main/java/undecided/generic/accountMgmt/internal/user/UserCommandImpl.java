@@ -3,7 +3,7 @@ package undecided.generic.accountMgmt.internal.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 import undecided.generic.accountMgmt.ChangePasswordRequest;
 import undecided.generic.accountMgmt.UserCommand;
 import com.github.mizo432.shared.exception.BusinessException;
@@ -18,7 +18,7 @@ import com.github.mizo432.shared.exception.BusinessException;
 public class UserCommandImpl implements UserCommand {
 
   private static final String AUTHORIZATION_SERVICE_URL = "http://localhost:8082";
-  private final RestTemplate restTemplate;
+  private final RestClient accountManagementRestClient;
 
   @Override
   public void changePassword(String username, ChangePasswordRequest request) {
@@ -59,7 +59,13 @@ public class UserCommandImpl implements UserCommand {
    */
   private boolean checkIfFirstLogin(String username) {
     String url = AUTHORIZATION_SERVICE_URL + "/api/auth/users/" + username + "/first-login";
-    ResponseEntity<UserStatusDto> response = restTemplate.getForEntity(url, UserStatusDto.class);
+    ResponseEntity<UserStatusDto> response =
+        accountManagementRestClient
+            .get()
+            .uri(url)
+            .retrieve()
+            .onStatus(status -> status.isError(), (req, res) -> {})
+            .toEntity(UserStatusDto.class);
 
     if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
       return response.getBody().isFirstLogin();
@@ -78,7 +84,14 @@ public class UserCommandImpl implements UserCommand {
         AUTHORIZATION_SERVICE_URL + "/api/auth/users/" + username + "/first-login-password";
     PasswordChangeDto requestDto = new PasswordChangeDto(null, newPassword);
 
-    ResponseEntity<Void> response = restTemplate.postForEntity(url, requestDto, Void.class);
+    ResponseEntity<Void> response =
+        accountManagementRestClient
+            .post()
+            .uri(url)
+            .body(requestDto)
+            .retrieve()
+            .onStatus(status -> status.isError(), (req, res) -> {})
+            .toEntity(Void.class);
 
     if (!response.getStatusCode().is2xxSuccessful()) {
       throw new BusinessException("初回ログイン時のパスワード変更に失敗しました");
@@ -97,7 +110,14 @@ public class UserCommandImpl implements UserCommand {
     String url = AUTHORIZATION_SERVICE_URL + "/api/auth/users/" + username + "/password";
     PasswordChangeDto requestDto = new PasswordChangeDto(currentPassword, newPassword);
 
-    ResponseEntity<Void> response = restTemplate.postForEntity(url, requestDto, Void.class);
+    ResponseEntity<Void> response =
+        accountManagementRestClient
+            .post()
+            .uri(url)
+            .body(requestDto)
+            .retrieve()
+            .onStatus(status -> status.isError(), (req, res) -> {})
+            .toEntity(Void.class);
 
     if (!response.getStatusCode().is2xxSuccessful()) {
       throw new BusinessException("パスワード変更に失敗しました");

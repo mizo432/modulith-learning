@@ -1,8 +1,10 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.jspecify.annotations.NonNull;
@@ -10,10 +12,14 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
+import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
 import undecided.agiloom.sprintExecution.spi.Sprint;
 import undecided.agiloom.sprintExecution.spi.SprintFacade;
-import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
-import undecided.agiloom.requirementBacklog.spi.BacklogItemStatus;
+import undecided.generic.documentMgmt.spi.Document;
+import undecided.generic.documentMgmt.spi.DocumentContent;
+import undecided.generic.documentMgmt.spi.DocumentFacade;
 import undecided.supporting.snowflake.SnowflakeId;
 
 @Service
@@ -22,17 +28,23 @@ class BacklogItemQueryService {
 
   private final BacklogItemRepository backlogItemRepository;
   private final BacklogItemCommentRepository backlogItemCommentRepository;
+  private final BacklogItemDocumentRepository backlogItemDocumentRepository;
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
+  private final DocumentFacade documentFacade;
   private final SprintFacade sprintFacade;
 
   BacklogItemQueryService(
       BacklogItemRepository backlogItemRepository,
       BacklogItemCommentRepository backlogItemCommentRepository,
+      BacklogItemDocumentRepository backlogItemDocumentRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
+      DocumentFacade documentFacade,
       SprintFacade sprintFacade) {
     this.backlogItemRepository = backlogItemRepository;
     this.backlogItemCommentRepository = backlogItemCommentRepository;
+    this.backlogItemDocumentRepository = backlogItemDocumentRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
+    this.documentFacade = documentFacade;
     this.sprintFacade = sprintFacade;
   }
 
@@ -106,24 +118,26 @@ class BacklogItemQueryService {
             .findById(backlogItemId)
             .orElseThrow(
                 () -> new IllegalArgumentException("BacklogItem not found: " + backlogItemId));
-    ScrumTeamSubset scrumTeam =
+    ScrumTeamSubset scrumTeamSubset =
         scrumTeamSubsetRepository
             .findById(backlogItem.getScrumTeamId())
             .orElseThrow(
                 () ->
                     new IllegalArgumentException(
                         "ScrumTeam not found: " + backlogItem.getScrumTeamId()));
-    if (!scrumTeam.isTeamMember(actorEmployeeId)) {
+    if (!scrumTeamSubset.isTeamMember(actorEmployeeId)) {
       throw new BacklogItemPermissionDeniedException(
           "Only team members can view assignable sprints for a backlog item");
     }
     List<Sprint> window = sprintFacade.findAssignableSprints(backlogItem.getScrumTeamId());
-    List<AssignableSprintResponse> responses = new java.util.ArrayList<>();
+    List<AssignableSprintResponse> responses = new ArrayList<>();
     for (Sprint sprint : window) {
-      responses.add(toAssignableSprintResponse(sprint, sprint.getId().equals(backlogItem.getSprintId())));
+      responses.add(
+          toAssignableSprintResponse(sprint, sprint.getId().equals(backlogItem.getSprintId())));
     }
     SnowflakeId assignedSprintId = backlogItem.getSprintId();
-    if (assignedSprintId != null && !assignedSprintId.isEmpty()
+    if (assignedSprintId != null
+        && !assignedSprintId.isEmpty()
         && window.stream().noneMatch(sprint -> sprint.getId().equals(assignedSprintId))) {
       sprintFacade
           .findById(assignedSprintId)
@@ -141,5 +155,124 @@ class BacklogItemQueryService {
         sprint.getStartDate(),
         sprint.getEndDate(),
         assigned);
+  }
+
+  /**
+   * バックログアイテムの添付ファイル一覧を取得します（詳細表示用、権限チェックなし）。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @return 添付ファイル一覧
+   */
+  List<BacklogItemAttachmentResponse> findAttachments(@NonNull SnowflakeId backlogItemId) {
+    return backlogItemDocumentRepository.findByBacklogItemId(backlogItemId).stream()
+        .map(
+            linkage ->
+                documentFacade
+                    .findById(linkage.getDocumentId())
+                    .map(
+                        document ->
+                            BacklogItemAttachmentResponse.from(document, linkage.getSeriesId()))
+                    .orElse(null))
+        .filter(Objects::nonNull)
+        .toList();
+  }
+
+  /**
+   * バックログアイテムの添付ファイル一覧を取得します。
+   *
+   * <p>閲覧できるのはチームメンバーとステークホルダーのみです。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @param actorEmployeeId 操作者の従業員 ID
+   * @return 添付ファイル一覧
+   * @throws BacklogItemPermissionDeniedException メンバーでもステークホルダーでもない場合
+   */
+  List<BacklogItemAttachmentResponse> findAttachments(
+      @NonNull SnowflakeId backlogItemId, @Nullable SnowflakeId actorEmployeeId) {
+    BacklogItem backlogItem =
+        backlogItemRepository
+            .findById(backlogItemId)
+            .orElseThrow(
+                () -> new IllegalArgumentException("BacklogItem not found: " + backlogItemId));
+    ScrumTeamSubset scrumTeamSubset =
+        scrumTeamSubsetRepository
+            .findById(backlogItem.getScrumTeamId())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "ScrumTeam not found: " + backlogItem.getScrumTeamId()));
+    if (!scrumTeamSubset.isTeamMember(actorEmployeeId)
+        && !scrumTeamSubset.isStakeholder(actorEmployeeId)) {
+      throw new BacklogItemPermissionDeniedException(
+          "添付ファイルを閲覧できるのはチームメンバーとステークホルダーのみです");
+    }
+    return findAttachments(backlogItemId);
+  }
+
+  /**
+   * 添付ファイルをダウンロードします。
+   *
+   * <p>ダウンロードできるのはチームメンバーとステークホルダーのみです。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @param documentId 帳票 ID
+   * @param actorEmployeeId 操作者の従業員 ID
+   * @return ダウンロード内容
+   * @throws BacklogItemPermissionDeniedException メンバーでもステークホルダーでもない場合
+   */
+  DocumentContent downloadAttachment(
+      @NonNull SnowflakeId backlogItemId,
+      @NonNull SnowflakeId documentId,
+      @Nullable SnowflakeId actorEmployeeId) {
+    findAttachments(backlogItemId, actorEmployeeId);
+    resolveLinkage(backlogItemId, documentId);
+    return documentFacade.download(documentId);
+  }
+
+  /**
+   * 添付ファイルのバージョン一覧を取得します（バージョン昇順）。
+   *
+   * <p>閲覧できるのはチームメンバーとステークホルダーのみです。指定した帳票が属する系列の
+   * 全バージョンを返します。
+   *
+   * @param backlogItemId バックログアイテム ID
+   * @param documentId 系列に属する帳票 ID（どのバージョンでもよい）
+   * @param actorEmployeeId 操作者の従業員 ID
+   * @return バージョン一覧
+   * @throws BacklogItemPermissionDeniedException メンバーでもステークホルダーでもない場合
+   */
+  List<BacklogItemAttachmentResponse> findAttachmentVersions(
+      @NonNull SnowflakeId backlogItemId,
+      @NonNull SnowflakeId documentId,
+      @Nullable SnowflakeId actorEmployeeId) {
+    findAttachments(backlogItemId, actorEmployeeId);
+    BacklogItemDocument linkage = resolveLinkage(backlogItemId, documentId);
+    return documentFacade.findBySeriesId(linkage.getSeriesId()).stream()
+        .sorted(Comparator.comparingInt(Document::getVersion))
+        .map(document -> BacklogItemAttachmentResponse.from(document, linkage.getSeriesId()))
+        .toList();
+  }
+
+  /**
+   * 帳票 ID から添付リンケージを解決します。
+   *
+   * <p>リンケージは最新バージョンの帳票 ID を保持するため、旧バージョンの ID は帳票の系列 ID
+   * 経由で解決します。
+   */
+  private BacklogItemDocument resolveLinkage(SnowflakeId backlogItemId, SnowflakeId documentId) {
+    Optional<BacklogItemDocument> byDocument =
+        backlogItemDocumentRepository.findByBacklogItemIdAndDocumentId(backlogItemId, documentId);
+    if (byDocument.isPresent()) {
+      return byDocument.get();
+    }
+    return documentFacade
+        .findById(documentId)
+        .map(Document::getSeriesId)
+        .filter(Objects::nonNull)
+        .flatMap(
+            seriesId ->
+                backlogItemDocumentRepository.findByBacklogItemIdAndSeriesId(
+                    backlogItemId, seriesId))
+        .orElseThrow(() -> new IllegalArgumentException("添付が存在しません: " + documentId));
   }
 }

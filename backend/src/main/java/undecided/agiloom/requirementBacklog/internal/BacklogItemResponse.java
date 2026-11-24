@@ -1,6 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +32,5 @@ class BacklogItemResponse {
   private Integer storyPoint;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private List<BacklogItemAttachmentResponse> attachments;
 }

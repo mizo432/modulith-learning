@@ -22,6 +22,20 @@ export interface BacklogItem {
   qualityCategoryLabel?: string;
   createdAt: string;
   updatedAt?: string;
+  /** 添付ファイル一覧（詳細取得時に含まれる）。 */
+  attachments?: BacklogItemAttachment[];
+}
+
+export interface BacklogItemAttachment {
+  documentId: string;
+  seriesId: string;
+  fileName: string;
+  contentType: string;
+  fileSize: number;
+  version: number;
+  uploaderEmployeeId?: string;
+  uploaderName: string;
+  createdAt: string;
 }
 
 export interface BacklogItemComment {
@@ -232,6 +246,65 @@ const backlogItemService = {
     request: EstimateBacklogItemRequest,
   ): Promise<BacklogItem> {
     const response = await api.patch(`/v1/backlog-items/${backlogItemId}/estimate`, request);
+    return response.data;
+  },
+
+  async getAttachments(
+    backlogItemId: string,
+    actorEmployeeId: string,
+  ): Promise<BacklogItemAttachment[]> {
+    const response = await api.get(`/v1/backlog-items/${backlogItemId}/attachments`, {
+      params: { actorEmployeeId },
+    });
+    return response.data;
+  },
+
+  async uploadAttachment(
+    backlogItemId: string,
+    file: File,
+    uploaderEmployeeId?: string,
+    uploaderName?: string,
+    seriesId?: string,
+  ): Promise<BacklogItemAttachment> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (uploaderEmployeeId) {
+      formData.append('uploaderEmployeeId', uploaderEmployeeId);
+    }
+    if (uploaderName) {
+      formData.append('uploaderName', uploaderName);
+    }
+    if (seriesId) {
+      formData.append('seriesId', seriesId);
+    }
+    const response = await api.post(`/v1/backlog-items/${backlogItemId}/attachments`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  async deleteAttachment(
+    backlogItemId: string,
+    documentId: string,
+    actorEmployeeId: string,
+  ): Promise<void> {
+    await api.delete(`/v1/backlog-items/${backlogItemId}/attachments/${documentId}`, {
+      params: { actorEmployeeId },
+    });
+  },
+
+  async downloadAttachment(
+    backlogItemId: string,
+    documentId: string,
+    actorEmployeeId: string,
+  ): Promise<Blob> {
+    const response = await api.get(
+      `/v1/backlog-items/${backlogItemId}/attachments/${documentId}/download`,
+      {
+        params: { actorEmployeeId },
+        responseType: 'blob',
+      },
+    );
     return response.data;
   },
 };

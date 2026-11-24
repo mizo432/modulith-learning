@@ -183,4 +183,69 @@ describe('backlogItemService', () => {
       expect(result).toEqual({ id: '100' });
     });
   });
+
+  describe('添付ファイル', () => {
+    const mockAttachment = {
+      documentId: '200',
+      seriesId: '300',
+      fileName: '設計書.pdf',
+      contentType: 'application/pdf',
+      fileSize: 2048,
+      version: 1,
+      uploaderEmployeeId: 'emp-1',
+      uploaderName: 'メンバー',
+      createdAt: '2026-01-02T10:00:00',
+    };
+
+    it('getAttachments を呼んだとき、actorEmployeeId をクエリに付けて一覧が返される', async () => {
+      mockGet.mockResolvedValue({ data: [mockAttachment] });
+
+      const result = await backlogItemService.getAttachments('100', 'emp-1');
+
+      expect(mockGet).toHaveBeenCalledWith('/v1/backlog-items/100/attachments', {
+        params: { actorEmployeeId: 'emp-1' },
+      });
+      expect(result).toEqual([mockAttachment]);
+    });
+
+    it('uploadAttachment を呼んだとき、FormData で送信される', async () => {
+      mockPost.mockResolvedValue({ data: mockAttachment });
+      const file = new File(['content'], '設計書.pdf', { type: 'application/pdf' });
+
+      const result = await backlogItemService.uploadAttachment('100', file, 'emp-1', 'メンバー');
+
+      expect(mockPost).toHaveBeenCalledTimes(1);
+      const [url, formData, config] = mockPost.mock.calls[0];
+      expect(url).toBe('/v1/backlog-items/100/attachments');
+      expect(formData).toBeInstanceOf(FormData);
+      expect(formData.get('file')).toBe(file);
+      expect(formData.get('uploaderEmployeeId')).toBe('emp-1');
+      expect(formData.get('uploaderName')).toBe('メンバー');
+      expect(config).toEqual({ headers: { 'Content-Type': 'multipart/form-data' } });
+      expect(result).toEqual(mockAttachment);
+    });
+
+    it('deleteAttachment を呼んだとき、actorEmployeeId をクエリに付けて DELETE される', async () => {
+      mockDelete.mockResolvedValue({});
+
+      await backlogItemService.deleteAttachment('100', '200', 'emp-1');
+
+      expect(mockDelete).toHaveBeenCalledWith('/v1/backlog-items/100/attachments/200', {
+        params: { actorEmployeeId: 'emp-1' },
+      });
+    });
+
+    it('downloadAttachment を呼んだとき、blob で取得しデータが返される', async () => {
+      const blob = new Blob(['content'], { type: 'application/pdf' });
+      mockGet.mockResolvedValue({ data: blob });
+
+      const result = await backlogItemService.downloadAttachment('100', '200', 'emp-1');
+
+      expect(mockGet).toHaveBeenCalledWith('/v1/backlog-items/100/attachments/200/download', {
+        params: { actorEmployeeId: 'emp-1' },
+        responseType: 'blob',
+      });
+      expect(result).toBe(blob);
+    });
+  });
 });

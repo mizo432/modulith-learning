@@ -36,7 +36,7 @@ class BacklogItemQueryServiceAssignableSprintsTest {
   private final SprintFacade sprintFacade = mock(SprintFacade.class);
   private final BacklogItemQueryService service =
       new BacklogItemQueryService(
-          backlogItemRepository, null, scrumTeamSubsetRepository, sprintFacade);
+          backlogItemRepository, null, null, scrumTeamSubsetRepository, null, sprintFacade);
 
   private Sprint sprint(SnowflakeId id, int number, SprintStatus status) {
     return Sprint.builder()

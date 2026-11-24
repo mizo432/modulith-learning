@@ -93,6 +93,7 @@ class ScrumTeamMigrationMediumTest {
               "product_id",
               "sm_employee_id",
               "sm_name",
+              "stakeholder_employee_ids",
               "updated_at");
     }
 

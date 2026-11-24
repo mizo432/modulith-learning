@@ -3,11 +3,13 @@ package undecided;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.modulith.Modulithic;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -21,7 +23,10 @@ import com.github.mizo432.shared.application.ApplicationInfoInitializer;
  * アプリケーション名やサーバーポートなど、アプリケーション固有の情報を初期化します。
  */
 @SpringBootApplication(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
-@ComponentScan(basePackages = {"undecided", "com.github.mizo432.shared"})
+@ComponentScan(
+    basePackages = {"undecided", "com.github.mizo432.shared"},
+    excludeFilters =
+        @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class))
 @EntityScan(basePackages = {"undecided", "com.github.mizo432.shared"})
 @EnableJpaRepositories(basePackages = {"undecided", "com.github.mizo432.shared"})
 @Modulithic(additionalPackages = "com.github.mizo432.shared")

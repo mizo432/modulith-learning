@@ -109,4 +109,22 @@ public class UpdateScrumTeamCommandService {
 
     scrumTeam.setMemberEmployeeIds(unionedList);
   }
+
+  /**
+   * ステークホルダーの従業員IDリストを更新します。
+   *
+   * <p>ステークホルダーは組織ユニットに所属しない従業員のため、メンバーとの union は行いません。
+   *
+   * @param id スクラムチームID
+   * @param stakeholderEmployeeIds ステークホルダーの従業員IDリスト
+   */
+  public void updateStakeholders(
+      @NonNull SnowflakeId id, @NonNull List<SnowflakeId> stakeholderEmployeeIds) {
+    ScrumTeam scrumTeam =
+        scrumTeamRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
+
+    scrumTeam.setStakeholderEmployeeIds(stakeholderEmployeeIds);
+  }
 }
