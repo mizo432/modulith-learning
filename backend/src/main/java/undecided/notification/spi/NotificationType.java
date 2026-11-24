@@ -13,5 +13,8 @@ public enum NotificationType {
   COMMENT_DELETED,
 
   /** バックログアイテムが分割された通知 */
-  BACKLOG_ITEM_SPLIT
+  BACKLOG_ITEM_SPLIT,
+
+  /** バックログアイテムのスプリント割り当てが変更された通知 */
+  BACKLOG_ITEM_SPRINT_ASSIGNMENT_CHANGED
 }
