@@ -2417,6 +2417,7 @@ describe('BacklogItemDetail スプリント割り当て（Issue #525）', () => 
     setAuthMock();
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockEstimatedItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
     (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
       id: 'team-1',
       productId: 'product-1',
