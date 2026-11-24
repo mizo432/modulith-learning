@@ -2,6 +2,7 @@ package undecided.agiloom.sprintExecution.internal.command;
 
 import java.time.LocalDate;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import undecided.agiloom.sprintExecution.internal.SprintRepository;
@@ -14,9 +15,12 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class UpdateSprintCommandService {
 
     private final SprintRepository sprintRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public UpdateSprintCommandService(SprintRepository sprintRepository) {
+    public UpdateSprintCommandService(
+            SprintRepository sprintRepository, ApplicationEventPublisher eventPublisher) {
         this.sprintRepository = sprintRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public void execute(@NonNull UpdateSprintCommand command) {
