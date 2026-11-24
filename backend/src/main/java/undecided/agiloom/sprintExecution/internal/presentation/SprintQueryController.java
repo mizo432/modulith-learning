@@ -66,7 +66,16 @@ public class SprintQueryController {
      */
     @GetMapping("/{id}/capacity")
     public SprintCapacityResponse getSprintCapacity(@PathVariable @NotNull String id) {
-        throw new UnsupportedOperationException("not implemented");
+        SnowflakeId sprintId = SnowflakeId.of(Long.parseLong(id));
+        SprintCapacity capacity = sprintCapacityQueryService.getCapacity(sprintId);
+        return SprintCapacityResponse.builder()
+                .sprintId(capacity.sprintId().value().toString())
+                .businessDays(capacity.businessDays())
+                .velocityPerBusinessDay(capacity.velocityPerBusinessDay())
+                .assignablePoints(capacity.assignablePoints())
+                .assignedPoints(capacity.assignedPoints())
+                .overAllocated(capacity.overAllocated())
+                .build();
     }
 
     SprintResponse toResponse(Sprint sprint) {
