@@ -87,6 +87,7 @@ const BacklogItemDetail: React.FC = () => {
   const [comments, setComments] = useState<BacklogItemComment[]>([]);
   const [attachments, setAttachments] = useState<BacklogItemAttachment[]>([]);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [revertDialogOpen, setRevertDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -409,6 +410,24 @@ const BacklogItemDetail: React.FC = () => {
     }
   };
 
+  // Accepted状態へ戻す（Issue #522）。ストーリーポイントはサーバー側でクリアされる
+  const handleRevertToAccepted = async () => {
+    if (!backlogItemId) return;
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await backlogItemService.changeStatus(backlogItemId, 'ACCEPTED', auth.employeeId ?? '');
+      setRevertDialogOpen(false);
+      setSuccessMessage('受入済み状態に戻しました。');
+      // 再取得して状態変化を反映
+      await load();
+    } catch (err: any) {
+      console.error('Failed to change status to Accepted:', err);
+      setRevertDialogOpen(false);
+      setError(err?.response?.data?.message ?? err?.message ?? '状態遷移に失敗しました。');
+    }
+  };
+
   // スプリント割り当てセクションの表示条件（ESTIMATED かつチームメンバーのみ。Issue #525）
   const showSprintAssignmentSection = isTeamMember && item?.status === 'ESTIMATED';
 
@@ -627,6 +646,19 @@ const BacklogItemDetail: React.FC = () => {
           </Box>
         )}
 
+        {/* Acceptedに戻すボタン（Issue #522）：READY状態かつチームメンバーのみ表示 */}
+        {isTeamMember && item?.status === 'READY' && (
+          <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={() => setRevertDialogOpen(true)}
+            >
+              Acceptedに戻す
+            </Button>
+          </Box>
+        )}
+
         {/* StoryPoint見積もりセクション（Issue #516） */}
         {showStoryPointSection && (
           <Box sx={{mt: 3, pt: 2, borderTop: '1px solid #e0e0e0'}}>
@@ -769,6 +801,21 @@ const BacklogItemDetail: React.FC = () => {
           </Box>
         )}
       </Paper>
+
+      <Dialog open={revertDialogOpen} onClose={() => setRevertDialogOpen(false)}>
+        <DialogTitle>Acceptedに戻しますか</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Acceptedに戻すと、設定されているストーリーポイントはクリアされます。再度見積もりが必要になります。
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setRevertDialogOpen(false)}>キャンセル</Button>
+          <Button variant="contained" color="warning" onClick={handleRevertToAccepted}>
+            戻す
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}>
         <DialogTitle>ファイルを添付</DialogTitle>

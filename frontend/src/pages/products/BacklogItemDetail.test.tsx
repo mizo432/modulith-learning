@@ -2647,3 +2647,115 @@ describe('BacklogItemDetail オーバーアロケーション警告（Issue #531
     expect(screen.queryByText('スプリント割り当てに失敗しました。')).not.toBeInTheDocument();
   });
 });
+
+describe('BacklogItemDetail Acceptedに戻す（Issue #522）', () => {
+  const mockReadyItem = {
+    id: 'item-100',
+    scrumTeamId: 'team-1',
+    title: '準備完了アイテム',
+    description: 'テスト説明',
+    status: 'READY',
+    statusLabel: '準備完了',
+    priority: 1,
+    creatorName: 'テストユーザー',
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T01:00:00Z',
+    value: 50,
+    storyPoint: 5,
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    setAuthMock();
+    (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockReadyItem);
+    (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
+    (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+      id: 'team-1',
+      productId: 'product-1',
+      name: 'テストチーム',
+      poEmployeeId: 'emp-1',
+      smEmployeeId: 'emp-2',
+      memberEmployeeIds: ['emp-1', 'emp-2'],
+    });
+  });
+
+  it('Ready状態のアイテムをチームメンバーが表示したとき、「Acceptedに戻す」ボタンが表示される', async () => {
+    renderBacklogItemDetail();
+    await waitFor(() => {
+      expect(screen.getByText('準備完了アイテム')).toBeInTheDocument();
+    });
+    expect(screen.getByRole('button', { name: 'Acceptedに戻す' })).toBeInTheDocument();
+  });
+
+  it('Ready状態のアイテムをチームメンバーでないユーザーが表示したとき、「Acceptedに戻す」ボタンが表示されない', async () => {
+    setAuthMock({ employeeId: 'emp-9' });
+    renderBacklogItemDetail();
+    await waitFor(() => {
+      expect(screen.getByText('準備完了アイテム')).toBeInTheDocument();
+    });
+    expect(screen.queryByRole('button', { name: 'Acceptedに戻す' })).not.toBeInTheDocument();
+  });
+
+  it('「Acceptedに戻す」ボタンを押したとき、ストーリーポイントがクリアされる旨の確認ダイアログが表示される', async () => {
+    const user = userEvent.setup();
+    renderBacklogItemDetail();
+    await waitFor(() => {
+      expect(screen.getByText('準備完了アイテム')).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('button', { name: 'Acceptedに戻す' }));
+    expect(await screen.findByText(/ストーリーポイントはクリアされます/)).toBeInTheDocument();
+  });
+
+  it('確認ダイアログで確定したとき、状態変更APIがACCEPTEDで呼ばれ、成功後に詳細が再読み込みされる', async () => {
+    const user = userEvent.setup();
+    (backlogItemService.changeStatus as jest.Mock).mockResolvedValue({
+      ...mockReadyItem,
+      status: 'ACCEPTED',
+      statusLabel: '承認済み',
+      storyPoint: null,
+    });
+    renderBacklogItemDetail();
+    await waitFor(() => {
+      expect(screen.getByText('準備完了アイテム')).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('button', { name: 'Acceptedに戻す' }));
+    await user.click(await screen.findByRole('button', { name: '戻す' }));
+    await waitFor(() => {
+      expect(backlogItemService.changeStatus).toHaveBeenCalledWith('item-100', 'ACCEPTED', 'emp-1');
+    });
+    await waitFor(() => {
+      expect(screen.getByText('受入済み状態に戻しました。')).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect((backlogItemService.getBacklogItem as jest.Mock).mock.calls.length).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  it('確認ダイアログでキャンセルしたとき、状態変更APIは呼ばれない', async () => {
+    const user = userEvent.setup();
+    renderBacklogItemDetail();
+    await waitFor(() => {
+      expect(screen.getByText('準備完了アイテム')).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('button', { name: 'Acceptedに戻す' }));
+    await user.click(await screen.findByRole('button', { name: 'キャンセル' }));
+    expect(backlogItemService.changeStatus).not.toHaveBeenCalled();
+  });
+
+  it('状態変更APIが失敗したとき、エラーメッセージが表示される', async () => {
+    const user = userEvent.setup();
+    (backlogItemService.changeStatus as jest.Mock).mockRejectedValue({
+      response: { data: { message: '権限がありません' } },
+    });
+    renderBacklogItemDetail();
+    await waitFor(() => {
+      expect(screen.getByText('準備完了アイテム')).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('button', { name: 'Acceptedに戻す' }));
+    await user.click(await screen.findByRole('button', { name: '戻す' }));
+    await waitFor(() => {
+      expect(screen.getByText('権限がありません')).toBeInTheDocument();
+    });
+  });
+});

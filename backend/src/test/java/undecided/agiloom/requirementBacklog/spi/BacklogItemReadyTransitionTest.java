@@ -95,17 +95,6 @@ class BacklogItemReadyTransitionTest {
     }
 
     @Test
-    @DisplayName("READY状態からACCEPTEDへ遷移できないこと")
-    void shouldNotTransitionFromReadyToAccepted() {
-      BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
-
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED))
-          .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
     @DisplayName("READY状態からFROZENへ遷移できないこと")
     void shouldNotTransitionFromReadyToFrozen() {
       BacklogItem item = acceptedItem();

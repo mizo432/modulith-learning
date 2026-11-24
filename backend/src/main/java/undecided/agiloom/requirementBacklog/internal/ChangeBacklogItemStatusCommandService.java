@@ -73,6 +73,12 @@ class ChangeBacklogItemStatusCommandService {
         throw new BacklogItemPermissionDeniedException(
             "Only team members can revert a backlog item from ready to suggested");
       }
+    } else if (currentStatus == BacklogItemStatus.READY && targetStatus == BacklogItemStatus.ACCEPTED) {
+      // READY → ACCEPTED（逆遷移）はチームメンバー全員が許可（Issue #717 の決定）
+      if (!scrumTeam.isTeamMember(command.getActorEmployeeId())) {
+        throw new BacklogItemPermissionDeniedException(
+            "Only team members can revert a backlog item from ready to accepted");
+      }
     } else if (currentStatus == BacklogItemStatus.READY && targetStatus == BacklogItemStatus.ESTIMATED) {
       // READY → ESTIMATED はチームメンバー全員が許可
       if (!scrumTeam.isTeamMember(command.getActorEmployeeId())) {

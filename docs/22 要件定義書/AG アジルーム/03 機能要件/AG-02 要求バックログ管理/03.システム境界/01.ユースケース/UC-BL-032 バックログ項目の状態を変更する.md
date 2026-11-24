@@ -42,7 +42,7 @@
 ### 4b. 権限がない場合
 - SUGGESTED→ACCEPTED/FROZEN を試みたがPO/SMでない場合
 - FROZEN→SUGGESTED を試みたがPOでない場合
-- ACCEPTED→READY、READY→SUGGESTED/ESTIMATED、ESTIMATED→READY、ESTIMATED→IN_PROGRESS、IN_PROGRESS→DONE を試みたがチームメンバーでない場合
+- ACCEPTED→READY、READY→SUGGESTED/ACCEPTED/ESTIMATED、ESTIMATED→READY、ESTIMATED→IN_PROGRESS、IN_PROGRESS→DONE を試みたがチームメンバーでない場合
 - システムが権限エラーメッセージを表示する
 - 状態は変更されない
 - ユースケースは終了する
@@ -64,6 +64,7 @@
 | FROZEN → SUGGESTED | POのみ | - |
 | ACCEPTED → READY | チームメンバー全員 | - |
 | READY → SUGGESTED | チームメンバー全員 | - |
+| READY → ACCEPTED | チームメンバー全員 | StoryPointはクリアされる |
 | READY → ESTIMATED | チームメンバー全員 | StoryPointが設定されていること |
 | ESTIMATED → READY | チームメンバー全員 | - |
 | ESTIMATED → IN_PROGRESS | チームメンバー全員 | スプリントに割り当てられていること |
