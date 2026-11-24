@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import BacklogItemDetail from './BacklogItemDetail';
 import backlogItemService from '../../services/backlogItemService';
 import scrumTeamService from '../../services/scrumTeamService';
+import sprintService from '../../services/sprintService';
 
 // Mock react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -76,6 +77,20 @@ jest.mock('../../services/scrumTeamService', () => ({
   default: {
     getScrumTeamById: jest.fn(),
   },
+}));
+
+// Mock sprintService
+jest.mock('../../services/sprintService', () => ({
+  __esModule: true,
+  default: {
+    getSprintCapacity: jest.fn(),
+  },
+}));
+
+// Mock ToastContext — showToast の呼び出しを検証する
+const mockShowToast = jest.fn();
+jest.mock('../../contexts/ToastContext', () => ({
+  useToast: () => ({ showToast: mockShowToast }),
 }));
 
 const mockBacklogItem = {
@@ -2507,5 +2522,128 @@ describe('BacklogItemDetail スプリント割り当て（Issue #525）', () => 
     await waitFor(() => {
       expect(backlogItemService.unassignSprint).toHaveBeenCalledWith('item-100', 'emp-1');
     });
+  });
+});
+
+describe('BacklogItemDetail オーバーアロケーション警告（Issue #531/#534）', () => {
+  const mockEstimatedItem = {
+    id: 'item-100',
+    scrumTeamId: 'team-1',
+    title: '見積もり済みアイテム',
+    description: 'テスト説明',
+    status: 'ESTIMATED',
+    statusLabel: '見積もり済み',
+    priority: 1,
+    creatorName: 'テストユーザー',
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T01:00:00Z',
+    value: 50,
+    storyPoint: 5,
+  };
+
+  const mockAssignableSprints = [
+    {
+      sprintId: 'sprint-1',
+      sprintNumber: 1,
+      title: 'Sprint 1',
+      status: 'ACTIVE',
+      startDate: '2026-11-16',
+      endDate: '2026-11-27',
+      assigned: false,
+    },
+    {
+      sprintId: 'sprint-2',
+      sprintNumber: 2,
+      title: 'Sprint 2',
+      status: 'PLANNED',
+      startDate: '2026-11-30',
+      endDate: '2026-12-11',
+      assigned: false,
+    },
+  ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    setAuthMock();
+    (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockEstimatedItem);
+    (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
+    (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
+      id: 'team-1',
+      productId: 'product-1',
+      name: 'テストチーム',
+      poEmployeeId: 'emp-1',
+      smEmployeeId: 'emp-2',
+      memberEmployeeIds: ['emp-1', 'emp-2'],
+    });
+    (backlogItemService.getAssignableSprints as jest.Mock).mockResolvedValue(mockAssignableSprints);
+    (backlogItemService.assignSprint as jest.Mock).mockResolvedValue({
+      ...mockEstimatedItem,
+      sprintId: 'sprint-2',
+    });
+    (sprintService.getSprintCapacity as jest.Mock).mockResolvedValue({
+      sprintId: 'sprint-2',
+      businessDays: 10,
+      velocityPerBusinessDay: 5,
+      assignablePoints: 50,
+      assignedPoints: 40,
+      overAllocated: false,
+    });
+  });
+
+  const assignToSprint2 = async () => {
+    const user = userEvent.setup();
+    renderBacklogItemDetail();
+    await waitFor(() => {
+      expect(screen.getByText('スプリント割り当て')).toBeInTheDocument();
+    });
+    const select = await screen.findByRole('combobox', { name: 'スプリント' });
+    await user.click(select);
+    const option = await screen.findByRole('option', { name: 'Sprint 2：Sprint 2' });
+    await user.click(option);
+    await user.click(screen.getByRole('button', { name: 'スプリントに割り当て' }));
+    await waitFor(() => {
+      expect(backlogItemService.assignSprint).toHaveBeenCalledWith('item-100', 'sprint-2', 'emp-1');
+    });
+  };
+
+  it('割り当て後の容量が超過しているとき、超過分を含む警告トーストが表示される', async () => {
+    (sprintService.getSprintCapacity as jest.Mock).mockResolvedValue({
+      sprintId: 'sprint-2',
+      businessDays: 10,
+      velocityPerBusinessDay: 5,
+      assignablePoints: 50,
+      assignedPoints: 55,
+      overAllocated: true,
+    });
+    await assignToSprint2();
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith(
+        '割り当て可能ポイントを超えています（5ポイント超過）',
+        'warning'
+      );
+    });
+  });
+
+  it('割り当て後の容量が超過していないとき、警告トーストは表示されない', async () => {
+    await assignToSprint2();
+    await waitFor(() => {
+      expect(sprintService.getSprintCapacity).toHaveBeenCalledWith('sprint-2');
+    });
+    await waitFor(() => {
+      expect(screen.getByText('スプリントへ割り当てました。')).toBeInTheDocument();
+    });
+    expect(mockShowToast).not.toHaveBeenCalled();
+  });
+
+  it('容量取得に失敗したとき、割り当ては成功したままで警告トーストは表示されない', async () => {
+    (sprintService.getSprintCapacity as jest.Mock).mockRejectedValue(new Error('network error'));
+    await assignToSprint2();
+    expect(sprintService.getSprintCapacity).toHaveBeenCalledWith('sprint-2');
+    await waitFor(() => {
+      expect(screen.getByText('スプリントへ割り当てました。')).toBeInTheDocument();
+    });
+    expect(mockShowToast).not.toHaveBeenCalled();
+    expect(screen.queryByText('スプリント割り当てに失敗しました。')).not.toBeInTheDocument();
   });
 });
