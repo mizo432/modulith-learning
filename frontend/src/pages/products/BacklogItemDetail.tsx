@@ -39,11 +39,13 @@ import backlogItemService, {
   BacklogItemStatus,
 } from '../../services/backlogItemService';
 import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
+import sprintService from '../../services/sprintService';
 import {valueToColor, VALUE_MIN, VALUE_MAX, valueToQualityCategory, qualityCategoryToLabel, qualityCategoryToTooltip, QUALITY_CATEGORY_STYLES} from '../../utils/valueColor';
 import {STORY_POINT_VALUES, getStoryPointDescription} from '../../utils/storyPoints';
 import {useIsVisible} from '../../hooks/useIsVisible';
 import {useAutoRefresh} from '../../hooks/useAutoRefresh';
 import {useAuth} from '../../contexts/AuthContext';
+import {useToast} from '../../contexts/ToastContext';
 import {MarkdownComment} from '../../components/MarkdownComment';
 
 const REFRESH_INTERVAL = 30000; // 30秒
@@ -78,6 +80,7 @@ const BacklogItemDetail: React.FC = () => {
   }>();
   const navigate = useNavigate();
   const auth = useAuth();
+  const {showToast} = useToast();
 
   const [item, setItem] = useState<BacklogItem | null>(null);
   const [team, setTeam] = useState<ScrumTeam | null>(null);
@@ -436,6 +439,17 @@ const BacklogItemDetail: React.FC = () => {
     setSuccessMessage(null);
     try {
       await backlogItemService.assignSprint(backlogItemId, selectedSprintId, auth.employeeId ?? '');
+      // 割り当て後の容量超過を警告トーストで知らせる（Issue #531/#534）。
+      // 容量取得の失敗は割り当ての成功に影響させない
+      try {
+        const capacity = await sprintService.getSprintCapacity(selectedSprintId);
+        if (capacity.overAllocated) {
+          const excess = capacity.assignedPoints - capacity.assignablePoints;
+          showToast(`割り当て可能ポイントを超えています（${excess}ポイント超過）`, 'warning');
+        }
+      } catch (capacityErr) {
+        console.error('Failed to load sprint capacity:', capacityErr);
+      }
       setSuccessMessage('スプリントへ割り当てました。');
       await load();
     } catch (err: any) {
