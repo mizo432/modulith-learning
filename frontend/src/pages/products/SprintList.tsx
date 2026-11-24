@@ -34,6 +34,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import sprintService, {Sprint, isSprint0} from '../../services/sprintService';
+import SprintCapacityCell from '../../components/SprintCapacityCell';
 
 // Status chip color mapping
 const getStatusChip = (status: Sprint['status']) => {
@@ -276,6 +277,7 @@ const SprintList: React.FC = () => {
                             ステータス
                           </TableSortLabel>
                         </TableCell>
+                        <TableCell>容量</TableCell>
                         <TableCell align="right">操作</TableCell>
                       </TableRow>
                     </TableHead>
@@ -330,6 +332,9 @@ const SprintList: React.FC = () => {
                                 ) : '未設定'}
                               </TableCell>
                               <TableCell>{getStatusChip(sprint.status)}</TableCell>
+                              <TableCell>
+                                {sprintZero ? '-' : <SprintCapacityCell sprintId={sprint.id}/>}
+                              </TableCell>
                               <TableCell align="right">
                                 <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                                   {/* Date edit button - enabled for Sprint 0 */}

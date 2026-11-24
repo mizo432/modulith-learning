@@ -65,6 +65,15 @@ export interface UpdateSprintSettingsRequest {
   endDayOfWeek: EndDayOfWeek;
 }
 
+export interface SprintCapacity {
+  sprintId: string;
+  businessDays: number;
+  velocityPerBusinessDay: number;
+  assignablePoints: number;
+  assignedPoints: number;
+  overAllocated: boolean;
+}
+
 export interface CalculateEndDateResponse {
   startDate: string;
   endDate: string;
@@ -134,6 +143,12 @@ const sprintService = {
       backlogItem: Partial<SprintBacklog>
   ): Promise<SprintBacklog> => {
     const response = await api.put(`/sprint-backlogs/${backlogId}`, backlogItem);
+    return response.data;
+  },
+
+  // Get sprint capacity (velocity-based assignable points and assigned points)
+  getSprintCapacity: async (id: string): Promise<SprintCapacity> => {
+    const response = await api.get(`/v1/sprints/${id}/capacity`);
     return response.data;
   },
 
