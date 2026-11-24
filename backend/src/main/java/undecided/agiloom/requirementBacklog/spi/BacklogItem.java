@@ -184,6 +184,7 @@ public class BacklogItem {
    *   <li>SUGGESTED → FROZEN
    *   <li>ACCEPTED → READY（スクラムチームメンバー全員が実行可能）
    *   <li>READY → SUGGESTED（スクラムチームメンバー全員が実行可能）
+   *   <li>READY → ACCEPTED（StoryPoint はクリアされる。スクラムチームメンバー全員が実行可能）
    *   <li>READY → ESTIMATED（StoryPoint が設定されていること。スクラムチームメンバー全員が実行可能）
    *   <li>ESTIMATED → READY（StoryPoint は保持。スクラムチームメンバー全員が実行可能）
    *   <li>FROZEN → SUGGESTED（PO のみが実行可能。権限判定はコマンドサービス側で行う）
@@ -231,6 +232,10 @@ public class BacklogItem {
       case READY -> {
         if (target == BacklogItemStatus.SUGGESTED) {
           this.status = target;
+          this.updatedAt = LocalDateTime.now();
+        } else if (target == BacklogItemStatus.ACCEPTED) {
+          this.status = target;
+          this.storyPoint = null;
           this.updatedAt = LocalDateTime.now();
         } else if (target == BacklogItemStatus.ESTIMATED) {
           if (this.storyPoint == null) {
