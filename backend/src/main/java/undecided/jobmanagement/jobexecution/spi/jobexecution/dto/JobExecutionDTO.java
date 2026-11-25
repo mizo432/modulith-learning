@@ -17,4 +17,6 @@ public class JobExecutionDTO {
   private Long processedCount;
   private String checkpointPosition;
   private String createdBy;
+  private String actorEmployeeId;
+  private String parameters;
 }
