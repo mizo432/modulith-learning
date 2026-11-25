@@ -61,6 +61,10 @@ jest.mock('../../services/backlogItemService', () => ({
     uploadAttachment: jest.fn(),
     deleteAttachment: jest.fn(),
     downloadAttachment: jest.fn(),
+    getBacklogItemsByTeam: jest.fn(),
+    getDependencies: jest.fn(),
+    addDependency: jest.fn(),
+    removeDependency: jest.fn(),
   },
   BacklogItemStatus: {
     SUGGESTED: 'SUGGESTED',
@@ -137,6 +141,14 @@ describe('BacklogItemDetail', () => {
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
     (backlogItemService.getAssignableSprints as jest.Mock).mockResolvedValue([]);
     (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getDependencies as jest.Mock).mockResolvedValue({
+      backlogItemId: 'item-100',
+      dependencies: [],
+      dependents: [],
+      dependenciesSatisfied: true,
+      unmetDependencyCount: 0,
+    });
+    (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
     // デフォルトではemp-1をチームメンバーとして設定
     (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
       id: 'team-1',
@@ -2433,6 +2445,14 @@ describe('BacklogItemDetail スプリント割り当て（Issue #525）', () => 
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockEstimatedItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
     (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getDependencies as jest.Mock).mockResolvedValue({
+      backlogItemId: 'item-100',
+      dependencies: [],
+      dependents: [],
+      dependenciesSatisfied: true,
+      unmetDependencyCount: 0,
+    });
+    (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
     (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
       id: 'team-1',
       productId: 'product-1',
@@ -2568,6 +2588,14 @@ describe('BacklogItemDetail オーバーアロケーション警告（Issue #531
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockEstimatedItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
     (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getDependencies as jest.Mock).mockResolvedValue({
+      backlogItemId: 'item-100',
+      dependencies: [],
+      dependents: [],
+      dependenciesSatisfied: true,
+      unmetDependencyCount: 0,
+    });
+    (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
     (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
       id: 'team-1',
       productId: 'product-1',
@@ -2670,6 +2698,14 @@ describe('BacklogItemDetail Acceptedに戻す（Issue #522）', () => {
     (backlogItemService.getBacklogItem as jest.Mock).mockResolvedValue(mockReadyItem);
     (backlogItemService.getComments as jest.Mock).mockResolvedValue([]);
     (backlogItemService.getAttachments as jest.Mock).mockResolvedValue([]);
+    (backlogItemService.getDependencies as jest.Mock).mockResolvedValue({
+      backlogItemId: 'item-100',
+      dependencies: [],
+      dependents: [],
+      dependenciesSatisfied: true,
+      unmetDependencyCount: 0,
+    });
+    (backlogItemService.getBacklogItemsByTeam as jest.Mock).mockResolvedValue([]);
     (scrumTeamService.getScrumTeamById as jest.Mock).mockResolvedValue({
       id: 'team-1',
       productId: 'product-1',
