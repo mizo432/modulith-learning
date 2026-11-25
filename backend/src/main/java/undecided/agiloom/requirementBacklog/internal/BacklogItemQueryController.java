@@ -17,12 +17,15 @@ class BacklogItemQueryController {
 
   private final BacklogItemQueryService backlogItemQueryService;
   private final BacklogItemResponseConverter backlogItemResponseConverter;
+  private final BacklogItemDependencyQueryService backlogItemDependencyQueryService;
 
   BacklogItemQueryController(
       BacklogItemQueryService backlogItemQueryService,
-      BacklogItemResponseConverter backlogItemResponseConverter) {
+      BacklogItemResponseConverter backlogItemResponseConverter,
+      BacklogItemDependencyQueryService backlogItemDependencyQueryService) {
     this.backlogItemQueryService = backlogItemQueryService;
     this.backlogItemResponseConverter = backlogItemResponseConverter;
+    this.backlogItemDependencyQueryService = backlogItemDependencyQueryService;
   }
 
   @GetMapping("/api/v1/scrum-teams/{scrumTeamId}/backlog-items")
@@ -105,5 +108,12 @@ class BacklogItemQueryController {
     return backlogItemQueryService.findComments(id).stream()
         .map(backlogItemResponseConverter::toCommentResponse)
         .toList();
+  }
+
+  @GetMapping("/api/v1/backlog-items/{backlogItemId}/dependencies")
+  @Transactional(readOnly = true)
+  BacklogItemDependenciesResponse getDependencies(@PathVariable String backlogItemId) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    return backlogItemDependencyQueryService.getDependencies(id);
   }
 }

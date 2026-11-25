@@ -8,7 +8,14 @@ import undecided.agiloom.requirementBacklog.spi.BacklogItemComment;
 @Component
 class BacklogItemResponseConverter {
 
+  private final BacklogItemDependencyQueryService dependencyQueryService;
+
+  BacklogItemResponseConverter(BacklogItemDependencyQueryService dependencyQueryService) {
+    this.dependencyQueryService = dependencyQueryService;
+  }
+
   BacklogItemResponse toBacklogItemResponse(BacklogItem backlogItem) {
+    BacklogItemDependencySummary dependencySummary = dependencyQueryService.summarize(backlogItem.getId());
     return BacklogItemResponse.builder()
         .id(backlogItem.getId())
         .title(backlogItem.getTitle())
@@ -34,6 +41,8 @@ class BacklogItemResponseConverter {
         .storyPoint(backlogItem.getStoryPoint())
         .createdAt(backlogItem.getCreatedAt())
         .updatedAt(backlogItem.getUpdatedAt())
+        .dependencyCount(dependencySummary.dependencyCount())
+        .dependenciesSatisfied(dependencySummary.dependenciesSatisfied())
         .build();
   }
 
