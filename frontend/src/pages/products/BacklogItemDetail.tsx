@@ -36,6 +36,7 @@ import backlogItemService, {
   BacklogItem,
   BacklogItemAttachment,
   BacklogItemComment,
+  BacklogItemDependencies,
   BacklogItemStatus,
 } from '../../services/backlogItemService';
 import scrumTeamService, {ScrumTeam} from '../../services/scrumTeamService';
@@ -117,6 +118,11 @@ const BacklogItemDetail: React.FC = () => {
   const [assignableSprints, setAssignableSprints] = useState<AssignableSprint[]>([]);
   const [selectedSprintId, setSelectedSprintId] = useState('');
 
+  // 依存関係（Issue #542）
+  const [dependencies, setDependencies] = useState<BacklogItemDependencies | null>(null);
+  const [teamItems, setTeamItems] = useState<BacklogItem[]>([]);
+  const [selectedDependencyId, setSelectedDependencyId] = useState('');
+
   // 入力状態の参照（load 関数内で最新値を取得するため）
   const valueInputRef = useRef(valueInput);
   valueInputRef.current = valueInput;
@@ -136,6 +142,13 @@ const BacklogItemDetail: React.FC = () => {
       ]);
       setItem(itemData);
       setComments(commentData);
+      // 依存関係（取得できない場合はセクションを空にする）
+      try {
+        const dependencyData = await backlogItemService.getDependencies(backlogItemId);
+        setDependencies(dependencyData);
+      } catch {
+        setDependencies(null);
+      }
       // 添付ファイル一覧（取得できない場合は詳細レスポンスに含まれる添付を使う）
       if (auth.employeeId) {
         try {
@@ -190,6 +203,21 @@ const BacklogItemDetail: React.FC = () => {
     !!auth.employeeId &&
     !!team?.memberEmployeeIds &&
     team.memberEmployeeIds.includes(auth.employeeId);
+
+  // POまたはSMかどうかを判定（依存関係の追加・削除は PO・SM のみ。Issue #542）
+  const isPoOrSm =
+    !!auth.employeeId &&
+    !!team &&
+    (team.poEmployeeId === auth.employeeId || team.smEmployeeId === auth.employeeId);
+
+  // 依存先の候補（同一チームのアイテム）を取得する
+  useEffect(() => {
+    if (!isPoOrSm || !scrumTeamId) return;
+    backlogItemService
+      .getBacklogItemsByTeam(scrumTeamId)
+      .then(setTeamItems)
+      .catch(() => setTeamItems([]));
+  }, [isPoOrSm, scrumTeamId]);
 
   // 自動リフレッシュ
   const {isVisible} = useIsVisible();
@@ -492,6 +520,50 @@ const BacklogItemDetail: React.FC = () => {
     }
   };
 
+  // 依存関係の追加（Issue #542）
+  const handleAddDependency = async () => {
+    if (!backlogItemId || !selectedDependencyId || !auth.employeeId) return;
+    setError(null);
+    try {
+      const updated = await backlogItemService.addDependency(
+        backlogItemId,
+        selectedDependencyId,
+        auth.employeeId,
+      );
+      setDependencies(updated);
+      setSelectedDependencyId('');
+      setSuccessMessage('依存関係を追加しました。');
+    } catch (err: any) {
+      console.error('Failed to add dependency:', err);
+      setError(err?.response?.data?.message ?? '依存関係の追加に失敗しました。');
+    }
+  };
+
+  // 依存関係の削除（Issue #542）
+  const handleRemoveDependency = async (dependencyItemId: string) => {
+    if (!backlogItemId || !auth.employeeId) return;
+    setError(null);
+    try {
+      const updated = await backlogItemService.removeDependency(
+        backlogItemId,
+        dependencyItemId,
+        auth.employeeId,
+      );
+      setDependencies(updated);
+      setSuccessMessage('依存関係を削除しました。');
+    } catch (err: any) {
+      console.error('Failed to remove dependency:', err);
+      setError(err?.response?.data?.message ?? '依存関係の削除に失敗しました。');
+    }
+  };
+
+  // 依存先の候補（自分自身と追加済みを除く同一チームのアイテム）
+  const dependencyCandidates = teamItems.filter(
+    (candidate) =>
+      candidate.id !== backlogItemId &&
+      !dependencies?.dependencies.some((entry) => entry.backlogItemId === candidate.id),
+  );
+
   const assignedSprint = assignableSprints.find((s) => s.assigned);
 
   // StoryPoint見積もりセクションの表示条件（READY または ESTIMATED のみ）
@@ -744,6 +816,101 @@ const BacklogItemDetail: React.FC = () => {
             </Box>
           </Box>
         )}
+
+        {/* 依存関係セクション（Issue #542）：リスト形式で表示し、追加・削除は PO・SM のみ */}
+        <Box sx={{mt: 3, pt: 2, borderTop: '1px solid #e0e0e0'}}>
+          <Typography variant="subtitle1" gutterBottom>
+            依存関係
+          </Typography>
+          {dependencies && !dependencies.dependenciesSatisfied && (
+            <Alert severity="warning" sx={{mb: 2}}>
+              依存先が完了していないため、このアイテムには着手できません。
+            </Alert>
+          )}
+          <Typography variant="body2" sx={{mt: 1}}>
+            依存先
+          </Typography>
+          {dependencies && dependencies.dependencies.length > 0 ? (
+            <List dense>
+              {dependencies.dependencies.map((entry) => (
+                <ListItem
+                  key={entry.backlogItemId}
+                  secondaryAction={
+                    isPoOrSm ? (
+                      <IconButton
+                        edge="end"
+                        aria-label="依存を削除"
+                        data-testid={`remove-dependency-${entry.backlogItemId}`}
+                        onClick={() => handleRemoveDependency(entry.backlogItemId)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    ) : undefined
+                  }
+                >
+                  <ListItemText primary={entry.title} />
+                  <Chip
+                    label={entry.statusLabel}
+                    color={entry.satisfied ? 'success' : 'default'}
+                    size="small"
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              依存先はありません。
+            </Typography>
+          )}
+          <Typography variant="body2" sx={{mt: 2}}>
+            依存元
+          </Typography>
+          {dependencies && dependencies.dependents.length > 0 ? (
+            <List dense>
+              {dependencies.dependents.map((entry) => (
+                <ListItem key={entry.backlogItemId}>
+                  <ListItemText primary={entry.title} />
+                  <Chip
+                    label={entry.statusLabel}
+                    color={entry.satisfied ? 'success' : 'default'}
+                    size="small"
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              依存元はありません。
+            </Typography>
+          )}
+          {isPoOrSm && (
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', mt: 2}}>
+              <FormControl size="small" sx={{minWidth: 240}}>
+                <InputLabel id="dependency-select-label">依存先</InputLabel>
+                <Select
+                  labelId="dependency-select-label"
+                  label="依存先"
+                  data-testid="dependency-select"
+                  value={selectedDependencyId}
+                  onChange={(e) => setSelectedDependencyId(e.target.value)}
+                >
+                  {dependencyCandidates.map((candidate) => (
+                    <MenuItem key={candidate.id} value={candidate.id}>
+                      {candidate.title}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                onClick={handleAddDependency}
+                disabled={!selectedDependencyId}
+              >
+                依存を追加
+              </Button>
+            </Box>
+          )}
+        </Box>
 
         <Typography variant="body2" color="text.secondary">
           優先度：{item.priority ?? '-'} ／ 作成者：{item.creatorName} ／ 作成日時：

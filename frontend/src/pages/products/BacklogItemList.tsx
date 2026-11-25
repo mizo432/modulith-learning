@@ -278,7 +278,18 @@ const BacklogItemList: React.FC = () => {
               const acceptDisabled = item.value == null;
               return (
                 <TableRow key={item.id} hover>
-                  <TableCell>{item.title}</TableCell>
+                  <TableCell>
+                    {item.title}
+                    {item.dependencyCount != null && item.dependencyCount > 0 && (
+                      <Chip
+                        label={`依存 ${item.dependencyCount}`}
+                        size="small"
+                        color={item.dependenciesSatisfied ? 'success' : 'warning'}
+                        data-testid={`dependency-badge-${item.id}`}
+                        sx={{ ml: 1 }}
+                      />
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Chip
                       label={item.statusLabel || STATUS_LABELS[item.status]}

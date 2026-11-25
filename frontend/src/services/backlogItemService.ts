@@ -24,6 +24,10 @@ export interface BacklogItem {
   updatedAt?: string;
   /** 添付ファイル一覧（詳細取得時に含まれる）。 */
   attachments?: BacklogItemAttachment[];
+  /** 依存先の件数（Issue #542）。 */
+  dependencyCount?: number;
+  /** 依存先がすべて完了しているか（Issue #542）。 */
+  dependenciesSatisfied?: boolean;
 }
 
 export interface BacklogItemAttachment {
@@ -94,6 +98,24 @@ export interface AssignableSprint {
   endDate: string;
   /** 現在このアイテムが割り当てられているスプリントかどうか */
   assigned: boolean;
+}
+
+/** 依存関係で結ばれたバックログアイテム1件分（Issue #542） */
+export interface BacklogItemDependencyEntry {
+  backlogItemId: string;
+  title: string;
+  status: string;
+  statusLabel: string;
+  satisfied: boolean;
+}
+
+/** バックログアイテムの依存関係（依存先・依存元と充足状態）（Issue #542） */
+export interface BacklogItemDependencies {
+  backlogItemId: string;
+  dependencies: BacklogItemDependencyEntry[];
+  dependents: BacklogItemDependencyEntry[];
+  dependenciesSatisfied: boolean;
+  unmetDependencyCount: number;
 }
 
 /** StoryPoint 見積もりリクエスト（Issue #516 実装予定） */
@@ -237,6 +259,38 @@ const backlogItemService = {
     const response = await api.delete(`/v1/backlog-items/${backlogItemId}/sprint-assignment`, {
       data: { actorEmployeeId },
     });
+    return response.data;
+  },
+
+  /** 依存関係（依存先・依存元と充足状態）を取得する（Issue #542） */
+  async getDependencies(backlogItemId: string): Promise<BacklogItemDependencies> {
+    const response = await api.get(`/v1/backlog-items/${backlogItemId}/dependencies`);
+    return response.data;
+  },
+
+  /** 依存関係を追加する（PO・SMのみ。Issue #542） */
+  async addDependency(
+    backlogItemId: string,
+    dependencyItemId: string,
+    actorEmployeeId: string,
+  ): Promise<BacklogItemDependencies> {
+    const response = await api.post(`/v1/backlog-items/${backlogItemId}/dependencies`, {
+      dependencyItemId,
+      actorEmployeeId,
+    });
+    return response.data;
+  },
+
+  /** 依存関係を削除する（PO・SMのみ。Issue #542） */
+  async removeDependency(
+    backlogItemId: string,
+    dependencyItemId: string,
+    actorEmployeeId: string,
+  ): Promise<BacklogItemDependencies> {
+    const response = await api.delete(
+      `/v1/backlog-items/${backlogItemId}/dependencies/${dependencyItemId}`,
+      { data: { actorEmployeeId } },
+    );
     return response.data;
   },
 

@@ -28,6 +28,9 @@ class BacklogItemCommandController {
   private final BacklogItemResponseConverter backlogItemResponseConverter;
   private final AttachDocumentCommandService attachDocumentCommandService;
   private final DetachDocumentCommandService detachDocumentCommandService;
+  private final AddBacklogItemDependencyCommandService addBacklogItemDependencyCommandService;
+  private final RemoveBacklogItemDependencyCommandService removeBacklogItemDependencyCommandService;
+  private final BacklogItemDependencyQueryService backlogItemDependencyQueryService;
 
   BacklogItemCommandController(
       CreateBacklogItemCommandService createBacklogItemCommandService,
@@ -42,7 +45,10 @@ class BacklogItemCommandController {
       BacklogItemQueryService backlogItemQueryService,
       BacklogItemResponseConverter backlogItemResponseConverter,
       AttachDocumentCommandService attachDocumentCommandService,
-      DetachDocumentCommandService detachDocumentCommandService) {
+      DetachDocumentCommandService detachDocumentCommandService,
+      AddBacklogItemDependencyCommandService addBacklogItemDependencyCommandService,
+      RemoveBacklogItemDependencyCommandService removeBacklogItemDependencyCommandService,
+      BacklogItemDependencyQueryService backlogItemDependencyQueryService) {
     this.createBacklogItemCommandService = createBacklogItemCommandService;
     this.updateBacklogItemCommandService = updateBacklogItemCommandService;
     this.changeBacklogItemStatusCommandService = changeBacklogItemStatusCommandService;
@@ -56,6 +62,9 @@ class BacklogItemCommandController {
     this.backlogItemResponseConverter = backlogItemResponseConverter;
     this.attachDocumentCommandService = attachDocumentCommandService;
     this.detachDocumentCommandService = detachDocumentCommandService;
+    this.addBacklogItemDependencyCommandService = addBacklogItemDependencyCommandService;
+    this.removeBacklogItemDependencyCommandService = removeBacklogItemDependencyCommandService;
+    this.backlogItemDependencyQueryService = backlogItemDependencyQueryService;
   }
 
   @PostMapping("/api/v1/backlog-items/{backlogItemId}/attachments")
@@ -302,5 +311,34 @@ class BacklogItemCommandController {
             .build());
     BacklogItem backlogItem = backlogItemQueryService.findById(id).orElseThrow();
     return ResponseEntity.ok(backlogItemResponseConverter.toBacklogItemResponse(backlogItem));
+  }
+
+  @PostMapping("/api/v1/backlog-items/{backlogItemId}/dependencies")
+  ResponseEntity<BacklogItemDependenciesResponse> addDependency(
+      @PathVariable String backlogItemId,
+      @Valid @RequestBody AddBacklogItemDependencyRequest request) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    addBacklogItemDependencyCommandService.execute(
+        AddBacklogItemDependencyCommand.builder()
+            .backlogItemId(id)
+            .dependencyItemId(SnowflakeId.of(Long.parseLong(request.getDependencyItemId())))
+            .actorEmployeeId(request.getActorEmployeeId())
+            .build());
+    return ResponseEntity.ok(backlogItemDependencyQueryService.getDependencies(id));
+  }
+
+  @DeleteMapping("/api/v1/backlog-items/{backlogItemId}/dependencies/{dependencyItemId}")
+  ResponseEntity<BacklogItemDependenciesResponse> removeDependency(
+      @PathVariable String backlogItemId,
+      @PathVariable String dependencyItemId,
+      @Valid @RequestBody RemoveBacklogItemDependencyRequest request) {
+    SnowflakeId id = SnowflakeId.of(Long.parseLong(backlogItemId));
+    removeBacklogItemDependencyCommandService.execute(
+        RemoveBacklogItemDependencyCommand.builder()
+            .backlogItemId(id)
+            .dependencyItemId(SnowflakeId.of(Long.parseLong(dependencyItemId)))
+            .actorEmployeeId(request.getActorEmployeeId())
+            .build());
+    return ResponseEntity.ok(backlogItemDependencyQueryService.getDependencies(id));
   }
 }

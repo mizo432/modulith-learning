@@ -33,4 +33,6 @@ class BacklogItemResponse {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private List<BacklogItemAttachmentResponse> attachments;
+  private int dependencyCount;
+  private boolean dependenciesSatisfied;
 }
