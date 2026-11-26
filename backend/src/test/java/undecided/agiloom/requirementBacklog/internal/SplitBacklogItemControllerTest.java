@@ -137,7 +137,7 @@ class SplitBacklogItemControllerTest {
 
       mockMvc.perform(splitRequest(MEMBER_ID, CHILDREN))
           .andExpect(MockMvcResultMatchers.status().isForbidden())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+          .andExpect(MockMvcResultMatchers.jsonPath("$.detail")
               .value("Only the Scrum Master or Product Owner of the team can split a backlog item"));
 
       verifyCommand(MEMBER_ID, CHILDREN);
@@ -154,7 +154,7 @@ class SplitBacklogItemControllerTest {
 
       mockMvc.perform(splitRequest(ACTOR_ID, children))
           .andExpect(MockMvcResultMatchers.status().isBadRequest())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+          .andExpect(MockMvcResultMatchers.jsonPath("$.detail")
               .value("The number of children must be between 1 and 20"));
 
       verifyCommand(ACTOR_ID, children);
@@ -168,7 +168,7 @@ class SplitBacklogItemControllerTest {
 
       mockMvc.perform(splitRequest(ACTOR_ID, CHILDREN))
           .andExpect(MockMvcResultMatchers.status().isBadRequest())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+          .andExpect(MockMvcResultMatchers.jsonPath("$.detail")
               .value("BacklogItem story point must be at least 13"));
 
       verifyCommand(ACTOR_ID, CHILDREN);
@@ -182,7 +182,7 @@ class SplitBacklogItemControllerTest {
 
       mockMvc.perform(splitRequest(ACTOR_ID, CHILDREN))
           .andExpect(MockMvcResultMatchers.status().isBadRequest())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+          .andExpect(MockMvcResultMatchers.jsonPath("$.detail")
               .value("BacklogItem not found: " + PARENT_ID));
 
       verifyCommand(ACTOR_ID, CHILDREN);

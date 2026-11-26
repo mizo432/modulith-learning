@@ -98,7 +98,7 @@ test('起動に成功したとき、成功メッセージが表示され実行�
 
 test('起動に失敗したとき、エラーメッセージが表示される', async () => {
   mockedStartJob.mockRejectedValue({
-    response: {data: {message: '同時実行数の上限に達しています'}},
+    response: {data: {detail: '同時実行数の上限に達しています'}},
   });
   render(<JobLaunchPage/>);
 

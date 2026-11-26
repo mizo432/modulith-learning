@@ -852,7 +852,7 @@ describe('BacklogItemDetail', () => {
       (backlogItemService.deleteComment as jest.Mock).mockRejectedValue({
         response: {
           status: 403,
-          data: { message: 'コメントの削除権限がありません。' },
+          data: { detail: 'コメントの削除権限がありません。' },
         },
       });
 
@@ -1424,7 +1424,7 @@ describe('BacklogItemDetail', () => {
       (backlogItemService.estimateBacklogItem as jest.Mock).mockRejectedValue({
         response: {
           status: 400,
-          data: { message: 'StoryPointの見積もりに失敗しました。' },
+          data: { detail: 'StoryPointの見積もりに失敗しました。' },
         },
       });
 
@@ -2156,7 +2156,7 @@ describe('BacklogItemDetail', () => {
       (backlogItemService.changeStatus as jest.Mock).mockRejectedValue({
         response: {
           status: 400,
-          data: { message: '状態遷移に失敗しました' },
+          data: { detail: '状態遷移に失敗しました' },
         },
       });
 
@@ -2782,7 +2782,7 @@ describe('BacklogItemDetail Acceptedに戻す（Issue #522）', () => {
   it('状態変更APIが失敗したとき、エラーメッセージが表示される', async () => {
     const user = userEvent.setup();
     (backlogItemService.changeStatus as jest.Mock).mockRejectedValue({
-      response: { data: { message: '権限がありません' } },
+      response: { data: { detail: '権限がありません' } },
     });
     renderBacklogItemDetail();
     await waitFor(() => {
