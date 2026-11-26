@@ -295,8 +295,9 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
     timeout.set(Duration.ofMinutes(60))
     // Issue #737: クラスごとにJVMを分離し、共有DB・コンテナ・スキーマを介したクラス間干渉を防ぐ
     forkEvery = 1
-    dependsOn("test")
-    shouldRunAfter("test")
+    // Issue #751: フォークは別JVM・別コンテナのため干渉対策を維持したまま並列実行できる
+    maxParallelForks = (project.findProperty("mediumMaxParallelForks") as String?)?.toIntOrNull() ?: 1
+    // Issue #751: small は CI の Backend Small Tests ジョブで並列実行するため、test への依存は持たない
 }
 val largeTest = tasks.register("largeTest", Test::class.java) {
     description = "large sized test"
