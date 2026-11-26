@@ -25,6 +25,7 @@ import SprintList from './pages/products/SprintList';
 import SprintSettings from './pages/products/SprintSettings';
 import BacklogItemList from './pages/products/BacklogItemList';
 import BacklogItemDetail from './pages/products/BacklogItemDetail';
+import JobLaunchPage from './pages/JobLaunchPage';
 import {AuthProvider, useAuth} from './contexts/AuthContext';
 import {ToastProvider} from './contexts/ToastContext';
 
@@ -206,6 +207,12 @@ const AppContent = () => {
                                                                                            <BacklogItemDetail/>
                                                                                          </ProtectedRoute>
                                                                                        }/>
+              {/* Job manual launch route - admin only */}
+              <Route path="/jobs/launch" element={
+                                          <AdminRoute>
+                                           <JobLaunchPage/>
+                                         </AdminRoute>
+                                       }/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </Container>
