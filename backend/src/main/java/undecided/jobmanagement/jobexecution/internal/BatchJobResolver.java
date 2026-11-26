@@ -15,7 +15,13 @@ public class BatchJobResolver {
     this.jobs = jobs;
   }
 
+  /**
+   * ジョブコードと Job 名が一致する Job を返します。
+   *
+   * @param jobCode ジョブコード（Spring Batch の Job 名）
+   * @return 一致する Job。存在しない場合は空
+   */
   public Optional<Job> resolve(String jobCode) {
-    return Optional.empty();
+    return jobs.stream().filter(job -> job.getName().equals(jobCode)).findFirst();
   }
 }

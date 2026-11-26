@@ -19,7 +19,7 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Table(schema = "job_management", name = "admin_employee_subsets")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AdminEmployeeSubset {
+public class JobAdminEmployeeSubset {
 
   @Id
   @Column(name = "employee_id", nullable = false)
@@ -28,8 +28,8 @@ public class AdminEmployeeSubset {
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
-  public static AdminEmployeeSubset of(SnowflakeId employeeId) {
-    AdminEmployeeSubset subset = new AdminEmployeeSubset();
+  public static JobAdminEmployeeSubset of(SnowflakeId employeeId) {
+    JobAdminEmployeeSubset subset = new JobAdminEmployeeSubset();
     subset.employeeId = employeeId;
     subset.updatedAt = LocalDateTime.now();
     return subset;

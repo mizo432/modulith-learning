@@ -12,8 +12,8 @@ class AdminEmployeeSubsetEventListenerTest {
 
   @Test
   void 付与を受信したときサブセットに登録される() {
-    AdminEmployeeSubsetRepository repository = mock(AdminEmployeeSubsetRepository.class);
-    AdminEmployeeSubsetEventListener listener = new AdminEmployeeSubsetEventListener(repository);
+    JobAdminEmployeeSubsetRepository repository = mock(JobAdminEmployeeSubsetRepository.class);
+    JobAdminEmployeeSubsetEventListener listener = new JobAdminEmployeeSubsetEventListener(repository);
     SnowflakeId employeeId = SnowflakeId.of(100L);
 
     listener.on(new AdminEmployeeChanged(employeeId, true));
@@ -23,8 +23,8 @@ class AdminEmployeeSubsetEventListenerTest {
 
   @Test
   void 剥離を受信したときサブセットから削除される() {
-    AdminEmployeeSubsetRepository repository = mock(AdminEmployeeSubsetRepository.class);
-    AdminEmployeeSubsetEventListener listener = new AdminEmployeeSubsetEventListener(repository);
+    JobAdminEmployeeSubsetRepository repository = mock(JobAdminEmployeeSubsetRepository.class);
+    JobAdminEmployeeSubsetEventListener listener = new JobAdminEmployeeSubsetEventListener(repository);
     SnowflakeId employeeId = SnowflakeId.of(100L);
 
     listener.on(new AdminEmployeeChanged(employeeId, false));

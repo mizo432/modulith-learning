@@ -31,14 +31,14 @@ import undecided.jobmanagement.jobexecution.spi.jobexecution.ExecutionState;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.JobExecution;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.JobManuallyStarted;
 import undecided.jobmanagement.jobexecution.spi.jobexecution.dto.JobExecutionDTO;
-import undecided.jobmanagement.permissionmanagement.internal.AdminEmployeeSubsetRepository;
+import undecided.jobmanagement.permissionmanagement.internal.JobAdminEmployeeSubsetRepository;
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 class StartJobCommandServiceTest {
 
   private JobExecutionRepository jobExecutionRepository;
   private JobDefinitionRepository jobDefinitionRepository;
-  private AdminEmployeeSubsetRepository adminEmployeeSubsetRepository;
+  private JobAdminEmployeeSubsetRepository adminEmployeeSubsetRepository;
   private BatchJobResolver batchJobResolver;
   private JobExecutionRunner jobExecutionRunner;
   private ApplicationEventPublisher eventPublisher;
@@ -49,7 +49,7 @@ class StartJobCommandServiceTest {
   void setUp() {
     jobExecutionRepository = mock(JobExecutionRepository.class);
     jobDefinitionRepository = mock(JobDefinitionRepository.class);
-    adminEmployeeSubsetRepository = mock(AdminEmployeeSubsetRepository.class);
+    adminEmployeeSubsetRepository = mock(JobAdminEmployeeSubsetRepository.class);
     batchJobResolver = mock(BatchJobResolver.class);
     jobExecutionRunner = mock(JobExecutionRunner.class);
     eventPublisher = mock(ApplicationEventPublisher.class);
