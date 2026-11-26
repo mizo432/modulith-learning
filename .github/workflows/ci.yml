@@ -56,6 +56,10 @@ jobs:
 
   backend-medium-test:
     name: Backend Medium Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1]
     permissions:
       contents: read
       pull-requests: read
@@ -95,7 +99,7 @@ jobs:
 
       - name: Run Backend Medium Tests
         if: steps.changes.outputs.backend == 'true'
-        run: ./gradlew :backend:mediumTest -PmediumMaxParallelForks=4
+        run: ./gradlew :backend:mediumTest -PmediumMaxParallelForks=2 -PmediumShardIndex=${{ matrix.shard }} -PmediumShardCount=2
 
   backend-small-test:
     name: Backend Small Tests

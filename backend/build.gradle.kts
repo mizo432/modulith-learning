@@ -298,6 +298,30 @@ val mediumTest = tasks.register("mediumTest", Test::class.java) {
     // Issue #751: フォークは別JVM・別コンテナのため干渉対策を維持したまま並列実行できる
     maxParallelForks = (project.findProperty("mediumMaxParallelForks") as String?)?.toIntOrNull() ?: 1
     // Issue #751: small は CI の Backend Small Tests ジョブで並列実行するため、test への依存は持たない
+    // Issue #751: CI では medium クラスをシャード分割し、ランナー単位でも並列化する
+    val shardIndex = (project.findProperty("mediumShardIndex") as String?)?.toIntOrNull()
+    val shardCount = (project.findProperty("mediumShardCount") as String?)?.toIntOrNull() ?: 1
+    if (shardIndex != null && shardCount > 1) {
+        // doFirst で適用する filter はタスク入力に含まれず、up-to-date 判定とビルドキャッシュのキーを汚染するため、シャード識別子を明示的に入力として宣言する
+        inputs.property("mediumShardIndex", shardIndex)
+        inputs.property("mediumShardCount", shardCount)
+        doFirst {
+            // 候補は MediumTest クラスに加え、入れ子クラスに medium テストを持つ外側クラス（BatchConfigTest 等）も含める
+            val allClasses = testClassesDirs.files.flatMap { dir ->
+                val classFiles = dir.walkTopDown().filter { it.isFile && it.name.endsWith(".class") }.toList()
+                val outersWithNested = classFiles.filter { it.name.contains('$') }
+                    .map { it.relativeTo(dir).path.removeSuffix(".class").substringBefore('$').replace(File.separatorChar, '.') }
+                    .toSet()
+                classFiles.filter { !it.name.contains('$') }
+                    .map { it.relativeTo(dir).path.removeSuffix(".class").replace(File.separatorChar, '.') }
+                    .filter { it.endsWith("MediumTest") || outersWithNested.contains(it) }
+            }.distinct().sorted()
+            val shardClasses = allClasses.filterIndexed { index, _ -> index % shardCount == shardIndex }
+            check(shardClasses.isNotEmpty()) { "mediumTest shard $shardIndex/$shardCount has no classes" }
+            logger.lifecycle("mediumTest shard {}/{}: {} of {} classes", shardIndex, shardCount, shardClasses.size, allClasses.size)
+            filter { shardClasses.forEach { includeTestsMatching(it) } }
+        }
+    }
 }
 val largeTest = tasks.register("largeTest", Test::class.java) {
     description = "large sized test"
