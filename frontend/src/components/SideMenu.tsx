@@ -15,6 +15,7 @@ import {
   ChevronLeft as ChevronLeftIcon,
   Group as TeamIcon,
   People as PeopleIcon,
+  PlayArrow as PlayArrowIcon,
   Settings as SettingsIcon
 } from '@mui/icons-material';
 import {Link as RouterLink} from 'react-router-dom';
@@ -200,6 +201,21 @@ const SideMenu: React.FC<SideMenuProps> = ({open, onClose, selectedTab}) => {
         </Box>
         <Divider/>
         {renderMenuItems()}
+        {isAdmin && (
+            <>
+              <Divider/>
+              <List>
+                <ListItem disablePadding>
+                  <ListItemButton component={RouterLink} to="/jobs/launch" onClick={onClose}>
+                    <ListItemIcon>
+                      <PlayArrowIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="ジョブ手動起動"/>
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </>
+        )}
       </Drawer>
   );
 };

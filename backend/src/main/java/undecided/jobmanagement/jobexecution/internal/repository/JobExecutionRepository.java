@@ -16,4 +16,8 @@ public interface JobExecutionRepository extends JpaRepository<JobExecution, Snow
   List<JobExecution> findByJobCode(String jobCode);
   
   boolean existsByExecutionIdValue(String executionIdValue);
+
+  long countByJobCodeAndStateIn(String jobCode, java.util.Collection<undecided.jobmanagement.jobexecution.spi.jobexecution.ExecutionState> states);
+
+  List<JobExecution> findAllByOrderByCreatedAtDesc();
 }
