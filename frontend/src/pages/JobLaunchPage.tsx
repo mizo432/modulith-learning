@@ -79,7 +79,7 @@ const JobLaunchPage: React.FC = () => {
       setSuccessMessage('ジョブを起動しました');
       await loadExecutions();
     } catch (err: any) {
-      setErrorMessage(err?.response?.data?.message ?? 'ジョブの起動に失敗しました');
+      setErrorMessage(err?.response?.data?.detail ?? 'ジョブの起動に失敗しました');
     }
   };
 

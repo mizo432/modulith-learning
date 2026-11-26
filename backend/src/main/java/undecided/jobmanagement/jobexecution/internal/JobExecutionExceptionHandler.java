@@ -1,32 +1,31 @@
 package undecided.jobmanagement.jobexecution.internal;
 
-import java.util.Map;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/** ジョブ管理の例外を HTTP ステータスへ変換するハンドラ。 */
+/** ジョブ管理の例外を HTTP ステータスへ変換するハンドラ。エラーレスポンスは RFC 9457（Problem Details）形式で返す。 */
 @RestControllerAdvice
 class JobExecutionExceptionHandler {
 
   @ExceptionHandler(JobPermissionDeniedException.class)
-  ResponseEntity<Map<String, String>> handlePermissionDenied(JobPermissionDeniedException e) {
-    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
+  ProblemDetail handlePermissionDenied(JobPermissionDeniedException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
   }
 
   @ExceptionHandler(JobDefinitionNotFoundException.class)
-  ResponseEntity<Map<String, String>> handleDefinitionNotFound(JobDefinitionNotFoundException e) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+  ProblemDetail handleDefinitionNotFound(JobDefinitionNotFoundException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
   }
 
   @ExceptionHandler(JobLaunchConflictException.class)
-  ResponseEntity<Map<String, String>> handleLaunchConflict(JobLaunchConflictException e) {
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", e.getMessage()));
+  ProblemDetail handleLaunchConflict(JobLaunchConflictException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
   }
 
   @ExceptionHandler(JobParameterFormatException.class)
-  ResponseEntity<Map<String, String>> handleParameterFormat(JobParameterFormatException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+  ProblemDetail handleParameterFormat(JobParameterFormatException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
   }
 }

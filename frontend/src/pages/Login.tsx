@@ -47,7 +47,7 @@ const Login: React.FC = () => {
         setError(response.data.message || 'Authentication failed');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred during login');
+      setError(err.response?.data?.detail || 'An error occurred during login');
     } finally {
       setLoading(false);
     }

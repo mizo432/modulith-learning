@@ -112,7 +112,7 @@ const SprintSettings: React.FC = () => {
       const result = await sprintService.calculateEndDate(productId, startDateStr);
       setCalculatedEndDate(result);
     } catch (err: any) {
-      const message = err.response?.data?.message || '終了日の計算に失敗しました';
+      const message = err.response?.data?.detail || '終了日の計算に失敗しました';
       setEndDateError(message);
       console.error('Error calculating end date:', err);
     } finally {
@@ -192,7 +192,7 @@ const SprintSettings: React.FC = () => {
       setSuccessMessage('スプリント設定が正常に保存されました');
       setSnackbarOpen(true);
     } catch (err: any) {
-      const message = err.response?.data?.message || 'スプリント設定の保存に失敗しました';
+      const message = err.response?.data?.detail || 'スプリント設定の保存に失敗しました';
       setError(message);
       console.error('Error updating sprint settings:', err);
     } finally {

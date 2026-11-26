@@ -251,7 +251,7 @@ const BacklogItemDetail: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Failed to add comment:', err);
-      setError(err?.response?.data?.message ?? 'コメントの追加に失敗しました。');
+      setError(err?.response?.data?.detail ?? 'コメントの追加に失敗しました。');
     }
   };
 
@@ -270,7 +270,7 @@ const BacklogItemDetail: React.FC = () => {
       setEditBody('');
     } catch (err: any) {
       console.error('Failed to update comment:', err);
-      setError(err?.response?.data?.message ?? 'コメントの更新に失敗しました。');
+      setError(err?.response?.data?.detail ?? 'コメントの更新に失敗しました。');
     }
   };
 
@@ -284,7 +284,7 @@ const BacklogItemDetail: React.FC = () => {
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     } catch (err: any) {
       console.error('Failed to delete comment:', err);
-      setError(err?.response?.data?.message ?? 'コメントの削除に失敗しました。');
+      setError(err?.response?.data?.detail ?? 'コメントの削除に失敗しました。');
     }
   };
 
@@ -305,7 +305,7 @@ const BacklogItemDetail: React.FC = () => {
       await load();
     } catch (err: any) {
       console.error('Failed to upload attachment:', err);
-      setError(err?.response?.data?.message ?? '添付ファイルのアップロードに失敗しました。');
+      setError(err?.response?.data?.detail ?? '添付ファイルのアップロードに失敗しました。');
     }
   };
 
@@ -323,7 +323,7 @@ const BacklogItemDetail: React.FC = () => {
       await load();
     } catch (err: any) {
       console.error('Failed to delete attachment:', err);
-      setError(err?.response?.data?.message ?? '添付ファイルの削除に失敗しました。');
+      setError(err?.response?.data?.detail ?? '添付ファイルの削除に失敗しました。');
     }
   };
 
@@ -346,7 +346,7 @@ const BacklogItemDetail: React.FC = () => {
       URL.revokeObjectURL(url);
     } catch (err: any) {
       console.error('Failed to download attachment:', err);
-      setError(err?.response?.data?.message ?? '添付ファイルのダウンロードに失敗しました。');
+      setError(err?.response?.data?.detail ?? '添付ファイルのダウンロードに失敗しました。');
     }
   };
 
@@ -399,7 +399,7 @@ const BacklogItemDetail: React.FC = () => {
       setSuccessMessage('Valueを保存しました。');
     } catch (err: any) {
       console.error('Failed to save value:', err);
-      setError(err?.response?.data?.message ?? err?.message ?? 'Valueの保存に失敗しました。');
+      setError(err?.response?.data?.detail ?? err?.message ?? 'Valueの保存に失敗しました。');
     }
   };
 
@@ -418,7 +418,7 @@ const BacklogItemDetail: React.FC = () => {
       await load();
     } catch (err: any) {
       console.error('Failed to save story point:', err);
-      setError(err?.response?.data?.message ?? err?.message ?? 'StoryPointの保存に失敗しました。');
+      setError(err?.response?.data?.detail ?? err?.message ?? 'StoryPointの保存に失敗しました。');
     }
   };
 
@@ -434,7 +434,7 @@ const BacklogItemDetail: React.FC = () => {
       await load();
     } catch (err: any) {
       console.error('Failed to change status to Ready:', err);
-      setError(err?.response?.data?.message ?? err?.message ?? '状態遷移に失敗しました。');
+      setError(err?.response?.data?.detail ?? err?.message ?? '状態遷移に失敗しました。');
     }
   };
 
@@ -452,7 +452,7 @@ const BacklogItemDetail: React.FC = () => {
     } catch (err: any) {
       console.error('Failed to change status to Accepted:', err);
       setRevertDialogOpen(false);
-      setError(err?.response?.data?.message ?? err?.message ?? '状態遷移に失敗しました。');
+      setError(err?.response?.data?.detail ?? err?.message ?? '状態遷移に失敗しました。');
     }
   };
 
@@ -501,7 +501,7 @@ const BacklogItemDetail: React.FC = () => {
       await load();
     } catch (err: any) {
       console.error('Failed to assign sprint:', err);
-      setError(err?.response?.data?.message ?? err?.message ?? 'スプリント割り当てに失敗しました。');
+      setError(err?.response?.data?.detail ?? err?.message ?? 'スプリント割り当てに失敗しました。');
     }
   };
 
@@ -516,7 +516,7 @@ const BacklogItemDetail: React.FC = () => {
       await load();
     } catch (err: any) {
       console.error('Failed to unassign sprint:', err);
-      setError(err?.response?.data?.message ?? err?.message ?? 'スプリント割り当ての解除に失敗しました。');
+      setError(err?.response?.data?.detail ?? err?.message ?? 'スプリント割り当ての解除に失敗しました。');
     }
   };
 
@@ -535,7 +535,7 @@ const BacklogItemDetail: React.FC = () => {
       setSuccessMessage('依存関係を追加しました。');
     } catch (err: any) {
       console.error('Failed to add dependency:', err);
-      setError(err?.response?.data?.message ?? '依存関係の追加に失敗しました。');
+      setError(err?.response?.data?.detail ?? '依存関係の追加に失敗しました。');
     }
   };
 
@@ -553,7 +553,7 @@ const BacklogItemDetail: React.FC = () => {
       setSuccessMessage('依存関係を削除しました。');
     } catch (err: any) {
       console.error('Failed to remove dependency:', err);
-      setError(err?.response?.data?.message ?? '依存関係の削除に失敗しました。');
+      setError(err?.response?.data?.detail ?? '依存関係の削除に失敗しました。');
     }
   };
 
