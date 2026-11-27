@@ -202,6 +202,38 @@ class ValidIntervalTest {
     }
   }
 
+
+  @Nested
+  @DisplayName("isActiveメソッドのテスト")
+  class IsActiveTest {
+
+    @Test
+    @DisplayName("引数の日付が期間内の場合はtrueを返す")
+    void shouldReturnTrueForDateWithinInterval() {
+      ValidInterval interval =
+          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+
+      assertThat(interval.isActive(LocalDate.of(2024, 6, 15))).isTrue();
+    }
+
+    @Test
+    @DisplayName("引数の日付が期間外の場合はfalseを返す")
+    void shouldReturnFalseForDateOutsideInterval() {
+      ValidInterval interval =
+          ValidInterval.of(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+
+      assertThat(interval.isActive(LocalDate.of(2025, 1, 1))).isFalse();
+    }
+
+    @Test
+    @DisplayName("空のインスタンスはfalseを返す")
+    void shouldReturnFalseForEmptyInterval() {
+      ValidInterval interval = ValidInterval.empty();
+
+      assertThat(interval.isActive(LocalDate.of(2024, 6, 15))).isFalse();
+    }
+  }
+
   @Nested
   @DisplayName("toStringメソッドのテスト")
   class ToStringTest {

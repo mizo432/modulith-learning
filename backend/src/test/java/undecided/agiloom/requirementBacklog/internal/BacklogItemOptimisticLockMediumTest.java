@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityManager;
@@ -57,7 +59,7 @@ class BacklogItemOptimisticLockMediumTest {
     // 1次キャッシュをクリアして、別の管理インスタンスとして再度読み込む
     entityManager.detach(staleItem);
     BacklogItem freshItem = entityManager.find(BacklogItem.class, itemId);
-    freshItem.changeStatus(BacklogItemStatus.FROZEN);
+    freshItem.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
     entityManager.flush();
 
     // 古いバージョンのエンティティを再アタッチすると楽観ロック例外が発生する

@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,9 +79,9 @@ class SplitBacklogItemCommandServiceTest {
         .title("親タイトル").description("親の説明").creatorName("作成者")
         .priority(3).value(50).sprintId(SPRINT_ID).storyPoint(storyPoint).build();
     if (storyPoint != null) {
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
     }
     when(items.findById(ITEM_ID)).thenReturn(Optional.of(item));
     return item;

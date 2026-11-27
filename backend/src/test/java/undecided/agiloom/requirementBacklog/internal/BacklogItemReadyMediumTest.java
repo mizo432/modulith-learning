@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -59,10 +61,10 @@ class BacklogItemReadyMediumTest {
           .scrumTeamId(TEAM_ID)
           .value(50)
           .build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       backlogItemRepository.save(item);
 
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       backlogItemRepository.save(item);
 
       BacklogItem saved = backlogItemRepository.findById(item.getId()).orElseThrow();
@@ -84,17 +86,17 @@ class BacklogItemReadyMediumTest {
           .scrumTeamId(TEAM_ID)
           .value(50)
           .build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       backlogItemRepository.save(item);
       entityManager.flush();
 
       item = backlogItemRepository.findById(item.getId()).orElseThrow();
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       backlogItemRepository.save(item);
       entityManager.flush();
 
       item = backlogItemRepository.findById(item.getId()).orElseThrow();
-      item.changeStatus(BacklogItemStatus.SUGGESTED);
+      item.changeStatus(BacklogItemStatus.SUGGESTED, LocalDateTime.now());
       backlogItemRepository.save(item);
       entityManager.flush();
 

@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.spi;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -37,8 +39,8 @@ class BacklogItemStatusReadyTest {
     private BacklogItem readyItem() {
       BacklogItem item =
           BacklogItem.builder().title("Test Item").creatorName("Creator").value(50).build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       return item;
     }
 
@@ -48,7 +50,7 @@ class BacklogItemStatusReadyTest {
       BacklogItem item = readyItem();
       item.setStoryPoint(5);
 
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
       assertThat(item.getStoryPoint()).isNull();
@@ -59,7 +61,7 @@ class BacklogItemStatusReadyTest {
     void shouldKeepStoryPointNullWhenReadyToAcceptedWithoutStoryPoint() {
       BacklogItem item = readyItem();
 
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
       assertThat(item.getStoryPoint()).isNull();
@@ -70,7 +72,7 @@ class BacklogItemStatusReadyTest {
     void shouldKeepValueWhenReadyToAccepted() {
       BacklogItem item = readyItem();
 
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       assertThat(item.getValue()).isEqualTo(50);
     }
@@ -80,9 +82,9 @@ class BacklogItemStatusReadyTest {
     void shouldThrowWhenEstimatedToAccepted() {
       BacklogItem item = readyItem();
       item.setStoryPoint(5);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ESTIMATED);
     }

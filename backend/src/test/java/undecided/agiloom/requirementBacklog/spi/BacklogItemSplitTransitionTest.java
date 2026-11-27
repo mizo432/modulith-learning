@@ -72,7 +72,7 @@ class BacklogItemSplitTransitionTest {
     void shouldRejectNormalTransitionToDone(BacklogItemStatus status) {
       BacklogItem item = itemWithStatus(status);
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.DONE))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.DONE, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
 
       assertThat(item.getStatus()).isEqualTo(status);
@@ -85,7 +85,7 @@ class BacklogItemSplitTransitionTest {
     void shouldRejectNormalTransitionFromDone(BacklogItemStatus target) {
       BacklogItem item = itemWithStatus(BacklogItemStatus.DONE);
 
-      assertThatThrownBy(() -> item.changeStatus(target)).isInstanceOf(IllegalStateException.class);
+      assertThatThrownBy(() -> item.changeStatus(target, LocalDateTime.now())).isInstanceOf(IllegalStateException.class);
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.DONE);
       assertThat(item.getUpdatedAt()).isEqualTo(BEFORE);

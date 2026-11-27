@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -87,7 +89,7 @@ class ScrumTeamSubsetStakeholderTest {
     void shouldApplyStakeholderIdsFromEvent() {
       ScrumTeamSubset subset = subset();
 
-      subset.apply(event(List.of(SnowflakeId.of(950L))));
+      subset.apply(event(List.of(SnowflakeId.of(950L))), LocalDateTime.now());
 
       assertThat(subset.getStakeholderEmployeeIds()).containsExactly(SnowflakeId.of(950L));
       assertThat(subset.isStakeholder(SnowflakeId.of(950L))).isTrue();
@@ -97,7 +99,7 @@ class ScrumTeamSubsetStakeholderTest {
     @Test
     @DisplayName("from()でイベントのステークホルダーリストがセットされること")
     void shouldSetStakeholderIdsFromEvent() {
-      ScrumTeamSubset subset = ScrumTeamSubset.from(event(List.of(STAKEHOLDER_ID)));
+      ScrumTeamSubset subset = ScrumTeamSubset.from(event(List.of(STAKEHOLDER_ID)), LocalDateTime.now());
 
       assertThat(subset.getStakeholderEmployeeIds()).containsExactly(STAKEHOLDER_ID);
       assertThat(subset.isStakeholder(STAKEHOLDER_ID)).isTrue();
@@ -108,7 +110,7 @@ class ScrumTeamSubsetStakeholderTest {
     void shouldApplyEmptyWhenEventStakeholdersNull() {
       ScrumTeamSubset subset = subset();
 
-      subset.apply(event(null));
+      subset.apply(event(null), LocalDateTime.now());
 
       assertThat(subset.getStakeholderEmployeeIds()).isEmpty();
     }

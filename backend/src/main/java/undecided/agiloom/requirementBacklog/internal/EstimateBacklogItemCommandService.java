@@ -71,7 +71,7 @@ class EstimateBacklogItemCommandService {
 
     if (currentStatus == BacklogItemStatus.READY) {
       // READY → ESTIMATED へ遷移（値の設定と状態遷移の一体化）
-      backlogItem.changeStatus(BacklogItemStatus.ESTIMATED);
+      backlogItem.changeStatus(BacklogItemStatus.ESTIMATED, now);
       backlogItemRepository.save(backlogItem);
 
       // BacklogItemStatusChanged イベントを発行

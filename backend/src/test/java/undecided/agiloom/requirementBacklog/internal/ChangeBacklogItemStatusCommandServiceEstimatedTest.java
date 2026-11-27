@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,8 +72,8 @@ class ChangeBacklogItemStatusCommandServiceEstimatedTest {
         .value(50)
         .storyPoint(8)
         .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
     return item;
   }
 
@@ -84,9 +86,9 @@ class ChangeBacklogItemStatusCommandServiceEstimatedTest {
         .value(50)
         .storyPoint(13)
         .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
-    item.changeStatus(BacklogItemStatus.ESTIMATED);
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
     return item;
   }
 
@@ -321,7 +323,7 @@ class ChangeBacklogItemStatusCommandServiceEstimatedTest {
           .scrumTeamId(TEAM_ID)
           .value(50)
           .build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -341,8 +343,8 @@ class ChangeBacklogItemStatusCommandServiceEstimatedTest {
           .scrumTeamId(TEAM_ID)
           .value(50)
           .build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -361,7 +363,7 @@ class ChangeBacklogItemStatusCommandServiceEstimatedTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .build();
-      item.changeStatus(BacklogItemStatus.FROZEN);
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 

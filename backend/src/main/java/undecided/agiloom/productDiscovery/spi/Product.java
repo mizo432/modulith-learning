@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -86,7 +87,7 @@ public class Product {
    * @param managerId 更新後のマネージャーID（nullの場合は変更なし）
    */
   public void update(
-      @Nullable String name, @Nullable String description, @Nullable SnowflakeId managerId) {
+      @Nullable String name, @Nullable String description, @Nullable SnowflakeId managerId, @NonNull LocalDateTime now) {
     if (name != null) {
       checkNonEmpty(
           name, () -> new IllegalArgumentException("Product name must not be empty"));
@@ -102,7 +103,7 @@ public class Product {
   }
 
   /** プロダクトをアーカイブします。 ACTIVE状態からARCHIVED状態へ遷移します。 */
-  public void archive() {
+  public void archive(@NonNull LocalDateTime now) {
     if (this.status != ProductStatus.ACTIVE) {
       throw new IllegalStateException(
           "Product can only be archived from ACTIVE status, current status: " + this.status);
@@ -112,7 +113,7 @@ public class Product {
   }
 
   /** プロダクトを論理削除します。 deleted_atに現在時刻を設定します。 */
-  public void delete() {
+  public void delete(@NonNull LocalDateTime now) {
     this.deletedAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
   }

@@ -104,10 +104,9 @@ class ChangeBacklogItemStatusCommandService {
     }
 
     BacklogItemStatus fromStatus = backlogItem.getStatus();
-    backlogItem.changeStatus(command.getTargetStatus());
-    backlogItemRepository.save(backlogItem);
-
     LocalDateTime now = LocalDateTime.now(clock);
+    backlogItem.changeStatus(command.getTargetStatus(), now);
+    backlogItemRepository.save(backlogItem);
     eventPublisher.publishEvent(
         new BacklogItemStatusChanged(
             backlogItem.getId(),

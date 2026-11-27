@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.productDiscovery.internal.ProductRepository;
@@ -29,13 +29,14 @@ class UpdateProductCommandServiceTest {
 
   @Mock private ProductRepository productRepository;
 
-  @InjectMocks private UpdateProductCommandService service;
+  private UpdateProductCommandService service;
 
   private SnowflakeId productId;
   private Product product;
 
   @BeforeEach
   void setUp() {
+    service = new UpdateProductCommandService(productRepository, Clock.systemDefaultZone());
     productId = SnowflakeId.of(1L);
     product =
         Product.builder()

@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -120,7 +122,7 @@ class ScrumTeamSubsetStakeholderEmployeeIdsMediumTest {
               List.of(SnowflakeId.of(6921L)),
               false);
 
-      scrumTeamSubsetRepository.save(ScrumTeamSubset.from(event));
+      scrumTeamSubsetRepository.save(ScrumTeamSubset.from(event, LocalDateTime.now()));
       ScrumTeamSubset loaded =
           scrumTeamSubsetRepository.findById(SnowflakeId.of(602L)).orElseThrow();
 

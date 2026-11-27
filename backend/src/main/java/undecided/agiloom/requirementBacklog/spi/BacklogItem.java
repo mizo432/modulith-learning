@@ -199,7 +199,7 @@ public class BacklogItem {
    * @throws IllegalArgumentException ACCEPTED 遷移時に Value が未設定の場合、
    *                                  ESTIMATED 遷移時に StoryPoint が未設定の場合
    */
-  public void changeStatus(@NonNull BacklogItemStatus target) {
+  public void changeStatus(@NonNull BacklogItemStatus target, @NonNull LocalDateTime now) {
     checkNotNull(target, () -> new IllegalArgumentException("target status must not be null"));
     switch (this.status) {
       case SUGGESTED -> {

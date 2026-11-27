@@ -1,5 +1,7 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
@@ -16,9 +18,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class SprintZeroFactoryImpl implements SprintZeroFactory {
 
     private final SprintRepository sprintRepository;
+    private final Clock clock;
 
-    public SprintZeroFactoryImpl(SprintRepository sprintRepository) {
+    public SprintZeroFactoryImpl(SprintRepository sprintRepository, Clock clock) {
         this.sprintRepository = sprintRepository;
+        this.clock = clock;
     }
 
     @Override
@@ -29,7 +33,7 @@ public class SprintZeroFactoryImpl implements SprintZeroFactory {
             return existing;
         }
 
-        Sprint sprintZero = Sprint.createSprintZero(productId, teamId, teamName);
+        Sprint sprintZero = Sprint.createSprintZero(productId, teamId, teamName, LocalDateTime.now(clock));
         sprintRepository.save(sprintZero);
         return Optional.of(sprintZero);
     }

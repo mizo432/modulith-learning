@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,8 +71,8 @@ class EstimateBacklogItemCommandServiceTest {
         .scrumTeamId(TEAM_ID)
         .value(50)
         .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
     return item;
   }
 
@@ -93,9 +95,9 @@ class EstimateBacklogItemCommandServiceTest {
         .value(50)
         .storyPoint(5)
         .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
-    item.changeStatus(BacklogItemStatus.ESTIMATED);
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
     return item;
   }
 

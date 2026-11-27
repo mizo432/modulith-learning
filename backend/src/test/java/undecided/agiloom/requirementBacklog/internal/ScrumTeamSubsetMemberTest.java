@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -13,6 +15,9 @@ import undecided.supporting.snowflake.SnowflakeId;
 @Tag("small")
 @DisplayName("ScrumTeamSubsetのチームメンバー判定テスト")
 class ScrumTeamSubsetMemberTest {
+
+  private static final LocalDateTime BASE = LocalDateTime.of(2025, 1, 1, 0, 0);
+  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 12, 0);
 
   private static final SnowflakeId TEAM_ID = SnowflakeId.of(10L);
   private static final SnowflakeId PO_ID = SnowflakeId.of(100L);
@@ -128,7 +133,7 @@ class ScrumTeamSubsetMemberTest {
           List.of(),
           false);
 
-      subset.apply(event);
+      subset.apply(event, NOW);
 
       assertThat(subset.getMemberEmployeeIds()).containsExactlyInAnyOrder(PO_ID, SM_ID, MEMBER_ID);
     }
@@ -154,9 +159,55 @@ class ScrumTeamSubsetMemberTest {
           List.of(),
           false);
 
-      ScrumTeamSubset subset = ScrumTeamSubset.from(event);
+      ScrumTeamSubset subset = ScrumTeamSubset.from(event, NOW);
 
       assertThat(subset.getMemberEmployeeIds()).containsExactlyInAnyOrder(PO_ID, SM_ID, MEMBER_ID);
+    }
+  }
+  @Nested
+  @DisplayName("渡された時刻のテスト")
+  class PassedTimeTest {
+
+    private ScrumTeamChanged event() {
+      return new ScrumTeamChanged(
+          TEAM_ID,
+          SnowflakeId.of(1L),
+          "Test Team",
+          "Business Domain",
+          PO_ID,
+          "PO Name",
+          SM_ID,
+          "SM Name",
+          List.of(PO_ID, SM_ID, MEMBER_ID),
+          List.of(),
+          false);
+    }
+
+    @Test
+    @DisplayName("from()に渡した時刻がupdatedAtになること")
+    void shouldSetUpdatedAtOnFrom() {
+      ScrumTeamSubset subset = ScrumTeamSubset.from(event(), NOW);
+
+      assertThat(subset.getUpdatedAt()).isEqualTo(NOW);
+    }
+
+    @Test
+    @DisplayName("apply()に渡した時刻がupdatedAtになること")
+    void shouldSetUpdatedAtOnApply() {
+      ScrumTeamSubset subset =
+          ScrumTeamSubset.builder()
+              .id(TEAM_ID)
+              .name("Old Team")
+              .poEmployeeId(PO_ID)
+              .poName("PO Name")
+              .smEmployeeId(SM_ID)
+              .smName("SM Name")
+              .updatedAt(BASE)
+              .build();
+
+      subset.apply(event(), NOW);
+
+      assertThat(subset.getUpdatedAt()).isEqualTo(NOW);
     }
   }
 }

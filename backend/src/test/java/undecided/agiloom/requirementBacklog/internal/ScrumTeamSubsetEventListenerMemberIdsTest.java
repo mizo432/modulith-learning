@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ class ScrumTeamSubsetEventListenerMemberIdsTest {
 
   @BeforeEach
   void setUp() {
-    listener = new ScrumTeamSubsetEventListener(scrumTeamSubsetRepository);
+    listener = new ScrumTeamSubsetEventListener(scrumTeamSubsetRepository, Clock.systemDefaultZone());
   }
 
   private ScrumTeamChanged eventWithMembers() {

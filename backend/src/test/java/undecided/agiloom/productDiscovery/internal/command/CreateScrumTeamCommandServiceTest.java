@@ -1,5 +1,7 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -143,7 +145,7 @@ class CreateScrumTeamCommandServiceTest {
               .build();
 
       Sprint existingSprintZero = Sprint.createSprintZero(
-          SnowflakeId.of(1L), SnowflakeId.of(2L), "Test Team");
+          SnowflakeId.of(1L), SnowflakeId.of(2L), "Test Team", LocalDateTime.now());
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
       when(sprintZeroFactory.createSprintZero(any(SnowflakeId.class), any(SnowflakeId.class), any(String.class)))

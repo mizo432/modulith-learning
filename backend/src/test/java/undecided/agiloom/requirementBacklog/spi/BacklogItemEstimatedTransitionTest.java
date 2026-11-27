@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.spi;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -25,8 +27,8 @@ class BacklogItemEstimatedTransitionTest {
         .value(50)
         .storyPoint(storyPoint)
         .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
     return item;
   }
 
@@ -38,8 +40,8 @@ class BacklogItemEstimatedTransitionTest {
         .scrumTeamId(TEAM_ID)
         .value(50)
         .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
     return item;
   }
 
@@ -51,7 +53,7 @@ class BacklogItemEstimatedTransitionTest {
     @DisplayName("READY状態のBacklogItemに有効なStoryPointを設定しESTIMATEDへ遷移したとき、状態がESTIMATEDになること")
     void shouldTransitionReadyToEstimatedWithValidStoryPoint() {
       BacklogItem item = readyItemWithStoryPoint(8);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ESTIMATED);
     }
 
@@ -59,7 +61,7 @@ class BacklogItemEstimatedTransitionTest {
     @DisplayName("READY状態のBacklogItemでStoryPointが未設定のときESTIMATEDへ遷移すると、IllegalArgumentExceptionがスローされること")
     void shouldRejectReadyToEstimatedWithoutStoryPoint() {
       BacklogItem item = readyItemWithoutStoryPoint();
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ESTIMATED))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("StoryPoint must be set");
     }
@@ -75,9 +77,9 @@ class BacklogItemEstimatedTransitionTest {
           .value(50)
           .storyPoint(4) // 無効な値
           .build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ESTIMATED))
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
   }
@@ -90,9 +92,9 @@ class BacklogItemEstimatedTransitionTest {
     @DisplayName("ESTIMATED状態のBacklogItemをREADYへ戻したとき、状態がREADYになりStoryPointが保持されること")
     void shouldTransitionEstimatedToReadyAndKeepStoryPoint() {
       BacklogItem item = readyItemWithStoryPoint(13);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
       assertThat(item.getStoryPoint()).isEqualTo(13);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.READY);
       assertThat(item.getStoryPoint()).isEqualTo(13);
     }
@@ -106,7 +108,7 @@ class BacklogItemEstimatedTransitionTest {
     @DisplayName("ESTIMATED状態のBacklogItemのStoryPointを変更したとき、新しい値が設定されること（再評価許可）")
     void shouldUpdateStoryPointInEstimatedState() {
       BacklogItem item = readyItemWithStoryPoint(5);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
       item.setStoryPoint(21);
       assertThat(item.getStoryPoint()).isEqualTo(21);
     }
@@ -120,8 +122,8 @@ class BacklogItemEstimatedTransitionTest {
     @DisplayName("ESTIMATED状態のBacklogItemをACCEPTEDへ遷移しようとすると、IllegalStateExceptionがスローされること")
     void shouldRejectEstimatedToAccepted() {
       BacklogItem item = readyItemWithStoryPoint(8);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED))
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
     }
 
@@ -129,8 +131,8 @@ class BacklogItemEstimatedTransitionTest {
     @DisplayName("ESTIMATED状態のBacklogItemをSUGGESTEDへ遷移しようとすると、IllegalStateExceptionがスローされること")
     void shouldRejectEstimatedToSuggested() {
       BacklogItem item = readyItemWithStoryPoint(8);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.SUGGESTED))
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.SUGGESTED, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
     }
   }

@@ -217,7 +217,7 @@ public class Sprint {
      * @param teamName スクラムチームの名前
      * @return スプリント0のインスタンス
      */
-    public static Sprint createSprintZero(@NonNull SnowflakeId productId, @NonNull SnowflakeId teamId, @NonNull String teamName) {
+    public static Sprint createSprintZero(@NonNull SnowflakeId productId, @NonNull SnowflakeId teamId, @NonNull String teamName, @NonNull LocalDateTime now) {
         checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
         checkNotNull(teamId, () -> new IllegalArgumentException("teamId must not be null"));
         checkNotNull(teamName, () -> new IllegalArgumentException("teamName must not be null"));

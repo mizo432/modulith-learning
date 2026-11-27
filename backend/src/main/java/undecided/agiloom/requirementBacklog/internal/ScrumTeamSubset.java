@@ -75,7 +75,7 @@ class ScrumTeamSubset {
   protected LocalDateTime updatedAt = LocalDateTime.now();
 
   /** イベントのスナップショット内容でサブセットを更新します。 */
-  void apply(@NonNull ScrumTeamChanged event) {
+  void apply(@NonNull ScrumTeamChanged event, @NonNull LocalDateTime now) {
     this.name = event.name();
     this.poEmployeeId = event.poEmployeeId();
     this.poName = event.poName();
@@ -89,7 +89,7 @@ class ScrumTeamSubset {
   }
 
   /** イベントから新しいサブセットを作成します。 */
-  static ScrumTeamSubset from(@NonNull ScrumTeamChanged event) {
+  static ScrumTeamSubset from(@NonNull ScrumTeamChanged event, @NonNull LocalDateTime now) {
     return ScrumTeamSubset.builder()
         .id(event.scrumTeamId())
         .name(event.name())

@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -157,7 +159,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .scrumTeamId(TEAM_ID)
           .value(50)
           .build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
@@ -236,7 +238,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .build();
-      item.changeStatus(BacklogItemStatus.FROZEN);
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
@@ -257,7 +259,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .build();
-      item.changeStatus(BacklogItemStatus.FROZEN);
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
@@ -279,7 +281,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .build();
-      item.changeStatus(BacklogItemStatus.FROZEN);
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 

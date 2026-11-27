@@ -2,6 +2,7 @@ package undecided.agiloom.productDiscovery.internal.command;
 
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
+import java.time.Clock;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +15,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class CreateProductCommandService {
 
   private final ProductRepository productRepository;
+  private final Clock clock;
 
-  public CreateProductCommandService(ProductRepository productRepository) {
+  public CreateProductCommandService(ProductRepository productRepository, Clock clock) {
     this.productRepository = productRepository;
+    this.clock = clock;
   }
 
   public SnowflakeId execute(@NonNull CreateProductCommand command) {
