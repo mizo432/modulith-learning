@@ -163,8 +163,8 @@ const backlogItemService = {
       });
       return response.data;
     } catch (err: any) {
-      if (err?.response?.data?.message) {
-        const normalizedError = new Error(err.response.data.message);
+      if (err?.response?.data?.detail) {
+        const normalizedError = new Error(err.response.data.detail);
         (normalizedError as any).response = err.response;
         throw normalizedError;
       }
@@ -180,8 +180,8 @@ const backlogItemService = {
       const response = await api.patch(`/v1/backlog-items/${backlogItemId}`, request);
       return response.data;
     } catch (err: any) {
-      if (err?.response?.data?.message) {
-        const normalizedError = new Error(err.response.data.message);
+      if (err?.response?.data?.detail) {
+        const normalizedError = new Error(err.response.data.detail);
         (normalizedError as any).response = err.response;
         throw normalizedError;
       }

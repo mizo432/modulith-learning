@@ -68,7 +68,7 @@ describe('backlogItemService', () => {
       const error: any = new Error('Bad Request');
       error.response = {
         status: 400,
-        data: { message: 'BacklogItem value must be set before accepting' },
+        data: { detail: 'BacklogItem value must be set before accepting' },
       };
       mockPatch.mockRejectedValue(error);
 
@@ -81,7 +81,7 @@ describe('backlogItemService', () => {
       const error: any = new Error('Bad Request');
       error.response = {
         status: 400,
-        data: { message: 'BacklogItem value must be between 0 and 100' },
+        data: { detail: 'BacklogItem value must be between 0 and 100' },
       };
       mockPatch.mockRejectedValue(error);
 

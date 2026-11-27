@@ -47,7 +47,7 @@ const ChangePassword: React.FC = () => {
         setError(response.data.message || 'パスワードの変更に失敗しました');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'エラーが発生しました');
+      setError(err.response?.data?.detail || 'エラーが発生しました');
     } finally {
       setLoading(false);
     }

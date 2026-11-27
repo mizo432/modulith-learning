@@ -161,7 +161,7 @@ const BacklogItemList: React.FC = () => {
     } catch (err: any) {
       console.error('Failed to create backlog item:', err);
       setError(
-        err?.response?.data?.message ?? 'バックログアイテムの追加に失敗しました。',
+        err?.response?.data?.detail ?? 'バックログアイテムの追加に失敗しました。',
       );
     }
   };
@@ -185,7 +185,7 @@ const BacklogItemList: React.FC = () => {
       if (err?.response?.status === 403) {
         setError('状態を変更する権限がありません（PO / SM のみ変更できます）。');
       } else {
-        setError(err?.response?.data?.message ?? '状態の変更に失敗しました。');
+        setError(err?.response?.data?.detail ?? '状態の変更に失敗しました。');
       }
       setConfirmTarget(null);
     }
