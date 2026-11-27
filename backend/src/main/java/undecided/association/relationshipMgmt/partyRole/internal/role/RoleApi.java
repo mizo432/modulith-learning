@@ -1,4 +1,6 @@
 package undecided.association.relationshipMgmt.partyRole.internal.role;
+import java.time.Clock;
+import java.time.LocalDateTime;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,12 @@ import undecided.association.relationshipMgmt.partyRole.spi.role.Role;
 @RestController
 @RequestMapping("/api/roles")
 public class RoleApi {
+
+  private final Clock clock;
+
+  public RoleApi(Clock clock) {
+    this.clock = clock;
+  }
   @GetMapping
   Role get() {
     return Role.create(
@@ -29,7 +37,7 @@ public class RoleApi {
         "",
         "",
         null,
-        java.time.LocalDateTime.now(),
+        LocalDateTime.now(clock),
         null);
   }
 }

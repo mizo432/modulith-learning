@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
+import java.time.Clock;
 
 import java.time.LocalDate;
 import jakarta.validation.constraints.NotNull;
@@ -18,9 +19,12 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class SprintSettingsQueryController {
 
   private final SprintSettingsQueryService sprintSettingsQueryService;
+  private final Clock clock;
 
-  public SprintSettingsQueryController(SprintSettingsQueryService sprintSettingsQueryService) {
+  public SprintSettingsQueryController(
+      SprintSettingsQueryService sprintSettingsQueryService, Clock clock) {
     this.sprintSettingsQueryService = sprintSettingsQueryService;
+    this.clock = clock;
   }
 
   /**
@@ -64,7 +68,7 @@ public class SprintSettingsQueryController {
         .endDate(endDate)
         .businessDays(settings.getBusinessDays())
         .endDayOfWeekLabel(settings.getEndDayOfWeek().name())
-        .isPastDate(endDate.isBefore(LocalDate.now()))
+        .isPastDate(endDate.isBefore(LocalDate.now(clock)))
         .build();
   }
 }

@@ -1,4 +1,5 @@
 package undecided.generic.bankReg.internal.batch.config;
+import java.time.Clock;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
@@ -23,6 +24,11 @@ import undecided.generic.bankReg.spi.branch.Branch;
 /** 金融機関支店マスターデータ自動インポート用 Spring Batch 設定クラス。 */
 @Configuration
 public class BranchImportBatchConfig {
+  private final Clock clock;
+
+  public BranchImportBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "branchImportJob";
   public static final String STEP_NAME = "branchImportStep";
@@ -69,7 +75,7 @@ public class BranchImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -77,7 +83,7 @@ public class BranchImportBatchConfig {
   public Job branchImportJob(JobRepository jobRepository, Step branchImportStep) {
     return new JobBuilder(JOB_NAME, jobRepository)
         .start(branchImportStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }

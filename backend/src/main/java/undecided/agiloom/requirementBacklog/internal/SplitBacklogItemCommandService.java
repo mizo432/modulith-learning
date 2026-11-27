@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
@@ -24,16 +25,19 @@ class SplitBacklogItemCommandService {
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
   private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   SplitBacklogItemCommandService(
       BacklogItemRepository backlogItemRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
       SnowflakeIdGenerator snowflakeIdGenerator,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
     this.eventPublisher = eventPublisher;
+    this.clock = clock;
   }
 
   void execute(SplitBacklogItemCommand command) {
@@ -77,7 +81,7 @@ class SplitBacklogItemCommandService {
     backlogItemRepository.save(parent);
     backlogItemRepository.saveAll(children);
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     eventPublisher.publishEvent(new BacklogItemStatusChanged(
         parent.getId(), parent.getScrumTeamId(), fromStatus, BacklogItemStatus.DONE,
         command.actorEmployeeId(), now));

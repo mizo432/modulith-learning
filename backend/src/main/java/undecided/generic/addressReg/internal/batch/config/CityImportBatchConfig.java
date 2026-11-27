@@ -1,4 +1,5 @@
 package undecided.generic.addressReg.internal.batch.config;
+import java.time.Clock;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
@@ -24,6 +25,11 @@ import undecided.generic.addressReg.spi.City;
 /** 市区町村マスターデータ自動インポート用 Spring Batch 設定クラス。 */
 @Configuration
 public class CityImportBatchConfig {
+  private final Clock clock;
+
+  public CityImportBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "cityImportJob";
   public static final String STEP_NAME = "cityImportStep";
@@ -64,7 +70,7 @@ public class CityImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -72,7 +78,7 @@ public class CityImportBatchConfig {
   public Job cityImportJob(JobRepository jobRepository, Step cityImportStep) {
     return new JobBuilder(JOB_NAME, jobRepository)
         .start(cityImportStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }

@@ -1,4 +1,5 @@
 package undecided.association.relationshipMgmt.party.command;
+import java.time.Clock;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class CreateOrgUnitCommandService implements CreateOrgUnitCommand {
   private final OrgUnitRepository orgUnitRepository;
   private final OrgRepository orgRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   /**
    * 組織単位を新規作成します。
@@ -72,7 +74,7 @@ public class CreateOrgUnitCommandService implements CreateOrgUnitCommand {
     OrgUnit orgUnit = OrgUnit.create(
         SnowflakeId.of(snowflakeIdGenerator.nextId()),
         orgUnitDto.getOrgUnitCode().value(),
-        LocalDateTime.now(),
+        LocalDateTime.now(clock),
         orgUnitDto.getOrgUnitName(),
         orgUnitDto.getOrgUnitCode(),
         orgUnitDto.getOrgUnitTypeCode(),

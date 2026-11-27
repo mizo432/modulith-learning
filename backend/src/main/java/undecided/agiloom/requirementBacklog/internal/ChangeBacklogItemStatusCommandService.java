@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
@@ -28,14 +29,17 @@ class ChangeBacklogItemStatusCommandService {
   private final BacklogItemRepository backlogItemRepository;
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
   private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   ChangeBacklogItemStatusCommandService(
       BacklogItemRepository backlogItemRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.eventPublisher = eventPublisher;
+    this.clock = clock;
   }
 
   void execute(@NonNull ChangeBacklogItemStatusCommand command) {
@@ -103,7 +107,7 @@ class ChangeBacklogItemStatusCommandService {
     backlogItem.changeStatus(command.getTargetStatus());
     backlogItemRepository.save(backlogItem);
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     eventPublisher.publishEvent(
         new BacklogItemStatusChanged(
             backlogItem.getId(),

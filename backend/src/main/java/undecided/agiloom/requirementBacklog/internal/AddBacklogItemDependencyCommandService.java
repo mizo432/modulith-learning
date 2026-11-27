@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
@@ -30,18 +31,21 @@ class AddBacklogItemDependencyCommandService {
   private final BacklogItemDependencyRepository dependencyRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
   private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   AddBacklogItemDependencyCommandService(
       BacklogItemRepository backlogItemRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
       BacklogItemDependencyRepository dependencyRepository,
       SnowflakeIdGenerator snowflakeIdGenerator,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.dependencyRepository = dependencyRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
     this.eventPublisher = eventPublisher;
+    this.clock = clock;
   }
 
   SnowflakeId execute(@NonNull AddBacklogItemDependencyCommand command) {
@@ -104,7 +108,7 @@ class AddBacklogItemDependencyCommandService {
             command.getDependencyItemId(),
             backlogItem.getScrumTeamId(),
             command.getActorEmployeeId(),
-            LocalDateTime.now()));
+            LocalDateTime.now(clock)));
     return dependency.getId();
   }
 

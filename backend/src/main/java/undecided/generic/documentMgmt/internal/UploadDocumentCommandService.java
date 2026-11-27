@@ -1,4 +1,5 @@
 package undecided.generic.documentMgmt.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import java.util.OptionalInt;
@@ -24,16 +25,19 @@ class UploadDocumentCommandService {
   private final undecided.generic.documentMgmt.spi.DocumentStorageService documentStorageService;
   private final DocumentRepository documentRepository;
   private final undecided.supporting.snowflake.SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   UploadDocumentCommandService(
       DocumentFileValidator documentFileValidator,
       undecided.generic.documentMgmt.spi.DocumentStorageService documentStorageService,
       DocumentRepository documentRepository,
-      undecided.supporting.snowflake.SnowflakeIdGenerator snowflakeIdGenerator) {
+      undecided.supporting.snowflake.SnowflakeIdGenerator snowflakeIdGenerator,
+      Clock clock) {
     this.documentFileValidator = documentFileValidator;
     this.documentStorageService = documentStorageService;
     this.documentRepository = documentRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
+    this.clock = clock;
   }
 
   /**
@@ -71,7 +75,7 @@ class UploadDocumentCommandService {
             command.getContent(),
             command.getFileSize());
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     documentRepository.save(
         Document.builder()
             .id(id)

@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
@@ -27,16 +28,19 @@ class AssignBacklogItemSprintCommandService {
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
   private final SprintFacade sprintFacade;
   private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   AssignBacklogItemSprintCommandService(
       BacklogItemRepository backlogItemRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
       SprintFacade sprintFacade,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.sprintFacade = sprintFacade;
     this.eventPublisher = eventPublisher;
+    this.clock = clock;
   }
 
   void assign(@NonNull AssignBacklogItemSprintCommand command) {
@@ -74,7 +78,7 @@ class AssignBacklogItemSprintCommandService {
             previousSprintId,
             sprint.getId(),
             command.getActorEmployeeId(),
-            LocalDateTime.now()));
+            LocalDateTime.now(clock)));
   }
 
   void unassign(@NonNull UnassignBacklogItemSprintCommand command) {
@@ -96,7 +100,7 @@ class AssignBacklogItemSprintCommandService {
             previousSprintId,
             null,
             command.getActorEmployeeId(),
-            LocalDateTime.now()));
+            LocalDateTime.now(clock)));
   }
 
   /** DBから読み込んだ未設定のIDは SnowflakeId.EMPTY になるため、nullへ正規化する。 */

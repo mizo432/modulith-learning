@@ -1,4 +1,5 @@
 package undecided.generic.documentMgmt.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
@@ -17,9 +18,11 @@ import undecided.generic.documentMgmt.spi.Document;
 class DeleteDocumentCommandService {
 
   private final DocumentRepository documentRepository;
+  private final Clock clock;
 
-  DeleteDocumentCommandService(DocumentRepository documentRepository) {
+  DeleteDocumentCommandService(DocumentRepository documentRepository, Clock clock) {
     this.documentRepository = documentRepository;
+    this.clock = clock;
   }
 
   /**
@@ -45,7 +48,7 @@ class DeleteDocumentCommandService {
           "帳票を削除する権限がありません。削除できるのはアップロードした本人のみです");
     }
 
-    document.softDelete(LocalDateTime.now());
+    document.softDelete(LocalDateTime.now(clock));
     documentRepository.save(document);
   }
 }

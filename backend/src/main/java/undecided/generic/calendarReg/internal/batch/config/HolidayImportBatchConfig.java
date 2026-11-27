@@ -1,4 +1,5 @@
 package undecided.generic.calendarReg.internal.batch.config;
+import java.time.Clock;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +27,11 @@ import undecided.generic.calendarReg.spi.Holiday;
 /** 祝日マスターデータ自動インポート用 Spring Batch 設定クラス。 */
 @Configuration
 public class HolidayImportBatchConfig {
+  private final Clock clock;
+
+  public HolidayImportBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "holidayImportJob";
   public static final String STEP_NAME = "holidayImportStep";
@@ -77,7 +83,7 @@ public class HolidayImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -85,7 +91,7 @@ public class HolidayImportBatchConfig {
   public Job holidayImportJob(JobRepository jobRepository, Step holidayImportStep) {
     return new JobBuilder(JOB_NAME, jobRepository)
         .start(holidayImportStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }

@@ -1,4 +1,5 @@
 package undecided.jobmanagement.jobdefinition.internal.command;
+import java.time.Clock;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class RegisterJobDefinitionCommandService implements RegisterJobDefinitio
 
   private final JobDefinitionRepository jobDefinitionRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   @Override
   public void register(JobDefinitionDTO jobDefinitionDTO) {
@@ -34,7 +36,7 @@ public class RegisterJobDefinitionCommandService implements RegisterJobDefinitio
             jobDefinitionDTO.getMaxConcurrentExecutions(),
             jobDefinitionDTO.getTimeoutSeconds()));
     jobDefinition.setIsActive(true);
-    jobDefinition.setCreatedAt(LocalDateTime.now());
+    jobDefinition.setCreatedAt(LocalDateTime.now(clock));
     jobDefinition.setCreatedBy(jobDefinitionDTO.getCreatedBy());
     
     jobDefinitionRepository.save(jobDefinition);

@@ -1,4 +1,5 @@
 package undecided.generic.largeRecordBatch.internal.batch.config;
+import java.time.Clock;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
@@ -34,6 +35,11 @@ import undecided.generic.largeRecordBatch.spi.LargeRecord;
  */
 @Configuration
 public class LargeRecordImportBatchConfig {
+  private final Clock clock;
+
+  public LargeRecordImportBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "largeRecordImportJob";
   public static final String STEP_NAME = "largeRecordImportStep";
@@ -85,7 +91,7 @@ public class LargeRecordImportBatchConfig {
         // フォールトトレランスパターン: 一時的なエラーに対してリトライ
         .retry(Exception.class)
         .retryLimit(RETRY_LIMIT)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -93,7 +99,7 @@ public class LargeRecordImportBatchConfig {
   public Job largeRecordImportJob(JobRepository jobRepository, Step largeRecordImportStep) {
     return new JobBuilder(JOB_NAME, jobRepository)
         .start(largeRecordImportStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }

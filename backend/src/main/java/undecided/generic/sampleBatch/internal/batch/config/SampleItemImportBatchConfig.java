@@ -1,4 +1,5 @@
 package undecided.generic.sampleBatch.internal.batch.config;
+import java.time.Clock;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
@@ -28,6 +29,11 @@ import undecided.generic.sampleBatch.spi.SampleItem;
  */
 @Configuration
 public class SampleItemImportBatchConfig {
+  private final Clock clock;
+
+  public SampleItemImportBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "sampleItemImportJob";
   public static final String STEP_NAME = "sampleItemImportStep";
@@ -68,7 +74,7 @@ public class SampleItemImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -76,7 +82,7 @@ public class SampleItemImportBatchConfig {
   public Job sampleItemImportJob(JobRepository jobRepository, Step sampleItemImportStep) {
     return new JobBuilder(JOB_NAME, jobRepository)
         .start(sampleItemImportStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }
