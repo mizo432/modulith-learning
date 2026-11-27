@@ -3,10 +3,17 @@ package undecided.notification.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
 /**
  * テストリスト項目7, 8: メール送信サービスのテスト
@@ -67,6 +74,65 @@ class EmailNotificationServiceTest {
 
       // 例外がスローされないこと（try-catchでキャッチされる）
       assertThatCode(() -> service.send(TO_EMAIL, TITLE, CONTENT)).doesNotThrowAnyException();
+    }
+  }
+
+  /** テストリスト項目4, 5: メール送信のログ出力テスト（#755） */
+  @Nested
+  @DisplayName("ログ出力のテスト")
+  class LoggingTest {
+
+    private Logger logger;
+    private ListAppender<ILoggingEvent> appender;
+
+    @BeforeEach
+    void setUp() {
+      logger = (Logger) LoggerFactory.getLogger(EmailNotificationService.class);
+      appender = new ListAppender<>();
+      appender.start();
+      logger.addAppender(appender);
+      logger.setLevel(Level.INFO);
+    }
+
+    @AfterEach
+    void tearDown() {
+      logger.detachAppender(appender);
+      logger.setLevel(null);
+    }
+
+    @Test
+    @DisplayName("メール送信が成功したとき、宛先と件名を含むINFOログが記録される")
+    void shouldLogInfoWhenMailSent() {
+      EmailNotificationService service =
+          new EmailNotificationService((to, from, subject, text) -> {});
+
+      service.send(TO_EMAIL, TITLE, CONTENT);
+
+      assertThat(appender.list)
+          .anySatisfy(
+              event -> {
+                assertThat(event.getLevel()).isEqualTo(Level.INFO);
+                assertThat(event.getFormattedMessage()).contains(TO_EMAIL).contains(TITLE);
+              });
+    }
+
+    @Test
+    @DisplayName("メール送信が失敗したとき、WARNログが記録される")
+    void shouldLogWarnWhenMailFails() {
+      EmailNotificationService service =
+          new EmailNotificationService(
+              (to, from, subject, text) -> {
+                throw new RuntimeException("Mail send failed");
+              });
+
+      service.send(TO_EMAIL, TITLE, CONTENT);
+
+      assertThat(appender.list)
+          .anySatisfy(
+              event -> {
+                assertThat(event.getLevel()).isEqualTo(Level.WARN);
+                assertThat(event.getFormattedMessage()).contains("メール送信に失敗しました");
+              });
     }
   }
 }

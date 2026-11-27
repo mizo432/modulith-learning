@@ -38,6 +38,7 @@ class EmailNotificationService {
   public void send(String to, String title, String content) {
     try {
       mailSender.send(to, "noreply@modulith-learning.local", title, content);
+      log.info("メールを送信しました (to={}, title={})", to, title);
     } catch (Exception ex) {
       log.warn("メール送信に失敗しました (to={}, title={})", to, title, ex);
     }
@@ -55,6 +56,7 @@ class EmailNotificationService {
   public void sendAsync(String to, String title, String content) {
     try {
       mailSender.send(to, "noreply@modulith-learning.local", title, content);
+      log.info("メールを送信しました (to={}, title={})", to, title);
     } catch (Exception ex) {
       log.warn("メール送信に失敗しました (to={}, title={})", to, title, ex);
     }
