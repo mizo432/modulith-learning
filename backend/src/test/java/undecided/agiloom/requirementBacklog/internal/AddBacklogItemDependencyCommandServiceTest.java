@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,7 +49,8 @@ class AddBacklogItemDependencyCommandServiceTest {
           scrumTeamSubsetRepository,
           dependencyRepository,
           snowflakeIdGenerator,
-          eventPublisher);
+          eventPublisher,
+          Clock.systemDefaultZone());
 
   private BacklogItem item(SnowflakeId id, SnowflakeId teamId) {
     return BacklogItem.builder()

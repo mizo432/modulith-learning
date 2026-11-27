@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -27,11 +29,15 @@ class DeleteDocumentCommandServiceTest {
   private final DocumentRepository documentRepository = mock(DocumentRepository.class);
 
   private final DeleteDocumentCommandService sut =
-      new DeleteDocumentCommandService(documentRepository);
+      new DeleteDocumentCommandService(documentRepository, FIXED_CLOCK);
 
   private static final SnowflakeId DOCUMENT_ID = SnowflakeId.of(1L);
   private static final SnowflakeId UPLOADER_ID = SnowflakeId.of(10L);
   private static final SnowflakeId OTHER_EMPLOYEE_ID = SnowflakeId.of(99L);
+  private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+  private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 11, 27, 12, 0);
+  private static final Clock FIXED_CLOCK = Clock.fixed(FIXED_TIME.atZone(ZONE).toInstant(), ZONE);
+
 
   private Document buildDocument(boolean deleted) {
     return Document.builder()
@@ -68,7 +74,7 @@ class DeleteDocumentCommandServiceTest {
               .build());
 
       assertThat(document.isDeleted()).isTrue();
-      assertThat(document.getDeletedAt()).isNotNull();
+      assertThat(document.getDeletedAt()).isEqualTo(FIXED_TIME);
     }
   }
 

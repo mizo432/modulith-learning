@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -55,7 +56,7 @@ class SplitBacklogItemControllerTest {
   private final ApplicationEventPublisher events = mock(ApplicationEventPublisher.class);
 
   @Spy private SplitBacklogItemCommandService splitService =
-      new SplitBacklogItemCommandService(items, teams, ids, events);
+      new SplitBacklogItemCommandService(items, teams, ids, events, Clock.systemDefaultZone());
   @Spy private BacklogItemQueryService queryService =
       new BacklogItemQueryService(items, null, null, null, null, null);
   @Spy private BacklogItemResponseConverter converter =

@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -67,7 +68,7 @@ class AddBacklogItemCommentCommandServiceTest {
             commentParticipantSubsetRepository,
             snowflakeIdGenerator,
             eventPublisher,
-            employeeEmailQuery);
+            employeeEmailQuery, Clock.systemDefaultZone());
   }
 
   private BacklogItem backlogItem() {
