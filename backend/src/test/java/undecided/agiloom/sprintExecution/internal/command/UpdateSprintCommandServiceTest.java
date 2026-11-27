@@ -6,6 +6,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +33,10 @@ class UpdateSprintCommandServiceTest {
   private static final SnowflakeId SPRINT_ID = SnowflakeId.of(1001L);
   private static final SnowflakeId PRODUCT_ID = SnowflakeId.of(3000L);
   private static final SnowflakeId TEAM_ID = SnowflakeId.of(2000L);
+  private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+  private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 11, 27, 12, 0);
+  private static final Clock FIXED_CLOCK = Clock.fixed(FIXED_TIME.atZone(ZONE).toInstant(), ZONE);
+
 
   @Mock private SprintRepository sprintRepository;
   @Mock private ApplicationEventPublisher eventPublisher;
@@ -38,7 +45,7 @@ class UpdateSprintCommandServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new UpdateSprintCommandService(sprintRepository, eventPublisher);
+    service = new UpdateSprintCommandService(sprintRepository, eventPublisher, FIXED_CLOCK);
   }
 
   private Sprint sprint() {
@@ -64,7 +71,7 @@ class UpdateSprintCommandServiceTest {
     assertThat(captor.getValue().sprintId()).isEqualTo(SPRINT_ID);
     assertThat(captor.getValue().scrumTeamId()).isEqualTo(TEAM_ID);
     assertThat(captor.getValue().sprintNumber()).isEqualTo(1);
-    assertThat(captor.getValue().occurredAt()).isNotNull();
+    assertThat(captor.getValue().occurredAt()).isEqualTo(FIXED_TIME);
   }
 
   @Test

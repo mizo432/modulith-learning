@@ -1,4 +1,5 @@
 package undecided.jobmanagement.jobexecution.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class JobExecutionRunner {
 
   private final JobExecutionRepository jobExecutionRepository;
   private final JobOperator jobOperator;
+  private final Clock clock;
 
   /**
    * 実行レコードを実行中へ進め、実バッチを実行して結果で状態を更新します。
@@ -39,7 +41,7 @@ public class JobExecutionRunner {
             .orElseThrow(
                 () -> new IllegalStateException("ジョブ実行レコードが見つかりません: " + executionRecordId));
     execution.setState(ExecutionState.RUNNING);
-    execution.setStartedAt(LocalDateTime.now());
+    execution.setStartedAt(LocalDateTime.now(clock));
     jobExecutionRepository.save(execution);
     try {
       JobParameters withTimestamp =
@@ -48,7 +50,7 @@ public class JobExecutionRunner {
               .toJobParameters();
       org.springframework.batch.core.job.JobExecution batchExecution =
           jobOperator.start(job, withTimestamp);
-      execution.setCompletedAt(LocalDateTime.now());
+      execution.setCompletedAt(LocalDateTime.now(clock));
       if (batchExecution.getStatus() == BatchStatus.COMPLETED) {
         execution.setState(ExecutionState.SUCCESS);
       } else {
@@ -56,7 +58,7 @@ public class JobExecutionRunner {
         execution.setErrorMessage(describeFailure(batchExecution));
       }
     } catch (Exception e) {
-      execution.setCompletedAt(LocalDateTime.now());
+      execution.setCompletedAt(LocalDateTime.now(clock));
       execution.setState(ExecutionState.FAILED);
       execution.setErrorMessage(truncate(String.valueOf(e.getMessage())));
     }

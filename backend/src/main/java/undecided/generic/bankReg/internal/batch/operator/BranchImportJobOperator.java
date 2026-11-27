@@ -1,4 +1,5 @@
 package undecided.generic.bankReg.internal.batch.operator;
+import java.time.Clock;
 
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
@@ -40,6 +41,7 @@ public class BranchImportJobOperator {
   private final BranchMasterImportRepository branchMasterImportRepository;
   private final BankcodeJpMasterExportClient bankcodeJpClient;
   private final BankcodeJpProperties bankcodeJpProperties;
+  private final Clock clock;
 
   /**
    * 指定された CSV ファイルを使用して支店インポートジョブを実行します。
@@ -111,7 +113,7 @@ public class BranchImportJobOperator {
       BranchMasterImport importEvent = new BranchMasterImport();
       importEvent.setDatasetId(dataset.datasetId());
       importEvent.setPublishedAt(dataset.publishedAt());
-      importEvent.setOccurredAt(OffsetDateTime.now());
+      importEvent.setOccurredAt(OffsetDateTime.now(clock));
       importEvent.setZipSha256(dataset.zipSha256());
       importEvent.setBranchRowCount(
           dataset.bankRowCount()); // API returns bank_row_count; actual branch count may differ

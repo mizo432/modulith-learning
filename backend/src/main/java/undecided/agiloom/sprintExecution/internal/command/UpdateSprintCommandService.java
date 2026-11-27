@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.command;
+import java.time.Clock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,11 +19,13 @@ public class UpdateSprintCommandService {
 
     private final SprintRepository sprintRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final Clock clock;
 
     public UpdateSprintCommandService(
-            SprintRepository sprintRepository, ApplicationEventPublisher eventPublisher) {
+            SprintRepository sprintRepository, ApplicationEventPublisher eventPublisher, Clock clock) {
         this.sprintRepository = sprintRepository;
         this.eventPublisher = eventPublisher;
+        this.clock = clock;
     }
 
     public void execute(@NonNull UpdateSprintCommand command) {
@@ -71,6 +74,6 @@ public class UpdateSprintCommandService {
     private void publishSprintCancelled(Sprint sprint) {
         eventPublisher.publishEvent(
                 new SprintCancelled(
-                        sprint.getId(), sprint.getTeamId(), sprint.getSprintNumber(), LocalDateTime.now()));
+                        sprint.getId(), sprint.getTeamId(), sprint.getSprintNumber(), LocalDateTime.now(clock)));
     }
 }

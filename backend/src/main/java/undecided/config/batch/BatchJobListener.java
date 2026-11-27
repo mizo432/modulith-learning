@@ -1,4 +1,5 @@
 package undecided.config.batch;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +14,11 @@ import com.github.mizo432.shared.logger.LogIdBasedLogger;
  * <p>すべてのバッチジョブにこのリスナーを適用することで、ジョブの開始・終了タイミングを 一貫してログに記録します。
  */
 public class BatchJobListener implements JobExecutionListener {
+  private final Clock clock;
+
+  public BatchJobListener(Clock clock) {
+    this.clock = clock;
+  }
 
   private static final DateTimeFormatter FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -22,7 +28,7 @@ public class BatchJobListener implements JobExecutionListener {
   @Override
   public void beforeJob(JobExecution jobExecution) {
     String jobName = jobExecution.getJobInstance().getJobName();
-    String startTime = LocalDateTime.now().format(FORMATTER);
+    String startTime = LocalDateTime.now(clock).format(FORMATTER);
     log.info("i.batch.1001", jobName, startTime);
     log.info("i.batch.1002", jobExecution.getJobParameters());
   }
@@ -30,7 +36,7 @@ public class BatchJobListener implements JobExecutionListener {
   @Override
   public void afterJob(JobExecution jobExecution) {
     String jobName = jobExecution.getJobInstance().getJobName();
-    String endTime = LocalDateTime.now().format(FORMATTER);
+    String endTime = LocalDateTime.now(clock).format(FORMATTER);
     String status = jobExecution.getStatus().name();
 
     log.info("i.batch.1003", jobName, endTime, status);

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.sprintExecution.internal.query.SprintSettingsQueryService;
@@ -27,7 +27,6 @@ class SprintSettingsQueryControllerTest {
   @Mock
   private SprintSettingsQueryService sprintSettingsQueryService;
 
-  @InjectMocks
   private SprintSettingsQueryController controller;
 
   private SnowflakeId productId;
@@ -35,6 +34,9 @@ class SprintSettingsQueryControllerTest {
   @BeforeEach
   void setUp() {
     productId = SnowflakeId.of(100L);
+    controller =
+        new SprintSettingsQueryController(
+            sprintSettingsQueryService, Clock.systemDefaultZone());
   }
 
   @Nested

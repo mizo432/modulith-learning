@@ -1,4 +1,5 @@
 package undecided.generic.bankReg.internal.batch.config;
+import java.time.Clock;
 
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
@@ -39,6 +40,11 @@ import undecided.generic.bankReg.spi.bank.Bank;
  */
 @Configuration
 public class BankImportBatchConfig {
+  private final Clock clock;
+
+  public BankImportBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "bankImportJob";
   public static final String DOWNLOAD_STEP = "bankDownloadStep";
@@ -63,7 +69,7 @@ public class BankImportBatchConfig {
       JobRepository jobRepository, PlatformTransactionManager transactionManager) {
     return new StepBuilder(DOWNLOAD_STEP, jobRepository)
         .tasklet((contribution, chunkContext) -> RepeatStatus.FINISHED, transactionManager)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -85,7 +91,7 @@ public class BankImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -109,7 +115,7 @@ public class BankImportBatchConfig {
       Tasklet cleanupTasklet) {
     return new StepBuilder(CLEANUP_STEP, jobRepository)
         .tasklet(cleanupTasklet, transactionManager)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -129,7 +135,7 @@ public class BankImportBatchConfig {
             publishedAtStr != null && !publishedAtStr.isBlank()
                 ? OffsetDateTime.parse(publishedAtStr)
                 : null);
-        importRecord.setOccurredAt(OffsetDateTime.now());
+        importRecord.setOccurredAt(OffsetDateTime.now(clock));
         importRecord.setZipSha256(zipSha256 != null ? zipSha256 : "");
         importRecord.setBankRowCount(bankRowCountLong != null ? bankRowCountLong.intValue() : 0);
         bankMasterImportRepository.save(importRecord);
@@ -146,7 +152,7 @@ public class BankImportBatchConfig {
       Tasklet recordImportTasklet) {
     return new StepBuilder(RECORD_IMPORT_STEP, jobRepository)
         .tasklet(recordImportTasklet, transactionManager)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -162,7 +168,7 @@ public class BankImportBatchConfig {
         .next(importStep)
         .next(cleanupStep)
         .next(recordImportStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }

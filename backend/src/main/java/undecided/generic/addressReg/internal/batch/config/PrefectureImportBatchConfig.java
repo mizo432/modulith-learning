@@ -1,4 +1,5 @@
 package undecided.generic.addressReg.internal.batch.config;
+import java.time.Clock;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
@@ -24,6 +25,11 @@ import undecided.generic.addressReg.spi.Prefecture;
 /** 都道府県マスターデータ自動インポート用 Spring Batch 設定クラス。 */
 @Configuration
 public class PrefectureImportBatchConfig {
+  private final Clock clock;
+
+  public PrefectureImportBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "prefectureImportJob";
   public static final String STEP_NAME = "prefectureImportStep";
@@ -64,7 +70,7 @@ public class PrefectureImportBatchConfig {
         .skipLimit(10)
         .retry(Exception.class)
         .retryLimit(3)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -72,7 +78,7 @@ public class PrefectureImportBatchConfig {
   public Job prefectureImportJob(JobRepository jobRepository, Step prefectureImportStep) {
     return new JobBuilder(JOB_NAME, jobRepository)
         .start(prefectureImportStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }

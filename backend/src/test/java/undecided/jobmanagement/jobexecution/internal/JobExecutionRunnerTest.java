@@ -5,6 +5,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +25,10 @@ import undecided.supporting.snowflake.SnowflakeId;
 
 class JobExecutionRunnerTest {
 
+  private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+  private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 11, 27, 12, 0);
+  private static final Clock FIXED_CLOCK = Clock.fixed(FIXED_TIME.atZone(ZONE).toInstant(), ZONE);
+
   private JobExecutionRepository repository;
   private JobOperator jobOperator;
   private JobExecutionRunner runner;
@@ -33,7 +40,7 @@ class JobExecutionRunnerTest {
   void setUp() {
     repository = mock(JobExecutionRepository.class);
     jobOperator = mock(JobOperator.class);
-    runner = new JobExecutionRunner(repository, jobOperator);
+    runner = new JobExecutionRunner(repository, jobOperator, FIXED_CLOCK);
     recordId = SnowflakeId.of(1L);
     record = new JobExecution();
     record.setId(recordId);
@@ -54,8 +61,8 @@ class JobExecutionRunnerTest {
     runner.execute(recordId, job, new JobParametersBuilder().toJobParameters());
 
     assertThat(record.getState()).isEqualTo(ExecutionState.SUCCESS);
-    assertThat(record.getStartedAt()).isNotNull();
-    assertThat(record.getCompletedAt()).isNotNull();
+    assertThat(record.getStartedAt()).isEqualTo(FIXED_TIME);
+    assertThat(record.getCompletedAt()).isEqualTo(FIXED_TIME);
   }
 
   @Test
@@ -70,6 +77,6 @@ class JobExecutionRunnerTest {
 
     assertThat(record.getState()).isEqualTo(ExecutionState.FAILED);
     assertThat(record.getErrorMessage()).contains("boom");
-    assertThat(record.getCompletedAt()).isNotNull();
+    assertThat(record.getCompletedAt()).isEqualTo(FIXED_TIME);
   }
 }

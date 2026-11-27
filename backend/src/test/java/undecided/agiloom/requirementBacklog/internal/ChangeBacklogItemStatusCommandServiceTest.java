@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -49,7 +50,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
   void setUp() {
     service =
         new ChangeBacklogItemStatusCommandService(
-            backlogItemRepository, scrumTeamSubsetRepository, eventPublisher);
+            backlogItemRepository, scrumTeamSubsetRepository, eventPublisher, Clock.systemDefaultZone());
   }
 
   private BacklogItem suggestedItem() {

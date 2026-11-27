@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,7 +53,7 @@ class SplitBacklogItemCommandServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new SplitBacklogItemCommandService(items, teams, ids, events);
+    service = new SplitBacklogItemCommandService(items, teams, ids, events, Clock.systemDefaultZone());
     ScrumTeamSubset team = ScrumTeamSubset.builder()
         .id(TEAM_ID).name("チーム").poEmployeeId(PO_ID).smEmployeeId(SM_ID)
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID)).build();

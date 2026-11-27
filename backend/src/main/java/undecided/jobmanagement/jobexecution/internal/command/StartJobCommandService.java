@@ -1,4 +1,5 @@
 package undecided.jobmanagement.jobexecution.internal.command;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,6 +48,7 @@ public class StartJobCommandService implements StartJobCommand {
   private final JobExecutionRunner jobExecutionRunner;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
   private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   @Override
   public void startJob(JobExecutionDTO jobExecutionDTO) {
@@ -93,7 +95,7 @@ public class StartJobCommandService implements StartJobCommand {
     execution.setExecutionId(ExecutionId.of(executionId));
     execution.setJobCode(jobExecutionDTO.getJobCode());
     execution.setState(ExecutionState.PENDING);
-    execution.setCreatedAt(LocalDateTime.now());
+    execution.setCreatedAt(LocalDateTime.now(clock));
     execution.setCreatedBy(
         jobExecutionDTO.getCreatedBy() != null
             ? jobExecutionDTO.getCreatedBy()

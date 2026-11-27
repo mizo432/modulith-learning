@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,7 +54,8 @@ class DeleteBacklogItemCommentCommandServiceTest {
   void setUp() {
     service =
         new DeleteBacklogItemCommentCommandService(
-            backlogItemCommentRepository, adminEmployeeSubsetRepository, eventPublisher);
+            backlogItemCommentRepository, adminEmployeeSubsetRepository, eventPublisher,
+            Clock.systemDefaultZone());
   }
 
   private BacklogItemComment comment() {

@@ -15,11 +15,15 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import undecided.generic.documentMgmt.spi.Document;
 import undecided.generic.documentMgmt.spi.DocumentFileType;
 import undecided.generic.documentMgmt.spi.DocumentStorageService;
@@ -36,6 +40,10 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 @DisplayName("UploadDocumentCommandServiceの単体テスト")
 class UploadDocumentCommandServiceTest {
 
+  private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+  private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 11, 27, 12, 0);
+  private static final Clock FIXED_CLOCK = Clock.fixed(FIXED_TIME.atZone(ZONE).toInstant(), ZONE);
+
   private final DocumentFileValidator documentFileValidator = new DocumentFileValidator();
   private final DocumentStorageService documentStorageService = mock(DocumentStorageService.class);
   private final DocumentRepository documentRepository = mock(DocumentRepository.class);
@@ -43,7 +51,7 @@ class UploadDocumentCommandServiceTest {
 
   private final UploadDocumentCommandService sut =
       new UploadDocumentCommandService(
-          documentFileValidator, documentStorageService, documentRepository, snowflakeIdGenerator);
+          documentFileValidator, documentStorageService, documentRepository, snowflakeIdGenerator, FIXED_CLOCK);
 
   private static final byte[] CONTENT = "テスト内容".getBytes(StandardCharsets.UTF_8);
   private static final SnowflakeId DOCUMENT_ID = SnowflakeId.of(100L);
@@ -78,7 +86,9 @@ class UploadDocumentCommandServiceTest {
       verify(documentStorageService)
           .upload(eq(DOCUMENT_ID), any(DocumentVersion.class), eq("test.pdf"),
               eq("application/pdf"), any(InputStream.class), anyLong());
-      verify(documentRepository).save(any(Document.class));
+      ArgumentCaptor<Document> documentCaptor = ArgumentCaptor.forClass(Document.class);
+      verify(documentRepository).save(documentCaptor.capture());
+      assertThat(documentCaptor.getValue().getCreatedAt()).isEqualTo(FIXED_TIME);
     }
 
     @Test

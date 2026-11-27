@@ -9,6 +9,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,10 @@ import undecided.jobmanagement.permissionmanagement.internal.JobAdminEmployeeSub
 import undecided.supporting.snowflake.SnowflakeIdGenerator;
 
 class StartJobCommandServiceTest {
+
+  private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+  private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 11, 27, 12, 0);
+  private static final Clock FIXED_CLOCK = Clock.fixed(FIXED_TIME.atZone(ZONE).toInstant(), ZONE);
 
   private JobExecutionRepository jobExecutionRepository;
   private JobDefinitionRepository jobDefinitionRepository;
@@ -63,7 +70,8 @@ class StartJobCommandServiceTest {
             batchJobResolver,
             jobExecutionRunner,
             generator,
-            eventPublisher);
+            eventPublisher,
+            FIXED_CLOCK);
     job = mock(Job.class);
     when(adminEmployeeSubsetRepository.existsById(any())).thenReturn(true);
     when(jobDefinitionRepository.findByJobCodeValue("sampleJob"))
@@ -98,6 +106,7 @@ class StartJobCommandServiceTest {
     verify(jobExecutionRepository).save(captor.capture());
     assertThat(captor.getValue().getState()).isEqualTo(ExecutionState.PENDING);
     assertThat(captor.getValue().getJobCode()).isEqualTo("sampleJob");
+    assertThat(captor.getValue().getCreatedAt()).isEqualTo(FIXED_TIME);
     assertThat(captor.getValue().getExecutionId().getValue()).isEqualTo("exec-1");
     verify(jobExecutionRunner).execute(any(), eq(job), any());
     verify(eventPublisher).publishEvent(any(JobManuallyStarted.class));

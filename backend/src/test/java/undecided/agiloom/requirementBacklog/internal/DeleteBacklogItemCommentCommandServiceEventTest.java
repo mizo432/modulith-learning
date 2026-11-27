@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,8 @@ class DeleteBacklogItemCommentCommandServiceEventTest {
         new DeleteBacklogItemCommentCommandService(
             backlogItemCommentRepository,
             adminEmployeeSubsetRepository,
-            eventPublisher);
+            eventPublisher,
+            Clock.systemDefaultZone());
   }
 
   @Nested

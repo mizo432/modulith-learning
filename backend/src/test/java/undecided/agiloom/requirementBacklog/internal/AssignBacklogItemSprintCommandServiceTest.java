@@ -7,6 +7,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +30,10 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("AssignBacklogItemSprintCommandServiceのテスト")
 class AssignBacklogItemSprintCommandServiceTest {
 
+  private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+  private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 11, 27, 12, 0);
+  private static final Clock FIXED_CLOCK = Clock.fixed(FIXED_TIME.atZone(ZONE).toInstant(), ZONE);
+
   private static final SnowflakeId TEAM_ID = SnowflakeId.of(10L);
   private static final SnowflakeId OTHER_TEAM_ID = SnowflakeId.of(11L);
   private static final SnowflakeId ITEM_ID = SnowflakeId.of(100L);
@@ -43,7 +50,7 @@ class AssignBacklogItemSprintCommandServiceTest {
   private final ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
   private final AssignBacklogItemSprintCommandService service =
       new AssignBacklogItemSprintCommandService(
-          backlogItemRepository, scrumTeamSubsetRepository, sprintFacade, eventPublisher);
+          backlogItemRepository, scrumTeamSubsetRepository, sprintFacade, eventPublisher, FIXED_CLOCK);
 
   private BacklogItem item(BacklogItemStatus status, SnowflakeId sprintId) {
     return BacklogItem.builder()

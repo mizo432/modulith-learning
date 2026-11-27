@@ -1,4 +1,5 @@
 package undecided.generic.documentMgmt.internal.batch.config;
+import java.time.Clock;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
@@ -25,6 +26,11 @@ import undecided.generic.documentMgmt.spi.Document;
  */
 @Configuration
 public class DocumentPhysicalDeleteBatchConfig {
+  private final Clock clock;
+
+  public DocumentPhysicalDeleteBatchConfig(Clock clock) {
+    this.clock = clock;
+  }
 
   public static final String JOB_NAME = "documentPhysicalDeleteJob";
   public static final String STEP_NAME = "documentPhysicalDeleteStep";
@@ -34,7 +40,7 @@ public class DocumentPhysicalDeleteBatchConfig {
   @StepScope
   public DocumentPhysicalDeleteReader documentPhysicalDeleteReader(
       DocumentRepository documentRepository) {
-    return new DocumentPhysicalDeleteReader(documentRepository);
+    return new DocumentPhysicalDeleteReader(documentRepository, clock);
   }
 
   @Bean
@@ -50,7 +56,7 @@ public class DocumentPhysicalDeleteBatchConfig {
         .reader(reader)
         .processor(processor)
         .writer(writer)
-        .listener(new BatchStepListener())
+        .listener(new BatchStepListener(clock))
         .build();
   }
 
@@ -58,7 +64,7 @@ public class DocumentPhysicalDeleteBatchConfig {
   public Job documentPhysicalDeleteJob(JobRepository jobRepository, Step documentPhysicalDeleteStep) {
     return new JobBuilder(JOB_NAME, jobRepository)
         .start(documentPhysicalDeleteStep)
-        .listener(new BatchJobListener())
+        .listener(new BatchJobListener(clock))
         .build();
   }
 }

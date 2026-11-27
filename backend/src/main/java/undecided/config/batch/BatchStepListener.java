@@ -1,4 +1,5 @@
 package undecided.config.batch;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +15,11 @@ import com.github.mizo432.shared.logger.LogIdBasedLogger;
  * <p>すべてのバッチステップにこのリスナーを適用することで、ステップの開始・終了タイミングを 一貫してログに記録します。
  */
 public class BatchStepListener implements StepExecutionListener {
+  private final Clock clock;
+
+  public BatchStepListener(Clock clock) {
+    this.clock = clock;
+  }
 
   private static final DateTimeFormatter FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -24,7 +30,7 @@ public class BatchStepListener implements StepExecutionListener {
   public void beforeStep(StepExecution stepExecution) {
     String stepName = stepExecution.getStepName();
     String jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
-    String startTime = LocalDateTime.now().format(FORMATTER);
+    String startTime = LocalDateTime.now(clock).format(FORMATTER);
     log.info("i.batch.1011", jobName, stepName, startTime);
   }
 
@@ -32,7 +38,7 @@ public class BatchStepListener implements StepExecutionListener {
   public @Nullable ExitStatus afterStep(StepExecution stepExecution) {
     String stepName = stepExecution.getStepName();
     String jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
-    String endTime = LocalDateTime.now().format(FORMATTER);
+    String endTime = LocalDateTime.now(clock).format(FORMATTER);
     String status = stepExecution.getStatus().name();
 
     log.info(

@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
@@ -25,6 +26,7 @@ class AddBacklogItemCommentCommandService {
   private final SnowflakeIdGenerator snowflakeIdGenerator;
   private final ApplicationEventPublisher eventPublisher;
   private final EmployeeEmailQuery employeeEmailQuery;
+  private final Clock clock;
 
   AddBacklogItemCommentCommandService(
       BacklogItemRepository backlogItemRepository,
@@ -32,13 +34,15 @@ class AddBacklogItemCommentCommandService {
       CommentParticipantSubsetRepository commentParticipantSubsetRepository,
       SnowflakeIdGenerator snowflakeIdGenerator,
       ApplicationEventPublisher eventPublisher,
-      EmployeeEmailQuery employeeEmailQuery) {
+      EmployeeEmailQuery employeeEmailQuery,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.backlogItemCommentRepository = backlogItemCommentRepository;
     this.commentParticipantSubsetRepository = commentParticipantSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
     this.eventPublisher = eventPublisher;
     this.employeeEmailQuery = employeeEmailQuery;
+    this.clock = clock;
   }
 
   SnowflakeId execute(@NonNull AddBacklogItemCommentCommand command) {
@@ -114,7 +118,7 @@ class AddBacklogItemCommentCommandService {
             command.getAuthorEmployeeId(),
             command.getAuthorName(),
             authorEmail,
-            LocalDateTime.now()));
+            LocalDateTime.now(clock)));
 
     return saved.getId();
   }

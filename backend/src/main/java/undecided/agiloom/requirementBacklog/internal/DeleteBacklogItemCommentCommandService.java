@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,14 +19,17 @@ class DeleteBacklogItemCommentCommandService {
   private final BacklogItemCommentRepository backlogItemCommentRepository;
   private final AdminEmployeeSubsetRepository adminEmployeeSubsetRepository;
   private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   DeleteBacklogItemCommentCommandService(
       BacklogItemCommentRepository backlogItemCommentRepository,
       AdminEmployeeSubsetRepository adminEmployeeSubsetRepository,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      Clock clock) {
     this.backlogItemCommentRepository = backlogItemCommentRepository;
     this.adminEmployeeSubsetRepository = adminEmployeeSubsetRepository;
     this.eventPublisher = eventPublisher;
+    this.clock = clock;
   }
 
   /**
@@ -80,6 +84,6 @@ class DeleteBacklogItemCommentCommandService {
             command.getBacklogItemId(),
             command.getCommentId(),
             actorEmployeeId,
-            LocalDateTime.now()));
+            LocalDateTime.now(clock)));
   }
 }

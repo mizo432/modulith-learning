@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -57,7 +58,7 @@ class ChangeBacklogItemStatusCommandServiceEstimatedTest {
   void setUp() {
     org.mockito.MockitoAnnotations.openMocks(this);
     service = new ChangeBacklogItemStatusCommandService(
-        backlogItemRepository, scrumTeamSubsetRepository, eventPublisher);
+        backlogItemRepository, scrumTeamSubsetRepository, eventPublisher, Clock.systemDefaultZone());
   }
 
   private BacklogItem readyItemWithStoryPoint() {

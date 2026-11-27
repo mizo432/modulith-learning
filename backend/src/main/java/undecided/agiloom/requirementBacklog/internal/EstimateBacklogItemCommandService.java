@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
@@ -29,14 +30,17 @@ class EstimateBacklogItemCommandService {
   private final BacklogItemRepository backlogItemRepository;
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
   private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   EstimateBacklogItemCommandService(
       BacklogItemRepository backlogItemRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
-      ApplicationEventPublisher eventPublisher) {
+      ApplicationEventPublisher eventPublisher,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.eventPublisher = eventPublisher;
+    this.clock = clock;
   }
 
   void execute(@NonNull EstimateBacklogItemCommand command) {
@@ -63,7 +67,7 @@ class EstimateBacklogItemCommandService {
     // 見積もり値の設定（StoryPoint値の検証を含む）
     backlogItem.setStoryPoint(command.getStoryPoint());
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
 
     if (currentStatus == BacklogItemStatus.READY) {
       // READY → ESTIMATED へ遷移（値の設定と状態遷移の一体化）

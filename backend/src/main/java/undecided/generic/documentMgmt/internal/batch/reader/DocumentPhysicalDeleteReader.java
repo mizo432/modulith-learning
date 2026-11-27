@@ -1,4 +1,5 @@
 package undecided.generic.documentMgmt.internal.batch.reader;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
@@ -16,11 +17,13 @@ import undecided.generic.documentMgmt.spi.Document;
 public class DocumentPhysicalDeleteReader implements ItemReader<Document> {
 
   private final DocumentRepository documentRepository;
+  private final Clock clock;
 
   private @Nullable Iterator<Document> iterator;
 
-  public DocumentPhysicalDeleteReader(DocumentRepository documentRepository) {
+  public DocumentPhysicalDeleteReader(DocumentRepository documentRepository, Clock clock) {
     this.documentRepository = documentRepository;
+    this.clock = clock;
   }
 
   @Override
@@ -28,7 +31,7 @@ public class DocumentPhysicalDeleteReader implements ItemReader<Document> {
     if (iterator == null) {
       iterator =
           documentRepository
-              .findByDeletedTrueAndDeletedAtBefore(LocalDateTime.now().minusYears(1))
+              .findByDeletedTrueAndDeletedAtBefore(LocalDateTime.now(clock).minusYears(1))
               .iterator();
     }
     return iterator.hasNext() ? iterator.next() : null;
