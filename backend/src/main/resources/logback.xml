@@ -43,6 +43,8 @@
   <!-- shared -->
   <logger level="info" name="com.github.mizo432.shared"/>
   <logger level="info" name="undecided.supporting"/>
+  <logger level="info" name="undecided.generic.documentMgmt"/>
+  <logger level="info" name="undecided.notification"/>
   <logger level="trace"
     name="undecided.config.presentation.web.logging.RestTraceLoggingInterceptor"/>
   <logger level="info" name="com.github.mizo432.shared.logging.ExceptionLogger"/>

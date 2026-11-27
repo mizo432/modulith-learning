@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestClient;
 import undecided.generic.bankReg.internal.batch.client.BankcodeJpMasterExportClient;
 import undecided.generic.bankReg.internal.batch.client.BankcodeJpProperties;
+import undecided.supporting.http.LoggingClientHttpRequestInterceptor;
 
 /**
  * 金融機関インポートバッチのインフラストラクチャ設定クラス。
@@ -21,7 +22,10 @@ public class BankImportInfrastructureConfig {
 
   @Bean
   public RestClient bankcodeJpRestClient(BankcodeJpProperties properties) {
-    return RestClient.builder().baseUrl(properties.baseUrl()).build();
+    return RestClient.builder()
+        .baseUrl(properties.baseUrl())
+        .requestInterceptor(new LoggingClientHttpRequestInterceptor())
+        .build();
   }
 
   @Bean
