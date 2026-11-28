@@ -26,7 +26,7 @@ class BacklogItemEstimatedTransitionTest {
         .scrumTeamId(TEAM_ID)
         .value(50)
         .storyPoint(storyPoint)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
     item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
     return item;
@@ -39,7 +39,7 @@ class BacklogItemEstimatedTransitionTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
     item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
     return item;
@@ -76,7 +76,7 @@ class BacklogItemEstimatedTransitionTest {
           .scrumTeamId(TEAM_ID)
           .value(50)
           .storyPoint(4) // 無効な値
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now()))
@@ -109,7 +109,7 @@ class BacklogItemEstimatedTransitionTest {
     void shouldUpdateStoryPointInEstimatedState() {
       BacklogItem item = readyItemWithStoryPoint(5);
       item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
-      item.setStoryPoint(21);
+      item.setStoryPoint(21, LocalDateTime.now());
       assertThat(item.getStoryPoint()).isEqualTo(21);
     }
   }

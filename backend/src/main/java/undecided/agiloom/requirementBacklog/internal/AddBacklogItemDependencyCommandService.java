@@ -100,6 +100,7 @@ class AddBacklogItemDependencyCommandService {
             .backlogItemId(command.getBacklogItemId())
             .dependencyItemId(command.getDependencyItemId())
             .createdBy(command.getActorEmployeeId())
+            .createdAt(LocalDateTime.now(clock))
             .build();
     dependencyRepository.save(dependency);
     eventPublisher.publishEvent(

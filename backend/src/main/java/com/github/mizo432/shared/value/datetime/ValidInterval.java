@@ -128,7 +128,7 @@ public class ValidInterval {
    *     を返します。
    */
   public boolean isActive(@Nullable LocalDate date) {
-    return contains(LocalDate.now());
+    return contains(date);
   }
 
   /**

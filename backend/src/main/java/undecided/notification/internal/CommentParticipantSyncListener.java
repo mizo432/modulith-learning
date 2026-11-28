@@ -1,5 +1,7 @@
 package undecided.notification.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -21,12 +23,15 @@ class CommentParticipantSyncListener {
 
   private final NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   CommentParticipantSyncListener(
       NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository,
-      SnowflakeIdGenerator snowflakeIdGenerator) {
+      SnowflakeIdGenerator snowflakeIdGenerator,
+      Clock clock) {
     this.commentParticipantSubsetRepository = commentParticipantSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
+    this.clock = clock;
   }
 
   /**
@@ -51,6 +56,7 @@ class CommentParticipantSyncListener {
               .employeeId(event.authorEmployeeId())
               .employeeName(event.authorName() != null ? event.authorName() : "")
               .employeeEmail(employeeEmail)
+              .createdAt(LocalDateTime.now(clock))
               .build());
     }
   }

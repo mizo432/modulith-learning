@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,7 +24,7 @@ class BacklogItemStoryPointTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -34,7 +35,7 @@ class BacklogItemStoryPointTest {
     @DisplayName("BacklogItemにStoryPoint 0を設定したとき、値が保持されること")
     void shouldKeepStoryPointZero() {
       BacklogItem backlogItem = item();
-      backlogItem.setStoryPoint(0);
+      backlogItem.setStoryPoint(0, LocalDateTime.now());
       assertThat(backlogItem.getStoryPoint()).isEqualTo(0);
     }
 
@@ -42,7 +43,7 @@ class BacklogItemStoryPointTest {
     @DisplayName("BacklogItemにStoryPoint 89を設定したとき、値が保持されること")
     void shouldKeepStoryPoint89() {
       BacklogItem backlogItem = item();
-      backlogItem.setStoryPoint(89);
+      backlogItem.setStoryPoint(89, LocalDateTime.now());
       assertThat(backlogItem.getStoryPoint()).isEqualTo(89);
     }
 
@@ -50,7 +51,7 @@ class BacklogItemStoryPointTest {
     @DisplayName("BacklogItemに無効なStoryPoint値を設定しようとすると、IllegalArgumentExceptionがスローされること")
     void shouldRejectInvalidStoryPoint() {
       BacklogItem backlogItem = item();
-      assertThatThrownBy(() -> backlogItem.setStoryPoint(4))
+      assertThatThrownBy(() -> backlogItem.setStoryPoint(4, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
       assertThat(backlogItem.getStoryPoint()).isNull();
     }
@@ -60,7 +61,7 @@ class BacklogItemStoryPointTest {
     void shouldUpdateStoryPointFromNull() {
       BacklogItem backlogItem = item();
       assertThat(backlogItem.getStoryPoint()).isNull();
-      backlogItem.setStoryPoint(13);
+      backlogItem.setStoryPoint(13, LocalDateTime.now());
       assertThat(backlogItem.getStoryPoint()).isEqualTo(13);
     }
   }

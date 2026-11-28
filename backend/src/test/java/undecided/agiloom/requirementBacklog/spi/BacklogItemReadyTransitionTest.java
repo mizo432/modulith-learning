@@ -24,7 +24,7 @@ class BacklogItemReadyTransitionTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItem acceptedItemWithTimestamp() {
@@ -88,7 +88,7 @@ class BacklogItemReadyTransitionTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
@@ -113,7 +113,7 @@ class BacklogItemReadyTransitionTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
 
       assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now()))
@@ -155,7 +155,7 @@ class BacklogItemReadyTransitionTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
@@ -170,7 +170,7 @@ class BacklogItemReadyTransitionTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
 
@@ -185,7 +185,7 @@ class BacklogItemReadyTransitionTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
 
       item.changeStatus(BacklogItemStatus.SUGGESTED, LocalDateTime.now());

@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ class BacklogItemCommandControllerTest {
         .id(ITEM_ID)
         .title("Test Item")
         .creatorName("Creator")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
     comment = BacklogItemComment.builder()
         .id(COMMENT_ID)
@@ -66,7 +67,7 @@ class BacklogItemCommandControllerTest {
         .authorEmployeeId(AUTHOR_ID)
         .authorName("Author")
         .body("Test comment")
-        .build();
+        .createdAt(LocalDateTime.now()).build();
 
     commentResponse = BacklogItemCommentResponse.builder()
         .id(COMMENT_ID)

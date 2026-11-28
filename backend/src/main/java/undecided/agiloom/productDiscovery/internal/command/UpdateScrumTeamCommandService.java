@@ -1,5 +1,7 @@
 package undecided.agiloom.productDiscovery.internal.command;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,9 +18,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 public class UpdateScrumTeamCommandService {
 
   private final ScrumTeamRepository scrumTeamRepository;
+  private final Clock clock;
 
-  public UpdateScrumTeamCommandService(ScrumTeamRepository scrumTeamRepository) {
+  public UpdateScrumTeamCommandService(ScrumTeamRepository scrumTeamRepository, Clock clock) {
     this.scrumTeamRepository = scrumTeamRepository;
+    this.clock = clock;
   }
 
   public void execute(@NonNull UpdateScrumTeamCommand command) {
@@ -34,7 +38,7 @@ public class UpdateScrumTeamCommandService {
         command.getPoEmployeeId(),
         command.getPoName(),
         command.getSmEmployeeId(),
-        command.getSmName());
+        command.getSmName(), LocalDateTime.now(clock));
   }
 
   public void delete(@NonNull SnowflakeId id) {
@@ -52,7 +56,7 @@ public class UpdateScrumTeamCommandService {
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
-    scrumTeam.assignPo(poEmployeeId, poName);
+    scrumTeam.assignPo(poEmployeeId, poName, LocalDateTime.now(clock));
   }
 
   public void unassignPo(@NonNull SnowflakeId id) {
@@ -61,7 +65,7 @@ public class UpdateScrumTeamCommandService {
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
-    scrumTeam.unassignPo();
+    scrumTeam.unassignPo(LocalDateTime.now(clock));
   }
 
   public void assignSm(@NonNull SnowflakeId id, @NonNull SnowflakeId smEmployeeId, @NonNull String smName) {
@@ -70,7 +74,7 @@ public class UpdateScrumTeamCommandService {
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
-    scrumTeam.assignSm(smEmployeeId, smName);
+    scrumTeam.assignSm(smEmployeeId, smName, LocalDateTime.now(clock));
   }
 
   public void unassignSm(@NonNull SnowflakeId id) {
@@ -79,7 +83,7 @@ public class UpdateScrumTeamCommandService {
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
-    scrumTeam.unassignSm();
+    scrumTeam.unassignSm(LocalDateTime.now(clock));
   }
 
   /**
@@ -107,7 +111,7 @@ public class UpdateScrumTeamCommandService {
     }
     List<SnowflakeId> unionedList = new ArrayList<>(unionSet);
 
-    scrumTeam.setMemberEmployeeIds(unionedList);
+    scrumTeam.setMemberEmployeeIds(unionedList, LocalDateTime.now(clock));
   }
 
   /**
@@ -125,6 +129,6 @@ public class UpdateScrumTeamCommandService {
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("ScrumTeam not found: " + id));
 
-    scrumTeam.setStakeholderEmployeeIds(stakeholderEmployeeIds);
+    scrumTeam.setStakeholderEmployeeIds(stakeholderEmployeeIds, LocalDateTime.now(clock));
   }
 }

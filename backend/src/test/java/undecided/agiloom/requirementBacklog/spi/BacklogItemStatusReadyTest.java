@@ -38,7 +38,7 @@ class BacklogItemStatusReadyTest {
 
     private BacklogItem readyItem() {
       BacklogItem item =
-          BacklogItem.builder().title("Test Item").creatorName("Creator").value(50).build();
+          BacklogItem.builder().title("Test Item").creatorName("Creator").value(50).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       return item;
@@ -48,7 +48,7 @@ class BacklogItemStatusReadyTest {
     @DisplayName("Readyでストーリーポイントが設定されているアイテムをAcceptedへ遷移させたとき、状態がAcceptedとなりストーリーポイントがnullとなる")
     void shouldClearStoryPointWhenReadyToAccepted() {
       BacklogItem item = readyItem();
-      item.setStoryPoint(5);
+      item.setStoryPoint(5, LocalDateTime.now());
 
       item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
@@ -81,7 +81,7 @@ class BacklogItemStatusReadyTest {
     @DisplayName("ESTIMATEDのアイテムをAcceptedへ遷移させたとき、IllegalStateExceptionとなる")
     void shouldThrowWhenEstimatedToAccepted() {
       BacklogItem item = readyItem();
-      item.setStoryPoint(5);
+      item.setStoryPoint(5, LocalDateTime.now());
       item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
 
       assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now()))

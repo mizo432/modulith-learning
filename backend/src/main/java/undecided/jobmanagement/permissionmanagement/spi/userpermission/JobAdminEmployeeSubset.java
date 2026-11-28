@@ -32,7 +32,7 @@ public class JobAdminEmployeeSubset {
   public static JobAdminEmployeeSubset of(SnowflakeId employeeId, @NonNull LocalDateTime now) {
     JobAdminEmployeeSubset subset = new JobAdminEmployeeSubset();
     subset.employeeId = employeeId;
-    subset.updatedAt = LocalDateTime.now();
+    subset.updatedAt = now;
     return subset;
   }
 }

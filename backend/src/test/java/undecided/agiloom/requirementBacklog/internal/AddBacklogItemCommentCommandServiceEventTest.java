@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,7 +83,7 @@ class AddBacklogItemCommentCommandServiceEventTest {
     void shouldPublishCommentAddedEvent() {
       // Arrange: テストリスト項目1
       BacklogItem item =
-          BacklogItem.builder().id(ITEM_ID).title("Test Item").creatorName("Creator").build();
+          BacklogItem.builder().id(ITEM_ID).title("Test Item").creatorName("Creator").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(snowflakeIdGenerator.nextIdValue()).thenReturn(COMMENT_ID);
 
@@ -93,7 +94,7 @@ class AddBacklogItemCommentCommandServiceEventTest {
               .authorEmployeeId(AUTHOR_ID)
               .authorName("Author")
               .body("Test comment")
-              .build();
+              .createdAt(LocalDateTime.now()).build();
       when(backlogItemCommentRepository.save(any(BacklogItemComment.class))).thenReturn(savedComment);
 
       AddBacklogItemCommentCommand command =

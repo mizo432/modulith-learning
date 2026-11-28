@@ -34,7 +34,7 @@ class ScrumTeamSubsetMemberTest {
         .smEmployeeId(SM_ID)
         .smName("SM Name")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamSubset teamWithPoSmOnly() {
@@ -46,7 +46,7 @@ class ScrumTeamSubsetMemberTest {
         .smEmployeeId(SM_ID)
         .smName("SM Name")
         .memberEmployeeIds(List.of())
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -118,7 +118,7 @@ class ScrumTeamSubsetMemberTest {
           .poName("PO Name")
           .smEmployeeId(SM_ID)
           .smName("SM Name")
-          .build();
+          .updatedAt(LocalDateTime.now()).build();
 
       ScrumTeamChanged event = new ScrumTeamChanged(
           TEAM_ID,

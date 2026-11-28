@@ -58,12 +58,10 @@ public class NotificationEntity {
   protected Boolean isRead = false;
 
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   @jakarta.persistence.Version
   @Column(name = "version", nullable = false)
@@ -73,9 +71,9 @@ public class NotificationEntity {
   /**
    * 通知を既読としてマークします。
    */
-  public void markAsRead() {
+  public void markAsRead(@NonNull LocalDateTime now) {
     this.isRead = true;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**

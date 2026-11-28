@@ -273,7 +273,7 @@ class ScrumTeamMigrationMediumTest {
           .name("テストプロダクト")
           .description("テスト用のプロダクト")
           .status(ProductStatus.ACTIVE)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     }
 
     private ScrumTeam createScrumTeam(Product product) {
@@ -286,7 +286,7 @@ class ScrumTeamMigrationMediumTest {
           .smEmployeeId(SnowflakeId.of(200L))
           .smName("テストSM")
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     }
 
     @Test
@@ -327,7 +327,7 @@ class ScrumTeamMigrationMediumTest {
               .name("チームA")
               .businessDomain("領域A")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       ScrumTeam team2 =
           ScrumTeam.builder()
@@ -335,7 +335,7 @@ class ScrumTeamMigrationMediumTest {
               .name("チームB")
               .businessDomain("領域B")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       scrumTeamRepository.save(team1);
       scrumTeamRepository.save(team2);
@@ -361,7 +361,7 @@ class ScrumTeamMigrationMediumTest {
               .name("POなしチーム")
               .businessDomain("テスト領域")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // Act & Assert
       ScrumTeam saved = scrumTeamRepository.save(scrumTeam);
@@ -384,7 +384,7 @@ class ScrumTeamMigrationMediumTest {
       // Act
       SnowflakeId newPoId = SnowflakeId.of(300L);
       SnowflakeId newSmId = SnowflakeId.of(400L);
-      scrumTeam.update("更新後チーム名", "更新後領域", newPoId, "更新後PO", newSmId, "更新後SM");
+      scrumTeam.update("更新後チーム名", "更新後領域", newPoId, "更新後PO", newSmId, "更新後SM", LocalDateTime.now());
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(200L)).orElseThrow();
@@ -411,12 +411,12 @@ class ScrumTeamMigrationMediumTest {
               .name("テストチーム")
               .businessDomain("テスト領域")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       scrumTeamRepository.save(scrumTeam);
 
       // Act
       SnowflakeId poId = SnowflakeId.of(500L);
-      scrumTeam.assignPo(poId, "新しいPO");
+      scrumTeam.assignPo(poId, "新しいPO", LocalDateTime.now());
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(204L)).orElseThrow();
@@ -437,7 +437,7 @@ class ScrumTeamMigrationMediumTest {
       scrumTeamRepository.save(scrumTeam);
 
       // Act
-      scrumTeam.unassignPo();
+      scrumTeam.unassignPo(LocalDateTime.now());
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(200L)).orElseThrow();
@@ -460,12 +460,12 @@ class ScrumTeamMigrationMediumTest {
               .name("テストチーム")
               .businessDomain("テスト領域")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       scrumTeamRepository.save(scrumTeam);
 
       // Act
       SnowflakeId smId = SnowflakeId.of(600L);
-      scrumTeam.assignSm(smId, "新しいSM");
+      scrumTeam.assignSm(smId, "新しいSM", LocalDateTime.now());
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(205L)).orElseThrow();
@@ -486,7 +486,7 @@ class ScrumTeamMigrationMediumTest {
       scrumTeamRepository.save(scrumTeam);
 
       // Act
-      scrumTeam.unassignSm();
+      scrumTeam.unassignSm(LocalDateTime.now());
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(200L)).orElseThrow();

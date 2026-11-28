@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,7 +40,7 @@ class UpdateFeatureCommandServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new UpdateFeatureCommandService(featureRepository, scrumTeamSubsetRepository);
+    service = new UpdateFeatureCommandService(featureRepository, scrumTeamSubsetRepository, Clock.systemDefaultZone());
   }
 
   private Feature createFeature(FeatureStatus status) {
@@ -47,7 +49,7 @@ class UpdateFeatureCommandServiceTest {
         .name("Original Name")
         .status(status)
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -62,7 +64,7 @@ class UpdateFeatureCommandServiceTest {
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature(FeatureStatus.PLANNED);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       UpdateFeatureCommand command = UpdateFeatureCommand.builder()
           .featureId(featureId)
           .scrumTeamId(teamId)
@@ -92,7 +94,7 @@ class UpdateFeatureCommandServiceTest {
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature(FeatureStatus.PLANNED);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       UpdateFeatureCommand command = UpdateFeatureCommand.builder()
           .featureId(featureId)
           .scrumTeamId(teamId)
@@ -166,7 +168,7 @@ class UpdateFeatureCommandServiceTest {
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature(FeatureStatus.PLANNED);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       UpdateFeatureCommand command = UpdateFeatureCommand.builder()
           .featureId(featureId)
           .scrumTeamId(teamId)
@@ -196,7 +198,7 @@ class UpdateFeatureCommandServiceTest {
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature(FeatureStatus.IN_PROGRESS);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       UpdateFeatureCommand command = UpdateFeatureCommand.builder()
           .featureId(featureId)
           .scrumTeamId(teamId)

@@ -23,7 +23,7 @@ class ProductTest {
         .name("Test Product")
         .description("Test Description")
         .managerId(SnowflakeId.of(100L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested

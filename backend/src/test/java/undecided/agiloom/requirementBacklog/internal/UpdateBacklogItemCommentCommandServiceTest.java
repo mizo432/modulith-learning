@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,7 +55,7 @@ class UpdateBacklogItemCommentCommandServiceTest {
   private BacklogItemComment comment() {
     return BacklogItemComment.builder()
         .id(COMMENT_ID)
-        .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").build())
+        .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build())
         .authorEmployeeId(AUTHOR_ID)
         .authorName("Author")
         .body("Original body")
@@ -136,7 +137,7 @@ class UpdateBacklogItemCommentCommandServiceTest {
       when(backlogItemCommentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
       BacklogItemComment reply = BacklogItemComment.builder()
           .id(SnowflakeId.of(2000L))
-          .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").build())
+          .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build())
           .authorEmployeeId(SnowflakeId.of(400L))
           .authorName("Replier")
           .body("Reply comment")

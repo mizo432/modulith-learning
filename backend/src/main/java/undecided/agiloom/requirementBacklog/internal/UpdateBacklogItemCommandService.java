@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +14,17 @@ import undecided.supporting.snowflake.SnowflakeId;
 class UpdateBacklogItemCommandService {
 
   private final BacklogItemRepository backlogItemRepository;
+  private final Clock clock;
 
-  UpdateBacklogItemCommandService(BacklogItemRepository backlogItemRepository) {
+  UpdateBacklogItemCommandService(BacklogItemRepository backlogItemRepository, Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
+    this.clock = clock;
   }
 
   void execute(@NonNull UpdateBacklogItemCommand command) {
     BacklogItem backlogItem = findOrThrow(command.getBacklogItemId());
     backlogItem.update(
-        command.getTitle(), command.getDescription(), command.getPriority(), command.getSprintId(), command.getValue());
+        command.getTitle(), command.getDescription(), command.getPriority(), command.getSprintId(), command.getValue(), LocalDateTime.now(clock));
     backlogItemRepository.save(backlogItem);
   }
 

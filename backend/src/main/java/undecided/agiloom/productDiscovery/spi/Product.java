@@ -61,13 +61,11 @@ public class Product {
 
   /** プロダクトが作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** プロダクトが最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** プロダクトが論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -99,7 +97,7 @@ public class Product {
     if (managerId != null) {
       this.managerId = managerId;
     }
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** プロダクトをアーカイブします。 ACTIVE状態からARCHIVED状態へ遷移します。 */
@@ -109,12 +107,12 @@ public class Product {
           "Product can only be archived from ACTIVE status, current status: " + this.status);
     }
     this.status = ProductStatus.ARCHIVED;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** プロダクトを論理削除します。 deleted_atに現在時刻を設定します。 */
   public void delete(@NonNull LocalDateTime now) {
-    this.deletedAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
+    this.deletedAt = now;
+    this.updatedAt = now;
   }
 }

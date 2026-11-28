@@ -3,6 +3,7 @@ package undecided.agiloom.productDiscovery.internal.command;
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,8 @@ public class CreateProductCommandService {
             .name(command.getName())
             .description(command.getDescription())
             .managerId(command.getManagerId())
+            .createdAt(LocalDateTime.now(clock))
+            .updatedAt(LocalDateTime.now(clock))
             .build();
 
     Product saved = productRepository.save(product);

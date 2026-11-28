@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,7 +49,7 @@ class BacklogItemQueryServiceAssignableSprintsTest {
         .teamId(TEAM_ID)
         .startDate(LocalDate.of(2026, 11, 16))
         .endDate(LocalDate.of(2026, 11, 27))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private void givenItem(SnowflakeId assignedSprintId) {
@@ -60,7 +61,7 @@ class BacklogItemQueryServiceAssignableSprintsTest {
             .scrumTeamId(TEAM_ID)
             .status(BacklogItemStatus.ESTIMATED)
             .sprintId(assignedSprintId)
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
     when(scrumTeamSubsetRepository.findById(TEAM_ID))
         .thenReturn(
@@ -69,7 +70,7 @@ class BacklogItemQueryServiceAssignableSprintsTest {
                     .id(TEAM_ID)
                     .name("Team")
                     .memberEmployeeIds(List.of(MEMBER_ID))
-                    .build()));
+                    .updatedAt(LocalDateTime.now()).build()));
     when(sprintFacade.findAssignableSprints(TEAM_ID))
         .thenReturn(
             List.of(

@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -75,7 +76,7 @@ class ScrumTeamMembersEndpointMediumTest {
             .name("Test Product")
             .description("Test")
             .status(ProductStatus.ACTIVE)
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     productRepository.save(product);
 
     ScrumTeam scrumTeam =
@@ -88,7 +89,7 @@ class ScrumTeamMembersEndpointMediumTest {
             .smEmployeeId(smId)
             .smName("Test SM")
             .product(product)
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     scrumTeamRepository.save(scrumTeam);
   }
 

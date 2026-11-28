@@ -2,6 +2,8 @@ package undecided.agiloom.requirementBacklog.internal;
 
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +25,17 @@ class CreateBacklogItemCommandService {
   private final BacklogItemRepository backlogItemRepository;
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   CreateBacklogItemCommandService(
       BacklogItemRepository backlogItemRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
-      SnowflakeIdGenerator snowflakeIdGenerator) {
+      SnowflakeIdGenerator snowflakeIdGenerator,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
+    this.clock = clock;
   }
 
   SnowflakeId execute(@NonNull CreateBacklogItemCommand command) {
@@ -42,6 +47,7 @@ class CreateBacklogItemCommandService {
         .orElseThrow(
             () -> new IllegalArgumentException("ScrumTeam not found: " + command.getScrumTeamId()));
 
+    LocalDateTime now = LocalDateTime.now(clock);
     BacklogItem backlogItem =
         BacklogItem.builder()
             .id(snowflakeIdGenerator.nextIdValue())
@@ -52,6 +58,8 @@ class CreateBacklogItemCommandService {
             .creatorName(command.getCreatorName())
             .sprintId(command.getSprintId())
             .scrumTeamId(command.getScrumTeamId())
+            .createdAt(now)
+            .updatedAt(now)
             .build();
 
     return backlogItemRepository.save(backlogItem).getId();

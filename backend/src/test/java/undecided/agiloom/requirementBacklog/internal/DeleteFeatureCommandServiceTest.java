@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,7 +51,7 @@ class DeleteFeatureCommandServiceTest {
         .name("Test Feature")
         .status(FeatureStatus.PLANNED)
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -65,7 +66,7 @@ class DeleteFeatureCommandServiceTest {
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       DeleteFeatureCommand command = DeleteFeatureCommand.builder()
           .featureId(featureId)
           .scrumTeamId(teamId)
@@ -90,7 +91,7 @@ class DeleteFeatureCommandServiceTest {
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       DeleteFeatureCommand command = DeleteFeatureCommand.builder()
           .featureId(featureId)
           .scrumTeamId(teamId)

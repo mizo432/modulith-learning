@@ -1,5 +1,7 @@
 package undecided.notification.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.util.Set;
 import org.springframework.modulith.events.ApplicationModuleListener;
@@ -24,16 +26,19 @@ public class BacklogItemCommentEventListener {
   private final NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository;
   private final EmailNotificationService emailNotificationService;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   public BacklogItemCommentEventListener(
       NotificationEntityRepository notificationRepository,
       NotificationCommentParticipantSubsetRepository commentParticipantSubsetRepository,
       EmailNotificationService emailNotificationService,
-      SnowflakeIdGenerator snowflakeIdGenerator) {
+      SnowflakeIdGenerator snowflakeIdGenerator,
+      Clock clock) {
     this.notificationRepository = notificationRepository;
     this.commentParticipantSubsetRepository = commentParticipantSubsetRepository;
     this.emailNotificationService = emailNotificationService;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
+    this.clock = clock;
   }
 
   /**
@@ -115,6 +120,8 @@ public class BacklogItemCommentEventListener {
               .title(title)
               .content(content)
               .type(type)
+              .createdAt(LocalDateTime.now(clock))
+              .updatedAt(LocalDateTime.now(clock))
               .build();
 
       notificationRepository.save(notification);

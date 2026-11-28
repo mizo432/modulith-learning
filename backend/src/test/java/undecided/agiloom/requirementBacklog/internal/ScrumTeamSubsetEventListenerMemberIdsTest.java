@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +69,7 @@ class ScrumTeamSubsetEventListenerMemberIdsTest {
           .poName("PO Name")
           .smEmployeeId(SM_ID)
           .smName("SM Name")
-          .build();
+          .updatedAt(LocalDateTime.now()).build();
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(existing));
 
       listener.on(eventWithMembers());

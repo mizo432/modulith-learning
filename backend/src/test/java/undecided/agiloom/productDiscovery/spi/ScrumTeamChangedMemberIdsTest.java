@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,7 +29,7 @@ class ScrumTeamChangedMemberIdsTest {
         .poName("PO Name")
         .smEmployeeId(SM_ID)
         .smName("SM Name")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -65,7 +66,7 @@ class ScrumTeamChangedMemberIdsTest {
     @DisplayName("of(ScrumTeam)でScrumTeamのメンバーIDリストが正しくセットされること")
     void shouldSetMemberIdsFromScrumTeam() {
       ScrumTeam team = scrumTeam();
-      team.setMemberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID));
+      team.setMemberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID), LocalDateTime.now());
 
       ScrumTeamChanged event = ScrumTeamChanged.of(team);
 
@@ -81,7 +82,7 @@ class ScrumTeamChangedMemberIdsTest {
     @DisplayName("removed(ScrumTeam)でもメンバーIDリストが含まれること")
     void shouldIncludeMemberIdsInRemovedEvent() {
       ScrumTeam team = scrumTeam();
-      team.setMemberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID));
+      team.setMemberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID), LocalDateTime.now());
 
       ScrumTeamChanged event = ScrumTeamChanged.removed(team);
 
@@ -99,7 +100,7 @@ class ScrumTeamChangedMemberIdsTest {
     void shouldIncludePoAndSmInEventAfterUnion() {
       ScrumTeam team = scrumTeam();
       // union処理後、memberEmployeeIdsにPO/SMと他のメンバーが含まれる状態
-      team.setMemberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID));
+      team.setMemberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID), LocalDateTime.now());
 
       ScrumTeamChanged event = ScrumTeamChanged.of(team);
 

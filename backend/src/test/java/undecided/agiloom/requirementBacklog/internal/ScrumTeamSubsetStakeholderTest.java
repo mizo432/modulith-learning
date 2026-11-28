@@ -33,7 +33,7 @@ class ScrumTeamSubsetStakeholderTest {
         .smName("SM Name")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
         .stakeholderEmployeeIds(List.of(STAKEHOLDER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamChanged event(List<SnowflakeId> stakeholderIds) {

@@ -59,7 +59,7 @@ class CreateProductCommandServiceTest {
               .id(productId)
               .name("Test Product")
               .description("Test Description")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(productRepository.save(any(Product.class))).thenReturn(saved);
 
       SnowflakeId result = service.execute(command);
@@ -80,7 +80,7 @@ class CreateProductCommandServiceTest {
               .build();
 
       Product saved =
-          Product.builder().id(productId).name("Test Product").managerId(managerId).build();
+          Product.builder().id(productId).name("Test Product").managerId(managerId).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(productRepository.save(any(Product.class))).thenReturn(saved);
 
       SnowflakeId result = service.execute(command);

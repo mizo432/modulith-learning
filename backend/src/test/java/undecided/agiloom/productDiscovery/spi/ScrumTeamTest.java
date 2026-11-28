@@ -26,7 +26,7 @@ class ScrumTeamTest {
         .poName("Test PO")
         .smEmployeeId(SnowflakeId.of(200L))
         .smName("Test SM")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -66,7 +66,7 @@ class ScrumTeamTest {
     void shouldUpdateName() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.update("New Team Name", null, null, null, null, null);
+      scrumTeam.update("New Team Name", null, null, null, null, null, LocalDateTime.now());
 
       assertThat(scrumTeam.getName()).isEqualTo("New Team Name");
       assertThat(scrumTeam.getUpdatedAt()).isNotNull();
@@ -77,7 +77,7 @@ class ScrumTeamTest {
     void shouldUpdateBusinessDomain() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.update(null, "New Domain", null, null, null, null);
+      scrumTeam.update(null, "New Domain", null, null, null, null, LocalDateTime.now());
 
       assertThat(scrumTeam.getBusinessDomain()).isEqualTo("New Domain");
     }
@@ -88,7 +88,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       SnowflakeId newPoId = SnowflakeId.of(300L);
 
-      scrumTeam.update(null, null, newPoId, null, null, null);
+      scrumTeam.update(null, null, newPoId, null, null, null, LocalDateTime.now());
 
       assertThat(scrumTeam.getPoEmployeeId()).isEqualTo(newPoId);
     }
@@ -98,7 +98,7 @@ class ScrumTeamTest {
     void shouldUpdatePoName() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.update(null, null, null, "New PO Name", null, null);
+      scrumTeam.update(null, null, null, "New PO Name", null, null, LocalDateTime.now());
 
       assertThat(scrumTeam.getPoName()).isEqualTo("New PO Name");
     }
@@ -109,7 +109,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       SnowflakeId newSmId = SnowflakeId.of(400L);
 
-      scrumTeam.update(null, null, null, null, newSmId, null);
+      scrumTeam.update(null, null, null, null, newSmId, null, LocalDateTime.now());
 
       assertThat(scrumTeam.getSmEmployeeId()).isEqualTo(newSmId);
     }
@@ -119,7 +119,7 @@ class ScrumTeamTest {
     void shouldUpdateSmName() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.update(null, null, null, null, null, "New SM Name");
+      scrumTeam.update(null, null, null, null, null, "New SM Name", LocalDateTime.now());
 
       assertThat(scrumTeam.getSmName()).isEqualTo("New SM Name");
     }
@@ -131,7 +131,7 @@ class ScrumTeamTest {
       SnowflakeId newPoId = SnowflakeId.of(300L);
       SnowflakeId newSmId = SnowflakeId.of(400L);
 
-      scrumTeam.update("New Team Name", "New Domain", newPoId, "New PO Name", newSmId, "New SM Name");
+      scrumTeam.update("New Team Name", "New Domain", newPoId, "New PO Name", newSmId, "New SM Name", LocalDateTime.now());
 
       assertThat(scrumTeam.getName()).isEqualTo("New Team Name");
       assertThat(scrumTeam.getBusinessDomain()).isEqualTo("New Domain");
@@ -147,7 +147,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       LocalDateTime originalUpdatedAt = scrumTeam.getUpdatedAt();
 
-      scrumTeam.update("New Team Name", null, null, null, null, null);
+      scrumTeam.update("New Team Name", null, null, null, null, null, LocalDateTime.now());
 
       assertThat(scrumTeam.getUpdatedAt()).isNotEqualTo(originalUpdatedAt);
     }
@@ -159,7 +159,7 @@ class ScrumTeamTest {
       String originalName = scrumTeam.getName();
       String originalDomain = scrumTeam.getBusinessDomain();
 
-      scrumTeam.update(null, null, null, null, null, null);
+      scrumTeam.update(null, null, null, null, null, null, LocalDateTime.now());
 
       assertThat(scrumTeam.getName()).isEqualTo(originalName);
       assertThat(scrumTeam.getBusinessDomain()).isEqualTo(originalDomain);
@@ -170,7 +170,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenNameIsEmpty() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.update("", null, null, null, null, null))
+      assertThatThrownBy(() -> scrumTeam.update("", null, null, null, null, null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be empty");
     }
@@ -180,7 +180,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenBusinessDomainIsEmpty() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.update(null, "", null, null, null, null))
+      assertThatThrownBy(() -> scrumTeam.update(null, "", null, null, null, null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be empty");
     }
@@ -198,10 +198,10 @@ class ScrumTeamTest {
               .id(SnowflakeId.of(1L))
               .name("Test Team")
               .businessDomain("Test Domain")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       SnowflakeId poId = SnowflakeId.of(100L);
-      scrumTeam.assignPo(poId, "New PO");
+      scrumTeam.assignPo(poId, "New PO", LocalDateTime.now());
 
       assertThat(scrumTeam.getPoEmployeeId()).isEqualTo(poId);
       assertThat(scrumTeam.getPoName()).isEqualTo("New PO");
@@ -212,7 +212,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenPoEmployeeIdIsNull() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.assignPo(null, "New PO"))
+      assertThatThrownBy(() -> scrumTeam.assignPo(null, "New PO", LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("poEmployeeId must not be null");
     }
@@ -222,7 +222,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenPoNameIsNull() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.assignPo(SnowflakeId.of(100L), null))
+      assertThatThrownBy(() -> scrumTeam.assignPo(SnowflakeId.of(100L), null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("poName must not be null");
     }
@@ -237,7 +237,7 @@ class ScrumTeamTest {
     void shouldUnassignPo() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.unassignPo();
+      scrumTeam.unassignPo(LocalDateTime.now());
 
       assertThat(scrumTeam.getPoEmployeeId()).isNull();
       assertThat(scrumTeam.getPoName()).isNull();
@@ -256,10 +256,10 @@ class ScrumTeamTest {
               .id(SnowflakeId.of(1L))
               .name("Test Team")
               .businessDomain("Test Domain")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       SnowflakeId smId = SnowflakeId.of(200L);
-      scrumTeam.assignSm(smId, "New SM");
+      scrumTeam.assignSm(smId, "New SM", LocalDateTime.now());
 
       assertThat(scrumTeam.getSmEmployeeId()).isEqualTo(smId);
       assertThat(scrumTeam.getSmName()).isEqualTo("New SM");
@@ -270,7 +270,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenSmEmployeeIdIsNull() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.assignSm(null, "New SM"))
+      assertThatThrownBy(() -> scrumTeam.assignSm(null, "New SM", LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("smEmployeeId must not be null");
     }
@@ -280,7 +280,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenSmNameIsNull() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.assignSm(SnowflakeId.of(200L), null))
+      assertThatThrownBy(() -> scrumTeam.assignSm(SnowflakeId.of(200L), null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("smName must not be null");
     }
@@ -295,7 +295,7 @@ class ScrumTeamTest {
     void shouldUnassignSm() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      scrumTeam.unassignSm();
+      scrumTeam.unassignSm(LocalDateTime.now());
 
       assertThat(scrumTeam.getSmEmployeeId()).isNull();
       assertThat(scrumTeam.getSmName()).isNull();
@@ -314,7 +314,7 @@ class ScrumTeamTest {
       SnowflakeId member2 = SnowflakeId.of(400L);
       List<SnowflakeId> memberIds = List.of(member1, member2);
 
-      scrumTeam.setMemberEmployeeIds(memberIds);
+      scrumTeam.setMemberEmployeeIds(memberIds, LocalDateTime.now());
 
       assertThat(scrumTeam.getMemberEmployeeIds()).containsExactly(member1, member2);
     }
@@ -324,7 +324,7 @@ class ScrumTeamTest {
     void shouldThrowExceptionWhenNull() {
       ScrumTeam scrumTeam = createScrumTeam();
 
-      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(null))
+      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be null");
     }
@@ -333,9 +333,9 @@ class ScrumTeamTest {
     @DisplayName("空リストを渡したとき、memberEmployeeIdsが空リストになる")
     void shouldSetEmptyList() {
       ScrumTeam scrumTeam = createScrumTeam();
-      scrumTeam.setMemberEmployeeIds(List.of(SnowflakeId.of(300L)));
+      scrumTeam.setMemberEmployeeIds(List.of(SnowflakeId.of(300L)), LocalDateTime.now());
 
-      scrumTeam.setMemberEmployeeIds(List.of());
+      scrumTeam.setMemberEmployeeIds(List.of(), LocalDateTime.now());
 
       assertThat(scrumTeam.getMemberEmployeeIds()).isEmpty();
     }
@@ -346,7 +346,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       LocalDateTime originalUpdatedAt = scrumTeam.getUpdatedAt();
 
-      scrumTeam.setMemberEmployeeIds(List.of(SnowflakeId.of(300L)));
+      scrumTeam.setMemberEmployeeIds(List.of(SnowflakeId.of(300L)), LocalDateTime.now());
 
       assertThat(scrumTeam.getUpdatedAt()).isNotEqualTo(originalUpdatedAt);
     }
@@ -357,7 +357,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       List<SnowflakeId> memberIds = new ArrayList<>(List.of(SnowflakeId.of(300L)));
 
-      scrumTeam.setMemberEmployeeIds(memberIds);
+      scrumTeam.setMemberEmployeeIds(memberIds, LocalDateTime.now());
 
       memberIds.add(SnowflakeId.of(400L));
 
@@ -372,7 +372,7 @@ class ScrumTeamTest {
       @SuppressWarnings("unchecked")
       List<SnowflakeId> idsWithNull = Arrays.asList(SnowflakeId.of(1001L), null, SnowflakeId.of(1003L));
 
-      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(idsWithNull))
+      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(idsWithNull, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be null");
     }
@@ -384,7 +384,7 @@ class ScrumTeamTest {
 
       List<SnowflakeId> idsWithEmpty = List.of(SnowflakeId.of(1001L), SnowflakeId.EMPTY, SnowflakeId.of(1003L));
 
-      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(idsWithEmpty))
+      assertThatThrownBy(() -> scrumTeam.setMemberEmployeeIds(idsWithEmpty, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be empty");
     }
@@ -395,7 +395,7 @@ class ScrumTeamTest {
       ScrumTeam scrumTeam = createScrumTeam();
       List<SnowflakeId> validIds = List.of(SnowflakeId.of(1001L), SnowflakeId.of(1002L), SnowflakeId.of(1003L));
 
-      scrumTeam.setMemberEmployeeIds(validIds);
+      scrumTeam.setMemberEmployeeIds(validIds, LocalDateTime.now());
 
       assertThat(scrumTeam.getMemberEmployeeIds()).hasSize(3);
       assertThat(scrumTeam.getMemberEmployeeIds())

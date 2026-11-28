@@ -61,7 +61,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
         .title("Test Item")
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamSubset team() {
@@ -70,7 +70,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
         .name("Test Team")
         .poEmployeeId(SnowflakeId.of(PO_ID_VALUE))
         .smEmployeeId(SnowflakeId.of(SM_ID_VALUE))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private ChangeBacklogItemStatusCommand command(BacklogItemStatus target, long actorIdValue) {
@@ -95,7 +95,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
 
@@ -158,7 +158,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
@@ -237,7 +237,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
@@ -258,7 +258,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));
@@ -280,7 +280,7 @@ class ChangeBacklogItemStatusCommandServiceTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(team()));

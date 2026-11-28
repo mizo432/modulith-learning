@@ -58,7 +58,7 @@ class ScrumTeamSubsetStakeholderEmployeeIdsMediumTest {
               .memberEmployeeIds(List.of(SnowflakeId.of(6001L), SnowflakeId.of(6002L)))
               .stakeholderEmployeeIds(
                   List.of(SnowflakeId.of(6901L), SnowflakeId.of(6902L)))
-              .build();
+              .updatedAt(LocalDateTime.now()).build();
 
       scrumTeamSubsetRepository.save(subset);
       ScrumTeamSubset loaded =
@@ -74,7 +74,7 @@ class ScrumTeamSubsetStakeholderEmployeeIdsMediumTest {
     @DisplayName("stakeholderEmployeeIdsを指定せずに保存すると、空リストとして読込されること")
     void shouldDefaultToEmptyStakeholders() {
       ScrumTeamSubset subset =
-          ScrumTeamSubset.builder().id(SnowflakeId.of(601L)).name("ステークホルダーなしチーム").build();
+          ScrumTeamSubset.builder().id(SnowflakeId.of(601L)).name("ステークホルダーなしチーム").updatedAt(LocalDateTime.now()).build();
 
       scrumTeamSubsetRepository.save(subset);
       ScrumTeamSubset loaded =

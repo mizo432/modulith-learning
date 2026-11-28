@@ -2,6 +2,8 @@ package undecided.agiloom.productDiscovery.internal.command;
 
 import static com.github.mizo432.shared.common.precondition.StringPrecondition.checkNonEmpty;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +21,17 @@ public class CreateScrumTeamCommandService {
   private final ScrumTeamRepository scrumTeamRepository;
   private final ProductRepository productRepository;
   private final SprintZeroFactory sprintZeroFactory;
+  private final Clock clock;
 
   public CreateScrumTeamCommandService(
       ScrumTeamRepository scrumTeamRepository,
       ProductRepository productRepository,
-      SprintZeroFactory sprintZeroFactory) {
+      SprintZeroFactory sprintZeroFactory,
+      Clock clock) {
     this.scrumTeamRepository = scrumTeamRepository;
     this.productRepository = productRepository;
     this.sprintZeroFactory = sprintZeroFactory;
+    this.clock = clock;
   }
 
   public SnowflakeId execute(@NonNull CreateScrumTeamCommand command) {
@@ -48,6 +53,8 @@ public class CreateScrumTeamCommandService {
             .smEmployeeId(command.getSmEmployeeId())
             .smName(command.getSmName())
             .product(product)
+            .createdAt(LocalDateTime.now(clock))
+            .updatedAt(LocalDateTime.now(clock))
             .build();
 
     ScrumTeam saved = scrumTeamRepository.save(scrumTeam);

@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -37,7 +38,7 @@ class BacklogItemDependencyQueryServiceTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .status(status)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItemDependency dep(SnowflakeId from, SnowflakeId to) {
@@ -46,7 +47,7 @@ class BacklogItemDependencyQueryServiceTest {
         .backlogItemId(from)
         .dependencyItemId(to)
         .createdBy(SnowflakeId.of(1001L))
-        .build();
+        .createdAt(LocalDateTime.now()).build();
   }
 
   @Test

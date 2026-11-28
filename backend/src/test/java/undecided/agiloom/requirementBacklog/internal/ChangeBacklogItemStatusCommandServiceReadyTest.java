@@ -65,7 +65,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamSubset teamWithMembers() {
@@ -77,7 +77,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
         .smEmployeeId(SM_ID)
         .smName("SM Name")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private ChangeBacklogItemStatusCommand command(BacklogItemStatus target, SnowflakeId actorId) {
@@ -283,7 +283,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -302,7 +302,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));

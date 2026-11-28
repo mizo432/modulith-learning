@@ -43,6 +43,5 @@ class NotificationCommentParticipantSubset {
   protected String employeeEmail;
 
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 }

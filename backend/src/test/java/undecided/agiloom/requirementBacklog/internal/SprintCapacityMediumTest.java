@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,7 +55,7 @@ class SprintCapacityMediumTest {
             .teamName("容量テストチーム")
             .startDate(start)
             .endDate(end)
-            .build());
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
   }
 
   private void saveItem(long id, BacklogItemStatus status, Integer storyPoint, SnowflakeId sprintId) {
@@ -67,7 +68,7 @@ class SprintCapacityMediumTest {
             .status(status)
             .storyPoint(storyPoint)
             .sprintId(sprintId)
-            .build());
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
   }
 
   @Test

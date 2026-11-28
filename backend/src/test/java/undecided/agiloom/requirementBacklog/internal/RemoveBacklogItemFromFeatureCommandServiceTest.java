@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,14 +51,14 @@ class RemoveBacklogItemFromFeatureCommandServiceTest {
         .name("Test Feature")
         .status(FeatureStatus.PLANNED)
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private FeatureBacklogItem createAssociation(SnowflakeId featureId, SnowflakeId backlogItemId) {
     return FeatureBacklogItem.builder()
         .featureId(featureId)
         .backlogItemId(backlogItemId)
-        .build();
+        .createdAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -74,7 +75,7 @@ class RemoveBacklogItemFromFeatureCommandServiceTest {
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
       FeatureBacklogItem association = createAssociation(featureId, backlogItemId);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       RemoveBacklogItemFromFeatureCommand command = RemoveBacklogItemFromFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)

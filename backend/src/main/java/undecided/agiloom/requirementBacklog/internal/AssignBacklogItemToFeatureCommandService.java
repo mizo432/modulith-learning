@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import undecided.agiloom.requirementBacklog.spi.BacklogItem;
 import undecided.agiloom.requirementBacklog.spi.Feature;
@@ -16,16 +18,19 @@ class AssignBacklogItemToFeatureCommandService {
   private final BacklogItemRepository backlogItemRepository;
   private final FeatureBacklogItemRepository featureBacklogItemRepository;
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
+  private final Clock clock;
 
   AssignBacklogItemToFeatureCommandService(
       @NonNull FeatureRepository featureRepository,
       @NonNull BacklogItemRepository backlogItemRepository,
       @NonNull FeatureBacklogItemRepository featureBacklogItemRepository,
-      @NonNull ScrumTeamSubsetRepository scrumTeamSubsetRepository) {
+      @NonNull ScrumTeamSubsetRepository scrumTeamSubsetRepository,
+      @NonNull Clock clock) {
     this.featureRepository = featureRepository;
     this.backlogItemRepository = backlogItemRepository;
     this.featureBacklogItemRepository = featureBacklogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
+    this.clock = clock;
   }
 
   /**
@@ -70,6 +75,7 @@ class AssignBacklogItemToFeatureCommandService {
     FeatureBacklogItem association = FeatureBacklogItem.builder()
         .featureId(command.featureId())
         .backlogItemId(command.backlogItemId())
+        .createdAt(LocalDateTime.now(clock))
         .build();
     featureBacklogItemRepository.save(association);
   }

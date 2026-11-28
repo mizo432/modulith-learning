@@ -81,7 +81,7 @@ class NotificationIntegrationMediumTest {
             .employeeId(participant1EmployeeId)
             .employeeName("参加者1")
             .employeeEmail("participant1@example.com")
-            .build());
+            .createdAt(LocalDateTime.now()).build());
     commentParticipantSubsetRepository.save(
         NotificationCommentParticipantSubset.builder()
             .id(snowflakeIdGenerator.nextIdValue())
@@ -89,7 +89,7 @@ class NotificationIntegrationMediumTest {
             .employeeId(participant2EmployeeId)
             .employeeName("参加者2")
             .employeeEmail("participant2@example.com")
-            .build());
+            .createdAt(LocalDateTime.now()).build());
   }
 
   /**

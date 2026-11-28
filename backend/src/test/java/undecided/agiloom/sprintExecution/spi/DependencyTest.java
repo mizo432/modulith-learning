@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +20,7 @@ class DependencyTest {
         .targetItemId(SnowflakeId.of(200L))
         .dependencyType(DependencyType.BLOCKS)
         .description("Task A blocks Task B")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -46,7 +47,7 @@ class DependencyTest {
     void shouldUpdateDependencyTypeAndDescription() {
       Dependency dependency = createDependency();
 
-      dependency.update(DependencyType.REQUIRES, "New description");
+      dependency.update(DependencyType.REQUIRES, "New description", LocalDateTime.now());
 
       assertThat(dependency.getDependencyType()).isEqualTo(DependencyType.REQUIRES);
       assertThat(dependency.getDescription()).isEqualTo("New description");
@@ -58,13 +59,13 @@ class DependencyTest {
     void shouldUpdateToAllDependencyTypes() {
       Dependency dependency = createDependency();
 
-      dependency.update(DependencyType.REQUIRES, "Requires");
+      dependency.update(DependencyType.REQUIRES, "Requires", LocalDateTime.now());
       assertThat(dependency.getDependencyType()).isEqualTo(DependencyType.REQUIRES);
 
-      dependency.update(DependencyType.RELATES_TO, "Relates to");
+      dependency.update(DependencyType.RELATES_TO, "Relates to", LocalDateTime.now());
       assertThat(dependency.getDependencyType()).isEqualTo(DependencyType.RELATES_TO);
 
-      dependency.update(DependencyType.BLOCKS, "Blocks");
+      dependency.update(DependencyType.BLOCKS, "Blocks", LocalDateTime.now());
       assertThat(dependency.getDependencyType()).isEqualTo(DependencyType.BLOCKS);
     }
   }

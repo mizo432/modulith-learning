@@ -73,13 +73,11 @@ public class Impediment {
 
   /** 障害事項が作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** 障害事項が最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** 障害事項が論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -128,30 +126,30 @@ public class Impediment {
                 .build();
     }
 
-    public void resolve() {
+    public void resolve(@NonNull LocalDateTime now) {
         if (this.status != ImpedimentStatus.IN_PROGRESS) {
             throw new IllegalStateException("Impediment can only be resolved from IN_PROGRESS status, current status: " + this.status);
         }
         this.status = ImpedimentStatus.RESOLVED;
-        this.resolvedAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.resolvedAt = now;
+        this.updatedAt = now;
     }
 
-    public void startWorkingOn() {
+    public void startWorkingOn(@NonNull LocalDateTime now) {
         if (this.status != ImpedimentStatus.NEW) {
             throw new IllegalStateException("Impediment can only start working on from NEW status, current status: " + this.status);
         }
         this.status = ImpedimentStatus.IN_PROGRESS;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
-    public void update(@NonNull String title, @NonNull String description, @Nullable String impact, @Nullable SnowflakeId assigneeId) {
+    public void update(@NonNull String title, @NonNull String description, @Nullable String impact, @Nullable SnowflakeId assigneeId, @NonNull LocalDateTime now) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(description, () -> new IllegalArgumentException("description must not be null"));
         this.title = title;
         this.description = description;
         this.impact = impact;
         this.assigneeId = assigneeId;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 }

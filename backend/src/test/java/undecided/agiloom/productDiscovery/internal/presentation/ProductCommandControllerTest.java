@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -59,7 +60,7 @@ class ProductCommandControllerTest {
             .description("Test Description")
             .managerId(SnowflakeId.of(100L))
             .status(ProductStatus.ACTIVE)
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     productResponse =
         ProductResponse.builder()
             .id(productId)

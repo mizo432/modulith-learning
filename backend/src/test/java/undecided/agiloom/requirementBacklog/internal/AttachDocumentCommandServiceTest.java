@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
 
@@ -65,7 +66,7 @@ class AttachDocumentCommandServiceTest {
             scrumTeamSubsetRepository,
             backlogItemDocumentRepository,
             documentFacade,
-            snowflakeIdGenerator);
+            snowflakeIdGenerator, Clock.systemDefaultZone());
   }
 
   private BacklogItem backlogItem() {
@@ -74,7 +75,7 @@ class AttachDocumentCommandServiceTest {
         .title("Test Item")
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamSubset subset() {
@@ -87,7 +88,7 @@ class AttachDocumentCommandServiceTest {
         .smName("SM")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
         .stakeholderEmployeeIds(List.of(STAKEHOLDER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private AttachDocumentCommand command(SnowflakeId uploaderId, long fileSize, SnowflakeId seriesId) {
@@ -166,7 +167,7 @@ class AttachDocumentCommandServiceTest {
               .backlogItemId(ITEM_ID)
               .documentId(DOC_ID)
               .seriesId(SERIES_ID)
-              .build();
+              .createdAt(LocalDateTime.now()).build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(backlogItem()));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(subset()));
       when(backlogItemDocumentRepository.findByBacklogItemId(ITEM_ID))
@@ -215,7 +216,7 @@ class AttachDocumentCommandServiceTest {
               .backlogItemId(ITEM_ID)
               .documentId(DOC_ID)
               .seriesId(SERIES_ID)
-              .build();
+              .createdAt(LocalDateTime.now()).build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(backlogItem()));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(subset()));
       when(backlogItemDocumentRepository.findByBacklogItemId(ITEM_ID))

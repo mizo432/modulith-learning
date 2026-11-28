@@ -2,6 +2,8 @@ package undecided.agiloom.sprintExecution.internal.query;
 
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.jspecify.annotations.NonNull;
@@ -22,12 +24,15 @@ public class SprintSettingsQueryService {
 
   private final SprintSettingsRepository sprintSettingsRepository;
   private final SprintSettingsCalculator sprintSettingsCalculator;
+  private final Clock clock;
 
   public SprintSettingsQueryService(
       SprintSettingsRepository sprintSettingsRepository,
-      SprintSettingsCalculator sprintSettingsCalculator) {
+      SprintSettingsCalculator sprintSettingsCalculator,
+      Clock clock) {
     this.sprintSettingsRepository = sprintSettingsRepository;
     this.sprintSettingsCalculator = sprintSettingsCalculator;
+    this.clock = clock;
   }
 
   /**
@@ -74,6 +79,8 @@ public class SprintSettingsQueryService {
             .productId(productId)
             .businessDays(10)
             .endDayOfWeek(EndDayOfWeek.FRIDAY)
+            .createdAt(LocalDateTime.now(clock))
+            .updatedAt(LocalDateTime.now(clock))
             .build()
     );
   }

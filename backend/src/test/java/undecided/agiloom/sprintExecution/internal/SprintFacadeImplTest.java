@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -31,7 +32,7 @@ class SprintFacadeImplTest {
         .title("Sprint " + number)
         .status(status)
         .teamId(TEAM_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private Sprint sprintZero() {
@@ -43,7 +44,7 @@ class SprintFacadeImplTest {
         .status(SprintStatus.PLANNED)
         .teamId(TEAM_ID)
         .isSprintZero(true)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private void givenSprints(Sprint... sprints) {

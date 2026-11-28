@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -28,7 +29,7 @@ class BacklogItemResponseConverterParentItemIdTest {
     @Test
     @DisplayName("親IDを持つアイテムを変換するとレスポンスに同じ親IDが文字列で含まれる")
     void shouldIncludeParentItemIdInResponse() {
-      BacklogItem item = BacklogItem.builder().parentItemId(PARENT_ID).build();
+      BacklogItem item = BacklogItem.builder().parentItemId(PARENT_ID).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       BacklogItemResponse response = converter.toBacklogItemResponse(item);
 
@@ -38,7 +39,7 @@ class BacklogItemResponseConverterParentItemIdTest {
     @Test
     @DisplayName("親IDがnullのアイテムを変換するとレスポンスの親IDもnullになる")
     void shouldHaveNullParentItemIdWhenItemHasNoParent() {
-      BacklogItem item = BacklogItem.builder().parentItemId(null).build();
+      BacklogItem item = BacklogItem.builder().parentItemId(null).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       BacklogItemResponse response = converter.toBacklogItemResponse(item);
 

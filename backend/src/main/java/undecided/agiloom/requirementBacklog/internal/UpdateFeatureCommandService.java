@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import undecided.agiloom.requirementBacklog.spi.Feature;
 import undecided.agiloom.requirementBacklog.spi.FeatureStatus;
@@ -11,12 +13,15 @@ class UpdateFeatureCommandService {
 
   private final FeatureRepository featureRepository;
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
+  private final Clock clock;
 
   UpdateFeatureCommandService(
       @NonNull FeatureRepository featureRepository,
-      @NonNull ScrumTeamSubsetRepository scrumTeamSubsetRepository) {
+      @NonNull ScrumTeamSubsetRepository scrumTeamSubsetRepository,
+      @NonNull Clock clock) {
     this.featureRepository = featureRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
+    this.clock = clock;
   }
 
   /**
@@ -38,11 +43,11 @@ class UpdateFeatureCommandService {
         .orElseThrow(() -> new IllegalArgumentException("Feature not found: " + command.featureId()));
 
     // Update name/description
-    feature.update(command.name(), command.description());
+    feature.update(command.name(), command.description(), LocalDateTime.now(clock));
 
     // Update status if provided
     if (command.status() != null) {
-      feature.changeStatus(command.status());
+      feature.changeStatus(command.status(), LocalDateTime.now(clock));
     }
 
     featureRepository.save(feature);

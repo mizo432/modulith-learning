@@ -69,7 +69,10 @@ public class FeatureBacklogItem {
     FeatureBacklogItem item = new FeatureBacklogItem();
     item.featureId = featureId;
     item.backlogItemId = backlogItemId;
-    item.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+    if (createdAt == null) {
+      throw new IllegalArgumentException("createdAt must not be null");
+    }
+    item.createdAt = createdAt;
     return item;
   }
 }

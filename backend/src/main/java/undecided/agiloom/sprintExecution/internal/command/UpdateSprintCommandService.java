@@ -36,7 +36,8 @@ public class UpdateSprintCommandService {
                 command.getTitle() != null ? command.getTitle() : sprint.getTitle(),
                 command.getGoal() != null ? command.getGoal() : sprint.getGoal(),
                 command.getEndDate(),
-                command.getNotes()
+                command.getNotes(),
+                LocalDateTime.now(clock)
         );
     }
 
@@ -45,10 +46,10 @@ public class UpdateSprintCommandService {
                 .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
 
         switch (status) {
-            case ACTIVE -> sprint.start();
-            case COMPLETED -> sprint.complete();
+            case ACTIVE -> sprint.start(LocalDateTime.now(clock));
+            case COMPLETED -> sprint.complete(LocalDateTime.now(clock));
             case CANCELLED -> {
-                sprint.cancel();
+                sprint.cancel(LocalDateTime.now(clock));
                 publishSprintCancelled(sprint);
             }
             default -> throw new IllegalArgumentException("Invalid status: " + status);
@@ -66,7 +67,7 @@ public class UpdateSprintCommandService {
                 .orElseThrow(() -> new IllegalArgumentException("Sprint not found: " + id));
 
         // スプリント0の削除は禁止
-        sprint.delete();
+        sprint.delete(LocalDateTime.now(clock));
         sprintRepository.save(sprint);
         publishSprintCancelled(sprint);
     }

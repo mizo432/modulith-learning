@@ -59,13 +59,11 @@ public class SprintSettings {
 
   /** スプリント設定が作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** スプリント設定が最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** スプリント設定が論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -77,7 +75,7 @@ public class SprintSettings {
    * @param businessDays 営業日数（1〜30）
    * @param endDayOfWeek 終了曜日
    */
-  public void update(@NonNull Integer businessDays, @NonNull EndDayOfWeek endDayOfWeek) {
+  public void update(@NonNull Integer businessDays, @NonNull EndDayOfWeek endDayOfWeek, @NonNull LocalDateTime now) {
     checkNotNull(businessDays, () -> new IllegalArgumentException("businessDays must not be null"));
     checkNotNull(endDayOfWeek, () -> new IllegalArgumentException("endDayOfWeek must not be null"));
 
@@ -90,7 +88,7 @@ public class SprintSettings {
 
     this.businessDays = businessDays;
     this.endDayOfWeek = endDayOfWeek;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -136,8 +134,8 @@ public class SprintSettings {
   }
 
   /** スプリント設定を論理削除します。 */
-  public void delete() {
-    this.deletedAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
+  public void delete(@NonNull LocalDateTime now) {
+    this.deletedAt = now;
+    this.updatedAt = now;
   }
 }

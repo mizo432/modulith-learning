@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +44,7 @@ class SprintCancelledSlideListenerTest {
 
   @BeforeEach
   void setUp() {
-    listener = new SprintCancelledSlideListener(backlogItemRepository, sprintFacade);
+    listener = new SprintCancelledSlideListener(backlogItemRepository, sprintFacade, Clock.systemDefaultZone());
   }
 
   private BacklogItem item(long id) {
@@ -55,7 +56,7 @@ class SprintCancelledSlideListenerTest {
         .status(BacklogItemStatus.ESTIMATED)
         .storyPoint(5)
         .sprintId(CANCELLED_SPRINT_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private Sprint nextSprint() {
@@ -66,7 +67,7 @@ class SprintCancelledSlideListenerTest {
         .title("Sprint 2")
         .status(SprintStatus.PLANNED)
         .teamId(TEAM_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Test

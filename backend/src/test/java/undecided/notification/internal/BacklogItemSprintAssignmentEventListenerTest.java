@@ -1,4 +1,5 @@
 package undecided.notification.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -59,7 +60,7 @@ class BacklogItemSprintAssignmentEventListenerTest {
             notificationRepository,
             scrumTeamMemberRepository,
             emailNotificationService,
-            snowflakeIdGenerator);
+            snowflakeIdGenerator, Clock.systemDefaultZone());
   }
 
   @Nested

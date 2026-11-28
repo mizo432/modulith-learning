@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,7 @@ class DeleteBacklogItemCommentCommandServiceTest {
   private BacklogItemComment comment() {
     return BacklogItemComment.builder()
         .id(COMMENT_ID)
-        .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").build())
+        .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build())
         .authorEmployeeId(AUTHOR_ID)
         .authorName("Author")
         .body("Test comment")
@@ -181,7 +182,7 @@ class DeleteBacklogItemCommentCommandServiceTest {
       // 子返信が存在する
       BacklogItemComment reply = BacklogItemComment.builder()
           .id(SnowflakeId.of(2000L))
-          .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").build())
+          .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build())
           .authorEmployeeId(SnowflakeId.of(400L))
           .authorName("Replier")
           .body("Reply comment")

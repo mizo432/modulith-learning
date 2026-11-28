@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,7 +48,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
   @BeforeEach
   void setUp() {
     service = new AssignBacklogItemToFeatureCommandService(
-        featureRepository, backlogItemRepository, featureBacklogItemRepository, scrumTeamSubsetRepository);
+        featureRepository, backlogItemRepository, featureBacklogItemRepository, scrumTeamSubsetRepository, Clock.systemDefaultZone());
   }
 
   private Feature createFeature() {
@@ -55,7 +57,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
         .name("Test Feature")
         .status(FeatureStatus.PLANNED)
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItem createBacklogItem() {
@@ -64,7 +66,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
         .title("Test Item")
         .creatorName("Creator")
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -81,7 +83,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
       BacklogItem backlogItem = createBacklogItem();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
@@ -122,8 +124,8 @@ class AssignBacklogItemToFeatureCommandServiceTest {
           .creatorName("Creator")
           .scrumTeamId(teamId)
           .status(BacklogItemStatus.ACCEPTED)
-          .build();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
@@ -152,7 +154,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       SnowflakeId featureId = SnowflakeId.of(100L);
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(SnowflakeId.of(200L))
@@ -177,7 +179,7 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
       Feature feature = createFeature();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
@@ -207,8 +209,8 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       FeatureBacklogItem existing = FeatureBacklogItem.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
-          .build();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+          .createdAt(LocalDateTime.now()).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)
@@ -243,8 +245,8 @@ class AssignBacklogItemToFeatureCommandServiceTest {
       FeatureBacklogItem existing = FeatureBacklogItem.builder()
           .featureId(otherFeatureId)
           .backlogItemId(backlogItemId)
-          .build();
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+          .createdAt(LocalDateTime.now()).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       AssignBacklogItemToFeatureCommand command = AssignBacklogItemToFeatureCommand.builder()
           .featureId(featureId)
           .backlogItemId(backlogItemId)

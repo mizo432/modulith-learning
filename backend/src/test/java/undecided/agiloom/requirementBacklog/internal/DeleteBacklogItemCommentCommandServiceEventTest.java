@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -70,7 +71,7 @@ class DeleteBacklogItemCommentCommandServiceEventTest {
       BacklogItemComment comment =
           BacklogItemComment.builder()
               .id(COMMENT_ID)
-              .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").build())
+              .backlogItem(BacklogItem.builder().id(ITEM_ID).title("Test").creatorName("Creator").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build())
               .authorEmployeeId(AUTHOR_ID)
               .authorName("Author")
               .body("Test comment")

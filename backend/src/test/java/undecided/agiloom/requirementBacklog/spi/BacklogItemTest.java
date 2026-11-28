@@ -24,7 +24,7 @@ class BacklogItemTest {
         .title("Test Item")
         .creatorName("Creator")
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -47,7 +47,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .creatorEmployeeId(employeeId)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       assertThat(backlogItem.getCreatorEmployeeId()).isEqualTo(employeeId);
     }
 
@@ -71,7 +71,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }
@@ -93,7 +93,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItem.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
     }
@@ -107,7 +107,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class)
@@ -157,7 +157,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class)
@@ -182,7 +182,7 @@ class BacklogItemTest {
     @DisplayName("タイトル等を更新できること（nullは変更なし）")
     void shouldUpdateFields() {
       BacklogItem backlogItem = item();
-      backlogItem.update("New Title", null, 5, null, null);
+      backlogItem.update("New Title", null, 5, null, null, LocalDateTime.now());
       assertThat(backlogItem.getTitle()).isEqualTo("New Title");
       assertThat(backlogItem.getPriority()).isEqualTo(5);
     }
@@ -191,7 +191,7 @@ class BacklogItemTest {
     @DisplayName("空タイトルへの更新は例外になること")
     void shouldThrowOnEmptyTitle() {
       BacklogItem backlogItem = item();
-      assertThatThrownBy(() -> backlogItem.update("", null, null, null, null))
+      assertThatThrownBy(() -> backlogItem.update("", null, null, null, null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
   }
@@ -204,7 +204,7 @@ class BacklogItemTest {
     @DisplayName("value=0でupdate成功すること（下限境界値）")
     void shouldAcceptValueZero() {
       BacklogItem backlogItem = item();
-      backlogItem.update(null, null, null, null, 0);
+      backlogItem.update(null, null, null, null, 0, LocalDateTime.now());
       assertThat(backlogItem.getValue()).isEqualTo(0);
     }
 
@@ -212,7 +212,7 @@ class BacklogItemTest {
     @DisplayName("value=100でupdate成功すること（上限境界値）")
     void shouldAcceptValue100() {
       BacklogItem backlogItem = item();
-      backlogItem.update(null, null, null, null, 100);
+      backlogItem.update(null, null, null, null, 100, LocalDateTime.now());
       assertThat(backlogItem.getValue()).isEqualTo(100);
     }
 
@@ -220,7 +220,7 @@ class BacklogItemTest {
     @DisplayName("value=-1でupdate時IllegalArgumentExceptionをスローすること")
     void shouldThrowOnValueMinusOne() {
       BacklogItem backlogItem = item();
-      assertThatThrownBy(() -> backlogItem.update(null, null, null, null, -1))
+      assertThatThrownBy(() -> backlogItem.update(null, null, null, null, -1, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -228,7 +228,7 @@ class BacklogItemTest {
     @DisplayName("value=101でupdate時IllegalArgumentExceptionをスローすること")
     void shouldThrowOnValue101() {
       BacklogItem backlogItem = item();
-      assertThatThrownBy(() -> backlogItem.update(null, null, null, null, 101))
+      assertThatThrownBy(() -> backlogItem.update(null, null, null, null, 101, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -236,7 +236,7 @@ class BacklogItemTest {
     @DisplayName("value=nullでupdate成功すること（変更なし）")
     void shouldAcceptValueNull() {
       BacklogItem backlogItem = item();
-      backlogItem.update(null, null, null, null, null);
+      backlogItem.update(null, null, null, null, null, LocalDateTime.now());
       assertThat(backlogItem.getValue()).isNull();
     }
   }
@@ -254,7 +254,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(80)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       assertThat(backlogItem.getQualityCategory()).isEqualTo(QualityCategory.ATTRACTIVE);
     }
 
@@ -269,7 +269,7 @@ class BacklogItemTest {
     @DisplayName("updateでvalueを30に設定するとqualityCategoryがONE_DIMENSIONALになること")
     void shouldSetQualityCategoryToOneDimensionalWhenValue30() {
       BacklogItem backlogItem = item();
-      backlogItem.update(null, null, null, null, 30);
+      backlogItem.update(null, null, null, null, 30, LocalDateTime.now());
       assertThat(backlogItem.getQualityCategory()).isEqualTo(QualityCategory.ONE_DIMENSIONAL);
     }
 
@@ -282,8 +282,8 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(30)
-          .build();
-      backlogItem.update(null, null, null, null, 90);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      backlogItem.update(null, null, null, null, 90, LocalDateTime.now());
       assertThat(backlogItem.getQualityCategory()).isEqualTo(QualityCategory.ATTRACTIVE);
     }
   }
@@ -301,7 +301,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(0)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }
@@ -315,7 +315,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(100)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }
@@ -329,7 +329,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(-1)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
@@ -343,7 +343,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(101)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       assertThatThrownBy(() -> backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
@@ -365,7 +365,7 @@ class BacklogItemTest {
           .creatorName("Creator")
           .scrumTeamId(SnowflakeId.of(10L))
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItem.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       assertThat(backlogItem.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }

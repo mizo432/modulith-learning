@@ -2,6 +2,8 @@ package undecided.agiloom.sprintExecution.internal.command;
 
 import static com.github.mizo432.shared.common.precondition.ObjectPrecondition.checkNotNull;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -24,11 +26,13 @@ public class UpdateSprintSettingsCommandService {
 
   private final SprintSettingsRepository sprintSettingsRepository;
   private final SprintRepository sprintRepository;
+  private final Clock clock;
 
   public UpdateSprintSettingsCommandService(
-      SprintSettingsRepository sprintSettingsRepository, SprintRepository sprintRepository) {
+      SprintSettingsRepository sprintSettingsRepository, SprintRepository sprintRepository, Clock clock) {
     this.sprintSettingsRepository = sprintSettingsRepository;
     this.sprintRepository = sprintRepository;
+    this.clock = clock;
   }
 
   /**
@@ -60,7 +64,7 @@ public class UpdateSprintSettingsCommandService {
     Optional<SprintSettings> existing = sprintSettingsRepository.findByProductId(productId);
     if (existing.isPresent()) {
       SprintSettings settings = existing.get();
-      settings.update(command.getBusinessDays(), command.getEndDayOfWeek());
+      settings.update(command.getBusinessDays(), command.getEndDayOfWeek(), LocalDateTime.now(clock));
       SprintSettings saved = sprintSettingsRepository.save(settings);
       return saved.getId();
     } else {
@@ -68,6 +72,8 @@ public class UpdateSprintSettingsCommandService {
           .productId(productId)
           .businessDays(command.getBusinessDays())
           .endDayOfWeek(command.getEndDayOfWeek())
+          .createdAt(LocalDateTime.now(clock))
+          .updatedAt(LocalDateTime.now(clock))
           .build();
       SprintSettings saved = sprintSettingsRepository.save(settings);
       return saved.getId();

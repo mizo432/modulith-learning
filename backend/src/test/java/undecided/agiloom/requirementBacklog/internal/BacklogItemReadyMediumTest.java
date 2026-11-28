@@ -60,7 +60,7 @@ class BacklogItemReadyMediumTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       backlogItemRepository.save(item);
 
@@ -85,7 +85,7 @@ class BacklogItemReadyMediumTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       backlogItemRepository.save(item);
       entityManager.flush();
@@ -137,7 +137,7 @@ class BacklogItemReadyMediumTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       backlogItemRepository.save(item);
 
       BacklogItem saved = backlogItemRepository.findById(item.getId()).orElseThrow();

@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,7 +65,7 @@ class ScrumTeamSubsetMemberEmployeeIdsMediumTest {
           .smEmployeeId(SnowflakeId.of(3002L))
           .smName("サブセットSM")
           .memberEmployeeIds(memberIds)
-          .build();
+          .updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamSubsetRepository.save(subset);
@@ -88,7 +89,7 @@ class ScrumTeamSubsetMemberEmployeeIdsMediumTest {
       ScrumTeamSubset subset = ScrumTeamSubset.builder()
           .id(SnowflakeId.of(301L))
           .name("メンバーなしサブセット")
-          .build();
+          .updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamSubsetRepository.save(subset);
@@ -134,7 +135,7 @@ class ScrumTeamSubsetMemberEmployeeIdsMediumTest {
           .smEmployeeId(SnowflakeId.of(4002L))
           .smName("SM")
           .memberEmployeeIds(memberIds)
-          .build();
+          .updatedAt(LocalDateTime.now()).build();
       scrumTeamSubsetRepository.save(subset);
       ScrumTeamSubset loaded = scrumTeamSubsetRepository.findById(SnowflakeId.of(400L)).orElseThrow();
 
@@ -161,7 +162,7 @@ class ScrumTeamSubsetMemberEmployeeIdsMediumTest {
       ScrumTeamSubset subset = ScrumTeamSubset.builder()
           .id(SnowflakeId.of(500L))
           .name("デフォルトテストサブセット")
-          .build();
+          .updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamSubsetRepository.save(subset);

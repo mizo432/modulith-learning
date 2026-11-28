@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -204,7 +205,7 @@ class BacklogItemAttachmentsEndpointMediumTest {
             .smName("SM")
             .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
             .stakeholderEmployeeIds(List.of(STAKEHOLDER_ID))
-            .build());
+            .updatedAt(LocalDateTime.now()).build());
     backlogItemRepository.save(
         BacklogItem.builder()
             .id(ITEM_ID)
@@ -212,7 +213,7 @@ class BacklogItemAttachmentsEndpointMediumTest {
             .creatorName("Creator")
             .scrumTeamId(TEAM_ID)
             .value(50)
-            .build());
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
   }
 
   private long attachAsMember(String fileName, byte[] content) throws Exception {

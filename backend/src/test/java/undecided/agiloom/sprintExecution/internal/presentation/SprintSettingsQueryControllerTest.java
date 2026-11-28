@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -55,7 +56,7 @@ class SprintSettingsQueryControllerTest {
           .productId(productId)
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(sprintSettingsQueryService.getSettingsOrDefault(productId)).thenReturn(settings);
       when(sprintSettingsQueryService.calculateEndDate(productId, startDate))
@@ -85,7 +86,7 @@ class SprintSettingsQueryControllerTest {
           .productId(productId)
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(sprintSettingsQueryService.getSettingsOrDefault(productId)).thenReturn(settings);
       when(sprintSettingsQueryService.calculateEndDate(productId, startDate))
@@ -110,7 +111,7 @@ class SprintSettingsQueryControllerTest {
           .productId(productId)
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.WEDNESDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(sprintSettingsQueryService.getSettingsOrDefault(productId)).thenReturn(settings);
       when(sprintSettingsQueryService.calculateEndDate(productId, startDate))
@@ -136,7 +137,7 @@ class SprintSettingsQueryControllerTest {
           .productId(productId)
           .businessDays(1)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(sprintSettingsQueryService.getSettingsOrDefault(productId)).thenReturn(settings);
       when(sprintSettingsQueryService.calculateEndDate(productId, startDate))
@@ -162,7 +163,7 @@ class SprintSettingsQueryControllerTest {
           .productId(productId)
           .businessDays(30)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(sprintSettingsQueryService.getSettingsOrDefault(productId)).thenReturn(settings);
       when(sprintSettingsQueryService.calculateEndDate(productId, startDate))
@@ -205,7 +206,7 @@ class SprintSettingsQueryControllerTest {
           .productId(productId)
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(sprintSettingsQueryService.getSettingsOrDefault(productId)).thenReturn(settings);
 

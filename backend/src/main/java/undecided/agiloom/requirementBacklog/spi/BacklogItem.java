@@ -136,7 +136,7 @@ public class BacklogItem {
       @Nullable String description,
       @Nullable Integer priority,
       @Nullable SnowflakeId sprintId,
-      @Nullable Integer value) {
+      @Nullable Integer value, @NonNull LocalDateTime now) {
     if (title != null) {
       checkNonEmpty(title, () -> new IllegalArgumentException("BacklogItem title must not be empty"));
       this.title = title;
@@ -155,7 +155,7 @@ public class BacklogItem {
       this.value = value;
     }
     this.qualityCategory = calculateQualityCategory(this.value);
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -163,16 +163,16 @@ public class BacklogItem {
    *
    * @param sprintId 割り当て先スプリントID
    */
-  public void assignToSprint(@NonNull SnowflakeId sprintId) {
+  public void assignToSprint(@NonNull SnowflakeId sprintId, @NonNull LocalDateTime now) {
     checkNotNull(sprintId, () -> new IllegalArgumentException("sprintId must not be null"));
     this.sprintId = sprintId;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** スプリント割り当てを解除します（Issue #525）。 */
-  public void unassignFromSprint() {
+  public void unassignFromSprint(@NonNull LocalDateTime now) {
     this.sprintId = null;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -210,11 +210,11 @@ public class BacklogItem {
             }
             validateValue(this.value);
             this.status = target;
-            this.updatedAt = LocalDateTime.now();
+            this.updatedAt = now;
           }
           case FROZEN -> {
             this.status = target;
-            this.updatedAt = LocalDateTime.now();
+            this.updatedAt = now;
           }
           default -> throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -223,7 +223,7 @@ public class BacklogItem {
       case ACCEPTED -> {
         if (target == BacklogItemStatus.READY) {
           this.status = target;
-          this.updatedAt = LocalDateTime.now();
+          this.updatedAt = now;
         } else {
           throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -232,18 +232,18 @@ public class BacklogItem {
       case READY -> {
         if (target == BacklogItemStatus.SUGGESTED) {
           this.status = target;
-          this.updatedAt = LocalDateTime.now();
+          this.updatedAt = now;
         } else if (target == BacklogItemStatus.ACCEPTED) {
           this.status = target;
           this.storyPoint = null;
-          this.updatedAt = LocalDateTime.now();
+          this.updatedAt = now;
         } else if (target == BacklogItemStatus.ESTIMATED) {
           if (this.storyPoint == null) {
             throw new IllegalArgumentException("StoryPoint must be set before estimating");
           }
           StoryPoint.of(this.storyPoint);
           this.status = target;
-          this.updatedAt = LocalDateTime.now();
+          this.updatedAt = now;
         } else {
           throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -252,7 +252,7 @@ public class BacklogItem {
       case ESTIMATED -> {
         if (target == BacklogItemStatus.READY) {
           this.status = target;
-          this.updatedAt = LocalDateTime.now();
+          this.updatedAt = now;
         } else {
           throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -261,7 +261,7 @@ public class BacklogItem {
       case FROZEN -> {
         if (target == BacklogItemStatus.SUGGESTED) {
           this.status = target;
-          this.updatedAt = LocalDateTime.now();
+          this.updatedAt = now;
         } else {
           throw new IllegalStateException(
               "Invalid status transition: " + this.status + " -> " + target);
@@ -274,12 +274,12 @@ public class BacklogItem {
     }
   }
 
-  public void completeForSplit() {
+  public void completeForSplit(@NonNull LocalDateTime now) {
     if (this.status == BacklogItemStatus.DONE) {
       throw new IllegalStateException("BacklogItem is already done");
     }
     this.status = BacklogItemStatus.DONE;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   public @Nullable SnowflakeId getParentItemId() {
@@ -295,12 +295,12 @@ public class BacklogItem {
    * @param storyPoint 設定するストーリーポイント値（null可。nullの場合は変更なし）
    * @throws IllegalArgumentException 値がフィボナッチ数列にない場合
    */
-  public void setStoryPoint(@Nullable Integer storyPoint) {
+  public void setStoryPoint(@Nullable Integer storyPoint, @NonNull LocalDateTime now) {
     if (storyPoint != null) {
       StoryPoint.of(storyPoint);
     }
     this.storyPoint = storyPoint;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -346,7 +346,7 @@ public class BacklogItem {
    *
    * <p>ビルダーの {@code build()} 時に {@code value} から {@code qualityCategory} を自動計算し、
    * {@code status} が未設定の場合は {@link BacklogItemStatus#SUGGESTED} を、
-   * {@code createdAt}・{@code updatedAt} が未設定の場合は現在時刻をそれぞれ設定します。
+   * {@code createdAt}・{@code updatedAt} が未設定の場合は例外をスローします。
    */
   @Builder(builderMethodName = "builder")
   private static BacklogItem build(
@@ -377,8 +377,14 @@ public class BacklogItem {
     item.parentItemId = parentItemId;
     item.value = value;
     item.storyPoint = storyPoint;
-    item.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-    item.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+    if (createdAt == null) {
+      throw new IllegalArgumentException("createdAt must not be null");
+    }
+    if (updatedAt == null) {
+      throw new IllegalArgumentException("updatedAt must not be null");
+    }
+    item.createdAt = createdAt;
+    item.updatedAt = updatedAt;
     item.qualityCategory = calculateQualityCategory(value);
     return item;
   }

@@ -43,7 +43,7 @@ class BacklogItemSplitTransitionTest {
     void shouldCompleteForSplitFromNonDoneStatus(BacklogItemStatus status) {
       BacklogItem item = itemWithStatus(status);
 
-      item.completeForSplit();
+      item.completeForSplit(LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.DONE);
       assertThat(item.getStoryPoint()).isEqualTo(13);
@@ -55,7 +55,7 @@ class BacklogItemSplitTransitionTest {
     void shouldRejectCompletingForSplitWhenAlreadyDone() {
       BacklogItem item = itemWithStatus(BacklogItemStatus.DONE);
 
-      assertThatThrownBy(item::completeForSplit).isInstanceOf(IllegalStateException.class);
+      assertThatThrownBy(() -> item.completeForSplit(LocalDateTime.now())).isInstanceOf(IllegalStateException.class);
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.DONE);
       assertThat(item.getUpdatedAt()).isEqualTo(BEFORE);

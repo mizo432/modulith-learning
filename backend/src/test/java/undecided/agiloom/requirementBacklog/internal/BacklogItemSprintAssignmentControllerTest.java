@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
@@ -55,7 +56,7 @@ class BacklogItemSprintAssignmentControllerTest {
             .title("Item")
             .creatorName("Creator")
             .sprintId(SPRINT_B_ID)
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Test

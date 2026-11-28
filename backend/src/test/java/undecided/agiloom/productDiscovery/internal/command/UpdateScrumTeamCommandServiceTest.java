@@ -1,4 +1,6 @@
 package undecided.agiloom.productDiscovery.internal.command;
+import java.time.LocalDateTime;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,7 +33,7 @@ class UpdateScrumTeamCommandServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new UpdateScrumTeamCommandService(scrumTeamRepository);
+    service = new UpdateScrumTeamCommandService(scrumTeamRepository, Clock.systemDefaultZone());
   }
 
   @Nested
@@ -48,7 +50,7 @@ class UpdateScrumTeamCommandServiceTest {
               .id(teamId)
               .name("Old Name")
               .businessDomain("Old Domain")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       UpdateScrumTeamCommand command =
           UpdateScrumTeamCommand.builder()
@@ -94,7 +96,7 @@ class UpdateScrumTeamCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(1L);
       ScrumTeam existingTeam =
-          ScrumTeam.builder().id(teamId).name("Test Team").build();
+          ScrumTeam.builder().id(teamId).name("Test Team").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -131,7 +133,7 @@ class UpdateScrumTeamCommandServiceTest {
       SnowflakeId poEmployeeId = SnowflakeId.of(100L);
       String poName = "Test PO";
       ScrumTeam existingTeam =
-          ScrumTeam.builder().id(teamId).name("Test Team").build();
+          ScrumTeam.builder().id(teamId).name("Test Team").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -172,7 +174,7 @@ class UpdateScrumTeamCommandServiceTest {
               .name("Test Team")
               .poEmployeeId(SnowflakeId.of(100L))
               .poName("Test PO")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -210,7 +212,7 @@ class UpdateScrumTeamCommandServiceTest {
       SnowflakeId smEmployeeId = SnowflakeId.of(200L);
       String smName = "Test SM";
       ScrumTeam existingTeam =
-          ScrumTeam.builder().id(teamId).name("Test Team").build();
+          ScrumTeam.builder().id(teamId).name("Test Team").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -251,7 +253,7 @@ class UpdateScrumTeamCommandServiceTest {
               .name("Test Team")
               .smEmployeeId(SnowflakeId.of(200L))
               .smName("Test SM")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -298,7 +300,7 @@ class UpdateScrumTeamCommandServiceTest {
               .poName("PO")
               .smEmployeeId(SM_ID)
               .smName("SM")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -320,7 +322,7 @@ class UpdateScrumTeamCommandServiceTest {
               .name("Test Team")
               .poEmployeeId(PO_ID)
               .poName("PO")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -342,7 +344,7 @@ class UpdateScrumTeamCommandServiceTest {
               .name("Test Team")
               .smEmployeeId(SM_ID)
               .smName("SM")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -366,7 +368,7 @@ class UpdateScrumTeamCommandServiceTest {
               .poName("PO")
               .smEmployeeId(SM_ID)
               .smName("SM")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -391,7 +393,7 @@ class UpdateScrumTeamCommandServiceTest {
               .poName("PO")
               .smEmployeeId(SM_ID)
               .smName("SM")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -416,7 +418,7 @@ class UpdateScrumTeamCommandServiceTest {
               .poName("PO")
               .smEmployeeId(SM_ID)
               .smName("SM")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 
@@ -437,7 +439,7 @@ class UpdateScrumTeamCommandServiceTest {
           ScrumTeam.builder()
               .id(teamId)
               .name("Test Team")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(scrumTeamRepository.findById(teamId)).thenReturn(Optional.of(existingTeam));
 

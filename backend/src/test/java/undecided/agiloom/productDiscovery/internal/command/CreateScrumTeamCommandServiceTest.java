@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.internal.command;
+import java.time.Clock;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +43,7 @@ class CreateScrumTeamCommandServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new CreateScrumTeamCommandService(scrumTeamRepository, productRepository, sprintZeroFactory);
+    service = new CreateScrumTeamCommandService(scrumTeamRepository, productRepository, sprintZeroFactory, Clock.systemDefaultZone());
   }
 
   @Nested
@@ -55,7 +56,7 @@ class CreateScrumTeamCommandServiceTest {
       // Arrange
       SnowflakeId productId = SnowflakeId.of(1L);
       Product product =
-          Product.builder().id(productId).name("Test Product").build();
+          Product.builder().id(productId).name("Test Product").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       CreateScrumTeamCommand command =
           CreateScrumTeamCommand.builder()
@@ -70,7 +71,7 @@ class CreateScrumTeamCommandServiceTest {
               .name("Test Team")
               .businessDomain("Test Domain")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
@@ -92,7 +93,7 @@ class CreateScrumTeamCommandServiceTest {
       // Arrange
       SnowflakeId productId = SnowflakeId.of(1L);
       Product product =
-          Product.builder().id(productId).name("Test Product").build();
+          Product.builder().id(productId).name("Test Product").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       CreateScrumTeamCommand command =
           CreateScrumTeamCommand.builder()
@@ -107,7 +108,7 @@ class CreateScrumTeamCommandServiceTest {
               .name("Test Team")
               .businessDomain("Test Domain")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(productRepository.findById(productId)).thenReturn(Optional.of(product));
       when(scrumTeamRepository.save(any(ScrumTeam.class))).thenReturn(savedTeam);
@@ -127,7 +128,7 @@ class CreateScrumTeamCommandServiceTest {
       // Arrange
       SnowflakeId productId = SnowflakeId.of(1L);
       Product product =
-          Product.builder().id(productId).name("Test Product").build();
+          Product.builder().id(productId).name("Test Product").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       CreateScrumTeamCommand command =
           CreateScrumTeamCommand.builder()
@@ -142,7 +143,7 @@ class CreateScrumTeamCommandServiceTest {
               .name("Test Team")
               .businessDomain("Test Domain")
               .product(product)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Sprint existingSprintZero = Sprint.createSprintZero(
           SnowflakeId.of(1L), SnowflakeId.of(2L), "Test Team", LocalDateTime.now());
