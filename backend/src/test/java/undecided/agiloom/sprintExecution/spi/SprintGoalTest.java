@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +19,7 @@ class SprintGoalTest {
         .sprintId(SnowflakeId.of(100L))
         .goalDescription("Complete user authentication feature")
         .relatedItems("Login, Register, Forgot Password")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -45,7 +46,7 @@ class SprintGoalTest {
     void shouldUpdateGoalDescriptionAndRelatedItems() {
       SprintGoal goal = createSprintGoal();
 
-      goal.update("New goal description", "New related items");
+      goal.update("New goal description", "New related items", LocalDateTime.now());
 
       assertThat(goal.getGoalDescription()).isEqualTo("New goal description");
       assertThat(goal.getRelatedItems()).isEqualTo("New related items");

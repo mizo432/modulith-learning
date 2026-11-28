@@ -14,6 +14,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("Sprintのテスト")
 class SprintTest {
 
+  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 12, 0);
+
   private Sprint createSprint() {
     return Sprint.builder()
         .id(SnowflakeId.of(1L))
@@ -26,7 +28,7 @@ class SprintTest {
         .teamId(SnowflakeId.of(200L))
         .teamName("Team A")
         .velocity(30)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -63,7 +65,7 @@ class SprintTest {
     void shouldUpdateStatusToActive() {
       Sprint sprint = createSprint();
 
-      sprint.start();
+      sprint.start(LocalDateTime.now());
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.ACTIVE);
       assertThat(sprint.getUpdatedAt()).isNotNull();
@@ -78,9 +80,9 @@ class SprintTest {
     @DisplayName("ステータスがCOMPLETEDに更新される")
     void shouldUpdateStatusToCompleted() {
       Sprint sprint = createSprint();
-      sprint.start();
+      sprint.start(LocalDateTime.now());
 
-      sprint.complete();
+      sprint.complete(LocalDateTime.now());
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.COMPLETED);
       assertThat(sprint.getUpdatedAt()).isNotNull();
@@ -96,7 +98,7 @@ class SprintTest {
     void shouldUpdateStatusToCancelled() {
       Sprint sprint = createSprint();
 
-      sprint.cancel();
+      sprint.cancel(LocalDateTime.now());
 
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
       assertThat(sprint.getUpdatedAt()).isNotNull();
@@ -112,7 +114,7 @@ class SprintTest {
     void shouldUpdateTitleAndGoal() {
       Sprint sprint = createSprint();
 
-      sprint.update("New Title", "New Goal", null, "New Notes");
+      sprint.update("New Title", "New Goal", null, "New Notes", LocalDateTime.now());
 
       assertThat(sprint.getTitle()).isEqualTo("New Title");
       assertThat(sprint.getGoal()).isEqualTo("New Goal");
@@ -126,7 +128,7 @@ class SprintTest {
       Sprint sprint = createSprint();
       LocalDate newEndDate = LocalDate.now().plusWeeks(4);
 
-      sprint.update("Title", "Goal", newEndDate, "Notes");
+      sprint.update("Title", "Goal", newEndDate, "Notes", LocalDateTime.now());
 
       assertThat(sprint.getEndDate()).isEqualTo(newEndDate);
     }
@@ -137,7 +139,7 @@ class SprintTest {
       Sprint sprint = createSprint();
       LocalDate originalEndDate = sprint.getEndDate();
 
-      sprint.update("Title", "Goal", null, "Notes");
+      sprint.update("Title", "Goal", null, "Notes", LocalDateTime.now());
 
       assertThat(sprint.getEndDate()).isEqualTo(originalEndDate);
     }
@@ -153,7 +155,7 @@ class SprintTest {
       Sprint sprint = createSprint();
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.PLANNED);
 
-      sprint.start();
+      sprint.start(LocalDateTime.now());
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.ACTIVE);
     }
 
@@ -161,9 +163,9 @@ class SprintTest {
     @DisplayName("ACTIVEからCOMPLETEDへ遷移できる")
     void shouldTransitionFromActiveToCompleted() {
       Sprint sprint = createSprint();
-      sprint.start();
+      sprint.start(LocalDateTime.now());
 
-      sprint.complete();
+      sprint.complete(LocalDateTime.now());
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.COMPLETED);
     }
 
@@ -171,9 +173,9 @@ class SprintTest {
     @DisplayName("ACTIVEからCANCELLEDへ遷移できる")
     void shouldTransitionFromActiveToCancelled() {
       Sprint sprint = createSprint();
-      sprint.start();
+      sprint.start(LocalDateTime.now());
 
-      sprint.cancel();
+      sprint.cancel(LocalDateTime.now());
       assertThat(sprint.getStatus()).isEqualTo(SprintStatus.CANCELLED);
     }
   }
@@ -189,7 +191,7 @@ class SprintTest {
       SnowflakeId teamId = SnowflakeId.of(200L);
       String teamName = "Team A";
 
-      Sprint sprintZero = Sprint.createSprintZero(productId, teamId, teamName);
+      Sprint sprintZero = Sprint.createSprintZero(productId, teamId, teamName, NOW);
 
       assertThat(sprintZero.isSprintZero()).isTrue();
       assertThat(sprintZero.getSprintNumber()).isEqualTo(0);
@@ -203,14 +205,24 @@ class SprintTest {
       assertThat(sprintZero.getProductId()).isEqualTo(productId);
     }
 
+
+    @Test
+    @DisplayName("createSprintZeroに渡した時刻がcreatedAtとupdatedAtになる")
+    void shouldSetTimestampsFromPassedTime() {
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A", NOW);
+
+      assertThat(sprintZero.getCreatedAt()).isEqualTo(NOW);
+      assertThat(sprintZero.getUpdatedAt()).isEqualTo(NOW);
+    }
+
     @Test
     @DisplayName("スプリント0は削除できない")
     void shouldNotDeleteSprintZero() {
-      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A", NOW);
 
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalStateException.class,
-          sprintZero::delete,
+          () -> sprintZero.delete(LocalDateTime.now()),
           "Sprint 0 cannot be deleted"
       );
     }
@@ -218,7 +230,7 @@ class SprintTest {
     @Test
     @DisplayName("スプリント0のisDeletableはfalseを返す")
     void shouldReturnFalseForIsDeletable() {
-      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A", NOW);
 
       assertThat(sprintZero.isDeletable()).isFalse();
     }
@@ -228,7 +240,7 @@ class SprintTest {
     void shouldDeleteNormalSprint() {
       Sprint sprint = createSprint();
 
-      sprint.delete();
+      sprint.delete(LocalDateTime.now());
 
       assertThat(sprint.getDeletedAt()).isNotNull();
     }
@@ -244,10 +256,10 @@ class SprintTest {
     @Test
     @DisplayName("スプリント0の名前変更は禁止される")
     void shouldNotChangeSprintZeroTitle() {
-      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A", NOW);
       String originalTitle = sprintZero.getTitle();
 
-      sprintZero.update("New Title", "New Goal", null, "Notes");
+      sprintZero.update("New Title", "New Goal", null, "Notes", LocalDateTime.now());
 
       assertThat(sprintZero.getTitle()).isEqualTo(originalTitle);
     }
@@ -255,11 +267,11 @@ class SprintTest {
     @Test
     @DisplayName("スプリント0の日付更新は許可される")
     void shouldUpdateSprintZeroDates() {
-      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A");
+      Sprint sprintZero = Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), "Team A", NOW);
       LocalDate startDate = LocalDate.now();
       LocalDate endDate = LocalDate.now().plusWeeks(2);
 
-      sprintZero.updateDates(startDate, endDate);
+      sprintZero.updateDates(startDate, endDate, LocalDateTime.now());
 
       assertThat(sprintZero.getStartDate()).isEqualTo(startDate);
       assertThat(sprintZero.getEndDate()).isEqualTo(endDate);
@@ -270,7 +282,7 @@ class SprintTest {
     void shouldMarkAsSprintZero() {
       Sprint sprint = createSprint();
 
-      sprint.markAsSprintZero();
+      sprint.markAsSprintZero(LocalDateTime.now());
 
       assertThat(sprint.isSprintZero()).isTrue();
       assertThat(sprint.getSprintNumber()).isEqualTo(0);
@@ -281,7 +293,7 @@ class SprintTest {
     void shouldThrowWhenProductIdIsNull() {
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalArgumentException.class,
-          () -> Sprint.createSprintZero(null, SnowflakeId.of(200L), "Team A")
+          () -> Sprint.createSprintZero(null, SnowflakeId.of(200L), "Team A", NOW)
       );
     }
 
@@ -290,7 +302,7 @@ class SprintTest {
     void shouldThrowWhenTeamIdIsNull() {
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalArgumentException.class,
-          () -> Sprint.createSprintZero(SnowflakeId.of(100L), null, "Team A")
+          () -> Sprint.createSprintZero(SnowflakeId.of(100L), null, "Team A", NOW)
       );
     }
 
@@ -299,7 +311,7 @@ class SprintTest {
     void shouldThrowWhenTeamNameIsNull() {
       org.junit.jupiter.api.Assertions.assertThrows(
           IllegalArgumentException.class,
-          () -> Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), null)
+          () -> Sprint.createSprintZero(SnowflakeId.of(100L), SnowflakeId.of(200L), null, NOW)
       );
     }
   }

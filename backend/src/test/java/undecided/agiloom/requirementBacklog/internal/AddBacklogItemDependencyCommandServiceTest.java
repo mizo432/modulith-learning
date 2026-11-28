@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +60,7 @@ class AddBacklogItemDependencyCommandServiceTest {
         .creatorName("Creator")
         .scrumTeamId(teamId)
         .status(BacklogItemStatus.ACCEPTED)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamSubset team() {
@@ -69,7 +70,7 @@ class AddBacklogItemDependencyCommandServiceTest {
         .poEmployeeId(PO_ID)
         .smEmployeeId(SM_ID)
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItemDependency dep(SnowflakeId from, SnowflakeId to) {
@@ -78,7 +79,7 @@ class AddBacklogItemDependencyCommandServiceTest {
         .backlogItemId(from)
         .dependencyItemId(to)
         .createdBy(PO_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).build();
   }
 
   private void givenItems(SnowflakeId fromId, SnowflakeId toId, SnowflakeId toTeamId) {

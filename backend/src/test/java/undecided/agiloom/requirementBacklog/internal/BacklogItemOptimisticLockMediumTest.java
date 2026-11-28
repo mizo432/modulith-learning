@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityManager;
@@ -46,7 +48,7 @@ class BacklogItemOptimisticLockMediumTest {
         .title("Stale Version Test")
         .creatorName("Creator")
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     repository.save(item);
     entityManager.flush();
     entityManager.clear();
@@ -57,7 +59,7 @@ class BacklogItemOptimisticLockMediumTest {
     // 1次キャッシュをクリアして、別の管理インスタンスとして再度読み込む
     entityManager.detach(staleItem);
     BacklogItem freshItem = entityManager.find(BacklogItem.class, itemId);
-    freshItem.changeStatus(BacklogItemStatus.FROZEN);
+    freshItem.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
     entityManager.flush();
 
     // 古いバージョンのエンティティを再アタッチすると楽観ロック例外が発生する
@@ -76,7 +78,7 @@ class BacklogItemOptimisticLockMediumTest {
         .title("Stale Update Test")
         .creatorName("Creator")
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     repository.save(item);
     entityManager.flush();
     entityManager.clear();
@@ -87,7 +89,7 @@ class BacklogItemOptimisticLockMediumTest {
     // 1次キャッシュをクリアして、別の管理インスタンスとして再度読み込む
     entityManager.detach(staleItem);
     BacklogItem freshItem = entityManager.find(BacklogItem.class, itemId);
-    freshItem.update("Fresh Title", null, null, null, null);
+    freshItem.update("Fresh Title", null, null, null, null, LocalDateTime.now());
     entityManager.flush();
 
     // 古いバージョンのエンティティを再アタッチすると楽観ロック例外が発生する

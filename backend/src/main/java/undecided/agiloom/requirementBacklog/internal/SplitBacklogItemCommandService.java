@@ -56,6 +56,7 @@ class SplitBacklogItemCommandService {
       throw new IllegalArgumentException("The number of children must be between 1 and " + MAX_CHILDREN);
     }
 
+    LocalDateTime now = LocalDateTime.now(clock);
     List<BacklogItem> children = new ArrayList<>();
     for (SplitBacklogItemCommand.Child child : command.children()) {
       if (child == null) {
@@ -71,17 +72,18 @@ class SplitBacklogItemCommandService {
           .creatorName(parent.getCreatorName())
           .scrumTeamId(parent.getScrumTeamId())
           .parentItemId(parent.getId())
+          .createdAt(now)
+          .updatedAt(now)
           .build();
-      item.setStoryPoint(child.storyPoint());
+      item.setStoryPoint(child.storyPoint(), now);
       children.add(item);
     }
 
     BacklogItemStatus fromStatus = parent.getStatus();
-    parent.completeForSplit();
+    parent.completeForSplit(now);
     backlogItemRepository.save(parent);
     backlogItemRepository.saveAll(children);
 
-    LocalDateTime now = LocalDateTime.now(clock);
     eventPublisher.publishEvent(new BacklogItemStatusChanged(
         parent.getId(), parent.getScrumTeamId(), fromStatus, BacklogItemStatus.DONE,
         command.actorEmployeeId(), now));

@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,9 +70,9 @@ class EstimateBacklogItemCommandServiceTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
     return item;
   }
 
@@ -81,7 +83,7 @@ class EstimateBacklogItemCommandServiceTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItem estimatedItem() {
@@ -92,10 +94,10 @@ class EstimateBacklogItemCommandServiceTest {
         .scrumTeamId(TEAM_ID)
         .value(50)
         .storyPoint(5)
-        .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
-    item.changeStatus(BacklogItemStatus.ESTIMATED);
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
     return item;
   }
 
@@ -108,7 +110,7 @@ class EstimateBacklogItemCommandServiceTest {
         .smEmployeeId(SM_ID)
         .smName("SM Name")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private EstimateBacklogItemCommand command(Integer storyPoint, SnowflakeId actorId) {

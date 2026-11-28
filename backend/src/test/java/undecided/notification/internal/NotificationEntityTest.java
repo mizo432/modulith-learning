@@ -1,4 +1,5 @@
 package undecided.notification.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +40,7 @@ class NotificationEntityTest {
         .title("コメントが追加されました")
         .content("バックログアイテムに新しいコメントが追加されました")
         .type(NotificationType.COMMENT_ADDED)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -77,7 +78,7 @@ class NotificationEntityTest {
     void shouldMarkAsRead() {
       NotificationEntity entity = createNotification();
 
-      entity.markAsRead();
+      entity.markAsRead(LocalDateTime.now());
 
       assertThat(entity.getIsRead()).isTrue();
       assertThat(entity.isUnread()).isFalse();
@@ -88,8 +89,8 @@ class NotificationEntityTest {
     @DisplayName("既読后再呼び出ししても問題ない")
     void shouldIdempotentMarkAsRead() {
       NotificationEntity entity = createNotification();
-      entity.markAsRead();
-      entity.markAsRead();
+      entity.markAsRead(LocalDateTime.now());
+      entity.markAsRead(LocalDateTime.now());
 
       assertThat(entity.getIsRead()).isTrue();
     }

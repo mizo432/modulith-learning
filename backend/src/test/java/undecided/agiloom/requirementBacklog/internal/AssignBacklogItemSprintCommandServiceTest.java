@@ -61,7 +61,7 @@ class AssignBacklogItemSprintCommandServiceTest {
         .status(status)
         .storyPoint(5)
         .sprintId(sprintId)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamSubset team() {
@@ -69,7 +69,7 @@ class AssignBacklogItemSprintCommandServiceTest {
         .id(TEAM_ID)
         .name("Team")
         .memberEmployeeIds(List.of(MEMBER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private Sprint sprint(SnowflakeId id, int number, SprintStatus status, SnowflakeId teamId) {
@@ -80,7 +80,7 @@ class AssignBacklogItemSprintCommandServiceTest {
         .title("Sprint " + number)
         .status(status)
         .teamId(teamId)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private Sprint sprintA() {
@@ -222,7 +222,7 @@ class AssignBacklogItemSprintCommandServiceTest {
               .status(SprintStatus.PLANNED)
               .teamId(TEAM_ID)
               .isSprintZero(true)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(sprintFacade.findById(SPRINT_ZERO_ID)).thenReturn(Optional.of(zero));
       when(sprintFacade.findAssignableSprints(TEAM_ID)).thenReturn(List.of(sprintA(), sprintB()));
 

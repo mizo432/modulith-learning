@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.domain;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,7 +32,7 @@ class SprintSettingsCalculatorTest {
         .productId(SnowflakeId.of(100L))
         .businessDays(10)
         .endDayOfWeek(EndDayOfWeek.FRIDAY)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -65,7 +66,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // 2026-11-16(月) から開始、祝日なし
       LocalDate startDate = LocalDate.of(2026, 11, 16);
@@ -88,7 +89,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
       Holiday holiday = new Holiday();
@@ -131,7 +132,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.WEDNESDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
       when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
@@ -154,7 +155,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       LocalDate startDate = LocalDate.of(2026, 12, 28); // Monday
       // 年末年始の連続祝日: 12/29(火), 12/30(水), 12/31(木), 1/1(金), 1/2(土), 1/3(日)
@@ -185,7 +186,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
       // 土曜日が祝日(海の日など)
@@ -213,7 +214,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
       // 連続祝日: 11/17(火), 11/18(水), 11/19(木)
@@ -258,7 +259,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(1)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
       when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());
@@ -281,7 +282,7 @@ class SprintSettingsCalculatorTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       LocalDate startDate = LocalDate.of(2026, 11, 20); // Friday
       when(holidayQuery.findBetween(startDate, startDate.plusDays(90))).thenReturn(List.of());

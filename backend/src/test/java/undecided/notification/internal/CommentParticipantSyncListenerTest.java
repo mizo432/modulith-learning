@@ -1,4 +1,5 @@
 package undecided.notification.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,7 +61,7 @@ class CommentParticipantSyncListenerTest {
     listener =
         new CommentParticipantSyncListener(
             commentParticipantSubsetRepository,
-            snowflakeIdGenerator);
+            snowflakeIdGenerator, Clock.systemDefaultZone());
   }
 
   @Test

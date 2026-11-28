@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
 import undecided.agiloom.requirementBacklog.spi.Feature;
 import undecided.supporting.snowflake.SnowflakeId;
@@ -13,14 +15,17 @@ class CreateFeatureCommandService {
   private final FeatureRepository featureRepository;
   private final ScrumTeamSubsetRepository scrumTeamSubsetRepository;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   CreateFeatureCommandService(
       @NonNull FeatureRepository featureRepository,
       @NonNull ScrumTeamSubsetRepository scrumTeamSubsetRepository,
-      @NonNull SnowflakeIdGenerator snowflakeIdGenerator) {
+      @NonNull SnowflakeIdGenerator snowflakeIdGenerator,
+      @NonNull Clock clock) {
     this.featureRepository = featureRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
+    this.clock = clock;
   }
 
   /**
@@ -55,6 +60,8 @@ class CreateFeatureCommandService {
         .name(command.name())
         .description(command.description())
         .scrumTeamId(command.scrumTeamId())
+        .createdAt(LocalDateTime.now(clock))
+        .updatedAt(LocalDateTime.now(clock))
         .build();
     feature = featureRepository.save(feature);
     return feature.getId();

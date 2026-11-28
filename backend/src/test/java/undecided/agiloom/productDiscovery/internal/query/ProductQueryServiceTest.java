@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.internal.query;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -43,7 +44,7 @@ class ProductQueryServiceTest {
             .name("Test Product")
             .description("Test Description")
             .managerId(SnowflakeId.of(100L))
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested

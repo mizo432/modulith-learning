@@ -35,16 +35,15 @@ class AdminEmployeeSubset {
 
   /** サブセットが最後にイベントで更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** 更新日時を現在に更新します。 */
-  void touch() {
-    this.updatedAt = LocalDateTime.now();
+  void touch(@NonNull LocalDateTime now) {
+    this.updatedAt = now;
   }
 
   /** イベントから新しいサブセットを作成します。 */
-  static AdminEmployeeSubset of(@NonNull SnowflakeId employeeId) {
-    return AdminEmployeeSubset.builder().employeeId(employeeId).build();
+  static AdminEmployeeSubset of(@NonNull SnowflakeId employeeId, @NonNull LocalDateTime now) {
+    return AdminEmployeeSubset.builder().employeeId(employeeId).updatedAt(now).build();
   }
 }

@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -40,7 +42,7 @@ class CreateBacklogItemCommandServiceTest {
   void setUp() {
     service =
         new CreateBacklogItemCommandService(
-            backlogItemRepository, scrumTeamSubsetRepository, snowflakeIdGenerator);
+            backlogItemRepository, scrumTeamSubsetRepository, snowflakeIdGenerator, Clock.systemDefaultZone());
   }
 
   @Nested
@@ -52,7 +54,7 @@ class CreateBacklogItemCommandServiceTest {
     void shouldCreateWithSuggestedStatus() {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").updatedAt(LocalDateTime.now()).build();
       CreateBacklogItemCommand command =
           CreateBacklogItemCommand.builder()
               .scrumTeamId(teamId)
@@ -83,7 +85,7 @@ class CreateBacklogItemCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId employeeId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").updatedAt(LocalDateTime.now()).build();
       CreateBacklogItemCommand command =
           CreateBacklogItemCommand.builder()
               .scrumTeamId(teamId)

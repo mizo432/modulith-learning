@@ -127,8 +127,8 @@ public class ValidInterval {
    * @return 現在が有効期間内である場合は {@code true} を返し、そうでない場合は {@code false} を返します。 有効期間が空の場合は {@code false}
    *     を返します。
    */
-  public boolean isActive() {
-    return contains(LocalDate.now());
+  public boolean isActive(@Nullable LocalDate date) {
+    return contains(date);
   }
 
   /**

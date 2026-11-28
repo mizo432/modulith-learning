@@ -51,7 +51,7 @@ class DetachDocumentCommandServiceTest {
         .backlogItemId(ITEM_ID)
         .documentId(DOC_ID)
         .seriesId(SERIES_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).build();
   }
 
   private Document document() {

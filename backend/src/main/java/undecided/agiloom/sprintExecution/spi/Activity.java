@@ -59,8 +59,7 @@ public class Activity {
 
   /** アクティビティが作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
     /**
      * アクティビティを新規作成します。

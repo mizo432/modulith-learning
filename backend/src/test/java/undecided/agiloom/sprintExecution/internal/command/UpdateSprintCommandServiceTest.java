@@ -56,7 +56,7 @@ class UpdateSprintCommandServiceTest {
         .title("Sprint 1")
         .status(SprintStatus.PLANNED)
         .teamId(TEAM_ID)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Test

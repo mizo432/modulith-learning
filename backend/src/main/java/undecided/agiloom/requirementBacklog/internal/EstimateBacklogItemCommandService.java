@@ -64,14 +64,14 @@ class EstimateBacklogItemCommandService {
 
     BacklogItemStatus currentStatus = backlogItem.getStatus();
 
-    // 見積もり値の設定（StoryPoint値の検証を含む）
-    backlogItem.setStoryPoint(command.getStoryPoint());
-
     LocalDateTime now = LocalDateTime.now(clock);
+
+    // 見積もり値の設定（StoryPoint値の検証を含む）
+    backlogItem.setStoryPoint(command.getStoryPoint(), now);
 
     if (currentStatus == BacklogItemStatus.READY) {
       // READY → ESTIMATED へ遷移（値の設定と状態遷移の一体化）
-      backlogItem.changeStatus(BacklogItemStatus.ESTIMATED);
+      backlogItem.changeStatus(BacklogItemStatus.ESTIMATED, now);
       backlogItemRepository.save(backlogItem);
 
       // BacklogItemStatusChanged イベントを発行

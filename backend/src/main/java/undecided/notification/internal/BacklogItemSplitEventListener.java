@@ -1,5 +1,7 @@
 package undecided.notification.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ class BacklogItemSplitEventListener {
   private final NotificationScrumTeamMemberRepository scrumTeamMemberRepository;
   private final EmailNotificationService emailNotificationService;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   @ApplicationModuleListener
   public void onBacklogItemSplit(BacklogItemSplit event) {
@@ -46,6 +49,8 @@ class BacklogItemSplitEventListener {
               .title(title)
               .content(content)
               .type(NotificationType.BACKLOG_ITEM_SPLIT)
+              .createdAt(LocalDateTime.now(clock))
+              .updatedAt(LocalDateTime.now(clock))
               .build();
       notificationRepository.save(notification);
 

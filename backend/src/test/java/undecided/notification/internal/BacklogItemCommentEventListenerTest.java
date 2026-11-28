@@ -1,4 +1,5 @@
 package undecided.notification.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -75,7 +76,7 @@ class BacklogItemCommentEventListenerTest {
             notificationRepository,
             commentParticipantSubsetRepository,
             emailNotificationService,
-            snowflakeIdGenerator);
+            snowflakeIdGenerator, Clock.systemDefaultZone());
   }
 
   @Nested
@@ -99,7 +100,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
               .employeeEmail("participant1@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       participants.add(
           NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(2L))
@@ -107,7 +108,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(PARTICIPANT_2_ID)
               .employeeName("Participant2")
               .employeeEmail("participant2@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
       // Act
@@ -140,7 +141,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(ACTOR_ID)
               .employeeName("Actor")
               .employeeEmail("actor@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
       // Act
@@ -167,7 +168,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(ACTOR_ID)
               .employeeName("Actor")
               .employeeEmail("actor@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       participants.add(
           NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(2L))
@@ -175,7 +176,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
               .employeeEmail("participant1@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       participants.add(
           NotificationCommentParticipantSubset.builder()
               .id(SnowflakeId.of(3L))
@@ -183,7 +184,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(PARTICIPANT_2_ID)
               .employeeName("Participant2")
               .employeeEmail("participant2@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
       // Act
@@ -214,7 +215,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
               .employeeEmail("participant1@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
       // Act
@@ -261,7 +262,7 @@ class BacklogItemCommentEventListenerTest {
               .employeeId(PARTICIPANT_1_ID)
               .employeeName("Participant1")
               .employeeEmail("participant1@example.com")
-              .build());
+              .createdAt(LocalDateTime.now()).build());
       when(commentParticipantSubsetRepository.findByBacklogItemId(ITEM_ID)).thenReturn(participants);
 
       // Act

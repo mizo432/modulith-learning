@@ -1,5 +1,7 @@
 package undecided.agiloom.sprintExecution.internal.command;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -18,23 +20,27 @@ public class CreateSprintCommandService {
     private final SprintRepository sprintRepository;
     private final SprintSettingsRepository sprintSettingsRepository;
     private final SprintSettingsCalculator sprintSettingsCalculator;
+    private final Clock clock;
 
     public CreateSprintCommandService(SprintRepository sprintRepository,
                                       SprintSettingsRepository sprintSettingsRepository,
-                                      SprintSettingsCalculator sprintSettingsCalculator) {
+                                      SprintSettingsCalculator sprintSettingsCalculator,
+                                      Clock clock) {
         this.sprintRepository = sprintRepository;
         this.sprintSettingsRepository = sprintSettingsRepository;
         this.sprintSettingsCalculator = sprintSettingsCalculator;
+        this.clock = clock;
     }
 
     public SnowflakeId execute(@NonNull CreateSprintCommand command) {
         LocalDate endDate = command.getEndDate();
+        LocalDateTime now = LocalDateTime.now(clock);
         
         // endDateが指定されていない場合、スプリント設定に基づいて自動計算する
         if (endDate == null) {
             SnowflakeId productId = command.getProductId();
             SprintSettings settings = sprintSettingsRepository.findByProductId(productId)
-                .orElseGet(() -> SprintSettings.builder().productId(productId).build());
+                .orElseGet(() -> SprintSettings.builder().productId(productId).createdAt(now).updatedAt(now).build());
             endDate = sprintSettingsCalculator.calculateEndDate(settings, command.getStartDate());
         }
 
@@ -47,6 +53,8 @@ public class CreateSprintCommandService {
                 .endDate(endDate)
                 .teamId(command.getTeamId())
                 .teamName(command.getTeamName())
+                .createdAt(now)
+                .updatedAt(now)
                 .build();
 
         Sprint saved = sprintRepository.save(sprint);

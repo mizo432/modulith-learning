@@ -1,10 +1,12 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +37,7 @@ class ScrumTeamSubsetEventListenerMemberIdsTest {
 
   @BeforeEach
   void setUp() {
-    listener = new ScrumTeamSubsetEventListener(scrumTeamSubsetRepository);
+    listener = new ScrumTeamSubsetEventListener(scrumTeamSubsetRepository, Clock.systemDefaultZone());
   }
 
   private ScrumTeamChanged eventWithMembers() {
@@ -67,7 +69,7 @@ class ScrumTeamSubsetEventListenerMemberIdsTest {
           .poName("PO Name")
           .smEmployeeId(SM_ID)
           .smName("SM Name")
-          .build();
+          .updatedAt(LocalDateTime.now()).build();
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(existing));
 
       listener.on(eventWithMembers());

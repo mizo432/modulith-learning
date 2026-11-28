@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -45,7 +46,7 @@ class SplitBacklogItemMediumTest {
   @BeforeEach
   void setUp() {
     scrumTeamSubsetRepository.save(
-        ScrumTeamSubset.builder().id(TEAM_ID).name("分割テストチーム").poEmployeeId(PO_ID).build());
+        ScrumTeamSubset.builder().id(TEAM_ID).name("分割テストチーム").poEmployeeId(PO_ID).updatedAt(LocalDateTime.now()).build());
     saveParent(PARENT_ID, "分割元");
     entityManager.flush();
     entityManager.clear();
@@ -131,7 +132,7 @@ class SplitBacklogItemMediumTest {
             .scrumTeamId(TEAM_ID)
             .status(BacklogItemStatus.ESTIMATED)
             .storyPoint(13)
-            .build());
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
   }
 
   private void split(SnowflakeId parentId, String firstTitle, String secondTitle) {

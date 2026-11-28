@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -27,7 +28,7 @@ class AdminEmployeeSubsetEventListenerTest {
 
   @BeforeEach
   void setUp() {
-    listener = new AdminEmployeeSubsetEventListener(adminEmployeeSubsetRepository);
+    listener = new AdminEmployeeSubsetEventListener(adminEmployeeSubsetRepository, Clock.systemDefaultZone());
   }
 
   @Test

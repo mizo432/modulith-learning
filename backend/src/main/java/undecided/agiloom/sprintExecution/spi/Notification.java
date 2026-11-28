@@ -67,13 +67,11 @@ public class Notification {
 
   /** 通知が作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** 通知が最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** 通知が論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -119,8 +117,8 @@ public class Notification {
                 .build();
     }
 
-    public void markAsRead() {
+    public void markAsRead(@NonNull LocalDateTime now) {
         this.isRead = true;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 }

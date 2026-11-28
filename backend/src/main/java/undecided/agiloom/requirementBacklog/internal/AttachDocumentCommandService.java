@@ -2,6 +2,8 @@ package undecided.agiloom.requirementBacklog.internal;
 
 import undecided.agiloom.requirementBacklog.spi.BacklogItemDocument;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -30,18 +32,21 @@ class AttachDocumentCommandService {
   private final BacklogItemDocumentRepository backlogItemDocumentRepository;
   private final DocumentFacade documentFacade;
   private final SnowflakeIdGenerator snowflakeIdGenerator;
+  private final Clock clock;
 
   AttachDocumentCommandService(
       BacklogItemRepository backlogItemRepository,
       ScrumTeamSubsetRepository scrumTeamSubsetRepository,
       BacklogItemDocumentRepository backlogItemDocumentRepository,
       DocumentFacade documentFacade,
-      SnowflakeIdGenerator snowflakeIdGenerator) {
+      SnowflakeIdGenerator snowflakeIdGenerator,
+      Clock clock) {
     this.backlogItemRepository = backlogItemRepository;
     this.scrumTeamSubsetRepository = scrumTeamSubsetRepository;
     this.backlogItemDocumentRepository = backlogItemDocumentRepository;
     this.documentFacade = documentFacade;
     this.snowflakeIdGenerator = snowflakeIdGenerator;
+    this.clock = clock;
   }
 
   /**
@@ -113,6 +118,7 @@ class AttachDocumentCommandService {
               .backlogItemId(command.getBacklogItemId())
               .documentId(documentId)
               .seriesId(seriesId)
+              .createdAt(LocalDateTime.now(clock))
               .build());
     }
     return documentId;

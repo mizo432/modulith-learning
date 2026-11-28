@@ -1,5 +1,7 @@
 package undecided.jobmanagement.permissionmanagement.internal;
 
+import java.time.Clock;
+
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -13,7 +15,7 @@ class AdminEmployeeSubsetEventListenerTest {
   @Test
   void 付与を受信したときサブセットに登録される() {
     JobAdminEmployeeSubsetRepository repository = mock(JobAdminEmployeeSubsetRepository.class);
-    JobAdminEmployeeSubsetEventListener listener = new JobAdminEmployeeSubsetEventListener(repository);
+    JobAdminEmployeeSubsetEventListener listener = new JobAdminEmployeeSubsetEventListener(repository, Clock.systemDefaultZone());
     SnowflakeId employeeId = SnowflakeId.of(100L);
 
     listener.on(new AdminEmployeeChanged(employeeId, true));
@@ -24,7 +26,7 @@ class AdminEmployeeSubsetEventListenerTest {
   @Test
   void 剥離を受信したときサブセットから削除される() {
     JobAdminEmployeeSubsetRepository repository = mock(JobAdminEmployeeSubsetRepository.class);
-    JobAdminEmployeeSubsetEventListener listener = new JobAdminEmployeeSubsetEventListener(repository);
+    JobAdminEmployeeSubsetEventListener listener = new JobAdminEmployeeSubsetEventListener(repository, Clock.systemDefaultZone());
     SnowflakeId employeeId = SnowflakeId.of(100L);
 
     listener.on(new AdminEmployeeChanged(employeeId, false));

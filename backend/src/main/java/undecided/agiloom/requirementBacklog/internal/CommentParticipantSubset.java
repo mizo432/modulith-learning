@@ -45,8 +45,7 @@ class CommentParticipantSubset {
   protected String employeeEmail;
 
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** イベントから新しいサブセットを作成します。 */
   static CommentParticipantSubset of(
@@ -54,13 +53,14 @@ class CommentParticipantSubset {
       @NonNull SnowflakeId backlogItemId,
       @NonNull SnowflakeId employeeId,
       @NonNull String employeeName,
-      @NonNull String employeeEmail) {
+      @NonNull String employeeEmail, @NonNull LocalDateTime now) {
     return CommentParticipantSubset.builder()
         .id(id)
         .backlogItemId(backlogItemId)
         .employeeId(employeeId)
         .employeeName(employeeName)
         .employeeEmail(employeeEmail)
+        .createdAt(now)
         .build();
   }
 }

@@ -69,7 +69,7 @@ class AssignBacklogItemSprintCommandService {
     if (sprint.getId().equals(previousSprintId)) {
       return;
     }
-    backlogItem.assignToSprint(sprint.getId());
+    backlogItem.assignToSprint(sprint.getId(), LocalDateTime.now(clock));
     backlogItemRepository.save(backlogItem);
     eventPublisher.publishEvent(
         new BacklogItemSprintAssignmentChanged(
@@ -91,7 +91,7 @@ class AssignBacklogItemSprintCommandService {
       throw new IllegalStateException(
           "BacklogItem is not assigned to any sprint: " + command.getBacklogItemId());
     }
-    backlogItem.unassignFromSprint();
+    backlogItem.unassignFromSprint(LocalDateTime.now(clock));
     backlogItemRepository.save(backlogItem);
     eventPublisher.publishEvent(
         new BacklogItemSprintAssignmentChanged(

@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +20,7 @@ class ImpedimentTest {
         .title("Database connection issue")
         .description("Cannot connect to production database")
         .impact("Blocking all deployments")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -53,9 +54,9 @@ class ImpedimentTest {
     @DisplayName("ステータスがRESOLVEDに更新される")
     void shouldUpdateStatusToResolved() {
       Impediment impediment = createImpediment();
-      impediment.startWorkingOn();
+      impediment.startWorkingOn(LocalDateTime.now());
 
-      impediment.resolve();
+      impediment.resolve(LocalDateTime.now());
 
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.RESOLVED);
       assertThat(impediment.getResolvedAt()).isNotNull();
@@ -72,7 +73,7 @@ class ImpedimentTest {
     void shouldUpdateStatusToInProgress() {
       Impediment impediment = createImpediment();
 
-      impediment.startWorkingOn();
+      impediment.startWorkingOn(LocalDateTime.now());
 
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.IN_PROGRESS);
       assertThat(impediment.getUpdatedAt()).isNotNull();
@@ -89,7 +90,7 @@ class ImpedimentTest {
       Impediment impediment = createImpediment();
       SnowflakeId assigneeId = SnowflakeId.of(300L);
 
-      impediment.update("New title", "New description", "New impact", assigneeId);
+      impediment.update("New title", "New description", "New impact", assigneeId, LocalDateTime.now());
 
       assertThat(impediment.getTitle()).isEqualTo("New title");
       assertThat(impediment.getDescription()).isEqualTo("New description");
@@ -109,7 +110,7 @@ class ImpedimentTest {
       Impediment impediment = createImpediment();
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.NEW);
 
-      impediment.startWorkingOn();
+      impediment.startWorkingOn(LocalDateTime.now());
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.IN_PROGRESS);
     }
 
@@ -117,9 +118,9 @@ class ImpedimentTest {
     @DisplayName("IN_PROGRESSからRESOLVEDへ遷移できる")
     void shouldTransitionFromInProgressToResolved() {
       Impediment impediment = createImpediment();
-      impediment.startWorkingOn();
+      impediment.startWorkingOn(LocalDateTime.now());
 
-      impediment.resolve();
+      impediment.resolve(LocalDateTime.now());
       assertThat(impediment.getStatus()).isEqualTo(ImpedimentStatus.RESOLVED);
     }
   }

@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.presentation;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,7 +51,7 @@ class SprintQueryControllerTest {
           .productId(productId)
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       when(sprintSettingsQueryService.findByProductId(productId))
           .thenReturn(Optional.of(settings));

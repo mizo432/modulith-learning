@@ -6,6 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +16,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import undecided.agiloom.productDiscovery.internal.ProductRepository;
@@ -25,15 +28,20 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("CreateProductCommandServiceのテスト")
 class CreateProductCommandServiceTest {
 
+  private static final ZoneId ZONE = ZoneId.of("Asia/Tokyo");
+  private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 1, 1, 12, 0);
+  private static final Clock FIXED_CLOCK = Clock.fixed(FIXED_TIME.atZone(ZONE).toInstant(), ZONE);
+
   @Mock private ProductRepository productRepository;
 
-  @InjectMocks private CreateProductCommandService service;
+  private CreateProductCommandService service;
 
   private SnowflakeId productId;
 
   @BeforeEach
   void setUp() {
     productId = SnowflakeId.of(1L);
+    service = new CreateProductCommandService(productRepository, FIXED_CLOCK);
   }
 
   @Nested
@@ -51,7 +59,7 @@ class CreateProductCommandServiceTest {
               .id(productId)
               .name("Test Product")
               .description("Test Description")
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(productRepository.save(any(Product.class))).thenReturn(saved);
 
       SnowflakeId result = service.execute(command);
@@ -72,13 +80,30 @@ class CreateProductCommandServiceTest {
               .build();
 
       Product saved =
-          Product.builder().id(productId).name("Test Product").managerId(managerId).build();
+          Product.builder().id(productId).name("Test Product").managerId(managerId).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(productRepository.save(any(Product.class))).thenReturn(saved);
 
       SnowflakeId result = service.execute(command);
 
       assertThat(result).isEqualTo(productId);
       verify(productRepository).save(any(Product.class));
+    }
+
+
+    @Test
+    @DisplayName("作成したプロダクトのcreatedAtとupdatedAtがClockの時刻になる")
+    void shouldSetTimestampsFromClock() {
+      CreateProductCommand command =
+          CreateProductCommand.builder().name("Test Product").description("Test Description").build();
+      when(productRepository.save(any(Product.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+      service.execute(command);
+
+      ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
+      verify(productRepository).save(captor.capture());
+      assertThat(captor.getValue().getCreatedAt()).isEqualTo(FIXED_TIME);
+      assertThat(captor.getValue().getUpdatedAt()).isEqualTo(FIXED_TIME);
     }
 
     @Test

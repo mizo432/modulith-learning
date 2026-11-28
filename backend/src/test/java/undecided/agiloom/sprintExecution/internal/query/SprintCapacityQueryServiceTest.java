@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.query;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,7 +51,7 @@ class SprintCapacityQueryServiceTest {
         .title("Sprint " + number)
         .startDate(startDate)
         .endDate(endDate)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private void stubTarget(Sprint target, List<Sprint> teamSprints) {

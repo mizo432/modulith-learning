@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,7 +57,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
         .name("テストプロダクト")
         .description("テスト用のプロダクト")
         .status(ProductStatus.ACTIVE)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     return productRepository.save(product);
   }
 
@@ -85,7 +86,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           .smName("テストSM")
           .memberEmployeeIds(memberIds)
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // Act
       ScrumTeam saved = scrumTeamRepository.save(scrumTeam);
@@ -112,7 +113,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           .name("メンバーなしチーム")
           .businessDomain("テスト領域")
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamRepository.save(scrumTeam);
@@ -133,7 +134,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           .name("更新テストチーム")
           .businessDomain("テスト領域")
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       scrumTeamRepository.save(scrumTeam);
 
       // Act
@@ -141,7 +142,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           SnowflakeId.of(2001L),
           SnowflakeId.of(2002L)
       );
-      scrumTeam.setMemberEmployeeIds(newMemberIds);
+      scrumTeam.setMemberEmployeeIds(newMemberIds, LocalDateTime.now());
       scrumTeamRepository.save(scrumTeam);
 
       ScrumTeam loaded = scrumTeamRepository.findById(SnowflakeId.of(202L)).orElseThrow();
@@ -190,7 +191,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           .smEmployeeId(SnowflakeId.of(5002L))
           .smName("SM")
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamRepository.save(scrumTeam);
@@ -231,7 +232,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           .businessDomain("テスト領域")
           .memberEmployeeIds(memberIds)
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamRepository.save(scrumTeam);
@@ -275,7 +276,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           .smName("SM")
           .memberEmployeeIds(memberIds)
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamRepository.save(scrumTeam);
@@ -307,7 +308,7 @@ class ScrumTeamMemberEmployeeIdsMediumTest {
           .name("デフォルトテストチーム")
           .businessDomain("テスト領域")
           .product(product)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       // Act
       scrumTeamRepository.save(scrumTeam);

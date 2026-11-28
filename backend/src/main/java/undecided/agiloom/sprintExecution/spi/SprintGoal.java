@@ -57,13 +57,11 @@ public class SprintGoal {
 
   /** Sprint目標が作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** Sprint目標が最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** Sprint目標が論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -100,9 +98,9 @@ public class SprintGoal {
                 .build();
     }
 
-    public void update(@NonNull String goalDescription, String relatedItems) {
+    public void update(@NonNull String goalDescription, String relatedItems, @NonNull LocalDateTime now) {
         this.goalDescription = goalDescription;
         this.relatedItems = relatedItems;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 }

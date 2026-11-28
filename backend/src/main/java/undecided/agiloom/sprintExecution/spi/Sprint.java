@@ -97,13 +97,11 @@ public class Sprint {
 
   /** Sprintが作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** Sprintが最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** Sprintが論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -125,37 +123,37 @@ public class Sprint {
   /**
    * スプリント0としてマークします。
    */
-  public void markAsSprintZero() {
+  public void markAsSprintZero(@NonNull LocalDateTime now) {
     this.isSprintZero = true;
     this.sprintNumber = 0;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
-    public void start() {
+    public void start(@NonNull LocalDateTime now) {
         if (this.status != SprintStatus.PLANNED) {
             throw new IllegalStateException("Sprint can only be started from PLANNED status, current status: " + this.status);
         }
         this.status = SprintStatus.ACTIVE;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
-    public void complete() {
+    public void complete(@NonNull LocalDateTime now) {
         if (this.status != SprintStatus.ACTIVE) {
             throw new IllegalStateException("Sprint can only be completed from ACTIVE status, current status: " + this.status);
         }
         this.status = SprintStatus.COMPLETED;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
-    public void cancel() {
+    public void cancel(@NonNull LocalDateTime now) {
         if (this.status != SprintStatus.ACTIVE && this.status != SprintStatus.PLANNED) {
             throw new IllegalStateException("Sprint can only be cancelled from ACTIVE or PLANNED status, current status: " + this.status);
         }
         this.status = SprintStatus.CANCELLED;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
-    public void update(@NonNull String title, @NonNull String goal, @Nullable LocalDate endDate, @Nullable String notes) {
+    public void update(@NonNull String title, @NonNull String goal, @Nullable LocalDate endDate, @Nullable String notes, @NonNull LocalDateTime now) {
         checkNotNull(title, () -> new IllegalArgumentException("title must not be null"));
         checkNotNull(goal, () -> new IllegalArgumentException("goal must not be null"));
         // スプリント0の名前変更は禁止
@@ -167,7 +165,7 @@ public class Sprint {
             this.endDate = endDate;
         }
         this.notes = notes;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
     /**
@@ -177,26 +175,26 @@ public class Sprint {
      * @param startDate 開始日（nullの場合は変更なし）
      * @param endDate 終了日（nullの場合は変更なし）
      */
-    public void updateDates(@Nullable LocalDate startDate, @Nullable LocalDate endDate) {
+    public void updateDates(@Nullable LocalDate startDate, @Nullable LocalDate endDate, @NonNull LocalDateTime now) {
         if (startDate != null) {
             this.startDate = startDate;
         }
         if (endDate != null) {
             this.endDate = endDate;
         }
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
     /**
      * スプリントを論理削除します。
      * スプリント0は削除できないため、例外をスローします。
      */
-    public void delete() {
+    public void delete(@NonNull LocalDateTime now) {
         if (this.isSprintZero()) {
             throw new IllegalStateException("Sprint 0 cannot be deleted");
         }
-        this.deletedAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.deletedAt = now;
+        this.updatedAt = now;
     }
 
     /**
@@ -217,7 +215,7 @@ public class Sprint {
      * @param teamName スクラムチームの名前
      * @return スプリント0のインスタンス
      */
-    public static Sprint createSprintZero(@NonNull SnowflakeId productId, @NonNull SnowflakeId teamId, @NonNull String teamName) {
+    public static Sprint createSprintZero(@NonNull SnowflakeId productId, @NonNull SnowflakeId teamId, @NonNull String teamName, @NonNull LocalDateTime now) {
         checkNotNull(productId, () -> new IllegalArgumentException("productId must not be null"));
         checkNotNull(teamId, () -> new IllegalArgumentException("teamId must not be null"));
         checkNotNull(teamName, () -> new IllegalArgumentException("teamName must not be null"));
@@ -233,6 +231,8 @@ public class Sprint {
                 .teamId(teamId)
                 .teamName(teamName)
                 .isSprintZero(true)
+                .createdAt(now)
+                .updatedAt(now)
                 .build();
         return sprint;
     }

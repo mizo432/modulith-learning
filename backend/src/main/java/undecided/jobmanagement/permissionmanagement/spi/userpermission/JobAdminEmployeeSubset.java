@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import undecided.supporting.snowflake.SnowflakeId;
 
 /**
@@ -28,10 +29,10 @@ public class JobAdminEmployeeSubset {
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
-  public static JobAdminEmployeeSubset of(SnowflakeId employeeId) {
+  public static JobAdminEmployeeSubset of(SnowflakeId employeeId, @NonNull LocalDateTime now) {
     JobAdminEmployeeSubset subset = new JobAdminEmployeeSubset();
     subset.employeeId = employeeId;
-    subset.updatedAt = LocalDateTime.now();
+    subset.updatedAt = now;
     return subset;
   }
 }

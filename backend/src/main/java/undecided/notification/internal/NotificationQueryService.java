@@ -1,5 +1,7 @@
 package undecided.notification.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +17,11 @@ import undecided.supporting.snowflake.SnowflakeId;
 class NotificationQueryService {
 
   private final NotificationEntityRepository notificationRepository;
+  private final Clock clock;
 
-  public NotificationQueryService(NotificationEntityRepository notificationRepository) {
+  public NotificationQueryService(NotificationEntityRepository notificationRepository, Clock clock) {
     this.notificationRepository = notificationRepository;
+    this.clock = clock;
   }
 
   /**
@@ -41,7 +45,7 @@ class NotificationQueryService {
     notificationRepository
         .findById(notificationId)
         .ifPresent(notification -> {
-          notification.markAsRead();
+          notification.markAsRead(LocalDateTime.now(clock));
           notificationRepository.save(notification);
         });
   }

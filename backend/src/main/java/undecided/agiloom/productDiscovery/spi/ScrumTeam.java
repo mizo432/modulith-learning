@@ -87,13 +87,11 @@ public class ScrumTeam {
 
   /** スクラムチームが作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** スクラムチームが最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /**
    * スクラムチーム情報を更新します。
@@ -111,7 +109,7 @@ public class ScrumTeam {
       @Nullable SnowflakeId poEmployeeId,
       @Nullable String poName,
       @Nullable SnowflakeId smEmployeeId,
-      @Nullable String smName) {
+      @Nullable String smName, @NonNull LocalDateTime now) {
     if (name != null) {
       checkNonEmpty(name, () -> new IllegalArgumentException("ScrumTeam name must not be empty"));
       this.name = name;
@@ -133,7 +131,7 @@ public class ScrumTeam {
     if (smName != null) {
       this.smName = smName;
     }
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -142,19 +140,19 @@ public class ScrumTeam {
    * @param poEmployeeId POの従業員ID
    * @param poName POの名前
    */
-  public void assignPo(@NonNull SnowflakeId poEmployeeId, @NonNull String poName) {
+  public void assignPo(@NonNull SnowflakeId poEmployeeId, @NonNull String poName, @NonNull LocalDateTime now) {
     checkNotNull(poEmployeeId, () -> new IllegalArgumentException("poEmployeeId must not be null"));
     checkNotNull(poName, () -> new IllegalArgumentException("poName must not be null"));
     this.poEmployeeId = poEmployeeId;
     this.poName = poName;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** PO（Product Owner）の割り当てを解除します。 */
-  public void unassignPo() {
+  public void unassignPo(@NonNull LocalDateTime now) {
     this.poEmployeeId = null;
     this.poName = null;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -163,19 +161,19 @@ public class ScrumTeam {
    * @param smEmployeeId SMの従業員ID
    * @param smName SMの名前
    */
-  public void assignSm(@NonNull SnowflakeId smEmployeeId, @NonNull String smName) {
+  public void assignSm(@NonNull SnowflakeId smEmployeeId, @NonNull String smName, @NonNull LocalDateTime now) {
     checkNotNull(smEmployeeId, () -> new IllegalArgumentException("smEmployeeId must not be null"));
     checkNotNull(smName, () -> new IllegalArgumentException("smName must not be null"));
     this.smEmployeeId = smEmployeeId;
     this.smName = smName;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** SM（Scrum Master）の割り当てを解除します。 */
-  public void unassignSm() {
+  public void unassignSm(@NonNull LocalDateTime now) {
     this.smEmployeeId = null;
     this.smName = null;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -184,7 +182,7 @@ public class ScrumTeam {
    * @param memberEmployeeIds メンバーの従業員IDリスト（PO/SMを含む）
    * @throws IllegalArgumentException リストにnull要素または空のSnowflakeIdが含まれる場合
    */
-  public void setMemberEmployeeIds(@NonNull List<SnowflakeId> memberEmployeeIds) {
+  public void setMemberEmployeeIds(@NonNull List<SnowflakeId> memberEmployeeIds, @NonNull LocalDateTime now) {
     checkNotNull(memberEmployeeIds, () -> new IllegalArgumentException("memberEmployeeIds must not be null"));
     for (int i = 0; i < memberEmployeeIds.size(); i++) {
       SnowflakeId id = memberEmployeeIds.get(i);
@@ -196,7 +194,7 @@ public class ScrumTeam {
       }
     }
     this.memberEmployeeIds = new ArrayList<>(memberEmployeeIds);
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -205,7 +203,7 @@ public class ScrumTeam {
    * @param stakeholderEmployeeIds ステークホルダーの従業員IDリスト
    * @throws IllegalArgumentException リストにnull要素または空のSnowflakeIdが含まれる場合
    */
-  public void setStakeholderEmployeeIds(@NonNull List<SnowflakeId> stakeholderEmployeeIds) {
+  public void setStakeholderEmployeeIds(@NonNull List<SnowflakeId> stakeholderEmployeeIds, @NonNull LocalDateTime now) {
     checkNotNull(stakeholderEmployeeIds, () -> new IllegalArgumentException("stakeholderEmployeeIds must not be null"));
     for (int i = 0; i < stakeholderEmployeeIds.size(); i++) {
       SnowflakeId id = stakeholderEmployeeIds.get(i);
@@ -217,6 +215,6 @@ public class ScrumTeam {
       }
     }
     this.stakeholderEmployeeIds = new ArrayList<>(stakeholderEmployeeIds);
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 }

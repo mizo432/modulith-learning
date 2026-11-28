@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,7 +19,7 @@ class FeatureTest {
         .id(SnowflakeId.of(100L))
         .name("Test Feature")
         .scrumTeamId(SnowflakeId.of(10L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -44,7 +45,7 @@ class FeatureTest {
           .id(SnowflakeId.of(100L))
           .name("Test Feature")
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       assertThat(f.getDescription()).isNull();
     }
 
@@ -56,7 +57,7 @@ class FeatureTest {
           .name("Test Feature")
           .description("Test Description")
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       assertThat(f.getDescription()).isEqualTo("Test Description");
     }
   }
@@ -73,7 +74,7 @@ class FeatureTest {
           .id(SnowflakeId.of(100L))
           .name(name)
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       assertThat(f.getName().length()).isEqualTo(Feature.NAME_MAX_LENGTH);
     }
 
@@ -82,7 +83,7 @@ class FeatureTest {
     void shouldThrowWhenNameExceeds200Characters() {
       Feature f = feature();
       String name = "a".repeat(Feature.NAME_MAX_LENGTH + 1);
-      assertThatThrownBy(() -> f.update(name, null))
+      assertThatThrownBy(() -> f.update(name, null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not exceed");
     }
@@ -91,7 +92,7 @@ class FeatureTest {
     @DisplayName("名前が空でupdateしたとき、例外がスローされること")
     void shouldThrowWhenNameIsEmpty() {
       Feature f = feature();
-      assertThatThrownBy(() -> f.update("", null))
+      assertThatThrownBy(() -> f.update("", null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be empty");
     }
@@ -105,7 +106,7 @@ class FeatureTest {
     @DisplayName("PLANNEDからIN_PROGRESSへ遷移できること")
     void shouldTransitionFromPlannedToInProgress() {
       Feature f = feature();
-      f.changeStatus(FeatureStatus.IN_PROGRESS);
+      f.changeStatus(FeatureStatus.IN_PROGRESS, LocalDateTime.now());
       assertThat(f.getStatus()).isEqualTo(FeatureStatus.IN_PROGRESS);
     }
 
@@ -117,8 +118,8 @@ class FeatureTest {
           .name("Test Feature")
           .status(FeatureStatus.IN_PROGRESS)
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
-      f.changeStatus(FeatureStatus.DONE);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      f.changeStatus(FeatureStatus.DONE, LocalDateTime.now());
       assertThat(f.getStatus()).isEqualTo(FeatureStatus.DONE);
     }
 
@@ -130,8 +131,8 @@ class FeatureTest {
           .name("Test Feature")
           .status(FeatureStatus.IN_PROGRESS)
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
-      f.changeStatus(FeatureStatus.PLANNED);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      f.changeStatus(FeatureStatus.PLANNED, LocalDateTime.now());
       assertThat(f.getStatus()).isEqualTo(FeatureStatus.PLANNED);
     }
 
@@ -143,8 +144,8 @@ class FeatureTest {
           .name("Test Feature")
           .status(FeatureStatus.DONE)
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
-      f.changeStatus(FeatureStatus.IN_PROGRESS);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      f.changeStatus(FeatureStatus.IN_PROGRESS, LocalDateTime.now());
       assertThat(f.getStatus()).isEqualTo(FeatureStatus.IN_PROGRESS);
     }
 
@@ -152,7 +153,7 @@ class FeatureTest {
     @DisplayName("PLANNEDからDONEへの直接遷移は許可しないこと")
     void shouldNotTransitionFromPlannedToDone() {
       Feature f = feature();
-      assertThatThrownBy(() -> f.changeStatus(FeatureStatus.DONE))
+      assertThatThrownBy(() -> f.changeStatus(FeatureStatus.DONE, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("Invalid status transition");
     }
@@ -165,8 +166,8 @@ class FeatureTest {
           .name("Test Feature")
           .status(FeatureStatus.DONE)
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
-      assertThatThrownBy(() -> f.changeStatus(FeatureStatus.PLANNED))
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      assertThatThrownBy(() -> f.changeStatus(FeatureStatus.PLANNED, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("Invalid status transition");
     }
@@ -180,7 +181,7 @@ class FeatureTest {
     @DisplayName("名前を更新できること")
     void shouldUpdateName() {
       Feature f = feature();
-      f.update("New Name", null);
+      f.update("New Name", null, LocalDateTime.now());
       assertThat(f.getName()).isEqualTo("New Name");
     }
 
@@ -188,7 +189,7 @@ class FeatureTest {
     @DisplayName("説明を更新できること")
     void shouldUpdateDescription() {
       Feature f = feature();
-      f.update(null, "New Description");
+      f.update(null, "New Description", LocalDateTime.now());
       assertThat(f.getDescription()).isEqualTo("New Description");
     }
 
@@ -200,8 +201,8 @@ class FeatureTest {
           .name("Original Name")
           .description("Original Description")
           .scrumTeamId(SnowflakeId.of(10L))
-          .build();
-      f.update(null, null);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      f.update(null, null, LocalDateTime.now());
       assertThat(f.getName()).isEqualTo("Original Name");
       assertThat(f.getDescription()).isEqualTo("Original Description");
     }

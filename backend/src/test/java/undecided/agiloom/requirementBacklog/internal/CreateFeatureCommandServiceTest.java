@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,7 +44,7 @@ class CreateFeatureCommandServiceTest {
   @BeforeEach
   void setUp() {
     service = new CreateFeatureCommandService(
-        featureRepository, scrumTeamSubsetRepository, snowflakeIdGenerator);
+        featureRepository, scrumTeamSubsetRepository, snowflakeIdGenerator, Clock.systemDefaultZone());
   }
 
   @Nested
@@ -55,7 +57,7 @@ class CreateFeatureCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       CreateFeatureCommand command = CreateFeatureCommand.builder()
           .scrumTeamId(teamId)
           .name("New Feature")
@@ -101,7 +103,7 @@ class CreateFeatureCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       String name = "a".repeat(Feature.NAME_MAX_LENGTH);
       CreateFeatureCommand command = CreateFeatureCommand.builder()
           .scrumTeamId(teamId)
@@ -164,7 +166,7 @@ class CreateFeatureCommandServiceTest {
       // Arrange
       SnowflakeId teamId = SnowflakeId.of(10L);
       SnowflakeId actorId = SnowflakeId.of(999L);
-      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).build();
+      ScrumTeamSubset team = ScrumTeamSubset.builder().id(teamId).name("Test Team").memberEmployeeIds(List.of(actorId)).updatedAt(LocalDateTime.now()).build();
       CreateFeatureCommand command = CreateFeatureCommand.builder()
           .scrumTeamId(teamId)
           .name("New Feature")

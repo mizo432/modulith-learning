@@ -24,7 +24,7 @@ class BacklogItemReadyTransitionTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItem acceptedItemWithTimestamp() {
@@ -38,7 +38,7 @@ class BacklogItemReadyTransitionTest {
         .createdAt(before)
         .updatedAt(before)
         .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
     return item;
   }
 
@@ -50,9 +50,9 @@ class BacklogItemReadyTransitionTest {
     @DisplayName("ACCEPTED状態からREADYへ遷移できること")
     void shouldTransitionFromAcceptedToReady() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.READY);
     }
@@ -66,10 +66,10 @@ class BacklogItemReadyTransitionTest {
     @DisplayName("READY状態からSUGGESTEDへ遷移できること")
     void shouldTransitionFromReadyToSuggested() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
 
-      item.changeStatus(BacklogItemStatus.SUGGESTED);
+      item.changeStatus(BacklogItemStatus.SUGGESTED, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
     }
@@ -88,9 +88,9 @@ class BacklogItemReadyTransitionTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
     }
 
@@ -98,10 +98,10 @@ class BacklogItemReadyTransitionTest {
     @DisplayName("READY状態からFROZENへ遷移できないこと")
     void shouldNotTransitionFromReadyToFrozen() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.FROZEN))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
     }
 
@@ -113,10 +113,10 @@ class BacklogItemReadyTransitionTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
-      item.changeStatus(BacklogItemStatus.FROZEN);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
     }
 
@@ -124,9 +124,9 @@ class BacklogItemReadyTransitionTest {
     @DisplayName("ACCEPTED状態からSUGGESTEDへ遷移できないこと")
     void shouldNotTransitionFromAcceptedToSuggested() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.SUGGESTED))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.SUGGESTED, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
     }
 
@@ -134,10 +134,10 @@ class BacklogItemReadyTransitionTest {
     @DisplayName("READY状態からREADYへ遷移できないこと")
     void shouldNotTransitionFromReadyToReady() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
     }
   }
@@ -155,9 +155,9 @@ class BacklogItemReadyTransitionTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
     }
@@ -170,9 +170,9 @@ class BacklogItemReadyTransitionTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
-      item.changeStatus(BacklogItemStatus.FROZEN);
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.FROZEN);
     }
@@ -185,10 +185,10 @@ class BacklogItemReadyTransitionTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
-      item.changeStatus(BacklogItemStatus.FROZEN);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
 
-      item.changeStatus(BacklogItemStatus.SUGGESTED);
+      item.changeStatus(BacklogItemStatus.SUGGESTED, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.SUGGESTED);
     }
@@ -211,14 +211,14 @@ class BacklogItemReadyTransitionTest {
           .createdAt(before)
           .updatedAt(before)
           .build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       try {
         Thread.sleep(10); // updatedAtの更新が検出できるように待機
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
 
       assertThat(item.getUpdatedAt()).isAfter(before);
     }

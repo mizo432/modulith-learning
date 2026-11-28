@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.internal.query;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -60,7 +61,7 @@ class SprintCalculateEndDateMediumTest {
           .productId(productId)
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       sprintSettingsRepository.save(settings);
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -82,7 +83,7 @@ class SprintCalculateEndDateMediumTest {
           .productId(productId)
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.WEDNESDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       sprintSettingsRepository.save(settings);
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -105,7 +106,7 @@ class SprintCalculateEndDateMediumTest {
           .productId(productId)
           .businessDays(1)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       sprintSettingsRepository.save(settings);
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -128,7 +129,7 @@ class SprintCalculateEndDateMediumTest {
           .productId(productId)
           .businessDays(30)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       sprintSettingsRepository.save(settings);
 
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -156,7 +157,7 @@ class SprintCalculateEndDateMediumTest {
           .productId(productId)
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       sprintSettingsRepository.save(settings);
 
       // 11/20(金)を祝日として登録
@@ -187,7 +188,7 @@ class SprintCalculateEndDateMediumTest {
           .productId(productId)
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       sprintSettingsRepository.save(settings);
 
       // 連続祝日: 11/17(火), 11/18(水), 11/19(木)
@@ -223,7 +224,7 @@ class SprintCalculateEndDateMediumTest {
           .productId(productId)
           .businessDays(15)
           .endDayOfWeek(EndDayOfWeek.THURSDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       sprintSettingsRepository.save(settings);
 
       // Act

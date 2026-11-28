@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,7 +23,7 @@ class SprintSettingsTest {
         .productId(SnowflakeId.of(100L))
         .businessDays(10)
         .endDayOfWeek(EndDayOfWeek.FRIDAY)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -45,7 +46,7 @@ class SprintSettingsTest {
       SprintSettings settings = SprintSettings.builder()
           .id(SnowflakeId.of(2L))
           .productId(SnowflakeId.of(100L))
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       assertThat(settings.getBusinessDays()).isEqualTo(10);
       assertThat(settings.getEndDayOfWeek()).isEqualTo(EndDayOfWeek.FRIDAY);
@@ -61,7 +62,7 @@ class SprintSettingsTest {
     void shouldUpdateBusinessDaysAndEndDayOfWeek() {
       SprintSettings settings = createSettings();
 
-      settings.update(15, EndDayOfWeek.WEDNESDAY);
+      settings.update(15, EndDayOfWeek.WEDNESDAY, LocalDateTime.now());
 
       assertThat(settings.getBusinessDays()).isEqualTo(15);
       assertThat(settings.getEndDayOfWeek()).isEqualTo(EndDayOfWeek.WEDNESDAY);
@@ -72,7 +73,7 @@ class SprintSettingsTest {
     void shouldThrowExceptionWhenBusinessDaysIsNull() {
       SprintSettings settings = createSettings();
 
-      assertThatThrownBy(() -> settings.update(null, EndDayOfWeek.FRIDAY))
+      assertThatThrownBy(() -> settings.update(null, EndDayOfWeek.FRIDAY, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -81,7 +82,7 @@ class SprintSettingsTest {
     void shouldThrowExceptionWhenEndDayOfWeekIsNull() {
       SprintSettings settings = createSettings();
 
-      assertThatThrownBy(() -> settings.update(10, null))
+      assertThatThrownBy(() -> settings.update(10, null, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -90,7 +91,7 @@ class SprintSettingsTest {
     void shouldThrowExceptionWhenBusinessDaysIsZero() {
       SprintSettings settings = createSettings();
 
-      assertThatThrownBy(() -> settings.update(0, EndDayOfWeek.FRIDAY))
+      assertThatThrownBy(() -> settings.update(0, EndDayOfWeek.FRIDAY, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -99,7 +100,7 @@ class SprintSettingsTest {
     void shouldThrowExceptionWhenBusinessDaysExceeds30() {
       SprintSettings settings = createSettings();
 
-      assertThatThrownBy(() -> settings.update(31, EndDayOfWeek.FRIDAY))
+      assertThatThrownBy(() -> settings.update(31, EndDayOfWeek.FRIDAY, LocalDateTime.now()))
           .isInstanceOf(IllegalArgumentException.class);
     }
   }
@@ -117,7 +118,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(10)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -136,7 +137,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       holidays.add(LocalDate.of(2026, 11, 19)); // 水曜日が祝日
@@ -158,7 +159,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.WEDNESDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -197,7 +198,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       holidays.add(LocalDate.of(2026, 12, 29)); // 火
@@ -223,7 +224,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       holidays.add(LocalDate.of(2026, 11, 21)); // Saturday (祝日)
@@ -245,7 +246,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(5)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       holidays.add(LocalDate.of(2026, 11, 17)); // 火
@@ -269,7 +270,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(1)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -289,7 +290,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(30)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       LocalDate startDate = LocalDate.of(2026, 11, 16); // Monday
@@ -308,7 +309,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       LocalDate startDate = LocalDate.of(2026, 11, 21); // Saturday
@@ -328,7 +329,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       LocalDate startDate = LocalDate.of(2026, 11, 22); // Sunday
@@ -348,7 +349,7 @@ class SprintSettingsTest {
           .productId(SnowflakeId.of(100L))
           .businessDays(3)
           .endDayOfWeek(EndDayOfWeek.FRIDAY)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       Set<LocalDate> holidays = new HashSet<>();
       holidays.add(LocalDate.of(2026, 11, 20)); // 金曜日が祝日
@@ -373,7 +374,7 @@ class SprintSettingsTest {
     void shouldSoftDelete() {
       SprintSettings settings = createSettings();
 
-      settings.delete();
+      settings.delete(LocalDateTime.now());
 
       assertThat(settings.getDeletedAt()).isNotNull();
     }

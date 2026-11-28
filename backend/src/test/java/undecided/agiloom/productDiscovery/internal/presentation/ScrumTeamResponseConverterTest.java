@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +32,7 @@ class ScrumTeamResponseConverterTest {
         .smEmployeeId(SM_ID)
         .smName("SM Name")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeam scrumTeamWithoutMembers() {
@@ -43,7 +44,7 @@ class ScrumTeamResponseConverterTest {
         .poName("PO Name")
         .smEmployeeId(SM_ID)
         .smName("SM Name")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested

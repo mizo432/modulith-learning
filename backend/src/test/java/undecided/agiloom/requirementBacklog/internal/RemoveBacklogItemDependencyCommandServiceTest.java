@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -42,7 +43,7 @@ class RemoveBacklogItemDependencyCommandServiceTest {
           .backlogItemId(ITEM_A)
           .dependencyItemId(ITEM_B)
           .createdBy(PO_ID)
-          .build();
+          .createdAt(LocalDateTime.now()).build();
 
   private void given() {
     when(backlogItemRepository.findById(ITEM_A))
@@ -54,7 +55,7 @@ class RemoveBacklogItemDependencyCommandServiceTest {
                     .creatorName("Creator")
                     .scrumTeamId(TEAM_ID)
                     .status(BacklogItemStatus.ACCEPTED)
-                    .build()));
+                    .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build()));
     when(scrumTeamSubsetRepository.findById(TEAM_ID))
         .thenReturn(
             Optional.of(
@@ -64,7 +65,7 @@ class RemoveBacklogItemDependencyCommandServiceTest {
                     .poEmployeeId(PO_ID)
                     .smEmployeeId(SM_ID)
                     .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-                    .build()));
+                    .updatedAt(LocalDateTime.now()).build()));
     when(dependencyRepository.findByBacklogItemIdAndDependencyItemId(ITEM_A, ITEM_B))
         .thenReturn(Optional.of(existing));
   }

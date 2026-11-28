@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,7 +55,7 @@ class BacklogItemSprintAssignmentMediumTest {
             .id(TEAM_ID)
             .name("割当テストチーム")
             .memberEmployeeIds(List.of(MEMBER_ID))
-            .build());
+            .updatedAt(LocalDateTime.now()).build());
     for (int number = 1; number <= 5; number++) {
       sprintRepository.save(
           Sprint.builder()
@@ -67,7 +68,7 @@ class BacklogItemSprintAssignmentMediumTest {
               .teamName("割当テストチーム")
               .startDate(LocalDate.of(2026, 11, 16).plusWeeks(2L * (number - 1)))
               .endDate(LocalDate.of(2026, 11, 27).plusWeeks(2L * (number - 1)))
-              .build());
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
     }
     backlogItemRepository.save(
         BacklogItem.builder()
@@ -77,7 +78,7 @@ class BacklogItemSprintAssignmentMediumTest {
             .scrumTeamId(TEAM_ID)
             .status(BacklogItemStatus.ESTIMATED)
             .storyPoint(5)
-            .build());
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
     entityManager.flush();
     entityManager.clear();
   }

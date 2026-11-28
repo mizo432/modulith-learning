@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.internal.presentation;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -67,7 +68,7 @@ class ScrumTeamStakeholdersEndpointMediumTest {
             .name("Test Product")
             .description("Test")
             .status(ProductStatus.ACTIVE)
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     productRepository.save(product);
 
     ScrumTeam scrumTeam =
@@ -80,7 +81,7 @@ class ScrumTeamStakeholdersEndpointMediumTest {
             .smEmployeeId(SnowflakeId.of(200L))
             .smName("Test SM")
             .product(product)
-            .build();
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     scrumTeamRepository.save(scrumTeam);
   }
 
@@ -119,7 +120,7 @@ class ScrumTeamStakeholdersEndpointMediumTest {
     @DisplayName("stakeholderEmployeeIdsを送信しないとき、既存のステークホルダーは変更されない")
     void shouldKeepStakeholdersWhenNotSent() throws Exception {
       ScrumTeam team = scrumTeamRepository.findById(scrumTeamId).orElseThrow();
-      team.setStakeholderEmployeeIds(List.of(SnowflakeId.of(900L)));
+      team.setStakeholderEmployeeIds(List.of(SnowflakeId.of(900L)), LocalDateTime.now());
       scrumTeamRepository.save(team);
 
       UpdateScrumTeamMembersRequest request =

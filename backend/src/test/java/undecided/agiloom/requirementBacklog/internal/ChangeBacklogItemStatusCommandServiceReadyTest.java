@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +65,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
         .creatorName("Creator")
         .scrumTeamId(TEAM_ID)
         .value(50)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private ScrumTeamSubset teamWithMembers() {
@@ -75,7 +77,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
         .smEmployeeId(SM_ID)
         .smName("SM Name")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private ChangeBacklogItemStatusCommand command(BacklogItemStatus target, SnowflakeId actorId) {
@@ -94,7 +96,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("POがACCEPTEDをREADYに変更できること")
     void shouldPoChangeAcceptedToReady() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -108,7 +110,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("SMがACCEPTEDをREADYに変更できること")
     void shouldSmChangeAcceptedToReady() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -122,7 +124,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("チームメンバー（PO/SM以外）がACCEPTEDをREADYに変更できること")
     void shouldTeamMemberChangeAcceptedToReady() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -136,7 +138,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("チーム外の従業員がACCEPTEDをREADYに変更しようとすると権限例外になること")
     void shouldDenyOutsiderChangeAcceptedToReady() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -156,8 +158,8 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("POがREADYをSUGGESTEDに戻せること")
     void shouldPoChangeReadyToSuggested() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -171,8 +173,8 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("SMがREADYをSUGGESTEDに戻せること")
     void shouldSmChangeReadyToSuggested() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -186,8 +188,8 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("チームメンバー（PO/SM以外）がREADYをSUGGESTEDに戻せること")
     void shouldTeamMemberChangeReadyToSuggested() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -201,8 +203,8 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("チーム外の従業員がREADYをSUGGESTEDに戻そうとすると権限例外になること")
     void shouldDenyOutsiderChangeReadyToSuggested() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -222,7 +224,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("ACCEPTED→READY遷移時にBacklogItemStatusChangedイベントが発行されること")
     void shouldPublishEventOnAcceptedToReady() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -239,8 +241,8 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("READY→SUGGESTED遷移時にBacklogItemStatusChangedイベントが発行されること")
     void shouldPublishEventOnReadyToSuggested() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -257,7 +259,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
     @DisplayName("権限がない場合、保存もイベント発行もされないこと（ACCEPTED→READY試行時）")
     void shouldNotSaveOrPublishWhenPermissionDenied() {
       BacklogItem item = acceptedItem();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -281,7 +283,7 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
           .value(50)
-          .build();
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 
@@ -300,8 +302,8 @@ class ChangeBacklogItemStatusCommandServiceReadyTest {
           .title("Test Item")
           .creatorName("Creator")
           .scrumTeamId(TEAM_ID)
-          .build();
-      item.changeStatus(BacklogItemStatus.FROZEN);
+          .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      item.changeStatus(BacklogItemStatus.FROZEN, LocalDateTime.now());
       when(backlogItemRepository.findById(ITEM_ID)).thenReturn(Optional.of(item));
       when(scrumTeamSubsetRepository.findById(TEAM_ID)).thenReturn(Optional.of(teamWithMembers()));
 

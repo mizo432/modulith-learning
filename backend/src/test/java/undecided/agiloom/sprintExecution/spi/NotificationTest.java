@@ -1,4 +1,5 @@
 package undecided.agiloom.sprintExecution.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +21,7 @@ class NotificationTest {
         .title("Task assigned")
         .content("You have been assigned to a new task")
         .type(NotificationType.ASSIGNEE_CHANGE)
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -56,7 +57,7 @@ class NotificationTest {
     void shouldMarkAsRead() {
       Notification notification = createNotification();
 
-      notification.markAsRead();
+      notification.markAsRead(LocalDateTime.now());
 
       assertThat(notification.getIsRead()).isTrue();
       assertThat(notification.getUpdatedAt()).isNotNull();
@@ -66,8 +67,8 @@ class NotificationTest {
     @DisplayName("既読后再呼び出ししても問題ない")
     void shouldIdempotentMarkAsRead() {
       Notification notification = createNotification();
-      notification.markAsRead();
-      notification.markAsRead();
+      notification.markAsRead(LocalDateTime.now());
+      notification.markAsRead(LocalDateTime.now());
 
       assertThat(notification.getIsRead()).isTrue();
     }

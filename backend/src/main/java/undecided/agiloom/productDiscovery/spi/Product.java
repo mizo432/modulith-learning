@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import undecided.supporting.snowflake.SnowflakeId;
 
@@ -60,13 +61,11 @@ public class Product {
 
   /** プロダクトが作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** プロダクトが最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** プロダクトが論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -86,7 +85,7 @@ public class Product {
    * @param managerId 更新後のマネージャーID（nullの場合は変更なし）
    */
   public void update(
-      @Nullable String name, @Nullable String description, @Nullable SnowflakeId managerId) {
+      @Nullable String name, @Nullable String description, @Nullable SnowflakeId managerId, @NonNull LocalDateTime now) {
     if (name != null) {
       checkNonEmpty(
           name, () -> new IllegalArgumentException("Product name must not be empty"));
@@ -98,22 +97,22 @@ public class Product {
     if (managerId != null) {
       this.managerId = managerId;
     }
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** プロダクトをアーカイブします。 ACTIVE状態からARCHIVED状態へ遷移します。 */
-  public void archive() {
+  public void archive(@NonNull LocalDateTime now) {
     if (this.status != ProductStatus.ACTIVE) {
       throw new IllegalStateException(
           "Product can only be archived from ACTIVE status, current status: " + this.status);
     }
     this.status = ProductStatus.ARCHIVED;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** プロダクトを論理削除します。 deleted_atに現在時刻を設定します。 */
-  public void delete() {
-    this.deletedAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
+  public void delete(@NonNull LocalDateTime now) {
+    this.deletedAt = now;
+    this.updatedAt = now;
   }
 }

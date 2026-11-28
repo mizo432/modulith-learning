@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,7 +77,7 @@ class AddBacklogItemCommentCommandServiceTest {
         .id(ITEM_ID)
         .title("Test Item")
         .creatorName("Creator")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItem differentBacklogItem() {
@@ -84,7 +85,7 @@ class AddBacklogItemCommentCommandServiceTest {
         .id(DIFFERENT_ITEM_ID)
         .title("Different Item")
         .creatorName("Creator")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   private BacklogItemComment parentComment() {
@@ -94,7 +95,7 @@ class AddBacklogItemCommentCommandServiceTest {
         .authorEmployeeId(AUTHOR_ID)
         .authorName("Parent Author")
         .body("Parent comment")
-        .build();
+        .createdAt(LocalDateTime.now()).build();
   }
 
   private AddBacklogItemCommentCommand command() {
@@ -184,7 +185,7 @@ class AddBacklogItemCommentCommandServiceTest {
           .authorEmployeeId(AUTHOR_ID)
           .authorName("Other Author")
           .body("Other parent comment")
-          .build();
+          .createdAt(LocalDateTime.now()).build();
       when(backlogItemCommentRepository.findById(PARENT_COMMENT_ID))
           .thenReturn(Optional.of(parentOfDifferentItem));
 

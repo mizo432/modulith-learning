@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,7 +52,7 @@ class SprintCancelledSlideMediumTest {
   @BeforeEach
   void setUp() {
     // @ApplicationModuleListener は非同期実行のため、検証では実リポジトリで直接生成して同期に呼ぶ
-    listener = new SprintCancelledSlideListener(backlogItemRepository, sprintFacade);
+    listener = new SprintCancelledSlideListener(backlogItemRepository, sprintFacade, Clock.systemDefaultZone());
     for (int number = 1; number <= 2; number++) {
       sprintRepository.save(
           Sprint.builder()
@@ -64,7 +65,7 @@ class SprintCancelledSlideMediumTest {
               .teamName("スライドテストチーム")
               .startDate(LocalDate.of(2026, 11, 16).plusWeeks(2L * (number - 1)))
               .endDate(LocalDate.of(2026, 11, 27).plusWeeks(2L * (number - 1)))
-              .build());
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
     }
     entityManager.flush();
     entityManager.clear();
@@ -80,7 +81,7 @@ class SprintCancelledSlideMediumTest {
             .status(BacklogItemStatus.ESTIMATED)
             .storyPoint(5)
             .sprintId(sprintId(sprintNumber))
-            .build());
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
     entityManager.flush();
     entityManager.clear();
   }

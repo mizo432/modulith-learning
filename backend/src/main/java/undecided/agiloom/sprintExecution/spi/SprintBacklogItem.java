@@ -64,13 +64,11 @@ public class SprintBacklogItem {
 
   /** バックログ項目が作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** バックログ項目が最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** バックログ項目が論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -113,20 +111,20 @@ public class SprintBacklogItem {
                 .build();
     }
 
-    public void updateStatus(@NonNull TaskStatus status) {
+    public void updateStatus(@NonNull TaskStatus status, @NonNull LocalDateTime now) {
         this.status = status;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
-    public void assignTo(SnowflakeId assigneeId) {
+    public void assignTo(SnowflakeId assigneeId, @NonNull LocalDateTime now) {
         this.assigneeId = assigneeId;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 
-    public void update(@NonNull String workDescription, TaskStatus status, SnowflakeId assigneeId) {
+    public void update(@NonNull String workDescription, TaskStatus status, SnowflakeId assigneeId, @NonNull LocalDateTime now) {
         this.workDescription = workDescription;
         this.status = status;
         this.assigneeId = assigneeId;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 }

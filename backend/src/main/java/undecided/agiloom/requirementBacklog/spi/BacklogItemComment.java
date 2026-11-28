@@ -56,8 +56,7 @@ public class BacklogItemComment {
 
   /** 投稿日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** 親コメントへの自己参照（返信がある場合）。ルートコメントの場合はnull。 */
   @ManyToOne(fetch = FetchType.LAZY)

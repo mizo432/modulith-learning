@@ -59,13 +59,11 @@ public class Dependency {
 
   /** 依存関係が作成された日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** 依存関係が最後に更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** 依存関係が論理削除された日時。nullの場合は未削除です。 */
   @Column(name = "deleted_at")
@@ -105,9 +103,9 @@ public class Dependency {
                 .build();
     }
 
-    public void update(@NonNull DependencyType dependencyType, String description) {
+    public void update(@NonNull DependencyType dependencyType, String description, @NonNull LocalDateTime now) {
         this.dependencyType = dependencyType;
         this.description = description;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
     }
 }

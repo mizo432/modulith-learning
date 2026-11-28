@@ -14,13 +14,16 @@ import undecided.supporting.snowflake.SnowflakeId;
 @DisplayName("Productのテスト")
 class ProductTest {
 
+  private static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 12, 0);
+  private static final LocalDateTime BASE = LocalDateTime.of(2025, 1, 1, 0, 0);
+
   private Product createProduct() {
     return Product.builder()
         .id(SnowflakeId.of(1L))
         .name("Test Product")
         .description("Test Description")
         .managerId(SnowflakeId.of(100L))
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -67,7 +70,7 @@ class ProductTest {
     void shouldUpdateName() {
       Product product = createProduct();
 
-      product.update("New Name", null, null);
+      product.update("New Name", null, null, NOW);
 
       assertThat(product.getName()).isEqualTo("New Name");
       assertThat(product.getUpdatedAt()).isNotNull();
@@ -78,7 +81,7 @@ class ProductTest {
     void shouldUpdateDescription() {
       Product product = createProduct();
 
-      product.update(null, "New Description", null);
+      product.update(null, "New Description", null, NOW);
 
       assertThat(product.getDescription()).isEqualTo("New Description");
     }
@@ -89,7 +92,7 @@ class ProductTest {
       Product product = createProduct();
       SnowflakeId newManagerId = SnowflakeId.of(200L);
 
-      product.update(null, null, newManagerId);
+      product.update(null, null, newManagerId, NOW);
 
       assertThat(product.getManagerId()).isEqualTo(newManagerId);
     }
@@ -100,7 +103,7 @@ class ProductTest {
       Product product = createProduct();
       SnowflakeId newManagerId = SnowflakeId.of(200L);
 
-      product.update("New Name", "New Description", newManagerId);
+      product.update("New Name", "New Description", newManagerId, NOW);
 
       assertThat(product.getName()).isEqualTo("New Name");
       assertThat(product.getDescription()).isEqualTo("New Description");
@@ -113,7 +116,7 @@ class ProductTest {
       Product product = createProduct();
       LocalDateTime originalUpdatedAt = product.getUpdatedAt();
 
-      product.update("New Name", null, null);
+      product.update("New Name", null, null, NOW);
 
       assertThat(product.getUpdatedAt()).isNotEqualTo(originalUpdatedAt);
     }
@@ -123,7 +126,7 @@ class ProductTest {
     void shouldThrowExceptionWhenNameIsEmpty() {
       Product product = createProduct();
 
-      assertThatThrownBy(() -> product.update("", null, null))
+      assertThatThrownBy(() -> product.update("", null, null, NOW))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("must not be empty");
     }
@@ -134,7 +137,7 @@ class ProductTest {
       Product product = createProduct();
       String originalName = product.getName();
 
-      product.update(null, null, null);
+      product.update(null, null, null, NOW);
 
       assertThat(product.getName()).isEqualTo(originalName);
     }
@@ -149,7 +152,7 @@ class ProductTest {
     void shouldUpdateStatusToArchived() {
       Product product = createProduct();
 
-      product.archive();
+      product.archive(NOW);
 
       assertThat(product.getStatus()).isEqualTo(ProductStatus.ARCHIVED);
       assertThat(product.getUpdatedAt()).isNotNull();
@@ -159,9 +162,9 @@ class ProductTest {
     @DisplayName("ARCHIVED状態から再度archiveすると例外がスローされる")
     void shouldThrowExceptionWhenArchivingArchivedProduct() {
       Product product = createProduct();
-      product.archive();
+      product.archive(NOW);
 
-      assertThatThrownBy(() -> product.archive())
+      assertThatThrownBy(() -> product.archive(NOW))
           .isInstanceOf(IllegalStateException.class)
           .hasMessageContaining("ARCHIVED");
     }
@@ -177,7 +180,7 @@ class ProductTest {
       Product product = createProduct();
       assertThat(product.getStatus()).isEqualTo(ProductStatus.ACTIVE);
 
-      product.archive();
+      product.archive(NOW);
       assertThat(product.getStatus()).isEqualTo(ProductStatus.ARCHIVED);
     }
   }
@@ -192,7 +195,7 @@ class ProductTest {
       Product product = createProduct();
       assertThat(product.getDeletedAt()).isNull();
 
-      product.delete();
+      product.delete(NOW);
 
       assertThat(product.getDeletedAt()).isNotNull();
       assertThat(product.getUpdatedAt()).isNotNull();
@@ -203,9 +206,53 @@ class ProductTest {
     void shouldNotChangeStatusOnDelete() {
       Product product = createProduct();
 
-      product.delete();
+      product.delete(NOW);
 
       assertThat(product.getStatus()).isEqualTo(ProductStatus.ACTIVE);
+    }
+  }
+  @Nested
+  @DisplayName("渡された時刻のテスト")
+  class PassedTimeTest {
+
+    private Product productWithBaseTime() {
+      return Product.builder()
+          .id(SnowflakeId.of(1L))
+          .name("Test Product")
+          .createdAt(BASE)
+          .updatedAt(BASE)
+          .build();
+    }
+
+    @Test
+    @DisplayName("updateに渡した時刻がupdatedAtになる")
+    void shouldSetUpdatedAtOnUpdate() {
+      Product product = productWithBaseTime();
+
+      product.update("New Name", null, null, NOW);
+
+      assertThat(product.getUpdatedAt()).isEqualTo(NOW);
+    }
+
+    @Test
+    @DisplayName("archiveに渡した時刻がupdatedAtになる")
+    void shouldSetUpdatedAtOnArchive() {
+      Product product = productWithBaseTime();
+
+      product.archive(NOW);
+
+      assertThat(product.getUpdatedAt()).isEqualTo(NOW);
+    }
+
+    @Test
+    @DisplayName("deleteに渡した時刻がdeletedAtとupdatedAtになる")
+    void shouldSetDeletedAtOnDelete() {
+      Product product = productWithBaseTime();
+
+      product.delete(NOW);
+
+      assertThat(product.getDeletedAt()).isEqualTo(NOW);
+      assertThat(product.getUpdatedAt()).isEqualTo(NOW);
     }
   }
 }

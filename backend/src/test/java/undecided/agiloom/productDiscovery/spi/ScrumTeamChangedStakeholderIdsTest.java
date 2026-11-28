@@ -1,4 +1,5 @@
 package undecided.agiloom.productDiscovery.spi;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +30,7 @@ class ScrumTeamChangedStakeholderIdsTest {
         .poName("PO Name")
         .smEmployeeId(SM_ID)
         .smName("SM Name")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -66,7 +67,7 @@ class ScrumTeamChangedStakeholderIdsTest {
     @DisplayName("of(ScrumTeam)でScrumTeamのステークホルダーIDリストが正しくセットされること")
     void shouldSetStakeholderIdsFromScrumTeam() {
       ScrumTeam team = scrumTeam();
-      team.setStakeholderEmployeeIds(List.of(STAKEHOLDER_ID));
+      team.setStakeholderEmployeeIds(List.of(STAKEHOLDER_ID), LocalDateTime.now());
 
       ScrumTeamChanged event = ScrumTeamChanged.of(team);
 
@@ -90,7 +91,7 @@ class ScrumTeamChangedStakeholderIdsTest {
     @DisplayName("removed(ScrumTeam)でもステークホルダーIDリストが含まれること")
     void shouldIncludeStakeholderIdsInRemovedEvent() {
       ScrumTeam team = scrumTeam();
-      team.setStakeholderEmployeeIds(List.of(STAKEHOLDER_ID, STAKEHOLDER2_ID));
+      team.setStakeholderEmployeeIds(List.of(STAKEHOLDER_ID, STAKEHOLDER2_ID), LocalDateTime.now());
 
       ScrumTeamChanged event = ScrumTeamChanged.removed(team);
 

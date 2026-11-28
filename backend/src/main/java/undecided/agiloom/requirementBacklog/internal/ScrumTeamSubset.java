@@ -71,11 +71,10 @@ class ScrumTeamSubset {
 
   /** サブセットが最後にイベントで更新された日時。 */
   @Column(name = "updated_at", nullable = false)
-  @Builder.Default
-  protected LocalDateTime updatedAt = LocalDateTime.now();
+  protected LocalDateTime updatedAt;
 
   /** イベントのスナップショット内容でサブセットを更新します。 */
-  void apply(@NonNull ScrumTeamChanged event) {
+  void apply(@NonNull ScrumTeamChanged event, @NonNull LocalDateTime now) {
     this.name = event.name();
     this.poEmployeeId = event.poEmployeeId();
     this.poName = event.poName();
@@ -85,11 +84,11 @@ class ScrumTeamSubset {
         ? new ArrayList<>(event.memberEmployeeIds()) : new ArrayList<>();
     this.stakeholderEmployeeIds = event.stakeholderEmployeeIds() != null
         ? new ArrayList<>(event.stakeholderEmployeeIds()) : new ArrayList<>();
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /** イベントから新しいサブセットを作成します。 */
-  static ScrumTeamSubset from(@NonNull ScrumTeamChanged event) {
+  static ScrumTeamSubset from(@NonNull ScrumTeamChanged event, @NonNull LocalDateTime now) {
     return ScrumTeamSubset.builder()
         .id(event.scrumTeamId())
         .name(event.name())
@@ -101,6 +100,7 @@ class ScrumTeamSubset {
             ? new ArrayList<>(event.memberEmployeeIds()) : new ArrayList<>())
         .stakeholderEmployeeIds(event.stakeholderEmployeeIds() != null
             ? new ArrayList<>(event.stakeholderEmployeeIds()) : new ArrayList<>())
+        .updatedAt(now)
         .build();
   }
 

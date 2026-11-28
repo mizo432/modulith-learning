@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.spi;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -36,9 +38,9 @@ class BacklogItemStatusReadyTest {
 
     private BacklogItem readyItem() {
       BacklogItem item =
-          BacklogItem.builder().title("Test Item").creatorName("Creator").value(50).build();
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
+          BacklogItem.builder().title("Test Item").creatorName("Creator").value(50).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
       return item;
     }
 
@@ -46,9 +48,9 @@ class BacklogItemStatusReadyTest {
     @DisplayName("Readyでストーリーポイントが設定されているアイテムをAcceptedへ遷移させたとき、状態がAcceptedとなりストーリーポイントがnullとなる")
     void shouldClearStoryPointWhenReadyToAccepted() {
       BacklogItem item = readyItem();
-      item.setStoryPoint(5);
+      item.setStoryPoint(5, LocalDateTime.now());
 
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
       assertThat(item.getStoryPoint()).isNull();
@@ -59,7 +61,7 @@ class BacklogItemStatusReadyTest {
     void shouldKeepStoryPointNullWhenReadyToAcceptedWithoutStoryPoint() {
       BacklogItem item = readyItem();
 
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ACCEPTED);
       assertThat(item.getStoryPoint()).isNull();
@@ -70,7 +72,7 @@ class BacklogItemStatusReadyTest {
     void shouldKeepValueWhenReadyToAccepted() {
       BacklogItem item = readyItem();
 
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
 
       assertThat(item.getValue()).isEqualTo(50);
     }
@@ -79,10 +81,10 @@ class BacklogItemStatusReadyTest {
     @DisplayName("ESTIMATEDのアイテムをAcceptedへ遷移させたとき、IllegalStateExceptionとなる")
     void shouldThrowWhenEstimatedToAccepted() {
       BacklogItem item = readyItem();
-      item.setStoryPoint(5);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
+      item.setStoryPoint(5, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
 
-      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED))
+      assertThatThrownBy(() -> item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now()))
           .isInstanceOf(IllegalStateException.class);
       assertThat(item.getStatus()).isEqualTo(BacklogItemStatus.ESTIMATED);
     }

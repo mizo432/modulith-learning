@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,10 +59,10 @@ class ChangeBacklogItemStatusCommandServiceAcceptedTest {
             .creatorName("Creator")
             .scrumTeamId(TEAM_ID)
             .value(50)
-            .build();
-    item.changeStatus(BacklogItemStatus.ACCEPTED);
-    item.changeStatus(BacklogItemStatus.READY);
-    item.setStoryPoint(5);
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+    item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+    item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
+    item.setStoryPoint(5, LocalDateTime.now());
     return item;
   }
 
@@ -73,7 +75,7 @@ class ChangeBacklogItemStatusCommandServiceAcceptedTest {
         .smEmployeeId(SM_ID)
         .smName("SM Name")
         .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID))
-        .build();
+        .updatedAt(LocalDateTime.now()).build();
   }
 
   private ChangeBacklogItemStatusCommand command(SnowflakeId actorId) {

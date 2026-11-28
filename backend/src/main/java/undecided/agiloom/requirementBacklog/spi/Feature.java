@@ -74,7 +74,7 @@ public class Feature {
    * @param name 更新後の名前（nullの場合は変更なし）
    * @param description 更新後の説明（nullの場合は変更なし）
    */
-  public void update(@Nullable String name, @Nullable String description) {
+  public void update(@Nullable String name, @Nullable String description, @NonNull LocalDateTime now) {
     if (name != null) {
       if (name.isEmpty()) {
         throw new IllegalArgumentException("Feature name must not be empty");
@@ -88,7 +88,7 @@ public class Feature {
     if (description != null) {
       this.description = description;
     }
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
@@ -104,7 +104,7 @@ public class Feature {
    * @param target 遷移先の状態
    * @throws IllegalStateException 許可されていない遷移の場合
    */
-  public void changeStatus(@NonNull FeatureStatus target) {
+  public void changeStatus(@NonNull FeatureStatus target, @NonNull LocalDateTime now) {
     boolean allowed = switch (this.status) {
       case PLANNED -> target == FeatureStatus.IN_PROGRESS;
       case IN_PROGRESS -> target == FeatureStatus.DONE || target == FeatureStatus.PLANNED;
@@ -115,14 +115,14 @@ public class Feature {
           "Invalid status transition: " + this.status + " -> " + target);
     }
     this.status = target;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = now;
   }
 
   /**
    * フィーチャーをビルダーパターンで構築します。
    *
    * <p>ビルダーの {@code build()} 時に {@code status} が未設定の場合は {@link FeatureStatus#PLANNED} を、
-   * {@code createdAt}・{@code updatedAt} が未設定の場合は現在時刻をそれぞれ設定します。
+   * {@code createdAt}・{@code updatedAt} が未設定の場合は例外をスローします。
    */
   @Builder(builderMethodName = "builder")
   private static Feature build(
@@ -139,8 +139,14 @@ public class Feature {
     feature.description = description;
     feature.status = status != null ? status : FeatureStatus.PLANNED;
     feature.scrumTeamId = scrumTeamId;
-    feature.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-    feature.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+    if (createdAt == null) {
+      throw new IllegalArgumentException("createdAt must not be null");
+    }
+    if (updatedAt == null) {
+      throw new IllegalArgumentException("updatedAt must not be null");
+    }
+    feature.createdAt = createdAt;
+    feature.updatedAt = updatedAt;
     return feature;
   }
 }

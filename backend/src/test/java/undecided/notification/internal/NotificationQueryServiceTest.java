@@ -1,4 +1,5 @@
 package undecided.notification.internal;
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +51,7 @@ class NotificationQueryServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new NotificationQueryService(notificationRepository);
+    service = new NotificationQueryService(notificationRepository, Clock.systemDefaultZone());
   }
 
   @Nested
@@ -69,7 +70,7 @@ class NotificationQueryServiceTest {
               .title("テスト通知")
               .content("テスト内容")
               .type(NotificationType.COMMENT_ADDED)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       List<NotificationEntity> expected = List.of(notification);
       when(notificationRepository.findByRecipientIdAndIsReadFalseOrderByCreatedAtDesc(RECIPIENT_ID))
           .thenReturn(expected);
@@ -109,7 +110,7 @@ class NotificationQueryServiceTest {
               .title("テスト通知")
               .content("テスト内容")
               .type(NotificationType.COMMENT_ADDED)
-              .build();
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(notificationRepository.findById(NOTIFICATION_ID)).thenReturn(Optional.of(notification));
 
       service.markAsRead(NOTIFICATION_ID);

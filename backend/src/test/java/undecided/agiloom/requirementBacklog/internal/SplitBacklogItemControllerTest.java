@@ -1,4 +1,5 @@
 package undecided.agiloom.requirementBacklog.internal;
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -194,9 +195,9 @@ class SplitBacklogItemControllerTest {
   private void prepareParent(int storyPoint) {
     BacklogItem parent = BacklogItem.builder().id(PARENT_ID).title("分割元")
         .creatorName("作成者").scrumTeamId(TEAM_ID).storyPoint(storyPoint)
-        .status(BacklogItemStatus.ESTIMATED).build();
+        .status(BacklogItemStatus.ESTIMATED).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     ScrumTeamSubset team = ScrumTeamSubset.builder().id(TEAM_ID).name("チーム")
-        .poEmployeeId(ACTOR_ID).memberEmployeeIds(List.of(ACTOR_ID, MEMBER_ID)).build();
+        .poEmployeeId(ACTOR_ID).memberEmployeeIds(List.of(ACTOR_ID, MEMBER_ID)).updatedAt(LocalDateTime.now()).build();
     when(items.findById(PARENT_ID)).thenReturn(Optional.of(parent));
     when(teams.findById(TEAM_ID)).thenReturn(Optional.of(team));
   }

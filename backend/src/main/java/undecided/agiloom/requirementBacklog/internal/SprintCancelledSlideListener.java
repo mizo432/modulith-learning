@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ class SprintCancelledSlideListener {
 
   private final BacklogItemRepository backlogItemRepository;
   private final SprintFacade sprintFacade;
+  private final Clock clock;
 
   @ApplicationModuleListener
   public void onSprintCancelled(SprintCancelled event) {
@@ -34,9 +37,9 @@ class SprintCancelledSlideListener {
         sprintFacade.findNextSprint(event.scrumTeamId(), event.sprintNumber());
     for (BacklogItem item : assignedItems) {
       if (nextSprint.isPresent()) {
-        item.assignToSprint(nextSprint.get().getId());
+        item.assignToSprint(nextSprint.get().getId(), LocalDateTime.now(clock));
       } else {
-        item.unassignFromSprint();
+        item.unassignFromSprint(LocalDateTime.now(clock));
       }
     }
     backlogItemRepository.saveAll(assignedItems);

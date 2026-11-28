@@ -19,7 +19,7 @@ class SprintBacklogItemTest {
         .sprintId(SnowflakeId.of(100L))
         .backlogItemId(SnowflakeId.of(200L))
         .workDescription("Implement login feature")
-        .build();
+        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
   }
 
   @Nested
@@ -54,7 +54,7 @@ class SprintBacklogItemTest {
     void shouldUpdateStatus() {
       SprintBacklogItem item = createBacklogItem();
 
-      item.updateStatus(TaskStatus.IN_PROGRESS);
+      item.updateStatus(TaskStatus.IN_PROGRESS, LocalDateTime.now());
 
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
       assertThat(item.getUpdatedAt()).isNotNull();
@@ -65,13 +65,13 @@ class SprintBacklogItemTest {
     void shouldTransitionToAllStatuses() {
       SprintBacklogItem item = createBacklogItem();
 
-      item.updateStatus(TaskStatus.IN_PROGRESS);
+      item.updateStatus(TaskStatus.IN_PROGRESS, LocalDateTime.now());
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
 
-      item.updateStatus(TaskStatus.IN_REVIEW);
+      item.updateStatus(TaskStatus.IN_REVIEW, LocalDateTime.now());
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_REVIEW);
 
-      item.updateStatus(TaskStatus.DONE);
+      item.updateStatus(TaskStatus.DONE, LocalDateTime.now());
       assertThat(item.getStatus()).isEqualTo(TaskStatus.DONE);
     }
   }
@@ -86,7 +86,7 @@ class SprintBacklogItemTest {
       SprintBacklogItem item = createBacklogItem();
       SnowflakeId assigneeId = SnowflakeId.of(300L);
 
-      item.assignTo(assigneeId);
+      item.assignTo(assigneeId, LocalDateTime.now());
 
       assertThat(item.getAssigneeId()).isEqualTo(assigneeId);
       assertThat(item.getUpdatedAt()).isNotNull();
@@ -103,7 +103,7 @@ class SprintBacklogItemTest {
       SprintBacklogItem item = createBacklogItem();
       SnowflakeId assigneeId = SnowflakeId.of(300L);
 
-      item.update("New description", TaskStatus.IN_PROGRESS, assigneeId);
+      item.update("New description", TaskStatus.IN_PROGRESS, assigneeId, LocalDateTime.now());
 
       assertThat(item.getWorkDescription()).isEqualTo("New description");
       assertThat(item.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);

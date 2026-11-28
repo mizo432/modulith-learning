@@ -1,5 +1,7 @@
 package undecided.jobmanagement.permissionmanagement.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import undecided.jobmanagement.permissionmanagement.spi.userpermission.JobAdminEmployeeSubset;
@@ -15,9 +17,11 @@ import undecided.supporting.event.AdminEmployeeChanged;
 class JobAdminEmployeeSubsetEventListener {
 
   private final JobAdminEmployeeSubsetRepository adminEmployeeSubsetRepository;
+  private final Clock clock;
 
-  JobAdminEmployeeSubsetEventListener(JobAdminEmployeeSubsetRepository adminEmployeeSubsetRepository) {
+  JobAdminEmployeeSubsetEventListener(JobAdminEmployeeSubsetRepository adminEmployeeSubsetRepository, Clock clock) {
     this.adminEmployeeSubsetRepository = adminEmployeeSubsetRepository;
+    this.clock = clock;
   }
 
   /**
@@ -28,7 +32,7 @@ class JobAdminEmployeeSubsetEventListener {
   @EventListener
   void on(AdminEmployeeChanged event) {
     if (event.isAdmin()) {
-      adminEmployeeSubsetRepository.save(JobAdminEmployeeSubset.of(event.employeeId()));
+      adminEmployeeSubsetRepository.save(JobAdminEmployeeSubset.of(event.employeeId(), LocalDateTime.now(clock)));
     } else {
       adminEmployeeSubsetRepository.deleteById(event.employeeId());
     }

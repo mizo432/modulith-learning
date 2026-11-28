@@ -1,4 +1,6 @@
 package undecided.agiloom.requirementBacklog.internal;
+
+import java.time.LocalDateTime;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +58,7 @@ class SplitBacklogItemCommandServiceTest {
     service = new SplitBacklogItemCommandService(items, teams, ids, events, Clock.systemDefaultZone());
     ScrumTeamSubset team = ScrumTeamSubset.builder()
         .id(TEAM_ID).name("チーム").poEmployeeId(PO_ID).smEmployeeId(SM_ID)
-        .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID)).build();
+        .memberEmployeeIds(List.of(PO_ID, SM_ID, MEMBER_ID)).updatedAt(LocalDateTime.now()).build();
     lenient().when(teams.findById(TEAM_ID)).thenReturn(Optional.of(team));
     AtomicLong next = new AtomicLong(1000);
     lenient().when(ids.nextIdValue()).thenAnswer(invocation -> SnowflakeId.of(next.getAndIncrement()));
@@ -75,11 +77,11 @@ class SplitBacklogItemCommandServiceTest {
   private BacklogItem parent(Integer storyPoint) {
     BacklogItem item = BacklogItem.builder().id(ITEM_ID).scrumTeamId(TEAM_ID)
         .title("親タイトル").description("親の説明").creatorName("作成者")
-        .priority(3).value(50).sprintId(SPRINT_ID).storyPoint(storyPoint).build();
+        .priority(3).value(50).sprintId(SPRINT_ID).storyPoint(storyPoint).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
     if (storyPoint != null) {
-      item.changeStatus(BacklogItemStatus.ACCEPTED);
-      item.changeStatus(BacklogItemStatus.READY);
-      item.changeStatus(BacklogItemStatus.ESTIMATED);
+      item.changeStatus(BacklogItemStatus.ACCEPTED, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.READY, LocalDateTime.now());
+      item.changeStatus(BacklogItemStatus.ESTIMATED, LocalDateTime.now());
     }
     when(items.findById(ITEM_ID)).thenReturn(Optional.of(item));
     return item;
@@ -341,7 +343,7 @@ class SplitBacklogItemCommandServiceTest {
     void shouldRejectDoneParent() {
       BacklogItem done = BacklogItem.builder().id(ITEM_ID).scrumTeamId(TEAM_ID)
           .title("親タイトル").creatorName("作成者").storyPoint(13)
-          .status(BacklogItemStatus.DONE).build();
+          .status(BacklogItemStatus.DONE).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
       when(items.findById(ITEM_ID)).thenReturn(Optional.of(done));
       assertThatThrownBy(() -> service.execute(command(PO_ID, children(1))))
           .isInstanceOf(IllegalStateException.class);

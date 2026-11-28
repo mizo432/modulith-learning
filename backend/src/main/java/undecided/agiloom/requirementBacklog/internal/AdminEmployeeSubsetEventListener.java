@@ -1,5 +1,7 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import undecided.supporting.event.AdminEmployeeChanged;
@@ -14,9 +16,11 @@ import undecided.supporting.event.AdminEmployeeChanged;
 class AdminEmployeeSubsetEventListener {
 
   private final AdminEmployeeSubsetRepository adminEmployeeSubsetRepository;
+  private final Clock clock;
 
-  AdminEmployeeSubsetEventListener(AdminEmployeeSubsetRepository adminEmployeeSubsetRepository) {
+  AdminEmployeeSubsetEventListener(AdminEmployeeSubsetRepository adminEmployeeSubsetRepository, Clock clock) {
     this.adminEmployeeSubsetRepository = adminEmployeeSubsetRepository;
+    this.clock = clock;
   }
 
   /**
@@ -27,7 +31,7 @@ class AdminEmployeeSubsetEventListener {
   @EventListener
   void on(AdminEmployeeChanged event) {
     if (event.isAdmin()) {
-      AdminEmployeeSubset subset = AdminEmployeeSubset.of(event.employeeId());
+      AdminEmployeeSubset subset = AdminEmployeeSubset.of(event.employeeId(), LocalDateTime.now(clock));
       adminEmployeeSubsetRepository.save(subset);
     } else {
       adminEmployeeSubsetRepository.deleteById(event.employeeId());

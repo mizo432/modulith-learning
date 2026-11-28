@@ -43,8 +43,7 @@ public class BacklogItemDependency {
 
   /** 定義日時。 */
   @Column(name = "created_at", nullable = false, updatable = false)
-  @Builder.Default
-  protected LocalDateTime createdAt = LocalDateTime.now();
+  protected LocalDateTime createdAt;
 
   /** 楽観ロック用バージョン列。 */
   @Version

@@ -93,6 +93,7 @@ class AddBacklogItemCommentCommandService {
             .authorName(command.getAuthorName())
             .body(command.getBody())
             .parentComment(parentComment)
+            .createdAt(LocalDateTime.now(clock))
             .build();
 
     BacklogItemComment saved = backlogItemCommentRepository.save(comment);
@@ -107,7 +108,7 @@ class AddBacklogItemCommentCommandService {
               command.getBacklogItemId(),
               command.getAuthorEmployeeId(),
               command.getAuthorName(),
-              authorEmail));
+              authorEmail, LocalDateTime.now(clock)));
     }
 
     // コメント追加イベントを発行
