@@ -1,5 +1,8 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import org.jspecify.annotations.NonNull;
@@ -12,6 +15,8 @@ import undecided.supporting.snowflake.SnowflakeId;
 /**
  * フィーチャークエリサービス（進捗計算含む）。
  */
+@Service
+@Transactional(readOnly = true)
 class FeatureQueryService {
 
   private final FeatureRepository featureRepository;

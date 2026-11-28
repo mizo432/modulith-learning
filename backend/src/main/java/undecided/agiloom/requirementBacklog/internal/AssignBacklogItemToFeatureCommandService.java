@@ -1,5 +1,8 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
@@ -12,6 +15,8 @@ import undecided.agiloom.requirementBacklog.spi.FeatureBacklogItem;
  *
  * <p>同じフィーチャーへの再割り当ては冪等に成功し、別のフィーチャーへの割り当ては409エラー（決定4）。
  */
+@Service
+@Transactional
 class AssignBacklogItemToFeatureCommandService {
 
   private final FeatureRepository featureRepository;
