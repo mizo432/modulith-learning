@@ -1,5 +1,8 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 import org.jspecify.annotations.NonNull;
@@ -10,6 +13,8 @@ import undecided.supporting.snowflake.SnowflakeIdGenerator;
 /**
  * フィーチャー作成サービス。
  */
+@Service
+@Transactional
 class CreateFeatureCommandService {
 
   private final FeatureRepository featureRepository;

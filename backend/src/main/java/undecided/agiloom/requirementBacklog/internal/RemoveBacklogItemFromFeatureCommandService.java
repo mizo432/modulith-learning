@@ -1,5 +1,8 @@
 package undecided.agiloom.requirementBacklog.internal;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.jspecify.annotations.NonNull;
 import undecided.agiloom.requirementBacklog.spi.Feature;
 import undecided.agiloom.requirementBacklog.spi.FeatureBacklogItem;
@@ -7,6 +10,8 @@ import undecided.agiloom.requirementBacklog.spi.FeatureBacklogItem;
 /**
  * バックログアイテムをフィーチャーから外すサービス。
  */
+@Service
+@Transactional
 class RemoveBacklogItemFromFeatureCommandService {
 
   private final FeatureRepository featureRepository;
